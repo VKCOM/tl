@@ -1,0 +1,302 @@
+{%- import "fmt" -%}
+
+{%- func (union *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
+    {%- code
+        goName := addBytes(union.goGlobalName, bytesVersion)
+        asterisk := ifString(union.IsEnum, "", "*")
+        natArgsDecl := formatNatArgsDecl(union.wr.NatParams)
+        natArgsCall := formatNatArgsCall(union.wr.NatParams)
+    -%}
+{%= union.generateEnumAlias(bytesVersion) %}
+
+type {%s= goName %} struct { {%= union.generateFields(bytesVersion, directImports) %} }
+
+func (item {%s= goName %}) TLName() string { return _{%s= addBytes(union.goGlobalName, false) %}[item.index].TLName }
+func (item {%s= goName %}) TLTag() uint32 { return _{%s= addBytes(union.goGlobalName, false) %}[item.index].TLTag }
+
+func (item *{%s= goName %}) Reset() { {%- if union.Fields[0].t.IsTrueType() -%} item.index = 0 {%- else -%} item.ResetTo{%s= union.Fields[0].goName %}() {%- endif -%} }
+    {%- if union.wr.gen.options.GenerateRandomCode -%}
+func (item *{%s= goName %}) FillRandom(rand basictl.Rand{%s= natArgsDecl %}) {
+    index := basictl.RandomNat(rand) % {%d len(union.Fields) %}
+    switch index {
+    {%- for i, field := range union.Fields -%}
+    case {%d i %}:
+        item.index = {%d i %}
+        {%- if field.t.IsTrueType() -%}
+            {%- continue -%}
+        {%- endif -%}
+        {%- code
+            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
+        -%}
+        {%- if field.recursive -%}
+        if item.value{%s= field.goName %} == nil {
+            var value {%s= fieldTypeString %}
+            value.FillRandom(rand)
+            item.value{%s= field.goName %} = &value
+        }
+        {%- endif -%}
+        {%s= field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, field.recursive) %}
+        {%- endfor -%}
+    default:
+    }
+}
+    {%- endif -%}
+
+{%= union.generateConstructorsBehavior(bytesVersion, directImports) %}
+
+func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    var tag uint32
+    if w, err = basictl.NatRead(w, &tag); err != nil {
+        return w, err
+    }
+    switch tag {
+    {%- for i, field := range union.Fields -%}
+    case {%s= fmt.Sprintf("%#x", field.t.tlTag) %}:
+        item.index = {%d i %}
+        {%- if field.t.IsTrueType() -%}
+        return w, nil
+            {%- continue -%}
+        {%- endif -%}
+        {%- code
+            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
+        -%}
+        {%- if field.recursive -%}
+        if item.value{%s= field.goName %} == nil {
+            var value {%s= fieldTypeString %}
+            item.value{%s= field.goName %} = &value
+        }
+        {%- endif -%}
+        {%s= field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true, union.Fields[0].t.NatParams, field.recursive, true) %}
+        {%- endfor -%}
+    default:
+        return w, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTag({%q= union.wr.tlName.String() %}, tag)
+    }
+}
+
+func (item {%s= asterisk %}{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    w = basictl.NatWrite(w, _{%s= addBytes(union.goGlobalName, false) %}[item.index].TLTag)
+    {%- if union.IsEnum -%}
+        return w, nil }
+    {%- else -%}
+    switch item.index {
+        {%- for i, field := range union.Fields -%}
+        case {%d i %}:
+            {%- if field.t.IsTrueType() -%}
+        return w, nil
+            {%- else -%}
+        {%s= field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf( "item.value%s", field.goName), true, union.Fields[0].t.NatParams, false, true) %}
+            {%- endif -%}
+        {%- endfor -%}
+        default: // Impossible due to panic above
+           return w, nil
+    }
+}
+    {%- endif -%}
+
+func {%s= goName %}__ReadJSON(item *{%s= goName %}, j interface{}{%s= natArgsDecl %}) error { return item.readJSON(j{%s= natArgsCall %}); }
+func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
+    {%- code
+        // TODO - we lost compatibility between enums and unions here. We might wish to return compatibility
+        // by allowing union element to be read from string, and enum from object with tag
+    -%}
+    {%- if union.IsEnum -%}
+    if j == nil {
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, "expected string")
+    }
+    _jtype, _ok := j.(string)
+    if !_ok {
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, "expected string")
+    }
+    switch _jtype {
+        {%- for i, field := range union.Fields -%}
+            {%- code
+                name := field.originalName
+                tag := fmt.Sprintf("#%08x", field.t.tlTag)
+                nameWithTag := name + tag
+            -%}
+        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}:
+            item.index = {%d i %}
+            return nil
+        {%- endfor -%}
+        default:
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidEnumTagJSON({%q= union.wr.tlName.String() %}, _jtype)
+    }
+}
+    {%- else -%}
+    _jm, _tag, err := {%s= union.wr.gen.InternalPrefix()%}JsonReadUnionType({%q= union.wr.tlName.String() %}, j)
+    if err != nil {
+        return err
+    }
+    jvalue := _jm["value"]
+    switch _tag {
+        {%- for i, field := range union.Fields -%}
+            {%- code
+                name := field.originalName
+                tag := fmt.Sprintf("#%08x", field.t.tlTag)
+                nameWithTag := name + tag
+            -%}
+        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}:
+            item.index = {%d i %}
+            {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
+                {%- if field.recursive -%}
+            if item.value{%s= field.goName %} == nil {
+                var value {%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
+                item.value{%s= field.goName %} = &value
+            }
+                {%- endif -%}
+            {%s= field.t.TypeJSONReadingCode(bytesVersion, directImports, union.wr.ins, "jvalue", fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, field.recursive) %}
+            delete(_jm, "value")
+        {%- endfor -%}
+        default:
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= union.wr.tlName.String() %}, _tag)
+    }
+    for k := range _jm {
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= union.wr.tlName.String() %}, k)
+    }
+    return nil
+}
+    {%- endif -%}
+
+func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if union.IsEnum -%}
+        w = append(w, '"')
+        w = append(w, _{%s= goName %}[item.index].TLString...)
+        return append(w, '"'), nil
+
+    {%- else -%}
+    switch item.index {
+        {%- for i, field := range union.Fields -%}
+            {%- code
+                nameWithTag := fmt.Sprintf("%s#%08x", field.originalName, field.t.tlTag)
+            -%}
+        case {%d i %}:
+            {%- if field.t.IsTrueType() -%}
+        return append(w, `{"type":{%q= nameWithTag %}}`...), nil
+            {%- else -%}
+    {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false, ) != "" -%}
+        w = append(w, `{"type":{%q= nameWithTag %}`...)
+        if {%s= field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false, ) %} {
+            w = append(w, `,"value":`...)
+            {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false) %}
+        }
+    {%- else -%}
+        w = append(w, `{"type":{%q= nameWithTag %},"value":`...)
+        {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false) %}
+    {%- endif -%}
+        return append(w, '}'), nil
+            {%- endif -%}
+        {%- endfor -%}
+        default: // Impossible due to panic above
+            return w, nil
+    }
+    {%- endif -%}
+}
+
+{%- if len(union.wr.NatParams) == 0 -%}
+func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(union.wr.NatParams) %}) string {
+    w, err := item.WriteJSON(nil{%s= natArgsCall %})
+    if err != nil {
+        return err.Error()
+    }
+    return string(w)
+}
+{%- endif -%}
+{%- endfunc -%}
+
+{%- func (union *TypeRWUnion) generateFields(bytesVersion bool, directImports *DirectImports) -%}
+    {%- for _, field := range union.Fields -%}
+        {%- if !field.t.IsTrueType() -%}
+    value{%s= field.goName %} {%s= ifString(field.recursive, "*", "") %}{%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
+        {%- endif -%}
+    {%- endfor -%}
+    index int
+{%- endfunc -%}
+
+{%- func (union *TypeRWUnion) generateConstructorsBehavior(bytesVersion bool, directImports *DirectImports) -%}
+    {%- code goGlobalName := addBytes(union.goGlobalName, bytesVersion) -%}
+    {%- for i, field := range union.Fields -%}
+
+func (item *{%s= goGlobalName %}) Is{%s= field.goName %}() bool { return item.index == {%d i %} }
+        {%- if union.IsEnum -%}
+func (item *{%s= goGlobalName %}) Set{%s= field.goName %}() { item.index = {%d i %}}
+        {%- else -%}
+
+        {%- code
+            fieldTypeString := field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false)
+            ampersand := ifString(field.recursive, "", "&")
+        -%}
+
+        {%- if field.t.IsTrueType() -%}
+func (item *{%s= goGlobalName %}) As{%s= field.goName %}() ({%s= fieldTypeString %}, bool) {
+    var value {%s= fieldTypeString %}
+    return value, item.index == {%d i %}
+}
+        {%- else -%}
+func (item *{%s= goGlobalName %}) As{%s= field.goName %}() (*{%s= fieldTypeString %}, bool) {
+    if item.index != {%d i %} {
+        return nil, false
+    }
+    return {%s= ampersand %}item.value{%s= field.goName %}, true
+}
+        {%- endif -%}
+        {%- if field.t.IsTrueType() -%}
+func (item *{%s= goGlobalName %}) ResetTo{%s= field.goName %}() { item.index = {%d i %}}
+        {%- elseif field.recursive -%}
+func (item *{%s= goGlobalName %}) ResetTo{%s= field.goName %}() *{%s= fieldTypeString %} {
+    item.index = {%d i %}
+    if item.value{%s= field.goName %} == nil {
+        var value {%s= fieldTypeString %}
+        item.value{%s= field.goName %} = &value
+    } else {
+        {%s= field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, true) %}
+    }
+    return item.value{%s= field.goName %}
+}
+        {%- else -%}
+func (item *{%s= goGlobalName %}) ResetTo{%s= field.goName %}() *{%s= fieldTypeString %} {
+    item.index = {%d i %}
+    {%s= field.t.TypeResettingCode(bytesVersion, directImports, union.wr.ins, "item.value"+field.goName, false) %}
+    return &item.value{%s= field.goName %}
+}
+        {%- endif -%}
+        {%- if field.t.IsTrueType() -%}
+func (item *{%s= goGlobalName %}) Set{%s= field.goName %}() { item.index = {%d i %}}
+        {%- elseif field.recursive -%}
+func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeString %}) {
+    item.index = {%d i %}
+    if item.value{%s= field.goName %} == nil {
+        item.value{%s= field.goName %} = &value
+    } else {
+        *item.value{%s= field.goName %} = value
+    }
+}
+        {%- else -%}
+func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeString %}) {
+    item.index = {%d i %}
+    item.value{%s= field.goName %} = value
+}
+        {%- endif -%}
+
+
+    {%- endif -%}
+    {%- endfor -%}
+{%- endfunc -%}
+
+{%- func (union *TypeRWUnion) generateEnumAlias(bytesVersion bool) -%}
+    {%- code goName := addBytes(union.goGlobalName, false) -%}
+    {%- if bytesVersion -%} {%- return -%} {%- endif -%}
+    var _{%s= goName %} = [{%d len(union.Fields) %}]{%s= union.wr.gen.InternalPrefix()%}UnionElement{
+    {%- for _, x := range union.Fields -%}
+        {%- code
+            tlTag := fmt.Sprintf("%#x", x.t.tlTag )
+            tlString := fmt.Sprintf("%s#%08x", x.t.tlName, x.t.tlTag)
+            tlName := x.t.tlName.String()
+        -%}
+        {TLTag:{%s= tlTag %}, TLName:{%q= tlName %}, TLString:{%q= tlString %}},
+    {%- endfor -%}
+    }
+
+    {%- if union.IsEnum -%} // TODO - deconflict name
+func {%s= goName %}__MakeEnum(i int) {%s= goName %} { return {%s= goName %}{index: i} }
+    {%- endif -%}
+{%- endfunc -%}

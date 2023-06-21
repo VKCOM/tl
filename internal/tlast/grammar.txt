@@ -1,0 +1,50 @@
+[regex]
+TypesSection := ---types---
+FunctionSection := ---functions---
+CRC32 := #[a-f0-9]{8}
+functionModifier := @any  | @internal  | @kphp
+                    @read | @readwrite | @write
+number := \d+
+word := \w+
+comment := //.*
+
+[bnf]
+arithmetic :=  arithmetic '+' arithmetic | number | '(' arithmetic ')'
+namespace := namespace '.' | word
+name := word
+fullName := namespace '.' name
+
+fieldMask := word '.' number '?'
+
+apply := fullName [ aot ] ...
+
+T := '(' apply ')'                 |
+     '(' T ')'                     |
+     fullName '<' aot ',' ... '>'  |
+     repeatType                    |
+     fullName                      |
+     bareType                      |
+     '#'                           |
+     '?'
+
+aot := [T | arithmetic]
+
+bareType := '%' T | '(' '%' fullName [ aot ] ... ')'
+repeatType := [ scale '*' ] '[' field ... ']' //  scale - the name of any previously encountered field of type # (if it is not explicitly indicated, the most recent is used).
+
+
+fieldName := name ':'
+templateArgument := '{' fieldName T '}'
+field := [ fieldName ] [ ! ]     [ fieldMask ] T
+
+constructor := fullName [CRC32]
+
+typeDecl := fullName [word] ...
+
+type := constructor [templateArgument] ... [field] ...  '=' typeDecl ';'
+
+funcDecl := apply | '(' apply ')' | '%' T | fullName '<' aot ',' ... '>'
+
+function := [ functionModifier ] constructor [templateArgument] ... [field] ... '=' apply;'
+
+TL := TypesSection [ type ... ] FunctionSection [ function ... ]

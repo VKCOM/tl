@@ -1,0 +1,91 @@
+{%- import "fmt" -%}
+
+{%- func (maybe *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
+    {%- code
+        goName := addBytes(maybe.goGlobalName, bytesVersion)
+        elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
+        natArgsDecl := formatNatArgsDecl(maybe.wr.NatParams)
+        natArgsCall := formatNatArgsCall(maybe.wr.NatParams)
+        emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
+        okTag := fmt.Sprintf("%#x", maybe.okTag)
+    -%}
+type {%s= goName %} struct {
+    Value {%s= elementTypeString %} // not deterministic if !Ok
+    Ok    bool
+}
+
+func (item *{%s= goName %}) Reset() {
+    item.Ok = false
+}
+    {%- if maybe.wr.gen.options.GenerateRandomCode -%}
+func (item *{%s= goName %}) FillRandom(rand basictl.Rand{%s= natArgsDecl %}) {
+    if basictl.RandomNat(rand) & 1 == 1 {
+        item.Ok = true
+        {%s= maybe.element.t.TypeRandomCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.natArgs), false) %}
+    } else {
+        item.Ok = false
+    }
+}
+    {%- endif -%}
+
+func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    if w, err = basictl.ReadBool(w, &item.Ok, {%s= emptyTag %}, {%s= okTag %}); err != nil {
+        return w, err
+    }
+    if item.Ok {
+        {%s= maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true) %}
+    }
+    return w, nil
+}
+
+
+func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    if item.Ok {
+        w = basictl.NatWrite(w, {%s= okTag %})
+        {%s= maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true, ) %}
+    }
+    return basictl.NatWrite(w, {%s= emptyTag %}), nil
+}
+
+func {%s= goName %}__ReadJSON(item *{%s= goName %}, j interface{}{%s= natArgsDecl %}) error { return item.readJSON(j{%s= natArgsCall %}); }
+func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
+  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe({%q= maybe.wr.tlName.String() %}, j)
+  if err != nil {
+    return err
+  }
+  item.Ok = _ok
+  if _ok {
+    {%s= maybe.element.t.TypeJSONReadingCode(bytesVersion, directImports, maybe.wr.ins, "_jvalue", "item.Value", formatNatArgs(nil, maybe.element.natArgs), false, ) %}
+  }
+  return nil
+}
+
+func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+  if !item.Ok {
+    return append(w, "{}"...), nil
+  }
+  w = append(w, `{"ok":true`...)
+    {%- if maybe.element.t.TypeJSONEmptyCondition(bytesVersion, "item.Value", false, ) != "" -%}
+  if {%s= maybe.element.t.TypeJSONEmptyCondition(bytesVersion, "item.Value", false, ) %} {
+    {%- endif -%}
+    w = basictl.JSONAddCommaIfNeeded(w)
+    w = append(w, `"value":`...)
+  {%s= maybe.element.t.TypeJSONWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", formatNatArgs(nil, maybe.element.natArgs), false, ) %}
+    {%- if maybe.element.t.TypeJSONEmptyCondition(bytesVersion, "item.Value", false, ) != "" -%}
+    }
+    {%- endif -%}
+  return append(w, '}'), nil
+}
+    {%- if len(maybe.wr.NatParams) == 0 -%}
+
+func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(maybe.wr.NatParams) %}) string {
+    w, err := item.WriteJSON(nil{%s= natArgsCall %})
+    if err != nil {
+        return err.Error()
+    }
+    return string(w) 
+}
+
+    {%- endif -%}
+
+{%- endfunc -%}

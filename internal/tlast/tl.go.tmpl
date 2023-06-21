@@ -1,0 +1,131 @@
+---types---
+{{ range . }}
+    {{- if not .Modifiers -}}
+        {{- template "type" . }}
+    {{- end -}}
+{{ end -}}
+---functions---
+{{ range . }}
+    {{- if .Modifiers -}}
+            {{- template "function" . }}
+        {{- end -}}
+{{ end -}}
+
+{{- define "name" -}}
+    {{- if .Namespace -}}
+        {{- . -}}.
+    {{- end -}}
+    {{- .Name -}}
+{{- end -}}
+
+{{- define "construct" -}}
+    {{- template "name" .Name -}}
+    {{- if .ID -}}
+        {{- printf "#%.8x" (Deref .ID) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- define "template argument" -}}
+    {{- if .IsNat -}}
+    { {{- .FieldName -}}:# }
+    {{- else -}}
+    { {{- .FieldName -}}:Type }
+    {{- end -}}
+{{- end -}}
+
+{{- define "mask" -}}
+    {{- .MaskName -}}.{{- .BitNumber -}}?
+{{- end -}}
+
+{{- define "arith" -}}
+    {{- $length := len .Nums -}}
+    {{- range $i, $val := .Nums -}}
+        {{- if ne $i 0 -}}
+            +{{.}}
+        {{- else -}}
+            {{.}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- define "aot" -}}
+    {{- if .Arith -}}
+        {{- template "arith" .Arith -}}
+    {{- else if .T -}}
+        {{- template "T" .T -}}
+    {{- else -}}{{end}}
+{{- end -}}
+
+{{define "rt"}}
+    {{- if .Name -}}{{- Deref .Name -}}{{- end -}}
+    {{- template "T" .T -}}
+{{end}}
+
+{{- define "swr" -}}
+    {{- if .Scale -}}
+        {{- Deref .Scale -}}*
+    {{- end -}}
+    [ {{ range .Rep -}} {{- template "rt" . -}} {{- end }} ]
+{{- end -}}
+
+{{- define "T"}}
+    {{- if .Type -}}
+        {{- if not .Args -}}
+            {{- template "name" .Type -}}
+        {{- else -}}
+        ({{- template "name" .Type }}{{ range .Args }} {{ template "aot" . }}{{ end -}})
+        {{- end -}}
+    {{- else if .Bare -}}
+        %{{- template "T" .Bare -}}
+    {{- else if .ScaleRepeat -}}
+        {{- template "swr" .ScaleRepeat -}}
+    {{- else -}}{{- end -}}
+{{- end -}}
+
+{{- define "field"}}
+    {{- if .FieldName -}}
+        {{- .FieldName -}}:
+    {{- end -}}
+    {{- if .Mask -}}
+        {{- template "mask" .Mask -}}
+    {{- end -}}
+    {{- if .Excl -}}
+        !
+    {{- end -}}
+    {{- template "T" .FieldType -}}
+{{- end -}}
+
+{{- define "type_decl"}}
+    {{- .Name -}} {{- range .Arguments }} {{ . }} {{ end -}}
+{{- end -}}
+
+{{- define "type" -}}
+    {{- template "construct" .Construct }}
+    {{ range .TemplateArguments -}}
+        {{- template "template argument" . }}
+    {{ end -}}
+    {{ range .Fields -}}
+        {{- template "field" . }}
+    {{ end -}}
+    = {{ template "type_decl" .TypeDecl -}};
+{{end}}
+
+{{- define "modifiers" -}}
+    {{ range . -}}
+        .
+    {{- end -}}
+{{end}}
+
+{{- define "function" -}}
+    {{ range .Modifiers }}
+        .
+    {{ end }}
+    {{- template "construct" .Construct }}
+    {{ range .TemplateArguments -}}
+        {{- template "template argument" . }}
+    {{ end -}}
+    {{ range .Fields -}}
+        {{- template "field" . }}
+    {{ end -}}
+    = {{ template "T" .FuncDecl -}};
+{{ end }} 
