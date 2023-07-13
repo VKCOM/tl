@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>contactEmailRot13</key>
+	<string>z.obeqlhtbi@pbec.ix.pbz</string>
+	<key>contactName</key>
+	<string>DedAzaMarks</string>
+	<key>description</key>
+	<string>Syntax highlight for &lt;a href="https://core.telegram.org/mtproto/TL"&gt;TypeLanguge&lt;/a&gt; files. Used for type, and RPC protocol description. Also is a binay serialization format.</string>
+	<key>name</key>
+	<string>tl</string>
+	<key>uuid</key>
+	<string>8DD66D91-38FC-415A-B7EA-CDD511CD9AF7</string>
+</dict>
+</plist>

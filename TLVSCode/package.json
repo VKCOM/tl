@@ -1,0 +1,29 @@
+{
+  "name": "tl",
+  "displayName": "TL",
+  "description": "Syntax highlight for Type Language",
+  "version": "0.0.3",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "tl",
+      "aliases": ["TL", "tl"],
+      "extensions": [".tl"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "tl",
+      "scopeName": "source.tl",
+      "path": "./syntaxes/tl.tmLanguage"
+    }]
+  },
+  "repository": {
+    "url": "https://github.com/DedAzaMarks/TLVSCode.git"
+  },
+  "publisher": "DedAzaMarks"
+}
