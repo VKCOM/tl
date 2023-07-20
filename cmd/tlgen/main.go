@@ -59,7 +59,7 @@ func (ctx *context) parseFlags() error {
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&ctx.argv.GenerateRPCCode, "generateRPCCode", true,
 		"whether to generate *_server.go files")
-	flag.StringVar(&ctx.argv.BasicRPCPath, "basicRPCPath", "gitlab.mvk.com/go/vkgo/pkg/rpc",
+	flag.StringVar(&ctx.argv.BasicRPCPath, "basicRPCPath", "github.com/vkcom/tl/internal/rpc",
 		"path to rpc package")
 	flag.StringVar(&ctx.argv.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")

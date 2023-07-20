@@ -12,9 +12,6 @@ package tlcodegen
 import (
 	"fmt"
 	"strconv"
-	"time"
-
-	"github.com/vkcom/tl/internal/build"
 
 	qtio422016 "io"
 
@@ -37,16 +34,6 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, buildSHA256Checksum stri
   <body>
     <h1>Schema</h1>
     <ul>
-      <li><abbr>TL</abbr> schema: <a href="https://gitlab.mvk.com/go/vkgo/-/blob/`)
-	qw422016.E().S(build.Commit())
-	qw422016.N().S(`/pkg/vktl/combined.tl"><code>`)
-	qw422016.E().S(build.Commit())
-	qw422016.N().S(`</code></a> commit timestamp `)
-	qw422016.E().S(time.Unix(int64(build.CommitTimestamp()), 0).Format(time.RFC3339))
-	qw422016.N().S(` compiled at `)
-	qw422016.E().S(build.Time())
-	qw422016.N().S(`</li>
-      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://gitlab.mvk.com/go/vkgo/-/blob/master/pkg/vktl/TLJSON.md">TLJSON.md</a></li>
     </ul>
     <h1>Functions</h1>
     <ul>

@@ -2,9 +2,7 @@
 
 {% import "fmt" %}
 {% import "strconv" %}
-{% import "time" %}
 
-{% import "github.com/vkcom/tl/internal/build" %}
 
 {%- func tlJSON(gen *Gen2, buildSHA256Checksum string) -%}
 <!DOCTYPE html>
@@ -17,8 +15,6 @@
   <body>
     <h1>Schema</h1>
     <ul>
-      <li><abbr>TL</abbr> schema: <a href="https://gitlab.mvk.com/go/vkgo/-/blob/{%s build.Commit() %}/pkg/vktl/combined.tl"><code>{%s build.Commit() %}</code></a> commit timestamp {%s time.Unix(int64(build.CommitTimestamp()), 0).Format(time.RFC3339) %} compiled at {%s build.Time() %}</li>
-      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://gitlab.mvk.com/go/vkgo/-/blob/master/pkg/vktl/TLJSON.md">TLJSON.md</a></li>
     </ul>
     <h1>Functions</h1>
     <ul>
