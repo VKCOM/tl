@@ -34,6 +34,7 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, buildSHA256Checksum stri
   <body>
     <h1>Schema</h1>
     <ul>
+      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
     </ul>
     <h1>Functions</h1>
     <ul>
