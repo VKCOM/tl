@@ -11,10 +11,10 @@ require (
 	github.com/valyala/quicktemplate v1.7.0
 	go.uber.org/atomic v1.11.0
 	go.uber.org/multierr v1.11.0
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
-	golang.org/x/net v0.0.0-20210510120150-4163338589ed
+	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1
+	golang.org/x/net v0.12.0
 	golang.org/x/sync v0.3.0
-	golang.org/x/sys v0.1.0
+	golang.org/x/sys v0.10.0
 	pgregory.net/rand v1.0.2
 	pgregory.net/rapid v1.0.0
 )
