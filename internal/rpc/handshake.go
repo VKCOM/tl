@@ -39,7 +39,7 @@ var (
 	processStartTime = atomic.NewInt32(int32(time.Now().Unix()))
 )
 
-func SchemaToString(schema int32) string {
+func SchemaToString(schema uint32) string {
 	switch schema {
 	case cryptoSchemaNone:
 		return "None"
@@ -48,7 +48,7 @@ func SchemaToString(schema int32) string {
 	case cryptoSchemaNoneOrAES:
 		return "NoneOrAES"
 	default:
-		return fmt.Sprintf("Unknown (%d)", schema)
+		return fmt.Sprintf("Unknown (0x%x)", schema)
 	}
 }
 
@@ -59,9 +59,17 @@ func uniqueStartTime() uint32 {
 
 type nonceMsg struct {
 	KeyID  [4]byte
-	Schema int32
+	Schema uint32
 	Time   uint32
 	Nonce  [16]byte
+}
+
+func (m *nonceMsg) LegacySchema() int {
+	return int(m.Schema & 0xFF)
+}
+
+func (m *nonceMsg) Protocol() int {
+	return int((m.Schema >> 8) & 0xFF)
 }
 
 // first 4 bytes of cryptoKey are identifier. This is not a problem because arbitrary long keys are allowed.
@@ -72,30 +80,32 @@ func KeyIDFromCryptoKey(cryptoKey string) (keyID [4]byte) {
 
 func (m *nonceMsg) writeTo(buf []byte) []byte {
 	buf = append(buf, m.KeyID[:]...)
-	buf = basictl.IntWrite(buf, m.Schema)
+	buf = basictl.NatWrite(buf, m.Schema)
 	buf = basictl.NatWrite(buf, m.Time)
 	return append(buf, m.Nonce[:]...)
 }
 
 func (m *nonceMsg) readFrom(packetType uint32, body []byte) (_ []byte, err error) {
+	wasSize := len(body)
 	if packetType != packetTypeRPCNonce {
 		return body, fmt.Errorf("nonce packet type 0x%x instead of 0x%x", packetType, packetTypeRPCNonce)
 	}
 	if len(body) < len(m.KeyID) {
-		return body, fmt.Errorf("nonce packet too short")
+		return body, fmt.Errorf("nonce packet too short (%d) bytes", wasSize)
 	}
 	copy(m.KeyID[:], body)
 	body = body[len(m.KeyID):]
-	if body, err = basictl.IntRead(body, &m.Schema); err != nil {
+	if body, err = basictl.NatRead(body, &m.Schema); err != nil {
 		return body, fmt.Errorf("nonce packet too short: %w", err)
 	}
 	if body, err = basictl.NatRead(body, &m.Time); err != nil {
 		return body, fmt.Errorf("nonce packet too short: %w", err)
 	}
-	if len(body) != len(m.Nonce) {
-		return body, fmt.Errorf("nonce packet size mismatch")
+	if len(body) < len(m.Nonce) {
+		return body, fmt.Errorf("nonce packet too short (%d) bytes", wasSize)
 	}
 	copy(m.Nonce[:], body)
+	// We expect future protocol extensions to have additional fields here
 	return body, nil
 }
 
@@ -146,9 +156,7 @@ func (m *handshakeMsg) readFrom(packetType uint32, body []byte) (_ []byte, err e
 	if body, err = m.PeerPID.Read(body); err != nil {
 		return body, fmt.Errorf("failed to read handshake data: %w", err)
 	}
-	if len(body) != 0 {
-		return body, fmt.Errorf("extra %v bytes in handshake packet", len(body))
-	}
+	// We expect future protocol extensions to have additional fields here
 	return body, nil
 }
 

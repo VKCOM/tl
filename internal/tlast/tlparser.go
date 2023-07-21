@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-const ContactAuthorsString = "please send TL file for analysis to vk:@hrissan or vk:@gb" // TODO move to better place
+const ContactAuthorsString = "please check/create issue with example https://github.com/VKCOM/tl/issues" // TODO move to better place
 
 type Name struct {
 	Namespace string
