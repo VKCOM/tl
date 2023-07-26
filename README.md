@@ -12,6 +12,10 @@ The TL format is characterized by compactness and high efficiency.
 
 TL is schema-driven format. Tool caled `tlgen` is used to generate structs/classes and (de)serialization methods.
 
+## Documentation
+
+- [Internals](./docs/internals.ru.md) (in Russian)
+
 ## License
 
 TL is licensed under the [Mozilla Public License Version 2.0](./LICENSE).

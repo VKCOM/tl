@@ -224,7 +224,7 @@ func (pc *PacketConn) deriveKeysClient(cryptoKey string, clientTime uint32, clie
 
 	return deriveCryptoKeys(true, cryptoKey, clientTime,
 		clientNonce, clientIP, clientPort,
-		serverNonce, serverIP, serverPort)
+		serverNonce, serverIP, serverPort), nil
 }
 
 func (pc *PacketConn) deriveKeysServer(cryptoKey string, clientTime uint32, clientNonce [16]byte, serverTime uint32, serverNonce [16]byte) (*cryptoKeys, error) {
@@ -238,7 +238,7 @@ func (pc *PacketConn) deriveKeysServer(cryptoKey string, clientTime uint32, clie
 
 	return deriveCryptoKeys(false, cryptoKey, clientTime,
 		clientNonce, clientIP, clientPort,
-		serverNonce, serverIP, serverPort)
+		serverNonce, serverIP, serverPort), nil
 }
 
 func (pc *PacketConn) handshakeExchangeClient(body []byte, startTime uint32, flags uint32, handshakeStepTimeout time.Duration) (*handshakeMsg, []byte, error) {

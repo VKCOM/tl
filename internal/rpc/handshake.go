@@ -170,10 +170,10 @@ type cryptoKeys struct {
 func deriveCryptoKeys(client bool, key string, clientTime uint32,
 	clientNonce [16]byte, clientIP uint32, clientPort uint16,
 	serverNonce [16]byte, serverIP uint32, serverPort uint16,
-) (*cryptoKeys, error) {
+) *cryptoKeys {
 	w, err := writeCryptoInitMsg(client, key, clientTime, clientNonce, clientIP, clientPort, serverNonce, serverIP, serverPort)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialize write key derivation data: %w", err)
+		panic("failed to serialize write key derivation data")
 	}
 
 	var keys cryptoKeys
@@ -186,7 +186,7 @@ func deriveCryptoKeys(client bool, key string, clientTime uint32,
 
 	r, err := writeCryptoInitMsg(!client, key, clientTime, clientNonce, clientIP, clientPort, serverNonce, serverIP, serverPort)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialize read key derivation data: %w", err)
+		panic("failed to serialize read key derivation data")
 	}
 
 	r1 := md5.Sum(r[1:])
@@ -196,7 +196,7 @@ func deriveCryptoKeys(client bool, key string, clientTime uint32,
 	copy(keys.readKey[12:], r2[:])
 	copy(keys.readIV[:], r3[:])
 
-	return &keys, nil
+	return &keys
 }
 
 func writeCryptoInitMsg(client bool, key string, clientTime uint32,

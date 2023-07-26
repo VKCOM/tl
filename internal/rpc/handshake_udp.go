@@ -11,7 +11,6 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/binary"
-	"fmt"
 )
 
 type HandshakeMsgUdp struct {
@@ -25,10 +24,10 @@ type CryptoKeysUdp struct {
 	WriteKey [32]byte
 }
 
-func DeriveCryptoKeysUdp(key string, localPid *NetPID, remotePid *NetPID, generation uint32) (*CryptoKeysUdp, error) {
+func DeriveCryptoKeysUdp(key string, localPid *NetPID, remotePid *NetPID, generation uint32) *CryptoKeysUdp {
 	w, err := writeCryptoInitMsgUdp(key, localPid, remotePid, generation)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialize write key derivation data: %w", err)
+		panic("failed to serialize write key derivation data")
 	}
 
 	//fmt.Println("init write crypto buf", w)
@@ -40,7 +39,7 @@ func DeriveCryptoKeysUdp(key string, localPid *NetPID, remotePid *NetPID, genera
 
 	r, err := writeCryptoInitMsgUdp(key, remotePid, localPid, generation)
 	if err != nil {
-		return nil, fmt.Errorf("failed to serialize read key derivation data: %w", err)
+		panic("failed to serialize read key derivation data")
 	}
 	//fmt.Println("init read crypto buf", r)
 
@@ -49,7 +48,7 @@ func DeriveCryptoKeysUdp(key string, localPid *NetPID, remotePid *NetPID, genera
 	copy(keys.ReadKey[:], r1[:])
 	copy(keys.ReadKey[12:], r2[:])
 
-	return &keys, nil
+	return &keys
 }
 
 func writeCryptoInitMsgUdp(key string, localPid *NetPID, remotePid *NetPID, generation uint32) ([]byte, error) {
