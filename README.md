@@ -14,7 +14,7 @@ TL is schema-driven format. Tool caled `tlgen` is used to generate structs/class
 
 ## Documentation
 
-- [Internals](./docs/internals.ru.md) (in Russian)
+- [Internals](./docs/tldoc.ru.md) (in Russian)
 
 ## License
 
