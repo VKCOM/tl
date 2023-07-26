@@ -59,7 +59,7 @@ func (ctx *context) parseFlags() error {
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&ctx.argv.GenerateRPCCode, "generateRPCCode", true,
 		"whether to generate *_server.go files")
-	flag.StringVar(&ctx.argv.BasicRPCPath, "basicRPCPath", "github.com/vkcom/tl/internal/rpc",
+	flag.StringVar(&ctx.argv.BasicRPCPath, "basicRPCPath", "",
 		"path to rpc package")
 	flag.StringVar(&ctx.argv.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
@@ -84,6 +84,9 @@ func (ctx *context) parseFlags() error {
 	}
 	if ctx.argv.TLPackageNameFull == "" {
 		return errors.New("can't use empty pkgName")
+	}
+	if ctx.argv.GenerateRPCCode && ctx.argv.BasicRPCPath == "" {
+		return errors.New("flag '-generateRPCCode' is set but '-basicRPCPath' is empty")
 	}
 	ctx.argv.TLPackageNameFull = strings.TrimSuffix(ctx.argv.TLPackageNameFull, "/") // См. BACK-4267
 
