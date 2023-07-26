@@ -25,7 +25,6 @@ type arguments struct {
 	tlcodegen.Gen2Options
 	outdir         string
 	schemaFileName string
-	strict         bool
 	printTLOAsJSON string
 }
 
@@ -49,8 +48,6 @@ func (ctx *context) parseFlags() error {
 		"input TL schema in binary format")
 	flag.BoolVar(&ctx.argv.Verbose, "v", false,
 		"verbose mode that prints debug info")
-	flag.BoolVar(&ctx.argv.strict, "strict", false,
-		"don't generate any code if can't cover 100% of the scheme")
 	flag.BoolVar(&ctx.argv.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&ctx.argv.GenerateRPCCode, "generateRPCCode", true,
