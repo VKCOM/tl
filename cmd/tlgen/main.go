@@ -15,7 +15,6 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/vkcom/tl/internal/build"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"
 	"github.com/vkcom/tl/internal/tlcodegen/gen_tlo"
@@ -26,8 +25,6 @@ type arguments struct {
 	tlcodegen.Gen2Options
 	outdir         string
 	schemaFileName string
-	fileNote       string
-	strict         bool
 	printTLOAsJSON string
 }
 
@@ -49,17 +46,13 @@ func (ctx *context) parseFlags() error {
 		"if empty, 'basictl' package will be generated in output dir, otherwise imports will be generated")
 	flag.StringVar(&ctx.argv.schemaFileName, "schema", "",
 		"input TL schema in binary format")
-	flag.StringVar(&ctx.argv.fileNote, "fileNote", "",
-		"additional single line note-like comment for generated files")
 	flag.BoolVar(&ctx.argv.Verbose, "v", false,
 		"verbose mode that prints debug info")
-	flag.BoolVar(&ctx.argv.strict, "strict", false,
-		"don't generate any code if can't cover 100% of the scheme")
 	flag.BoolVar(&ctx.argv.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&ctx.argv.GenerateRPCCode, "generateRPCCode", true,
 		"whether to generate *_server.go files")
-	flag.StringVar(&ctx.argv.BasicRPCPath, "basicRPCPath", "github.com/vkcom/tl/internal/rpc",
+	flag.StringVar(&ctx.argv.BasicRPCPath, "basicRPCPath", "",
 		"path to rpc package")
 	flag.StringVar(&ctx.argv.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
@@ -79,11 +72,11 @@ func (ctx *context) parseFlags() error {
 		"accepts path to tlo file and writes equivalent json file nearby")
 	flag.Parse()
 
-	if ctx.argv.fileNote == "" {
-		ctx.argv.fileNote = build.Info()
-	}
 	if ctx.argv.TLPackageNameFull == "" {
 		return errors.New("can't use empty pkgName")
+	}
+	if ctx.argv.GenerateRPCCode && ctx.argv.BasicRPCPath == "" {
+		return errors.New("flag '-generateRPCCode' is set but '-basicRPCPath' is empty")
 	}
 	ctx.argv.TLPackageNameFull = strings.TrimSuffix(ctx.argv.TLPackageNameFull, "/") // См. BACK-4267
 
