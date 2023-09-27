@@ -16,10 +16,10 @@ UPSTREAM=${UPSTREAM#v} # v1.0.0 -> 1.0.0
 BUILD_TIME="$(date +%FT%T%z)"
 if [[ -z $BUILD_VERSION ]]; then
   if [[ -z $BUILD_VERSION_SUFFIX ]]; then
-    # upstream-version-debian.revision
-    BUILD_VERSION="$UPSTREAM-$TAG"
+    # epoch:upstream-version-debian.revision
+    BUILD_VERSION="1:$UPSTREAM-$TAG"
   else
-    BUILD_VERSION="$UPSTREAM-$BUILD_VERSION_SUFFIX"
+    BUILD_VERSION="1:$UPSTREAM-$BUILD_VERSION_SUFFIX"
   fi
 fi
 
