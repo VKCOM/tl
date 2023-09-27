@@ -11,7 +11,7 @@ if [[ -z $TAG ]]; then
 fi
 
 # upstream-version
-UPSTREAM=$(git describe --tags --always --dirty)
+UPSTREAM=$(git describe --tags --always --dirty  --match="v*")
 UPSTREAM=${UPSTREAM#v} # v1.0.0 -> 1.0.0
 BUILD_TIME="$(date +%FT%T%z)"
 if [[ -z $BUILD_VERSION ]]; then
