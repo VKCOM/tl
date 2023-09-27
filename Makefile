@@ -28,7 +28,5 @@ endif
 all: build
 
 build:
-	@echo "Building tlgen with sha256 checksum $(SHA256_CHECKSUM)"
-	@$(GO) build -ldflags "$(COMMON_LDFLAGS)  -X 'github.com/vkcom/tl/internal/tlcodegen.buildSHA256Checksum=$(SHA256_CHECKSUM)'" ./cmd/tlgen
-
-
+        @echo "Building tlgen with sha256 checksum $(SHA256_CHECKSUM)"
+        @$(GO) build -ldflags "$(COMMON_LDFLAGS)  -X 'github.com/vkcom/tl/internal/tlcodegen.buildSHA256Checksum=$(SHA256_CHECKSUM)'" -o target/bin/tlgen ./cmd/tlgen

@@ -1,0 +1,11 @@
+Source: tlgen
+Section: misc
+Priority: optional
+Maintainer: Gregory Petrosyan <pgregory@pgregory.net>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://github.com/VKCOM/tl
+
+Package: tlgen
+Architecture: amd64 arm64
+Description: tlgen
