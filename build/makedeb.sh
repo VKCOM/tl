@@ -49,6 +49,6 @@ docker run --rm -v "$PWD:/src" -w /src -u "$UID:$GID" "$DEB_IMAGE" dch \
   --newversion "$BUILD_VERSION" "up to version $BUILD_VERSION"
 docker run --rm -v "$PWD/..:/src" -w /src/build -u "$UID:$GID" "$DEB_IMAGE" debuild --no-lintian -us -uc -b)
 
-# Drop to target directory
+# drop to target directory
 mkdir -p target/deb
 for f in *"${BUILD_VERSION##[0-9]*\:}"*; do mv -u "$f" "target/deb/$f"; done
