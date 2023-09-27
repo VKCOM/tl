@@ -1,7 +1,7 @@
 Source: tlgen
 Section: misc
 Priority: optional
-Maintainer: Gregory Petrosyan <pgregory@pgregory.net>
+Maintainer: Grigoriy Buteyko <hrissan@mail.ru>
 Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.5
 Homepage: https://github.com/VKCOM/tl
