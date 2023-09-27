@@ -11,8 +11,7 @@ package tlcodegen
 
 import (
 	"fmt"
-
-	"golang.org/x/exp/slices"
+	"sort"
 
 	"github.com/vkcom/tl/internal/tlast"
 
@@ -142,8 +141,8 @@ package `)
 		}
 		sortedConstructors = append(sortedConstructors, c)
 	}
-	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) bool {
-		return a.Construct.Name.String() < b.Construct.Name.String()
+	sort.Slice(sortedConstructors, func(i, j int) bool {
+		return sortedConstructors[i].Construct.Name.String() < sortedConstructors[j].Construct.Name.String()
 	})
 
 	qw422016.N().S(`const (

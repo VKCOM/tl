@@ -13,9 +13,8 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
-
-	"golang.org/x/exp/slices"
 )
 
 type pair struct {
@@ -48,8 +47,8 @@ func walkDeterministic(fileExt string, root ...string) ([]string, error) {
 			return nil, err
 		}
 	}
-	slices.SortFunc[pair](pairs, func(a, b pair) bool {
-		return a.canonical < b.canonical
+	sort.Slice(pairs, func(i, j int) bool {
+		return pairs[j].canonical < pairs[j].canonical
 	})
 	res := make([]string, 0, len(pairs))
 	for _, p := range pairs {

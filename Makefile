@@ -30,3 +30,14 @@ all: build
 build:
 	@echo "Building tlgen with sha256 checksum $(SHA256_CHECKSUM)"
 	@$(GO) build -ldflags "$(COMMON_LDFLAGS)  -X 'github.com/vkcom/tl/internal/tlcodegen.buildSHA256Checksum=$(SHA256_CHECKSUM)'" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+
+qtpl:
+	@if ! [ -x "$(command -v qtc)"]; then \
+		echo "qtc could not be found"; \
+		echo "install it using"; \
+		echo "go get -u github.com/valyala/quicktemplate"; \
+		echo "go get -u github.com/valyala/quicktemplate/qtc"; \
+	else \
+		qtc -dir=./internal/tlcodegen -skipLineComments; \
+	fi
+

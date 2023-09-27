@@ -11,10 +11,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
-
-	"golang.org/x/exp/slices"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen/gen_tlo"
@@ -65,8 +64,8 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 	for typName := range gen.typeDescriptors {
 		sortedTypeDescriptors = append(sortedTypeDescriptors, typName)
 	}
-	slices.Sort(sortedTypeDescriptors)
-	typeInd, _ := slices.BinarySearch(sortedTypeDescriptors, "Type")
+	sort.Strings(sortedTypeDescriptors)
+	typeInd := sort.SearchStrings(sortedTypeDescriptors, "Type")
 
 	// number of types, # was added above
 	var typesNum uint32 = 1
@@ -133,7 +132,9 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 		typesNum++
 	}
 	// TODO - remove when possible
-	if reqResultTypeInd, ok := slices.BinarySearch(sortedTypeDescriptors, "ReqResult"); ok {
+	if reqResultTypeInd, ok := sort.Find(len(sortedTypeDescriptors), func(i int) int {
+		return strings.Compare(sortedTypeDescriptors[i], "ReqResult")
+	}); ok {
 		s.Types[reqResultTypeInd+1].ConstructorsNum++ // + 1 as '#' was added to types as first element, and it doesn't present in typeDescriptors
 		s.Types[reqResultTypeInd+1].Flags |= 1 << 25  // FLAG_DEFAULT_CONSTRUCTOR = (1 << 25)         ---          Does type have a default constructor, e.g. constructor that will be used if no magic is presented.
 	}
@@ -149,11 +150,11 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 			types = append(types, c)
 		}
 	}
-	slices.SortFunc[*tlast.Combinator](types, func(a, b *tlast.Combinator) bool {
-		return a.TypeDecl.Name.String() < b.TypeDecl.Name.String()
+	sort.Slice(types, func(i, j int) bool {
+		return types[i].TypeDecl.Name.String() < types[j].TypeDecl.Name.String()
 	})
-	slices.SortFunc[*tlast.Combinator](funcs, func(a, b *tlast.Combinator) bool {
-		return a.Construct.Name.String() < b.Construct.Name.String()
+	sort.Slice(funcs, func(i, j int) bool {
+		return funcs[i].Construct.Name.String() < funcs[j].Construct.Name.String()
 	})
 	sortedConstructors := append(types, funcs...)
 

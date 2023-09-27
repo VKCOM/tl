@@ -14,11 +14,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"sync/atomic"
-
-	"golang.org/x/exp/slices"
 
 	"github.com/TwiN/go-color"
 
@@ -318,7 +317,7 @@ func (n *InternalNamespace) sortedElements() []string {
 	for _, t := range n.Types {
 		elements = append(elements, t.TypeString(false))
 	}
-	slices.Sort(elements)
+	sort.Strings(elements)
 	return elements
 }
 
@@ -331,10 +330,10 @@ func (n *InternalNamespace) sortedRecursiveElements() []string {
 		for _, t := range r.Types {
 			inside = append(inside, t.TypeString(false))
 		}
-		slices.Sort(inside)
+		sort.Strings(inside)
 		elements = append(elements, strings.Join(inside, ":"))
 	}
-	slices.Sort(elements)
+	sort.Strings(elements)
 	return elements
 }
 
@@ -345,10 +344,10 @@ func (n *InternalNamespace) sortedDirectElements() []string {
 		for _, t := range r.Types {
 			inside = append(inside, t.TypeString(false))
 		}
-		slices.Sort(inside)
+		sort.Strings(inside)
 		elements = append(elements, strings.Join(inside, ":"))
 	}
-	slices.Sort(elements)
+	sort.Strings(elements)
 	return elements
 }
 
@@ -357,7 +356,7 @@ func (n *InternalNamespace) sortedNamespaces() []string {
 	for n := range n.Namespaces {
 		elements = append(elements, n)
 	}
-	slices.Sort(elements)
+	sort.Strings(elements)
 	return elements
 }
 
@@ -1421,7 +1420,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		builtinNames = append(builtinNames, cn)
 		gen.generatedTypesList = append(gen.generatedTypesList, t) // order does not matter, as names are different enough for our predicate
 	}
-	slices.Sort(builtinNames) // technically order of lines does not matter, but...
+	sort.Strings(builtinNames) // technically order of lines does not matter, but...
 	for _, cn := range builtinNames {
 		builtinBeautifulText += fmt.Sprintf("%s ? = _; // builtin primitive type\n", cn)
 		builtinTypes[cn] = true
@@ -1629,8 +1628,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			}
 		}
 	}
-	slices.SortStableFunc[*TypeRWWrapper](gen.generatedTypesList, func(a, b *TypeRWWrapper) bool { //  TODO - better idea?
-		return TypeRWWrapperLessGlobal(a, b)
+	sort.Slice(gen.generatedTypesList, func(i, j int) bool { //  TODO - better idea?
+		return TypeRWWrapperLessGlobal(gen.generatedTypesList[i], gen.generatedTypesList[j])
 	})
 	sortedTypes := gen.generatedTypesList
 	// for _, st := range sortedTypes {
@@ -1820,7 +1819,7 @@ import (
 				sortedNames = append(sortedNames, im.SubPath)
 			}
 		}
-		slices.Sort(sortedNames)
+		sort.Strings(sortedNames)
 		for _, n := range sortedNames {
 			s.WriteString(fmt.Sprintf("    \"%s/%s\"\n", gen.options.TLPackageNameFull, n))
 		}
@@ -1857,8 +1856,8 @@ var _ = basictl.NatWrite
 		log.Printf("generating RPC code...")
 	}
 	for name, namespace := range gen.Namespaces {
-		slices.SortFunc[*TypeRWWrapper](namespace.types, func(a, b *TypeRWWrapper) bool {
-			return TypeRWWrapperLessLocal(a, b)
+		sort.Slice(namespace.types, func(i, j int) bool {
+			return TypeRWWrapperLessLocal(namespace.types[i], namespace.types[j])
 		})
 		anyTypeAlias := false
 		anyEnumElementAlias := false
@@ -1883,7 +1882,7 @@ var _ = basictl.NatWrite
 		for im := range directImports.ns { // Imports of this file.
 			sortedNames = append(sortedNames, im.SubPath)
 		}
-		slices.Sort(sortedNames)
+		sort.Strings(sortedNames)
 		filepathName := filepath.Join(gen.GlobalPackageName+name, gen.GlobalPackageName+name+goExt)
 		code := gen.generateNamespacesCode(anyTypeAlias, anyFunction, name, namespace, sortedNames, directImports)
 		if code == "" {
@@ -1917,7 +1916,7 @@ var _ = basictl.NatWrite
 		for im := range directImports.ns { // Imports of this file.
 			sortedNames = append(sortedNames, im.SubPath)
 		}
-		slices.Sort(sortedNames)
+		sort.Strings(sortedNames)
 		if err := gen.addCodeFile(filepath.Join(FactoryGoPackageName, FactoryGoPackageName+goExt), gen.copyrightText+gen.generateFactory(sortedNames, directImports)); err != nil {
 			return err
 		}
