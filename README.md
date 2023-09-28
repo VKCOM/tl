@@ -12,6 +12,15 @@ The TL format is characterized by compactness and high efficiency.
 
 TL is schema-driven format. Tool caled `tlgen` is used to generate structs/classes and (de)serialization methods.
 
+
+## Installation
+
+Install `tlgen` with the following command
+
+```
+go install github.com/vkcom/tl/cmd/tlgen@latest
+```
+
 ## Documentation
 
 - [Internals](./docs/tldoc.ru.md) (in Russian)

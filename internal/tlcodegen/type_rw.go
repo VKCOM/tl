@@ -10,10 +10,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
-
-	"golang.org/x/exp/slices"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
@@ -100,7 +99,7 @@ func (d DirectIncludesCPP) sortedNames() []string {
 	for im := range d.ns { // Imports of this file.
 		sortedNames = append(sortedNames, im)
 	}
-	slices.Sort(sortedNames)
+	sort.Strings(sortedNames)
 	return sortedNames
 }
 

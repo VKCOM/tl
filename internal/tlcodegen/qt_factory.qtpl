@@ -1,5 +1,5 @@
 {%- import "fmt" -%}
-{%- import "golang.org/x/exp/slices" -%}
+{%- import "sort" -%}
 {%- import "github.com/vkcom/tl/internal/tlast" -%}
 
 {%- func (gen *Gen2) generateFactory(sortedImports []string, directImports *DirectImports) -%}
@@ -66,8 +66,8 @@ package {%s= pkgName %}
         if c.Crc32() == 0 { continue }
         sortedConstructors = append(sortedConstructors, c)
     }
-    slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) bool {
-        return a.Construct.Name.String() < b.Construct.Name.String()
+    sort.Slice(sortedConstructors, func(i, j int) bool {
+        return sortedConstructors[i].Construct.Name.String() < sortedConstructors[j].Construct.Name.String()
     })
 -%}
 const (

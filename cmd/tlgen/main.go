@@ -17,7 +17,6 @@ import (
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"
-	"github.com/vkcom/tl/internal/tlcodegen/gen_tlo"
 	"github.com/vkcom/tl/internal/utils"
 )
 
@@ -25,7 +24,6 @@ type arguments struct {
 	tlcodegen.Gen2Options
 	outdir         string
 	schemaFileName string
-	printTLOAsJSON string
 }
 
 type context struct {
@@ -57,7 +55,7 @@ func (ctx *context) parseFlags() error {
 	flag.StringVar(&ctx.argv.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
 	flag.BoolVar(&ctx.argv.SchemaDocumentation, "generateSchemaDocumentation", false,
-		"whether to generate .html representation of schema in to tljson.html file")
+		"whether to generate .html representation of schema in to tljson.html file and put it in outdir")
 	flag.BoolVar(&ctx.argv.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 	flag.StringVar(&ctx.argv.TypesWhileList, "typesWhiteList", "",
@@ -67,13 +65,15 @@ func (ctx *context) parseFlags() error {
 	flag.StringVar(&ctx.argv.CopyrightFilePath, "copyrightPath", "",
 		"path to file with copyright text")
 	flag.BoolVar(&ctx.argv.IgnoreGeneratedCode, "ignoreGeneratedCode", false,
-		"ignores generated code, tlo and documentation will be generated with related flags")
-	flag.StringVar(&ctx.argv.printTLOAsJSON, "printTloAsJson", "",
-		"accepts path to tlo file and writes equivalent json file nearby")
+		"ignores generated code, tlo will be generated with related flags")
 	flag.Parse()
 
+	if ctx.argv.IgnoreGeneratedCode {
+		return nil
+	}
+
 	if ctx.argv.TLPackageNameFull == "" {
-		return errors.New("can't use empty pkgName")
+		return errors.New("can't use empty pkgPath")
 	}
 	if ctx.argv.GenerateRPCCode && ctx.argv.BasicRPCPath == "" {
 		return errors.New("flag '-generateRPCCode' is set but '-basicRPCPath' is empty")
@@ -106,35 +106,7 @@ func main() {
 
 const tlExt = ".tl"
 
-func printTLOAsJSON(pathToFile string) error {
-	file, err := os.ReadFile(pathToFile)
-	if err != nil {
-		return fmt.Errorf("error on reading file %s: %w", pathToFile, err)
-	}
-	var s4 gen_tlo.TlsSchemaV4
-	if _, err = s4.ReadBoxed(file); err != nil {
-		return fmt.Errorf("error on readinf TLO from %s: %w", pathToFile, err)
-	}
-	out, err := s4.WriteJSON(nil)
-	if err != nil {
-		return fmt.Errorf("error on creating json from %s: %w", pathToFile, err)
-	}
-
-	if err := os.WriteFile(
-		pathToFile+".json",
-		utils.JsonPrettyPrint(out),
-		0644); err != nil {
-		return fmt.Errorf("error on writing json to file %s: %w", pathToFile+".json", err)
-	}
-	return nil
-}
-
 func runMain(argv arguments) error {
-	if argv.printTLOAsJSON != "" {
-		if err := printTLOAsJSON(argv.printTLOAsJSON); err != nil {
-			return err
-		}
-	}
 	if argv.Verbose {
 		log.Printf("No more awful TLO! Everyone happy!")
 	}
@@ -161,10 +133,6 @@ func runMain(argv arguments) error {
 
 	if argv.Verbose {
 		log.Printf("parsing TL...")
-	}
-	argv.TLPackageNameFull = strings.TrimSpace(argv.TLPackageNameFull)
-	if argv.TLPackageNameFull == "" { // TODO - better validation
-		return fmt.Errorf("--go-tl-package cannot be empty")
 	}
 	gen, err := tlcodegen.GenerateCode(ast, argv.Gen2Options)
 	if err != nil {
