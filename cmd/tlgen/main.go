@@ -64,7 +64,7 @@ func (ctx *context) parseFlags() error {
 	flag.StringVar(&ctx.argv.CopyrightFilePath, "copyrightPath", "",
 		"path to file with copyright text")
 	flag.BoolVar(&ctx.argv.IgnoreGeneratedCode, "ignoreGeneratedCode", false,
-		"ignores generated code, doesn't affect tloPath flag")
+		"ignores generated code, tlo will be generated with related flags")
 	flag.Parse()
 
 	if ctx.argv.IgnoreGeneratedCode {

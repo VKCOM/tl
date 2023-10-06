@@ -281,18 +281,8 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 
 	s.ConstructorNum = uint32(len(constructors)) + 1 // + _ = ReqResult TODO - remove when possible
 	s.Constructors = append(constructors, reqResult) // TODO - remove when possible
-	slices.SortFunc(s.Constructors, func(a, b gen_tlo.TlsCombinatorUnion) int {
-		aV4, _ := a.AsV4()
-		bV4, _ := b.AsV4()
-		return strings.Compare(aV4.Id, bV4.Id)
-	})
 	s.FunctionsNum = uint32(len(functions))
 	s.Functions = functions
-	slices.SortFunc(s.Functions, func(a, b gen_tlo.TlsCombinatorUnion) int {
-		aV4, _ := a.AsV4()
-		bV4, _ := b.AsV4()
-		return strings.Compare(aV4.Id, bV4.Id)
-	})
 	res, err := s.WriteBoxed(nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("can't write TLO boxed: %w", err)
