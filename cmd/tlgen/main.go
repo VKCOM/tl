@@ -7,13 +7,12 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strings"
-
-	"github.com/pkg/errors"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"
@@ -65,7 +64,7 @@ func (ctx *context) parseFlags() error {
 	flag.StringVar(&ctx.argv.CopyrightFilePath, "copyrightPath", "",
 		"path to file with copyright text")
 	flag.BoolVar(&ctx.argv.IgnoreGeneratedCode, "ignoreGeneratedCode", false,
-		"ignores generated code, tlo will be generated with related flags")
+		"ignores generated code, doesn't affect tloPath flag")
 	flag.Parse()
 
 	if ctx.argv.IgnoreGeneratedCode {
