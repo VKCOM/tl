@@ -24,7 +24,7 @@
       <li>
         <a href="#{%s trww.JSONHelpString() %}">
         <code>{%s trww.JSONHelpString() %}</code></a>
-        → <code>{%= printJSONHelpType(gen, fun.ResultResolvedType, fun.ResultType, formatNatArgsJSONHelp(fun.Fields, fun.ResultNatArgs, trww.NatParams, trww.NatParams)) %}</code>
+        → <code>{%= printJSONHelpType2(gen, fun.ResultType, fun.Fields, fun.ResultNatArgs) %}</code>
       </li>
     {%- endif -%}
   {%- endfor -%}
@@ -39,7 +39,7 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 </html>
 {%- endfunc -%}
 
-{%- func printJSONHelpType(gen *Gen2, rt ResolvedType, trww *TypeRWWrapper, natArgs []string) -%}
+{%- func printJSONHelpType2(gen *Gen2, trww *TypeRWWrapper, fields []Field, natArgs []ActualNatArg) -%}
 {%- stripspace -%}
   {%- switch trw := trww.trw.(type) -%}
   {%- case *TypeRWBool -%}
@@ -47,27 +47,30 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
   {%- case *TypeRWPrimitive -%}
 {%s "<"%}{%s trw.primitiveType %}{%s ">"%}
   {%- case *TypeRWMaybe -%}
-{%= makeRef(trw.goGlobalName) %}
+       {%= makeRef2(trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs)) %}
   {%- case *TypeRWStruct -%}
-    {%- if trw.isUnwrapTypeImpl(false)-%}
-      {%= printJSONHelpType(gen, trw.Fields[0].resolvedType, trw.Fields[0].t, formatNatArgsJSONHelp(trw.Fields, trw.Fields[0].natArgs, trww.NatParams, natArgs)) %}
+    {%- if trw.isTypeDef()-%}
+      {%= printJSONHelpType2(gen, trw.Fields[0].t, fields, trw.Fields[0].t.transformNatArgsFromParent(trww, natArgs, trw.Fields[0].natArgs)) %}
     {%- elseif trw.wr.IsTrueType() -%}
 {%s "{}" %}
     {%- else -%}
-        {%= makeRef(trww.JSONHelpString()) %}
+       {%= makeRef2(trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs)) %}
     {%- endif -%}
   {%- case *TypeRWUnion -%}
-{%= makeRef(trww.JSONHelpString()) %}
+       {%= makeRef2(trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs)) %}
   {%- case *TypeRWBrackets -%}
+    {%- code
+    elementNatArgs := trw.element.t.transformNatArgsFromParent(trww, natArgs, trw.element.natArgs)
+    -%}
     {%- switch -%}
     {%- case trw.dictLike -%}
-{%s "{" %}{%= printJSONHelpType(gen, trw.dictKeyField.resolvedType, trw.dictKeyField.t, formatNatArgsJSONHelp(nil, trw.dictKeyField.natArgs, trww.NatParams, natArgs)) %}{%s ": " %}{%= printJSONHelpType(gen, trw.dictValueField.resolvedType, trw.dictValueField.t, formatNatArgsJSONHelp(nil, trw.dictValueField.natArgs, trww.NatParams, natArgs)) %}{%s "}"%}
+{%s "{" %}
+{%= printJSONHelpType2(gen, trw.dictKeyField.t, fields, trw.dictKeyField.t.transformNatArgsFromParent(trw.element.t, elementNatArgs, trw.dictKeyField.natArgs)) %}{%s ": " %}
+{%= printJSONHelpType2(gen, trw.dictValueField.t, fields, trw.dictValueField.t.transformNatArgsFromParent(trw.element.t, elementNatArgs, trw.dictValueField.natArgs)) %}{%s "}"%}
     {%- case trw.vectorLike -%}
-{%s "[" %}{%= printJSONHelpType(gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, natArgs)) %}{%s ", ...]" %}
-    {%- case trw.dynamicSize -%}
-{%s "[" %}{%s natArgs[len(natArgs)-1] %}{%s " × " %}{%= printJSONHelpType(gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, natArgs)) %}{%s "]"%}
+{%s "[" %}{%= printJSONHelpType2(gen, trw.element.t, fields, elementNatArgs) %}{%s ", ...]" %}
     {%- default -%}
-{%s "[" %}{%s strconv.Itoa(int(trw.size)) %}{%s " × " %}{%= printJSONHelpType(gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, natArgs)) %}{%s "]"%}
+{%s "[" %}{%s trww.JSONHelpNatArg(fields, natArgs[len(natArgs)-1]) %}{%s " × " %}{%= printJSONHelpType2(gen, trw.element.t, fields, elementNatArgs) %}{%s "]"%}
     {%- endswitch -%}
   {%- endswitch -%}
 {%- endstripspace -%}
@@ -75,28 +78,46 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 
 {%- func printHTMLHelp(gen *Gen2, trww *TypeRWWrapper) -%}
   {%- code
-      if typ, ok := trww.trw.(*TypeRWStruct); ok && typ.ResultType == nil && trww.IsTrueType() {
+      if trw, ok := trww.trw.(*TypeRWStruct); ok && ((trw.ResultType == nil && trww.IsTrueType()) || trw.isTypeDef()) {
+          return
+      }
+      if _, ok := trww.trw.(*TypeRWBool); ok {
+          return
+      }
+      if _, ok := trww.trw.(*TypeRWBrackets); ok {
+          return
+      }
+      if _, ok := trww.trw.(*TypeRWPrimitive); ok {
           return
       }
   -%}
-  {%- switch trw := trww.trw.(type) -%}
-  {%- case *TypeRWBool -%}
-  {%- case *TypeRWPrimitive -%}
-<h2 id="{%s trww.tlName.String() %}">{%s trww.tlName.String() %}</h2>
+<h2 id="{%s trww.JSONHelpString() %}">{%s trww.JSONHelpString() %}</h2>
+    {%- code
+        natArgsDecl := ""
+        for i, a := range trww.NatArgs(!OptimizeConstParameters, "") {
+            if i != 0 {
+                natArgsDecl += ", "
+            }
+            natArgsDecl += a.name
+        }
+    -%}
+    {%- if len(natArgsDecl) != 0 -%}
+External # (nat) arguments: <b>{%s natArgsDecl %}</b>
+    {%- endif -%}
 <p></p>
+  {%- switch trw := trww.trw.(type) -%}
+  {%- case *TypeRWPrimitive -%}
 <dl>
   <dt>JSON</dt>
   <dd>{%s trw.primitiveType %}</dd>
 </dl>
   {%- case *TypeRWMaybe -%}
-<h2 id="{%s trw.goGlobalName %}">{%s trw.goGlobalName %}</h2>
-<p></p>
 <dl>
   <dt>JSON</dt>
   <dd>
     <ul>
       <li><code>{}</code></li>
-      <li><code>{%s `{"value": `%}{%= printJSONHelpType(gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, trww.NatParams)) %}{%s "}" %}</code></li>
+      <li><code>{%s `{"value": `%}{%= printJSONHelpType2(gen, trw.element.t, nil, trw.element.natArgs) %}{%s "}" %}</code></li>
     </ul>
   </dd>
   <dt>TL</dt>
@@ -108,11 +129,6 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
   </dd>
 </dl>
   {%- case *TypeRWStruct -%}
-    {%- if trw.isUnwrapTypeImpl(false) -%}
-        {%- return -%}
-    {%- endif -%}
-<h2 id="{%s trww.JSONHelpString() %}">{%s trww.JSONHelpString() %}</h2>
-<p></p>
 <dl>
   <dt>JSON</dt>
   <dd><code>
@@ -126,7 +142,7 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
         {%- if field.t.IsTrueType() -%}
           <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: true{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
         {%- else -%}
-          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType(gen, field.resolvedType, field.t, formatNatArgsJSONHelp(trw.Fields, field.natArgs, trww.NatParams, trww.NatParams)) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
+          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType2(gen, field.t, trw.Fields, field.natArgs) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
         {%- endif -%}
           <td>{%= jsonCommentFieldMask(field.fieldMask, field.BitNumber, trw.Fields) %}</td>
         </tr>
@@ -140,33 +156,24 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
   </dd>
 </dl>
   {%- case *TypeRWUnion -%}
-<h2 id="{%s trww.JSONHelpString() %}">{%s trww.JSONHelpString() %}</h2>
-<p></p>
 <dl>
   <dt>JSON</dt>
   <dd>
     <ul>
-    {%- if trw.IsEnum -%}
     {%- for _, field := range trw.Fields -%}
             {%- code
                 tag := fmt.Sprintf("%08x", field.t.tlTag)
             -%}
-      <li><code>"{%s field.originalName %}"</code> <small><small>(or <code>"#{%s tag %}"</code>
-      or <code>"{%s field.originalName %}#{%s tag %}"</code>)</small></small></li>
+            <li><code>
+            {%- if trw.IsEnum -%}
+                "{%s field.originalName %}"
+                // or "#{%s tag %}" or "{%s field.originalName %}#{%s tag %}"
+            {%- else -%}
+                {"type":"{%s field.originalName %}"{%- if !field.t.IsTrueType() -%}, "value":{%= makeRef(field.t.JSONHelpString()) %}{%- endif -%}}
+                // or "type":"#{%s tag %}" or "type":"{%s field.originalName %}#{%s tag %}"
+            {%- endif -%}
+            </code></li>
     {%- endfor -%}
-    {%- else -%}
-    {%- for _, field := range trw.Fields -%}
-            {%- code
-                tag := fmt.Sprintf("%08x", field.t.tlTag)
-            -%}
-      <li><code>{"type":"{%s field.originalName %}"</code> <small><small>(or <code>"#{%s tag %}"</code>
-      or <code>"{%s field.originalName %}#{%s tag %}"</code>)</small></small><code>
-      {%- if !field.t.IsTrueType() -%}
-,"value":{%= makeRef(field.t.JSONHelpString()) %}
-      {%- endif -%}
-      }</code></li>
-    {%- endfor -%}
-    {%- endif -%}
     </ul>
   </dd>
   <dt>TL</dt>
@@ -178,7 +185,6 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
     </ul>
   </dd>
 </dl>
-  {%- case *TypeRWBrackets -%}
   {%- endswitch -%}
 {%- endfunc -%}
 
@@ -192,3 +198,5 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 {%- endfunc -%}
 
 {%- func makeRef(s string) -%}<a href="#{%s s %}">{%s s %}</a>{%- endfunc -%}
+
+{%- func makeRef2(a string, s string) -%}<a href="#{%s a %}">{%s s %}</a>{%- endfunc -%}

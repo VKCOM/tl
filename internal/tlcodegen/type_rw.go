@@ -8,7 +8,6 @@ package tlcodegen
 
 import (
 	"fmt"
-	"log"
 	"regexp"
 	"sort"
 	"strconv"
@@ -59,7 +58,10 @@ type TypeRWWrapper struct {
 	ns        *Namespace
 	ins       *InternalNamespace
 	trw       TypeRW
-	NatParams []string // external params of type Read/Write method
+	NatParams []string // external params of type Read/Write method, with nat_ prefix
+
+	tlType    tlast.Name // type for canonical name generation, Type for everything except builtins and union elements
+	arguments []ResolvedArgument
 
 	wantsBytesVersion bool
 	preventUnwrap     bool
@@ -68,7 +70,7 @@ type TypeRWWrapper struct {
 
 	fileName string
 	tlTag    uint32
-	tlName   tlast.Name
+	tlName   tlast.Name // constructor for code generation. Might be good idea to move it to the trw?
 	origTL   []*tlast.Combinator
 
 	isTopLevel bool
@@ -78,9 +80,81 @@ type TypeRWWrapper struct {
 	unionIndex  int
 	unionIsEnum bool
 
-	cppNamespaceQualifier string // full qualifier, like ::tl2::tlstatshouse::, or "" for builtin types
+	// cppNamespaceQualifier string // full qualifier, like ::tl2::tlstatshouse::, or "" for builtin types
 
-	resolvedType ResolvedType // TODO - check if they are equal for every instantiation?
+	WrLong        *TypeRWWrapper // long transitioning code
+	WrWithoutLong *TypeRWWrapper // long transitioning code
+}
+
+func (w *TypeRWWrapper) CanonicalString() string {
+	var s strings.Builder
+	s.WriteString(w.tlType.String())
+	if len(w.arguments) == 0 {
+		return s.String()
+	}
+	s.WriteString("<")
+	for i, a := range w.arguments {
+		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
+		if i != 0 {
+			s.WriteString(",")
+		}
+		if a.isNat {
+			if a.isArith {
+				s.WriteString(fmt.Sprintf("%d", a.Arith.Res))
+			} else {
+				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
+			}
+		} else {
+			if a.bare {
+				s.WriteString("%")
+			}
+			s.WriteString(a.tip.CanonicalString())
+		}
+	}
+	s.WriteString(">")
+	return s.String()
+}
+
+// External arguments
+func (w *TypeRWWrapper) NatArgs(withFixed bool, prefix string) []ActualNatArg {
+	return w.natArgs(withFixed, nil, prefix)
+}
+
+func (w *TypeRWWrapper) natArgs(withFixed bool, result []ActualNatArg, prefix string) []ActualNatArg {
+	for i, a := range w.arguments {
+		fieldName := w.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
+		if a.isNat {
+			if withFixed || !a.isArith {
+				result = append(result, ActualNatArg{
+					isArith: a.isArith,
+					Arith:   a.Arith,
+					name:    prefix + fieldName,
+				})
+			}
+		} else {
+			result = a.tip.natArgs(withFixed, result, prefix+fieldName)
+		}
+	}
+	return result
+}
+
+func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
+	b := strings.Builder{}
+	for _, a := range w.arguments {
+		if a.isNat {
+			if a.isArith {
+				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+			}
+		} else {
+			head, tail := a.tip.resolvedT2GoName(insideNamespace)
+			b.WriteString(head)
+			b.WriteString(tail)
+			if !a.bare {
+				b.WriteString("Boxed")
+			}
+		}
+	}
+	return canonicalGoName(w.tlType, insideNamespace), b.String()
 }
 
 // for golang cycle detection
@@ -90,6 +164,7 @@ type DirectImports struct {
 }
 
 // for C++ includes
+/*
 type DirectIncludesCPP struct {
 	ns map[string]struct{}
 }
@@ -102,15 +177,26 @@ func (d DirectIncludesCPP) sortedNames() []string {
 	sort.Strings(sortedNames)
 	return sortedNames
 }
+*/
 
-func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) bool {
-	an := a.TypeString2(false, nil, nil, true, true)
-	bn := b.TypeString2(false, nil, nil, true, true)
-	return an < bn
+func stringCompare(a string, b string) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
 }
 
-func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) bool {
-	return a.TypeString(false) < b.TypeString(false)
+func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
+	an := a.TypeString2(false, nil, nil, true, true)
+	bn := b.TypeString2(false, nil, nil, true, true)
+	return stringCompare(an, bn)
+}
+
+func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
+	return stringCompare(a.TypeString(false), b.TypeString(false))
 }
 
 func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
@@ -211,38 +297,111 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
-func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-	if visitedNodes[w] {
-		return
+/*
+	func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
+		if visitedNodes[w] {
+			return
+		}
+		visitedNodes[w] = true
+		w.trw.CPPFillRecursiveChildren(visitedNodes)
 	}
-	visitedNodes[w] = true
-	w.trw.CPPFillRecursiveChildren(visitedNodes)
-}
 
-func (w *TypeRWWrapper) CPPTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
-	if halfResolve && resolvedType.OriginalName != "" {
-		return resolvedType.OriginalName
+	func (w *TypeRWWrapper) CPPTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
+		if halfResolve && resolvedType.OriginalName != "" {
+			return resolvedType.OriginalName
+		}
+		return w.trw.cppTypeStringInNamespace(bytesVersion, hppInc, resolvedType, halfResolve)
 	}
-	return w.trw.cppTypeStringInNamespace(bytesVersion, hppInc, resolvedType, halfResolve)
-}
 
-func (w *TypeRWWrapper) CPPDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
-	if halfResolve && resolvedType.OriginalName != "" {
-		return "{}"
+	func (w *TypeRWWrapper) CPPDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
+		if halfResolve && resolvedType.OriginalName != "" {
+			return "{}"
+		}
+		return w.trw.cppDefaultInitializer(resolvedType, halfResolve)
 	}
-	return w.trw.cppDefaultInitializer(resolvedType, halfResolve)
-}
-
+*/
 func (w *TypeRWWrapper) JSONHelpString() string {
-	if w.isTopLevel {
-		return w.resolvedType.Type.String()
+	return w.CanonicalString()
+}
+
+func (w *TypeRWWrapper) JSONHelpFullType(fields []Field, natArgs []ActualNatArg) string {
+	result := w.helpString2(fields, &natArgs)
+	if len(natArgs) != 0 {
+		panic("JSONHelpFullType should consume all arguments")
 	}
-	return w.TypeString(false)
+	return result
+}
+
+func (w *TypeRWWrapper) JSONHelpNatArg(fields []Field, natArg ActualNatArg) string {
+	if natArg.isArith {
+		return fmt.Sprintf("%d", natArg.Arith.Res)
+	}
+	if natArg.isField {
+		return fields[natArg.FieldIndex].originalName
+	}
+	return natArg.name
+}
+
+func (w *TypeRWWrapper) helpString2(fields []Field, natArgs *[]ActualNatArg) string {
+	var s strings.Builder
+	s.WriteString(w.tlType.String())
+	if len(w.arguments) == 0 {
+		return s.String()
+	}
+	s.WriteString("<")
+	for i, a := range w.arguments {
+		if i != 0 {
+			s.WriteString(",")
+		}
+		if a.isNat {
+			natArg := (*natArgs)[0]
+			*natArgs = (*natArgs)[1:]
+			if a.isArith != natArg.isArith || a.Arith.Res != natArg.Arith.Res {
+				panic("helpString2 arith mismatch")
+			}
+			if natArg.isArith {
+				s.WriteString(fmt.Sprintf("%d", natArg.Arith.Res))
+			} else {
+				if natArg.isField {
+					s.WriteString(fields[natArg.FieldIndex].originalName)
+				} else {
+					s.WriteString(natArg.name)
+				}
+			}
+		} else {
+			if a.bare {
+				s.WriteString("%")
+			}
+			s.WriteString(a.tip.helpString2(fields, natArgs))
+		}
+	}
+	s.WriteString(">")
+	return s.String()
+}
+
+func (w *TypeRWWrapper) transformNatArgsFromParent(parent *TypeRWWrapper, parentNatArgs []ActualNatArg, natArgs []ActualNatArg) []ActualNatArg {
+	parentParams := parent.NatArgs(true, "")
+	if len(parentParams) != len(parentNatArgs) {
+		panic("parent nat params inconsistent length")
+	}
+	var result []ActualNatArg
+outer:
+	for _, arg := range natArgs {
+		for i, p := range parentParams {
+			if p.name == arg.name {
+				result = append(result, parentNatArgs[i])
+				continue outer
+			}
+		}
+		panic("nat param not found in parent nat params")
+	}
+	return result
 }
 
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
+	wrapper() *TypeRWWrapper
 	canBeBareOrBoxed(bare bool) bool
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
@@ -265,18 +424,19 @@ type TypeRW interface {
 	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
-	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
-	cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string
-	cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string
-	CPPHasBytesVersion() bool
-	CPPTypeResettingCode(bytesVersion bool, val string) string
-	CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
+	//CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
+	//cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string
+	//cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string
+	//CPPHasBytesVersion() bool
+	//CPPTypeResettingCode(bytesVersion bool, val string) string
+	//CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	//CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	//CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
 }
 
 type Field struct {
 	t            *TypeRWWrapper
+	bare         bool
 	goName       string
 	cppName      string
 	originalName string
@@ -286,19 +446,19 @@ type Field struct {
 	BitNumber uint32 // only used when fieldMask != nil
 
 	originalType tlast.TypeRef // TODO - remove?
-	resolvedType ResolvedType
 	natArgs      []ActualNatArg
 }
 
 func (f *Field) Bare() bool {
-	return f.resolvedType.Bare
+	return f.bare
 }
 
 func (f *Field) checkBareBoxed() error {
 	if !f.t.trw.canBeBareOrBoxed(f.Bare()) {
-		e1 := f.originalType.PR.BeautifulError(fmt.Errorf("resolved type %q cannot be %s", f.resolvedType.Type.String(), ifString(f.Bare(), "bare", "boxed")))
-		e2 := f.resolvedType.PR.BeautifulError(fmt.Errorf("referenced here"))
-		return tlast.BeautifulError2(e1, e2)
+		e1 := f.originalType.PR.BeautifulError(fmt.Errorf("resolved type %q cannot be %s", f.t.CanonicalString(), ifString(f.Bare(), "bare", "boxed")))
+		// e2 := f.resolvedType.PR.BeautifulError(fmt.Errorf("referenced here"))
+		// TODO - return tlast.BeautifulError2(e1, e2)
+		return e1
 	}
 	return nil
 }
@@ -310,58 +470,47 @@ func formatNatArg(fields []Field, arg ActualNatArg) string {
 	if arg.isField {
 		return "item." + fields[arg.FieldIndex].goName
 	}
-	return arg.name
+	return "nat_" + arg.name
 }
 
+/*
 func formatNatArgCPP(fields []Field, arg ActualNatArg) string { // TODO - harmonize with formatNatArg?
-	if arg.isArith {
-		return strconv.FormatUint(uint64(arg.Arith.Res), 10)
-	}
-	if arg.isField {
-		return "item." + fields[arg.FieldIndex].cppName
-	}
-	return arg.name
-}
 
+		if arg.isArith {
+			return strconv.FormatUint(uint64(arg.Arith.Res), 10)
+		}
+		if arg.isField {
+			return "item." + fields[arg.FieldIndex].cppName
+		}
+		return "nat_" + arg.name
+	}
+
+	func formatNatArgsCPP(fields []Field, natArgs []ActualNatArg) []string {
+		var result []string
+		for _, arg := range natArgs {
+			result = append(result, formatNatArgCPP(fields, arg))
+		}
+		return result
+	}
+
+	func formatNatArgsCallCPP(natArgs []string) string {
+		return formatNatArgsCall(natArgs)
+	}
+
+	func formatNatArgsDeclCPP(natArgs []string) string {
+		var s strings.Builder
+		for _, arg := range natArgs {
+			s.WriteString(fmt.Sprintf(", uint32_t %s", arg))
+		}
+		return s.String()
+	}
+*/
 func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
-		result = append(result, formatNatArg(fields, arg))
-	}
-	return result
-}
-
-func formatNatArgsCPP(fields []Field, natArgs []ActualNatArg) []string {
-	var result []string
-	for _, arg := range natArgs {
-		result = append(result, formatNatArgCPP(fields, arg))
-	}
-	return result
-}
-
-func formatNatArgJSONHelp(fields []Field, arg ActualNatArg, trwNatParams []string, callNatParams []string) string {
-	if arg.isArith {
-		return strconv.FormatUint(uint64(arg.Arith.Res), 10)
-	}
-	if arg.isField {
-		return fields[arg.FieldIndex].originalName
-	}
-	if len(trwNatParams) != len(callNatParams) {
-		log.Panicf("formatNatArgJSONHelp wrong # of args %v %v", trwNatParams, callNatParams)
-	}
-	for i, p := range trwNatParams {
-		if p == arg.name {
-			return callNatParams[i]
+		if !OptimizeConstParameters || !arg.isArith {
+			result = append(result, formatNatArg(fields, arg))
 		}
-	}
-	log.Panicf("formatNatArgJSONHelp arg name %s not found in args %v %v", arg.name, trwNatParams, callNatParams)
-	return arg.name
-}
-
-func formatNatArgsJSONHelp(fields []Field, natArgs []ActualNatArg, trwNatParams []string, callNatParams []string) []string {
-	var result []string
-	for _, arg := range natArgs {
-		result = append(result, formatNatArgJSONHelp(fields, arg, trwNatParams, callNatParams))
 	}
 	return result
 }
@@ -372,10 +521,6 @@ func formatNatArgsCall(natArgs []string) string {
 		s.WriteString(fmt.Sprintf(", %s", arg))
 	}
 	return s.String()
-}
-
-func formatNatArgsCallCPP(natArgs []string) string {
-	return formatNatArgsCall(natArgs)
 }
 
 func formatNatArgsDecl(natArgs []string) string {
@@ -392,14 +537,6 @@ func formatNatArgsDeclNoComma(natArgs []string) string {
 		return s[1:]
 	}
 	return s
-}
-
-func formatNatArgsDeclCPP(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", uint32_t %s", arg))
-	}
-	return s.String()
 }
 
 func addBytes(val string, bytesVersion bool) string {

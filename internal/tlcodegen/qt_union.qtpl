@@ -113,8 +113,14 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
                 name := field.originalName
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
+                wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
             -%}
-        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}:
+        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}{%- if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) -%},
+            {%- code
+                name2 := wrWithoutLong.tlName.String()
+                tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+                nameWithTag2 := name2 + tag2
+            -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}{%- endif -%}:
             item.index = {%d i %}
             return nil
         {%- endfor -%}
@@ -134,8 +140,14 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
                 name := field.originalName
                 tag := fmt.Sprintf("#%08x", field.t.tlTag)
                 nameWithTag := name + tag
+                wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
             -%}
-        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}:
+        case {%q= nameWithTag %}, {%q= name %}, {%q= tag %}{%- if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) -%},
+            {%- code
+                name2 := wrWithoutLong.tlName.String()
+                tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+                nameWithTag2 := name2 + tag2
+            -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}{%- endif -%}:
             item.index = {%d i %}
             {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
                 {%- if field.recursive -%}
@@ -158,29 +170,57 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
     {%- endif -%}
 
 func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w{%s= natArgsCall %})
+}
+func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(short bool, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if union.IsEnum -%}
         w = append(w, '"')
         w = append(w, _{%s= goName %}[item.index].TLString...)
         return append(w, '"'), nil
-
     {%- else -%}
     switch item.index {
         {%- for i, field := range union.Fields -%}
             {%- code
                 nameWithTag := fmt.Sprintf("%s#%08x", field.originalName, field.t.tlTag)
+                nameWithTagShort :=  nameWithTag
+                wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
+                if wrWithoutLong != nil {
+                    nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.tlName.String(), wrWithoutLong.tlTag)
+                }
             -%}
         case {%d i %}:
             {%- if field.t.IsTrueType() -%}
+            {%- if wrWithoutLong != nil -%}
+                if short {
+                    return append(w, `{"type":{%q= nameWithTagShort %}}`...), nil
+                }
+            {%- endif -%}
         return append(w, `{"type":{%q= nameWithTag %}}`...), nil
             {%- else -%}
     {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false, ) != "" -%}
+        {%- if wrWithoutLong != nil -%}
+        if short {
+            w = append(w, `{"type":{%q= nameWithTagShort %}}`...), nil
+        } else {
+            w = append(w, `{"type":{%q= nameWithTag %}`...)
+        }
+        {%- else -%}
         w = append(w, `{"type":{%q= nameWithTag %}`...)
+        {%- endif -%}
         if {%s= field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false, ) %} {
             w = append(w, `,"value":`...)
             {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false) %}
         }
     {%- else -%}
+        {%- if wrWithoutLong != nil -%}
+        if short {
+            w = append(w, `{"type":{%q= nameWithTagShort %},"value":`...)
+        } else {
+            w = append(w, `{"type":{%q= nameWithTag %},"value":`...)
+        }
+        {%- else -%}
         w = append(w, `{"type":{%q= nameWithTag %},"value":`...)
+        {%- endif -%}
         {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false) %}
     {%- endif -%}
         return append(w, '}'), nil

@@ -244,6 +244,7 @@ func (item *`)
 			name := field.originalName
 			tag := fmt.Sprintf("#%08x", field.t.tlTag)
 			nameWithTag := name + tag
+			wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
 
 			qw422016.N().S(`        case `)
 			qw422016.N().Q(nameWithTag)
@@ -251,6 +252,19 @@ func (item *`)
 			qw422016.N().Q(name)
 			qw422016.N().S(`, `)
 			qw422016.N().Q(tag)
+			if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) {
+				qw422016.N().S(`,
+`)
+				name2 := wrWithoutLong.tlName.String()
+				tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+				nameWithTag2 := name2 + tag2
+
+				qw422016.N().Q(nameWithTag2)
+				qw422016.N().S(`, `)
+				qw422016.N().Q(name2)
+				qw422016.N().S(`, `)
+				qw422016.N().Q(tag2)
+			}
 			qw422016.N().S(`:
             item.index = `)
 			qw422016.N().D(i)
@@ -283,6 +297,7 @@ func (item *`)
 			name := field.originalName
 			tag := fmt.Sprintf("#%08x", field.t.tlTag)
 			nameWithTag := name + tag
+			wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
 
 			qw422016.N().S(`        case `)
 			qw422016.N().Q(nameWithTag)
@@ -290,6 +305,19 @@ func (item *`)
 			qw422016.N().Q(name)
 			qw422016.N().S(`, `)
 			qw422016.N().Q(tag)
+			if wrWithoutLong != nil && !union.HasShortFieldCollision(wrWithoutLong) {
+				qw422016.N().S(`,
+`)
+				name2 := wrWithoutLong.tlName.String()
+				tag2 := fmt.Sprintf("#%08x", wrWithoutLong.tlTag)
+				nameWithTag2 := name2 + tag2
+
+				qw422016.N().Q(nameWithTag2)
+				qw422016.N().S(`, `)
+				qw422016.N().Q(name2)
+				qw422016.N().S(`, `)
+				qw422016.N().Q(tag2)
+			}
 			qw422016.N().S(`:
             item.index = `)
 			qw422016.N().D(i)
@@ -342,6 +370,16 @@ func (item `)
 	qw422016.N().S(`) WriteJSON(w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)
+}
+func (item `)
+	qw422016.N().S(asterisk)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) WriteJSONOpt(short bool, w []byte`)
+	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if union.IsEnum {
 		qw422016.N().S(`        w = append(w, '"')
@@ -349,19 +387,35 @@ func (item `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`[item.index].TLString...)
         return append(w, '"'), nil
-
 `)
 	} else {
 		qw422016.N().S(`    switch item.index {
 `)
 		for i, field := range union.Fields {
 			nameWithTag := fmt.Sprintf("%s#%08x", field.originalName, field.t.tlTag)
+			nameWithTagShort := nameWithTag
+			wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
+			if wrWithoutLong != nil {
+				nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.tlName.String(), wrWithoutLong.tlTag)
+			}
 
 			qw422016.N().S(`        case `)
 			qw422016.N().D(i)
 			qw422016.N().S(`:
 `)
 			if field.t.IsTrueType() {
+				if wrWithoutLong != nil {
+					qw422016.N().S(`                if short {
+                    return append(w, `)
+					qw422016.N().S("`")
+					qw422016.N().S(`{"type":`)
+					qw422016.N().Q(nameWithTagShort)
+					qw422016.N().S(`}`)
+					qw422016.N().S("`")
+					qw422016.N().S(`...), nil
+                }
+`)
+				}
 				qw422016.N().S(`        return append(w, `)
 				qw422016.N().S("`")
 				qw422016.N().S(`{"type":`)
@@ -372,14 +426,36 @@ func (item `)
 `)
 			} else {
 				if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false) != "" {
-					qw422016.N().S(`        w = append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().S(`{"type":`)
-					qw422016.N().Q(nameWithTag)
-					qw422016.N().S(``)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
-        if `)
+					if wrWithoutLong != nil {
+						qw422016.N().S(`        if short {
+            w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTagShort)
+						qw422016.N().S(`}`)
+						qw422016.N().S("`")
+						qw422016.N().S(`...), nil
+        } else {
+            w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTag)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
+        }
+`)
+					} else {
+						qw422016.N().S(`        w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTag)
+						qw422016.N().S(``)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
+`)
+					}
+					qw422016.N().S(`        if `)
 					qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.value%s", field.goName), false))
 					qw422016.N().S(` {
             w = append(w, `)
@@ -393,14 +469,36 @@ func (item `)
         }
 `)
 				} else {
-					qw422016.N().S(`        w = append(w, `)
-					qw422016.N().S("`")
-					qw422016.N().S(`{"type":`)
-					qw422016.N().Q(nameWithTag)
-					qw422016.N().S(`,"value":`)
-					qw422016.N().S("`")
-					qw422016.N().S(`...)
-        `)
+					if wrWithoutLong != nil {
+						qw422016.N().S(`        if short {
+            w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTagShort)
+						qw422016.N().S(`,"value":`)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
+        } else {
+            w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTag)
+						qw422016.N().S(`,"value":`)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
+        }
+`)
+					} else {
+						qw422016.N().S(`        w = append(w, `)
+						qw422016.N().S("`")
+						qw422016.N().S(`{"type":`)
+						qw422016.N().Q(nameWithTag)
+						qw422016.N().S(`,"value":`)
+						qw422016.N().S("`")
+						qw422016.N().S(`...)
+`)
+					}
+					qw422016.N().S(`        `)
 					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false))
 					qw422016.N().S(`
 `)

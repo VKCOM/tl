@@ -152,7 +152,7 @@ type {%s= goName %} struct {
             -%}
             {%- if maskFunArg -%}
 
-func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}, {%s= field.fieldMask.name %} *uint32) {
+func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}, {%s= natArgUse %} *uint32) {
             {%- else -%}
 func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- endif -%}
@@ -166,7 +166,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
     {%s= asterisk %}item.{%s= field.goName %} = v
             {%- endif -%}
             {%- if maskFunArg -%}
-    if {%s= field.fieldMask.name %} != nil {
+    if {%s= natArgUse %} != nil {
             {%- endif -%}
             {%- if field.t.IsTrueType() -%}
         if v {
@@ -189,7 +189,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
                     }
                 -%}
                 {%- if maskFunArg -%}
-func (item *{%s= goName %}) {%s= clearName %}({%s= field.fieldMask.name %} *uint32) {
+func (item *{%s= goName %}) {%s= clearName %}({%s= natArgUse %} *uint32) {
                 {%- else -%}
 func (item *{%s= goName %}) {%s= clearName %}() {
                 {%- endif -%}
@@ -199,7 +199,7 @@ func (item *{%s= goName %}) {%s= clearName %}() {
     {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
                 {%- endif -%}
                 {%- if maskFunArg-%}
-    if {%s= field.fieldMask.name %} != nil {
+    if {%s= natArgUse %} != nil {
                 {%- endif -%}
     {%s= addAsterisk(maskFunArg, natArgUse) %} &^= 1 << {%v field.BitNumber %}
                 {%- if maskFunArg-%}
@@ -216,7 +216,7 @@ func (item *{%s= goName %}) {%s= clearName %}() {
             }
         -%}
         {%- if maskFunArg -%}
-func (item {%s= goName %}) {%s= isSetName %}({%s= field.fieldMask.name %} uint32) bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
+func (item {%s= goName %}) {%s= isSetName %}({%s= natArgUse %} uint32) bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
         {%- else -%}
 func (item {%s= goName %}) {%s= isSetName %}() bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
         {%- endif -%}
@@ -245,6 +245,10 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w{%s= natArgsCall %})
+}
+
+func (item *{%s= goName %}) WriteJSONOpt(short bool, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     ptr := (*{%s= fieldTypeString %})(item)
     {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
     return w, nil
@@ -400,6 +404,9 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
 
 {%- func (struct_ *TypeRWStruct)writeJSONCode(bytesVersion bool, directImports *DirectImports) -%}
 func (item *{%s= addBytes(struct_.goGlobalName, bytesVersion) %}) WriteJSON(w []byte{%s= formatNatArgsDecl(struct_.wr.NatParams) %}) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w{%s= formatNatArgsCall(struct_.wr.NatParams) %})
+}
+func (item *{%s= addBytes(struct_.goGlobalName, bytesVersion) %}) WriteJSONOpt(short bool, w []byte{%s= formatNatArgsDecl(struct_.wr.NatParams) %}) (_ []byte, err error) {
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
         {%- if field.t.IsTrueType() -%}
@@ -451,6 +458,10 @@ func (item *{%s= goGlobalName %}) ReadResultJSON(j interface{}, ret *{%s= retArg
 }
 
 func (item *{%s= goGlobalName %}) WriteResultJSON(w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
+    return item.writeResultJSON(false, w, ret)
+}
+
+func (item *{%s= goGlobalName %}) writeResultJSON(short bool, w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
     {%s= struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false) %}
     return w, nil
 }
@@ -461,6 +472,15 @@ func (item *{%s= goGlobalName %}) ReadResultWriteResultJSON(r []byte, w []byte) 
     return r, w, err
   }
   w, err = item.WriteResultJSON(w, ret)
+  return r, w, err
+}
+
+func (item *{%s= goGlobalName %}) ReadResultWriteResultJSONShort(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+  var ret {%s= retArg %}
+  if r, err = item.ReadResult(r, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.writeResultJSON(true, w, ret)
   return r, w, err
 }
 

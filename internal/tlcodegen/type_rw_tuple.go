@@ -27,6 +27,8 @@ type TypeRWBrackets struct {
 	dictValueField Field
 }
 
+func (trw *TypeRWBrackets) wrapper() *TypeRWWrapper { return trw.wr }
+
 func (trw *TypeRWBrackets) canBeBareOrBoxed(bare bool) bool {
 	return bare
 }
@@ -154,7 +156,7 @@ func (trw *TypeRWBrackets) typeJSONWritingCode(bytesVersion bool, directImports 
 	}
 	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
 	// Code which depends on serialization location (skipping empty array if object property) is generated in that location.
-	return fmt.Sprintf("if w, err = %sWriteJSON(w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %sWriteJSONOpt(short, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, formatNatArgsCall(natArgs))
 }
 
 func (trw *TypeRWBrackets) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {

@@ -19,6 +19,8 @@ type TypeRWBool struct {
 	trueTag      uint32
 }
 
+func (trw *TypeRWBool) wrapper() *TypeRWWrapper { return trw.wr }
+
 func (trw *TypeRWBool) canBeBareOrBoxed(bare bool) bool {
 	return !bare
 }

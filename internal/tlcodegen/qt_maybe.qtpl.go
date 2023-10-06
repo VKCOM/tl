@@ -138,6 +138,15 @@ func (item *`)
 	qw422016.N().S(`) WriteJSON(w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w`)
+	qw422016.N().S(natArgsCall)
+	qw422016.N().S(`)
+}
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) WriteJSONOpt(short bool, w []byte`)
+	qw422016.N().S(natArgsDecl)
+	qw422016.N().S(`) (_ []byte, err error) {
   if !item.Ok {
     return append(w, "{}"...), nil
   }

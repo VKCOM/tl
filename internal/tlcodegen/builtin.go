@@ -417,9 +417,9 @@ func ReplaceSquareBrackets(tl *tlast.TL) error {
 	return nil
 }
 
-func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, tlType *tlast.Combinator, myType2 ResolvedType, goGlobalName string, lrc LocalResolveContext) error {
+func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, tlType *tlast.Combinator, goGlobalName string, lrc LocalResolveContext) error {
 	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[0].FieldName}} // TODO - PR
-	trw, elementResolvedType, elementNatArgs, err := gen.getType(lrc, elementT)
+	elementResolvedType, elementResolvedTypeBare, elementNatArgs, err := gen.getType(lrc, elementT)
 	if err != nil {
 		return err
 	}
@@ -428,18 +428,18 @@ func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, 
 		vectorLike:   vectorLike,
 		goGlobalName: goGlobalName,
 		element: Field{
-			t:            trw,
+			t:            elementResolvedType,
+			bare:         elementResolvedTypeBare,
 			originalType: elementT,
-			resolvedType: elementResolvedType,
 			natArgs:      elementNatArgs,
 		},
 	}
 	myWrapper.trw = res
-	myWrapper.fileName = trw.fileName
+	myWrapper.fileName = elementResolvedType.fileName
 	if !res.vectorLike {
-		res.dynamicSize = !myType2.Args[1].isArith
-		if myType2.Args[1].isArith {
-			res.size = myType2.Args[1].Arith.Res
+		res.dynamicSize = !myWrapper.arguments[1].isArith
+		if myWrapper.arguments[1].isArith {
+			res.size = myWrapper.arguments[1].Arith.Res
 		}
 	}
 	return nil

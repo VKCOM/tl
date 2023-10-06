@@ -21,6 +21,8 @@ type TypeRWUnion struct {
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
 }
 
+func (trw *TypeRWUnion) wrapper() *TypeRWWrapper { return trw.wr }
+
 func (trw *TypeRWUnion) canBeBareOrBoxed(bare bool) bool {
 	return !bare
 }
@@ -110,10 +112,25 @@ func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, re
 }
 
 func (trw *TypeRWUnion) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if w, err = %s.WriteJSON(w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
 }
 
 func (trw *TypeRWUnion) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	goName := addBytes(trw.goGlobalName, bytesVersion)
 	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, formatNatArgsCall(natArgs))
+}
+
+func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
+	//messages.peerId peer_id:int = messages.ChatId;
+	//messagesLong.peerId peer_id:long = messages.ChatId;
+	//
+	//messages.globalChatId#07a5893d chat_id:long = messages.ChatId;
+	//messagesLong.globalChatId global_id:messagesLong.GlobalId = messages.ChatId;
+
+	for _, field := range trw.Fields {
+		if field.t == wr {
+			return true
+		}
+	}
+	return false
 }

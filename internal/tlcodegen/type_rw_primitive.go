@@ -29,6 +29,8 @@ type TypeRWPrimitive struct {
 	cppResetValue     string
 }
 
+func (trw *TypeRWPrimitive) wrapper() *TypeRWWrapper { return nil }
+
 func (trw *TypeRWPrimitive) canBeBareOrBoxed(bare bool) bool {
 	return bare
 }

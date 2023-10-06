@@ -342,7 +342,7 @@ func (item *`)
 				qw422016.N().S(`(v `)
 				qw422016.N().S(isTrueType)
 				qw422016.N().S(`, `)
-				qw422016.N().S(field.fieldMask.name)
+				qw422016.N().S(natArgUse)
 				qw422016.N().S(` *uint32) {
 `)
 			} else {
@@ -378,7 +378,7 @@ func (item *`)
 			}
 			if maskFunArg {
 				qw422016.N().S(`    if `)
-				qw422016.N().S(field.fieldMask.name)
+				qw422016.N().S(natArgUse)
 				qw422016.N().S(` != nil {
 `)
 			}
@@ -424,7 +424,7 @@ func (item *`)
 					qw422016.N().S(`) `)
 					qw422016.N().S(clearName)
 					qw422016.N().S(`(`)
-					qw422016.N().S(field.fieldMask.name)
+					qw422016.N().S(natArgUse)
 					qw422016.N().S(` *uint32) {
 `)
 				} else {
@@ -450,7 +450,7 @@ func (item *`)
 				}
 				if maskFunArg {
 					qw422016.N().S(`    if `)
-					qw422016.N().S(field.fieldMask.name)
+					qw422016.N().S(natArgUse)
 					qw422016.N().S(` != nil {
 `)
 				}
@@ -480,7 +480,7 @@ func (item *`)
 			qw422016.N().S(`) `)
 			qw422016.N().S(isSetName)
 			qw422016.N().S(`(`)
-			qw422016.N().S(field.fieldMask.name)
+			qw422016.N().S(natArgUse)
 			qw422016.N().S(` uint32) bool { return `)
 			qw422016.N().S(natArgUse)
 			qw422016.N().S(` & (1 << `)
@@ -555,6 +555,16 @@ func (item *`)
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteJSON(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w`)
+		qw422016.N().S(natArgsCall)
+		qw422016.N().S(`)
+}
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteJSONOpt(short bool, w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
     ptr := (*`)
@@ -870,6 +880,15 @@ func (struct_ *TypeRWStruct) streamwriteJSONCode(qw422016 *qt422016.Writer, byte
 	qw422016.N().S(`) WriteJSON(w []byte`)
 	qw422016.N().S(formatNatArgsDecl(struct_.wr.NatParams))
 	qw422016.N().S(`) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w`)
+	qw422016.N().S(formatNatArgsCall(struct_.wr.NatParams))
+	qw422016.N().S(`)
+}
+func (item *`)
+	qw422016.N().S(addBytes(struct_.goGlobalName, bytesVersion))
+	qw422016.N().S(`) WriteJSONOpt(short bool, w []byte`)
+	qw422016.N().S(formatNatArgsDecl(struct_.wr.NatParams))
+	qw422016.N().S(`) (_ []byte, err error) {
     w = append(w, '{')
 `)
 	for _, field := range struct_.Fields {
@@ -989,6 +1008,14 @@ func (item *`)
 	qw422016.N().S(`) WriteResultJSON(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
+    return item.writeResultJSON(false, w, ret)
+}
+
+func (item *`)
+	qw422016.N().S(goGlobalName)
+	qw422016.N().S(`) writeResultJSON(short bool, w []byte, ret `)
+	qw422016.N().S(retArg)
+	qw422016.N().S(`) (_ []byte, err error) {
     `)
 	qw422016.N().S(struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false))
 	qw422016.N().S(`
@@ -1005,6 +1032,19 @@ func (item *`)
     return r, w, err
   }
   w, err = item.WriteResultJSON(w, ret)
+  return r, w, err
+}
+
+func (item *`)
+	qw422016.N().S(goGlobalName)
+	qw422016.N().S(`) ReadResultWriteResultJSONShort(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+  var ret `)
+	qw422016.N().S(retArg)
+	qw422016.N().S(`
+  if r, err = item.ReadResult(r, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.writeResultJSON(true, w, ret)
   return r, w, err
 }
 

@@ -20,6 +20,8 @@ type TypeRWMaybe struct {
 	okTag    uint32
 }
 
+func (trw *TypeRWMaybe) wrapper() *TypeRWWrapper { return trw.wr }
+
 func (trw *TypeRWMaybe) canBeBareOrBoxed(bare bool) bool {
 	return !bare
 }
@@ -83,7 +85,7 @@ func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, re
 }
 
 func (trw *TypeRWMaybe) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if w, err = %s.WriteJSON(w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
 }
 
 func (trw *TypeRWMaybe) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {

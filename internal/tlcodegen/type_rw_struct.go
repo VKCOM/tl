@@ -17,9 +17,8 @@ type TypeRWStruct struct {
 	goLocalName  string // TODO - make different var with local name for cpp
 	Fields       []Field
 
-	ResultType         *TypeRWWrapper
-	ResultNatArgs      []ActualNatArg
-	ResultResolvedType ResolvedType
+	ResultType    *TypeRWWrapper
+	ResultNatArgs []ActualNatArg
 
 	fieldsDec    Deconflicter // TODO - add all generated methods here
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
@@ -27,6 +26,8 @@ type TypeRWStruct struct {
 	clearNames   []string
 	isSetNames   []string
 }
+
+func (trw *TypeRWStruct) wrapper() *TypeRWWrapper { return trw.wr }
 
 func (trw *TypeRWStruct) isTypeDef() bool {
 	return len(trw.Fields) == 1 && trw.Fields[0].originalName == "" && trw.Fields[0].fieldMask == nil && !trw.Fields[0].recursive
@@ -114,6 +115,7 @@ func (trw *TypeRWStruct) BeforeCodeGenerationStep() error {
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))
+
 	return nil
 }
 
@@ -227,7 +229,7 @@ func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *D
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
-	return fmt.Sprintf("if w, err = %s.WriteJSON(w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
 }
 
 func (trw *TypeRWStruct) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
