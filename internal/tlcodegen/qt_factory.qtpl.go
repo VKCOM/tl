@@ -11,7 +11,8 @@ package tlcodegen
 
 import (
 	"fmt"
-	"sort"
+
+	"golang.org/x/exp/slices"
 
 	"github.com/vkcom/tl/internal/tlast"
 
@@ -94,7 +95,15 @@ func init() {
 				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
 				qw422016.N().S(` `)
 				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
-				qw422016.N().S(`; return &ret }`)
+				qw422016.N().S(`; return &ret },`)
+				if wr.WrLong != nil {
+					qw422016.N().S(`func() meta.Function { var ret`)
+					qw422016.N().S(` `)
+					qw422016.N().S(wr.WrLong.TypeString2(false, directImports, nil, false, true))
+					qw422016.N().S(`; return &ret },`)
+				} else {
+					qw422016.N().S(`nil,`)
+				}
 			} else {
 				qw422016.N().S(`meta.SetGlobalFactoryCreateForObject(`)
 				qw422016.N().S(tlTag)
@@ -141,8 +150,8 @@ package `)
 		}
 		sortedConstructors = append(sortedConstructors, c)
 	}
-	sort.Slice(sortedConstructors, func(i, j int) bool {
-		return sortedConstructors[i].Construct.Name.String() < sortedConstructors[j].Construct.Name.String()
+	slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
+		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
 	})
 
 	qw422016.N().S(`const (

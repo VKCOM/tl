@@ -6,6 +6,7 @@
 
 package tlcodegen
 
+/*
 import (
 	"fmt"
 	"strconv"
@@ -342,3 +343,4 @@ func (trw *TypeRWStruct) CPPReadFields(bytesVersion bool, hppDetInc *DirectInclu
 	}
 	return s.String()
 }
+*/

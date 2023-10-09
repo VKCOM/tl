@@ -27,6 +27,8 @@ var (
 	branchName      string
 	name            string
 
+	info string // combination of above
+
 	appName               string
 	commitTimestampUint32 uint32
 
@@ -43,16 +45,10 @@ func Timestamp() uint32 {
 }
 
 func Machine() string {
-	if machine == "" {
-		return "?"
-	}
 	return machine
 }
 
 func Commit() string {
-	if commit == "" {
-		return "?"
-	}
 	return commit
 }
 
@@ -62,35 +58,23 @@ func CommitTimestamp() uint32 {
 }
 
 func Version() string {
-	if version == "" {
-		return "?"
-	}
 	return version
 }
 
 func Number() string {
-	if number == "" {
-		return "?"
-	}
 	return number
 }
 
 func Name() string {
-	if name == "" {
-		return "?"
-	}
 	return name
 }
 
 func BranchName() string {
-	if branchName == "" {
-		return "?"
-	}
 	return branchName
 }
 
 func Info() string {
-	return fmt.Sprintf("%s compiled at %s by %s after %s on %s build %s", appName, Time(), runtime.Version(), Version(), Machine(), Number())
+	return info
 }
 
 func init() {
@@ -98,16 +82,16 @@ func init() {
 	ts, _ := strconv.ParseUint(commitTimestamp, 10, 32)
 	commitTimestampUint32 = uint32(ts)
 
-	if buildTimestamp == "" {
-		buildTimeFormatted = "?"
-	} else {
+	if buildTimestamp != "" {
 		ts, _ = strconv.ParseUint(buildTimestamp, 10, 32)
 		buildTimestampUint32 = uint32(ts)
 		buildTimeFormatted = time.Unix(int64(ts), 0).Format("2006-01-02T15:04:05-0700")
 	}
+
+	info = fmt.Sprintf("%s compiled at %s by %s after %s on %s build %s", appName, buildTimeFormatted, runtime.Version(), version, machine, number)
 }
 
-func AppName() string { // TODO - remember during build
+func AppName() string { // TODO - remember during build?
 	return appName
 }
 
@@ -129,8 +113,12 @@ func FlagParseShowVersionHelpWithTail(set *flag.FlagSet, args []string) {
 		os.Exit(0)
 	}
 	if help {
-		_, _ = fmt.Fprintf(os.Stderr, "Usage of %s:\n", set.Name())
-		set.PrintDefaults()
+		if set.Usage != nil {
+			set.Usage()
+		} else {
+			_, _ = fmt.Fprintf(os.Stderr, "Usage of %s:\n", set.Name())
+			set.PrintDefaults()
+		}
 		os.Exit(0)
 	}
 }

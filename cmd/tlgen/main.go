@@ -7,13 +7,12 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strings"
-
-	"github.com/pkg/errors"
 
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"

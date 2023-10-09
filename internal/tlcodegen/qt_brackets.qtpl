@@ -1,7 +1,8 @@
 {%- func (tuple *TypeRWBrackets) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
-        goName := addBytes(tuple.goGlobalName, bytesVersion)
+        goName := addBytes(tuple.wr.goGlobalName, bytesVersion)
         natDecl := formatNatArgsDecl(tuple.wr.NatParams)
+        natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
         typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
         elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
     -%}
@@ -11,6 +12,7 @@
                 keyTypeString := tuple.dictKeyField.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
                 valueTypeString := tuple.dictValueField.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
                 valueNatArgsDecl := formatNatArgsDecl(tuple.element.t.NatParams)
+                valueNatArgsCall := formatNatArgsDeclCall(tuple.element.t.NatParams)
                 keyFieldName := tuple.dictKeyField.goName
                 valueFieldName := tuple.dictValueField.goName
             -%}
@@ -79,6 +81,9 @@ for key, _jvalue := range _map {
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= valueNatArgsCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
     w = append(w, '{')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
@@ -98,6 +103,9 @@ for _jkey, _jvalue := range _map {
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= valueNatArgsCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
     w = append(w, '{')
     for _, elem := range vec {
         key := elem.{%s= keyFieldName %}
@@ -196,6 +204,9 @@ for key, _jvalue := range _map {
 }
 
 func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, m{%s= valueNatArgsCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)
@@ -226,6 +237,9 @@ for _jkey, _jvalue := range _map {
 }
 
 func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, m{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)
@@ -303,6 +317,9 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl 
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     w = append(w, '[')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
@@ -363,6 +380,9 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl 
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     if uint32(len(vec)) != nat_n {
         return w, {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, len(vec), nat_n)
     }
@@ -415,6 +435,9 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl 
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     w = append(w, '[')
     for _, elem := range *vec {
         w = basictl.JSONAddCommaIfNeeded(w)

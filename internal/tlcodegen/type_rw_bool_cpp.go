@@ -6,6 +6,8 @@
 
 package tlcodegen
 
+/*
+
 import (
 	"fmt"
 	"strings"
@@ -72,3 +74,4 @@ void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
 
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 }
+*/

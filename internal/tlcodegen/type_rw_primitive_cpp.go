@@ -6,6 +6,7 @@
 
 package tlcodegen
 
+/*
 import (
 	"fmt"
 	"strings"
@@ -40,3 +41,4 @@ func (trw *TypeRWPrimitive) CPPTypeReadingCode(bytesVersion bool, val string, ba
 
 func (trw *TypeRWPrimitive) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
 }
+*/

@@ -7,6 +7,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.4
 	github.com/valyala/quicktemplate v1.7.0
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 )
 
 require (

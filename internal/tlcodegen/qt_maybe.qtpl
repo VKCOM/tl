@@ -2,10 +2,10 @@
 
 {%- func (maybe *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
-        goName := addBytes(maybe.goGlobalName, bytesVersion)
+        goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
         elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
         natArgsDecl := formatNatArgsDecl(maybe.wr.NatParams)
-        natArgsCall := formatNatArgsCall(maybe.wr.NatParams)
+        natArgsCall := formatNatArgsDeclCall(maybe.wr.NatParams)
         emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
         okTag := fmt.Sprintf("%#x", maybe.okTag)
     -%}
@@ -61,6 +61,9 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    return item.WriteJSONOpt(false, w{%s= natArgsCall %})
+}
+func (item *{%s= goName %}) WriteJSONOpt(short bool, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
   if !item.Ok {
     return append(w, "{}"...), nil
   }

@@ -6,6 +6,7 @@
 
 package tlcodegen
 
+/*
 import (
 	"fmt"
 	"strings"
@@ -102,7 +103,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 	// valueFieldName := ""
 	switch {
 	// TODO - does not work yet
-	/*
+	/ *
 		case trw.dictLike && !bytesVersion:
 				keyTypeString = trw.dictKeyField.t.TypeString(bytesVersion)
 				valueTypeString = trw.dictValueField.t.TypeString(bytesVersion)
@@ -148,7 +149,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 				}
 
 				`
-	*/
+	* /
 	case trw.vectorLike:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
@@ -204,7 +205,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 }
 `
 	}
-	/*
+	/ *
 		_ = fmt.Sprintf(code,
 			addBytes(trw.goGlobalName, bytesVersion),
 			trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.wr.resolvedType.Args[0].T, false),
@@ -241,7 +242,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 				false,
 			),
 		)
-	*/
+	* /
 
 	hppDet.WriteString(fmt.Sprintf(hppDetCode,
 		addBytes(trw.goGlobalName, bytesVersion),
@@ -274,3 +275,4 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 	))
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 }
+*/

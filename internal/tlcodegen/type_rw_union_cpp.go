@@ -6,6 +6,7 @@
 
 package tlcodegen
 
+/*
 import (
 	"fmt"
 	"strconv"
@@ -236,10 +237,10 @@ void %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				formatNatArgsDeclCPP(trw.wr.NatParams),
 				addBytes(trw.goGlobalName, false),
 			))
-	*/
+	* /
 }
 
-/*
+/ *
 func (union *TypeRWUnion) GenerateFields(bytesVersion bool) string {
 	var s strings.Builder
 	for _, field := range union.Fields {
@@ -401,7 +402,7 @@ func (union *TypeRWUnion) generateEnumAlias(bytesVersion bool) string {
 	}
 	return s.String()
 }
-*/
+* /
 
 func (trw *TypeRWUnion) CPPAllTags(bytesVersion bool) string {
 	var s strings.Builder
@@ -473,3 +474,4 @@ func (trw *TypeRWUnion) CPPReadFields(bytesVersion bool, hppInc *DirectIncludesC
 	}
 	return s.String()
 }
+*/

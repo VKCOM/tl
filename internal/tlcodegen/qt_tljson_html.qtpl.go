@@ -11,7 +11,7 @@ package tlcodegen
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 
 	qtio422016 "io"
 
@@ -43,13 +43,13 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, buildSHA256Checksum stri
 		if fun, ok := trww.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			qw422016.N().S(`      <li>
         <a href="#`)
-			qw422016.E().S(trww.JSONHelpString())
+			qw422016.E().S(trww.goGlobalName)
 			qw422016.N().S(`">
         <code>`)
 			qw422016.E().S(trww.JSONHelpString())
 			qw422016.N().S(`</code></a>
         → <code>`)
-			streamprintJSONHelpType(qw422016, gen, fun.ResultResolvedType, fun.ResultType, formatNatArgsJSONHelp(fun.Fields, fun.ResultNatArgs, trww.NatParams, trww.NatParams))
+			streamprintJSONHelpType2(qw422016, gen, fun.ResultType, false, fun.Fields, fun.ResultNatArgs)
 			qw422016.N().S(`</code>
       </li>
 `)
@@ -84,104 +84,116 @@ func tlJSON(gen *Gen2, buildSHA256Checksum string) string {
 	return qs422016
 }
 
-func streamprintJSONHelpType(qw422016 *qt422016.Writer, gen *Gen2, rt ResolvedType, trww *TypeRWWrapper, natArgs []string) {
+func streamprintJSONHelpType2(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) {
 	switch trw := trww.trw.(type) {
 	case *TypeRWBool:
 		qw422016.E().S("<bool>")
 	case *TypeRWPrimitive:
 		qw422016.E().S("<")
-		qw422016.E().S(trw.primitiveType)
+		qw422016.E().S(trw.goType)
 		qw422016.E().S(">")
 	case *TypeRWMaybe:
-		streammakeRef(qw422016, trw.goGlobalName)
+		streammakeRef(qw422016, trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs))
 	case *TypeRWStruct:
-		if trw.isUnwrapTypeImpl(false) {
-			streamprintJSONHelpType(qw422016, gen, trw.Fields[0].resolvedType, trw.Fields[0].t, formatNatArgsJSONHelp(trw.Fields, trw.Fields[0].natArgs, trww.NatParams, natArgs))
+		if trw.isTypeDef() {
+			streamprintJSONHelpType2(qw422016, gen, trw.Fields[0].t, trw.Fields[0].bare, fields, trww.transformNatArgsToChild(natArgs, trw.Fields[0].natArgs))
 		} else if trw.wr.IsTrueType() {
 			qw422016.E().S("{}")
 		} else {
-			streammakeRef(qw422016, trww.JSONHelpString())
+			streammakeRef(qw422016, trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs))
 		}
 	case *TypeRWUnion:
-		streammakeRef(qw422016, trww.JSONHelpString())
+		streammakeRef(qw422016, trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs))
 	case *TypeRWBrackets:
+		elementNatArgs := trww.transformNatArgsToChild(natArgs, trw.element.natArgs)
+
 		switch {
 		case trw.dictLike:
 			qw422016.E().S("{")
-			streamprintJSONHelpType(qw422016, gen, trw.dictKeyField.resolvedType, trw.dictKeyField.t, formatNatArgsJSONHelp(nil, trw.dictKeyField.natArgs, trww.NatParams, natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.dictKeyField.t, trw.dictKeyField.bare, fields, trw.element.t.transformNatArgsToChild(elementNatArgs, trw.dictKeyField.natArgs))
 			qw422016.E().S(": ")
-			streamprintJSONHelpType(qw422016, gen, trw.dictValueField.resolvedType, trw.dictValueField.t, formatNatArgsJSONHelp(nil, trw.dictValueField.natArgs, trww.NatParams, natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.dictValueField.t, trw.dictValueField.bare, fields, trw.element.t.transformNatArgsToChild(elementNatArgs, trw.dictValueField.natArgs))
 			qw422016.E().S("}")
 		case trw.vectorLike:
 			qw422016.E().S("[")
-			streamprintJSONHelpType(qw422016, gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, fields, elementNatArgs)
 			qw422016.E().S(", ...]")
 		case trw.dynamicSize:
 			qw422016.E().S("[")
-			qw422016.E().S(natArgs[len(natArgs)-1])
+			qw422016.E().S(trww.JSONHelpNatArg(fields, natArgs[len(natArgs)-1]))
 			qw422016.E().S(" × ")
-			streamprintJSONHelpType(qw422016, gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, fields, elementNatArgs)
 			qw422016.E().S("]")
 		default:
 			qw422016.E().S("[")
-			qw422016.E().S(strconv.Itoa(int(trw.size)))
+			qw422016.E().V(trw.size)
 			qw422016.E().S(" × ")
-			streamprintJSONHelpType(qw422016, gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, fields, elementNatArgs)
 			qw422016.E().S("]")
 		}
 	}
 }
 
-func writeprintJSONHelpType(qq422016 qtio422016.Writer, gen *Gen2, rt ResolvedType, trww *TypeRWWrapper, natArgs []string) {
+func writeprintJSONHelpType2(qq422016 qtio422016.Writer, gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streamprintJSONHelpType(qw422016, gen, rt, trww, natArgs)
+	streamprintJSONHelpType2(qw422016, gen, trww, bare, fields, natArgs)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func printJSONHelpType(gen *Gen2, rt ResolvedType, trww *TypeRWWrapper, natArgs []string) string {
+func printJSONHelpType2(gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writeprintJSONHelpType(qb422016, gen, rt, trww, natArgs)
+	writeprintJSONHelpType2(qb422016, gen, trww, bare, fields, natArgs)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016
 }
 
 func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapper) {
-	if typ, ok := trww.trw.(*TypeRWStruct); ok && typ.ResultType == nil && trww.IsTrueType() {
+	if trw, ok := trww.trw.(*TypeRWStruct); ok && ((trw.ResultType == nil && trww.IsTrueType()) || trw.isTypeDef()) {
+		return
+	}
+	if _, ok := trww.trw.(*TypeRWBool); ok {
+		return
+	}
+	if _, ok := trww.trw.(*TypeRWBrackets); ok {
+		return
+	}
+	if _, ok := trww.trw.(*TypeRWPrimitive); ok {
 		return
 	}
 
+	qw422016.N().S(`<h2 id="`)
+	qw422016.E().S(trww.goGlobalName)
+	qw422016.N().S(`">`)
+	qw422016.E().S(trww.JSONHelpString())
+	qw422016.N().S(`</h2>
+`)
+	if len(trww.NatParams) != 0 {
+		qw422016.N().S(`External # (nat) arguments: <b>`)
+		qw422016.E().S(strings.Join(trww.NatParams, ", "))
+		qw422016.N().S(`</b>
+`)
+	}
+	qw422016.N().S(`<p></p>
+`)
 	switch trw := trww.trw.(type) {
-	case *TypeRWBool:
 	case *TypeRWPrimitive:
-		qw422016.N().S(`<h2 id="`)
-		qw422016.E().S(trww.tlName.String())
-		qw422016.N().S(`">`)
-		qw422016.E().S(trww.tlName.String())
-		qw422016.N().S(`</h2>
-<p></p>
-<dl>
+		qw422016.N().S(`<dl>
   <dt>JSON</dt>
   <dd>`)
-		qw422016.E().S(trw.primitiveType)
+		qw422016.E().S(trw.goType)
 		qw422016.N().S(`</dd>
 </dl>
 `)
 	case *TypeRWMaybe:
-		qw422016.N().S(`<h2 id="`)
-		qw422016.E().S(trw.goGlobalName)
-		qw422016.N().S(`">`)
-		qw422016.E().S(trw.goGlobalName)
-		qw422016.N().S(`</h2>
-<p></p>
-<dl>
+		qw422016.N().S(`<dl>
   <dt>JSON</dt>
   <dd>
     <ul>
       <li><code>{}</code></li>
       <li><code>`)
 		qw422016.E().S(`{"value": `)
-		streamprintJSONHelpType(qw422016, gen, trw.element.resolvedType, trw.element.t, formatNatArgsJSONHelp(nil, trw.element.natArgs, trww.NatParams, trww.NatParams))
+		streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, nil, trw.element.natArgs)
 		qw422016.E().S("}")
 		qw422016.N().S(`</code></li>
     </ul>
@@ -200,16 +212,13 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 </dl>
 `)
 	case *TypeRWStruct:
-		if trw.isUnwrapTypeImpl(false) {
-			return
+		if trw.ResultType != nil {
+			qw422016.N().S(`  Returns <code>`)
+			streamprintJSONHelpType2(qw422016, gen, trw.ResultType, false, trw.Fields, trw.ResultNatArgs)
+			qw422016.N().S(`</code>
+`)
 		}
-		qw422016.N().S(`<h2 id="`)
-		qw422016.E().S(trww.JSONHelpString())
-		qw422016.N().S(`">`)
-		qw422016.E().S(trww.JSONHelpString())
-		qw422016.N().S(`</h2>
-<p></p>
-<dl>
+		qw422016.N().S(`<dl>
   <dt>JSON</dt>
   <dd><code>
 `)
@@ -236,7 +245,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 					qw422016.N().S(`          <td>&nbsp;&nbsp;"`)
 					qw422016.E().S(field.originalName)
 					qw422016.N().S(`"</td><td>: `)
-					streamprintJSONHelpType(qw422016, gen, field.resolvedType, field.t, formatNatArgsJSONHelp(trw.Fields, field.natArgs, trww.NatParams, trww.NatParams))
+					streamprintJSONHelpType2(qw422016, gen, field.t, field.bare, trw.Fields, field.natArgs)
 					if i != len(trw.Fields)-1 {
 						qw422016.N().S(`,`)
 					}
@@ -263,57 +272,48 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 </dl>
 `)
 	case *TypeRWUnion:
-		qw422016.N().S(`<h2 id="`)
-		qw422016.E().S(trww.JSONHelpString())
-		qw422016.N().S(`">`)
-		qw422016.E().S(trww.JSONHelpString())
-		qw422016.N().S(`</h2>
-<p></p>
-<dl>
+		qw422016.N().S(`<dl>
   <dt>JSON</dt>
   <dd>
     <ul>
 `)
-		if trw.IsEnum {
-			for _, field := range trw.Fields {
-				tag := fmt.Sprintf("%08x", field.t.tlTag)
+		for _, field := range trw.Fields {
+			tag := fmt.Sprintf("%08x", field.t.tlTag)
 
-				qw422016.N().S(`      <li><code>"`)
+			qw422016.N().S(`            <li><code>
+`)
+			if trw.IsEnum {
+				qw422016.N().S(`                "`)
 				qw422016.E().S(field.originalName)
-				qw422016.N().S(`"</code> <small><small>(or <code>"#`)
+				qw422016.N().S(`"
+                // or "#`)
 				qw422016.E().S(tag)
-				qw422016.N().S(`"</code>
-      or <code>"`)
+				qw422016.N().S(`" or "`)
 				qw422016.E().S(field.originalName)
 				qw422016.N().S(`#`)
 				qw422016.E().S(tag)
-				qw422016.N().S(`"</code>)</small></small></li>
+				qw422016.N().S(`"
 `)
-			}
-		} else {
-			for _, field := range trw.Fields {
-				tag := fmt.Sprintf("%08x", field.t.tlTag)
-
-				qw422016.N().S(`      <li><code>{"type":"`)
+			} else {
+				qw422016.N().S(`                {"type":"`)
 				qw422016.E().S(field.originalName)
-				qw422016.N().S(`"</code> <small><small>(or <code>"#`)
-				qw422016.E().S(tag)
-				qw422016.N().S(`"</code>
-      or <code>"`)
-				qw422016.E().S(field.originalName)
-				qw422016.N().S(`#`)
-				qw422016.E().S(tag)
-				qw422016.N().S(`"</code>)</small></small><code>
-`)
+				qw422016.N().S(`"`)
 				if !field.t.IsTrueType() {
-					qw422016.N().S(`,"value":`)
-					streammakeRef(qw422016, field.t.JSONHelpString())
-					qw422016.N().S(`
-`)
+					qw422016.N().S(`, "value":`)
+					streammakeRef(qw422016, field.t.goGlobalName, field.t.JSONHelpString())
 				}
-				qw422016.N().S(`      }</code></li>
+				qw422016.N().S(`}
+                // or "type":"#`)
+				qw422016.E().S(tag)
+				qw422016.N().S(`" or "type":"`)
+				qw422016.E().S(field.originalName)
+				qw422016.N().S(`#`)
+				qw422016.E().S(tag)
+				qw422016.N().S(`"
 `)
 			}
+			qw422016.N().S(`            </code></li>
+`)
 		}
 		qw422016.N().S(`    </ul>
   </dd>
@@ -331,7 +331,6 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
   </dd>
 </dl>
 `)
-	case *TypeRWBrackets:
 	}
 }
 
@@ -357,14 +356,28 @@ func streamjsonCommentFieldMask(qw422016 *qt422016.Writer, fm *ActualNatArg, num
 		qw422016.N().S(`// `)
 		qw422016.E().S(fields[fm.FieldIndex].originalName)
 		qw422016.N().S(` bit #`)
-		qw422016.E().S(strconv.Itoa(int(num)))
+		qw422016.E().V(num)
 		qw422016.N().S(`
+`)
+	} else if fm.isArith && (fm.Arith.Res&(1<<num)) != 0 {
+		qw422016.N().S(`// `)
+		qw422016.E().V(fm.Arith.Res)
+		qw422016.N().S(` bit #`)
+		qw422016.E().V(num)
+		qw422016.N().S(` = true
+`)
+	} else if fm.isArith {
+		qw422016.N().S(`// `)
+		qw422016.E().V(fm.Arith.Res)
+		qw422016.N().S(` bit #`)
+		qw422016.E().V(num)
+		qw422016.N().S(` = false
 `)
 	} else {
 		qw422016.N().S(`// `)
 		qw422016.E().S(fm.name)
 		qw422016.N().S(` bit #`)
-		qw422016.E().S(strconv.Itoa(int(num)))
+		qw422016.E().V(num)
 		qw422016.N().S(`
 `)
 	}
@@ -384,23 +397,23 @@ func jsonCommentFieldMask(fm *ActualNatArg, num uint32, fields []Field) string {
 	return qs422016
 }
 
-func streammakeRef(qw422016 *qt422016.Writer, s string) {
+func streammakeRef(qw422016 *qt422016.Writer, a string, s string) {
 	qw422016.N().S(`<a href="#`)
-	qw422016.E().S(s)
+	qw422016.E().S(a)
 	qw422016.N().S(`">`)
 	qw422016.E().S(s)
 	qw422016.N().S(`</a>`)
 }
 
-func writemakeRef(qq422016 qtio422016.Writer, s string) {
+func writemakeRef(qq422016 qtio422016.Writer, a string, s string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streammakeRef(qw422016, s)
+	streammakeRef(qw422016, a, s)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func makeRef(s string) string {
+func makeRef(a string, s string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writemakeRef(qb422016, s)
+	writemakeRef(qb422016, a, s)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

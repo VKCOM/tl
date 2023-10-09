@@ -223,12 +223,12 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`", err)
     }
     resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+    defer c.Client.PutResponse(resp)
     if err != nil {
         return internal.ErrorClientDo("`)
 	qw422016.N().S(tlName)
 	qw422016.N().S(`", c.Network, c.ActorID, c.Address, err)
     }
-    defer c.Client.PutResponse(resp)
     if ret != nil {
         if _, err = args.ReadResult(resp.Body, ret); err != nil {
             return internal.ErrorClientReadResult("`)

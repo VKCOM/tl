@@ -11,28 +11,18 @@ import (
 )
 
 type TypeRWMaybe struct {
-	wr           *TypeRWWrapper
-	goGlobalName string
-	goLocalName  string
-	element      Field
+	wr      *TypeRWWrapper
+	element Field
 
 	emptyTag uint32
 	okTag    uint32
 }
 
-func (trw *TypeRWMaybe) canBeBareOrBoxed(bare bool) bool {
-	return !bare
-}
-
-func (trw *TypeRWMaybe) typeStringGlobal(bytesVersion bool) string {
-	return addBytes(trw.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWMaybe) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if isLocal {
-		return addBytes(trw.goLocalName, bytesVersion)
+		return addBytes(trw.wr.goLocalName, bytesVersion)
 	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.goGlobalName, bytesVersion)
+	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWMaybe) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -46,8 +36,7 @@ func (trw *TypeRWMaybe) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	trw.element.t.MarkWantsBytesVersion(visitedNodes)
 }
 
-func (trw *TypeRWMaybe) BeforeCodeGenerationStep() error {
-	return trw.element.checkBareBoxed()
+func (trw *TypeRWMaybe) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWMaybe) BeforeCodeGenerationStep2() {
@@ -66,27 +55,26 @@ func (trw *TypeRWMaybe) typeResettingCode(bytesVersion bool, directImports *Dire
 }
 
 func (trw *TypeRWMaybe) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("%s.FillRandom(rand %s)", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("%s.FillRandom(rand %s)", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWMaybe) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), formatNatArgsCall(natArgs)))
+	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWMaybe) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), formatNatArgsCall(natArgs)))
+	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	// TODO - return "item.Ok"
 	return val + ".Ok"
 }
 
 func (trw *TypeRWMaybe) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if w, err = %s.WriteJSON(w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWMaybe) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	goName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, formatNatArgsCall(natArgs))
+	goName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, joinWithCommas(natArgs))
 }

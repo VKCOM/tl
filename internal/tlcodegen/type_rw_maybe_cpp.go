@@ -6,6 +6,7 @@
 
 package tlcodegen
 
+/*
 import (
 	"fmt"
 	"strings"
@@ -65,7 +66,7 @@ void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 	cppDet.WriteString(fmt.Sprintf(`
 void %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	if (s.bool_read(0x%[4]x, 0x%[5]x)) {
-		if (!item) { 
+		if (!item) {
 			item.emplace();
 		}
 	%[7]s
@@ -93,7 +94,7 @@ void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	/*
+	/ *
 			_ = fmt.Sprintf(`type %[1]s struct {
 			Value %[2]s // Значение имеет смысл при Ok=true
 			Ok    bool
@@ -143,5 +144,6 @@ void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				trw.okTag,
 				formatNatArgsDeclCPP(trw.wr.NatParams),
 			)
-	*/
+	* /
 }
+*/

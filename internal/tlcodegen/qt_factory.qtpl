@@ -1,5 +1,5 @@
 {%- import "fmt" -%}
-{%- import "sort" -%}
+{%- import "golang.org/x/exp/slices" -%}
 {%- import "github.com/vkcom/tl/internal/tlast" -%}
 
 {%- func (gen *Gen2) generateFactory(sortedImports []string, directImports *DirectImports) -%}
@@ -45,7 +45,12 @@ func init() {
         {%- if fun.ResultType != nil -%}
         meta.SetGlobalFactoryCreateForFunction({%s= tlTag %},
         func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
-        func() meta.Function { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret }
+        func() meta.Function { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        {%- if wr.WrLong != nil -%}
+        func() meta.Function { var ret{% space %}{%s= wr.WrLong.TypeString2(false, directImports, nil, false, true) %}; return &ret },
+        {%- else -%}
+        nil,
+        {%- endif -%}
         {%- else -%}
         meta.SetGlobalFactoryCreateForObject({%s= tlTag %},
         func() meta.Object { var ret{% space %}{%s= wr.TypeString2(false, directImports, nil, false, true) %}; return &ret }
@@ -66,8 +71,8 @@ package {%s= pkgName %}
         if c.Crc32() == 0 { continue }
         sortedConstructors = append(sortedConstructors, c)
     }
-    sort.Slice(sortedConstructors, func(i, j int) bool {
-        return sortedConstructors[i].Construct.Name.String() < sortedConstructors[j].Construct.Name.String()
+    slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
+        return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
     })
 -%}
 const (
