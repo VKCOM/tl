@@ -9,7 +9,6 @@ package tlcodegen
 import (
 	"fmt"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -191,7 +190,7 @@ func (d DirectIncludesCPP) sortedNames() []string {
 	for im := range d.ns { // Imports of this file.
 		sortedNames = append(sortedNames, im)
 	}
-	sort.Strings(sortedNames)
+	slices.Sort(sortedNames)
 	return sortedNames
 }
 */
