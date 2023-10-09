@@ -11,7 +11,7 @@ package tlcodegen
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 
 	qtio422016 "io"
 
@@ -43,13 +43,13 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, buildSHA256Checksum stri
 		if fun, ok := trww.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			qw422016.N().S(`      <li>
         <a href="#`)
-			qw422016.E().S(trww.JSONHelpString())
+			qw422016.E().S(trww.goGlobalName)
 			qw422016.N().S(`">
         <code>`)
 			qw422016.E().S(trww.JSONHelpString())
 			qw422016.N().S(`</code></a>
         → <code>`)
-			streamprintJSONHelpType2(qw422016, gen, fun.ResultType, fun.Fields, fun.ResultNatArgs)
+			streamprintJSONHelpType2(qw422016, gen, fun.ResultType, false, fun.Fields, fun.ResultNatArgs)
 			qw422016.N().S(`</code>
       </li>
 `)
@@ -84,59 +84,65 @@ func tlJSON(gen *Gen2, buildSHA256Checksum string) string {
 	return qs422016
 }
 
-func streamprintJSONHelpType2(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapper, fields []Field, natArgs []ActualNatArg) {
+func streamprintJSONHelpType2(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) {
 	switch trw := trww.trw.(type) {
 	case *TypeRWBool:
 		qw422016.E().S("<bool>")
 	case *TypeRWPrimitive:
 		qw422016.E().S("<")
-		qw422016.E().S(trw.primitiveType)
+		qw422016.E().S(trw.goType)
 		qw422016.E().S(">")
 	case *TypeRWMaybe:
-		streammakeRef2(qw422016, trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs))
+		streammakeRef(qw422016, trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs))
 	case *TypeRWStruct:
 		if trw.isTypeDef() {
-			streamprintJSONHelpType2(qw422016, gen, trw.Fields[0].t, fields, trw.Fields[0].t.transformNatArgsFromParent(trww, natArgs, trw.Fields[0].natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.Fields[0].t, trw.Fields[0].bare, fields, trww.transformNatArgsToChild(natArgs, trw.Fields[0].natArgs))
 		} else if trw.wr.IsTrueType() {
 			qw422016.E().S("{}")
 		} else {
-			streammakeRef2(qw422016, trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs))
+			streammakeRef(qw422016, trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs))
 		}
 	case *TypeRWUnion:
-		streammakeRef2(qw422016, trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs))
+		streammakeRef(qw422016, trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs))
 	case *TypeRWBrackets:
-		elementNatArgs := trw.element.t.transformNatArgsFromParent(trww, natArgs, trw.element.natArgs)
+		elementNatArgs := trww.transformNatArgsToChild(natArgs, trw.element.natArgs)
 
 		switch {
 		case trw.dictLike:
 			qw422016.E().S("{")
-			streamprintJSONHelpType2(qw422016, gen, trw.dictKeyField.t, fields, trw.dictKeyField.t.transformNatArgsFromParent(trw.element.t, elementNatArgs, trw.dictKeyField.natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.dictKeyField.t, trw.dictKeyField.bare, fields, trw.element.t.transformNatArgsToChild(elementNatArgs, trw.dictKeyField.natArgs))
 			qw422016.E().S(": ")
-			streamprintJSONHelpType2(qw422016, gen, trw.dictValueField.t, fields, trw.dictValueField.t.transformNatArgsFromParent(trw.element.t, elementNatArgs, trw.dictValueField.natArgs))
+			streamprintJSONHelpType2(qw422016, gen, trw.dictValueField.t, trw.dictValueField.bare, fields, trw.element.t.transformNatArgsToChild(elementNatArgs, trw.dictValueField.natArgs))
 			qw422016.E().S("}")
 		case trw.vectorLike:
 			qw422016.E().S("[")
-			streamprintJSONHelpType2(qw422016, gen, trw.element.t, fields, elementNatArgs)
+			streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, fields, elementNatArgs)
 			qw422016.E().S(", ...]")
-		default:
+		case trw.dynamicSize:
 			qw422016.E().S("[")
 			qw422016.E().S(trww.JSONHelpNatArg(fields, natArgs[len(natArgs)-1]))
 			qw422016.E().S(" × ")
-			streamprintJSONHelpType2(qw422016, gen, trw.element.t, fields, elementNatArgs)
+			streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, fields, elementNatArgs)
+			qw422016.E().S("]")
+		default:
+			qw422016.E().S("[")
+			qw422016.E().V(trw.size)
+			qw422016.E().S(" × ")
+			streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, fields, elementNatArgs)
 			qw422016.E().S("]")
 		}
 	}
 }
 
-func writeprintJSONHelpType2(qq422016 qtio422016.Writer, gen *Gen2, trww *TypeRWWrapper, fields []Field, natArgs []ActualNatArg) {
+func writeprintJSONHelpType2(qq422016 qtio422016.Writer, gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streamprintJSONHelpType2(qw422016, gen, trww, fields, natArgs)
+	streamprintJSONHelpType2(qw422016, gen, trww, bare, fields, natArgs)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func printJSONHelpType2(gen *Gen2, trww *TypeRWWrapper, fields []Field, natArgs []ActualNatArg) string {
+func printJSONHelpType2(gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writeprintJSONHelpType2(qb422016, gen, trww, fields, natArgs)
+	writeprintJSONHelpType2(qb422016, gen, trww, bare, fields, natArgs)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016
@@ -157,22 +163,14 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 	}
 
 	qw422016.N().S(`<h2 id="`)
-	qw422016.E().S(trww.JSONHelpString())
+	qw422016.E().S(trww.goGlobalName)
 	qw422016.N().S(`">`)
 	qw422016.E().S(trww.JSONHelpString())
 	qw422016.N().S(`</h2>
 `)
-	natArgsDecl := ""
-	for i, a := range trww.NatArgs(!OptimizeConstParameters, "") {
-		if i != 0 {
-			natArgsDecl += ", "
-		}
-		natArgsDecl += a.name
-	}
-
-	if len(natArgsDecl) != 0 {
+	if len(trww.NatParams) != 0 {
 		qw422016.N().S(`External # (nat) arguments: <b>`)
-		qw422016.E().S(natArgsDecl)
+		qw422016.E().S(strings.Join(trww.NatParams, ", "))
 		qw422016.N().S(`</b>
 `)
 	}
@@ -183,7 +181,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 		qw422016.N().S(`<dl>
   <dt>JSON</dt>
   <dd>`)
-		qw422016.E().S(trw.primitiveType)
+		qw422016.E().S(trw.goType)
 		qw422016.N().S(`</dd>
 </dl>
 `)
@@ -195,7 +193,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
       <li><code>{}</code></li>
       <li><code>`)
 		qw422016.E().S(`{"value": `)
-		streamprintJSONHelpType2(qw422016, gen, trw.element.t, nil, trw.element.natArgs)
+		streamprintJSONHelpType2(qw422016, gen, trw.element.t, trw.element.bare, nil, trw.element.natArgs)
 		qw422016.E().S("}")
 		qw422016.N().S(`</code></li>
     </ul>
@@ -214,6 +212,12 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 </dl>
 `)
 	case *TypeRWStruct:
+		if trw.ResultType != nil {
+			qw422016.N().S(`  Returns <code>`)
+			streamprintJSONHelpType2(qw422016, gen, trw.ResultType, false, trw.Fields, trw.ResultNatArgs)
+			qw422016.N().S(`</code>
+`)
+		}
 		qw422016.N().S(`<dl>
   <dt>JSON</dt>
   <dd><code>
@@ -241,7 +245,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 					qw422016.N().S(`          <td>&nbsp;&nbsp;"`)
 					qw422016.E().S(field.originalName)
 					qw422016.N().S(`"</td><td>: `)
-					streamprintJSONHelpType2(qw422016, gen, field.t, trw.Fields, field.natArgs)
+					streamprintJSONHelpType2(qw422016, gen, field.t, field.bare, trw.Fields, field.natArgs)
 					if i != len(trw.Fields)-1 {
 						qw422016.N().S(`,`)
 					}
@@ -296,7 +300,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 				qw422016.N().S(`"`)
 				if !field.t.IsTrueType() {
 					qw422016.N().S(`, "value":`)
-					streammakeRef(qw422016, field.t.JSONHelpString())
+					streammakeRef(qw422016, field.t.goGlobalName, field.t.JSONHelpString())
 				}
 				qw422016.N().S(`}
                 // or "type":"#`)
@@ -352,14 +356,28 @@ func streamjsonCommentFieldMask(qw422016 *qt422016.Writer, fm *ActualNatArg, num
 		qw422016.N().S(`// `)
 		qw422016.E().S(fields[fm.FieldIndex].originalName)
 		qw422016.N().S(` bit #`)
-		qw422016.E().S(strconv.Itoa(int(num)))
+		qw422016.E().V(num)
 		qw422016.N().S(`
+`)
+	} else if fm.isArith && (fm.Arith.Res&(1<<num)) != 0 {
+		qw422016.N().S(`// `)
+		qw422016.E().V(fm.Arith.Res)
+		qw422016.N().S(` bit #`)
+		qw422016.E().V(num)
+		qw422016.N().S(` = true
+`)
+	} else if fm.isArith {
+		qw422016.N().S(`// `)
+		qw422016.E().V(fm.Arith.Res)
+		qw422016.N().S(` bit #`)
+		qw422016.E().V(num)
+		qw422016.N().S(` = false
 `)
 	} else {
 		qw422016.N().S(`// `)
 		qw422016.E().S(fm.name)
 		qw422016.N().S(` bit #`)
-		qw422016.E().S(strconv.Itoa(int(num)))
+		qw422016.E().V(num)
 		qw422016.N().S(`
 `)
 	}
@@ -379,29 +397,7 @@ func jsonCommentFieldMask(fm *ActualNatArg, num uint32, fields []Field) string {
 	return qs422016
 }
 
-func streammakeRef(qw422016 *qt422016.Writer, s string) {
-	qw422016.N().S(`<a href="#`)
-	qw422016.E().S(s)
-	qw422016.N().S(`">`)
-	qw422016.E().S(s)
-	qw422016.N().S(`</a>`)
-}
-
-func writemakeRef(qq422016 qtio422016.Writer, s string) {
-	qw422016 := qt422016.AcquireWriter(qq422016)
-	streammakeRef(qw422016, s)
-	qt422016.ReleaseWriter(qw422016)
-}
-
-func makeRef(s string) string {
-	qb422016 := qt422016.AcquireByteBuffer()
-	writemakeRef(qb422016, s)
-	qs422016 := string(qb422016.B)
-	qt422016.ReleaseByteBuffer(qb422016)
-	return qs422016
-}
-
-func streammakeRef2(qw422016 *qt422016.Writer, a string, s string) {
+func streammakeRef(qw422016 *qt422016.Writer, a string, s string) {
 	qw422016.N().S(`<a href="#`)
 	qw422016.E().S(a)
 	qw422016.N().S(`">`)
@@ -409,15 +405,15 @@ func streammakeRef2(qw422016 *qt422016.Writer, a string, s string) {
 	qw422016.N().S(`</a>`)
 }
 
-func writemakeRef2(qq422016 qtio422016.Writer, a string, s string) {
+func writemakeRef(qq422016 qtio422016.Writer, a string, s string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streammakeRef2(qw422016, a, s)
+	streammakeRef(qw422016, a, s)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func makeRef2(a string, s string) string {
+func makeRef(a string, s string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writemakeRef2(qb422016, a, s)
+	writemakeRef(qb422016, a, s)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

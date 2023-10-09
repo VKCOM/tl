@@ -1,7 +1,7 @@
 {% package tlcodegen %}
 
 {% import "fmt" %}
-{% import "strconv" %}
+{% import "strings" %}
 
 
 {%- func tlJSON(gen *Gen2, buildSHA256Checksum string) -%}
@@ -22,9 +22,9 @@
   {%- for _, trww := range gen.generatedTypesList -%}
     {%- if fun, ok := trww.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
       <li>
-        <a href="#{%s trww.JSONHelpString() %}">
+        <a href="#{%s trww.goGlobalName %}">
         <code>{%s trww.JSONHelpString() %}</code></a>
-        → <code>{%= printJSONHelpType2(gen, fun.ResultType, fun.Fields, fun.ResultNatArgs) %}</code>
+        → <code>{%= printJSONHelpType2(gen, fun.ResultType, false, fun.Fields, fun.ResultNatArgs) %}</code>
       </li>
     {%- endif -%}
   {%- endfor -%}
@@ -39,38 +39,40 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 </html>
 {%- endfunc -%}
 
-{%- func printJSONHelpType2(gen *Gen2, trww *TypeRWWrapper, fields []Field, natArgs []ActualNatArg) -%}
+{%- func printJSONHelpType2(gen *Gen2, trww *TypeRWWrapper, bare bool, fields []Field, natArgs []ActualNatArg) -%}
 {%- stripspace -%}
   {%- switch trw := trww.trw.(type) -%}
   {%- case *TypeRWBool -%}
 {%s "<bool>" %}
   {%- case *TypeRWPrimitive -%}
-{%s "<"%}{%s trw.primitiveType %}{%s ">"%}
+{%s "<"%}{%s trw.goType %}{%s ">"%}
   {%- case *TypeRWMaybe -%}
-       {%= makeRef2(trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs)) %}
+       {%= makeRef(trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs)) %}
   {%- case *TypeRWStruct -%}
     {%- if trw.isTypeDef()-%}
-      {%= printJSONHelpType2(gen, trw.Fields[0].t, fields, trw.Fields[0].t.transformNatArgsFromParent(trww, natArgs, trw.Fields[0].natArgs)) %}
+      {%= printJSONHelpType2(gen, trw.Fields[0].t, trw.Fields[0].bare, fields, trww.transformNatArgsToChild(natArgs, trw.Fields[0].natArgs)) %}
     {%- elseif trw.wr.IsTrueType() -%}
 {%s "{}" %}
     {%- else -%}
-       {%= makeRef2(trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs)) %}
+       {%= makeRef(trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs)) %}
     {%- endif -%}
   {%- case *TypeRWUnion -%}
-       {%= makeRef2(trww.JSONHelpString(), trww.JSONHelpFullType(fields, natArgs)) %}
+       {%= makeRef(trww.goGlobalName, trww.JSONHelpFullType(bare, fields, natArgs)) %}
   {%- case *TypeRWBrackets -%}
     {%- code
-    elementNatArgs := trw.element.t.transformNatArgsFromParent(trww, natArgs, trw.element.natArgs)
+    elementNatArgs := trww.transformNatArgsToChild(natArgs, trw.element.natArgs)
     -%}
     {%- switch -%}
     {%- case trw.dictLike -%}
 {%s "{" %}
-{%= printJSONHelpType2(gen, trw.dictKeyField.t, fields, trw.dictKeyField.t.transformNatArgsFromParent(trw.element.t, elementNatArgs, trw.dictKeyField.natArgs)) %}{%s ": " %}
-{%= printJSONHelpType2(gen, trw.dictValueField.t, fields, trw.dictValueField.t.transformNatArgsFromParent(trw.element.t, elementNatArgs, trw.dictValueField.natArgs)) %}{%s "}"%}
+{%= printJSONHelpType2(gen, trw.dictKeyField.t, trw.dictKeyField.bare, fields, trw.element.t.transformNatArgsToChild(elementNatArgs, trw.dictKeyField.natArgs)) %}{%s ": " %}
+{%= printJSONHelpType2(gen, trw.dictValueField.t, trw.dictValueField.bare, fields, trw.element.t.transformNatArgsToChild(elementNatArgs, trw.dictValueField.natArgs)) %}{%s "}"%}
     {%- case trw.vectorLike -%}
-{%s "[" %}{%= printJSONHelpType2(gen, trw.element.t, fields, elementNatArgs) %}{%s ", ...]" %}
+{%s "[" %}{%= printJSONHelpType2(gen, trw.element.t, trw.element.bare, fields, elementNatArgs) %}{%s ", ...]" %}
+    {%- case trw.dynamicSize -%}
+{%s "[" %}{%s trww.JSONHelpNatArg(fields, natArgs[len(natArgs)-1]) %}{%s " × " %}{%= printJSONHelpType2(gen, trw.element.t, trw.element.bare, fields, elementNatArgs) %}{%s "]"%}
     {%- default -%}
-{%s "[" %}{%s trww.JSONHelpNatArg(fields, natArgs[len(natArgs)-1]) %}{%s " × " %}{%= printJSONHelpType2(gen, trw.element.t, fields, elementNatArgs) %}{%s "]"%}
+{%s "[" %}{%v trw.size %}{%s " × " %}{%= printJSONHelpType2(gen, trw.element.t, trw.element.bare, fields, elementNatArgs) %}{%s "]"%}
     {%- endswitch -%}
   {%- endswitch -%}
 {%- endstripspace -%}
@@ -91,25 +93,16 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
           return
       }
   -%}
-<h2 id="{%s trww.JSONHelpString() %}">{%s trww.JSONHelpString() %}</h2>
-    {%- code
-        natArgsDecl := ""
-        for i, a := range trww.NatArgs(!OptimizeConstParameters, "") {
-            if i != 0 {
-                natArgsDecl += ", "
-            }
-            natArgsDecl += a.name
-        }
-    -%}
-    {%- if len(natArgsDecl) != 0 -%}
-External # (nat) arguments: <b>{%s natArgsDecl %}</b>
+<h2 id="{%s trww.goGlobalName %}">{%s trww.JSONHelpString() %}</h2>
+    {%- if len(trww.NatParams) != 0 -%}
+External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
     {%- endif -%}
 <p></p>
   {%- switch trw := trww.trw.(type) -%}
   {%- case *TypeRWPrimitive -%}
 <dl>
   <dt>JSON</dt>
-  <dd>{%s trw.primitiveType %}</dd>
+  <dd>{%s trw.goType %}</dd>
 </dl>
   {%- case *TypeRWMaybe -%}
 <dl>
@@ -117,7 +110,7 @@ External # (nat) arguments: <b>{%s natArgsDecl %}</b>
   <dd>
     <ul>
       <li><code>{}</code></li>
-      <li><code>{%s `{"value": `%}{%= printJSONHelpType2(gen, trw.element.t, nil, trw.element.natArgs) %}{%s "}" %}</code></li>
+      <li><code>{%s `{"value": `%}{%= printJSONHelpType2(gen, trw.element.t, trw.element.bare, nil, trw.element.natArgs) %}{%s "}" %}</code></li>
     </ul>
   </dd>
   <dt>TL</dt>
@@ -129,6 +122,9 @@ External # (nat) arguments: <b>{%s natArgsDecl %}</b>
   </dd>
 </dl>
   {%- case *TypeRWStruct -%}
+  {%- if trw.ResultType != nil -%}
+  Returns <code>{%= printJSONHelpType2(gen, trw.ResultType, false, trw.Fields, trw.ResultNatArgs) %}</code>
+  {%- endif -%}
 <dl>
   <dt>JSON</dt>
   <dd><code>
@@ -142,7 +138,7 @@ External # (nat) arguments: <b>{%s natArgsDecl %}</b>
         {%- if field.t.IsTrueType() -%}
           <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: true{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
         {%- else -%}
-          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType2(gen, field.t, trw.Fields, field.natArgs) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
+          <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType2(gen, field.t, field.bare, trw.Fields, field.natArgs) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
         {%- endif -%}
           <td>{%= jsonCommentFieldMask(field.fieldMask, field.BitNumber, trw.Fields) %}</td>
         </tr>
@@ -169,7 +165,7 @@ External # (nat) arguments: <b>{%s natArgsDecl %}</b>
                 "{%s field.originalName %}"
                 // or "#{%s tag %}" or "{%s field.originalName %}#{%s tag %}"
             {%- else -%}
-                {"type":"{%s field.originalName %}"{%- if !field.t.IsTrueType() -%}, "value":{%= makeRef(field.t.JSONHelpString()) %}{%- endif -%}}
+                {"type":"{%s field.originalName %}"{%- if !field.t.IsTrueType() -%}, "value":{%= makeRef(field.t.goGlobalName, field.t.JSONHelpString()) %}{%- endif -%}}
                 // or "type":"#{%s tag %}" or "type":"{%s field.originalName %}#{%s tag %}"
             {%- endif -%}
             </code></li>
@@ -191,12 +187,14 @@ External # (nat) arguments: <b>{%s natArgsDecl %}</b>
 {%- func jsonCommentFieldMask(fm *ActualNatArg, num uint32, fields []Field) -%}
   {%- if fm == nil -%}{%- return -%}{%- endif -%}
   {%- if fm.isField -%}
-// {%s fields[fm.FieldIndex].originalName %} bit #{%s strconv.Itoa(int(num)) %}
+// {%s fields[fm.FieldIndex].originalName %} bit #{%v num %}
+  {%- elseif fm.isArith && (fm.Arith.Res & (1 << num)) != 0 -%}
+// {%v fm.Arith.Res %} bit #{%v num %} = true
+  {%- elseif fm.isArith -%}
+// {%v fm.Arith.Res %} bit #{%v num %} = false
   {%- else -%}
-// {%s fm.name %} bit #{%s strconv.Itoa(int(num)) %}
+// {%s fm.name %} bit #{%v num %}
   {%- endif -%}
 {%- endfunc -%}
 
-{%- func makeRef(s string) -%}<a href="#{%s s %}">{%s s %}</a>{%- endfunc -%}
-
-{%- func makeRef2(a string, s string) -%}<a href="#{%s a %}">{%s s %}</a>{%- endfunc -%}
+{%- func makeRef(a string, s string) -%}<a href="#{%s a %}">{%s s %}</a>{%- endfunc -%}

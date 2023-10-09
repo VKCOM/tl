@@ -12,10 +12,8 @@ import (
 )
 
 type TypeRWStruct struct {
-	wr           *TypeRWWrapper
-	goGlobalName string // globally unique, so used also in C++ to generate
-	goLocalName  string // TODO - make different var with local name for cpp
-	Fields       []Field
+	wr     *TypeRWWrapper
+	Fields []Field
 
 	ResultType    *TypeRWWrapper
 	ResultNatArgs []ActualNatArg
@@ -26,8 +24,6 @@ type TypeRWStruct struct {
 	clearNames   []string
 	isSetNames   []string
 }
-
-func (trw *TypeRWStruct) wrapper() *TypeRWWrapper { return trw.wr }
 
 func (trw *TypeRWStruct) isTypeDef() bool {
 	return len(trw.Fields) == 1 && trw.Fields[0].originalName == "" && trw.Fields[0].fieldMask == nil && !trw.Fields[0].recursive
@@ -58,22 +54,14 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	return trw.isUnwrapTypeImpl(true)
 }
 
-func (trw *TypeRWStruct) canBeBareOrBoxed(bare bool) bool {
-	return true
-}
-
-func (trw *TypeRWStruct) typeStringGlobal(bytesVersion bool) string {
-	return addBytes(trw.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWStruct) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if !skipAlias && trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, isLocal, skipAlias)
 	}
 	if isLocal {
-		return addBytes(trw.goLocalName, bytesVersion)
+		return addBytes(trw.wr.goLocalName, bytesVersion)
 	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.goGlobalName, bytesVersion)
+	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -103,11 +91,8 @@ func (trw *TypeRWStruct) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]b
 	}
 }
 
-func (trw *TypeRWStruct) BeforeCodeGenerationStep() error {
+func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
 	for i, f := range trw.Fields {
-		if err := f.checkBareBoxed(); err != nil {
-			return err
-		}
 		visitedNodes := map[*TypeRWWrapper]bool{}
 		f.t.trw.fillRecursiveChildren(visitedNodes)
 		trw.Fields[i].recursive = visitedNodes[trw.wr]
@@ -115,8 +100,6 @@ func (trw *TypeRWStruct) BeforeCodeGenerationStep() error {
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))
-
-	return nil
 }
 
 func (trw *TypeRWStruct) BeforeCodeGenerationStep2() {
@@ -154,6 +137,7 @@ func (trw *TypeRWStruct) IsDictKeySafe() (isSafe bool, isString bool) {
 	// return true
 }
 
+// same code as in func (w *TypeRWWrapper) transformNatArgsToChild
 func (trw *TypeRWStruct) replaceUnwrapArgs(natArgs []string) []string {
 	// Caller called outer.Read(   , nat_x, nat_y)
 	// outer has func Read(   ,nat_inner_x uint32, nat_inner_y uint32) {
@@ -164,14 +148,17 @@ func (trw *TypeRWStruct) replaceUnwrapArgs(natArgs []string) []string {
 	// inner.Read(   , nat_y, nat_y)
 	var result []string
 outer:
-	for _, arg := range formatNatArgs(trw.Fields, trw.Fields[0].natArgs) {
+	for _, arg := range trw.Fields[0].natArgs {
+		if arg.isArith || arg.isField {
+			panic("cannot replace to child arith or field nat param")
+		}
 		for i, p := range trw.wr.NatParams {
-			if p == arg {
+			if p == arg.name {
 				result = append(result, natArgs[i])
 				continue outer
 			}
 		}
-		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type of goName %s", arg, trw.goGlobalName)
+		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type of goName %s", arg.name, trw.wr.goGlobalName)
 	}
 	return result
 }
@@ -187,7 +174,7 @@ func (trw *TypeRWStruct) typeRandomCode(bytesVersion bool, directImports *Direct
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeRandomCode(bytesVersion, directImports, ins, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
-	return fmt.Sprintf("%s.FillRandom(rand %s)", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("%s.FillRandom(rand %s)", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
@@ -199,9 +186,9 @@ func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *Direc
 		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), ref, last)
 		// was
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
-		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Write%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), formatNatArgsCall(natArgs)))
+		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Write%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), formatNatArgsCall(natArgs)))
+	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
@@ -213,9 +200,9 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 		return prefix + trw.Fields[0].t.TypeReadingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), ref, last)
 		// was
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
-		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Read%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), formatNatArgsCall(natArgs)))
+		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Read%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), formatNatArgsCall(natArgs)))
+	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -229,13 +216,13 @@ func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *D
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
-	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeJSONReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
-	goName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, formatNatArgsCall(natArgs))
+	goName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, joinWithCommas(natArgs))
 }

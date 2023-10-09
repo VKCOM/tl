@@ -60,8 +60,10 @@ type TypeRWWrapper struct {
 	trw       TypeRW
 	NatParams []string // external params of type Read/Write method, with nat_ prefix
 
-	tlType    tlast.Name // type for canonical name generation, Type for everything except builtins and union elements
 	arguments []ResolvedArgument
+
+	goGlobalName string // globally unique, so could be used also in html anchors, internal C++ function names, etc.
+	goLocalName  string // TODO - make different var with local name for cpp
 
 	wantsBytesVersion bool
 	preventUnwrap     bool
@@ -70,7 +72,7 @@ type TypeRWWrapper struct {
 
 	fileName string
 	tlTag    uint32
-	tlName   tlast.Name // constructor for code generation. Might be good idea to move it to the trw?
+	tlName   tlast.Name // constructor name or union name for code generation
 	origTL   []*tlast.Combinator
 
 	isTopLevel bool
@@ -86,9 +88,26 @@ type TypeRWWrapper struct {
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 }
 
-func (w *TypeRWWrapper) CanonicalString() string {
+func (w *TypeRWWrapper) CanonicalStringTop() string {
+	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
+}
+
+func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 	var s strings.Builder
-	s.WriteString(w.tlType.String())
+	if len(w.origTL) > 1 {
+		if bare {
+			panic("CanonicalString of bare union")
+		}
+		s.WriteString(w.origTL[0].TypeDecl.Name.String())
+	} else if len(w.origTL) == 1 {
+		if bare {
+			s.WriteString(w.origTL[0].Construct.Name.String())
+		} else {
+			s.WriteString(w.origTL[0].TypeDecl.Name.String())
+		}
+	} else {
+		panic("all builtins are parsed from TL text, so must have exactly one constructor")
+	}
 	if len(w.arguments) == 0 {
 		return s.String()
 	}
@@ -105,26 +124,19 @@ func (w *TypeRWWrapper) CanonicalString() string {
 				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
 			}
 		} else {
-			if a.bare {
-				s.WriteString("%")
-			}
-			s.WriteString(a.tip.CanonicalString())
+			s.WriteString(a.tip.CanonicalString(a.bare))
 		}
 	}
 	s.WriteString(">")
 	return s.String()
 }
 
-// External arguments
-func (w *TypeRWWrapper) NatArgs(withFixed bool, prefix string) []ActualNatArg {
-	return w.natArgs(withFixed, nil, prefix)
-}
-
-func (w *TypeRWWrapper) natArgs(withFixed bool, result []ActualNatArg, prefix string) []ActualNatArg {
+// Assign structural names to external arguments
+func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNatArg {
 	for i, a := range w.arguments {
 		fieldName := w.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
 		if a.isNat {
-			if withFixed || !a.isArith {
+			if !a.isArith {
 				result = append(result, ActualNatArg{
 					isArith: a.isArith,
 					Arith:   a.Arith,
@@ -132,7 +144,7 @@ func (w *TypeRWWrapper) natArgs(withFixed bool, result []ActualNatArg, prefix st
 				})
 			}
 		} else {
-			result = a.tip.natArgs(withFixed, result, prefix+fieldName)
+			result = a.tip.NatArgs(result, prefix+fieldName)
 		}
 	}
 	return result
@@ -154,7 +166,12 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 			}
 		}
 	}
-	return canonicalGoName(w.tlType, insideNamespace), b.String()
+	// We keep compatibility with legacy golang naming
+	// This is customization point, generated code should work with whatever naming strategy is selected here
+	if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "_" || w.origTL[0].IsFunction || w.unionParent != nil) {
+		return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), b.String()
+	}
+	return canonicalGoName(w.origTL[0].TypeDecl.Name, insideNamespace), b.String()
 }
 
 // for golang cycle detection
@@ -196,7 +213,8 @@ func TypeRWWrapperLessLocal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 }
 
 func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
-	return stringCompare(a.TypeString(false), b.TypeString(false))
+	// return stringCompare(a.CanonicalString(), b.CanonicalString()) TODO - better idea after everything is stabilized
+	return stringCompare(a.goGlobalName, b.goGlobalName)
 }
 
 func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
@@ -252,10 +270,6 @@ func (w *TypeRWWrapper) MarkWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	w.trw.markWantsBytesVersion(visitedNodes)
 }
 
-func (w *TypeRWWrapper) TypeString(bytesVersion bool) string {
-	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeStringGlobal(bytesVersion)
-}
 func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeString2(bytesVersion, directImports, ins, isLocal, skipAlias)
@@ -321,11 +335,11 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	}
 */
 func (w *TypeRWWrapper) JSONHelpString() string {
-	return w.CanonicalString()
+	return w.CanonicalStringTop()
 }
 
-func (w *TypeRWWrapper) JSONHelpFullType(fields []Field, natArgs []ActualNatArg) string {
-	result := w.helpString2(fields, &natArgs)
+func (w *TypeRWWrapper) JSONHelpFullType(bare bool, fields []Field, natArgs []ActualNatArg) string {
+	result := w.helpString2(bare, fields, &natArgs)
 	if len(natArgs) != 0 {
 		panic("JSONHelpFullType should consume all arguments")
 	}
@@ -342,9 +356,20 @@ func (w *TypeRWWrapper) JSONHelpNatArg(fields []Field, natArg ActualNatArg) stri
 	return natArg.name
 }
 
-func (w *TypeRWWrapper) helpString2(fields []Field, natArgs *[]ActualNatArg) string {
+func (w *TypeRWWrapper) helpString2(bare bool, fields []Field, natArgs *[]ActualNatArg) string {
 	var s strings.Builder
-	s.WriteString(w.tlType.String())
+	if len(w.origTL) > 1 {
+		if bare {
+			panic("helpString2 of bare union")
+		}
+		s.WriteString(w.origTL[0].TypeDecl.Name.String())
+	} else {
+		if bare {
+			s.WriteString(w.origTL[0].Construct.Name.String())
+		} else {
+			s.WriteString(w.origTL[0].TypeDecl.Name.String())
+		}
+	}
 	if len(w.arguments) == 0 {
 		return s.String()
 	}
@@ -354,14 +379,11 @@ func (w *TypeRWWrapper) helpString2(fields []Field, natArgs *[]ActualNatArg) str
 			s.WriteString(",")
 		}
 		if a.isNat {
-			natArg := (*natArgs)[0]
-			*natArgs = (*natArgs)[1:]
-			if a.isArith != natArg.isArith || a.Arith.Res != natArg.Arith.Res {
-				panic("helpString2 arith mismatch")
-			}
-			if natArg.isArith {
-				s.WriteString(fmt.Sprintf("%d", natArg.Arith.Res))
+			if a.isArith {
+				s.WriteString(fmt.Sprintf("%d", a.Arith.Res))
 			} else {
+				natArg := (*natArgs)[0]
+				*natArgs = (*natArgs)[1:]
 				if natArg.isField {
 					s.WriteString(fields[natArg.FieldIndex].originalName)
 				} else {
@@ -369,27 +391,24 @@ func (w *TypeRWWrapper) helpString2(fields []Field, natArgs *[]ActualNatArg) str
 				}
 			}
 		} else {
-			if a.bare {
-				s.WriteString("%")
-			}
-			s.WriteString(a.tip.helpString2(fields, natArgs))
+			s.WriteString(a.tip.helpString2(a.bare, fields, natArgs))
 		}
 	}
 	s.WriteString(">")
 	return s.String()
 }
 
-func (w *TypeRWWrapper) transformNatArgsFromParent(parent *TypeRWWrapper, parentNatArgs []ActualNatArg, natArgs []ActualNatArg) []ActualNatArg {
-	parentParams := parent.NatArgs(true, "")
-	if len(parentParams) != len(parentNatArgs) {
-		panic("parent nat params inconsistent length")
-	}
+// same code as in func (trw *TypeRWStruct) replaceUnwrapArgs
+func (w *TypeRWWrapper) transformNatArgsToChild(natArgs []ActualNatArg, childNatArgs []ActualNatArg) []ActualNatArg {
 	var result []ActualNatArg
 outer:
-	for _, arg := range natArgs {
-		for i, p := range parentParams {
-			if p.name == arg.name {
-				result = append(result, parentNatArgs[i])
+	for _, arg := range childNatArgs {
+		if arg.isArith || arg.isField {
+			panic("cannot transform to child arith or field nat param")
+		}
+		for i, p := range w.NatParams {
+			if p == arg.name {
+				result = append(result, natArgs[i])
 				continue outer
 			}
 		}
@@ -401,18 +420,15 @@ outer:
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
-	wrapper() *TypeRWWrapper
-	canBeBareOrBoxed(bare bool) bool
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
-	BeforeCodeGenerationStep() error // during first phase, some wr.trw are nil due to recursive types. So we delay some
-	BeforeCodeGenerationStep2()      // during second phase, union fields recursive bit is set
+	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
+	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
 
 	// methods below depend on target language
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	IsDictKeySafe() (isSafe bool, isString bool) // natives are safe, other types TBD
-	typeStringGlobal(bytesVersion bool) string
 	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
 	typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string
@@ -435,32 +451,21 @@ type TypeRW interface {
 }
 
 type Field struct {
+	originalName string
 	t            *TypeRWWrapper
 	bare         bool
 	goName       string
 	cppName      string
-	originalName string
 	recursive    bool
 
 	fieldMask *ActualNatArg
 	BitNumber uint32 // only used when fieldMask != nil
 
-	originalType tlast.TypeRef // TODO - remove?
-	natArgs      []ActualNatArg
+	natArgs []ActualNatArg
 }
 
 func (f *Field) Bare() bool {
 	return f.bare
-}
-
-func (f *Field) checkBareBoxed() error {
-	if !f.t.trw.canBeBareOrBoxed(f.Bare()) {
-		e1 := f.originalType.PR.BeautifulError(fmt.Errorf("resolved type %q cannot be %s", f.t.CanonicalString(), ifString(f.Bare(), "bare", "boxed")))
-		// e2 := f.resolvedType.PR.BeautifulError(fmt.Errorf("referenced here"))
-		// TODO - return tlast.BeautifulError2(e1, e2)
-		return e1
-	}
-	return nil
 }
 
 func formatNatArg(fields []Field, arg ActualNatArg) string {
@@ -469,6 +474,9 @@ func formatNatArg(fields []Field, arg ActualNatArg) string {
 	}
 	if arg.isField {
 		return "item." + fields[arg.FieldIndex].goName
+	}
+	if strings.HasPrefix(arg.name, "nat_") {
+		fmt.Printf("aha!")
 	}
 	return "nat_" + arg.name
 }
@@ -494,7 +502,7 @@ func formatNatArgCPP(fields []Field, arg ActualNatArg) string { // TODO - harmon
 	}
 
 	func formatNatArgsCallCPP(natArgs []string) string {
-		return formatNatArgsCall(natArgs)
+		return joinWithCommas(natArgs)
 	}
 
 	func formatNatArgsDeclCPP(natArgs []string) string {
@@ -508,35 +516,42 @@ func formatNatArgCPP(fields []Field, arg ActualNatArg) string { // TODO - harmon
 func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
-		if !OptimizeConstParameters || !arg.isArith {
+		if !arg.isArith {
 			result = append(result, formatNatArg(fields, arg))
 		}
 	}
 	return result
 }
 
-func formatNatArgsCall(natArgs []string) string {
-	var s strings.Builder
-	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", %s", arg))
-	}
-	return s.String()
-}
-
 func formatNatArgsDecl(natArgs []string) string {
 	var s strings.Builder
 	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(",%s uint32", arg))
+		s.WriteString(fmt.Sprintf(",nat_%s uint32", arg))
 	}
 	return s.String()
 }
 
 func formatNatArgsDeclNoComma(natArgs []string) string {
-	s := formatNatArgsDecl(natArgs)
-	if len(s) != 0 {
-		return s[1:]
+	return strings.TrimPrefix(formatNatArgsDecl(natArgs), ",")
+}
+
+// if our fun is declared as ReadBoxed(..., nat_x uint32, nat_y uint32) using formatNatArgsDecl() above,
+// and we want to pass arguments to our own function, like Read(..., nat_x, nat_y)
+func formatNatArgsDeclCall(natArgs []string) string {
+	var s strings.Builder
+	for _, arg := range natArgs {
+		s.WriteString(fmt.Sprintf(", nat_%s", arg))
 	}
-	return s
+	return s.String()
+}
+
+// simply adds commas, natArgs are already fully formatted. Difference to strings.Join is leading comma
+func joinWithCommas(natArgs []string) string {
+	var s strings.Builder
+	for _, arg := range natArgs {
+		s.WriteString(fmt.Sprintf(", %s", arg))
+	}
+	return s.String()
 }
 
 func addBytes(val string, bytesVersion bool) string {
@@ -605,7 +620,7 @@ func CNameToCamelName(s string) string {
 //	case *TypeRWMaybe:
 //		return fmt.Sprintf("%s (%s)", wr.tlName, buildTlName(trw.element.t, trw.element.natArgs))
 //	case *TypeRWPrimitive:
-//		return trw.primitiveType
+//		return trw.tlType
 //	case *TypeRWStruct:
 //		log.Print("buildTlName STRUCT ", trw.goGlobalName, trw.Fields[0].originalType)
 //		var templateFields strings.Builder

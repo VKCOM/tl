@@ -11,22 +11,11 @@ import (
 )
 
 type TypeRWBool struct {
-	wr           *TypeRWWrapper
-	goGlobalName string
-	falseGoName  string
-	trueGoName   string
-	falseTag     uint32
-	trueTag      uint32
-}
-
-func (trw *TypeRWBool) wrapper() *TypeRWWrapper { return trw.wr }
-
-func (trw *TypeRWBool) canBeBareOrBoxed(bare bool) bool {
-	return !bare
-}
-
-func (trw *TypeRWBool) typeStringGlobal(bytesVersion bool) string {
-	return addBytes(trw.goGlobalName, bytesVersion)
+	wr          *TypeRWWrapper
+	falseGoName string
+	trueGoName  string
+	falseTag    uint32
+	trueTag     uint32
 }
 
 func (trw *TypeRWBool) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
@@ -43,8 +32,7 @@ func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 func (trw *TypeRWBool) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWBool) BeforeCodeGenerationStep() error {
-	return nil
+func (trw *TypeRWBool) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWBool) BeforeCodeGenerationStep2() {
@@ -66,11 +54,11 @@ func (trw *TypeRWBool) typeRandomCode(bytesVersion bool, directImports *DirectIm
 }
 
 func (trw *TypeRWBool) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite%s(w, %s%s)", trw.goGlobalName, addBare(bare), addAsterisk(ref, val), formatNatArgsCall(natArgs)))
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAsterisk(ref, val), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWBool) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead%s(w, %s%s)", trw.goGlobalName, addBare(bare), addAmpersand(ref, val), formatNatArgsCall(natArgs)))
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead%s(w, %s%s)", trw.wr.goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWBool) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {

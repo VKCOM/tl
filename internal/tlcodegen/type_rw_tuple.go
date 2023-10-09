@@ -14,27 +14,16 @@ import (
 // check that brackets cannot be function return type
 
 type TypeRWBrackets struct {
-	wr           *TypeRWWrapper
-	vectorLike   bool // # [T], because # has no reference name
-	dynamicSize  bool
-	size         uint32
-	goGlobalName string
-	element      Field
+	wr          *TypeRWWrapper
+	vectorLike  bool   // # [T], because # has no reference name
+	dynamicSize bool   // with passed nat param
+	size        uint32 // if !dynamicSize
+	element     Field
 
 	dictLike       bool // for now, can be true only if vectorLike is true. But should work for dynamicSize tuples, so TODO
 	dictKeyString  bool
 	dictKeyField   Field
 	dictValueField Field
-}
-
-func (trw *TypeRWBrackets) wrapper() *TypeRWWrapper { return trw.wr }
-
-func (trw *TypeRWBrackets) canBeBareOrBoxed(bare bool) bool {
-	return bare
-}
-
-func (trw *TypeRWBrackets) typeStringGlobal(bytesVersion bool) string {
-	return addBytes(trw.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWBrackets) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
@@ -67,7 +56,7 @@ func (trw *TypeRWBrackets) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper
 func dictElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	structElement, ok := wr.trw.(*TypeRWStruct)
 	// TODO - better ideas?
-	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.TypeString(false)), "dictionary") {
+	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.goGlobalName), "dictionary") {
 		return false, false, Field{}, Field{}
 	}
 	if structElement.Fields[0].fieldMask != nil { // TODO - allowing this complicates json serialization
@@ -77,7 +66,7 @@ func dictElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	return ok, isString, structElement.Fields[0], structElement.Fields[1]
 }
 
-func (trw *TypeRWBrackets) BeforeCodeGenerationStep() error {
+func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 	if trw.vectorLike {
 		if ok, isString, kf, vf := dictElement(trw.element.t); ok {
 			trw.dictLike = true
@@ -86,7 +75,6 @@ func (trw *TypeRWBrackets) BeforeCodeGenerationStep() error {
 			trw.dictValueField = vf
 		}
 	}
-	return trw.element.checkBareBoxed()
 }
 
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep2() {
@@ -110,7 +98,7 @@ func (trw *TypeRWBrackets) IsDictKeySafe() (isSafe bool, isString bool) {
 }
 
 func (trw *TypeRWBrackets) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	if trw.dictLike && !bytesVersion {
 		return trw.wr.ins.Prefix(directImports, ins) + fmt.Sprintf("%[1]sReset(%s)", goGlobalName, addAsterisk(ref, val))
 	}
@@ -124,8 +112,8 @@ func (trw *TypeRWBrackets) typeResettingCode(bytesVersion bool, directImports *D
 }
 
 func (trw *TypeRWBrackets) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return trw.wr.ins.Prefix(directImports, ins) + fmt.Sprintf("%sFillRandom(rand, %s%s)", goGlobalName, addAmpersand(ref, val), formatNatArgsCall(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return trw.wr.ins.Prefix(directImports, ins) + fmt.Sprintf("%sFillRandom(rand, %s%s)", goGlobalName, addAmpersand(ref, val), joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
@@ -133,13 +121,13 @@ func (trw *TypeRWBrackets) typeWritingCode(bytesVersion bool, directImports *Dir
 	if (trw.dictLike && !bytesVersion) || trw.vectorLike || trw.dynamicSize {
 		refVal = addAsterisk(ref, val) // those version pass to Write method by pointer
 	}
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite%s(w, %s%s)", goGlobalName, addBare(bare), refVal, formatNatArgsCall(natArgs)))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sWrite%s(w, %s%s)", goGlobalName, addBare(bare), refVal, joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWBrackets) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), formatNatArgsCall(natArgs)))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return wrapLastW(last, trw.wr.ins.Prefix(directImports, ins)+fmt.Sprintf("%sRead%s(w, %s%s)", goGlobalName, addBare(bare), addAmpersand(ref, val), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWBrackets) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -154,12 +142,12 @@ func (trw *TypeRWBrackets) typeJSONWritingCode(bytesVersion bool, directImports 
 	if (trw.dictLike && !bytesVersion) || trw.vectorLike || trw.dynamicSize {
 		refVal = addAsterisk(ref, val) // those version pass to Write method by pointer
 	}
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	// Code which depends on serialization location (skipping empty array if object property) is generated in that location.
-	return fmt.Sprintf("if w, err = %sWriteJSONOpt(short, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %sWriteJSONOpt(short, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %sReadJSON(%s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), formatNatArgsCall(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("if err := %sReadJSON(%s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
 }

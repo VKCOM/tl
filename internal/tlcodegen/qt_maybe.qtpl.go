@@ -23,10 +23,10 @@ var (
 )
 
 func (maybe *TypeRWMaybe) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(maybe.goGlobalName, bytesVersion)
+	goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
 	elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
 	natArgsDecl := formatNatArgsDecl(maybe.wr.NatParams)
-	natArgsCall := formatNatArgsCall(maybe.wr.NatParams)
+	natArgsCall := formatNatArgsDeclCall(maybe.wr.NatParams)
 	emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
 	okTag := fmt.Sprintf("%#x", maybe.okTag)
 

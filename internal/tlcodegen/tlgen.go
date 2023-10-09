@@ -7,14 +7,10 @@
 package tlcodegen
 
 import (
-	"crypto/sha1"
-	"encoding/hex"
 	"fmt"
-	"go/format"
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync/atomic"
 
@@ -26,7 +22,6 @@ import (
 	"github.com/vkcom/tl/internal/utils"
 )
 
-const OptimizeConstParameters = true // if false, they will be passed to children and ignored there
 const BuiltinTupleName = "__tuple"
 const BuiltinVectorName = "__vector"
 const BasicTLGoPackageName = "basictl" // does not contain tl prefix
@@ -96,8 +91,9 @@ type LocalNatArg struct {
 }
 
 type LocalTypeArg struct {
-	arg ResolvedArgument
-	PR  tlast.PositionRange // original template arg reference
+	arg     ResolvedArgument
+	PR      tlast.PositionRange // original template arg reference
+	natArgs []ActualNatArg      // nat args associated with this type argument, if type argument itself has some nat args
 }
 
 type ResolvedArgument struct {
@@ -236,7 +232,7 @@ func (n *InternalNamespace) mergeFrom(from *InternalNamespace, internalNamespace
 func (n *InternalNamespace) sortedElements() []string {
 	var elements []string
 	for _, t := range n.Types {
-		elements = append(elements, t.TypeString(false))
+		elements = append(elements, t.goGlobalName)
 	}
 	slices.Sort(elements)
 	return elements
@@ -249,7 +245,7 @@ func (n *InternalNamespace) sortedRecursiveElements() []string {
 	for r := range ri {
 		var inside []string
 		for _, t := range r.Types {
-			inside = append(inside, t.TypeString(false))
+			inside = append(inside, t.goGlobalName)
 		}
 		slices.Sort(inside)
 		elements = append(elements, strings.Join(inside, ":"))
@@ -263,7 +259,7 @@ func (n *InternalNamespace) sortedDirectElements() []string {
 	for r := range n.DirectImports.ns {
 		var inside []string
 		for _, t := range r.Types {
-			inside = append(inside, t.TypeString(false))
+			inside = append(inside, t.goGlobalName)
 		}
 		slices.Sort(inside)
 		elements = append(elements, strings.Join(inside, ":"))
@@ -329,6 +325,7 @@ type Gen2 struct {
 	allConstructors       map[string]*tlast.Combinator // for printing beautiful errors
 
 	// generation
+	builtinTypes       map[string]*TypeRWWrapper
 	generatedTypes     map[string]*TypeRWWrapper
 	generatedTypesList []*TypeRWWrapper // we need more deterministic order than sort predicate can establish
 
@@ -395,483 +392,6 @@ func (gen *Gen2) getNamespace(n string) *Namespace {
 		// etc...
 	}
 	return na
-}
-
-func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
-	tlType := myWrapper.origTL
-	for _, p := range myWrapper.NatArgs(!OptimizeConstParameters, "nat_") {
-		myWrapper.NatParams = append(myWrapper.NatParams, p.name)
-	}
-
-	lrc := LocalResolveContext{
-		localTypeArgs: map[string]LocalTypeArg{},
-		localNatArgs:  map[string]LocalNatArg{},
-	}
-	for i, a := range tlType[0].TemplateArguments { // they are the same for all constructors
-		if err := lrc.checkArgsCollision(a.FieldName, a.PR, errNatParamNameCollision); err != nil {
-			return err
-		}
-		ra := myWrapper.arguments[i]
-		if a.IsNat {
-			lrc.localNatArgs[a.FieldName] = LocalNatArg{
-				NamePR: a.PR,
-				TypePR: a.PR,
-				natArg: ActualNatArg{
-					isArith: ra.isArith,
-					Arith:   ra.Arith,
-					name:    a.FieldName, // TODO - "nat_" +
-				},
-			}
-			continue
-		}
-		lrc.localTypeArgs[a.FieldName] = LocalTypeArg{
-			arg: ra,
-			PR:  a.PR,
-		}
-	}
-
-	//myWrapper.cppNamespaceQualifier = "::" + gen.options.RootCPPNamespace + "::"
-	//if rt2.Type.Namespace != "" {
-	//	myWrapper.cppNamespaceQualifier += rt2.Type.Namespace + "::"
-	//}
-	if len(tlType) == 1 {
-		myWrapper.tlName = tlType[0].Construct.Name
-		myWrapper.fileName = tlType[0].Construct.Name.String()
-		namespace := gen.getNamespace(myWrapper.tlName.Namespace)
-		namespace.types = append(namespace.types, myWrapper)
-		myWrapper.ns = namespace
-		myWrapper.tlTag = tlType[0].Crc32()
-		switch tlType[0].Construct.Name.String() {
-		case BuiltinTupleName:
-			_, tail := myWrapper.resolvedT2GoName("")
-			goGlobalName := gen.globalDec.deconflictName("Tuple" + tail)
-			return gen.GenerateVectorTuple(myWrapper, false, tlType[0], goGlobalName, lrc)
-			// return fmt.Errorf("tuples not yet supported")
-		case BuiltinVectorName:
-			_, tail := myWrapper.resolvedT2GoName("")
-			goGlobalName := gen.globalDec.deconflictName("Vector" + tail)
-			return gen.GenerateVectorTuple(myWrapper, true, tlType[0], goGlobalName, lrc)
-			// return fmt.Errorf("vectors not yet supported")
-		}
-		head, tail := myWrapper.resolvedT2GoName("")
-		goGlobalName := gen.globalDec.deconflictName(head + tail)
-		head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-		goLocalName := namespace.dec.deconflictName(head + tail)
-		return gen.generateTypeStruct(lrc, myWrapper, tlType[0], goGlobalName, goLocalName)
-	}
-	myWrapper.tlName = tlType[0].TypeDecl.Name
-	myWrapper.fileName = tlType[0].TypeDecl.Name.String()
-	if isBool, falseDesc, trueDesc := IsUnionBool(tlType); isBool { // TODO - test if parts of Bool are in different namespaces
-		namespace := gen.getNamespace(myWrapper.tlName.Namespace)
-		namespace.types = append(namespace.types, myWrapper)
-		myWrapper.ns = namespace
-
-		head, tail := myWrapper.resolvedT2GoName("")
-		goGlobalName := gen.globalDec.deconflictName(head + tail)
-		myWrapper.trw = &TypeRWBool{
-			wr:           myWrapper,
-			goGlobalName: goGlobalName,
-			falseGoName:  gen.globalDec.deconflictName(CNameToCamelName(falseDesc.Construct.Name.String())),
-			trueGoName:   gen.globalDec.deconflictName(CNameToCamelName(trueDesc.Construct.Name.String())),
-			falseTag:     falseDesc.Crc32(),
-			trueTag:      trueDesc.Crc32(),
-		}
-		return nil
-	}
-	if isMaybe, emptyDesc, okDesc := IsUnionMaybe(tlType); isMaybe {
-		elementT := tlast.TypeRef{Type: tlast.Name{Name: okDesc.TemplateArguments[0].FieldName}} // TODO - PR
-		elementResolvedType, elementResolvedTypeBare, elementNatArgs, err := gen.getType(lrc, elementT)
-		if err != nil {
-			return err
-		}
-
-		//innerType := myWrapper.arguments[0].tip
-		//innerTypeBare := myWrapper.arguments[0].bare
-		namespace := gen.getNamespace(elementResolvedType.tlName.Namespace)
-		namespace.types = append(namespace.types, myWrapper)
-		myWrapper.ns = namespace
-
-		suffix := ifString(elementResolvedTypeBare, "Maybe", "BoxedMaybe")
-		head, tail := elementResolvedType.resolvedT2GoName("")
-		goGlobalName := gen.globalDec.deconflictName(head + tail + suffix)
-		head, tail = elementResolvedType.resolvedT2GoName(elementResolvedType.tlName.Namespace)
-		goLocalName := namespace.dec.deconflictName(head + tail + suffix)
-
-		res := &TypeRWMaybe{
-			wr:           myWrapper,
-			goGlobalName: goGlobalName,
-			goLocalName:  goLocalName,
-			element: Field{
-				t:            elementResolvedType,
-				bare:         elementResolvedTypeBare,
-				originalType: elementT,
-				natArgs:      elementNatArgs,
-			},
-			emptyTag: emptyDesc.Crc32(),
-			okTag:    okDesc.Crc32(),
-		}
-		myWrapper.fileName = elementResolvedType.fileName
-		myWrapper.trw = res
-		return nil
-	}
-	isEnum := true
-	for _, typ := range tlType {
-		isEnum = isEnum && len(typ.Fields) == 0
-	}
-
-	namespace := gen.getNamespace(tlType[0].TypeDecl.Name.Namespace)
-	namespace.types = append(namespace.types, myWrapper)
-	myWrapper.ns = namespace
-
-	suffix := ifString(isEnum, "", "Union") // Lesser evil to deconflict union constructor with union name, response = Response
-	head, tail := myWrapper.resolvedT2GoName("")
-	goGlobalName := gen.globalDec.deconflictName(head + tail + suffix)
-	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-	goLocalName := namespace.dec.deconflictName(head + tail + suffix)
-
-	lrc.allowAnyConstructor = true
-	lrc.overrideFileName = myWrapper.fileName
-	if gen.options.Language == "cpp" {
-		if isEnum {
-			lrc.overrideFileName += "Items" // in C++ when items and union are in the same file, they msuy be sorted which is hard for us
-		} else {
-			lrc.overrideFileName = "" // each type must be in its own file to break circular dependencies
-		}
-	}
-
-	res := &TypeRWUnion{
-		wr:           myWrapper,
-		goGlobalName: goGlobalName,
-		goLocalName:  goLocalName,
-		IsEnum:       isEnum,
-	}
-	res.fieldsDecCPP.fillCPPIdentifiers()
-	myWrapper.trw = res
-
-	// removing prefix common with union name.
-	typePrefix := strings.ToLower(tlType[0].TypeDecl.Name.Name) // not perfect, but good enough. Constructor starts from lower-case, type from upper-case
-	for _, typ := range tlType {
-		// if constructor is full prefix of type, we will shorten accessors
-		// ab.saveStateOne = ab.SaveState; // item.AsOne()
-		// ab.saveStateTwo = ab.SaveState; // item.AsTwo()
-		if !strings.HasPrefix(strings.ToLower(typ.Construct.Name.Name), typePrefix) {
-			typePrefix = ""
-			break
-		}
-	}
-	for i, typ := range tlType {
-		// ---- We treat
-		// ab.empty = ab.Response;
-		// ab.code x:int = ab.Response;
-		// ab.response x:int str:string = ab.Response;
-		// ---- roughly as
-		// ab.empty = _;
-		// ab.code x:int = _;
-		// ab.response x:int str:string = _;
-		// _ tag:# empty:ab.empty code:ab.code response: ab.response = ab.Response;
-		fieldType := tlast.TypeRef{
-			Type:   typ.Construct.Name,
-			Bare:   true,
-			PR:     typ.Construct.NamePR,
-			PRArgs: typ.TemplateArgumentsPR,
-		}
-		for _, arg := range typ.TemplateArguments {
-			fieldType.Args = append(fieldType.Args, tlast.ArithmeticOrType{
-				IsArith: false,
-				T: tlast.TypeRef{
-					Type:   tlast.Name{Name: arg.FieldName},
-					PR:     arg.PR,
-					PRArgs: arg.PR.CollapseToEnd(),
-				},
-			})
-		}
-		fieldResolvedType, fieldResolvedTypeBare, fieldNatArgs, err := gen.getType(lrc, fieldType)
-		if err != nil {
-			return err
-		}
-		fieldResolvedType.unionParent = myWrapper
-		fieldResolvedType.unionIndex = i
-		fieldResolvedType.unionIsEnum = isEnum
-		if !fieldResolvedTypeBare {
-			return fieldType.PR.LogicError(fmt.Errorf("union element resolved type %q cannot be boxed", fieldResolvedType.CanonicalString()))
-		}
-		typeConstructName := typ.Construct.Name
-		if len(typePrefix) < len(typeConstructName.Name) {
-			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
-		}
-		fieldGoName := canonicalGoName(typeConstructName, typ.Construct.Name.Namespace)
-		if res.fieldsDec.hasConflict(fieldGoName) { // try global, if local is already used
-			fieldGoName = canonicalGoName(typeConstructName, "")
-		}
-		//fieldCPPName := canonicalCPPName(typeConstructName, typ.Construct.Name.Namespace)
-		//if res.fieldsDecCPP.hasConflict(fieldCPPName) { // try global, if local is already used
-		//	fieldCPPName = canonicalCPPName(typeConstructName, "")
-		//}
-		newField := Field{
-			t:            fieldResolvedType,
-			bare:         fieldResolvedTypeBare,
-			goName:       res.fieldsDec.deconflictName(fieldGoName),
-			cppName:      res.fieldsDecCPP.deconflictName("TODO - cpp name"),
-			originalName: fieldType.Type.String(),
-			originalType: fieldType,
-			natArgs:      fieldNatArgs,
-		}
-		res.Fields = append(res.Fields, newField)
-		fieldResolvedType.unionField = newField
-	}
-	return nil
-}
-
-func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWrapper, tlType *tlast.Combinator, goGlobalName string, goLocalName string) error {
-	res := &TypeRWStruct{
-		wr:           myWrapper,
-		goGlobalName: goGlobalName,
-		goLocalName:  goLocalName,
-	}
-	res.fieldsDecCPP.fillCPPIdentifiers()
-	myWrapper.trw = res
-	for i, field := range tlType.Fields {
-		fieldType, fieldTypeBare, fieldNatArgs, err := gen.getType(lrc, field.FieldType)
-		if err != nil {
-			return err
-		}
-		fieldName := field.FieldName
-		if fieldName == "" {
-			// TODO - it would be nice to prohibit anonymous field name, unless it is single field
-			fieldName = "a" + strconv.Itoa(i)
-		}
-		newField := Field{
-			t:            fieldType,
-			bare:         fieldTypeBare,
-			goName:       res.fieldsDec.deconflictName(CNameToCamelName(fieldName)),
-			cppName:      res.fieldsDecCPP.deconflictName(fieldName),
-			originalName: field.FieldName,
-			originalType: field.FieldType,
-			natArgs:      fieldNatArgs,
-		}
-		if field.Mask != nil {
-			if field.Mask.BitNumber >= 32 {
-				return field.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..32)", field.Mask.BitNumber))
-			}
-			newField.BitNumber = field.Mask.BitNumber
-			localArg, ok := lrc.localNatArgs[field.Mask.MaskName]
-			if !ok {
-				return field.Mask.PRName.BeautifulError(fmt.Errorf("failed to resolve field mask %q reference", field.Mask.MaskName))
-			}
-			if localArg.wrongTypeErr != nil {
-				e1 := field.Mask.PRName.BeautifulError(fmt.Errorf("field mask %q reference to field of wrong type", field.Mask.MaskName))
-				e2 := localArg.TypePR.BeautifulError(localArg.wrongTypeErr)
-				return tlast.BeautifulError2(e1, e2)
-			}
-			newField.fieldMask = &localArg.natArg
-		}
-		res.Fields = append(res.Fields, newField)
-		arg := LocalNatArg{
-			NamePR: field.PRName,
-			TypePR: field.FieldType.PR,
-			natArg: ActualNatArg{isField: true, FieldIndex: i},
-		}
-		if field.FieldType.Type.String() != "#" {
-			arg.wrongTypeErr = fmt.Errorf("referenced field %q must have type #", field.FieldName)
-		}
-		if field.FieldName == "" {
-			continue
-		}
-		if err := lrc.checkArgsCollision(field.FieldName, field.PRName, errFieldNameCollision); err != nil {
-			return err
-		}
-		lrc.localNatArgs[field.FieldName] = arg
-	}
-	if tlType.IsFunction {
-		resultResolvedType, resultResolvedTypeBare, resultNatArgs, err := gen.getType(lrc, tlType.FuncDecl)
-		if err != nil {
-			return err
-		}
-		if resultResolvedTypeBare {
-			// @read a.TypeA = int;
-			// @read a.TypeB = %Int;
-			return tlType.FuncDecl.PR.BeautifulError(fmt.Errorf("function %q result cannot be bare", tlType.Construct.Name.String()))
-		}
-		res.ResultType = resultResolvedType
-		res.ResultNatArgs = resultNatArgs
-	}
-	return nil
-}
-
-func (gen *Gen2) getType(localContext LocalResolveContext, t tlast.TypeRef) (*TypeRWWrapper, bool, []ActualNatArg, error) {
-	tName := t.Type.String()
-	// Each named reference is either global type, global constructor, local param or local field
-	if localArg, ok := localContext.localNatArgs[tName]; ok {
-		e1 := t.PR.BeautifulError(fmt.Errorf("reference to %s %q where type is required", ifString(localArg.natArg.isField, "field", "#-param"), tName))
-		e2 := localArg.NamePR.BeautifulError(errSeeHere)
-		return nil, false, nil, tlast.BeautifulError2(e1, e2)
-	}
-	if lt, ok := localContext.localTypeArgs[tName]; ok {
-		if len(t.Args) != 0 {
-			e1 := t.PR.BeautifulError(fmt.Errorf("reference to template type arg %q cannot have arguments", tName))
-			e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
-		}
-		if t.Bare { // overwrite bare
-			// myUnionA = MyUnion;
-			// myUnionB b:int = MyUnion;
-			// wrapper {T:Type} a:%T = Wrapper T;
-			// useWarpper xx:(wrapper MyUnion) = UseWrapper;
-			lt.arg.bare = true
-			// TODO - we must perform canonical conversion of %Int to int here
-		}
-		actualNatArgs := lt.arg.tip.NatArgs(true, tName)
-		// code below is attempt to change semantic names into positional names. // Unfortunately it does not work.
-		// if len(actualNatArgs) == 1 {
-		//	actualNatArgs[0].name = tName
-		// } else {
-		//	for i, p := range actualNatArgs {
-		//		actualNatArgs[i].name = fmt.Sprintf("%s%d", p.name, i)
-		//	}
-		// }
-		return lt.arg.tip, lt.arg.bare, actualNatArgs, nil
-	}
-	var tlType []*tlast.Combinator
-	if lt, ok := gen.typeDescriptors[tName]; ok { // order of this if-else chain is important for built-ins
-		if len(lt) > 1 && t.Bare {
-			// myUnionA = MyUnion;
-			// myUnionB b:int = MyUnion;
-			// useUnion a:%MyUnion = UseUnion;
-			e1 := t.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tName))
-			e2 := lt[0].TypeDecl.NamePR.BeautifulError(fmt.Errorf("see more"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
-		}
-		tlType = lt
-		conName := tlType[0].Construct.Name.String()
-		if con2, ok := gen.singleConstructors[conName]; ok && t.Bare && !con2.IsFunction && con2.TypeDecl.Name.String() == "_" {
-			// bare references to wrappers %int have int canonical form,
-			// otherwise vectors, maybes and other templates will be generated twice
-			t.Type = tlType[0].Construct.Name
-		}
-	} else if lt, ok := gen.singleConstructors[tName]; ok {
-		tlType = []*tlast.Combinator{lt}
-		t.Bare = true
-		if lt.TypeDecl.Name.String() != "_" {
-			// We use "_" in type declaration for internal types which cannot be boxed
-			// We could wish to extend this definition to user types in the future
-			// If there is no boxed version, constructor name is canonical reference, otherwise
-			// Type name is canonical reference. We need canonical references to avoid generating type more than once
-			t.Type = lt.TypeDecl.Name
-		}
-	} else if lt, ok := gen.allConstructors[tName]; ok {
-		if !localContext.allowAnyConstructor {
-			e1 := t.PR.BeautifulError(fmt.Errorf("reference to %s constructor %q is not allowed", ifString(lt.IsFunction, "function", "union"), tName))
-			e2 := lt.Construct.NamePR.BeautifulError(fmt.Errorf("see more"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
-		}
-		// Here type name is already in canonical form, because this code path is only internal for union members and functions
-		tlType = []*tlast.Combinator{lt}
-		t.Bare = true
-	}
-	if len(tlType) == 0 {
-		return nil, false, nil, t.PR.BeautifulError(fmt.Errorf("error resolving name %q", tName))
-	}
-	td := tlType[0] // for type checking, any constructor is ok for us, because they all must have the same args
-	if len(td.TemplateArguments) > len(t.Args) {
-		arg := td.TemplateArguments[len(t.Args)]
-		e1 := t.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
-		e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
-		return nil, false, nil, tlast.BeautifulError2(e1, e2)
-	}
-	if len(td.TemplateArguments) < len(t.Args) {
-		arg := t.Args[len(td.TemplateArguments)]
-		e1 := arg.T.PR.BeautifulError(fmt.Errorf("excess template argument %q here", arg.String()))
-		e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
-		return nil, false, nil, tlast.BeautifulError2(e1, e2)
-	}
-	kernelType := &TypeRWWrapper{
-		gen:        gen,
-		tlType:     t.Type,
-		origTL:     tlType,
-		isTopLevel: len(td.TemplateArguments) == 0, // TODO - correct?
-	}
-	var actualNatArgs []ActualNatArg
-	for i, a := range t.Args {
-		ta := td.TemplateArguments[i]
-		aName := a.T.Type.String()
-		if ta.IsNat {
-			if a.IsArith {
-				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-					isNat:   true,
-					isArith: true,
-					Arith:   a.Arith,
-				})
-				actualNatArgs = append(actualNatArgs, ActualNatArg{isArith: true, Arith: a.Arith})
-				continue
-			}
-			if localArg, ok := localContext.localNatArgs[aName]; ok {
-				if localArg.wrongTypeErr != nil {
-					e1 := a.T.PR.BeautifulError(fmt.Errorf("error resolving reference %q to #-param %q", aName, ta.FieldName))
-					e2 := localArg.TypePR.BeautifulError(localArg.wrongTypeErr)
-					return nil, false, nil, tlast.BeautifulError2(e1, e2)
-				}
-				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-					isNat:   true, // true due to check above
-					isArith: localArg.natArg.isArith,
-					Arith:   localArg.natArg.Arith,
-				})
-				actualNatArgs = append(actualNatArgs, localArg.natArg)
-				continue
-			}
-			if localArg, ok := localContext.localTypeArgs[aName]; ok {
-				e1 := a.T.PR.BeautifulError(fmt.Errorf("reference to local Type-arg %q where #-arg is required", aName))
-				e2 := localArg.PR.BeautifulError(fmt.Errorf("arg declared here"))
-				return nil, false, nil, tlast.BeautifulError2(e1, e2)
-			}
-			e1 := a.T.PR.BeautifulError(fmt.Errorf("error resolving reference %q to #-param %q", aName, ta.FieldName))
-			e2 := ta.PR.BeautifulError(fmt.Errorf("see more"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
-		}
-		if a.IsArith {
-			e1 := a.T.PR.BeautifulError(fmt.Errorf("passing constant %q to Type-param %q is impossible", a.Arith.String(), ta.FieldName))
-			e2 := ta.PR.BeautifulError(fmt.Errorf("declared here"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
-		}
-		internalType, internalBare, internalNatArgs, err := gen.getType(localContext, a.T)
-		if err != nil {
-			return nil, false, nil, err
-		}
-		kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-			tip:  internalType,
-			bare: internalBare,
-		})
-		actualNatArgs = append(actualNatArgs, internalNatArgs...)
-	}
-	canonicalName := kernelType.CanonicalString()
-	exist, ok := gen.generatedTypes[canonicalName]
-	if !ok {
-		// log.Printf("adding canonical type: %s\n", canonicalName)
-		gen.generatedTypes[canonicalName] = kernelType
-		gen.generatedTypesList = append(gen.generatedTypesList, kernelType)
-		// We added our type already, so others can reference it
-		// Now we will iterate over our fields so all types we need are also generated
-		if err := gen.generateType(kernelType); err != nil {
-			return nil, false, nil, err
-		}
-		if localContext.overrideFileName != "" {
-			kernelType.fileName = localContext.overrideFileName
-		}
-		//else {
-		//	if gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-		//		if resolvedType.Type.Namespace == "" && len(resolvedType.Args) == 1 && !resolvedType.Args[0].IsNat {
-		//			wr.fileName = resolvedType.Args[0].TRW.fileName
-		//		}
-		//	}
-		//}
-		if kernelType.fileName == "" {
-			// TODO - check this is impossible, then return LogicError
-			log.Printf("Warning: empty type filename for canonical name %q, will move to 'builtin'", canonicalName)
-			kernelType.fileName = "builtin"
-		}
-		return kernelType, t.Bare, actualNatArgs, nil
-	}
-	// exist.combinator.tips = append(exist.combinator.tips, kernelType)
-	return exist, t.Bare, actualNatArgs, nil
 }
 
 func checkTagCollisions(tl tlast.TL) error {
@@ -1129,6 +649,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		typeDescriptors:       map[string][]*tlast.Combinator{},
 		allConstructors:       map[string]*tlast.Combinator{},
 		singleConstructors:    map[string]*tlast.Combinator{},
+		builtinTypes:          map[string]*TypeRWWrapper{},
+		generatedTypes:        map[string]*TypeRWWrapper{},
 	}
 	switch options.Language {
 	case "go", "cpp":
@@ -1180,9 +702,10 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 	gen.supportedModifierBits = map[string]int{"@read": 0, "@any": 1, "@internal": 2, "@write": 3, "@readwrite": 4, "@kphp": 5}
 	rootNamespace := gen.getNamespace("")
-	gen.generatedTypes = map[string]*TypeRWWrapper{
-		"#": {trw: &TypeRWPrimitive{
-			primitiveType:     "uint32",
+	primitiveTypesList := []*TypeRWPrimitive{
+		{
+			tlType:            "#",
+			goType:            "uint32",
 			cppPrimitiveType:  "uint32_t",
 			cppDefaultInit:    " = 0",
 			cppFunctionSuffix: "nat",
@@ -1192,9 +715,10 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomNat",
 			writeValue:        "basictl.NatWrite",
-			readValue:         "basictl.NatRead"}, fileName: "nat", ns: rootNamespace, gen: gen, tlType: tlast.Name{Name: "#"}},
-		"int": {trw: &TypeRWPrimitive{
-			primitiveType:     "int32",
+			readValue:         "basictl.NatRead",
+		}, {
+			tlType:            "int",
+			goType:            "int32",
 			cppPrimitiveType:  "int32_t",
 			cppDefaultInit:    " = 0",
 			cppFunctionSuffix: "int",
@@ -1204,9 +728,10 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomInt",
 			writeValue:        "basictl.IntWrite",
-			readValue:         "basictl.IntRead"}, fileName: "int", ns: rootNamespace, gen: gen, tlType: tlast.Name{Name: "int"}},
-		"long": {trw: &TypeRWPrimitive{
-			primitiveType:     "int64",
+			readValue:         "basictl.IntRead",
+		}, {
+			tlType:            "long",
+			goType:            "int64",
 			cppPrimitiveType:  "int64_t",
 			cppDefaultInit:    " = 0",
 			cppFunctionSuffix: "long",
@@ -1216,9 +741,10 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomLong",
 			writeValue:        "basictl.LongWrite",
-			readValue:         "basictl.LongRead"}, fileName: "long", ns: rootNamespace, gen: gen, tlType: tlast.Name{Name: "long"}},
-		"float": {trw: &TypeRWPrimitive{
-			primitiveType:     "float32",
+			readValue:         "basictl.LongRead",
+		}, {
+			tlType:            "float",
+			goType:            "float32",
 			cppPrimitiveType:  "float",
 			cppDefaultInit:    " = 0",
 			cppFunctionSuffix: "float",
@@ -1229,9 +755,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			randomValue:       "basictl.RandomFloat",
 			writeValue:        "basictl.FloatWrite",
 			readValue:         "basictl.FloatRead",
-			isFloat:           true}, fileName: "float", ns: rootNamespace, gen: gen, tlType: tlast.Name{Name: "float"}},
-		"double": {trw: &TypeRWPrimitive{
-			primitiveType:     "float64",
+		}, {
+			tlType:            "double",
+			goType:            "float64",
 			cppPrimitiveType:  "double",
 			cppDefaultInit:    " = 0",
 			cppFunctionSuffix: "double",
@@ -1242,9 +768,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			randomValue:       "basictl.RandomDouble",
 			writeValue:        "basictl.DoubleWrite",
 			readValue:         "basictl.DoubleRead",
-			isFloat:           true}, fileName: "double", ns: rootNamespace, gen: gen, tlType: tlast.Name{Name: "double"}},
-		"string": {trw: &TypeRWPrimitive{
-			primitiveType:     "string",
+		}, {
+			tlType:            "string",
+			goType:            "string",
 			cppPrimitiveType:  "std::string",
 			cppDefaultInit:    "",
 			cppFunctionSuffix: "string",
@@ -1256,23 +782,18 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			writeValue:        "basictl.StringWrite",
 			readValue:         "basictl.StringRead",
 			writeHasError:     true,
-			isString:          true}, fileName: "string", ns: rootNamespace, gen: gen, tlType: tlast.Name{Name: "string"}},
+		},
 	}
 	builtinBeautifulText := fmt.Sprintf(`
 %s {t:Type} {n:#} ? = _ t n; // builtin tuple
 %s {t:Type} # [t] = _ t; // builtin vector
 `, BuiltinTupleName, BuiltinVectorName)
-	builtinTypes := map[string]bool{}
-	var builtinNames []string
-	for cn, t := range gen.generatedTypes {
-		builtinNames = append(builtinNames, cn)
-		gen.generatedTypesList = append(gen.generatedTypesList, t) // order does not matter, as names are different enough for our predicate
+	primitiveTypes := map[string]*TypeRWPrimitive{}
+	for _, cn := range primitiveTypesList {
+		builtinBeautifulText += fmt.Sprintf("%s ? = _; // builtin primitive type\n", cn.tlType)
+		primitiveTypes[cn.tlType] = cn
 	}
-	slices.Sort(builtinNames) // technically order of lines does not matter, but...
-	for _, cn := range builtinNames {
-		builtinBeautifulText += fmt.Sprintf("%s ? = _; // builtin primitive type\n", cn)
-		builtinTypes[cn] = true
-	}
+
 	btl, err := tlast.ParseTL2(builtinBeautifulText, "<builtin>", true) // We need references to token positions for beautification
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse internal builtin type representation for beautification: %w", err)
@@ -1286,7 +807,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		if len(typ.TemplateArguments) != 0 {
 			return nil, typ.TemplateArgumentsPR.BeautifulError(fmt.Errorf("builtin wrapper %q cannot have template parameters", tName))
 		}
-		if !builtinTypes[tName] {
+		if _, ok := primitiveTypes[tName]; !ok {
 			return nil, typ.Construct.NamePR.BeautifulError(fmt.Errorf("builtin wrapper %q must have constructor name equal to some builtin type", tName))
 		}
 		newDesc := &tlast.Combinator{}
@@ -1330,6 +851,11 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		if err != nil {
 			return nil, err
 		}
+		for _, bt := range btl {
+			tName := bt.Construct.Name.String()
+			gen.allConstructors[tName] = bt
+			gen.singleConstructors[tName] = bt // will overwrite without checking, this code is for TLO only
+		}
 		tlo, tloJSON, err := gen.generateTLO()
 		if err != nil {
 			return gen, fmt.Errorf("can't generate TLO: %v", err)
@@ -1360,10 +886,33 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	// Int and %Int will reference wrappers, while int will reference builtin constructor.
 	// To avoid 2 canonical forms, resolveType will replace %Int to int for wrappers
 	for _, bt := range btl {
-		tName := bt.Construct.Name.String()
-		typ, ok := gen.allConstructors[tName]
 		var zero uint32
 		bt.Construct.ID = &zero
+		tName := bt.Construct.Name.String()
+		if tName == BuiltinTupleName || tName == BuiltinVectorName {
+			gen.allConstructors[tName] = bt
+			gen.singleConstructors[tName] = bt
+			continue
+		}
+		cn, ok := primitiveTypes[tName]
+		if !ok {
+			panic("broken primitive types list")
+		}
+		wrapper := &TypeRWWrapper{
+			gen:          gen,
+			ns:           rootNamespace,
+			trw:          cn,
+			goGlobalName: cn.goType,
+			goLocalName:  "",
+			fileName:     cn.tlType,
+			origTL:       []*tlast.Combinator{bt},
+		}
+		if cn.tlType == "#" {
+			wrapper.fileName = "nat"
+		}
+		gen.builtinTypes[cn.tlType] = wrapper
+		gen.generatedTypesList = append(gen.generatedTypesList, wrapper)
+		typ, ok := gen.allConstructors[tName]
 		if ok {
 			// vasya ? = Int;
 			// vasya {T:Type} {N:#} ? = Int T N;
@@ -1395,12 +944,13 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			if typ.Fields[0].FieldType.Type.String() != tName || len(typ.Fields[0].FieldType.Args) != 0 { // do not check Bare, because int === %int
 				return nil, typ.Fields[0].FieldType.PR.BeautifulError(fmt.Errorf("builtin wrapper %q field type must match constructor name", tName))
 			}
-			if !builtinTypes[tName] {
+			if _, ok := gen.builtinTypes[tName]; !ok {
 				return nil, typ.Construct.NamePR.BeautifulError(fmt.Errorf("builtin wrapper %q must have constructor name equal to some builtin type", tName))
 			}
+		} else {
+			gen.allConstructors[tName] = bt
+			gen.singleConstructors[tName] = bt
 		}
-		gen.allConstructors[tName] = bt
-		gen.singleConstructors[tName] = bt // will overwrite without checking, because they all are in allConstructors
 	}
 
 	// tupleDesc := btl[0]
@@ -1411,16 +961,6 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	// gen.allConstructors[vectorDesc.Construct.Name.String()] = vectorDesc
 	if options.Verbose {
 		log.Printf("type checking and templates instantiation...")
-	}
-	kernel := Kernel{
-		combinators: make(map[tlast.Name]*KernelCombinator),
-		tips:        make(map[string]*KernelType),
-	}
-	if gen.options.Language == "never" {
-		if err := kernel.generateSomething(gen, tl); err != nil {
-			log.Printf("generated something error: %v", err)
-		}
-		return nil, fmt.Errorf("never")
 	}
 
 	skippedDueToWhitelist := 0
@@ -1441,7 +981,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			lrc.localNatArgs["ArgumentN"] = LocalNatArg{
 				natArg: ActualNatArg{isField: true, FieldIndex: 0},
 			}
-			_, _, _, err = gen.getType(lrc, t)
+			_, _, _, err = gen.getType(lrc, t, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -1470,7 +1010,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			if !typ.IsFunction {
 				t = tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
 			}
-			_, _, _, err = gen.getType(LocalResolveContext{allowAnyConstructor: true}, t)
+			_, _, _, err = gen.getType(LocalResolveContext{allowAnyConstructor: true}, t, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -1495,6 +1035,12 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	//	fmt.Printf("sorted type %q\n", st.localTypeArg.rt.String())
 	// }
 	for _, v := range sortedTypes {
+		// fmt.Printf("type %s names %s %s %d\n", v.CanonicalStringTop(), v.goGlobalName, v.tlName.String(), v.tlTag)
+		// if len(v.origTL) <= 1 {
+		//	fmt.Printf("     %s\n", v.CanonicalString(true))
+		// } else {
+		//	fmt.Printf("     %s\n", v.CanonicalString(false))
+		// }
 		// r # [r] = S;
 		visitedNodes := map[*TypeRWWrapper]bool{}
 		v.trw.fillRecursiveUnwrap(visitedNodes)
@@ -1505,26 +1051,29 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
-		if err := v.trw.BeforeCodeGenerationStep(); err != nil {
-			return nil, err
-		}
+		v.trw.BeforeCodeGenerationStep1()
 	}
 	// in BeforeCodeGenerationStep2 we split recursion in unions.
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep2()
 	}
-	// in BeforeCodeGenerationStep2 we split recursion in unions.
+	// we link normal and long types for VK int->long conversion. This code is VK-specific and will be removed after full migration
 	for _, v := range sortedTypes {
 		// @readwrite queueLong.getQueueKey id:long ip:int timeout:int queue:string = queueLong.TimestampKey;
 		// @readwrite queue.getQueueKey id:int ip:int timeout:int queue:string = queue.TimestampKey;
-		rt := *v
-		rt.tlType.Namespace += "Long"
-		longName := rt.CanonicalString()
+		longName := v.CanonicalStringTop()
+		argsStart := strings.Index(longName, "<")
+		if argsStart < 0 {
+			argsStart = len(longName)
+		}
+		if i := strings.Index(longName[:argsStart], "."); i >= 0 {
+			longName = longName[:i] + "Long" + longName[i:]
 
-		if tt, ok := gen.generatedTypes[longName]; ok {
-			// log.Printf("long name %s discovered for %s", longName, v.CanonicalString())
-			v.WrLong = tt
-			tt.WrWithoutLong = v
+			if tt, ok := gen.generatedTypes[longName]; ok {
+				// log.Printf("long name %s discovered for %s", longName, v.CanonicalStringTop())
+				v.WrLong = tt
+				tt.WrWithoutLong = v
+			}
 		}
 
 		v.trw.BeforeCodeGenerationStep2()
@@ -1575,429 +1124,3 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 	return gen, nil
 }
-
-type InsFile struct {
-	ins      *InternalNamespace
-	fileName string
-}
-
-func (gen *Gen2) generateCodeGolang(generateByteVersions []string) error {
-	sortedTypes := gen.generatedTypesList
-	if !gen.options.SplitInternal {
-		globalIns := &InternalNamespace{DebugID: 1, Name: "internal", SubPath: "internal", Namespaces: map[string]struct{}{}, DirectImports: &DirectImports{ns: map[*InternalNamespace]struct{}{}}}
-		for _, v := range sortedTypes { // start with each type in its own internal namespace
-			if _, ok := v.trw.(*TypeRWPrimitive); ok {
-				continue // leave namespace nil
-			}
-			globalIns.Types = append(globalIns.Types, v)
-			globalIns.Namespaces[v.tlName.Namespace] = struct{}{}
-			v.ins = globalIns
-		}
-	} else {
-		var internalNamespaces []*InternalNamespace
-		printSortedNamespaces := func() {
-			// fmt.Printf("----sortedTypes----\n")
-			// for _, ins := range internalNamespaces {
-			//	fmt.Printf("recursive import namespace %s", ins)
-			// }
-		}
-		nextDebugID := 0
-		for _, v := range sortedTypes { // start with each type in its own internal namespace
-			if _, ok := v.trw.(*TypeRWPrimitive); ok {
-				continue // leave namespace nil
-			}
-			nextDebugID++
-			e := &InternalNamespace{DebugID: nextDebugID, Types: []*TypeRWWrapper{v}, Namespaces: map[string]struct{}{}, DirectImports: &DirectImports{ns: map[*InternalNamespace]struct{}{}}}
-			e.Namespaces[v.tlName.Namespace] = struct{}{}
-			v.ins = e
-			internalNamespaces = append(internalNamespaces, e)
-		}
-		// we start with each type in its own internal namespace
-		// we then generate code to assemble information on which is imported by which
-		for _, v := range sortedTypes {
-			if v.ins == nil {
-				continue
-			}
-			_ = v.trw.GenerateCode(false, v.ins.DirectImports)
-			if v.wantsBytesVersion && v.hasBytesVersion {
-				_ = v.trw.GenerateCode(true, v.ins.DirectImports)
-			}
-		}
-		printSortedNamespaces()
-		// now := time.Now()
-		recursiveImports := map[*InternalNamespace][]*InternalNamespace{}
-		for i := 0; i < len(internalNamespaces); {
-			from := internalNamespaces[i]
-			from.FindRecursiveImports(recursiveImports, nil)
-			if importMe, ok := recursiveImports[from]; ok && len(importMe) != 0 {
-				into := importMe[0]
-				// if options.Verbose {
-				// log.Printf("----merging cycle namespace %sinto  %s (total %d)", from, into, len(internalNamespaces))
-				// }
-				into.mergeFrom(from, internalNamespaces)
-				copy(internalNamespaces[i:], internalNamespaces[i+1:])
-				internalNamespaces = internalNamespaces[:len(internalNamespaces)-1]
-				// if options.Verbose {
-				// log.Printf("result %s", into)
-				// }
-				continue
-			}
-			i++
-		}
-		for _, ins := range internalNamespaces {
-			if len(ins.Types) == 1 {
-				t := ins.Types[0]
-				ins.Name = "tl" + t.TypeString(false)
-				ins.SubPath = "internal/tl" + t.tlName.Namespace + "/" + ins.Name
-				continue
-			}
-			sha := sha1.Sum([]byte(strings.Join(ins.sortedElements(), ":")))
-			ins.Name = "cycle_" + hex.EncodeToString(sha[:16])
-			ins.SubPath = "internal/" + ins.Name
-		}
-	}
-	typesCounter := 0
-	typesCounterBytes := 0
-
-	internalFiles := map[InsFile][]*TypeRWWrapper{}
-	for _, typeRw := range gen.generatedTypesList {
-		if typeRw.ins == nil {
-			continue
-		}
-		ff := InsFile{ins: typeRw.ins, fileName: typeRw.fileName}
-		internalFiles[ff] = append(internalFiles[ff], typeRw)
-	}
-	var s strings.Builder
-	for ff, types := range internalFiles {
-		directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-		for _, typeRw := range types {
-			_ = typeRw.trw.GenerateCode(false, directImports)
-			if typeRw.wantsBytesVersion && typeRw.hasBytesVersion {
-				_ = typeRw.trw.GenerateCode(true, directImports)
-			}
-		}
-		s.WriteString(fmt.Sprintf(`%s
-package %s 
-import (
-`,
-			HeaderComment, ff.ins.Name))
-		if directImports.importSort {
-			s.WriteString("\"sort\"\n\n")
-		}
-		s.WriteString(fmt.Sprintf("\"%s\"\n", gen.BasicPackageNameFull))
-		if gen.options.SplitInternal {
-			s.WriteString(fmt.Sprintf("    \"%s/%s\"\n", gen.options.TLPackageNameFull, "internal"))
-		}
-		var sortedNames []string
-		for im := range directImports.ns { // Imports of this file.
-			if im != ff.ins {
-				sortedNames = append(sortedNames, im.SubPath)
-			}
-		}
-		slices.Sort(sortedNames)
-		for _, n := range sortedNames {
-			s.WriteString(fmt.Sprintf("    \"%s/%s\"\n", gen.options.TLPackageNameFull, n))
-		}
-		s.WriteString(`)
-
-var _ = basictl.NatWrite
-`)
-		if gen.options.SplitInternal {
-			s.WriteString("var _ = internal.ErrorInvalidEnumTag\n")
-		}
-		for _, typeRw := range types {
-			typesCounter++
-			s.WriteString("\n")
-			s.WriteString(typeRw.trw.GenerateCode(false, directImports))
-			if typeRw.wantsBytesVersion && typeRw.hasBytesVersion {
-				typesCounterBytes++
-				s.WriteString("\n")
-				s.WriteString(typeRw.trw.GenerateCode(true, directImports))
-			}
-		}
-		filepathName := filepath.Join(ff.ins.SubPath, ff.fileName+goExt)
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+s.String()); err != nil {
-			return err
-		}
-		s.Reset()
-	}
-	if gen.options.Verbose {
-		log.Printf("generation of serialization code finished, %d constructors processed, %d types generated", len(gen.allConstructors), typesCounter)
-		if len(generateByteVersions) != 0 {
-			log.Printf("    also generated byte-optimized versions of %d types by the following filter: %s", typesCounterBytes, strings.Join(generateByteVersions, ", "))
-		}
-	}
-	if gen.options.Verbose {
-		log.Printf("generating RPC code...")
-	}
-	for name, namespace := range gen.Namespaces {
-		slices.SortFunc(namespace.types, func(a, b *TypeRWWrapper) int {
-			return TypeRWWrapperLessLocal(a, b)
-		})
-		anyTypeAlias := false
-		anyEnumElementAlias := false
-		anyFunction := false
-		for _, wr := range namespace.types {
-			if wr.ShouldWriteTypeAlias() {
-				anyTypeAlias = true
-			}
-			if wr.ShouldWriteEnumElementAlias() {
-				anyEnumElementAlias = true
-			}
-			if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-				anyFunction = true
-			}
-		}
-		if !anyTypeAlias && !anyEnumElementAlias && !anyFunction {
-			continue
-		}
-		directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-		var sortedNames []string
-		_ = gen.generateNamespacesCode(anyTypeAlias, anyFunction, name, namespace, sortedNames, directImports)
-		for im := range directImports.ns { // Imports of this file.
-			sortedNames = append(sortedNames, im.SubPath)
-		}
-		slices.Sort(sortedNames)
-		filepathName := filepath.Join(gen.GlobalPackageName+name, gen.GlobalPackageName+name+goExt)
-		code := gen.generateNamespacesCode(anyTypeAlias, anyFunction, name, namespace, sortedNames, directImports)
-		if code == "" {
-			continue
-		}
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
-			return err
-		}
-	}
-	if gen.options.Verbose {
-		log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
-	}
-	{
-		filepathName := filepath.Join(ConstantsPackageName, ConstantsPackageName+goExt) // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		code := gen.generateConstants(HeaderComment, ConstantsPackageName)
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
-			return err
-		}
-		if gen.options.BasicPackageNameFull == "" {
-			filepathName = filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+goExt) // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-			code = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
-			if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
-				return err
-			}
-		} else if gen.options.Verbose {
-			log.Printf("basictl code not written, expected to be available at %q", gen.options.BasicPackageNameFull)
-		}
-		directImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-		var sortedNames []string
-		_ = gen.generateFactory(sortedNames, directImports)
-		for im := range directImports.ns { // Imports of this file.
-			sortedNames = append(sortedNames, im.SubPath)
-		}
-		slices.Sort(sortedNames)
-		if err := gen.addCodeFile(filepath.Join(FactoryGoPackageName, FactoryGoPackageName+goExt), gen.copyrightText+gen.generateFactory(sortedNames, directImports)); err != nil {
-			return err
-		}
-		if err := gen.addCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+goExt), gen.copyrightText+gen.generateMeta()); err != nil {
-			return err
-		}
-		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision
-		code = fmt.Sprintf(internalTLCodeHeader, HeaderComment, "internal") + internalTLCodeBody
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
-			return err
-		}
-	}
-	if gen.options.Verbose {
-		log.Printf("formating generated code...")
-	}
-	for filepathName, code := range gen.Code {
-		if !strings.HasSuffix(filepathName, goExt) {
-			continue
-		}
-		formattedCode, err := format.Source([]byte(code))
-		if err != nil {
-			// We generate code still, because it will be easy to debug when the wrong file is written out
-			fmt.Printf("generator %sinternal error%s: source file %q will not compile due to error: %v", color.Red, color.Reset, filepathName, err)
-			continue
-		}
-		gen.Code[filepathName] = string(formattedCode)
-	}
-	return nil
-}
-
-/*
-func cppStartNamespace(s *strings.Builder, ns []string) {
-	for _, n := range ns {
-		s.WriteString(fmt.Sprintf("namespace %s { ", n))
-	}
-	s.WriteString("\n")
-}
-
-func cppFinishNamespace(s *strings.Builder, ns []string) {
-	s.WriteString(fmt.Sprintf("\n%s // namespace %s\n\n", strings.Repeat("}", len(ns)), strings.Join(ns, "::")))
-}
-
-func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
-	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
-
-	cppAllInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
-	var hpp strings.Builder
-	var hppDet strings.Builder
-	var cppDet strings.Builder
-	typesCounter := 0
-	typesCounterBytes := 0
-	internalFiles := map[InsFile][]*TypeRWWrapper{}
-	for _, typeRw := range gen.generatedTypesList {
-		ff := InsFile{ins: typeRw.ins, fileName: typeRw.fileName}
-		internalFiles[ff] = append(internalFiles[ff], typeRw)
-	}
-	for ff, types := range internalFiles {
-		hppInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		hppIncFwd := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		hppDetInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		cppDetInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		multipleDefinitions := map[string]struct{}{}
-		for _, typeRw := range types {
-			// log.Printf("type: %s\n", typeRw.tlName.String())
-			// log.Printf("      %s\n", typeRw.resolvedType.String())
-			typesCounter++
-			var hppDefinition strings.Builder
-			typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, &hppDet, hppDetInc, &cppDet, cppDetInc, false, false)
-			def := hppDefinition.String()
-			if _, ok := multipleDefinitions[def]; !ok {
-				multipleDefinitions[def] = struct{}{}
-				hpp.WriteString(def)
-			}
-			if typeRw.wantsBytesVersion && typeRw.trw.CPPHasBytesVersion() {
-				hppDefinition.Reset()
-				typesCounterBytes++
-				typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, &hppDet, hppDetInc, &cppDet, cppDetInc, true, false)
-				def = hppDefinition.String()
-				if _, ok := multipleDefinitions[def]; !ok {
-					multipleDefinitions[def] = struct{}{}
-					hpp.WriteString(def)
-				}
-			}
-		}
-		if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
-			continue
-		}
-		cppAllInc.ns[ff.fileName] = struct{}{}
-		hppStr := hpp.String()
-		hppDetStr := hppDet.String()
-		cppDetStr := cppDet.String()
-		hpp.Reset()
-		hppDet.Reset()
-		cppDet.Reset()
-		hpp.WriteString("#pragma once\n\n")
-		hppDet.WriteString("#pragma once\n\n")
-		hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", basicTLFilepathName))
-		for _, n := range hppInc.sortedNames() {
-			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
-		}
-		hpp.WriteString("\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", ff.fileName, hppExt))
-		hppDet.WriteString(fmt.Sprintf("#include \"../%s\"\n", basicTLFilepathName))
-		hpp.WriteString(hppStr)
-		// for _, n := range hppIncFwd.sortedNames() {
-		//	hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
-		// }
-		for _, n := range hppDetInc.sortedNames() {
-			hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, hppExt))
-		}
-		cppDet.WriteString(fmt.Sprintf("#include \"%s_details%s\"\n", ff.fileName, hppExt))
-		for _, n := range cppDetInc.sortedNames() {
-			cppDet.WriteString(fmt.Sprintf("#include \"%s_details%s\"\n", n, hppExt))
-		}
-		filepathName := ff.fileName + hppExt
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+hpp.String()); err != nil {
-			return err
-		}
-		hpp.Reset()
-		filepathName = filepath.Join("details", ff.fileName+"_details"+hppExt)
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+hppDet.String()+hppDetStr); err != nil {
-			return err
-		}
-		hppDet.Reset()
-		filepathName = filepath.Join("details", ff.fileName+"_details"+cppExt)
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+cppDet.String()+cppDetStr); err != nil {
-			return err
-		}
-		cppDet.Reset()
-	}
-	var cppAll strings.Builder
-	var cppMake strings.Builder
-	var cppMakeO strings.Builder
-	var cppMake1 strings.Builder
-	for _, n := range cppAllInc.sortedNames() {
-		cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n+"_details", cppExt))
-		cppMake1.WriteString(fmt.Sprintf("%s.o: details/%s%s details/%s%s\n", n+"_details", n+"_details", cppExt, n+"_details", hppExt))
-		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -c details/%s%s\n", n+"_details", cppExt))
-		cppMakeO.WriteString(fmt.Sprintf("%s.o ", n+"_details"))
-	}
-	cppMake.WriteString(`
-CC = g++
-CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
-`)
-	cppMake.WriteString(fmt.Sprintf("all: main.o %s\n", cppMakeO.String()))
-	cppMake.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o all main.o %s\n", cppMakeO.String()))
-	cppMake.WriteString(`
-main.o: main.cpp
-	$(CC) $(CFLAGS) -c main.cpp
-`)
-	cppMake.WriteString(cppMake1.String())
-	if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
-		return err
-	}
-	if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
-		return err
-	}
-	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
-		return err
-	}
-	// if gen.options.Verbose {
-	//	log.Printf("generation of serialization code finished, %d constructors processed, %d types generated", len(gen.allConstructors), typesCounter)
-	//	if len(generateByteVersions) != 0 {
-	//		log.Printf("    also generated byte-optimized versions of %d types by the following filter: %s", typesCounterBytes, strings.Join(generateByteVersions, ", "))
-	//	}
-	// }
-	// if gen.options.Verbose {
-	//	log.Printf("generating RPC code...")
-	// }
-	// if gen.options.GenerateRPCCode {
-	//	for name, namespace := range gen.Namespaces {
-	//		filepathName := filepath.Join(gen.GlobalPackageName+name, gen.GlobalPackageName+name+".go")
-	//		// TODO - if no functions and no aliases, do not write namespace file at all
-	//		code := gen.GenerateNamespacesCode(name, namespace)
-	//		if _, ok := gen.Code[filepathName]; ok {
-	//			return fmt.Errorf("generator %sinternal error%s: source file %q is generated twice", tlast.ColorRed, tlast.ColorReset, filepathName)
-	//		}
-	//		gen.Code[filepathName] = code
-	//	}
-	// }
-	// if gen.options.Verbose {
-	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
-	// }
-	{
-		//	filepathName := filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		//	gen.Code[filepathName] = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
-		//	filepathName = "factory.go"
-		//	gen.Code[filepathName] = gen.GenerateFactory()
-		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
-			fmt.Sprintf(basicCPPTLCodeFooter, BasicTLCPPNamespaceName)
-		if err := gen.addCodeFile(basicTLFilepathName, code); err != nil {
-			return err
-		}
-	}
-	// if gen.options.Verbose {
-	//	log.Printf("formating generated code...")
-	// }
-	// for filepathName, code := range gen.Code {
-	//	formattedCode, err := format.Source([]byte(code))
-	//	if err != nil {
-	//		// We generate code still, because it will be easy to debug when the wrong file is written out
-	//		fmt.Printf("generator %sinternal error%s: source file %q will not compile due to error: %v", tlast.ColorRed, tlast.ColorReset, filepathName, err)
-	//		continue
-	//	}
-	//	gen.Code[filepathName] = string(formattedCode)
-	// }
-	return nil
-}
-*/

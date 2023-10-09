@@ -23,10 +23,10 @@ var (
 )
 
 func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(struct_.goGlobalName, bytesVersion)
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlTag := fmt.Sprintf("%#x", struct_.wr.tlTag)
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsCall(struct_.wr.NatParams)
+	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
 	if struct_.wr.unionParent != nil {
 		ep := struct_.wr.unionParent.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
@@ -242,7 +242,7 @@ func (struct_ *TypeRWStruct) GenerateCode(bytesVersion bool, directImports *Dire
 }
 
 func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(struct_.goGlobalName, bytesVersion)
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
 	if struct_.isTypeDef() {
 		asterisk := ifString(struct_.Fields[0].recursive, "*", "")
@@ -305,7 +305,7 @@ func (struct_ *TypeRWStruct) typeDefinition(bytesVersion bool, directImports *Di
 }
 
 func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(struct_.goGlobalName, bytesVersion)
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
 	for i, field := range struct_.Fields {
 		if field.fieldMask == nil {
@@ -520,9 +520,9 @@ func (struct_ *TypeRWStruct) fieldMaskGettersAndSetters(bytesVersion bool, direc
 }
 
 func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(struct_.goGlobalName, bytesVersion)
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsCall(struct_.wr.NatParams)
+	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
 	if struct_.isTypeDef() {
 		field := struct_.Fields[0]
@@ -638,9 +638,9 @@ func (struct_ *TypeRWStruct) generateJSONCode(bytesVersion bool, directImports *
 }
 
 func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(struct_.goGlobalName, bytesVersion)
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsCall(struct_.wr.NatParams)
+	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
 	qw422016.N().S(`func `)
 	qw422016.N().S(goName)
@@ -875,19 +875,24 @@ func (struct_ *TypeRWStruct) readJSONCode(bytesVersion bool, directImports *Dire
 }
 
 func (struct_ *TypeRWStruct) streamwriteJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	qw422016.N().S(`func (item *`)
-	qw422016.N().S(addBytes(struct_.goGlobalName, bytesVersion))
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
+	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
+	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+
+	qw422016.N().S(`
+func (item *`)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteJSON(w []byte`)
-	qw422016.N().S(formatNatArgsDecl(struct_.wr.NatParams))
+	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
     return item.WriteJSONOpt(false, w`)
-	qw422016.N().S(formatNatArgsCall(struct_.wr.NatParams))
+	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
 func (item *`)
-	qw422016.N().S(addBytes(struct_.goGlobalName, bytesVersion))
+	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteJSONOpt(short bool, w []byte`)
-	qw422016.N().S(formatNatArgsDecl(struct_.wr.NatParams))
+	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
     w = append(w, '{')
 `)
@@ -969,11 +974,11 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	if struct_.ResultType == nil {
 		return
 	}
-	goGlobalName := addBytes(struct_.goGlobalName, bytesVersion)
+	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	retArg := struct_.ResultType.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
 	qw422016.N().S(`func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResult(w []byte, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
@@ -983,7 +988,7 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteResult(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
@@ -993,7 +998,7 @@ func (item *`)
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultJSON(j interface{}, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) error {
@@ -1004,7 +1009,7 @@ func (item *`)
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteResultJSON(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
@@ -1012,7 +1017,7 @@ func (item *`)
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) writeResultJSON(short bool, w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
@@ -1023,7 +1028,7 @@ func (item *`)
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
@@ -1036,7 +1041,7 @@ func (item *`)
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultWriteResultJSONShort(r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
@@ -1049,7 +1054,7 @@ func (item *`)
 }
 
 func (item *`)
-	qw422016.N().S(goGlobalName)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) {
   j, err := `)
 	qw422016.N().S(struct_.wr.gen.InternalPrefix())

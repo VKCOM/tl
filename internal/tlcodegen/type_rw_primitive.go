@@ -12,7 +12,9 @@ import (
 )
 
 type TypeRWPrimitive struct {
-	primitiveType  string
+	tlType string
+
+	goType         string
 	resetValue     string
 	randomValue    string
 	writeValue     string
@@ -20,8 +22,6 @@ type TypeRWPrimitive struct {
 	writeJSONValue string
 	readJSONValue  string
 	writeHasError  bool
-	isString       bool
-	isFloat        bool
 
 	cppFunctionSuffix string
 	cppPrimitiveType  string
@@ -29,28 +29,22 @@ type TypeRWPrimitive struct {
 	cppResetValue     string
 }
 
-func (trw *TypeRWPrimitive) wrapper() *TypeRWWrapper { return nil }
-
-func (trw *TypeRWPrimitive) canBeBareOrBoxed(bare bool) bool {
-	return bare
-}
-
-func (trw *TypeRWPrimitive) typeStringGlobal(bytesVersion bool) string {
-	return addBytes(trw.primitiveType, bytesVersion)
+func (trw *TypeRWPrimitive) isFloat() bool {
+	return trw.tlType == "float" || trw.tlType == "double"
 }
 
 func (trw *TypeRWPrimitive) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if isLocal {
-		return addBytes(trw.primitiveType, bytesVersion)
+		return addBytes(trw.goType, bytesVersion)
 	}
 	if bytesVersion {
 		return "[]byte"
 	}
-	return trw.primitiveType
+	return trw.goType
 }
 
 func (trw *TypeRWPrimitive) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
-	return trw.isString
+	return trw.tlType == "string"
 }
 
 func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
@@ -59,8 +53,7 @@ func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]
 func (trw *TypeRWPrimitive) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) BeforeCodeGenerationStep() error {
-	return nil
+func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWPrimitive) BeforeCodeGenerationStep2() {
@@ -70,7 +63,7 @@ func (trw *TypeRWPrimitive) fillRecursiveChildren(visitedNodes map[*TypeRWWrappe
 }
 
 func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
-	return !trw.isFloat, trw.isString
+	return !trw.isFloat(), trw.tlType == "string"
 }
 
 func (trw *TypeRWPrimitive) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
@@ -92,10 +85,10 @@ func (trw *TypeRWPrimitive) typeRandomCode(bytesVersion bool, directImports *Dir
 
 func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
 	if !bare {
-		log.Panicf("trw %q cannot be boxed", trw.primitiveType)
+		log.Panicf("trw %q cannot be boxed", trw.tlType)
 	}
 	if trw.writeValue == "" {
-		log.Panicf("trw %q cannot be bare", trw.primitiveType)
+		log.Panicf("trw %q cannot be bare", trw.tlType)
 	}
 	if bytesVersion {
 		return wrapLastW(last, fmt.Sprintf("basictl.StringWriteBytes(w, %s )", addAsterisk(ref, val)))
@@ -108,7 +101,7 @@ func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.isString {
+	if trw.tlType == "string" {
 		return fmt.Sprintf("len(%s) != 0", addAsterisk(ref, val))
 	}
 	return fmt.Sprintf("%s != 0", addAsterisk(ref, val))
@@ -116,7 +109,7 @@ func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string
 
 func (trw *TypeRWPrimitive) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
 	if !bare {
-		log.Panicf("trw %q cannot be boxed", trw.primitiveType)
+		log.Panicf("trw %q cannot be boxed", trw.tlType)
 	}
 	if bytesVersion {
 		return wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)))

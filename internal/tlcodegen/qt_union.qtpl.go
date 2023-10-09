@@ -23,10 +23,10 @@ var (
 )
 
 func (union *TypeRWUnion) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goName := addBytes(union.goGlobalName, bytesVersion)
+	goName := addBytes(union.wr.goGlobalName, bytesVersion)
 	asterisk := ifString(union.IsEnum, "", "*")
 	natArgsDecl := formatNatArgsDecl(union.wr.NatParams)
-	natArgsCall := formatNatArgsCall(union.wr.NatParams)
+	natArgsCall := formatNatArgsDeclCall(union.wr.NatParams)
 
 	union.streamgenerateEnumAlias(qw422016, bytesVersion)
 	qw422016.N().S(`
@@ -40,12 +40,12 @@ type `)
 func (item `)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) TLName() string { return _`)
-	qw422016.N().S(addBytes(union.goGlobalName, false))
+	qw422016.N().S(addBytes(union.wr.goGlobalName, false))
 	qw422016.N().S(`[item.index].TLName }
 func (item `)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) TLTag() uint32 { return _`)
-	qw422016.N().S(addBytes(union.goGlobalName, false))
+	qw422016.N().S(addBytes(union.wr.goGlobalName, false))
 	qw422016.N().S(`[item.index].TLTag }
 
 func (item *`)
@@ -99,7 +99,8 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, field.recursive))
+			qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+				formatNatArgs(nil, field.natArgs), field.recursive))
 			qw422016.N().S(`
 `)
 		}
@@ -153,7 +154,8 @@ func (item*`)
 `)
 		}
 		qw422016.N().S(`        `)
-		qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true, union.Fields[0].t.NatParams, field.recursive, true))
+		qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
+			formatNatArgs(nil, field.natArgs), field.recursive, true))
 		qw422016.N().S(`
 `)
 	}
@@ -173,7 +175,7 @@ func (item `)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
     w = basictl.NatWrite(w, _`)
-	qw422016.N().S(addBytes(union.goGlobalName, false))
+	qw422016.N().S(addBytes(union.wr.goGlobalName, false))
 	qw422016.N().S(`[item.index].TLTag)
 `)
 	if union.IsEnum {
@@ -192,7 +194,8 @@ func (item `)
 `)
 			} else {
 				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true, union.Fields[0].t.NatParams, false, true))
+				qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), true,
+					formatNatArgs(nil, field.natArgs), false, true))
 				qw422016.N().S(`
 `)
 			}
@@ -244,7 +247,7 @@ func (item *`)
 			name := field.originalName
 			tag := fmt.Sprintf("#%08x", field.t.tlTag)
 			nameWithTag := name + tag
-			wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
+			wrWithoutLong := field.t.WrWithoutLong
 
 			qw422016.N().S(`        case `)
 			qw422016.N().Q(nameWithTag)
@@ -297,7 +300,7 @@ func (item *`)
 			name := field.originalName
 			tag := fmt.Sprintf("#%08x", field.t.tlTag)
 			nameWithTag := name + tag
-			wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
+			wrWithoutLong := field.t.WrWithoutLong
 
 			qw422016.N().S(`        case `)
 			qw422016.N().Q(nameWithTag)
@@ -340,7 +343,8 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`            `)
-			qw422016.N().S(field.t.TypeJSONReadingCode(bytesVersion, directImports, union.wr.ins, "jvalue", fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, field.recursive))
+			qw422016.N().S(field.t.TypeJSONReadingCode(bytesVersion, directImports, union.wr.ins, "jvalue", fmt.Sprintf("item.value%s", field.goName),
+				formatNatArgs(nil, field.natArgs), field.recursive))
 			qw422016.N().S(`
             delete(_jm, "value")
 `)
@@ -394,7 +398,7 @@ func (item `)
 		for i, field := range union.Fields {
 			nameWithTag := fmt.Sprintf("%s#%08x", field.originalName, field.t.tlTag)
 			nameWithTagShort := nameWithTag
-			wrWithoutLong := field.t.trw.wrapper().WrWithoutLong
+			wrWithoutLong := field.t.WrWithoutLong
 			if wrWithoutLong != nil {
 				nameWithTagShort = fmt.Sprintf("%s#%08x", wrWithoutLong.tlName.String(), wrWithoutLong.tlTag)
 			}
@@ -464,7 +468,8 @@ func (item `)
 					qw422016.N().S("`")
 					qw422016.N().S(`...)
             `)
-					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false))
+					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+						formatNatArgs(nil, field.natArgs), false))
 					qw422016.N().S(`
         }
 `)
@@ -499,7 +504,8 @@ func (item `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName), union.Fields[0].t.NatParams, false))
+					qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, union.wr.ins, fmt.Sprintf("item.value%s", field.goName),
+						formatNatArgs(nil, field.natArgs), false))
 					qw422016.N().S(`
 `)
 				}
@@ -578,7 +584,7 @@ func (union *TypeRWUnion) generateFields(bytesVersion bool, directImports *Direc
 }
 
 func (union *TypeRWUnion) streamgenerateConstructorsBehavior(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
-	goGlobalName := addBytes(union.goGlobalName, bytesVersion)
+	goGlobalName := addBytes(union.wr.goGlobalName, bytesVersion)
 
 	for i, field := range union.Fields {
 		qw422016.N().S(`
@@ -775,7 +781,7 @@ func (union *TypeRWUnion) generateConstructorsBehavior(bytesVersion bool, direct
 }
 
 func (union *TypeRWUnion) streamgenerateEnumAlias(qw422016 *qt422016.Writer, bytesVersion bool) {
-	goName := addBytes(union.goGlobalName, false)
+	goName := addBytes(union.wr.goGlobalName, false)
 
 	if bytesVersion {
 		return

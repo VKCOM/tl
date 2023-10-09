@@ -28,7 +28,7 @@ func (trw *TypeRWBool) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersio
 	qw422016.N().S(` )
 
 func `)
-	qw422016.N().S(addBytes(trw.goGlobalName, bytesVersion))
+	qw422016.N().S(addBytes(trw.wr.goGlobalName, bytesVersion))
 	qw422016.N().S(`ReadBoxed(w []byte, v *bool) ([]byte, error) {
     return basictl.ReadBool(w, v, `)
 	qw422016.N().S(trw.falseGoName)
@@ -38,7 +38,7 @@ func `)
 }
 
 func `)
-	qw422016.N().S(addBytes(trw.goGlobalName, bytesVersion))
+	qw422016.N().S(addBytes(trw.wr.goGlobalName, bytesVersion))
 	qw422016.N().S(`WriteBoxed(w []byte, v bool) ([]byte, error) {
     if v {
         return basictl.NatWrite(w, 0x`)

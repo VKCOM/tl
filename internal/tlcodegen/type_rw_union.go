@@ -11,31 +11,19 @@ import (
 )
 
 type TypeRWUnion struct {
-	wr           *TypeRWWrapper
-	goGlobalName string
-	goLocalName  string
-	Fields       []Field
-	IsEnum       bool
+	wr     *TypeRWWrapper
+	Fields []Field
+	IsEnum bool
 
 	fieldsDec    Deconflicter // TODO - add all generated methods here
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
 }
 
-func (trw *TypeRWUnion) wrapper() *TypeRWWrapper { return trw.wr }
-
-func (trw *TypeRWUnion) canBeBareOrBoxed(bare bool) bool {
-	return !bare
-}
-
-func (trw *TypeRWUnion) typeStringGlobal(bytesVersion bool) string {
-	return addBytes(trw.goGlobalName, bytesVersion)
-}
-
 func (trw *TypeRWUnion) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
 	if isLocal {
-		return addBytes(trw.goLocalName, bytesVersion)
+		return addBytes(trw.wr.goLocalName, bytesVersion)
 	}
-	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.goGlobalName, bytesVersion)
+	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWUnion) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -55,8 +43,7 @@ func (trw *TypeRWUnion) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	}
 }
 
-func (trw *TypeRWUnion) BeforeCodeGenerationStep() error {
-	return nil
+func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
@@ -96,15 +83,21 @@ func (trw *TypeRWUnion) typeResettingCode(bytesVersion bool, directImports *Dire
 }
 
 func (trw *TypeRWUnion) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("%s.FillRandom(rand%s)", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("%s.FillRandom(rand%s)", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), formatNatArgsCall(natArgs)))
+	if bare {
+		panic("trying to write bare union, please report TL which caused this")
+	}
+	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWUnion) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
-	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), formatNatArgsCall(natArgs)))
+	if bare {
+		panic("trying to write bare union, please report TL which caused this")
+	}
+	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
 }
 
 func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -112,12 +105,12 @@ func (trw *TypeRWUnion) typeJSONEmptyCondition(bytesVersion bool, val string, re
 }
 
 func (trw *TypeRWUnion) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, formatNatArgsCall(natArgs))
+	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	goName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, formatNatArgsCall(natArgs))
+	goName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
