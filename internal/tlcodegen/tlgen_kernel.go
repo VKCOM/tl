@@ -429,6 +429,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			goName:       res.fieldsDec.deconflictName(fieldGoName),
 			cppName:      res.fieldsDecCPP.deconflictName("TODO - cpp name"),
 			natArgs:      fieldNatArgs,
+			// origTL:       ?, // We did not want to set it here for now
 		}
 		res.Fields = append(res.Fields, newField)
 		fieldResolvedType.unionField = newField
@@ -459,6 +460,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 			goName:       res.fieldsDec.deconflictName(CNameToCamelName(fieldName)),
 			cppName:      res.fieldsDecCPP.deconflictName(fieldName),
 			natArgs:      fieldNatArgs,
+			origTL:       field,
 		}
 		if field.Mask != nil {
 			if field.Mask.BitNumber >= 32 {

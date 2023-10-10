@@ -17,36 +17,69 @@ import (
 // Please add methods in the same order types defined in tlparser.go
 // All parsing, except TypeRef, which is in separate file tlparser_typeref.go
 
-func skipWS(rest *[]token, outer Position) PositionRange {
-	for ; len(*rest) != 0; *rest = (*rest)[1:] {
-		switch tok := (*rest)[0]; tok.tokenType {
+type tokenIterator struct {
+	tokens []token
+	offset int
+}
+
+func (it *tokenIterator) front() token {
+	return it.tokens[it.offset]
+}
+
+func (it *tokenIterator) count() int {
+	return len(it.tokens) - it.offset
+}
+
+func (it *tokenIterator) popFront() token {
+	it.offset++
+	return it.tokens[it.offset-1]
+}
+
+func (it *tokenIterator) skipWS(outer Position) PositionRange {
+	for ; it.count() != 0; it.popFront() {
+		switch tok := it.front(); tok.tokenType {
 		case comment, whiteSpace, tab, newLine:
 			continue
 		default:
 			return PositionRange{Outer: outer, Begin: tok.pos, End: tok.pos}
 		}
 	}
-	if len(*rest) == 0 {
+	if it.count() == 0 {
 		log.Panicf("tokenizer invariant failed, no eof token, %s", ContactAuthorsString)
 	}
 	return PositionRange{}
 }
 
-func checkToken(rest *[]token, i int) bool {
-	skipWS(rest, Position{})
-	return (*rest)[0].tokenType == i
+// returns if newline was found
+func (it *tokenIterator) skipToNewline() bool {
+	for ; it.count() != 0; it.popFront() {
+		switch tok := it.front(); tok.tokenType {
+		case comment, whiteSpace, tab:
+			continue
+		case newLine:
+			return true
+		default:
+			return false
+		}
+	}
+	return false
 }
 
-func expect(rest *[]token, i int) bool {
-	if checkToken(rest, i) {
-		*rest = (*rest)[1:]
+func (it *tokenIterator) checkToken(i int) bool {
+	it.skipWS(Position{})
+	return it.front().tokenType == i
+}
+
+func (it *tokenIterator) expect(i int) bool {
+	if it.checkToken(i) {
+		it.popFront()
 		return true
 	}
 	return false
 }
 
-func expectOrPanic(tokens *[]token, i int) {
-	if !expect(tokens, i) {
+func (it *tokenIterator) expectOrPanic(i int) {
+	if !it.expect(i) {
 		log.Panicf("unexpected token during parsing, %s", ContactAuthorsString)
 	}
 }
@@ -62,104 +95,104 @@ func splitIdenNSFromToken(s string) Name {
 	}
 }
 
-func parseLCIdentNS(tokens []token, outer Position) (Name, []token, error) {
+func parseLCIdentNS(tokens tokenIterator, outer Position) (Name, tokenIterator, error) {
 	rest := tokens
 	var res Name
-	if checkToken(&rest, lcIdentNS) {
-		res = splitIdenNSFromToken(rest[0].val)
-		expectOrPanic(&rest, lcIdentNS)
+	if rest.checkToken(lcIdentNS) {
+		res = splitIdenNSFromToken(rest.front().val)
+		rest.expectOrPanic(lcIdentNS)
 		return res, rest, nil
 	}
-	if checkToken(&rest, lcIdent) {
-		res.Name = rest[0].val
-		expectOrPanic(&rest, lcIdent)
+	if rest.checkToken(lcIdent) {
+		res.Name = rest.front().val
+		rest.expectOrPanic(lcIdent)
 		return res, rest, nil
 	}
-	return Name{}, tokens, parseErrToken(fmt.Errorf("low-case name (with optional namespace) expected"), rest[0], outer)
+	return Name{}, tokens, parseErrToken(fmt.Errorf("low-case name (with optional namespace) expected"), rest.front(), outer)
 }
 
-func parseUCIdentNS(tokens []token, outer Position) (Name, []token, error) {
+func parseUCIdentNS(tokens tokenIterator, outer Position) (Name, tokenIterator, error) {
 	rest := tokens
 	var res Name
-	if checkToken(&rest, ucIdentNS) {
-		res = splitIdenNSFromToken(rest[0].val)
-		expectOrPanic(&rest, ucIdentNS)
+	if rest.checkToken(ucIdentNS) {
+		res = splitIdenNSFromToken(rest.front().val)
+		rest.expectOrPanic(ucIdentNS)
 		return res, rest, nil
 	}
-	if checkToken(&rest, ucIdent) {
-		res.Name = rest[0].val
-		expectOrPanic(&rest, ucIdent)
+	if rest.checkToken(ucIdent) {
+		res.Name = rest.front().val
+		rest.expectOrPanic(ucIdent)
 		return res, rest, nil
 	}
-	return Name{}, tokens, parseErrToken(fmt.Errorf("upper-case name (with optional namespace) expected"), rest[0], outer)
+	return Name{}, tokens, parseErrToken(fmt.Errorf("upper-case name (with optional namespace) expected"), rest.front(), outer)
 }
 
-func parseVarIdent(tokens []token, outer Position) (string, []token, error) {
+func parseVarIdent(tokens tokenIterator, outer Position) (string, tokenIterator, error) {
 	rest := tokens
-	if checkToken(&rest, lcIdent) {
-		res := rest[0].val
-		expectOrPanic(&rest, lcIdent)
+	if rest.checkToken(lcIdent) {
+		res := rest.front().val
+		rest.expectOrPanic(lcIdent)
 		return res, rest, nil
 	}
-	if checkToken(&rest, ucIdent) {
-		res := rest[0].val
-		expectOrPanic(&rest, ucIdent)
+	if rest.checkToken(ucIdent) {
+		res := rest.front().val
+		rest.expectOrPanic(ucIdent)
 		return res, rest, nil
 	}
-	return "", tokens, parseErrToken(fmt.Errorf("name without namespace expected"), rest[0], outer)
+	return "", tokens, parseErrToken(fmt.Errorf("name without namespace expected"), rest.front(), outer)
 }
 
 // functionModifier := @any  | @internal  | @kphp | @read | @readwrite | @write
-func parseModifiers(tokens []token, outer Position) ([]Modifier, []token) {
+func parseModifiers(tokens tokenIterator, outer Position) ([]Modifier, tokenIterator) {
 	var res []Modifier
 	rest := tokens
 	for {
-		mod := Modifier{PR: skipWS(&rest, outer)}
-		if !checkToken(&rest, functionModifier) {
+		mod := Modifier{PR: rest.skipWS(outer)}
+		if !rest.checkToken(functionModifier) {
 			break
 		}
-		mod.Name = rest[0].val
-		expectOrPanic(&rest, functionModifier)
-		mod.PR.End = rest[0].pos
+		mod.Name = rest.front().val
+		rest.expectOrPanic(functionModifier)
+		mod.PR.End = rest.front().pos
 		res = append(res, mod)
 	}
 	return res, rest
 }
 
 // constructor := fullName [CRC32]
-func parseConstructor(tokens []token, outer Position, allowBuiltin bool) (Constructor, []token, error) {
+func parseConstructor(tokens tokenIterator, outer Position, allowBuiltin bool) (Constructor, tokenIterator, error) {
 	rest := tokens
-	res := Constructor{NamePR: skipWS(&rest, outer)}
+	res := Constructor{NamePR: rest.skipWS(outer)}
 	var err error
 	if allowBuiltin {
-		if checkToken(&rest, numberSign) {
-			res.Name.Name = rest[0].val
-			expectOrPanic(&rest, numberSign)
-			res.NamePR.End = rest[0].pos
+		if rest.checkToken(numberSign) {
+			res.Name.Name = rest.front().val
+			rest.expectOrPanic(numberSign)
+			res.NamePR.End = rest.front().pos
 			res.IDPR = res.NamePR // wish to highlight name, if tag absent
 			return res, rest, nil
 		}
 	}
 	if res.Name, rest, err = parseLCIdentNS(rest, outer); err != nil {
-		return Constructor{}, tokens, err // parseErrToken(fmt.Errorf("constructor name expected"), rest[0])
+		return Constructor{}, tokens, err // parseErrToken(fmt.Errorf("constructor name expected"), rest.front())
 	}
-	res.NamePR.End = rest[0].pos
+	res.NamePR.End = rest.front().pos
 	res.IDPR = res.NamePR // wish to highlight name, if tag absent
-	if checkToken(&rest, crc32hash) {
-		res.IDPR.Begin = rest[0].pos
-		i, err := strconv.ParseUint(rest[0].val[1:], 16, 32)
+	if rest.checkToken(crc32hash) {
+		res.IDPR.Begin = rest.front().pos
+		i, err := strconv.ParseUint(rest.front().val[1:], 16, 32)
 		if err != nil {
-			return Constructor{}, tokens, parseErrToken(fmt.Errorf("error converting constructor tag to uint32: %w", err), rest[0], outer)
+			return Constructor{}, tokens, parseErrToken(fmt.Errorf("error converting constructor tag to uint32: %w", err), rest.front(), outer)
 		}
 		x := uint32(i)
 		res.ID = &x
-		expectOrPanic(&rest, crc32hash)
-		res.IDPR.End = rest[0].pos
+		rest.expectOrPanic(crc32hash)
+		res.IDPR.End = rest.front().pos
 	}
 	return res, rest, nil
 }
 
-func parseTemplateArguments(tokens []token, outer Position) ([]TemplateArgument, []token, error) {
+func parseTemplateArguments(tokens tokenIterator, outer Position) ([]TemplateArgument, tokenIterator, error) {
 	var res []TemplateArgument
 	rest := tokens
 	var err error
@@ -178,41 +211,41 @@ func parseTemplateArguments(tokens []token, outer Position) ([]TemplateArgument,
 }
 
 // templateArgument := '{' fieldName T '}'
-func parseTemplateArgument(tokens []token, outer Position) (*TemplateArgument, []token, error) {
+func parseTemplateArgument(tokens tokenIterator, outer Position) (*TemplateArgument, tokenIterator, error) {
 	rest := tokens
 	var err error
-	of := &TemplateArgument{PR: skipWS(&rest, outer)}
-	if !expect(&rest, lCurlyBracket) {
+	of := &TemplateArgument{PR: rest.skipWS(outer)}
+	if !rest.expect(lCurlyBracket) {
 		return nil, tokens, nil
 	}
 	of.FieldName, rest, err = parseVarIdent(rest, outer)
 	if err != nil {
 		return nil, tokens, fmt.Errorf("template argument name expected: %w", err)
 	}
-	if !expect(&rest, colon) {
-		return nil, tokens, parseErrToken(fmt.Errorf("':' after template argument name expected"), rest[0], outer)
+	if !rest.expect(colon) {
+		return nil, tokens, parseErrToken(fmt.Errorf("':' after template argument name expected"), rest.front(), outer)
 	}
 	switch {
-	case checkToken(&rest, ucIdent) && rest[0].val == "Type":
+	case rest.checkToken(ucIdent) && rest.front().val == "Type":
 		of.IsNat = false
-		expectOrPanic(&rest, ucIdent)
-	case checkToken(&rest, numberSign):
+		rest.expectOrPanic(ucIdent)
+	case rest.checkToken(numberSign):
 		of.IsNat = true
-		expectOrPanic(&rest, numberSign)
+		rest.expectOrPanic(numberSign)
 	default:
-		return nil, tokens, parseErrToken(fmt.Errorf("template argument type can be either 'Type' or '#'"), rest[0], outer)
+		return nil, tokens, parseErrToken(fmt.Errorf("template argument type can be either 'Type' or '#'"), rest.front(), outer)
 	}
-	if !expect(&rest, rCurlyBracket) {
-		return nil, tokens, parseErrToken(fmt.Errorf("'}' after template argument type expected"), rest[0], outer)
+	if !rest.expect(rCurlyBracket) {
+		return nil, tokens, parseErrToken(fmt.Errorf("'}' after template argument type expected"), rest.front(), outer)
 	}
-	of.PR.End = rest[0].pos
+	of.PR.End = rest.front().pos
 	return of, rest, nil
 }
 
 // fullName [word] ...
-func parseTypeDeclaration(tokens []token, outer Position) (TypeDeclaration, []token, error) {
+func parseTypeDeclaration(tokens tokenIterator, outer Position) (TypeDeclaration, tokenIterator, error) {
 	rest := tokens
-	res := TypeDeclaration{PR: skipWS(&rest, outer)}
+	res := TypeDeclaration{PR: rest.skipWS(outer)}
 	res.NamePR = res.PR
 	var name Name
 	var err error
@@ -220,30 +253,30 @@ func parseTypeDeclaration(tokens []token, outer Position) (TypeDeclaration, []to
 		return TypeDeclaration{}, tokens, err
 	}
 	res.Name = name
-	res.NamePR.End = rest[0].pos
+	res.NamePR.End = rest.front().pos
 	for {
 		var argName string
-		argPR := skipWS(&rest, outer)
+		argPR := rest.skipWS(outer)
 		argName, rest, err = parseVarIdent(rest, outer)
 		if err != nil {
 			break
 		}
-		argPR.End = rest[0].pos
+		argPR.End = rest.front().pos
 		res.Arguments = append(res.Arguments, argName)
 		res.ArgumentsPR = append(res.ArgumentsPR, argPR)
 	}
-	res.PR.End = rest[0].pos
+	res.PR.End = rest.front().pos
 	return res, rest, nil
 }
 
 // TODO: make this grammar correct
 // arithmetic :=  arithmetic '+' arithmetic | number | '(' arithmetic ')'
-func parseArithmetic(tokens []token, outer Position, force bool) (*Arithmetic, []token, error) {
+func parseArithmetic(tokens tokenIterator, outer Position, force bool) (*Arithmetic, tokenIterator, error) {
 	rest := tokens
 	var err error
 	var res *Arithmetic
 	switch {
-	case expect(&rest, lRoundBracket):
+	case rest.expect(lRoundBracket):
 		res, rest, err = parseArithmetic(rest, outer, force)
 		if err != nil {
 			return nil, tokens, err
@@ -251,27 +284,27 @@ func parseArithmetic(tokens []token, outer Position, force bool) (*Arithmetic, [
 		if res == nil {
 			return nil, tokens, nil
 		}
-		if !expect(&rest, rRoundBracket) {
-			return nil, tokens, parseErrToken(fmt.Errorf("')' expected"), rest[0], outer)
+		if !rest.expect(rRoundBracket) {
+			return nil, tokens, parseErrToken(fmt.Errorf("')' expected"), rest.front(), outer)
 		}
-	case checkToken(&rest, number):
+	case rest.checkToken(number):
 		var i uint64
-		i, err = strconv.ParseUint(rest[0].val, 10, 32)
+		i, err = strconv.ParseUint(rest.front().val, 10, 32)
 		if err != nil {
-			return nil, tokens, parseErrToken(fmt.Errorf("constant overflows uint32: %w", err), rest[0], outer)
+			return nil, tokens, parseErrToken(fmt.Errorf("constant overflows uint32: %w", err), rest.front(), outer)
 		}
-		expectOrPanic(&rest, number)
+		rest.expectOrPanic(number)
 		res = &Arithmetic{
 			Nums: []uint32{uint32(i)},
 			Res:  uint32(i),
 		}
 	default:
 		if force {
-			return nil, tokens, parseErrToken(fmt.Errorf("arithmetic expression expected after '+'"), rest[0], outer)
+			return nil, tokens, parseErrToken(fmt.Errorf("arithmetic expression expected after '+'"), rest.front(), outer)
 		}
 		return nil, tokens, nil
 	}
-	for expect(&rest, plus) {
+	for rest.expect(plus) {
 		var res2 *Arithmetic
 		res2, rest, err = parseArithmetic(rest, outer, true)
 		if err != nil {
@@ -279,7 +312,7 @@ func parseArithmetic(tokens []token, outer Position, force bool) (*Arithmetic, [
 		}
 		sum := uint64(res.Res) + uint64(res2.Res)
 		if sum >= math.MaxUint32 {
-			return nil, tokens, parseErrToken(fmt.Errorf("arithmetic expression overflows uint32"), rest[0], outer)
+			return nil, tokens, parseErrToken(fmt.Errorf("arithmetic expression overflows uint32"), rest.front(), outer)
 		}
 		res.Res = uint32(sum)
 		res.Nums = append(res.Nums, res2.Nums...)
@@ -288,18 +321,18 @@ func parseArithmetic(tokens []token, outer Position, force bool) (*Arithmetic, [
 }
 
 // aot := [T | arithmetic]
-func parseArithmeticOrTypeOpt(tokens []token, applyFlag bool, outer Position) (*ArithmeticOrType, []token, error) {
+func parseArithmeticOrTypeOpt(tokens tokenIterator, applyFlag bool, outer Position) (*ArithmeticOrType, tokenIterator, error) {
 	rest := tokens
 	var a *Arithmetic
-	pr := skipWS(&rest, outer)
+	pr := rest.skipWS(outer)
 	var err error
 	a, rest, err = parseArithmetic(rest, outer, false)
 	if err != nil {
 		return nil, tokens, err
 	}
 	if a != nil {
-		t := TypeRef{PR: pr}   // TODO - move into parsing of Arithmetic
-		t.PR.End = rest[0].pos // t stores PR in arithmeticOrType
+		t := TypeRef{PR: pr}        // TODO - move into parsing of Arithmetic
+		t.PR.End = rest.front().pos // t stores PR in arithmeticOrType
 		return &ArithmeticOrType{T: t, IsArith: true, Arith: *a}, rest, nil
 	}
 	var t *TypeRef
@@ -314,13 +347,13 @@ func parseArithmeticOrTypeOpt(tokens []token, applyFlag bool, outer Position) (*
 }
 
 // repeatType := [ scale '*' ]
-func parseScaleFactorOpt(tokens []token, outer Position) (*ScaleFactor, []token, error) {
+func parseScaleFactorOpt(tokens tokenIterator, outer Position) (*ScaleFactor, tokenIterator, error) {
 	rest := tokens
-	res := ScaleFactor{PR: skipWS(&rest, outer)}
+	res := ScaleFactor{PR: rest.skipWS(outer)}
 	var err error
 	res.Scale, rest, err = parseVarIdent(rest, outer)
 	if err == nil {
-		res.PR.End = rest[0].pos
+		res.PR.End = rest.front().pos
 		return &res, rest, nil
 		// return ScaleFactor{}, tokens, nil // fmt.Errorf("scale factor error: %w", err) // TODO - better error
 	}
@@ -334,14 +367,14 @@ func parseScaleFactorOpt(tokens []token, outer Position) (*ScaleFactor, []token,
 		res = ScaleFactor{IsArith: true, Arith: *arith}
 		return &res, rest, nil
 	}
-	res.PR.End = rest[0].pos
+	res.PR.End = rest.front().pos
 	return nil, rest, nil // TODO - check
 }
 
 // repeatType := [ scale '*' ] '[' field ... ']'
-func parseRepeatWithScaleOpt(tokens []token, outer Position) (*RepeatWithScale, []token, error) {
+func parseRepeatWithScaleOpt(tokens tokenIterator, outer Position) (*RepeatWithScale, tokenIterator, error) {
 	rest := tokens
-	res := RepeatWithScale{PR: skipWS(&rest, outer)}
+	res := RepeatWithScale{PR: rest.skipWS(outer)}
 	var err error
 	var scale *ScaleFactor
 	scale, rest, err = parseScaleFactorOpt(rest, outer)
@@ -350,17 +383,17 @@ func parseRepeatWithScaleOpt(tokens []token, outer Position) (*RepeatWithScale, 
 	}
 	if scale != nil {
 		res.Scale = *scale
-		if !expect(&rest, asterisk) {
+		if !rest.expect(asterisk) {
 			return nil, tokens, nil
 		}
 		res.ExplicitScale = true
-		if !expect(&rest, lSquareBracket) {
-			return nil, tokens, parseErrToken(fmt.Errorf("'[' is expected after '*'"), rest[0], outer)
+		if !rest.expect(lSquareBracket) {
+			return nil, tokens, parseErrToken(fmt.Errorf("'[' is expected after '*'"), rest.front(), outer)
 		}
-	} else if !expect(&rest, lSquareBracket) {
+	} else if !rest.expect(lSquareBracket) {
 		return nil, tokens, nil
 	}
-	// rBracketToken := rest[0]
+	// rBracketToken := rest.front()
 	res.Rep, rest, err = parseFields(rest, rSquareBracket, outer)
 	if err != nil {
 		return nil, tokens, err // fmt.Errorf("error parsing fields in square brackets: %w", err)
@@ -368,60 +401,61 @@ func parseRepeatWithScaleOpt(tokens []token, outer Position) (*RepeatWithScale, 
 	// if res.Rep == nil {
 	//	return RepeatWithScale{}, nil, parseErrToken(fmt.Errorf("empty square brackets not allowed: "), rBracketToken, outer)
 	// }
-	res.PR.End = rest[0].pos
+	res.PR.End = rest.front().pos
 	return &res, rest, nil
 }
 
 // fieldMask := word '.' number '?'
-func parseFieldMask(tokens []token, outer Position) (*FieldMask, []token, error) {
+func parseFieldMask(tokens tokenIterator, outer Position) (*FieldMask, tokenIterator, error) {
 	rest := tokens
-	res := &FieldMask{PRName: skipWS(&rest, outer)}
+	res := &FieldMask{PRName: rest.skipWS(outer)}
 	var name string
 	var err error
 	if name, rest, err = parseVarIdent(rest, outer); err != nil {
 		return nil, tokens, nil
 	}
 	res.MaskName = name
-	res.PRName.End = rest[0].pos
-	if !expect(&rest, dotSign) {
+	res.PRName.End = rest.front().pos
+	if !rest.expect(dotSign) {
 		return nil, tokens, nil
 	}
-	res.PRBits = skipWS(&rest, outer)
-	if !checkToken(&rest, number) {
-		return nil, tokens, parseErrToken(fmt.Errorf("expecting decimal bitmask bit number"), rest[0], outer)
+	res.PRBits = rest.skipWS(outer)
+	if !rest.checkToken(number) {
+		return nil, tokens, parseErrToken(fmt.Errorf("expecting decimal bitmask bit number"), rest.front(), outer)
 	}
-	i, err := strconv.ParseUint(rest[0].val, 10, 32)
+	i, err := strconv.ParseUint(rest.front().val, 10, 32)
 	if err != nil {
-		return nil, tokens, parseErrToken(fmt.Errorf("error converting bitmask to uint32: %w", err), rest[0], outer)
+		return nil, tokens, parseErrToken(fmt.Errorf("error converting bitmask to uint32: %w", err), rest.front(), outer)
 	}
 	res.BitNumber = uint32(i)
-	expectOrPanic(&rest, number)
-	res.PRBits.End = rest[0].pos
-	if !expect(&rest, questionMark) {
-		return nil, tokens, parseErrToken(fmt.Errorf("'?' expected after field bitmask "), rest[0], outer)
+	rest.expectOrPanic(number)
+	res.PRBits.End = rest.front().pos
+	if !rest.expect(questionMark) {
+		return nil, tokens, parseErrToken(fmt.Errorf("'?' expected after field bitmask "), rest.front(), outer)
 	}
 	return res, rest, nil
 }
 
 // fieldName := name ':'
-func parseFieldName(tokens []token, outer Position) (string, []token, Position) {
+func parseFieldName(tokens tokenIterator, outer Position) (string, tokenIterator, Position) {
 	rest := tokens
 	var name string
 	var err error
 	if name, rest, err = parseVarIdent(rest, outer); err != nil {
 		return "", rest, Position{}
 	}
-	end := rest[0].pos
-	if !expect(&rest, colon) {
+	end := rest.front().pos
+	if !rest.expect(colon) {
 		return "", tokens, end
 	}
 	return name, rest, end
 }
 
 // field := [ fieldName ] [ ! ]     [ fieldMask ] T
-func parseField(tokens []token, outer Position) (Field, []token, error) {
+func parseField(commentStart tokenIterator, tokens tokenIterator, outer Position) (Field, tokenIterator, error) {
 	rest := tokens
-	res := Field{PR: skipWS(&rest, outer)}
+	res := Field{PR: rest.skipWS(outer)}
+	res.CommentBefore = parseCommentBefore(commentStart, rest)
 	res.PRName = res.PR
 	var err error
 	res.FieldName, rest, res.PRName.End = parseFieldName(rest, outer)
@@ -433,7 +467,7 @@ func parseField(tokens []token, outer Position) (Field, []token, error) {
 	if mask != nil {
 		res.Mask = mask
 	}
-	if expect(&rest, exclamation) {
+	if rest.expect(exclamation) {
 		res.Excl = true
 	}
 	var rws *RepeatWithScale
@@ -445,10 +479,10 @@ func parseField(tokens []token, outer Position) (Field, []token, error) {
 		res.IsRepeated = true
 		res.ScaleRepeat = *rws
 		res.FieldType.PR = rws.PR // after type replacing, it will become new field
-		res.PR.End = rest[0].pos
+		res.PR.End = rest.front().pos
 		return res, rest, nil
 	}
-	// typeStartPR := skipWS(&rest, outer) - experimental beautiful error code below
+	// typeStartPR := rest.skipWS(outer) - experimental beautiful error code below
 	var t *TypeRef
 	t, rest, err = parseTypeRef(rest, false, outer)
 	if err != nil {
@@ -458,30 +492,36 @@ func parseField(tokens []token, outer Position) (Field, []token, error) {
 		return Field{}, tokens, fmt.Errorf("error parsing field type: %w", err)
 	}
 	if t == nil {
-		return Field{}, tokens, parseErrToken(fmt.Errorf("field type is expected here (missed '()' around complex type?)"), rest[0], outer)
+		return Field{}, tokens, parseErrToken(fmt.Errorf("field type is expected here (missed '()' around complex type?)"), rest.front(), outer)
 	}
 	res.FieldType = *t
-	res.PR.End = rest[0].pos
+	res.PR.End = rest.front().pos
 	return res, rest, nil
 }
 
-func parseFields(tokens []token, finishToken int, outer Position) ([]Field, []token, error) {
+func parseFields(tokens tokenIterator, finishToken int, outer Position) ([]Field, tokenIterator, error) {
 	var res []Field
 	rest := tokens
 	var err error
-	for !expect(&rest, finishToken) {
+	commentStart := tokens
+	for !rest.expect(finishToken) {
 		var field Field
-		field, rest, err = parseField(rest, outer)
+		field, rest, err = parseField(commentStart, rest, outer)
 		if err != nil {
-			return nil, tokens, err // fmt.Errorf("'%c' or field declaration expected: %w", finishToken, err) // parseErrToken(fmt.Errorf("field declaration expected:"), rest[0])
+			return nil, tokens, err // fmt.Errorf("'%c' or field declaration expected: %w", finishToken, err) // parseErrToken(fmt.Errorf("field declaration expected:"), rest.front())
+		}
+		commentStart = rest
+		if rest.skipToNewline() {
+			field.CommentRight = parseCommentRight(commentStart, rest)
 		}
 		res = append(res, field)
+		commentStart = rest
 	}
 	return res, rest, nil
 }
 
 // funcDecl := apply | '(' apply ')' | '%' T | fullName '<' aot ',' ... '>
-func parseFuncDecl(tokens []token, outer Position) (TypeRef, []token, error) {
+func parseFuncDecl(tokens tokenIterator, outer Position) (TypeRef, tokenIterator, error) {
 	// Separate function for better documentation
 	rest := tokens
 	t, rest, err := parseTypeRef(rest, true, outer)
@@ -489,7 +529,7 @@ func parseFuncDecl(tokens []token, outer Position) (TypeRef, []token, error) {
 		return TypeRef{}, tokens, err
 	}
 	if t == nil {
-		return TypeRef{}, tokens, parseErrToken(fmt.Errorf("return type is expected here"), rest[0], outer)
+		return TypeRef{}, tokens, parseErrToken(fmt.Errorf("return type is expected here"), rest.front(), outer)
 	}
 	return *t, rest, nil
 }
@@ -497,10 +537,12 @@ func parseFuncDecl(tokens []token, outer Position) (TypeRef, []token, error) {
 // type := constructor [templateArgument] ... [field] ...  '=' typeDecl ';'
 // or
 // function := [ functionModifier ] constructor [templateArgument] ... [field] ... '=' apply;'
-func parseCombinator(tokens []token, isFunction bool, allowBuiltin bool) (Combinator, []token, error) {
+func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunction bool, allowBuiltin bool) (Combinator, tokenIterator, error) {
 	rest := tokens
 
-	td := Combinator{PR: skipWS(&rest, Position{})}
+	td := Combinator{PR: rest.skipWS(Position{})}
+	td.CommentBefore = parseCommentBefore(commentStart, rest)
+
 	outer := td.PR.Begin
 	td.PR.Outer = outer // Set outer context for all parsing
 	var err error
@@ -510,7 +552,7 @@ func parseCombinator(tokens []token, isFunction bool, allowBuiltin bool) (Combin
 	if err != nil {
 		return Combinator{}, tokens, fmt.Errorf("constructor declaration error: %w", err)
 	}
-	td.TemplateArgumentsPR = skipWS(&rest, outer)
+	td.TemplateArgumentsPR = rest.skipWS(outer)
 	td.TemplateArguments, rest, err = parseTemplateArguments(rest, outer)
 	if err != nil {
 		return Combinator{}, tokens, err
@@ -518,15 +560,15 @@ func parseCombinator(tokens []token, isFunction bool, allowBuiltin bool) (Combin
 	if len(td.TemplateArguments) == 0 {
 		td.TemplateArgumentsPR.Begin = td.Construct.IDPR.End // highlight empty space when no arguments
 	}
-	td.TemplateArgumentsPR.End = rest[0].pos
-	if checkToken(&rest, questionMark) {
+	td.TemplateArgumentsPR.End = rest.front().pos
+	if rest.checkToken(questionMark) {
 		if isFunction {
-			return Combinator{}, tokens, parseErrToken(fmt.Errorf("'?' (legacy builtin type body) is not allowed in functions"), rest[0], outer)
+			return Combinator{}, tokens, parseErrToken(fmt.Errorf("'?' (legacy builtin type body) is not allowed in functions"), rest.front(), outer)
 		}
-		expectOrPanic(&rest, questionMark)
+		rest.expectOrPanic(questionMark)
 		td.Builtin = true
-		if !expect(&rest, equalSign) {
-			return Combinator{}, tokens, parseErrToken(fmt.Errorf("'=' expected after '?' (legacy builtin type body)"), rest[0], outer)
+		if !rest.expect(equalSign) {
+			return Combinator{}, tokens, parseErrToken(fmt.Errorf("'=' expected after '?' (legacy builtin type body)"), rest.front(), outer)
 		}
 	} else {
 		td.Fields, rest, err = parseFields(rest, equalSign, outer)
@@ -545,10 +587,15 @@ func parseCombinator(tokens []token, isFunction bool, allowBuiltin bool) (Combin
 			return Combinator{}, tokens, fmt.Errorf("type declaration expected: %w", err)
 		}
 	}
-	if !expect(&rest, semiColon) {
-		return Combinator{}, tokens, parseErrToken(fmt.Errorf("';' or type argument expected"), rest[0], outer)
+	if !rest.expect(semiColon) {
+		return Combinator{}, tokens, parseErrToken(fmt.Errorf("';' or type argument expected"), rest.front(), outer)
 	}
-	td.PR.End = rest[0].pos
+	td.PR.End = rest.front().pos
+	commentStart = rest
+	if rest.skipToNewline() {
+		td.CommentRight = parseCommentRight(commentStart, rest)
+	}
+
 	return td, rest, nil
 }
 
@@ -563,7 +610,7 @@ func ParseTLFile(str, file string) (TL, error) {
 // ParseTL TL := TypesSection [ type ... ] FunctionSection [ function ... ]
 func ParseTL2(str, file string, allowBuiltin bool) (TL, error) {
 	lex := newLexer(str, file, allowBuiltin)
-	rest, err := lex.generateTokens()
+	allTokens, err := lex.generateTokens()
 	if err != nil {
 		return TL{}, fmt.Errorf("tokenizer error: %w", err)
 	}
@@ -578,19 +625,23 @@ func ParseTL2(str, file string, allowBuiltin bool) (TL, error) {
 	var res TL
 
 	orderIndex := 0
-	for !expect(&rest, eof) {
-		switch rest[0].tokenType {
+	rest := tokenIterator{tokens: allTokens}
+	commentStart := rest
+	for !rest.expect(eof) {
+		switch rest.front().tokenType {
 		case typesSection:
 			functionSection = false
-			rest = rest[1:]
+			rest.popFront()
+			commentStart = rest
 			continue
 		case functionsSection:
 			functionSection = true
-			rest = rest[1:]
+			rest.popFront()
+			commentStart = rest
 			continue
 		}
 		var td Combinator
-		td, rest, err = parseCombinator(rest, functionSection, allowBuiltin)
+		td, rest, err = parseCombinator(commentStart, rest, functionSection, allowBuiltin)
 		if err != nil {
 			if functionSection {
 				return nil, fmt.Errorf("function declaration error: %w", err)
@@ -600,6 +651,7 @@ func ParseTL2(str, file string, allowBuiltin bool) (TL, error) {
 		td.OriginalOrderIndex = orderIndex
 		orderIndex++
 		res = append(res, &td)
+		commentStart = rest
 	}
 	return res, nil
 }
