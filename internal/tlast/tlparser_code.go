@@ -164,20 +164,18 @@ func parseConstructor(tokens tokenIterator, outer Position, allowBuiltin bool) (
 	rest := tokens
 	res := Constructor{NamePR: rest.skipWS(outer)}
 	var err error
-	if allowBuiltin {
-		if rest.checkToken(numberSign) {
-			res.Name.Name = rest.front().val
-			rest.expectOrPanic(numberSign)
-			res.NamePR.End = rest.front().pos
-			res.IDPR = res.NamePR // wish to highlight name, if tag absent
-			return res, rest, nil
+	if allowBuiltin && rest.checkToken(numberSign) {
+		res.Name.Name = rest.front().val
+		rest.expectOrPanic(numberSign)
+		res.NamePR.End = rest.front().pos
+		res.IDPR = res.NamePR // wish to highlight name, if tag absent
+	} else {
+		if res.Name, rest, err = parseLCIdentNS(rest, outer); err != nil {
+			return Constructor{}, tokens, err // parseErrToken(fmt.Errorf("constructor name expected"), rest.front())
 		}
+		res.NamePR.End = rest.front().pos
+		res.IDPR = res.NamePR // wish to highlight name, if tag absent
 	}
-	if res.Name, rest, err = parseLCIdentNS(rest, outer); err != nil {
-		return Constructor{}, tokens, err // parseErrToken(fmt.Errorf("constructor name expected"), rest.front())
-	}
-	res.NamePR.End = rest.front().pos
-	res.IDPR = res.NamePR // wish to highlight name, if tag absent
 	if rest.checkToken(crc32hash) {
 		res.IDPR.Begin = rest.front().pos
 		i, err := strconv.ParseUint(rest.front().val[1:], 16, 32)

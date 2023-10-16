@@ -11,8 +11,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/vkcom/tl/internal/tlcodegen/gen_tlo"
+	tls "github.com/vkcom/tl/internal/tlcodegen/gentlo/tltls"
 	"github.com/vkcom/tl/internal/utils"
+
+	"golang.org/x/exp/slices"
 )
 
 func main() {
@@ -24,10 +26,32 @@ func main() {
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "error on reading file %s: %v", os.Args[1], err)
 	}
-	var v4 gen_tlo.TlsSchemaV4
+	var v4 tls.SchemaV4
 	if _, err := v4.ReadBoxed(buf); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "error on reading schema: %v", err)
 	}
+	slices.SortFunc(v4.Constructors, func(a, b tls.CombinatorUnion) int {
+		valAV4, okA := a.AsV4()
+		if !okA {
+			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())
+		}
+		valBV4, okB := b.AsV4()
+		if !okB {
+			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())
+		}
+		return strings.Compare(valAV4.Id, valBV4.Id)
+	})
+	slices.SortFunc(v4.Functions, func(a, b tls.CombinatorUnion) int {
+		valAV4, okA := a.AsV4()
+		if !okA {
+			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())
+		}
+		valBV4, okB := b.AsV4()
+		if !okB {
+			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())
+		}
+		return strings.Compare(valAV4.Id, valBV4.Id)
+	})
 	out, err := v4.WriteJSON(nil)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "error on creating json: %v", err)
