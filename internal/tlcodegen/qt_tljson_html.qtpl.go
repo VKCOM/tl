@@ -168,6 +168,16 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 	qw422016.E().S(trww.JSONHelpString())
 	qw422016.N().S(`</h2>
 `)
+	if len(trww.origTL) == 1 && trww.origTL[0].CommentBefore != "" {
+		for _, line := range strings.Split(trww.origTL[0].CommentBefore, "\n") {
+			qw422016.N().S(`    <code style="color:DarkCyan">`)
+			qw422016.E().S(line)
+			qw422016.N().S(`</code></br>
+`)
+		}
+	}
+	qw422016.N().S(`
+`)
 	if len(trww.NatParams) != 0 {
 		qw422016.N().S(`External # (nat) arguments: <b>`)
 		qw422016.E().S(strings.Join(trww.NatParams, ", "))
@@ -230,7 +240,18 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
       <table>
 `)
 			for i, field := range trw.Fields {
+				if field.origTL.CommentBefore != "" {
+					for _, line := range strings.Split(field.origTL.CommentBefore, "\n") {
+						qw422016.N().S(`          <tr><td colspan="4">
+            <code style="color:DarkCyan">`)
+						qw422016.E().S(line)
+						qw422016.N().S(`</code>
+          </td></tr>
+`)
+					}
+				}
 				qw422016.N().S(`        <tr>
+
 `)
 				if field.t.IsTrueType() {
 					qw422016.N().S(`          <td>&nbsp;&nbsp;"`)
@@ -255,6 +276,17 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 				qw422016.N().S(`          <td>`)
 				streamjsonCommentFieldMask(qw422016, field.fieldMask, field.BitNumber, trw.Fields)
 				qw422016.N().S(`</td>
+          <td>
+`)
+				if field.origTL.CommentRight != "" {
+					for _, line := range strings.Split(field.origTL.CommentRight, "\n") {
+						qw422016.N().S(`    <code style="color:DarkCyan">`)
+						qw422016.E().S(line)
+						qw422016.N().S(`</code></td></tr><tr><td colspan="4">
+`)
+					}
+				}
+				qw422016.N().S(`          </td>
         </tr>
 `)
 			}
@@ -268,63 +300,84 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
     <code>`)
 		qw422016.E().S(trww.origTL[0].String())
 		qw422016.N().S(`</code>
-  </dd>
+`)
+		if trww.origTL[0].CommentRight != "" {
+			for _, line := range strings.Split(trww.origTL[0].CommentRight, "\n") {
+				qw422016.N().S(`    <code style="color:DarkCyan">`)
+				qw422016.E().S(line)
+				qw422016.N().S(`</code></br>
+`)
+			}
+		}
+		qw422016.N().S(`  </dd>
 </dl>
 `)
 	case *TypeRWUnion:
 		qw422016.N().S(`<dl>
   <dt>JSON</dt>
-  <dd>
-    <ul>
+  <dd><code>
+      <table>
 `)
 		for _, field := range trw.Fields {
 			tag := fmt.Sprintf("%08x", field.t.tlTag)
 
-			qw422016.N().S(`            <li><code>
+			qw422016.N().S(`            <tr>
 `)
 			if trw.IsEnum {
-				qw422016.N().S(`                "`)
+				qw422016.N().S(`                <td><span title='Can be also specified as "`)
 				qw422016.E().S(field.originalName)
-				qw422016.N().S(`"
-                // or "#`)
+				qw422016.N().S(`" or "#`)
 				qw422016.E().S(tag)
-				qw422016.N().S(`" or "`)
+				qw422016.N().S(`"' style="color:MediumVioletRed">"`)
 				qw422016.E().S(field.originalName)
 				qw422016.N().S(`#`)
 				qw422016.E().S(tag)
-				qw422016.N().S(`"
+				qw422016.N().S(`"</span></td><td></td>
 `)
 			} else {
-				qw422016.N().S(`                {"type":"`)
+				qw422016.N().S(`                <td>{"type":<span title='Can be also specified as "`)
 				qw422016.E().S(field.originalName)
-				qw422016.N().S(`"`)
-				if !field.t.IsTrueType() {
-					qw422016.N().S(`, "value":`)
-					streammakeRef(qw422016, field.t.goGlobalName, field.t.JSONHelpString())
-				}
-				qw422016.N().S(`}
-                // or "type":"#`)
+				qw422016.N().S(`" or "#`)
 				qw422016.E().S(tag)
-				qw422016.N().S(`" or "type":"`)
+				qw422016.N().S(`"' style="color:MediumVioletRed">"`)
 				qw422016.E().S(field.originalName)
 				qw422016.N().S(`#`)
 				qw422016.E().S(tag)
-				qw422016.N().S(`"
-`)
+				qw422016.N().S(`"</span>`)
+				if !field.t.IsTrueType() {
+					qw422016.N().S(`,</td><td>"value":`)
+					streammakeRef(qw422016, field.t.goGlobalName, field.t.JSONHelpString())
+					qw422016.N().S(`}</td>`)
+				} else {
+					qw422016.N().S(`}</td><td></td>`)
+				}
 			}
-			qw422016.N().S(`            </code></li>
+			qw422016.N().S(`          <td>
+`)
+			if field.t.origTL[0].CommentRight != "" {
+				for _, line := range strings.Split(field.t.origTL[0].CommentRight, "\n") {
+					qw422016.N().S(`    <code style="color:DarkCyan">`)
+					qw422016.E().S(line)
+					qw422016.N().S(`</code></td></tr><tr><td colspan="3">
+`)
+				}
+			}
+			qw422016.N().S(`          </td>
+        </tr>
 `)
 		}
-		qw422016.N().S(`    </ul>
-  </dd>
+		qw422016.N().S(`      </table>
+  </code></dd>
   <dt>TL</dt>
   <dd>
     <ul>
 `)
 		for _, origTL := range trww.origTL {
-			qw422016.N().S(`    <li><code>`)
+			qw422016.N().S(`    <li>
+    <code>`)
 			qw422016.E().S(origTL.String())
-			qw422016.N().S(`</code></li>
+			qw422016.N().S(`</code>
+    </li>
 `)
 		}
 		qw422016.N().S(`    </ul>
