@@ -22,19 +22,19 @@ import "fmt"
 //	'?'                               - we prohibit it, instead it is parsed as type body
 //
 // if applyFlag == true then it will try to parse a b c d type without brackets (used when there is outer brackets)
-func parseTypeRef(tokens []token, applyFlag bool, outer Position) (*TypeRef, []token, error) {
+func parseTypeRef(tokens tokenIterator, applyFlag bool, outer Position) (*TypeRef, tokenIterator, error) {
 	rest := tokens
 	var pt *TypeRef
 	var err error
 
-	pr := skipWS(&rest, outer)
+	pr := rest.skipWS(outer)
 
-	if expect(&rest, numberSign) {
-		pr.End = rest[0].pos
+	if rest.expect(numberSign) {
+		pr.End = rest.front().pos
 		return &TypeRef{Type: Name{Name: "#"}, PR: pr, PRArgs: pr.CollapseToEnd()}, rest, nil
 	}
 
-	bare := expect(&rest, percentSign)
+	bare := rest.expect(percentSign)
 
 	pt, rest, err = parseTypeRefInRoundBracketsOpt(rest, outer)
 	if err != nil {
@@ -43,7 +43,7 @@ func parseTypeRef(tokens []token, applyFlag bool, outer Position) (*TypeRef, []t
 	if pt != nil {
 		pt.Bare = pt.Bare || bare
 		pt.PR = pr
-		pt.PR.End = rest[0].pos
+		pt.PR.End = rest.front().pos
 		return pt, rest, nil
 	}
 
@@ -54,7 +54,7 @@ func parseTypeRef(tokens []token, applyFlag bool, outer Position) (*TypeRef, []t
 	if pt != nil {
 		pt.Bare = pt.Bare || bare
 		pt.PR = pr
-		pt.PR.End = rest[0].pos
+		pt.PR.End = rest.front().pos
 		return pt, rest, nil
 	}
 
@@ -63,11 +63,11 @@ func parseTypeRef(tokens []token, applyFlag bool, outer Position) (*TypeRef, []t
 		return nil, tokens, nil
 	}
 	res := TypeRef{PR: pr, Type: name}
-	res.PR.End = rest[0].pos
-	res.PRArgs = res.PR.CollapseToEnd() // skipWS(&rest, outer)
+	res.PR.End = rest.front().pos
+	res.PRArgs = res.PR.CollapseToEnd() // rest.skipWS(outer)
 	if applyFlag {
 		for {
-			res.PRArgs.End = rest[0].pos
+			res.PRArgs.End = rest.front().pos
 			var aot *ArithmeticOrType
 			aot, rest, err = parseArithmeticOrTypeOpt(rest, false, outer)
 			if err != nil {
@@ -86,9 +86,9 @@ func parseTypeRef(tokens []token, applyFlag bool, outer Position) (*TypeRef, []t
 // '(' T ')
 // returns nil, nil if ( not found
 // returns &t , nil if parsed
-func parseTypeRefInRoundBracketsOpt(tokens []token, outer Position) (*TypeRef, []token, error) {
+func parseTypeRefInRoundBracketsOpt(tokens tokenIterator, outer Position) (*TypeRef, tokenIterator, error) {
 	rest := tokens
-	if !expect(&rest, lRoundBracket) {
+	if !rest.expect(lRoundBracket) {
 		return nil, tokens, nil
 	}
 	var res *TypeRef
@@ -98,10 +98,10 @@ func parseTypeRefInRoundBracketsOpt(tokens []token, outer Position) (*TypeRef, [
 		return nil, tokens, err // fmt.Errorf("bad t: %w", err)
 	}
 	if res == nil {
-		return nil, tokens, parseErrToken(fmt.Errorf("')' or type is expected here"), rest[0], outer)
+		return nil, tokens, parseErrToken(fmt.Errorf("')' or type is expected here"), rest.front(), outer)
 	}
-	if !expect(&rest, rRoundBracket) {
-		return nil, tokens, parseErrToken(fmt.Errorf("')' or type is expected here"), rest[0], outer)
+	if !rest.expect(rRoundBracket) {
+		return nil, tokens, parseErrToken(fmt.Errorf("')' or type is expected here"), rest.front(), outer)
 	}
 	return res, rest, nil
 }
@@ -109,17 +109,17 @@ func parseTypeRefInRoundBracketsOpt(tokens []token, outer Position) (*TypeRef, [
 // fullName '<' aot ',' ... '>
 // returns nil, nil if fullName or < not found after fullName
 // returns &t , nil if parsed
-func parseTypeRefWithAngleBracketsOpt(tokens []token, outer Position) (*TypeRef, []token, error) {
+func parseTypeRefWithAngleBracketsOpt(tokens tokenIterator, outer Position) (*TypeRef, tokenIterator, error) {
 	var res TypeRef
 	rest := tokens
 	var err error
 	if res.Type, rest, err = parseTypeRefAsName(rest, outer); err != nil {
 		return nil, tokens, nil
 	}
-	if !expect(&rest, lAngleBracket) {
+	if !rest.expect(lAngleBracket) {
 		return nil, tokens, nil
 	}
-	res.PRArgs = skipWS(&rest, outer)
+	res.PRArgs = rest.skipWS(outer)
 	for {
 		var aot *ArithmeticOrType
 		aot, rest, err = parseArithmeticOrTypeOpt(rest, true, outer)
@@ -127,43 +127,43 @@ func parseTypeRefWithAngleBracketsOpt(tokens []token, outer Position) (*TypeRef,
 			return nil, tokens, err
 		}
 		if aot == nil {
-			return nil, tokens, parseErrToken(fmt.Errorf("',', '>' or type expected here"), rest[0], outer)
+			return nil, tokens, parseErrToken(fmt.Errorf("',', '>' or type expected here"), rest.front(), outer)
 		}
 		res.Args = append(res.Args, *aot)
-		if expect(&rest, commaSign) {
+		if rest.expect(commaSign) {
 			continue
 		}
-		res.PRArgs.End = rest[0].pos
-		if !expect(&rest, rAngleBracket) {
-			return nil, tokens, parseErrToken(fmt.Errorf("'>' or type expected here"), rest[0], outer)
+		res.PRArgs.End = rest.front().pos
+		if !rest.expect(rAngleBracket) {
+			return nil, tokens, parseErrToken(fmt.Errorf("'>' or type expected here"), rest.front(), outer)
 		}
 		break
 	}
 	return &res, rest, nil
 }
 
-func parseTypeRefAsName(tokens []token, outer Position) (Name, []token, error) {
+func parseTypeRefAsName(tokens tokenIterator, outer Position) (Name, tokenIterator, error) {
 	rest := tokens
 	var res Name
-	if checkToken(&rest, lcIdentNS) {
-		res = splitIdenNSFromToken(rest[0].val)
-		expectOrPanic(&rest, lcIdentNS)
+	if rest.checkToken(lcIdentNS) {
+		res = splitIdenNSFromToken(rest.front().val)
+		rest.expectOrPanic(lcIdentNS)
 		return res, rest, nil
 	}
-	if checkToken(&rest, lcIdent) {
-		res.Name = rest[0].val
-		expectOrPanic(&rest, lcIdent)
+	if rest.checkToken(lcIdent) {
+		res.Name = rest.front().val
+		rest.expectOrPanic(lcIdent)
 		return res, rest, nil
 	}
-	if checkToken(&rest, ucIdentNS) {
-		res = splitIdenNSFromToken(rest[0].val)
-		expectOrPanic(&rest, ucIdentNS)
+	if rest.checkToken(ucIdentNS) {
+		res = splitIdenNSFromToken(rest.front().val)
+		rest.expectOrPanic(ucIdentNS)
 		return res, rest, nil
 	}
-	if checkToken(&rest, ucIdent) {
-		res.Name = rest[0].val
-		expectOrPanic(&rest, ucIdent)
+	if rest.checkToken(ucIdent) {
+		res.Name = rest.front().val
+		rest.expectOrPanic(ucIdent)
 		return res, rest, nil
 	}
-	return Name{}, tokens, parseErrToken(fmt.Errorf("name (with optional namespace) expected"), rest[0], outer)
+	return Name{}, tokens, parseErrToken(fmt.Errorf("name (with optional namespace) expected"), rest.front(), outer)
 }

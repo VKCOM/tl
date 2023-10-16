@@ -70,8 +70,8 @@ type TypeRWWrapper struct {
 	hasBytesVersion bool
 
 	fileName string
-	tlTag    uint32
-	tlName   tlast.Name // constructor name or union name for code generation
+	tlTag    uint32     // TODO - turn into function
+	tlName   tlast.Name // TODO - turn into function constructor name or union name for code generation
 	origTL   []*tlast.Combinator
 
 	isTopLevel bool
@@ -461,6 +461,8 @@ type Field struct {
 	BitNumber uint32 // only used when fieldMask != nil
 
 	natArgs []ActualNatArg
+
+	origTL tlast.Field
 }
 
 func (f *Field) Bare() bool {

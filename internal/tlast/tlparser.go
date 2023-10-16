@@ -102,6 +102,9 @@ type Field struct {
 
 	PR     PositionRange
 	PRName PositionRange
+
+	CommentBefore string // comment before field
+	CommentRight  string // comment to the right of field
 }
 
 type Combinator struct {
@@ -119,6 +122,9 @@ type Combinator struct {
 
 	TemplateArgumentsPR PositionRange // especially useful when 0 arguments
 	PR                  PositionRange
+
+	CommentBefore string // comment before combinator
+	CommentRight  string // comment to the right of combinator
 }
 
 type TL []*Combinator

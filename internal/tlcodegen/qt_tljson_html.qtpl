@@ -94,6 +94,12 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
       }
   -%}
 <h2 id="{%s trww.goGlobalName %}">{%s trww.JSONHelpString() %}</h2>
+    {%- if len(trww.origTL) == 1 && trww.origTL[0].CommentBefore != "" -%}
+    {%- for _, line := range strings.Split(trww.origTL[0].CommentBefore, "\n") -%}
+    <code style="color:DarkCyan">{%s line %}</code></br>
+    {%- endfor -%}
+    {%- endif -%}
+
     {%- if len(trww.NatParams) != 0 -%}
 External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
     {%- endif -%}
@@ -134,13 +140,28 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
     {
       <table>
       {%- for i, field := range trw.Fields -%}
+            {%- if field.origTL.CommentBefore != "" -%}
+            {%- for _, line := range strings.Split(field.origTL.CommentBefore, "\n") -%}
+          <tr><td colspan="4">
+            <code style="color:DarkCyan">{%s line %}</code>
+          </td></tr>
+            {%- endfor -%}
+            {%- endif -%}
         <tr>
+
         {%- if field.t.IsTrueType() -%}
           <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: true{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
         {%- else -%}
           <td>&nbsp;&nbsp;"{%s field.originalName %}"</td><td>: {%= printJSONHelpType2(gen, field.t, field.bare, trw.Fields, field.natArgs) %}{%- if i != len(trw.Fields) - 1 -%},{%- endif -%}</td>
         {%- endif -%}
           <td>{%= jsonCommentFieldMask(field.fieldMask, field.BitNumber, trw.Fields) %}</td>
+          <td>
+    {%- if field.origTL.CommentRight != "" -%}
+    {%- for _, line := range strings.Split(field.origTL.CommentRight, "\n") -%}
+    <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="4">
+    {%- endfor -%}
+    {%- endif -%}
+          </td>
         </tr>
       {%- endfor -%}
       </table>
@@ -149,34 +170,46 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
   <dt>TL</dt>
   <dd>
     <code>{%s trww.origTL[0].String() %}</code>
+    {%- if trww.origTL[0].CommentRight != "" -%}
+    {%- for _, line := range strings.Split(trww.origTL[0].CommentRight, "\n") -%}
+    <code style="color:DarkCyan">{%s line %}</code></br>
+    {%- endfor -%}
+    {%- endif -%}
   </dd>
 </dl>
   {%- case *TypeRWUnion -%}
 <dl>
   <dt>JSON</dt>
-  <dd>
-    <ul>
+  <dd><code>
+      <table>
     {%- for _, field := range trw.Fields -%}
             {%- code
                 tag := fmt.Sprintf("%08x", field.t.tlTag)
             -%}
-            <li><code>
+            <tr>
             {%- if trw.IsEnum -%}
-                "{%s field.originalName %}"
-                // or "#{%s tag %}" or "{%s field.originalName %}#{%s tag %}"
+                <td><span title='Can be also specified as "{%s field.originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s field.originalName %}#{%s tag %}"</span></td><td></td>
             {%- else -%}
-                {"type":"{%s field.originalName %}"{%- if !field.t.IsTrueType() -%}, "value":{%= makeRef(field.t.goGlobalName, field.t.JSONHelpString()) %}{%- endif -%}}
-                // or "type":"#{%s tag %}" or "type":"{%s field.originalName %}#{%s tag %}"
+                <td>{"type":<span title='Can be also specified as "{%s field.originalName %}" or "#{%s tag %}"' style="color:MediumVioletRed">"{%s field.originalName %}#{%s tag %}"</span>{%- if !field.t.IsTrueType() -%},</td><td>"value":{%= makeRef(field.t.goGlobalName, field.t.JSONHelpString()) %}}</td>{%- else -%}}</td><td></td>{%- endif -%}
             {%- endif -%}
-            </code></li>
+          <td>
+    {%- if field.t.origTL[0].CommentRight != "" -%}
+    {%- for _, line := range strings.Split(field.t.origTL[0].CommentRight, "\n") -%}
+    <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="3">
     {%- endfor -%}
-    </ul>
-  </dd>
+    {%- endif -%}
+          </td>
+        </tr>
+    {%- endfor -%}
+      </table>
+  </code></dd>
   <dt>TL</dt>
   <dd>
     <ul>
     {%- for _, origTL := range trww.origTL -%}
-    <li><code>{%s origTL.String() %}</code></li>
+    <li>
+    <code>{%s origTL.String() %}</code>
+    </li>
     {%- endfor -%}
     </ul>
   </dd>
