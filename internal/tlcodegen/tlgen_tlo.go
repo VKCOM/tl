@@ -21,9 +21,53 @@ import (
 )
 
 const (
-	natTag  = 0x70659eff // crc32("#")
-	typeTag = 0x2cecf817 // crc32("Type")
+	natTag    = 0x70659eff // crc32("#")
+	typeTag   = 0x2cecf817 // crc32("Type")
+	intTag    = 0xa8509bda // crc32(int#a8509bda ? = Int;)
+	longTag   = 0x22076cba // crc32(long#22076cba ? = Long;)
+	floatTag  = 0x824dab22 // crc32(float#824dab22 ? = Float;)
+	doubleTag = 0x2210c154 // crc32(double#2210c154 ? = Double;)
+	stringTag = 0xb5286e24 // crc32(string#b5286e24 ? = String;)
+
+	intTadInt32    = int32(-1471112230) // int tag
+	longTagInt32   = int32(570911930)   // long tag
+	floatTagInt32  = int32(-2108839134) // float tag
+	doubleTagInt32 = int32(571523412)   // double tag
+	stringTagInt32 = int32(-1255641564) // string tag
+
+	vectorTotalTag          = uint32(0x10133f47) // crc32(vectorTotal t:Type total_count:int vector:%Vector t = VectorTotal t) field of engine.queryShortened
+	underscoreTag           = uint32(0x840e0ecc) // crc32(_ X:Type result:X = ReqResult X)
+	reqResultTypeTag        = uint32(0xbde1c550) // 0xb527877d ^ 0x8cc84ce1 ^ underscoreTag
+	engineQueryTag          = uint32(0xfd232246) // engine.query X:Type query:X = engine.Query
+	engineQueryShortenedTag = uint32(0x1edf25a9) // crc32(engine.queryShortened query:%VectorTotal int = engine.Query)
+	engineQueryTypeTag      = uint32(0xe3fc07ef) // engineQueryTag ^ engineQueryShortenedTag
+
+	vectorTotalTypeTagInt32      = int32(0x10133f47)  // vectorTotal type tag
+	underscoreTagInt32           = int32(-2079453492) // underscore type tag
+	reqResultTypeTagInt32        = int32(-1109277360) // reqResult type tag
+	engineQueryTagInt32          = int32(-48029114)   // engineQuery type tag
+	engineQueryShortenedTagInt32 = int32(0x1edf25a9)  // engineQueryShortened type tag
+	engineQueryTypeTagInt32      = int32(-470022161)  // 0xe3fc07ef = engineQueryTag ^ engineQueryShortenedTag
 )
+
+// at some point of TL schema compilation tlgen breaks primitive canonical form
+// in order to keep TLO compatible predefined primitive combinator form is used
+var builtinCombinators = map[string]tls.CombinatorUnion{
+	"int":    tls.CombinatorV4{Name: intTadInt32, Id: "int", TypeName: intTadInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: intTadInt32}.AsUnion()}}.AsUnion(),
+	"long":   tls.CombinatorV4{Name: longTagInt32, Id: "long", TypeName: longTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: longTagInt32}.AsUnion()}}.AsUnion(),
+	"float":  tls.CombinatorV4{Name: floatTagInt32, Id: "float", TypeName: floatTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: floatTagInt32}.AsUnion()}}.AsUnion(),
+	"double": tls.CombinatorV4{Name: doubleTagInt32, Id: "double", TypeName: doubleTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: doubleTagInt32}.AsUnion()}}.AsUnion(),
+	"string": tls.CombinatorV4{Name: stringTagInt32, Id: "string", TypeName: stringTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: stringTagInt32}.AsUnion()}}.AsUnion(),
+}
+
+var builtinTypeExprUnions = map[string]tls.TypeExprUnion{
+	"#":      tls.TypeExpr{Name: natTag}.AsUnion(),
+	"int":    tls.TypeExpr{Name: intTadInt32, Flags: 1 << 0}.AsUnion(),
+	"long":   tls.TypeExpr{Name: longTagInt32, Flags: 1 << 0}.AsUnion(),
+	"float":  tls.TypeExpr{Name: floatTagInt32, Flags: 1 << 0}.AsUnion(),
+	"double": tls.TypeExpr{Name: doubleTagInt32, Flags: 1 << 0}.AsUnion(),
+	"string": tls.TypeExpr{Name: stringTagInt32, Flags: 1 << 0}.AsUnion(),
+}
 
 type param struct {
 	name       string
@@ -54,37 +98,64 @@ func (ps *paramScope) find(f func(e param) bool) (param, bool) {
 func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 	typeTags := map[string]uint32{}
 	s := tls.SchemaV4{
-		Version:  0, // always 0
-		Date:     int32(time.Now().Unix()),
-		TypesNum: 1,
-		Types:    make([]tls.Type, 0, len(gen.typeDescriptors)+3), // + 3 is #, Type and _ = ReqResult (last need for backward compatibility with tl2php) TODO - remove when possible
+		Version: 0, // always 0
+		Date:    int32(time.Now().Unix()),
 	}
-	s.Types = append(s.Types, tls.Type{Name: natTag, Id: "#"})
-
-	sortedTypeDescriptors := make([]string, 0, len(gen.typeDescriptors))
+	types := make([]tls.Type, 0, len(gen.typeDescriptors)+3) // + 3 is #, Type and _ = ReqResult (last need for backward compatibility with tl2php) TODO - remove when possible
+	sortedTypeDescriptors := make([]string, 0, len(gen.typeDescriptors)+3)
 	for typName := range gen.typeDescriptors {
 		sortedTypeDescriptors = append(sortedTypeDescriptors, typName)
 	}
+	sortedTypeDescriptors = append(sortedTypeDescriptors, "#")
+	sortedTypeDescriptors = append(sortedTypeDescriptors, "Type")
+	// should be already in schema sortedTypeDescriptors = append(sortedTypeDescriptors, "ReqResult")
+	sortedTypeDescriptors = append(sortedTypeDescriptors, "engine.Query")
+
 	slices.Sort(sortedTypeDescriptors)
+
+	natInd, _ := slices.BinarySearch(sortedTypeDescriptors, "#")
 	typeInd, _ := slices.BinarySearch(sortedTypeDescriptors, "Type")
+	reqResultInd, _ := slices.BinarySearch(sortedTypeDescriptors, "ReqResult")
+	engineQueryInd, _ := slices.BinarySearch(sortedTypeDescriptors, "engine.Query")
 
 	// number of types, # was added above
-	var typesNum uint32 = 1
 	for i, typName := range sortedTypeDescriptors {
+		if i == natInd {
+			types = append(types, tls.Type{Name: natTag, Id: "#"})
+			typeTags[typName] = natTag
+			continue
+		}
 		if i == typeInd {
-			s.Types = append(s.Types, tls.Type{Name: typeTag, Id: "Type"})
-			typesNum++
+			types = append(types, tls.Type{Name: typeTag, Id: "Type"})
+			typeTags[typName] = typeTag
+			continue
+		}
+		if i == reqResultInd {
+			types = append(types, tls.Type{
+				Name:            reqResultTypeTagInt32,
+				Id:              "ReqResult",
+				ConstructorsNum: 3,
+				Flags:           1<<4 | 1<<25,
+				Arity:           1,
+			})
+			typeTags[typName] = reqResultTypeTag
+			continue
+		}
+		if i == engineQueryInd {
+			types = append(types, tls.Type{
+				Name:            engineQueryTypeTagInt32,
+				Id:              "engine.Query",
+				ConstructorsNum: 2,
+				Flags:           1 << 4,
+			})
+			typeTags[typName] = engineQueryTypeTag
+			continue
 		}
 		typ := gen.typeDescriptors[typName]
 
 		var typeName uint32 // it is actually id, but tl-compiler developers are факинг donkeys
 		for _, c := range typ {
 			typeName ^= c.Crc32()
-		}
-		// TODO - remove when possible
-		if typName == "ReqResult" {
-			tmp := -2079453492
-			typeName ^= uint32(uint64(tmp))
 		}
 		typeTags[typName] = typeName
 
@@ -118,7 +189,7 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 			flag |= 1 << 4
 		}
 
-		s.Types = append(s.Types, tls.Type{
+		types = append(types, tls.Type{
 			Name:            int32(typeName),                      // tl tag
 			Id:              typ[0].TypeDecl.Name.String(),        // tl type name
 			ConstructorsNum: int32(len(typ)),                      // number of constructors for type
@@ -126,38 +197,39 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 			Arity:           int32(len(typ[0].TemplateArguments)), // number of params for type
 			ParamsType:      paramsType,                           // written above
 		})
-		typesNum++
 	}
-	if typeInd == len(sortedTypeDescriptors) {
-		s.Types = append(s.Types, tls.Type{Name: typeTag, Id: "Type"})
-		typesNum++
-	}
-	// TODO - remove when possible
-	if reqResultTypeInd, ok := slices.BinarySearch(sortedTypeDescriptors, "ReqResult"); ok {
-		s.Types[reqResultTypeInd+1].ConstructorsNum++ // + 1 as '#' was added to types as first element, and it doesn't present in typeDescriptors
-		s.Types[reqResultTypeInd+1].Flags |= 1 << 25  // FLAG_DEFAULT_CONSTRUCTOR = (1 << 25)         ---          Does type have a default constructor, e.g. constructor that will be used if no magic is presented.
-	}
-	s.TypesNum = typesNum
 
 	var constructors, functions []tls.CombinatorUnion
 
-	var types, funcs []*tlast.Combinator
+	var typs, funcs []*tlast.Combinator
 	for _, c := range gen.allConstructors {
 		if c.IsFunction {
 			funcs = append(funcs, c)
 		} else {
-			types = append(types, c)
+			typs = append(typs, c)
 		}
 	}
-	slices.SortFunc(types, func(a, b *tlast.Combinator) int {
+	slices.SortFunc(typs, func(a, b *tlast.Combinator) int {
 		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
 	})
 	slices.SortFunc(funcs, func(a, b *tlast.Combinator) int {
 		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
 	})
-	sortedConstructors := append(types, funcs...)
+	sortedConstructors := append(typs, funcs...)
 
 	for _, c := range sortedConstructors {
+		constructName := c.Construct.Name.String()
+		combinatorV4, ok := builtinCombinators[constructName]
+		switch {
+		// builtins of tlgen type system
+		case constructName == "#" || constructName == "__vector" || constructName == "__tuple":
+			continue
+		case ok:
+			constructors = append(constructors, combinatorV4)
+			continue
+		default:
+		}
+
 		var typeName uint32
 		if c.IsFunction {
 			typeName = typeTags[c.FuncDecl.Type.String()]
@@ -166,52 +238,45 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 		}
 		var mc paramScope
 		left := tls.CombinatorLeftUnion{}
-		var primitiveFlags int32
-		switch c.TypeDecl.Name.String() {
-		case "Int", "Long", "Float", "Double", "String":
-			left.SetBuiltin()
-			primitiveFlags |= 1<<1 | 1<<2 | 1<<3 // purpose of magic for flags of primitives is unknown, but tl-compiler did, so do we
-		default:
-			args := make([]tls.Arg, 0, len(c.TemplateArguments)+len(c.Fields))
-			for i, ta := range c.TemplateArguments {
-				var tag int32
-				if ta.IsNat {
-					tag = natTag
-				} else {
-					tag = typeTag
-				}
-				args = append(args, tls.Arg{
-					Id:          ta.FieldName,
-					Flags:       1<<17 | 1<<0 | 1<<1, // FLAG_OPT_VAR | FLAG_BARE | FLAG_NOCONS
-					VarNum:      int32(i),
-					ExistVarNum: 0,
-					ExistVarBit: 0,
-					Type: tls.TypeExpr{
-						Name:  tag,
-						Flags: 0, // todo: flags
-					}.AsUnion(),
-				})
-				if ta.IsNat {
-					mc.append(ta.FieldName, "#", i)
-				} else {
-					mc.append(ta.FieldName, "Type", i)
-				}
+		args := make([]tls.Arg, 0, len(c.TemplateArguments)+len(c.Fields))
+		for i, ta := range c.TemplateArguments {
+			var tag int32
+			if ta.IsNat {
+				tag = natTag
+			} else {
+				tag = typeTag
 			}
-			for i, f := range c.Fields {
-				fieldTypeExprUnion, err := gen.combinatorToTypeExprUnion(mc, typeTags, &f, i+len(c.TemplateArguments))
-				if err != nil {
-					return nil, nil, fmt.Errorf("error on converting field %s to tls.Arg: %w", f.String(), err)
-				}
-				args = append(args, fieldTypeExprUnion)
-				if !f.IsRepeated && f.FieldType.Type.String() == "#" {
-					mc.append(f.FieldName, f.FieldType.Type.String(), len(c.TemplateArguments)+i)
-				}
+			args = append(args, tls.Arg{
+				Id:          ta.FieldName,
+				Flags:       1<<17 | 1<<0 | 1<<1, // FLAG_OPT_VAR | FLAG_BARE | FLAG_NOCONS
+				VarNum:      int32(i),
+				ExistVarNum: 0,
+				ExistVarBit: 0,
+				Type: tls.TypeExpr{
+					Name:  tag,
+					Flags: 0, // todo: flags
+				}.AsUnion(),
+			})
+			if ta.IsNat {
+				mc.append(ta.FieldName, "#", i)
+			} else {
+				mc.append(ta.FieldName, "Type", i)
 			}
-			left = tls.CombinatorLeft{
-				ArgsNum: uint32(len(args)),
-				Args:    args,
-			}.AsUnion()
 		}
+		for i, f := range c.Fields {
+			fieldTypeExprUnion, err := gen.combinatorToTypeExprUnion(mc, typeTags, &f, i+len(c.TemplateArguments))
+			if err != nil {
+				return nil, nil, fmt.Errorf("error on converting field %s to tls.Arg: %w", f.String(), err)
+			}
+			args = append(args, fieldTypeExprUnion)
+			if !f.IsRepeated && f.FieldType.Type.String() == "#" {
+				mc.append(f.FieldName, f.FieldType.Type.String(), len(c.TemplateArguments)+i)
+			}
+		}
+		left = tls.CombinatorLeft{
+			ArgsNum: uint32(len(args)),
+			Args:    args,
+		}.AsUnion()
 
 		var right tls.TypeExprUnion
 		if c.IsFunction {
@@ -247,12 +312,12 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 			}.AsUnion()
 		}
 		combinatorUnion := tls.CombinatorV4{
-			Name:     int32(c.Crc32()),
+			Name:     int32(c.Crc32()), // primitives were corrupted, but is safe to use crc32 here, as all critical combinators have been taken care in the begging of the loop over types
 			Id:       c.Construct.Name.String(),
 			TypeName: int32(typeName),
 			Left:     left,
 			Right:    tls.CombinatorRight{Value: right},
-			Flags:    modifierToFlag(c.Modifiers) | primitiveFlags,
+			Flags:    modifierToFlag(c.Modifiers),
 		}.AsUnion()
 		if c.IsFunction {
 			functions = append(functions, combinatorUnion)
@@ -262,25 +327,65 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 	}
 	// TODO - remove when possible
 	reqResult := tls.CombinatorV4{
-		Name:     -2079453492,
+		Name:     underscoreTagInt32,
 		Id:       "_",
-		TypeName: -1109277360,
+		TypeName: reqResultTypeTagInt32,
 		Left: tls.CombinatorLeft{
 			ArgsNum: 2,
 			Args: []tls.Arg{
-				{Id: "X", Flags: 131075, Type: tls.TypeExpr{Name: 753727511}.AsUnion()},
+				{Id: "X", Flags: 131075, Type: tls.TypeExpr{Name: typeTag}.AsUnion()},
 				{Id: "result", Type: tls.TypeVar{}.AsUnion()},
 			}}.AsUnion(),
 		Right: tls.CombinatorRight{
 			Value: tls.TypeExpr{
-				Name:        -1109277360,
+				Name:        reqResultTypeTagInt32,
 				ChildrenNum: 1,
 				Children: []tls.ExprUnion{tls.ExprType{
 					Expr: tls.TypeVar{}.AsUnion(),
 				}.AsUnion()}}.AsUnion()}}.AsUnion()
-
-	s.ConstructorNum = uint32(len(constructors)) + 1 // + _ = ReqResult TODO - remove when possible
-	s.Constructors = append(constructors, reqResult) // TODO - remove when possible
+	engineQuery := tls.CombinatorV4{
+		Name:     engineQueryTagInt32,
+		Id:       "engine.query",
+		TypeName: engineQueryTypeTagInt32,
+		Left: tls.CombinatorLeft{
+			ArgsNum: 2,
+			Args: []tls.Arg{
+				{Id: "X", Flags: 1<<1 | 1<<0 | 1<<17, Type: tls.TypeExpr{Name: typeTag}.AsUnion()},
+				{Id: "query", Flags: 1 << 18, Type: tls.TypeVar{}.AsUnion()},
+			},
+		}.AsUnion(),
+		Right: tls.CombinatorRight{
+			Value: tls.TypeExpr{
+				Name: engineQueryTypeTagInt32,
+			}.AsUnion()},
+	}.AsUnion()
+	engineQueryShortened := tls.CombinatorV4{
+		Name:     engineQueryShortenedTagInt32,
+		Id:       "engine.queryShortened",
+		TypeName: engineQueryTypeTagInt32,
+		Left: tls.CombinatorLeft{
+			ArgsNum: 1,
+			Args: []tls.Arg{
+				{Id: "query", Type: tls.TypeExpr{
+					Name:        vectorTotalTypeTagInt32,
+					Flags:       1 << 0,
+					ChildrenNum: 1,
+					Children: []tls.ExprUnion{
+						tls.ExprType{Expr: tls.TypeExpr{
+							Name:  intTadInt32,
+							Flags: 1 << 0,
+						}.AsUnion()}.AsUnion(),
+					}}.AsUnion()},
+			},
+		}.AsUnion(),
+		Right: tls.CombinatorRight{Value: tls.TypeExpr{
+			Name: engineQueryTypeTagInt32,
+		}.AsUnion()},
+	}.AsUnion()
+	s.TypesNum = uint32(len(types))
+	s.Types = types
+	s.ConstructorNum = uint32(len(constructors)) + 3
+	s.Constructors = append(constructors, reqResult, engineQuery, engineQueryShortened) // TODO - remove when possible
 	s.FunctionsNum = uint32(len(functions))
 	s.Functions = functions
 	res, err := s.WriteBoxed(nil)
@@ -295,8 +400,8 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 }
 
 func (gen *Gen2) typeRefToTypeExpr(mc paramScope, typeTags map[string]uint32, t *tlast.TypeRef, bare bool) tls.TypeExprUnion {
-	if t.Type.String() == "#" {
-		return tls.TypeExpr{Name: natTag}.AsUnion()
+	if typeExpr, ok := builtinTypeExprUnions[t.Type.String()]; ok {
+		return typeExpr
 	}
 	tmp := gen.typeRefToExprUnion(mc, typeTags, t.Args)
 	var flags int32
@@ -304,6 +409,7 @@ func (gen *Gen2) typeRefToTypeExpr(mc paramScope, typeTags map[string]uint32, t 
 		flags = 1
 	}
 	return tls.TypeExpr{
+		// safe to use as primitives handled above
 		Name:        int32(gen.allConstructors[t.Type.String()].Crc32()),
 		Flags:       flags,            // Is type expression bare
 		ChildrenNum: uint32(len(tmp)), // todo t.Args
@@ -399,6 +505,10 @@ func (gen *Gen2) typeRefToExprUnion(mc paramScope, typeTags map[string]uint32, a
 			res = append(res, tls.ExprNat{Expr: tls.NatConst{Value: int32(aot.Arith.Res)}.AsUnion()}.AsUnion())
 			continue
 		}
+		if typeExpr, ok := builtinTypeExprUnions[aotTypeString]; ok {
+			res = append(res, tls.ExprType{Expr: typeExpr}.AsUnion())
+			continue
+		}
 		if ctx, ok := mc.find(func(e param) bool {
 			return e.name == aotTypeString
 		}); ok {
@@ -408,6 +518,7 @@ func (gen *Gen2) typeRefToExprUnion(mc paramScope, typeTags map[string]uint32, a
 			case "Type":
 				res = append(res, tls.ExprType{Expr: tls.TypeVar{VarNum: int32(ctx.index)}.AsUnion()}.AsUnion())
 			}
+			continue
 		}
 		if c, ok := gen.allConstructors[aotTypeString]; ok {
 			flags := int32(1) // constructor is bare type parameter
@@ -416,11 +527,13 @@ func (gen *Gen2) typeRefToExprUnion(mc paramScope, typeTags map[string]uint32, a
 			}
 			tmp := gen.typeRefToExprUnion(mc, typeTags, aot.T.Args)
 			res = append(res, tls.ExprType{Expr: tls.TypeExpr{
+				// safe to use as primitives handled above
 				Name:        int32(c.Crc32()),
 				Flags:       flags,
 				ChildrenNum: uint32(len(tmp)),
 				Children:    tmp,
 			}.AsUnion()}.AsUnion())
+			continue
 		}
 		if typeTag, ok := typeTags[aotTypeString]; ok {
 			var flags int32
@@ -434,12 +547,7 @@ func (gen *Gen2) typeRefToExprUnion(mc paramScope, typeTags map[string]uint32, a
 				ChildrenNum: uint32(len(tmp)),
 				Children:    tmp,
 			}.AsUnion()}.AsUnion())
-		}
-		if aotTypeString == "#" {
-			res = append(res, tls.ExprType{Expr: tls.TypeExpr{
-				Name:  natTag,
-				Flags: 0, // todo: flags
-			}.AsUnion()}.AsUnion())
+			continue
 		}
 	}
 	return res
