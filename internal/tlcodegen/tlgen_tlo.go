@@ -4,6 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+//lint:file-ignore U1000 Ignore all unused code, it's not important, and will be removed ASAP
 package tlcodegen
 
 import (
@@ -69,6 +70,13 @@ var builtinTypeExprUnions = map[string]tls.TypeExprUnion{
 	"string": tls.TypeExpr{Name: stringTagInt32, Flags: 1 << 0}.AsUnion(),
 }
 
+var absentTypes = map[string]tls.Type{
+	"#":            {Name: natTag, Id: "#"},
+	"Type":         {Name: typeTag, Id: "Type"},
+	"ReqResult":    {Name: reqResultTypeTagInt32, Id: "ReqResult", ConstructorsNum: 3, Flags: 1<<4 | 1<<25, Arity: 1},
+	"engine.Query": {Name: engineQueryTypeTagInt32, Id: "engine.Query", ConstructorsNum: 2, Flags: 1 << 4},
+}
+
 type param struct {
 	name       string
 	typ        string
@@ -112,43 +120,11 @@ func (gen *Gen2) generateTLO() ([]byte, []byte, error) {
 	sortedTypeDescriptors = append(sortedTypeDescriptors, "engine.Query")
 
 	slices.Sort(sortedTypeDescriptors)
-
-	natInd, _ := slices.BinarySearch(sortedTypeDescriptors, "#")
-	typeInd, _ := slices.BinarySearch(sortedTypeDescriptors, "Type")
-	reqResultInd, _ := slices.BinarySearch(sortedTypeDescriptors, "ReqResult")
-	engineQueryInd, _ := slices.BinarySearch(sortedTypeDescriptors, "engine.Query")
-
 	// number of types, # was added above
-	for i, typName := range sortedTypeDescriptors {
-		if i == natInd {
-			types = append(types, tls.Type{Name: natTag, Id: "#"})
-			typeTags[typName] = natTag
-			continue
-		}
-		if i == typeInd {
-			types = append(types, tls.Type{Name: typeTag, Id: "Type"})
-			typeTags[typName] = typeTag
-			continue
-		}
-		if i == reqResultInd {
-			types = append(types, tls.Type{
-				Name:            reqResultTypeTagInt32,
-				Id:              "ReqResult",
-				ConstructorsNum: 3,
-				Flags:           1<<4 | 1<<25,
-				Arity:           1,
-			})
-			typeTags[typName] = reqResultTypeTag
-			continue
-		}
-		if i == engineQueryInd {
-			types = append(types, tls.Type{
-				Name:            engineQueryTypeTagInt32,
-				Id:              "engine.Query",
-				ConstructorsNum: 2,
-				Flags:           1 << 4,
-			})
-			typeTags[typName] = engineQueryTypeTag
+	for _, typName := range sortedTypeDescriptors {
+		if tlsType, ok := absentTypes[typName]; ok {
+			types = append(types, tlsType)
+			typeTags[typName] = uint32(tlsType.Name)
 			continue
 		}
 		typ := gen.typeDescriptors[typName]
@@ -578,7 +554,7 @@ func (gen *Gen2) WriteTLO() error {
 		return nil
 	}
 	filepathName := gen.options.TLOPath
-	if !strings.HasSuffix(filepathName, ".tlo") {
+	if !strings.HasSuffix(filepathName, tloExt) {
 		filepathName = filepath.Join(filepathName, gen.RootPackageName+tloExt)
 	}
 	return os.WriteFile(filepathName, gen.TLO, 0644)

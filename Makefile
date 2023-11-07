@@ -45,6 +45,6 @@ qtpl:
 		echo "go get -u github.com/valyala/quicktemplate"; \
 		echo "go get -u github.com/valyala/quicktemplate/qtc"; \
 	else \
-		qtc -dir=./internal/tlcodegen -skipLineComments; \
+		qtc -dir=./internal -skipLineComments; \
 	fi
 

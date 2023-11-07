@@ -118,9 +118,9 @@ func (item *`)
 	qw422016.N().S(`) error {
   _ok, _jvalue, err := `)
 	qw422016.N().S(maybe.wr.gen.InternalPrefix())
-	qw422016.N().S(`JsonReadMaybe(`)
-	qw422016.N().Q(maybe.wr.tlName.String())
-	qw422016.N().S(`, j)
+	qw422016.N().S(`JsonReadMaybe("`)
+	maybe.wr.tlName.StreamString(qw422016)
+	qw422016.N().S(`", j)
   if err != nil {
     return err
   }

@@ -66,7 +66,7 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 	t.Run("Full file", func(t *testing.T) {
 		str := combinedBytes
 		lex := newLexer(str, "", false)
-		tokens, _ := lex.generateTokens() // TODO - what if err?
+		tokens, _ := lex.generateTokens(false) // TODO - what if err?
 		require.Equal(t, 0, countToken(tokens, undefined))
 		recombined := lex.recombineTokens()
 		require.Equal(t, str, recombined)
@@ -75,7 +75,7 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 	t.Run("Empty file", func(t *testing.T) {
 		str := ""
 		lex := newLexer(str, "", false)
-		_, _ = lex.generateTokens()
+		_, _ = lex.generateTokens(false)
 		recombined := lex.recombineTokens()
 		require.Equal(t, str, recombined)
 	})
@@ -83,7 +83,7 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 	t.Run("Upper case in tag", func(t *testing.T) {
 		str := "foo#1234567F = Foo;"
 		lex := newLexer(str, "", false)
-		_, err = lex.generateTokens()
+		_, err = lex.generateTokens(false)
 		require.EqualError(t, err, "expect tag with exactly 8 lowercase hex digits here")
 	})
 
@@ -93,7 +93,7 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 			to := from + rand.Intn(len(combinedBytes)-from)
 			str := combinedBytes[from:to]
 			lex := newLexer(str, "", false)
-			_, _ = lex.generateTokens()
+			_, _ = lex.generateTokens(false)
 			recombined := lex.recombineTokens()
 			require.Equal(t, str, recombined)
 		}

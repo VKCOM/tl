@@ -1,0 +1,95 @@
+{% import "fmt" %}
+{% import "sort" %}
+{%- code
+func modifierToFlag(m Modifier) int32 {
+	switch m.Name {
+	case "@any":
+		return 0
+	case "@read":
+		return 1
+	case "@write":
+		return 2
+	case "@readwrite":
+		return 1 | 2
+	case "@internal":
+		return 4
+	case "@kphp":
+		return 8
+	default:
+	    return 0
+	}
+}
+-%}
+
+{%- stripspace -%}
+{%- func (descriptor Combinator) canonicalFormWithTag() -%}
+  {%- code
+    modifiers := append([]Modifier(nil), descriptor.Modifiers...)
+    sort.Slice(modifiers, func(i, j int) bool {
+    	return modifierToFlag(modifiers[i]) < modifierToFlag(modifiers[j])
+    })
+    haveKphp := false
+    for _, m := range modifiers {
+    	if m.Name == "@kphp" {
+    		haveKphp = true
+    	}
+    }
+    if haveKphp && modifiers[0].Name != "@any" {
+    	modifiers = append([]Modifier{{Name: "@any"}}, modifiers...)
+    }
+  -%}
+  {%- for _, mod := range modifiers -%}
+    {%s= mod.Name%}{% space %}
+  {%- endfor -%}
+  {%= descriptor.Construct.Name.String() -%}
+  #{%s= fmt.Sprintf("%08x", descriptor.Crc32()) %}
+  {% space %}
+    {%- for _, x := range descriptor.TemplateArguments -%}
+      {%s= x.FieldName %}
+      {%- if x.IsNat -%}
+        {%s= ":# " %}
+      {%- else -%}
+        {%s= ":Type " %}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if descriptor.Builtin -%}
+      {%s= "? " %}
+    {%- endif -%}
+    {%- for _, x := range descriptor.Fields -%}
+      {%- if x.FieldName != "" -%}
+        {%s= x.FieldName %}:
+      {%- endif -%}
+      {%- if x.Mask != nil -%}
+        {%= x.Mask.String() %}
+      {%- endif -%}
+      {%- if x.IsRepeated -%}
+        {%= x.ScaleRepeat.toCrc32() %}
+      {%- else -%}
+        {%= x.FieldType.toCrc32() %}
+      {%- endif -%}
+      {% space %}
+    {%- endfor -%}
+    {%s= "= " %}
+    {%- if descriptor.IsFunction -%}
+    	{%= descriptor.FuncDecl.toCrc32() %}
+    {%- else -%}
+    	{%= descriptor.TypeDecl.String() %}
+    {%- endif -%}
+{%- endfunc -%}
+
+{%- func (tl TL) Generate2TL() -%}
+  int#a8509bda ? = Int{% newline %}
+  long#22076cba ? = Long{% newline %}
+  float#824dab22 ? = Float{% newline %}
+  double#2210c154 ? = Double{% newline %}
+  string#b5286e24 ? = String{% newline %}
+  {%- for _, combinator := range tl -%}
+    {%- switch combinator.Construct.Name.String() -%}
+    {%- case "int", "long", "float", "double", "string" -%}
+      {%- continue -%}
+    {%- default -%}
+      {%= combinator.canonicalFormWithTag() %}{% space %}//{% space %}{% space %}{%s= combinator.PR.Begin.file %}{% newline %}
+    {%- endswitch -%}
+  {%- endfor -%}
+{%- endfunc -%}
+{%- endstripspace -%}

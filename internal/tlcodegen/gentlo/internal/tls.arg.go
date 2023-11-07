@@ -275,25 +275,19 @@ func (item *TlsArg) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
 		w = basictl.JSONWriteUint32(w, item.Flags)
 	}
 	if item.Flags&(1<<1) != 0 {
-		if item.VarNum != 0 {
-			w = basictl.JSONAddCommaIfNeeded(w)
-			w = append(w, `"var_num":`...)
-			w = basictl.JSONWriteInt32(w, item.VarNum)
-		}
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = append(w, `"var_num":`...)
+		w = basictl.JSONWriteInt32(w, item.VarNum)
 	}
 	if item.Flags&(1<<2) != 0 {
-		if item.ExistVarNum != 0 {
-			w = basictl.JSONAddCommaIfNeeded(w)
-			w = append(w, `"exist_var_num":`...)
-			w = basictl.JSONWriteInt32(w, item.ExistVarNum)
-		}
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = append(w, `"exist_var_num":`...)
+		w = basictl.JSONWriteInt32(w, item.ExistVarNum)
 	}
 	if item.Flags&(1<<2) != 0 {
-		if item.ExistVarBit != 0 {
-			w = basictl.JSONAddCommaIfNeeded(w)
-			w = append(w, `"exist_var_bit":`...)
-			w = basictl.JSONWriteInt32(w, item.ExistVarBit)
-		}
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = append(w, `"exist_var_bit":`...)
+		w = basictl.JSONWriteInt32(w, item.ExistVarBit)
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"type":`...)

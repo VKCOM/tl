@@ -1,0 +1,226 @@
+{%- import "fmt" -%}
+{%- import "unicode" -%}
+
+{% stripspace %}
+{%- func (n Name) String() -%}
+  {%- if n.Namespace != "" -%}
+    {%s= n.Namespace %}.
+  {%- endif -%}
+  {%s= n.Name %}
+{%- endfunc -%}
+
+{%- func (c Constructor) String() -%}
+  {%= c.Name.String() %}
+  {%- if c.ID != nil && *c.ID != 0 -%}
+    #{%s= fmt.Sprintf("%08x", *c.ID) %}
+  {%- endif -%}
+{%- endfunc -%}
+
+{%- func (ta TemplateArgument) String() -%}
+  {%- if ta.IsNat -%}
+    {{%s= ta.FieldName %}:#}
+  {%- endif -%}
+  {{%s= ta.FieldName %}:Type}
+{%- endfunc -%}
+
+{%- func (t TypeRef) String() -%}
+  {%- if t.Bare -%}
+    %
+  {%- endif -%}
+  {%- if len(t.Args) != 0 -%}
+    (
+    {%= t.Type.String() %}
+    {%- for _, x := range t.Args -%}
+      {% space %}{%= x.String() %}
+    {%- endfor -%}
+    )
+    {% return %}
+  {%- endif -%}
+  {%= t.Type.String() %}
+{%- endfunc -%}
+
+{%- func (t TypeRef) toCrc32() -%}
+  {%- if t.Bare && (len(t.Type.Name) == 0 || !unicode.IsLower(rune(t.Type.Name[0]))) -%}
+    %
+  {%- endif -%}
+  {%= t.Type.String() %}
+  {%- for _, x := range t.Args -%}
+    {% space %}{%= x.toCrc32() %}
+  {%- endfor -%}
+{%- endfunc -%}
+
+{%- func (a Arithmetic) String() -%}
+  {%- for i, x := range a.Nums -%}
+    {%dul= uint64(x) %}
+    {%- if i != len(a.Nums)-1 -%}
+      {%s= " + " %}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfunc -%}
+
+{%- func (aot ArithmeticOrType) String() -%}
+  {%- if aot.IsArith -%}
+    {%= aot.Arith.String() %}
+    {% return %}
+  {%- endif -%}
+  {%= aot.T.String() %}
+{%- endfunc -%}
+
+{%- func (aot ArithmeticOrType) toCrc32() -%}
+  {%- if aot.IsArith -%}
+    {%dul= uint64(aot.Arith.Res) %}
+  {%- else -%}
+    {%= aot.T.toCrc32() %}
+  {%- endif -%}
+{%- endfunc -%}
+
+{%- func (sf ScaleFactor) String() -%}
+  {%- if sf.IsArith -%}
+   ({%= sf.Arith.String() %})
+    {% return %}
+  {%- endif -%}
+  {%s= sf.Scale %}
+{%- endfunc -%}
+
+{%- func (rws RepeatWithScale) String() -%}
+  {%- if rws.ExplicitScale -%}
+    {%= rws.Scale.String() %}*
+  {%- endif -%}
+  [
+  {%- for i, x := range rws.Rep[0:] -%}
+    {%- if i != 0 -%}
+      {% space %}
+    {%- endif -%}
+    {%= x.String() %}
+  {%- endfor -%}
+  ]
+{%- endfunc -%}
+
+{%- func (rws RepeatWithScale) toCrc32() -%}
+  {%- if rws.ExplicitScale -%}
+    {%- if rws.Scale.IsArith -%}
+      {%dul= uint64(rws.Scale.Arith.Res) %}
+    {%- else -%}
+      {%s= rws.Scale.Scale %}
+    {%- endif -%}
+    *
+  {%- endif -%}
+  [
+    {%- for _, f := range rws.Rep -%}
+      {% space %}
+      {%- if f.IsRepeated -%}
+        {%- if f.FieldName != "" -%}
+          {%s= f.FieldName %}:
+        {%- endif -%}
+        {%= f.ScaleRepeat.toCrc32() %}
+      {%- else -%}
+        {%= f.String() %}
+      {%- endif -%}
+    {%- endfor -%}
+    {%s= " ]" %}
+{%- endfunc -%}
+
+{%- func (fm FieldMask) String() -%}
+  {%s= fm.MaskName %}.{%dul uint64(fm.BitNumber) %}?
+{%- endfunc -%}
+
+{%- func (f Field) String() -%}
+  {%- if f.FieldName != "" -%}
+    {%s= f.FieldName %}:
+  {%- endif -%}
+  {%- if f.Mask != nil -%}
+    {%= f.Mask.String() %}
+  {%- endif -%}
+  {%- if f.Excl -%}
+    !
+  {%- endif -%}
+  {%- if f.IsRepeated -%}
+    {%= f.ScaleRepeat.String() %}
+  {%- else -%}
+    {%= f.FieldType.String() %}
+  {%- endif -%}
+{%- endfunc -%}
+
+{%- func (d TypeDeclaration) String() -%}
+  {%= d.Name.String() %}
+  {%- for _, x := range d.Arguments -%}
+    {% space %}{%s= x %}
+  {%- endfor -%}
+{%- endfunc -%}
+
+{%- func (descriptor Combinator) String() -%}
+  {%- for _, x := range descriptor.Modifiers -%}
+    {%s= x.Name %}{% space %}
+  {%- endfor -%}
+  {%= descriptor.Construct.String() %}{% space %}
+  {%- for _, x := range descriptor.TemplateArguments -%}
+    {%= x.String() %}{% space %}
+  {%- endfor -%}
+  {%- if descriptor.Builtin-%}
+    {%s= "? " %}
+  {%- else -%}
+    {%- for _, x := range descriptor.Fields -%}
+      {%= x.String() %}{% space %}
+    {%- endfor -%}
+  {%- endif -%}
+  {%s= "= " %}
+  {%- if descriptor.IsFunction -%}
+    {%= descriptor.FuncDecl.String() %}
+  {%- else -%}
+    {%= descriptor.TypeDecl.String() %}
+  {%- endif -%}
+  ;
+{%- endfunc -%}
+
+{%- func (tl TL) String() -%}
+  {%- code
+    functionSection := false
+  -%}
+  {%- for _, x := range tl-%}
+    {%- if x.IsFunction && !functionSection -%}
+      {%s= functionsSectionString %}{% newline %}
+      {%- code functionSection = true -%}
+    {%- endif -%}
+    {%- if !x.IsFunction && functionSection -%}
+      {%s= typesSectionString %}{% newline %}
+      {%- code functionSection = false -%}
+    {%- endif -%}
+    {%= x.String() %}{% newline %}
+  {%- endfor -%}
+{%- endfunc -%}
+
+{%- func (descriptor Combinator) canonicalForm() -%}
+  {%= descriptor.Construct.Name.String() %}{% space %}
+  {%- for _, x := range descriptor.TemplateArguments -%}
+    {%s= x.FieldName %}
+    {%- if x.IsNat -%}
+      {%s= ":# " %}
+    {%- else -%}
+      {%s= ":Type " %}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if descriptor.Builtin -%}
+    {%s= "? " %}
+  {%- endif -%}
+  {%- for _, x := range descriptor.Fields -%}
+    {%- if x.FieldName != "" -%}
+      {%s= x.FieldName %}:
+    {%- endif -%}
+    {%- if x.Mask != nil -%}
+      {%= x.Mask.String() %}
+    {%- endif -%}
+    {%- if x.IsRepeated -%}
+      {%= x.ScaleRepeat.toCrc32() %}
+    {%- else -%}
+      {%= x.FieldType.toCrc32() %}
+    {%- endif -%}
+    {% space %}
+  {%- endfor -%}
+  {%s= "= " %}
+  {%- if descriptor.IsFunction -%}
+  	{%= descriptor.FuncDecl.toCrc32() %}
+  {%- else -%}
+  	{%= descriptor.TypeDecl.String() %}
+  {%- endif -%}
+{%- endfunc -%}
+{% endstripspace %}

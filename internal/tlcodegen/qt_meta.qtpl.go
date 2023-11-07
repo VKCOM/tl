@@ -252,14 +252,17 @@ func init() {
 			} else {
 				qw422016.N().S(`fillObject(`)
 			}
-			qw422016.N().Q(fmt.Sprintf("%s#%08x", wr.tlName.String(), wr.tlTag))
-			qw422016.N().S(`,`)
+			qw422016.N().S(`"`)
+			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(`#`)
+			qw422016.N().S(fmt.Sprintf("%08x", wr.tlTag))
+			qw422016.N().S(`",`)
 			qw422016.N().Q(fmt.Sprintf("#%08x", wr.tlTag))
 			qw422016.N().S(`,&TLItem{tag:`)
 			qw422016.N().S(fmt.Sprintf("%#x", wr.tlTag))
-			qw422016.N().S(`, tlName:`)
-			qw422016.N().Q(wr.tlName.String())
-			qw422016.N().S(`})`)
+			qw422016.N().S(`, tlName: "`)
+			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(`"})`)
 		}
 		qw422016.N().S(`
 `)

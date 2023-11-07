@@ -164,7 +164,25 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
 
 func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
     w = basictl.NatWrite(w, uint32(len(m)))
-    for key, val := range m {
+    if len(m) == 0 {
+        return w, nil
+    }
+    keys := make([]{%s= keyTypeString %}, 0, len(m))
+    for k := range m {
+        keys = append(keys, k)
+    }
+    {%- code
+        directImports.importSort = true
+    -%}
+{%- if tuple.dictKeyString -%}
+    sort.Strings(keys)
+{%- else -%}
+    sort.Slice(keys, func(i, j int) bool {
+        return keys[i] < keys[j]
+    })
+{%- endif -%}
+    for _, key := range keys {
+        val := m[key]
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:val}
         {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
     }
@@ -194,11 +212,19 @@ func {%s= goName %}ReadJSON(j interface{}, m *{%s= typeString %} {%s= valueNatAr
             delete(data, k)
         }
     }
+for _jkey, _jvalue := range _map {
                 {%- if tuple.dictKeyString -%}
-for key, _jvalue := range _map {
+                {%- else -%}
+        var key {%s= keyTypeString %}
+        {%s= tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+                {%- endif -%}
         var value {%s= valueTypeString %}
         {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+                {%- if tuple.dictKeyString -%}
+        data[_jkey] = value
+                {%- else -%}
         data[key] = value
+                {%- endif -%}
     }
     return nil
 }
@@ -206,6 +232,7 @@ for key, _jvalue := range _map {
 func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
     return {%s= goName %}WriteJSONOpt(false, w, m{%s= valueNatArgsCall %})
 }
+                {%- if tuple.dictKeyString -%}
 func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
@@ -226,19 +253,6 @@ func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= 
     return append(w, '}'), nil
 }
                 {%- else -%}
-for _jkey, _jvalue := range _map {
-        var key {%s= keyTypeString %}
-        {%s= tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
-        var value {%s= valueTypeString %}
-        {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
-        data[key] = value
-    }
-    return nil
-}
-
-func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, m{%s= natCall %})
-}
 func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
