@@ -19,7 +19,6 @@ import (
 	"github.com/TwiN/go-color"
 
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 )
 
 const BuiltinTupleName = "__tuple"
@@ -291,6 +290,7 @@ type Gen2Options struct {
 	GenerateRPCCode      bool
 	BasicRPCPath         string
 	TLOPath              string
+	CanonicalFormPath    string // combinators in canonical form, with comment of source schema file path
 	GenerateRandomCode   bool
 	SchemaDocumentation  bool
 	SplitInternal        bool
@@ -794,7 +794,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		primitiveTypes[cn.tlType] = cn
 	}
 
-	btl, err := tlast.ParseTL2(builtinBeautifulText, "<builtin>", true) // We need references to token positions for beautification
+	btl, err := tlast.ParseTL2(builtinBeautifulText, "<builtin>", true, false) // We need references to token positions for beautification
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse internal builtin type representation for beautification: %w", err)
 	}
@@ -843,9 +843,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	//	fmt.Printf("%s\n", c.String())
 	// }
 	if options.TLOPath != "" {
-		filepathName := gen.RootPackageName + tloExt + jsonExt
 		if options.Verbose {
-			log.Printf("generating tlo to %s", filepathName)
+			log.Printf("generating tlo to %s", options.TLOPath)
 		}
 		err = gen.buildMapDescriptors(tlTLO)
 		if err != nil {
@@ -856,13 +855,12 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			gen.allConstructors[tName] = bt
 			gen.singleConstructors[tName] = bt // will overwrite without checking, this code is for TLO only
 		}
-		tlo, tloJSON, err := gen.generateTLO()
-		if err != nil {
-			return gen, fmt.Errorf("can't generate TLO: %v", err)
-		}
-		gen.TLO = tlo
-		if err := gen.addCodeFile(filepathName, string(utils.JsonPrettyPrint(tloJSON))); err != nil {
-			return gen, err
+		if options.TLOPath != "" {
+			tlo, _, err := gen.generateTLO()
+			if err != nil {
+				return gen, fmt.Errorf("can't generate TLO: %v", err)
+			}
+			gen.TLO = tlo
 		}
 		// Clear map descriptors, we will build them again after replacing square brackets
 		gen.typeDescriptors = map[string][]*tlast.Combinator{}
@@ -1114,8 +1112,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	if options.SchemaDocumentation {
-		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, buildSHA256Checksum)); err != nil {
-			return gen, err
+		if err := os.WriteFile(TlJSONHTML, []byte(tlJSON(gen, buildSHA256Checksum)), 0644); err != nil {
+			return nil, err
 		}
 	}
 

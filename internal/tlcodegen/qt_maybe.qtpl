@@ -49,7 +49,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, e
 
 func {%s= goName %}__ReadJSON(item *{%s= goName %}, j interface{}{%s= natArgsDecl %}) error { return item.readJSON(j{%s= natArgsCall %}); }
 func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
-  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe({%q= maybe.wr.tlName.String() %}, j)
+  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe("{%= maybe.wr.tlName.String() %}", j)
   if err != nil {
     return err
   }

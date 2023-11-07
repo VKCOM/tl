@@ -426,13 +426,20 @@ func (item *{%s= goName %}) WriteJSONOpt(short bool, w []byte{%s= natArgsDecl %}
             {%- if field.fieldMask != nil -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
             {%- endif -%}
-            {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
+{%- comment %}
+if value is under mask and is empty and mask bit is set, we want it to be explicitly set, for example
+vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string = vru.ReplicaState;
+
+{"fields_mask":1024} // we do not want this, as it is hard to say "pre_vote_demote" is set
+{"fields_mask":1024, "pre_vote_demote": ""} // we want this, viewer knows immediately that "pre_vote_demote" is set
+{% endcomment -%}
+            {%- if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
                 if {%s= field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) %} {
             {%- endif -%}
                 w = basictl.JSONAddCommaIfNeeded(w)
                 w = append(w, `"{%s field.originalName %}":`...)
         {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
-            {%- if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
+            {%- if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive, ) != "" -%}
                 }
             {%- endif -%}
             {%- if field.fieldMask != nil -%}

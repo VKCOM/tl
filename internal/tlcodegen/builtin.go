@@ -101,21 +101,19 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 				}
 			}
 			suffix := ""
-			for s := 0; ; s++ {
-				if _, ok := constructorNames[constructorName.String()+suffix]; !ok {
-					constructorName.Name += suffix
-					break
-				}
+			_, ok := constructorNames[constructorName.String()+suffix]
+			for s := 1; ok; s++ {
+				_, ok = constructorNames[constructorName.String()+suffix]
 				suffix = strconv.Itoa(s)
 			}
+			constructorName.Name += suffix
 			suffix = ""
-			for s := 0; ; s++ {
-				if _, ok := typeNames[typeName.String()+suffix]; !ok {
-					typeName.Name += suffix
-					break
-				}
+			_, ok = typeNames[typeName.String()+suffix]
+			for s := 1; ok; s++ {
+				_, ok = typeNames[typeName.String()+suffix]
 				suffix = strconv.Itoa(s)
 			}
+			typeName.Name += suffix
 			tag := nextElemTag // copy to reference local var
 			if !forTLO {
 				tag = 0 // we need tags of elems only for TLO references

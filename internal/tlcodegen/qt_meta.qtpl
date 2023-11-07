@@ -215,9 +215,9 @@ func init() {
         {%- else -%}
         fillObject(
         {%- endif -%}
-        {%q= fmt.Sprintf("%s#%08x", wr.tlName.String(), wr.tlTag) %},
+        "{%= wr.tlName.String() %}#{%s= fmt.Sprintf("%08x", wr.tlTag) %}",
         {%q= fmt.Sprintf("#%08x", wr.tlTag) %},
-        &TLItem{tag: {%s= fmt.Sprintf("%#x", wr.tlTag) %}, tlName: {%q= wr.tlName.String() %}})
+        &TLItem{tag: {%s= fmt.Sprintf("%#x", wr.tlTag) %}, tlName: "{%= wr.tlName.String() %}"})
     {%- endif -%}
 {%- endstripspace -%}
 

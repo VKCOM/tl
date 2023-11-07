@@ -7,6 +7,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"flag"
 	"fmt"
@@ -53,6 +54,8 @@ func (ctx *context) parseFlags() error {
 		"path to rpc package")
 	flag.StringVar(&ctx.argv.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
+	flag.StringVar(&ctx.argv.CanonicalFormPath, "canonicalFormPath", "",
+		"combinators in canonical form, with comment of source schema file path")
 	flag.BoolVar(&ctx.argv.SchemaDocumentation, "generateSchemaDocumentation", false,
 		"whether to generate .html representation of schema in to tljson.html file and put it in outdir")
 	flag.BoolVar(&ctx.argv.SplitInternal, "split-internal", false,
@@ -110,6 +113,7 @@ func runMain(argv arguments) error {
 		log.Printf("No more awful TLO! Everyone happy!")
 	}
 	var ast tlast.TL
+	var fullAst tlast.TL
 	var args []string
 	if argv.schemaFileName != "" {
 		args = append(args, argv.schemaFileName)
@@ -124,10 +128,15 @@ func runMain(argv arguments) error {
 	}
 	for _, path := range paths {
 		tl, err := parseTlFile(path)
-		ast = append(ast, tl...)
 		if err != nil {
 			return err
 		}
+		fullTl, err := parseFullTlFile(path)
+		if err != nil {
+			return err
+		}
+		ast = append(ast, tl...)
+		fullAst = append(fullAst, fullTl...)
 	}
 
 	if argv.Verbose {
@@ -143,6 +152,14 @@ func runMain(argv arguments) error {
 	if err = gen.WriteTLO(); err != nil {
 		return err
 	}
+	if argv.CanonicalFormPath != "" {
+		if argv.Verbose {
+			log.Print("generating file with combinators in canonical form")
+		}
+		var buf bytes.Buffer
+		fullAst.WriteGenerate2TL(&buf)
+		return os.WriteFile(argv.CanonicalFormPath, buf.Bytes(), 0644)
+	}
 	return nil
 }
 
@@ -156,7 +173,20 @@ func parseTlFile(file string) (tlast.TL, error) {
 	dataStr = strings.ReplaceAll(dataStr, "engine.query {X:Type} query:!X = engine.Query;", "")
 	dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
 
-	tl, err := tlast.ParseTLFile(dataStr, file)
+	tl, err := tlast.ParseTLFile(dataStr, file, false)
+	if err != nil {
+		return tl, err // Do not add excess info to already long parse error
+	}
+	return tl, nil
+}
+
+func parseFullTlFile(file string) (tlast.TL, error) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return nil, fmt.Errorf("error reading schema file %q - %w", file, err)
+	}
+	// Exceptions we cannot fix upstream
+	tl, err := tlast.ParseTLFile(string(data), file, true)
 	if err != nil {
 		return tl, err // Do not add excess info to already long parse error
 	}

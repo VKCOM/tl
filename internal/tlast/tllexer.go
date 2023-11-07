@@ -67,6 +67,10 @@ type Position struct {
 	offset          int
 }
 
+func (p *Position) GetFile() string {
+	return p.file
+}
+
 type PositionRange struct {
 	Outer Position // in lexer, it is empty, in parser set to start of combinator
 	Begin Position
@@ -137,9 +141,9 @@ func newLexer(s, file string, allowBuiltin bool) lexer {
 }
 
 // when error is returned, undefined token is added to tokens
-func (l *lexer) generateTokens() ([]token, error) {
+func (l *lexer) generateTokens(allowDirty bool) ([]token, error) {
 	for l.str != "" {
-		err := l.nextToken()
+		err := l.nextToken(allowDirty)
 		if err != nil {
 			return l.tokens, err
 		}
@@ -190,7 +194,7 @@ func (l *lexer) checkPrimitive() bool {
 	}
 }
 
-func (l *lexer) nextToken() error {
+func (l *lexer) nextToken(allowDirty bool) error {
 	switch {
 	case l.checkPrimitive():
 		return nil
@@ -210,6 +214,10 @@ func (l *lexer) nextToken() error {
 			} else {
 				l.advance(len(w), lcIdent) // for constructor names
 			}
+			return nil
+		}
+		if allowDirty {
+			l.advance(1, lcIdent)
 			return nil
 		}
 		tok := l.advance(1, undefined)

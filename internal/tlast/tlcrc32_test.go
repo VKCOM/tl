@@ -32,14 +32,16 @@ func TestCRC32TL(t *testing.T) {
 	})
 	tests := []struct {
 		tlText string
-		tlTag  uint32
+		tlTag  []uint32
 	}{
-		{`---functions--- @any  get_arrays n:# a:n*[int] b:5*[int] = Tuple int 5;`, 0x90658cdb},
-		{`---functions--- @any  get_arrays#12345678 n:# a:n*[int] b:5*[int] = Tuple int 5;`, 0x12345678},
+		{`---types---int#a8509bda ? = Int;---functions--- @any  get_arrays n:# a:n*[int] b:5*[int] = Tuple int 5;`, []uint32{0xa8509bda, 0x90658cdb}},
+		{`---functions--- @any  get_arrays#12345678 n:# a:n*[int] b:5*[int] = Tuple int 5;`, []uint32{0x12345678}},
 	}
 	for _, test := range tests {
 		tl, err := ParseTL(test.tlText)
 		require.NoError(t, err)
-		require.Equal(t, test.tlTag, tl[0].Crc32())
+		for i, c := range tl {
+			require.Equal(t, test.tlTag[i], c.Crc32())
+		}
 	}
 }

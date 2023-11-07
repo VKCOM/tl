@@ -97,12 +97,12 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 		if bare {
 			panic("CanonicalString of bare union")
 		}
-		s.WriteString(w.origTL[0].TypeDecl.Name.String())
+		w.origTL[0].TypeDecl.Name.WriteString(&s)
 	} else if len(w.origTL) == 1 {
 		if bare {
-			s.WriteString(w.origTL[0].Construct.Name.String())
+			w.origTL[0].Construct.Name.WriteString(&s)
 		} else {
-			s.WriteString(w.origTL[0].TypeDecl.Name.String())
+			w.origTL[0].TypeDecl.Name.WriteString(&s)
 		}
 	} else {
 		panic("all builtins are parsed from TL text, so must have exactly one constructor")
@@ -110,15 +110,15 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 	if len(w.arguments) == 0 {
 		return s.String()
 	}
-	s.WriteString("<")
+	s.WriteByte('<')
 	for i, a := range w.arguments {
 		// fieldName := t.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
 		if i != 0 {
-			s.WriteString(",")
+			s.WriteByte(',')
 		}
 		if a.isNat {
 			if a.isArith {
-				s.WriteString(fmt.Sprintf("%d", a.Arith.Res))
+				s.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
 			} else {
 				s.WriteString("#") // TODO - write fieldName here if special argument to function is set
 			}
@@ -126,7 +126,7 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 			s.WriteString(a.tip.CanonicalString(a.bare))
 		}
 	}
-	s.WriteString(">")
+	s.WriteByte('>')
 	return s.String()
 }
 

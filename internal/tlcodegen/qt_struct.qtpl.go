@@ -923,7 +923,7 @@ func (item *`)
 				qw422016.N().S(`) != 0 {
 `)
 			}
-			if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+			if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
 				qw422016.N().S(`                if `)
 				qw422016.N().S(field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive))
 				qw422016.N().S(` {
@@ -941,7 +941,7 @@ func (item *`)
 			qw422016.N().S(field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
 			qw422016.N().S(`
 `)
-			if field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
+			if field.fieldMask == nil && field.t.TypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.goName), field.recursive) != "" {
 				qw422016.N().S(`                }
 `)
 			}

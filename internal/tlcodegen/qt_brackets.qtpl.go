@@ -348,7 +348,29 @@ func `)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
     w = basictl.NatWrite(w, uint32(len(m)))
-    for key, val := range m {
+    if len(m) == 0 {
+        return w, nil
+    }
+    keys := make([]`)
+			qw422016.N().S(keyTypeString)
+			qw422016.N().S(`, 0, len(m))
+    for k := range m {
+        keys = append(keys, k)
+    }
+`)
+			directImports.importSort = true
+
+			if tuple.dictKeyString {
+				qw422016.N().S(`    sort.Strings(keys)
+`)
+			} else {
+				qw422016.N().S(`    sort.Slice(keys, func(i, j int) bool {
+        return keys[i] < keys[j]
+    })
+`)
+			}
+			qw422016.N().S(`    for _, key := range keys {
+        val := m[key]
         elem := `)
 			qw422016.N().S(elementTypeString)
 			qw422016.N().S(`{`)
@@ -404,34 +426,52 @@ func `)
             delete(data, k)
         }
     }
+for _jkey, _jvalue := range _map {
 `)
 			if tuple.dictKeyString {
-				qw422016.N().S(`for key, _jvalue := range _map {
-        var value `)
-				qw422016.N().S(valueTypeString)
+			} else {
+				qw422016.N().S(`        var key `)
+				qw422016.N().S(keyTypeString)
 				qw422016.N().S(`
         `)
-				qw422016.N().S(tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+				qw422016.N().S(tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
 				qw422016.N().S(`
-        data[key] = value
-    }
+`)
+			}
+			qw422016.N().S(`        var value `)
+			qw422016.N().S(valueTypeString)
+			qw422016.N().S(`
+        `)
+			qw422016.N().S(tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+			qw422016.N().S(`
+`)
+			if tuple.dictKeyString {
+				qw422016.N().S(`        data[_jkey] = value
+`)
+			} else {
+				qw422016.N().S(`        data[key] = value
+`)
+			}
+			qw422016.N().S(`    }
     return nil
 }
 
 func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`WriteJSON(w []byte, m `)
-				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(valueNatArgsDecl)
-				qw422016.N().S(`) (_ []byte, err error) {
+			qw422016.N().S(goName)
+			qw422016.N().S(`WriteJSON(w []byte, m `)
+			qw422016.N().S(typeString)
+			qw422016.N().S(` `)
+			qw422016.N().S(valueNatArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
     return `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`WriteJSONOpt(false, w, m`)
-				qw422016.N().S(valueNatArgsCall)
-				qw422016.N().S(`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`WriteJSONOpt(false, w, m`)
+			qw422016.N().S(valueNatArgsCall)
+			qw422016.N().S(`)
 }
-func `)
+`)
+			if tuple.dictKeyString {
+				qw422016.N().S(`func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`WriteJSONOpt(short bool, w []byte, m `)
 				qw422016.N().S(typeString)
@@ -462,38 +502,7 @@ func `)
 }
 `)
 			} else {
-				qw422016.N().S(`for _jkey, _jvalue := range _map {
-        var key `)
-				qw422016.N().S(keyTypeString)
-				qw422016.N().S(`
-        `)
-				qw422016.N().S(tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
-				qw422016.N().S(`
-        var value `)
-				qw422016.N().S(valueTypeString)
-				qw422016.N().S(`
-        `)
-				qw422016.N().S(tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))
-				qw422016.N().S(`
-        data[key] = value
-    }
-    return nil
-}
-
-func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`WriteJSON(w []byte, m `)
-				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
-				qw422016.N().S(`) (_ []byte, err error) {
-    return `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`WriteJSONOpt(false, w, m`)
-				qw422016.N().S(natCall)
-				qw422016.N().S(`)
-}
-func `)
+				qw422016.N().S(`func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`WriteJSONOpt(short bool, w []byte, m `)
 				qw422016.N().S(typeString)

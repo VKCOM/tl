@@ -584,6 +584,9 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 		if td.TypeDecl, rest, err = parseTypeDeclaration(rest, outer); err != nil {
 			return Combinator{}, tokens, fmt.Errorf("type declaration expected: %w", err)
 		}
+		if td.TypeDecl.Name.String() == "_" {
+			td.Builtin = true
+		}
 	}
 	if !rest.expect(semiColon) {
 		return Combinator{}, tokens, parseErrToken(fmt.Errorf("';' or type argument expected"), rest.front(), outer)
@@ -598,17 +601,18 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 }
 
 func ParseTL(str string) (TL, error) {
-	return ParseTLFile(str, "")
+	return ParseTLFile(str, "", false)
 }
 
-func ParseTLFile(str, file string) (TL, error) {
-	return ParseTL2(str, file, false)
+func ParseTLFile(str, file string, allowDirty bool) (TL, error) {
+	return ParseTL2(str, file, false, allowDirty)
 }
 
-// ParseTL TL := TypesSection [ type ... ] FunctionSection [ function ... ]
-func ParseTL2(str, file string, allowBuiltin bool) (TL, error) {
+// ParseTL2 TL := TypesSection [ type ... ] FunctionSection [ function ... ]
+// allowDirty - allows to use '_' (underscore) as constructor name
+func ParseTL2(str, file string, allowBuiltin, allowDirty bool) (TL, error) {
 	lex := newLexer(str, file, allowBuiltin)
-	allTokens, err := lex.generateTokens()
+	allTokens, err := lex.generateTokens(allowDirty)
 	if err != nil {
 		return TL{}, fmt.Errorf("tokenizer error: %w", err)
 	}
