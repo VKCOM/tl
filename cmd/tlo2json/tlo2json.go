@@ -11,10 +11,10 @@ import (
 	"os"
 	"strings"
 
-	tls "github.com/vkcom/tl/internal/tlcodegen/gentlo/tltls"
-	"github.com/vkcom/tl/internal/utils"
-
 	"golang.org/x/exp/slices"
+
+	tls "github.com/vkcom/tl/internal/tlast/gentlo/tltls"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func main() {
@@ -31,17 +31,6 @@ func main() {
 		_, _ = fmt.Fprintf(os.Stderr, "error on reading schema: %v", err)
 	}
 	slices.SortFunc(v4.Constructors, func(a, b tls.CombinatorUnion) int {
-		valAV4, okA := a.AsV4()
-		if !okA {
-			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())
-		}
-		valBV4, okB := b.AsV4()
-		if !okB {
-			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())
-		}
-		return strings.Compare(valAV4.Id, valBV4.Id)
-	})
-	slices.SortFunc(v4.Functions, func(a, b tls.CombinatorUnion) int {
 		valAV4, okA := a.AsV4()
 		if !okA {
 			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())

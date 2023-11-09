@@ -23,29 +23,14 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
-func modifierToFlag(m Modifier) int32 {
-	switch m.Name {
-	case "@any":
-		return 0
-	case "@read":
-		return 1
-	case "@write":
-		return 2
-	case "@readwrite":
-		return 1 | 2
-	case "@internal":
-		return 4
-	case "@kphp":
-		return 8
-	default:
-		return 0
-	}
+func compareModifiers(a, b Modifier) bool {
+	return modifierToFlag([]Modifier{a}) < modifierToFlag([]Modifier{b})
 }
 
 func (descriptor Combinator) streamcanonicalFormWithTag(qw422016 *qt422016.Writer) {
 	modifiers := append([]Modifier(nil), descriptor.Modifiers...)
 	sort.Slice(modifiers, func(i, j int) bool {
-		return modifierToFlag(modifiers[i]) < modifierToFlag(modifiers[j])
+		return compareModifiers(modifiers[i], modifiers[j])
 	})
 	haveKphp := false
 	for _, m := range modifiers {

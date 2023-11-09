@@ -24,7 +24,7 @@ func createNode(s *strings.Builder, parent, child, nodeName string, color string
 	_, _ = fmt.Fprintf(s, "%s -> %s;\n", parent, child)
 }
 
-func (tl *TL) ToDot() string {
+func (tl TL) ToDot() string {
 	var s, t, f strings.Builder
 	s.WriteString("digraph TL { splines=\"ortho\";\nordering=in;\ngraph[ordering=in];\n")
 	tlID := fmt.Sprintf("\"%pTL\"", tl)
@@ -35,9 +35,9 @@ func (tl *TL) ToDot() string {
 	createNode(&f, tlID, functionsID, "Functions", "white")
 	t.WriteString("subgraph types { ordering=in;\ngraph[ordering=in];\n")
 	f.WriteString("subgraph functions { ordering=in;\ngraph[ordering=in];\n")
-	for i := 0; i < len(*tl); i++ {
-		x := (*tl)[i]
-		id := fmt.Sprintf("\"%pCombinator\"", x)
+	for i := 0; i < len(tl); i++ {
+		x := tl[i]
+		id := fmt.Sprintf("\"%pCombinator\"", &x)
 		if x.IsFunction {
 			createNode(&f, functionsID, id, "Function", "white")
 			x.toDot(&f)

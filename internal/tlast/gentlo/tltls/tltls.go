@@ -8,7 +8,7 @@
 package tltls
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/gentlo/internal"
+	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
 )
 
 type (

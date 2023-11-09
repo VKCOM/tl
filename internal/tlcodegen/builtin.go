@@ -222,7 +222,7 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 			if !newField.ScaleRepeat.ExplicitScale {
 				endRange := tlast.PositionRange{Outer: newField.ScaleRepeat.PR.Outer, Begin: newField.ScaleRepeat.PR.Begin, End: newField.ScaleRepeat.PR.Begin}
 				if fieldIndex == 0 { // Allow shortcut to last template parameters
-					// hren {n:#} a:[int] = Hren;
+					// hren {n:#} a:[int] = Hren n;
 					a := typ.TemplateArguments[len(typ.TemplateArguments)-1]
 					if !a.IsNat {
 						e1 := endRange.BeautifulError(fmt.Errorf("anonymous scale repeat references last template parameter %q which should have type #", a.FieldName))
@@ -244,7 +244,7 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 						toVector = true
 						newFields = newFields[:len(newFields)-1]
 					}
-					// hren n:# a:[int] = Hren;
+					// hren n:# a:[int] = Hren n;
 				}
 				newField.ScaleRepeat.ExplicitScale = true
 			}
