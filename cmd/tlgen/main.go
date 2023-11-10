@@ -126,6 +126,9 @@ func runMain(argv arguments) error {
 	if err != nil {
 		return fmt.Errorf("error while walkking through paths: %w", err)
 	}
+	if argv.Verbose {
+		log.Printf("parsing TL...")
+	}
 	for _, path := range paths {
 		tl, err := parseTlFile(path)
 		if err != nil {
@@ -138,10 +141,6 @@ func runMain(argv arguments) error {
 		ast = append(ast, tl...)
 		fullAst = append(fullAst, fullTl...)
 	}
-
-	if argv.Verbose {
-		log.Printf("parsing TL...")
-	}
 	gen, err := tlcodegen.GenerateCode(ast, argv.Gen2Options)
 	if err != nil {
 		return err // Do not add excess info to already long parse error
@@ -149,8 +148,15 @@ func runMain(argv arguments) error {
 	if err = gen.WriteToDir(argv.outdir); err != nil {
 		return err // Context is already in err
 	}
-	if err = gen.WriteTLO(); err != nil {
-		return err
+	if argv.TLOPath != "" {
+		if argv.Verbose {
+			log.Print("generating tlo file")
+		}
+		buf, err := fullAst.GenerateTLO()
+		if err != nil {
+			return fmt.Errorf("error on generating tlo: %w", err)
+		}
+		return os.WriteFile(argv.TLOPath, buf, 0644)
 	}
 	if argv.CanonicalFormPath != "" {
 		if argv.Verbose {
