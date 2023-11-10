@@ -156,7 +156,9 @@ func runMain(argv arguments) error {
 		if err != nil {
 			return fmt.Errorf("error on generating tlo: %w", err)
 		}
-		return os.WriteFile(argv.TLOPath, buf, 0644)
+		if err := os.WriteFile(argv.TLOPath, buf, 0644); err != nil {
+			return err
+		}
 	}
 	if argv.CanonicalFormPath != "" {
 		if argv.Verbose {
@@ -164,7 +166,9 @@ func runMain(argv arguments) error {
 		}
 		var buf bytes.Buffer
 		fullAst.WriteGenerate2TL(&buf)
-		return os.WriteFile(argv.CanonicalFormPath, buf.Bytes(), 0644)
+		if err := os.WriteFile(argv.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
+			return err
+		}
 	}
 	return nil
 }
