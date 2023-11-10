@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/gentlo/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite

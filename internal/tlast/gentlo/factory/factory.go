@@ -8,8 +8,8 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/gentlo/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/gentlo/meta"
+	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
+	"github.com/vkcom/tl/internal/tlast/gentlo/meta"
 )
 
 func CreateFunction(tag uint32) meta.Function {

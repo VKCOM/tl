@@ -10,8 +10,8 @@ package meta
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlcodegen/gentlo/basictl"
-	"github.com/vkcom/tl/internal/tlcodegen/gentlo/internal"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
 )
 
 // We can create only types which have zero type arguments and zero nat arguments

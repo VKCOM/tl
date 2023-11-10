@@ -832,42 +832,6 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		log.Printf("transforming collections into canonical tuples...")
 	}
 
-	// for _, c := range tl {
-	//	fmt.Printf("%s\n", c.String())
-	// }
-	tlTLO, err := ReplaceSquareBracketsElem(tl, true)
-	if err != nil {
-		return nil, fmt.Errorf("replacing with canonical tuples: %w", err)
-	}
-	// for _, c := range tlTLO {
-	//	fmt.Printf("%s\n", c.String())
-	// }
-	if options.TLOPath != "" {
-		if options.Verbose {
-			log.Printf("generating tlo to %s", options.TLOPath)
-		}
-		err = gen.buildMapDescriptors(tlTLO)
-		if err != nil {
-			return nil, err
-		}
-		for _, bt := range btl {
-			tName := bt.Construct.Name.String()
-			gen.allConstructors[tName] = bt
-			gen.singleConstructors[tName] = bt // will overwrite without checking, this code is for TLO only
-		}
-		if options.TLOPath != "" {
-			tlo, _, err := gen.generateTLO()
-			if err != nil {
-				return gen, fmt.Errorf("can't generate TLO: %v", err)
-			}
-			gen.TLO = tlo
-		}
-		// Clear map descriptors, we will build them again after replacing square brackets
-		gen.typeDescriptors = map[string][]*tlast.Combinator{}
-		gen.allConstructors = map[string]*tlast.Combinator{}
-		gen.singleConstructors = map[string]*tlast.Combinator{}
-	}
-
 	// ReplaceSquareBrackets will generate types with id 0, we will not generate boxed methods for such types
 	if tl, err = ReplaceSquareBracketsElem(tl, false); err != nil {
 		return nil, fmt.Errorf("replacing with canonical tuples: %w", err)
