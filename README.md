@@ -23,7 +23,7 @@ go install github.com/vkcom/tl/cmd/tlgen@latest
 
 ## Documentation
 
-- [Internals](./docs/tldoc.ru.md) (in Russian)
+- [Internals](./docs/TLPrimer.pdf) (in Russian)
 
 ## License
 
