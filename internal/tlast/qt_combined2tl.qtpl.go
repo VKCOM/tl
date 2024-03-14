@@ -43,6 +43,7 @@ func (descriptor Combinator) streamcanonicalFormWithTag(qw422016 *qt422016.Write
 	}
 
 	for _, mod := range modifiers {
+		qw422016.N().S(`@`)
 		qw422016.N().S(mod.Name)
 		qw422016.N().S(` `)
 	}

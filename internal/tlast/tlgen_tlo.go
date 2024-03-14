@@ -474,17 +474,17 @@ func typeRefToExprUnion(mc paramScope, allCombinators map[string]*Combinator, tl
 func modifierToFlag(ms []Modifier) (res int32) {
 	for _, m := range ms {
 		switch m.Name {
-		case "@any":
+		case "any":
 			res |= 0
-		case "@read":
+		case "read":
 			res |= 1
-		case "@write":
+		case "write":
 			res |= 2
-		case "@readwrite":
+		case "readwrite":
 			res |= 1 | 2
-		case "@internal":
+		case "internal":
 			res |= 4
-		case "@kphp":
+		case "kphp":
 			res |= 8
 		}
 	}
