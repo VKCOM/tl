@@ -31,12 +31,13 @@ build:
 	@echo "Building tlgen with sha256 checksum $(SHA256_CHECKSUM)"
 	@$(GO) build -ldflags "$(COMMON_LDFLAGS)  -X 'github.com/vkcom/tl/internal/tlcodegen.buildSHA256Checksum=$(SHA256_CHECKSUM)'" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
 
-tlo-bootstrap:
-	@$(GO) run ./cmd/tlgen \
-		-pkgPath=github.com/vkcom/tl/internal/tlcodegen/gentlo/tl \
+tlo-bootstrap: build
+	@./target/bin/tlgen \
+		-pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
+		-basicPkgPath=github.com/vkcom/tl/pkg/basictl \
 		-generateRPCCode=false \
-		-outdir ./internal/tlcodegen/gentlo \
-		-schema ./internal/tlcodegen/tls.tl
+		-outdir=./internal/tlast/gentlo \
+		-schema=./internal/tlast/tls.tl
 
 qtpl:
 	@if ! [ -x "$(command -v qtc)"]; then \
