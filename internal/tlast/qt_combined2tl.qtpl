@@ -24,7 +24,7 @@ func compareModifiers(a, b Modifier) bool {
     }
   -%}
   {%- for _, mod := range modifiers -%}
-    {%s= mod.Name%}{% space %}
+    @{%s= mod.Name%}{% space %}
   {%- endfor -%}
   {%= descriptor.Construct.Name.String() -%}
   #{%s= fmt.Sprintf("%08x", descriptor.Crc32()) %}
