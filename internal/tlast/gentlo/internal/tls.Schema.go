@@ -8,84 +8,84 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 
-var _TlsSchemaUnion = [3]UnionElement{
+var _TlsSchema = [3]UnionElement{
 	{TLTag: 0x3a2f9be2, TLName: "tls.schema_v2", TLString: "tls.schema_v2#3a2f9be2"},
 	{TLTag: 0xe4a8604b, TLName: "tls.schema_v3", TLString: "tls.schema_v3#e4a8604b"},
 	{TLTag: 0x90ac88d7, TLName: "tls.schema_v4", TLString: "tls.schema_v4#90ac88d7"},
 }
 
-type TlsSchemaUnion struct {
+type TlsSchema struct {
 	valueV2 TlsSchemaV2
 	valueV3 TlsSchemaV3
 	valueV4 TlsSchemaV4
 	index   int
 }
 
-func (item TlsSchemaUnion) TLName() string { return _TlsSchemaUnion[item.index].TLName }
-func (item TlsSchemaUnion) TLTag() uint32  { return _TlsSchemaUnion[item.index].TLTag }
+func (item TlsSchema) TLName() string { return _TlsSchema[item.index].TLName }
+func (item TlsSchema) TLTag() uint32  { return _TlsSchema[item.index].TLTag }
 
-func (item *TlsSchemaUnion) Reset() { item.ResetToV2() }
+func (item *TlsSchema) Reset() { item.ResetToV2() }
 
-func (item *TlsSchemaUnion) IsV2() bool { return item.index == 0 }
+func (item *TlsSchema) IsV2() bool { return item.index == 0 }
 
-func (item *TlsSchemaUnion) AsV2() (*TlsSchemaV2, bool) {
+func (item *TlsSchema) AsV2() (*TlsSchemaV2, bool) {
 	if item.index != 0 {
 		return nil, false
 	}
 	return &item.valueV2, true
 }
-func (item *TlsSchemaUnion) ResetToV2() *TlsSchemaV2 {
+func (item *TlsSchema) ResetToV2() *TlsSchemaV2 {
 	item.index = 0
 	item.valueV2.Reset()
 	return &item.valueV2
 }
-func (item *TlsSchemaUnion) SetV2(value TlsSchemaV2) {
+func (item *TlsSchema) SetV2(value TlsSchemaV2) {
 	item.index = 0
 	item.valueV2 = value
 }
 
-func (item *TlsSchemaUnion) IsV3() bool { return item.index == 1 }
+func (item *TlsSchema) IsV3() bool { return item.index == 1 }
 
-func (item *TlsSchemaUnion) AsV3() (*TlsSchemaV3, bool) {
+func (item *TlsSchema) AsV3() (*TlsSchemaV3, bool) {
 	if item.index != 1 {
 		return nil, false
 	}
 	return &item.valueV3, true
 }
-func (item *TlsSchemaUnion) ResetToV3() *TlsSchemaV3 {
+func (item *TlsSchema) ResetToV3() *TlsSchemaV3 {
 	item.index = 1
 	item.valueV3.Reset()
 	return &item.valueV3
 }
-func (item *TlsSchemaUnion) SetV3(value TlsSchemaV3) {
+func (item *TlsSchema) SetV3(value TlsSchemaV3) {
 	item.index = 1
 	item.valueV3 = value
 }
 
-func (item *TlsSchemaUnion) IsV4() bool { return item.index == 2 }
+func (item *TlsSchema) IsV4() bool { return item.index == 2 }
 
-func (item *TlsSchemaUnion) AsV4() (*TlsSchemaV4, bool) {
+func (item *TlsSchema) AsV4() (*TlsSchemaV4, bool) {
 	if item.index != 2 {
 		return nil, false
 	}
 	return &item.valueV4, true
 }
-func (item *TlsSchemaUnion) ResetToV4() *TlsSchemaV4 {
+func (item *TlsSchema) ResetToV4() *TlsSchemaV4 {
 	item.index = 2
 	item.valueV4.Reset()
 	return &item.valueV4
 }
-func (item *TlsSchemaUnion) SetV4(value TlsSchemaV4) {
+func (item *TlsSchema) SetV4(value TlsSchemaV4) {
 	item.index = 2
 	item.valueV4 = value
 }
 
-func (item *TlsSchemaUnion) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *TlsSchema) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -105,8 +105,8 @@ func (item *TlsSchemaUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *TlsSchemaUnion) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, _TlsSchemaUnion[item.index].TLTag)
+func (item *TlsSchema) WriteBoxed(w []byte) (_ []byte, err error) {
+	w = basictl.NatWrite(w, _TlsSchema[item.index].TLTag)
 	switch item.index {
 	case 0:
 		return item.valueV2.Write(w)
@@ -119,8 +119,8 @@ func (item *TlsSchemaUnion) WriteBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func TlsSchemaUnion__ReadJSON(item *TlsSchemaUnion, j interface{}) error { return item.readJSON(j) }
-func (item *TlsSchemaUnion) readJSON(j interface{}) error {
+func TlsSchema__ReadJSON(item *TlsSchema, j interface{}) error { return item.readJSON(j) }
+func (item *TlsSchema) readJSON(j interface{}) error {
 	_jm, _tag, err := JsonReadUnionType("tls.Schema", j)
 	if err != nil {
 		return err
@@ -154,10 +154,10 @@ func (item *TlsSchemaUnion) readJSON(j interface{}) error {
 	return nil
 }
 
-func (item *TlsSchemaUnion) WriteJSON(w []byte) (_ []byte, err error) {
+func (item *TlsSchema) WriteJSON(w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(false, w)
 }
-func (item *TlsSchemaUnion) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+func (item *TlsSchema) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
 		w = append(w, `{"type":"tls.schema_v2#3a2f9be2","value":`...)
@@ -182,7 +182,7 @@ func (item *TlsSchemaUnion) WriteJSONOpt(short bool, w []byte) (_ []byte, err er
 	}
 }
 
-func (item TlsSchemaUnion) String() string {
+func (item TlsSchema) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()
@@ -190,22 +190,36 @@ func (item TlsSchemaUnion) String() string {
 	return string(w)
 }
 
-func (item TlsSchemaV2) AsUnion() TlsSchemaUnion {
-	var ret TlsSchemaUnion
+func (item *TlsSchema) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil)
+}
+
+func (item *TlsSchema) UnmarshalJSON(b []byte) error {
+	j, err := JsonBytesToInterface(b)
+	if err != nil {
+		return ErrorInvalidJSON("tls.Schema", err.Error())
+	}
+	if err = item.readJSON(j); err != nil {
+		return ErrorInvalidJSON("tls.Schema", err.Error())
+	}
+	return nil
+}
+
+func (item TlsSchemaV2) AsUnion() TlsSchema {
+	var ret TlsSchema
 	ret.SetV2(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsSchemaV2 struct {
 	Version        int32
 	Date           int32
 	TypesNum       uint32
 	Types          []TlsType
 	ConstructorNum uint32
-	Constructors   []TlsCombinatorUnion
+	Constructors   []TlsCombinator
 	FunctionsNum   uint32
-	Functions      []TlsCombinatorUnion
+	Functions      []TlsCombinator
 }
 
 func (TlsSchemaV2) TLName() string { return "tls.schema_v2" }
@@ -403,22 +417,21 @@ func (item *TlsSchemaV2) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item TlsSchemaV3) AsUnion() TlsSchemaUnion {
-	var ret TlsSchemaUnion
+func (item TlsSchemaV3) AsUnion() TlsSchema {
+	var ret TlsSchema
 	ret.SetV3(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsSchemaV3 struct {
 	Version        int32
 	Date           int32
 	TypesNum       uint32
 	Types          []TlsType
 	ConstructorNum uint32
-	Constructors   []TlsCombinatorUnion
+	Constructors   []TlsCombinator
 	FunctionsNum   uint32
-	Functions      []TlsCombinatorUnion
+	Functions      []TlsCombinator
 }
 
 func (TlsSchemaV3) TLName() string { return "tls.schema_v3" }
@@ -616,22 +629,21 @@ func (item *TlsSchemaV3) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item TlsSchemaV4) AsUnion() TlsSchemaUnion {
-	var ret TlsSchemaUnion
+func (item TlsSchemaV4) AsUnion() TlsSchema {
+	var ret TlsSchema
 	ret.SetV4(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsSchemaV4 struct {
 	Version        int32
 	Date           int32
 	TypesNum       uint32
 	Types          []TlsType
 	ConstructorNum uint32
-	Constructors   []TlsCombinatorUnion
+	Constructors   []TlsCombinator
 	FunctionsNum   uint32
-	Functions      []TlsCombinatorUnion
+	Functions      []TlsCombinator
 }
 
 func (TlsSchemaV4) TLName() string { return "tls.schema_v4" }

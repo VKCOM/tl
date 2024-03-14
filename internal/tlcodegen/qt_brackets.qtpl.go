@@ -119,7 +119,7 @@ func `)
 			qw422016.N().S(tuple.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidJSON(`)
 			qw422016.N().Q(typeString)
-			qw422016.N().S(`, "expected json object") // TODO - better name
+			qw422016.N().S(`, "expected json object")
         }
     }
       l := len(_map)
@@ -298,7 +298,10 @@ func `)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
     var l uint32
-    if w, err = basictl.NatRead(w, &l); err != nil { // No sanity check required for map
+    if w, err = basictl.NatRead(w, &l); err != nil {
+        return w, err
+    }
+    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
     var data map[`)
@@ -401,7 +404,7 @@ func `)
 			qw422016.N().S(tuple.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidJSON(`)
 			qw422016.N().Q(typeString)
-			qw422016.N().S(`, "expected json object") // TODO - better name
+			qw422016.N().S(`, "expected json object")
         }
     }
     l := len(_map)
@@ -492,7 +495,7 @@ func `)
     for _, key := range keys {
         value := m[key]
         w = basictl.JSONAddCommaIfNeeded(w)
-        w = basictl.JSONWriteString(w, key) // StringKey
+        w = basictl.JSONWriteString(w, key)
         w = append(w, ':')
         `)
 				qw422016.N().S(tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false))

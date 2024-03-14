@@ -30,7 +30,7 @@ func main() {
 	if _, err := v4.ReadBoxed(buf); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "error on reading schema: %v", err)
 	}
-	slices.SortFunc(v4.Constructors, func(a, b tls.CombinatorUnion) int {
+	slices.SortFunc(v4.Constructors, func(a, b tls.Combinator) int {
 		valAV4, okA := a.AsV4()
 		if !okA {
 			panic("invalid union interpretation for tls.combinator_v4: " + valAV4.String())

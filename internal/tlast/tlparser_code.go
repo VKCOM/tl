@@ -151,7 +151,7 @@ func parseModifiers(tokens tokenIterator, outer Position) ([]Modifier, tokenIter
 		if !rest.checkToken(functionModifier) {
 			break
 		}
-		mod.Name = rest.front().val
+		mod.Name = rest.front().val[1:] // always safe
 		rest.expectOrPanic(functionModifier)
 		mod.PR.End = rest.front().pos
 		res = append(res, mod)
@@ -392,7 +392,7 @@ func parseRepeatWithScaleOpt(tokens tokenIterator, outer Position) (*RepeatWithS
 		return nil, tokens, nil
 	}
 	// rBracketToken := rest.front()
-	res.Rep, rest, err = parseFields(rest, rSquareBracket, outer)
+	_, res.Rep, rest, err = parseFields(rest, rSquareBracket, rSquareBracket, outer)
 	if err != nil {
 		return nil, tokens, err // fmt.Errorf("error parsing fields in square brackets: %w", err)
 	}
@@ -497,16 +497,24 @@ func parseField(commentStart tokenIterator, tokens tokenIterator, outer Position
 	return res, rest, nil
 }
 
-func parseFields(tokens tokenIterator, finishToken int, outer Position) ([]Field, tokenIterator, error) {
+func parseFields(tokens tokenIterator, finishToken1 int, finishToken2 int, outer Position) (int, []Field, tokenIterator, error) {
 	var res []Field
 	rest := tokens
 	var err error
 	commentStart := tokens
-	for !rest.expect(finishToken) {
+	for {
+		switch {
+		case rest.checkToken(finishToken1):
+			rest.popFront()
+			return finishToken1, res, rest, nil
+		case rest.checkToken(finishToken2):
+			rest.popFront()
+			return finishToken2, res, rest, nil
+		}
 		var field Field
 		field, rest, err = parseField(commentStart, rest, outer)
 		if err != nil {
-			return nil, tokens, err // fmt.Errorf("'%c' or field declaration expected: %w", finishToken, err) // parseErrToken(fmt.Errorf("field declaration expected:"), rest.front())
+			return 0, nil, tokens, err // fmt.Errorf("'%c' or field declaration expected: %w", finishToken, err) // parseErrToken(fmt.Errorf("field declaration expected:"), rest.front())
 		}
 		commentStart = rest
 		if rest.skipToNewline() {
@@ -515,7 +523,6 @@ func parseFields(tokens tokenIterator, finishToken int, outer Position) ([]Field
 		res = append(res, field)
 		commentStart = rest
 	}
-	return res, rest, nil
 }
 
 // funcDecl := apply | '(' apply ')' | '%' T | fullName '<' aot ',' ... '>
@@ -535,6 +542,7 @@ func parseFuncDecl(tokens tokenIterator, outer Position) (TypeRef, tokenIterator
 // type := constructor [templateArgument] ... [field] ...  '=' typeDecl ';'
 // or
 // function := [ functionModifier ] constructor [templateArgument] ... [field] ... '=' apply;'
+// but also => marks function independent of section
 func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunction bool, allowBuiltin bool) (Combinator, tokenIterator, error) {
 	rest := tokens
 
@@ -569,7 +577,11 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 			return Combinator{}, tokens, parseErrToken(fmt.Errorf("'=' expected after '?' (legacy builtin type body)"), rest.front(), outer)
 		}
 	} else {
-		td.Fields, rest, err = parseFields(rest, equalSign, outer)
+		var actualModifier int
+		actualModifier, td.Fields, rest, err = parseFields(rest, equalSign, functionSign, outer)
+		if actualModifier == functionSign {
+			isFunction = true
+		}
 		if err != nil {
 			return Combinator{}, tokens, err
 		}

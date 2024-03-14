@@ -242,8 +242,8 @@ func paddingLen(l int) int {
 }
 
 func writeString(w []byte, v string) []byte {
-	l := len(v)
-	var p int
+	l := int64(len(v))
+	var p int64
 	switch {
 	case l <= tinyStringLen:
 		w = append(w, byte(l))
@@ -261,7 +261,8 @@ func writeString(w []byte, v string) []byte {
 	}
 	w = append(w, v...)
 
-	switch uint(p) % 4 {
+	// w is sometimes slice of byte array, so we do not want optimization to always append 3 bytes, then resize.
+	switch uint64(p) % 4 {
 	case 1:
 		w = append(w, 0, 0, 0)
 	case 2:
@@ -273,8 +274,8 @@ func writeString(w []byte, v string) []byte {
 }
 
 func writeStringBytes(w []byte, v []byte) []byte {
-	l := len(v)
-	var p int
+	l := int64(len(v))
+	var p int64
 	switch {
 	case l <= tinyStringLen:
 		w = append(w, byte(l))
@@ -292,7 +293,8 @@ func writeStringBytes(w []byte, v []byte) []byte {
 	}
 	w = append(w, v...)
 
-	switch uint(p) % 4 {
+	// w is sometimes slice of byte array, so we do not want optimization to always append 3 bytes, then resize.
+	switch uint64(p) % 4 {
 	case 1:
 		w = append(w, 0, 0, 0)
 	case 2:
@@ -323,11 +325,30 @@ func JSONWriteInt64(w []byte, v int64) []byte {
 	return strconv.AppendInt(w, v, 10)
 }
 
+func jsonWriteFloatSpecial(w []byte, v float64) ([]byte, bool) {
+	if math.IsNaN(v) {
+		return append(w, "\"NaN\""...), true
+	}
+	if math.IsInf(v, 1) {
+		return append(w, "\"+Inf\""...), true
+	}
+	if math.IsInf(v, -1) {
+		return append(w, "\"-Inf\""...), true
+	}
+	return w, false
+}
+
 func JSONWriteFloat32(w []byte, v float32) []byte {
+	if ws, ok := jsonWriteFloatSpecial(w, float64(v)); ok {
+		return ws
+	}
 	return strconv.AppendFloat(w, float64(v), 'f', -1, 32)
 }
 
 func JSONWriteFloat64(w []byte, v float64) []byte {
+	if ws, ok := jsonWriteFloatSpecial(w, v); ok {
+		return ws
+	}
 	return strconv.AppendFloat(w, v, 'f', -1, 64)
 }
 
@@ -686,11 +707,11 @@ func ErrorClientWrite(typeName string, err error) error {
 	return fmt.Errorf("failed to serialize %s request: %w", typeName, err)
 }
 
-func ErrorClientDo(typeName string, network string, actorID uint64, address string, err error) error {
+func ErrorClientDo(typeName string, network string, actorID int64, address string, err error) error {
 	return fmt.Errorf("%s request to %s://%d@%s failed: %w", typeName, network, actorID, address, err)
 }
 
-func ErrorClientReadResult(typeName string, network string, actorID uint64, address string, err error) error {
+func ErrorClientReadResult(typeName string, network string, actorID int64, address string, err error) error {
 	return fmt.Errorf("failed to deserialize %s response from %s://%d@%s: %w", typeName, network, actorID, address, err)
 }
 

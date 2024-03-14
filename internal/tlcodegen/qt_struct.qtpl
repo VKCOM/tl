@@ -23,7 +23,6 @@ func (item {%s= goName %}) AsUnion() {%s= ep %} {
     return ret
 }
 
-// AsUnion will be here
     {%- endif -%}
     {%- endif -%}
 {%= struct_.typeDefinition(bytesVersion, directImports) %}
@@ -93,7 +92,7 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatPa
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%- if struct_.isTypeDef() -%}
         {%- code
-            asterisk := ifString(struct_.Fields[0].recursive, "*", "")
+            asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
             fieldTypeString :=  struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
 type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
@@ -255,7 +254,7 @@ func (item *{%s= goName %}) WriteJSONOpt(short bool, w []byte{%s= natArgsDecl %}
 }
     {%- else -%}
         {%- code
-// Sorting fields is bad idea. It is convenient when they are in TL order
+// Sorting fields is bad idea. Most efficient parsing is if they are in TL order, because no look ahead required
         -%}
 
 {%= struct_.readJSONCode(bytesVersion, directImports) %}
@@ -298,6 +297,9 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
 // then we read the rest, passing the same field masks to every field reader
     -%}
     {%- for _, field := range struct_.Fields -%}
+        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
+        -%}
+        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- code
             jsonField := fmt.Sprintf("_j%s", field.goName)
             itemField := fmt.Sprintf("item.%s", field.goName)
@@ -314,6 +316,9 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
         return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= struct_.wr.tlName.String() %}, k)
     }
     {%- for _, field := range struct_.Fields -%}
+        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
+        -%}
+        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- if field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
         {%- code
              // If field depends on implicit field mask and set in json, but field mask bit not set, this is error
@@ -357,6 +362,9 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
         {%- endif -%}
     {%- endfor -%}
     {%- for _, field := range struct_.Fields -%}
+        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
+        -%}
+        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- code
             jsonField := fmt.Sprintf("_j%s", field.goName)
             itemField := fmt.Sprintf("item.%s", field.goName)
@@ -381,17 +389,43 @@ func (item *{%s= goName %}) readJSON(j interface{}{%s= natArgsDecl %}) error {
         {%- if field.fieldMask != nil -%}
             {%- if !field.fieldMask.isField -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
+        {%- if field.recursive -%}
+            {%- code fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) -%}
+        if item.{%s= field.goName %} == nil {
+            var value {%s= fieldTypeString %}
+            item.{%s= field.goName %} = &value
+        }
+        {%- endif -%}
         {%s= readingCode %}
     } else {
+        {%- if field.recursive -%}
+        if item.{%s= field.goName %} != nil {
+            {%s= resettingCode %}
+        }
+        {%- else -%}
         {%s= resettingCode %}
+        {%- endif -%}
     }
             {%- else -%}
     if {%s= jsonField %} != nil {
+        {%- if field.recursive -%}
+        {%- code fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) -%}
+        if item.{%s= field.goName %} == nil {
+            var value {%s= fieldTypeString %}
+            item.{%s= field.goName %} = &value
+        }
+        {%- endif -%}
         {%s= readingCode %}
     } else {
+        {%- if field.recursive -%}
+        if item.{%s= field.goName %} != nil {
+            {%s= resettingCode %}
+        }
+        {%- else -%}
         {%s= resettingCode %}
+        {%- endif -%}
     }
-            {%- endif -%}
+        {%- endif -%}
         {%- else -%}
             {%- if _, isScalar := field.t.trw.(*TypeRWPrimitive); !isScalar -%}
     {%s= readingCode %}
@@ -415,6 +449,9 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) (_ []byte, er
 func (item *{%s= goName %}) WriteJSONOpt(short bool, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
+        {%- code // field names will be mandatory soon, except for typedefs which are processed separately
+        -%}
+        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- if field.t.IsTrueType() -%}
             {%- if field.fieldMask != nil && (field.fieldMask.isField || field.fieldMask.isArith) -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
@@ -573,7 +610,15 @@ if item.{%s= field.goName %} == nil {
         -%}
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
         {%- if finishFieldsMask -%}
-} else { {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %} }
+} else {
+        {%- if field.recursive -%}
+        if item.{%s= field.goName %} != nil {
+            {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
+        }
+        {%- else -%}
+        {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
+        {%- endif -%}
+}
         {%- endif -%}
     {%- endfor -%}
 {%- endfunc -%}
@@ -658,7 +703,15 @@ if item.{%s= field.goName %} == nil {
         -%}
 {%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last) %}
         {%- if finishFieldsMask -%}
-} else { {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %} }
+} else {
+        {%- if field.recursive -%}
+        if item.{%s= field.goName %} != nil {
+            {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
+        }
+        {%- else -%}
+        {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
+        {%- endif -%}
+}
         {%- endif -%}
     {%- endfor -%}
     {%- if !lastWritten -%}

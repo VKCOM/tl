@@ -8,18 +8,17 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 
-func (item TlsNatConst) AsUnion() TlsNatExprUnion {
-	var ret TlsNatExprUnion
+func (item TlsNatConst) AsUnion() TlsNatExpr {
+	var ret TlsNatExpr
 	ret.SetNatConst(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsNatConst struct {
 	Value int32
 }
@@ -104,59 +103,59 @@ func (item *TlsNatConst) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-var _TlsNatExprUnion = [2]UnionElement{
+var _TlsNatExpr = [2]UnionElement{
 	{TLTag: 0x8ce940b1, TLName: "tls.natConst", TLString: "tls.natConst#8ce940b1"},
 	{TLTag: 0x4e8a14f0, TLName: "tls.natVar", TLString: "tls.natVar#4e8a14f0"},
 }
 
-type TlsNatExprUnion struct {
+type TlsNatExpr struct {
 	valueNatConst TlsNatConst
 	valueNatVar   TlsNatVar
 	index         int
 }
 
-func (item TlsNatExprUnion) TLName() string { return _TlsNatExprUnion[item.index].TLName }
-func (item TlsNatExprUnion) TLTag() uint32  { return _TlsNatExprUnion[item.index].TLTag }
+func (item TlsNatExpr) TLName() string { return _TlsNatExpr[item.index].TLName }
+func (item TlsNatExpr) TLTag() uint32  { return _TlsNatExpr[item.index].TLTag }
 
-func (item *TlsNatExprUnion) Reset() { item.ResetToNatConst() }
+func (item *TlsNatExpr) Reset() { item.ResetToNatConst() }
 
-func (item *TlsNatExprUnion) IsNatConst() bool { return item.index == 0 }
+func (item *TlsNatExpr) IsNatConst() bool { return item.index == 0 }
 
-func (item *TlsNatExprUnion) AsNatConst() (*TlsNatConst, bool) {
+func (item *TlsNatExpr) AsNatConst() (*TlsNatConst, bool) {
 	if item.index != 0 {
 		return nil, false
 	}
 	return &item.valueNatConst, true
 }
-func (item *TlsNatExprUnion) ResetToNatConst() *TlsNatConst {
+func (item *TlsNatExpr) ResetToNatConst() *TlsNatConst {
 	item.index = 0
 	item.valueNatConst.Reset()
 	return &item.valueNatConst
 }
-func (item *TlsNatExprUnion) SetNatConst(value TlsNatConst) {
+func (item *TlsNatExpr) SetNatConst(value TlsNatConst) {
 	item.index = 0
 	item.valueNatConst = value
 }
 
-func (item *TlsNatExprUnion) IsNatVar() bool { return item.index == 1 }
+func (item *TlsNatExpr) IsNatVar() bool { return item.index == 1 }
 
-func (item *TlsNatExprUnion) AsNatVar() (*TlsNatVar, bool) {
+func (item *TlsNatExpr) AsNatVar() (*TlsNatVar, bool) {
 	if item.index != 1 {
 		return nil, false
 	}
 	return &item.valueNatVar, true
 }
-func (item *TlsNatExprUnion) ResetToNatVar() *TlsNatVar {
+func (item *TlsNatExpr) ResetToNatVar() *TlsNatVar {
 	item.index = 1
 	item.valueNatVar.Reset()
 	return &item.valueNatVar
 }
-func (item *TlsNatExprUnion) SetNatVar(value TlsNatVar) {
+func (item *TlsNatExpr) SetNatVar(value TlsNatVar) {
 	item.index = 1
 	item.valueNatVar = value
 }
 
-func (item *TlsNatExprUnion) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *TlsNatExpr) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
 	if w, err = basictl.NatRead(w, &tag); err != nil {
 		return w, err
@@ -173,8 +172,8 @@ func (item *TlsNatExprUnion) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func (item *TlsNatExprUnion) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, _TlsNatExprUnion[item.index].TLTag)
+func (item *TlsNatExpr) WriteBoxed(w []byte) (_ []byte, err error) {
+	w = basictl.NatWrite(w, _TlsNatExpr[item.index].TLTag)
 	switch item.index {
 	case 0:
 		return item.valueNatConst.Write(w)
@@ -185,8 +184,8 @@ func (item *TlsNatExprUnion) WriteBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-func TlsNatExprUnion__ReadJSON(item *TlsNatExprUnion, j interface{}) error { return item.readJSON(j) }
-func (item *TlsNatExprUnion) readJSON(j interface{}) error {
+func TlsNatExpr__ReadJSON(item *TlsNatExpr, j interface{}) error { return item.readJSON(j) }
+func (item *TlsNatExpr) readJSON(j interface{}) error {
 	_jm, _tag, err := JsonReadUnionType("tls.NatExpr", j)
 	if err != nil {
 		return err
@@ -214,10 +213,10 @@ func (item *TlsNatExprUnion) readJSON(j interface{}) error {
 	return nil
 }
 
-func (item *TlsNatExprUnion) WriteJSON(w []byte) (_ []byte, err error) {
+func (item *TlsNatExpr) WriteJSON(w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(false, w)
 }
-func (item *TlsNatExprUnion) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+func (item *TlsNatExpr) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
 		w = append(w, `{"type":"tls.natConst#8ce940b1","value":`...)
@@ -236,7 +235,7 @@ func (item *TlsNatExprUnion) WriteJSONOpt(short bool, w []byte) (_ []byte, err e
 	}
 }
 
-func (item TlsNatExprUnion) String() string {
+func (item TlsNatExpr) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()
@@ -244,13 +243,27 @@ func (item TlsNatExprUnion) String() string {
 	return string(w)
 }
 
-func (item TlsNatVar) AsUnion() TlsNatExprUnion {
-	var ret TlsNatExprUnion
+func (item *TlsNatExpr) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil)
+}
+
+func (item *TlsNatExpr) UnmarshalJSON(b []byte) error {
+	j, err := JsonBytesToInterface(b)
+	if err != nil {
+		return ErrorInvalidJSON("tls.NatExpr", err.Error())
+	}
+	if err = item.readJSON(j); err != nil {
+		return ErrorInvalidJSON("tls.NatExpr", err.Error())
+	}
+	return nil
+}
+
+func (item TlsNatVar) AsUnion() TlsNatExpr {
+	var ret TlsNatExpr
 	ret.SetNatVar(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsNatVar struct {
 	Dif    int32
 	VarNum int32

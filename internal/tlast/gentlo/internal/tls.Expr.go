@@ -8,17 +8,17 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 
-func BuiltinTupleTlsExprBoxedRead(w []byte, vec *[]TlsExprUnion, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprBoxedRead(w []byte, vec *[]TlsExpr, nat_n uint32) (_ []byte, err error) {
 	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
 		return w, err
 	}
 	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]TlsExprUnion, nat_n)
+		*vec = make([]TlsExpr, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
@@ -30,9 +30,9 @@ func BuiltinTupleTlsExprBoxedRead(w []byte, vec *[]TlsExprUnion, nat_n uint32) (
 	return w, nil
 }
 
-func BuiltinTupleTlsExprBoxedWrite(w []byte, vec []TlsExprUnion, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprBoxedWrite(w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
-		return w, ErrorWrongSequenceLength("[]TlsExprUnion", len(vec), nat_n)
+		return w, ErrorWrongSequenceLength("[]TlsExpr", len(vec), nat_n)
 	}
 	for _, elem := range vec {
 		if w, err = elem.WriteBoxed(w); err != nil {
@@ -42,30 +42,30 @@ func BuiltinTupleTlsExprBoxedWrite(w []byte, vec []TlsExprUnion, nat_n uint32) (
 	return w, nil
 }
 
-func BuiltinTupleTlsExprBoxedReadJSON(j interface{}, vec *[]TlsExprUnion, nat_n uint32) error {
-	_, _arr, err := JsonReadArrayFixedSize("[]TlsExprUnion", j, nat_n)
+func BuiltinTupleTlsExprBoxedReadJSON(j interface{}, vec *[]TlsExpr, nat_n uint32) error {
+	_, _arr, err := JsonReadArrayFixedSize("[]TlsExpr", j, nat_n)
 	if err != nil {
 		return err
 	}
 	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]TlsExprUnion, nat_n)
+		*vec = make([]TlsExpr, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
 	for i := range *vec {
-		if err := TlsExprUnion__ReadJSON(&(*vec)[i], _arr[i]); err != nil {
+		if err := TlsExpr__ReadJSON(&(*vec)[i], _arr[i]); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func BuiltinTupleTlsExprBoxedWriteJSON(w []byte, vec []TlsExprUnion, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprBoxedWriteJSON(w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleTlsExprBoxedWriteJSONOpt(false, w, vec, nat_n)
 }
-func BuiltinTupleTlsExprBoxedWriteJSONOpt(short bool, w []byte, vec []TlsExprUnion, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprBoxedWriteJSONOpt(short bool, w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
-		return w, ErrorWrongSequenceLength("[]TlsExprUnion", len(vec), nat_n)
+		return w, ErrorWrongSequenceLength("[]TlsExpr", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
@@ -77,15 +77,169 @@ func BuiltinTupleTlsExprBoxedWriteJSONOpt(short bool, w []byte, vec []TlsExprUni
 	return append(w, ']'), nil
 }
 
-func (item TlsExprNat) AsUnion() TlsExprUnion {
-	var ret TlsExprUnion
+var _TlsExpr = [2]UnionElement{
+	{TLTag: 0xecc9da78, TLName: "tls.exprType", TLString: "tls.exprType#ecc9da78"},
+	{TLTag: 0xdcb49bd8, TLName: "tls.exprNat", TLString: "tls.exprNat#dcb49bd8"},
+}
+
+type TlsExpr struct {
+	valueType TlsExprType
+	valueNat  TlsExprNat
+	index     int
+}
+
+func (item TlsExpr) TLName() string { return _TlsExpr[item.index].TLName }
+func (item TlsExpr) TLTag() uint32  { return _TlsExpr[item.index].TLTag }
+
+func (item *TlsExpr) Reset() { item.ResetToType() }
+
+func (item *TlsExpr) IsType() bool { return item.index == 0 }
+
+func (item *TlsExpr) AsType() (*TlsExprType, bool) {
+	if item.index != 0 {
+		return nil, false
+	}
+	return &item.valueType, true
+}
+func (item *TlsExpr) ResetToType() *TlsExprType {
+	item.index = 0
+	item.valueType.Reset()
+	return &item.valueType
+}
+func (item *TlsExpr) SetType(value TlsExprType) {
+	item.index = 0
+	item.valueType = value
+}
+
+func (item *TlsExpr) IsNat() bool { return item.index == 1 }
+
+func (item *TlsExpr) AsNat() (*TlsExprNat, bool) {
+	if item.index != 1 {
+		return nil, false
+	}
+	return &item.valueNat, true
+}
+func (item *TlsExpr) ResetToNat() *TlsExprNat {
+	item.index = 1
+	item.valueNat.Reset()
+	return &item.valueNat
+}
+func (item *TlsExpr) SetNat(value TlsExprNat) {
+	item.index = 1
+	item.valueNat = value
+}
+
+func (item *TlsExpr) ReadBoxed(w []byte) (_ []byte, err error) {
+	var tag uint32
+	if w, err = basictl.NatRead(w, &tag); err != nil {
+		return w, err
+	}
+	switch tag {
+	case 0xecc9da78:
+		item.index = 0
+		return item.valueType.Read(w)
+	case 0xdcb49bd8:
+		item.index = 1
+		return item.valueNat.Read(w)
+	default:
+		return w, ErrorInvalidUnionTag("tls.Expr", tag)
+	}
+}
+
+func (item *TlsExpr) WriteBoxed(w []byte) (_ []byte, err error) {
+	w = basictl.NatWrite(w, _TlsExpr[item.index].TLTag)
+	switch item.index {
+	case 0:
+		return item.valueType.Write(w)
+	case 1:
+		return item.valueNat.Write(w)
+	default: // Impossible due to panic above
+		return w, nil
+	}
+}
+
+func TlsExpr__ReadJSON(item *TlsExpr, j interface{}) error { return item.readJSON(j) }
+func (item *TlsExpr) readJSON(j interface{}) error {
+	_jm, _tag, err := JsonReadUnionType("tls.Expr", j)
+	if err != nil {
+		return err
+	}
+	jvalue := _jm["value"]
+	switch _tag {
+	case "tls.exprType#ecc9da78", "tls.exprType", "#ecc9da78":
+		item.index = 0
+		if err := TlsExprType__ReadJSON(&item.valueType, jvalue); err != nil {
+			return err
+		}
+		delete(_jm, "value")
+	case "tls.exprNat#dcb49bd8", "tls.exprNat", "#dcb49bd8":
+		item.index = 1
+		if err := TlsExprNat__ReadJSON(&item.valueNat, jvalue); err != nil {
+			return err
+		}
+		delete(_jm, "value")
+	default:
+		return ErrorInvalidUnionTagJSON("tls.Expr", _tag)
+	}
+	for k := range _jm {
+		return ErrorInvalidJSONExcessElement("tls.Expr", k)
+	}
+	return nil
+}
+
+func (item *TlsExpr) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(false, w)
+}
+func (item *TlsExpr) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+	switch item.index {
+	case 0:
+		w = append(w, `{"type":"tls.exprType#ecc9da78","value":`...)
+		if w, err = item.valueType.WriteJSONOpt(short, w); err != nil {
+			return w, err
+		}
+		return append(w, '}'), nil
+	case 1:
+		w = append(w, `{"type":"tls.exprNat#dcb49bd8","value":`...)
+		if w, err = item.valueNat.WriteJSONOpt(short, w); err != nil {
+			return w, err
+		}
+		return append(w, '}'), nil
+	default: // Impossible due to panic above
+		return w, nil
+	}
+}
+
+func (item TlsExpr) String() string {
+	w, err := item.WriteJSON(nil)
+	if err != nil {
+		return err.Error()
+	}
+	return string(w)
+}
+
+func (item *TlsExpr) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil)
+}
+
+func (item *TlsExpr) UnmarshalJSON(b []byte) error {
+	j, err := JsonBytesToInterface(b)
+	if err != nil {
+		return ErrorInvalidJSON("tls.Expr", err.Error())
+	}
+	if err = item.readJSON(j); err != nil {
+		return ErrorInvalidJSON("tls.Expr", err.Error())
+	}
+	return nil
+}
+
+func (item TlsExprNat) AsUnion() TlsExpr {
+	var ret TlsExpr
 	ret.SetNat(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsExprNat struct {
-	Expr TlsNatExprUnion
+	Expr TlsNatExpr
 }
 
 func (TlsExprNat) TLName() string { return "tls.exprNat" }
@@ -134,7 +288,7 @@ func (item *TlsExprNat) readJSON(j interface{}) error {
 	for k := range _jm {
 		return ErrorInvalidJSONExcessElement("tls.exprNat", k)
 	}
-	if err := TlsNatExprUnion__ReadJSON(&item.Expr, _jExpr); err != nil {
+	if err := TlsNatExpr__ReadJSON(&item.Expr, _jExpr); err != nil {
 		return err
 	}
 	return nil
@@ -168,15 +322,14 @@ func (item *TlsExprNat) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item TlsExprType) AsUnion() TlsExprUnion {
-	var ret TlsExprUnion
+func (item TlsExprType) AsUnion() TlsExpr {
+	var ret TlsExpr
 	ret.SetType(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsExprType struct {
-	Expr TlsTypeExprUnion
+	Expr TlsTypeExpr
 }
 
 func (TlsExprType) TLName() string { return "tls.exprType" }
@@ -225,7 +378,7 @@ func (item *TlsExprType) readJSON(j interface{}) error {
 	for k := range _jm {
 		return ErrorInvalidJSONExcessElement("tls.exprType", k)
 	}
-	if err := TlsTypeExprUnion__ReadJSON(&item.Expr, _jExpr); err != nil {
+	if err := TlsTypeExpr__ReadJSON(&item.Expr, _jExpr); err != nil {
 		return err
 	}
 	return nil
@@ -257,144 +410,4 @@ func (item *TlsExprType) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("tls.exprType", err.Error())
 	}
 	return nil
-}
-
-var _TlsExprUnion = [2]UnionElement{
-	{TLTag: 0xecc9da78, TLName: "tls.exprType", TLString: "tls.exprType#ecc9da78"},
-	{TLTag: 0xdcb49bd8, TLName: "tls.exprNat", TLString: "tls.exprNat#dcb49bd8"},
-}
-
-type TlsExprUnion struct {
-	valueType TlsExprType
-	valueNat  TlsExprNat
-	index     int
-}
-
-func (item TlsExprUnion) TLName() string { return _TlsExprUnion[item.index].TLName }
-func (item TlsExprUnion) TLTag() uint32  { return _TlsExprUnion[item.index].TLTag }
-
-func (item *TlsExprUnion) Reset() { item.ResetToType() }
-
-func (item *TlsExprUnion) IsType() bool { return item.index == 0 }
-
-func (item *TlsExprUnion) AsType() (*TlsExprType, bool) {
-	if item.index != 0 {
-		return nil, false
-	}
-	return &item.valueType, true
-}
-func (item *TlsExprUnion) ResetToType() *TlsExprType {
-	item.index = 0
-	item.valueType.Reset()
-	return &item.valueType
-}
-func (item *TlsExprUnion) SetType(value TlsExprType) {
-	item.index = 0
-	item.valueType = value
-}
-
-func (item *TlsExprUnion) IsNat() bool { return item.index == 1 }
-
-func (item *TlsExprUnion) AsNat() (*TlsExprNat, bool) {
-	if item.index != 1 {
-		return nil, false
-	}
-	return &item.valueNat, true
-}
-func (item *TlsExprUnion) ResetToNat() *TlsExprNat {
-	item.index = 1
-	item.valueNat.Reset()
-	return &item.valueNat
-}
-func (item *TlsExprUnion) SetNat(value TlsExprNat) {
-	item.index = 1
-	item.valueNat = value
-}
-
-func (item *TlsExprUnion) ReadBoxed(w []byte) (_ []byte, err error) {
-	var tag uint32
-	if w, err = basictl.NatRead(w, &tag); err != nil {
-		return w, err
-	}
-	switch tag {
-	case 0xecc9da78:
-		item.index = 0
-		return item.valueType.Read(w)
-	case 0xdcb49bd8:
-		item.index = 1
-		return item.valueNat.Read(w)
-	default:
-		return w, ErrorInvalidUnionTag("tls.Expr", tag)
-	}
-}
-
-func (item *TlsExprUnion) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, _TlsExprUnion[item.index].TLTag)
-	switch item.index {
-	case 0:
-		return item.valueType.Write(w)
-	case 1:
-		return item.valueNat.Write(w)
-	default: // Impossible due to panic above
-		return w, nil
-	}
-}
-
-func TlsExprUnion__ReadJSON(item *TlsExprUnion, j interface{}) error { return item.readJSON(j) }
-func (item *TlsExprUnion) readJSON(j interface{}) error {
-	_jm, _tag, err := JsonReadUnionType("tls.Expr", j)
-	if err != nil {
-		return err
-	}
-	jvalue := _jm["value"]
-	switch _tag {
-	case "tls.exprType#ecc9da78", "tls.exprType", "#ecc9da78":
-		item.index = 0
-		if err := TlsExprType__ReadJSON(&item.valueType, jvalue); err != nil {
-			return err
-		}
-		delete(_jm, "value")
-	case "tls.exprNat#dcb49bd8", "tls.exprNat", "#dcb49bd8":
-		item.index = 1
-		if err := TlsExprNat__ReadJSON(&item.valueNat, jvalue); err != nil {
-			return err
-		}
-		delete(_jm, "value")
-	default:
-		return ErrorInvalidUnionTagJSON("tls.Expr", _tag)
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.Expr", k)
-	}
-	return nil
-}
-
-func (item *TlsExprUnion) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
-}
-func (item *TlsExprUnion) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
-	switch item.index {
-	case 0:
-		w = append(w, `{"type":"tls.exprType#ecc9da78","value":`...)
-		if w, err = item.valueType.WriteJSONOpt(short, w); err != nil {
-			return w, err
-		}
-		return append(w, '}'), nil
-	case 1:
-		w = append(w, `{"type":"tls.exprNat#dcb49bd8","value":`...)
-		if w, err = item.valueNat.WriteJSONOpt(short, w); err != nil {
-			return w, err
-		}
-		return append(w, '}'), nil
-	default: // Impossible due to panic above
-		return w, nil
-	}
-}
-
-func (item TlsExprUnion) String() string {
-	w, err := item.WriteJSON(nil)
-	if err != nil {
-		return err.Error()
-	}
-	return string(w)
 }

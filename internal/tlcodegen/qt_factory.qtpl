@@ -62,8 +62,8 @@ func init() {
 
 {%- endfunc -%}
 
-{%- func (gen *Gen2)generateConstants(comment, pkgName string) -%}
-{%s= comment %}
+{%- func (gen *Gen2)generateConstants(commentString, pkgName string) -%}
+{%s= commentString %}
 package {%s= pkgName %}
 {%- code
     sortedConstructors := make([]*tlast.Combinator, 0, len(gen.allConstructors))

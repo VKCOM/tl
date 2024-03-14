@@ -8,20 +8,19 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 
-func (item TlsArray) AsUnion() TlsTypeExprUnion {
-	var ret TlsTypeExprUnion
+func (item TlsArray) AsUnion() TlsTypeExpr {
+	var ret TlsTypeExpr
 	ret.SetArray(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsArray struct {
-	Multiplicity TlsNatExprUnion
+	Multiplicity TlsNatExpr
 	ArgsNum      uint32
 	Args         []TlsArg
 }
@@ -91,7 +90,7 @@ func (item *TlsArray) readJSON(j interface{}) error {
 	for k := range _jm {
 		return ErrorInvalidJSONExcessElement("tls.array", k)
 	}
-	if err := TlsNatExprUnion__ReadJSON(&item.Multiplicity, _jMultiplicity); err != nil {
+	if err := TlsNatExpr__ReadJSON(&item.Multiplicity, _jMultiplicity); err != nil {
 		return err
 	}
 	if err := BuiltinTupleTlsArgBoxedReadJSON(_jArgs, &item.Args, item.ArgsNum); err != nil {
@@ -140,31 +139,222 @@ func (item *TlsArray) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item TlsTypeExpr) AsUnion() TlsTypeExprUnion {
-	var ret TlsTypeExprUnion
+var _TlsTypeExpr = [3]UnionElement{
+	{TLTag: 0x142ceae, TLName: "tls.typeVar", TLString: "tls.typeVar#0142ceae"},
+	{TLTag: 0xd9fb20de, TLName: "tls.array", TLString: "tls.array#d9fb20de"},
+	{TLTag: 0xc1863d08, TLName: "tls.typeExpr", TLString: "tls.typeExpr#c1863d08"},
+}
+
+type TlsTypeExpr struct {
+	valueTypeVar  TlsTypeVar
+	valueArray    TlsArray
+	valueTypeExpr TlsTypeExpr0
+	index         int
+}
+
+func (item TlsTypeExpr) TLName() string { return _TlsTypeExpr[item.index].TLName }
+func (item TlsTypeExpr) TLTag() uint32  { return _TlsTypeExpr[item.index].TLTag }
+
+func (item *TlsTypeExpr) Reset() { item.ResetToTypeVar() }
+
+func (item *TlsTypeExpr) IsTypeVar() bool { return item.index == 0 }
+
+func (item *TlsTypeExpr) AsTypeVar() (*TlsTypeVar, bool) {
+	if item.index != 0 {
+		return nil, false
+	}
+	return &item.valueTypeVar, true
+}
+func (item *TlsTypeExpr) ResetToTypeVar() *TlsTypeVar {
+	item.index = 0
+	item.valueTypeVar.Reset()
+	return &item.valueTypeVar
+}
+func (item *TlsTypeExpr) SetTypeVar(value TlsTypeVar) {
+	item.index = 0
+	item.valueTypeVar = value
+}
+
+func (item *TlsTypeExpr) IsArray() bool { return item.index == 1 }
+
+func (item *TlsTypeExpr) AsArray() (*TlsArray, bool) {
+	if item.index != 1 {
+		return nil, false
+	}
+	return &item.valueArray, true
+}
+func (item *TlsTypeExpr) ResetToArray() *TlsArray {
+	item.index = 1
+	item.valueArray.Reset()
+	return &item.valueArray
+}
+func (item *TlsTypeExpr) SetArray(value TlsArray) {
+	item.index = 1
+	item.valueArray = value
+}
+
+func (item *TlsTypeExpr) IsTypeExpr() bool { return item.index == 2 }
+
+func (item *TlsTypeExpr) AsTypeExpr() (*TlsTypeExpr0, bool) {
+	if item.index != 2 {
+		return nil, false
+	}
+	return &item.valueTypeExpr, true
+}
+func (item *TlsTypeExpr) ResetToTypeExpr() *TlsTypeExpr0 {
+	item.index = 2
+	item.valueTypeExpr.Reset()
+	return &item.valueTypeExpr
+}
+func (item *TlsTypeExpr) SetTypeExpr(value TlsTypeExpr0) {
+	item.index = 2
+	item.valueTypeExpr = value
+}
+
+func (item *TlsTypeExpr) ReadBoxed(w []byte) (_ []byte, err error) {
+	var tag uint32
+	if w, err = basictl.NatRead(w, &tag); err != nil {
+		return w, err
+	}
+	switch tag {
+	case 0x142ceae:
+		item.index = 0
+		return item.valueTypeVar.Read(w)
+	case 0xd9fb20de:
+		item.index = 1
+		return item.valueArray.Read(w)
+	case 0xc1863d08:
+		item.index = 2
+		return item.valueTypeExpr.Read(w)
+	default:
+		return w, ErrorInvalidUnionTag("tls.TypeExpr", tag)
+	}
+}
+
+func (item *TlsTypeExpr) WriteBoxed(w []byte) (_ []byte, err error) {
+	w = basictl.NatWrite(w, _TlsTypeExpr[item.index].TLTag)
+	switch item.index {
+	case 0:
+		return item.valueTypeVar.Write(w)
+	case 1:
+		return item.valueArray.Write(w)
+	case 2:
+		return item.valueTypeExpr.Write(w)
+	default: // Impossible due to panic above
+		return w, nil
+	}
+}
+
+func TlsTypeExpr__ReadJSON(item *TlsTypeExpr, j interface{}) error { return item.readJSON(j) }
+func (item *TlsTypeExpr) readJSON(j interface{}) error {
+	_jm, _tag, err := JsonReadUnionType("tls.TypeExpr", j)
+	if err != nil {
+		return err
+	}
+	jvalue := _jm["value"]
+	switch _tag {
+	case "tls.typeVar#0142ceae", "tls.typeVar", "#0142ceae":
+		item.index = 0
+		if err := TlsTypeVar__ReadJSON(&item.valueTypeVar, jvalue); err != nil {
+			return err
+		}
+		delete(_jm, "value")
+	case "tls.array#d9fb20de", "tls.array", "#d9fb20de":
+		item.index = 1
+		if err := TlsArray__ReadJSON(&item.valueArray, jvalue); err != nil {
+			return err
+		}
+		delete(_jm, "value")
+	case "tls.typeExpr#c1863d08", "tls.typeExpr", "#c1863d08":
+		item.index = 2
+		if err := TlsTypeExpr0__ReadJSON(&item.valueTypeExpr, jvalue); err != nil {
+			return err
+		}
+		delete(_jm, "value")
+	default:
+		return ErrorInvalidUnionTagJSON("tls.TypeExpr", _tag)
+	}
+	for k := range _jm {
+		return ErrorInvalidJSONExcessElement("tls.TypeExpr", k)
+	}
+	return nil
+}
+
+func (item *TlsTypeExpr) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(false, w)
+}
+func (item *TlsTypeExpr) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+	switch item.index {
+	case 0:
+		w = append(w, `{"type":"tls.typeVar#0142ceae","value":`...)
+		if w, err = item.valueTypeVar.WriteJSONOpt(short, w); err != nil {
+			return w, err
+		}
+		return append(w, '}'), nil
+	case 1:
+		w = append(w, `{"type":"tls.array#d9fb20de","value":`...)
+		if w, err = item.valueArray.WriteJSONOpt(short, w); err != nil {
+			return w, err
+		}
+		return append(w, '}'), nil
+	case 2:
+		w = append(w, `{"type":"tls.typeExpr#c1863d08","value":`...)
+		if w, err = item.valueTypeExpr.WriteJSONOpt(short, w); err != nil {
+			return w, err
+		}
+		return append(w, '}'), nil
+	default: // Impossible due to panic above
+		return w, nil
+	}
+}
+
+func (item TlsTypeExpr) String() string {
+	w, err := item.WriteJSON(nil)
+	if err != nil {
+		return err.Error()
+	}
+	return string(w)
+}
+
+func (item *TlsTypeExpr) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil)
+}
+
+func (item *TlsTypeExpr) UnmarshalJSON(b []byte) error {
+	j, err := JsonBytesToInterface(b)
+	if err != nil {
+		return ErrorInvalidJSON("tls.TypeExpr", err.Error())
+	}
+	if err = item.readJSON(j); err != nil {
+		return ErrorInvalidJSON("tls.TypeExpr", err.Error())
+	}
+	return nil
+}
+
+func (item TlsTypeExpr0) AsUnion() TlsTypeExpr {
+	var ret TlsTypeExpr
 	ret.SetTypeExpr(item)
 	return ret
 }
 
-// AsUnion will be here
-type TlsTypeExpr struct {
+type TlsTypeExpr0 struct {
 	Name        int32
 	Flags       int32
 	ChildrenNum uint32
-	Children    []TlsExprUnion
+	Children    []TlsExpr
 }
 
-func (TlsTypeExpr) TLName() string { return "tls.typeExpr" }
-func (TlsTypeExpr) TLTag() uint32  { return 0xc1863d08 }
+func (TlsTypeExpr0) TLName() string { return "tls.typeExpr" }
+func (TlsTypeExpr0) TLTag() uint32  { return 0xc1863d08 }
 
-func (item *TlsTypeExpr) Reset() {
+func (item *TlsTypeExpr0) Reset() {
 	item.Name = 0
 	item.Flags = 0
 	item.ChildrenNum = 0
 	item.Children = item.Children[:0]
 }
 
-func (item *TlsTypeExpr) Read(w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr0) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.IntRead(w, &item.Name); err != nil {
 		return w, err
 	}
@@ -177,26 +367,26 @@ func (item *TlsTypeExpr) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTupleTlsExprBoxedRead(w, &item.Children, item.ChildrenNum)
 }
 
-func (item *TlsTypeExpr) Write(w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr0) Write(w []byte) (_ []byte, err error) {
 	w = basictl.IntWrite(w, item.Name)
 	w = basictl.IntWrite(w, item.Flags)
 	w = basictl.NatWrite(w, item.ChildrenNum)
 	return BuiltinTupleTlsExprBoxedWrite(w, item.Children, item.ChildrenNum)
 }
 
-func (item *TlsTypeExpr) ReadBoxed(w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr0) ReadBoxed(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatReadExactTag(w, 0xc1863d08); err != nil {
 		return w, err
 	}
 	return item.Read(w)
 }
 
-func (item *TlsTypeExpr) WriteBoxed(w []byte) ([]byte, error) {
+func (item *TlsTypeExpr0) WriteBoxed(w []byte) ([]byte, error) {
 	w = basictl.NatWrite(w, 0xc1863d08)
 	return item.Write(w)
 }
 
-func (item TlsTypeExpr) String() string {
+func (item TlsTypeExpr0) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()
@@ -204,8 +394,8 @@ func (item TlsTypeExpr) String() string {
 	return string(w)
 }
 
-func TlsTypeExpr__ReadJSON(item *TlsTypeExpr, j interface{}) error { return item.readJSON(j) }
-func (item *TlsTypeExpr) readJSON(j interface{}) error {
+func TlsTypeExpr0__ReadJSON(item *TlsTypeExpr0, j interface{}) error { return item.readJSON(j) }
+func (item *TlsTypeExpr0) readJSON(j interface{}) error {
 	_jm, _ok := j.(map[string]interface{})
 	if j != nil && !_ok {
 		return ErrorInvalidJSON("tls.typeExpr", "expected json object")
@@ -236,10 +426,10 @@ func (item *TlsTypeExpr) readJSON(j interface{}) error {
 	return nil
 }
 
-func (item *TlsTypeExpr) WriteJSON(w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr0) WriteJSON(w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(false, w)
 }
-func (item *TlsTypeExpr) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr0) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	if item.Name != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -266,11 +456,11 @@ func (item *TlsTypeExpr) WriteJSONOpt(short bool, w []byte) (_ []byte, err error
 	return append(w, '}'), nil
 }
 
-func (item *TlsTypeExpr) MarshalJSON() ([]byte, error) {
+func (item *TlsTypeExpr0) MarshalJSON() ([]byte, error) {
 	return item.WriteJSON(nil)
 }
 
-func (item *TlsTypeExpr) UnmarshalJSON(b []byte) error {
+func (item *TlsTypeExpr0) UnmarshalJSON(b []byte) error {
 	j, err := JsonBytesToInterface(b)
 	if err != nil {
 		return ErrorInvalidJSON("tls.typeExpr", err.Error())
@@ -281,190 +471,12 @@ func (item *TlsTypeExpr) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-var _TlsTypeExprUnion = [3]UnionElement{
-	{TLTag: 0x142ceae, TLName: "tls.typeVar", TLString: "tls.typeVar#0142ceae"},
-	{TLTag: 0xd9fb20de, TLName: "tls.array", TLString: "tls.array#d9fb20de"},
-	{TLTag: 0xc1863d08, TLName: "tls.typeExpr", TLString: "tls.typeExpr#c1863d08"},
-}
-
-type TlsTypeExprUnion struct {
-	valueTypeVar  TlsTypeVar
-	valueArray    TlsArray
-	valueTypeExpr TlsTypeExpr
-	index         int
-}
-
-func (item TlsTypeExprUnion) TLName() string { return _TlsTypeExprUnion[item.index].TLName }
-func (item TlsTypeExprUnion) TLTag() uint32  { return _TlsTypeExprUnion[item.index].TLTag }
-
-func (item *TlsTypeExprUnion) Reset() { item.ResetToTypeVar() }
-
-func (item *TlsTypeExprUnion) IsTypeVar() bool { return item.index == 0 }
-
-func (item *TlsTypeExprUnion) AsTypeVar() (*TlsTypeVar, bool) {
-	if item.index != 0 {
-		return nil, false
-	}
-	return &item.valueTypeVar, true
-}
-func (item *TlsTypeExprUnion) ResetToTypeVar() *TlsTypeVar {
-	item.index = 0
-	item.valueTypeVar.Reset()
-	return &item.valueTypeVar
-}
-func (item *TlsTypeExprUnion) SetTypeVar(value TlsTypeVar) {
-	item.index = 0
-	item.valueTypeVar = value
-}
-
-func (item *TlsTypeExprUnion) IsArray() bool { return item.index == 1 }
-
-func (item *TlsTypeExprUnion) AsArray() (*TlsArray, bool) {
-	if item.index != 1 {
-		return nil, false
-	}
-	return &item.valueArray, true
-}
-func (item *TlsTypeExprUnion) ResetToArray() *TlsArray {
-	item.index = 1
-	item.valueArray.Reset()
-	return &item.valueArray
-}
-func (item *TlsTypeExprUnion) SetArray(value TlsArray) {
-	item.index = 1
-	item.valueArray = value
-}
-
-func (item *TlsTypeExprUnion) IsTypeExpr() bool { return item.index == 2 }
-
-func (item *TlsTypeExprUnion) AsTypeExpr() (*TlsTypeExpr, bool) {
-	if item.index != 2 {
-		return nil, false
-	}
-	return &item.valueTypeExpr, true
-}
-func (item *TlsTypeExprUnion) ResetToTypeExpr() *TlsTypeExpr {
-	item.index = 2
-	item.valueTypeExpr.Reset()
-	return &item.valueTypeExpr
-}
-func (item *TlsTypeExprUnion) SetTypeExpr(value TlsTypeExpr) {
-	item.index = 2
-	item.valueTypeExpr = value
-}
-
-func (item *TlsTypeExprUnion) ReadBoxed(w []byte) (_ []byte, err error) {
-	var tag uint32
-	if w, err = basictl.NatRead(w, &tag); err != nil {
-		return w, err
-	}
-	switch tag {
-	case 0x142ceae:
-		item.index = 0
-		return item.valueTypeVar.Read(w)
-	case 0xd9fb20de:
-		item.index = 1
-		return item.valueArray.Read(w)
-	case 0xc1863d08:
-		item.index = 2
-		return item.valueTypeExpr.Read(w)
-	default:
-		return w, ErrorInvalidUnionTag("tls.TypeExpr", tag)
-	}
-}
-
-func (item *TlsTypeExprUnion) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, _TlsTypeExprUnion[item.index].TLTag)
-	switch item.index {
-	case 0:
-		return item.valueTypeVar.Write(w)
-	case 1:
-		return item.valueArray.Write(w)
-	case 2:
-		return item.valueTypeExpr.Write(w)
-	default: // Impossible due to panic above
-		return w, nil
-	}
-}
-
-func TlsTypeExprUnion__ReadJSON(item *TlsTypeExprUnion, j interface{}) error { return item.readJSON(j) }
-func (item *TlsTypeExprUnion) readJSON(j interface{}) error {
-	_jm, _tag, err := JsonReadUnionType("tls.TypeExpr", j)
-	if err != nil {
-		return err
-	}
-	jvalue := _jm["value"]
-	switch _tag {
-	case "tls.typeVar#0142ceae", "tls.typeVar", "#0142ceae":
-		item.index = 0
-		if err := TlsTypeVar__ReadJSON(&item.valueTypeVar, jvalue); err != nil {
-			return err
-		}
-		delete(_jm, "value")
-	case "tls.array#d9fb20de", "tls.array", "#d9fb20de":
-		item.index = 1
-		if err := TlsArray__ReadJSON(&item.valueArray, jvalue); err != nil {
-			return err
-		}
-		delete(_jm, "value")
-	case "tls.typeExpr#c1863d08", "tls.typeExpr", "#c1863d08":
-		item.index = 2
-		if err := TlsTypeExpr__ReadJSON(&item.valueTypeExpr, jvalue); err != nil {
-			return err
-		}
-		delete(_jm, "value")
-	default:
-		return ErrorInvalidUnionTagJSON("tls.TypeExpr", _tag)
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.TypeExpr", k)
-	}
-	return nil
-}
-
-func (item *TlsTypeExprUnion) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
-}
-func (item *TlsTypeExprUnion) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
-	switch item.index {
-	case 0:
-		w = append(w, `{"type":"tls.typeVar#0142ceae","value":`...)
-		if w, err = item.valueTypeVar.WriteJSONOpt(short, w); err != nil {
-			return w, err
-		}
-		return append(w, '}'), nil
-	case 1:
-		w = append(w, `{"type":"tls.array#d9fb20de","value":`...)
-		if w, err = item.valueArray.WriteJSONOpt(short, w); err != nil {
-			return w, err
-		}
-		return append(w, '}'), nil
-	case 2:
-		w = append(w, `{"type":"tls.typeExpr#c1863d08","value":`...)
-		if w, err = item.valueTypeExpr.WriteJSONOpt(short, w); err != nil {
-			return w, err
-		}
-		return append(w, '}'), nil
-	default: // Impossible due to panic above
-		return w, nil
-	}
-}
-
-func (item TlsTypeExprUnion) String() string {
-	w, err := item.WriteJSON(nil)
-	if err != nil {
-		return err.Error()
-	}
-	return string(w)
-}
-
-func (item TlsTypeVar) AsUnion() TlsTypeExprUnion {
-	var ret TlsTypeExprUnion
+func (item TlsTypeVar) AsUnion() TlsTypeExpr {
+	var ret TlsTypeExpr
 	ret.SetTypeVar(item)
 	return ret
 }
 
-// AsUnion will be here
 type TlsTypeVar struct {
 	VarNum int32
 	Flags  int32

@@ -6,10 +6,8 @@
 
 package tlcodegen
 
-/*
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -21,44 +19,17 @@ func (trw *TypeRWUnion) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 	}
 }
 
-func (trw *TypeRWUnion) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
-	// TODO - harmonize with struct, other types
-	hppInc.ns[trw.wr.fileName] = struct{}{}
-	bNameSuffix := strings.Builder{}
-	bNameSuffix.WriteString(trw.wr.cppNamespaceQualifier)
-	bNameSuffix.WriteString(trw.goLocalName)
-	b := strings.Builder{}
-	for _, a := range resolvedType.Args {
-		if a.IsNat {
-			if a.isArith {
-				bNameSuffix.WriteString(a.TemplateArgName)
-				if b.Len() == 0 {
-					b.WriteString("<")
-				} else {
-					b.WriteString(", ")
-				}
-				if halfResolve && a.T.OriginalName != "" {
-					b.WriteString(a.T.OriginalName)
-				} else {
-					b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-				}
-			}
-		} else {
-			if b.Len() == 0 {
-				b.WriteString("<")
-			} else {
-				b.WriteString(", ")
-			}
-			b.WriteString(a.TRW.CPPTypeStringInNamespace(bytesVersion, hppInc, a.T, halfResolve))
-		}
-	}
-	if b.Len() != 0 {
-		b.WriteString(">")
-	}
-	return bNameSuffix.String() + b.String()
+func (trw *TypeRWUnion) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
+	_, _, args := trw.wr.cppTypeStringInNamespace(bytesVersion, hppInc, false, HalfResolvedArgument{})
+	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + args
 }
 
-func (trw *TypeRWUnion) cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
+func (trw *TypeRWUnion) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
+	_, _, args := trw.wr.cppTypeStringInNamespace(bytesVersion, hppInc, true, halfResolved)
+	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + args
+}
+
+func (trw *TypeRWUnion) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	return ""
 }
 
@@ -67,27 +38,28 @@ func (trw *TypeRWUnion) CPPHasBytesVersion() bool {
 }
 
 func (trw *TypeRWUnion) CPPTypeResettingCode(bytesVersion bool, val string) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return fmt.Sprintf("\t::%s::%sReset(%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, val)
 }
 
 func (trw *TypeRWUnion) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, formatNatArgsCallCPP(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, formatNatArgsCallCPP(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
 	// goLocalName := addBytes(trw.goLocalName, bytesVersion)
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 
-	mySuffix, myArgsDecl := fullyResolvedClassCppSuffixArgs(trw.wr.resolvedType)
-	myName := trw.goLocalName + mySuffix
-	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc, trw.wr.resolvedType, false)
+	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
+	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
+	fmt.Printf("Ts: %s %s\n", myFullType, strings.Join(myArgsDecl, ", "))
+	fmt.Printf("    %s\n", trw.wr.cppLocalName)
 	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
 
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
@@ -112,17 +84,17 @@ void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 	if len(myArgsDecl) != 0 {
 		hpp.WriteString("template<" + strings.Join(myArgsDecl, ", ") + ">\n")
 	}
-	hpp.WriteString("struct " + myName + " {\n")
+	hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
 	hpp.WriteString("\tstd::variant<")
 	for filedIndex, field := range trw.Fields {
 		if filedIndex != 0 {
 			hpp.WriteString(", ")
 		}
 		if field.recursive {
-			fieldFullType := field.t.CPPTypeStringInNamespace(bytesVersion, hppIncFwd, field.resolvedType, true)
+			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppIncFwd, field.halfResolved)
 			hpp.WriteString(fmt.Sprintf("std::shared_ptr<%s>", fieldFullType))
 		} else {
-			fieldFullType := field.t.CPPTypeStringInNamespace(bytesVersion, hppInc, field.resolvedType, true)
+			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
 			hpp.WriteString(fieldFullType)
 			//hpp.WriteString(fmt.Sprintf("\t// DebugString: %s\n", field.resolvedType.DebugString()))
 		}
@@ -237,10 +209,10 @@ void %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				formatNatArgsDeclCPP(trw.wr.NatParams),
 				addBytes(trw.goGlobalName, false),
 			))
-	* /
+	*/
 }
 
-/ *
+/*
 func (union *TypeRWUnion) GenerateFields(bytesVersion bool) string {
 	var s strings.Builder
 	for _, field := range union.Fields {
@@ -402,7 +374,7 @@ func (union *TypeRWUnion) generateEnumAlias(bytesVersion bool) string {
 	}
 	return s.String()
 }
-* /
+*/
 
 func (trw *TypeRWUnion) CPPAllTags(bytesVersion bool) string {
 	var s strings.Builder
@@ -464,7 +436,7 @@ func (trw *TypeRWUnion) CPPReadFields(bytesVersion bool, hppInc *DirectIncludesC
 		s.WriteString(fmt.Sprintf("\tcase 0x%x:\n\t\tif (item.value.index() != %d) { item.value.emplace<%d>(); }\n", field.t.tlTag, fieldIndex, fieldIndex))
 		if !field.t.IsTrueType() {
 			s.WriteString("\t")
-			_ = field.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc, field.resolvedType, false) // only fill includes
+			_ = field.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc) // only fill includes
 			s.WriteString(
 				field.t.trw.CPPTypeReadingCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
 					field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs),
@@ -474,4 +446,3 @@ func (trw *TypeRWUnion) CPPReadFields(bytesVersion bool, hppInc *DirectIncludesC
 	}
 	return s.String()
 }
-*/

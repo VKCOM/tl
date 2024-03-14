@@ -9,7 +9,6 @@ package tlcodegen
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -17,19 +16,19 @@ import (
 
 // Instantiation kernel of tlgen.
 
-func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *TypeRWWrapper) (*TypeRWWrapper, bool, []ActualNatArg, error) {
+func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *TypeRWWrapper) (*TypeRWWrapper, bool, []ActualNatArg, HalfResolvedArgument, error) {
 	tName := t.Type.String()
 	// Each named reference is either global type, global constructor, local param or local field
 	if localArg, ok := lrc.localNatArgs[tName]; ok {
 		e1 := t.PR.BeautifulError(fmt.Errorf("reference to %s %q where type is required", ifString(localArg.natArg.isField, "field", "#-param"), tName))
 		e2 := localArg.NamePR.BeautifulError(errSeeHere)
-		return nil, false, nil, tlast.BeautifulError2(e1, e2)
+		return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 	}
 	if lt, ok := lrc.localTypeArgs[tName]; ok {
 		if len(t.Args) != 0 {
 			e1 := t.PR.BeautifulError(fmt.Errorf("reference to template type arg %q cannot have arguments", tName))
 			e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
+			return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 		}
 		bare := lt.arg.bare
 		if t.Bare { // overwrite bare
@@ -40,7 +39,7 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 				// bareWrapperTest a:(bareWrapper a.Color) = BareWrapperTest;
 				e1 := t.PR.BeautifulError(fmt.Errorf("field type %q is bare, so union %q cannot be passed", tName, lt.arg.tip.CanonicalStringTop()))
 				e2 := lt.PR.BeautifulError(fmt.Errorf("defined here"))
-				return nil, false, nil, tlast.BeautifulError2(e1, e2)
+				return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 			}
 			// myUnionA = MyUnion;
 			// myUnionB b:int = MyUnion;
@@ -49,7 +48,7 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 			bare = true
 			// TODO - we must perform canonical conversion of %Int to int here
 		}
-		return lt.arg.tip, bare, lt.natArgs, nil
+		return lt.arg.tip, bare, lt.natArgs, HalfResolvedArgument{Name: tName}, nil
 	}
 	var tlType []*tlast.Combinator
 
@@ -59,8 +58,8 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 			// myUnionB b:int = MyUnion;
 			// useUnion a:%MyUnion = UseUnion;
 			e1 := t.PR.BeautifulError(fmt.Errorf("reference to union %q cannot be bare", tName))
-			e2 := lt[0].TypeDecl.NamePR.BeautifulError(fmt.Errorf("see more"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
+			e2 := lt[0].TypeDecl.NamePR.BeautifulError(fmt.Errorf("see more")) // TODO: maybe better message, see more about union is not very useful
+			return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 		}
 		tlType = lt
 		//conName := tlType[0].Construct.Name.String()
@@ -83,27 +82,27 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 		if !lrc.allowAnyConstructor {
 			e1 := t.PR.BeautifulError(fmt.Errorf("reference to %s constructor %q is not allowed", ifString(lt.IsFunction, "function", "union"), tName))
 			e2 := lt.Construct.NamePR.BeautifulError(fmt.Errorf("see more"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
+			return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 		}
 		// Here type name is already in canonical form, because this code path is only internal for union members and functions
 		tlType = []*tlast.Combinator{lt}
 		t.Bare = true
 	}
 	if len(tlType) == 0 {
-		return nil, false, nil, t.PR.BeautifulError(fmt.Errorf("error resolving name %q", tName))
+		return nil, false, nil, HalfResolvedArgument{}, t.PR.BeautifulError(fmt.Errorf("error resolving name %q", tName))
 	}
 	td := tlType[0] // for type checking, any constructor is ok for us, because they all must have the same args
 	if len(td.TemplateArguments) > len(t.Args) {
 		arg := td.TemplateArguments[len(t.Args)]
 		e1 := t.PRArgs.CollapseToEnd().BeautifulError(fmt.Errorf("missing template argument %q here", arg.FieldName))
 		e2 := arg.PR.BeautifulError(fmt.Errorf("declared here"))
-		return nil, false, nil, tlast.BeautifulError2(e1, e2)
+		return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 	}
 	if len(td.TemplateArguments) < len(t.Args) {
 		arg := t.Args[len(td.TemplateArguments)]
 		e1 := arg.T.PR.BeautifulError(fmt.Errorf("excess template argument %q here", arg.String()))
 		e2 := td.TemplateArgumentsPR.BeautifulError(fmt.Errorf("arguments declared here"))
-		return nil, false, nil, tlast.BeautifulError2(e1, e2)
+		return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 	}
 	kernelType := &TypeRWWrapper{
 		gen:         gen,
@@ -112,6 +111,7 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 		unionParent: unionParent,
 	}
 	var actualNatArgs []ActualNatArg
+	var halfResolved HalfResolvedArgument
 	for i, a := range t.Args {
 		ta := td.TemplateArguments[i]
 		aName := a.T.Type.String()
@@ -122,20 +122,21 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 					isArith: true,
 					Arith:   a.Arith,
 				})
-				// actualNatArgs = append(actualNatArgs, ActualNatArg{isArith: true, Arith: a.Arith})
+				halfResolved.Args = append(halfResolved.Args, HalfResolvedArgument{}) // Empty name here
 				continue
 			}
 			if localArg, ok := lrc.localNatArgs[aName]; ok {
 				if localArg.wrongTypeErr != nil {
 					e1 := a.T.PR.BeautifulError(fmt.Errorf("error resolving reference %q to #-param %q", aName, ta.FieldName))
 					e2 := localArg.TypePR.BeautifulError(localArg.wrongTypeErr)
-					return nil, false, nil, tlast.BeautifulError2(e1, e2)
+					return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 				}
 				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
 					isNat:   true, // true due to check above
 					isArith: localArg.natArg.isArith,
 					Arith:   localArg.natArg.Arith,
 				})
+				halfResolved.Args = append(halfResolved.Args, HalfResolvedArgument{Name: aName})
 				if !localArg.natArg.isArith {
 					actualNatArgs = append(actualNatArgs, localArg.natArg)
 				}
@@ -144,30 +145,31 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 			if localArg, ok := lrc.localTypeArgs[aName]; ok {
 				e1 := a.T.PR.BeautifulError(fmt.Errorf("reference to local Type-arg %q where #-arg is required", aName))
 				e2 := localArg.PR.BeautifulError(fmt.Errorf("arg declared here"))
-				return nil, false, nil, tlast.BeautifulError2(e1, e2)
+				return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 			}
 			e1 := a.T.PR.BeautifulError(fmt.Errorf("error resolving reference %q to #-param %q", aName, ta.FieldName))
 			e2 := ta.PR.BeautifulError(fmt.Errorf("see more"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
+			return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 		}
 		if a.IsArith {
 			e1 := a.T.PR.BeautifulError(fmt.Errorf("passing constant %q to Type-param %q is impossible", a.Arith.String(), ta.FieldName))
 			e2 := ta.PR.BeautifulError(fmt.Errorf("declared here"))
-			return nil, false, nil, tlast.BeautifulError2(e1, e2)
+			return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 		}
-		internalType, internalBare, internalNatArgs, err := gen.getType(lrc, a.T, nil)
+		internalType, internalBare, internalNatArgs, internalHalfResolved, err := gen.getType(lrc, a.T, nil)
 		if err != nil {
-			return nil, false, nil, err
+			return nil, false, nil, HalfResolvedArgument{}, err
 		}
 		kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
 			tip:  internalType,
 			bare: internalBare,
 		})
+		halfResolved.Args = append(halfResolved.Args, internalHalfResolved)
 		actualNatArgs = append(actualNatArgs, internalNatArgs...)
 	}
 	canonicalName := kernelType.CanonicalStringTop()
 	if bt, ok := gen.builtinTypes[kernelType.CanonicalString(t.Bare)]; ok {
-		return bt, true, nil, nil
+		return bt, true, nil, HalfResolvedArgument{}, nil
 	}
 	exist, ok := gen.generatedTypes[canonicalName]
 	if !ok {
@@ -177,7 +179,7 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 		// We added our type already, so others can reference it
 		// Now we will iterate over our fields so all types we need are also generated
 		if err := gen.generateType(kernelType); err != nil {
-			return nil, false, nil, err
+			return nil, false, nil, HalfResolvedArgument{}, err
 		}
 		if lrc.overrideFileName != "" {
 			kernelType.fileName = lrc.overrideFileName
@@ -194,10 +196,10 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 			log.Printf("Warning: empty type filename for canonical name %q, will move to 'builtin'", canonicalName)
 			kernelType.fileName = "builtin"
 		}
-		return kernelType, t.Bare, actualNatArgs, nil
+		return kernelType, t.Bare, actualNatArgs, halfResolved, nil
 	}
-	// exist.combinator.tips = append(exist.combinator.tips, kernelType)
-	return exist, t.Bare, actualNatArgs, nil
+	// exist.combinator.tips = append(exist.combinator.tips, kernelType) - TODO - collect all instantiations of combinator
+	return exist, t.Bare, actualNatArgs, halfResolved, nil
 }
 
 func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
@@ -276,7 +278,15 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		head, tail := myWrapper.resolvedT2GoName("")
 		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 		head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-		myWrapper.goLocalName = namespace.dec.deconflictName(head + tail)
+		myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
+		actualName, canonicalName, _ := myWrapper.cppTypeStringInNamespace(false, &DirectIncludesCPP{ns: map[string]struct{}{}}, false, HalfResolvedArgument{})
+		otherRW, ok := namespace.cppTemplates[canonicalName]
+		if ok {
+			myWrapper.cppLocalName = otherRW.cppLocalName
+		} else {
+			myWrapper.cppLocalName = namespace.decCpp.deconflictName(ToUpperFirst(actualName))
+			namespace.cppTemplates[canonicalName] = myWrapper
+		}
 		return gen.generateTypeStruct(lrc, myWrapper, tlType[0])
 	}
 	myWrapper.tlName = tlType[0].TypeDecl.Name
@@ -288,7 +298,8 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 
 		head, tail := myWrapper.resolvedT2GoName("")
 		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
-		// bool has no local name. TODO - invent one?
+		head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
+		myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
 		myWrapper.trw = &TypeRWBool{
 			wr:          myWrapper,
 			falseGoName: gen.globalDec.deconflictName(CNameToCamelName(falseDesc.Construct.Name.String())),
@@ -300,13 +311,11 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	}
 	if isMaybe, emptyDesc, okDesc := IsUnionMaybe(tlType); isMaybe {
 		elementT := tlast.TypeRef{Type: tlast.Name{Name: okDesc.TemplateArguments[0].FieldName}} // TODO - PR
-		elementResolvedType, elementResolvedTypeBare, elementNatArgs, err := gen.getType(lrc, elementT, nil)
+		elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)
 		if err != nil {
 			return err
 		}
 
-		//innerType := myWrapper.arguments[0].tip
-		//innerTypeBare := myWrapper.arguments[0].bare
 		namespace := gen.getNamespace(elementResolvedType.tlName.Namespace)
 		namespace.types = append(namespace.types, myWrapper)
 		myWrapper.ns = namespace
@@ -315,14 +324,15 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		head, tail := elementResolvedType.resolvedT2GoName("")
 		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
 		head, tail = elementResolvedType.resolvedT2GoName(elementResolvedType.tlName.Namespace)
-		myWrapper.goLocalName = namespace.dec.deconflictName(head + tail + suffix)
+		myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail + suffix)
 
 		res := &TypeRWMaybe{
 			wr: myWrapper,
 			element: Field{
-				t:       elementResolvedType,
-				bare:    elementResolvedTypeBare,
-				natArgs: elementNatArgs,
+				t:            elementResolvedType,
+				bare:         elementResolvedTypeBare,
+				natArgs:      elementNatArgs,
+				halfResolved: elementHalfResolved,
 			},
 			emptyTag: emptyDesc.Crc32(),
 			okTag:    okDesc.Crc32(),
@@ -340,17 +350,24 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	namespace.types = append(namespace.types, myWrapper)
 	myWrapper.ns = namespace
 
-	suffix := ifString(isEnum, "", "Union") // Lesser evil to deconflict union constructor with union name, response = Response
 	head, tail := myWrapper.resolvedT2GoName("")
-	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail + suffix)
+	myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 	head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
-	myWrapper.goLocalName = namespace.dec.deconflictName(head + tail + suffix)
+	myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
+	actualName, canonicalName, _ := myWrapper.cppTypeStringInNamespace(false, &DirectIncludesCPP{ns: map[string]struct{}{}}, false, HalfResolvedArgument{})
+	otherRW, ok := namespace.cppTemplates[canonicalName]
+	if ok {
+		myWrapper.cppLocalName = otherRW.cppLocalName
+	} else {
+		myWrapper.cppLocalName = namespace.decCpp.deconflictName(ToUpperFirst(actualName))
+		namespace.cppTemplates[canonicalName] = myWrapper
+	}
 
 	lrc.allowAnyConstructor = true
 	lrc.overrideFileName = myWrapper.fileName
 	if gen.options.Language == "cpp" {
 		if isEnum {
-			lrc.overrideFileName += "Items" // in C++ when items and union are in the same file, they msuy be sorted which is hard for us
+			lrc.overrideFileName += "Items" // TODO - in C++ when items and union are in the same file, they must be sorted which is hard for us
 		} else {
 			lrc.overrideFileName = "" // each type must be in its own file to break circular dependencies
 		}
@@ -363,15 +380,20 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	res.fieldsDecCPP.fillCPPIdentifiers()
 	myWrapper.trw = res
 
-	// removing prefix common with union name.
-	typePrefix := strings.ToLower(tlType[0].TypeDecl.Name.Name) // not perfect, but good enough. Constructor starts from lower-case, type from upper-case
+	// Removing prefix/suffix common with union name.
+	// We temporarily allow relaxed case match. To use strict match, remove all strings.ToLower() calls below
+	typePrefix := strings.ToLower(ToLowerFirst(tlType[0].TypeDecl.Name.Name))
+	typeSuffix := strings.ToLower(tlType[0].TypeDecl.Name.Name)
 	for _, typ := range tlType {
+		conName := strings.ToLower(typ.Construct.Name.Name)
 		// if constructor is full prefix of type, we will shorten accessors
 		// ab.saveStateOne = ab.SaveState; // item.AsOne()
 		// ab.saveStateTwo = ab.SaveState; // item.AsTwo()
-		if !strings.HasPrefix(strings.ToLower(typ.Construct.Name.Name), typePrefix) {
+		if !strings.HasPrefix(conName, typePrefix) { // same check as in checkUnionElementsCompatibility
 			typePrefix = ""
-			break
+		}
+		if !strings.HasSuffix(conName, typeSuffix) {
+			typeSuffix = ""
 		}
 	}
 	for i, typ := range tlType {
@@ -400,7 +422,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 				},
 			})
 		}
-		fieldResolvedType, fieldResolvedTypeBare, fieldNatArgs, err := gen.getType(lrc, fieldType, myWrapper)
+		fieldResolvedType, fieldResolvedTypeBare, fieldNatArgs, fieldHalfResolved, err := gen.getType(lrc, fieldType, myWrapper)
 		if err != nil {
 			return err
 		}
@@ -408,28 +430,31 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		fieldResolvedType.unionIndex = i
 		fieldResolvedType.unionIsEnum = isEnum
 		if !fieldResolvedTypeBare {
-			return fieldType.PR.LogicError(fmt.Errorf("union element resolved type %q cannot be boxed", fieldResolvedType.CanonicalStringTop()))
+			return fieldType.PR.BeautifulError(fmt.Errorf("union element resolved type %q cannot be boxed", fieldResolvedType.CanonicalStringTop()))
 		}
 		typeConstructName := typ.Construct.Name
-		if len(typePrefix) < len(typeConstructName.Name) {
+		if typePrefix != "" && len(typePrefix) < len(typeConstructName.Name) {
 			typeConstructName.Name = typeConstructName.Name[len(typePrefix):]
+		} else if typeSuffix != "" && len(typeSuffix) < len(typeConstructName.Name) {
+			typeConstructName.Name = typeConstructName.Name[:len(typeConstructName.Name)-len(typeSuffix)]
 		}
 		fieldGoName := canonicalGoName(typeConstructName, typ.Construct.Name.Namespace)
 		if res.fieldsDec.hasConflict(fieldGoName) { // try global, if local is already used
 			fieldGoName = canonicalGoName(typeConstructName, "")
 		}
-		//fieldCPPName := canonicalCPPName(typeConstructName, typ.Construct.Name.Namespace)
-		//if res.fieldsDecCPP.hasConflict(fieldCPPName) { // try global, if local is already used
-		//	fieldCPPName = canonicalCPPName(typeConstructName, "")
-		//}
+		fieldCPPName := canonicalCPPName(typeConstructName, typ.Construct.Name.Namespace)
+		if res.fieldsDecCPP.hasConflict(fieldCPPName) { // try global, if local is already used
+			fieldCPPName = canonicalCPPName(typeConstructName, "")
+		}
 		newField := Field{
 			originalName: fieldType.Type.String(),
 			t:            fieldResolvedType,
 			bare:         fieldResolvedTypeBare,
 			goName:       res.fieldsDec.deconflictName(fieldGoName),
-			cppName:      res.fieldsDecCPP.deconflictName("TODO - cpp name"),
+			cppName:      res.fieldsDecCPP.deconflictName(fieldCPPName),
 			natArgs:      fieldNatArgs,
-			// origTL:       ?, // We did not want to set it here for now
+			halfResolved: fieldHalfResolved,
+			// origTL:       ?, // We do not want to set it here for now
 		}
 		res.Fields = append(res.Fields, newField)
 		fieldResolvedType.unionField = newField
@@ -444,14 +469,14 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 	res.fieldsDecCPP.fillCPPIdentifiers()
 	myWrapper.trw = res
 	for i, field := range tlType.Fields {
-		fieldType, fieldTypeBare, fieldNatArgs, err := gen.getType(lrc, field.FieldType, nil)
+		fieldType, fieldTypeBare, fieldNatArgs, fieldHalfResolved, err := gen.getType(lrc, field.FieldType, nil)
 		if err != nil {
 			return err
 		}
 		fieldName := field.FieldName
 		if fieldName == "" {
-			// TODO - it would be nice to prohibit anonymous field name, unless it is single field
-			fieldName = "a" + strconv.Itoa(i)
+			// only for typedefs, but TODO - harmonize condition with func (trw *TypeRWStruct) isTypeDef()
+			fieldName = "a"
 		}
 		newField := Field{
 			originalName: field.FieldName,
@@ -461,6 +486,8 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 			cppName:      res.fieldsDecCPP.deconflictName(fieldName),
 			natArgs:      fieldNatArgs,
 			origTL:       field,
+
+			halfResolved: fieldHalfResolved,
 		}
 		if field.Mask != nil {
 			if field.Mask.BitNumber >= 32 {
@@ -496,7 +523,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		lrc.localNatArgs[field.FieldName] = arg
 	}
 	if tlType.IsFunction {
-		resultResolvedType, resultResolvedTypeBare, resultNatArgs, err := gen.getType(lrc, tlType.FuncDecl, nil)
+		resultResolvedType, resultResolvedTypeBare, resultNatArgs, resultHalfResolved, err := gen.getType(lrc, tlType.FuncDecl, nil)
 		if err != nil {
 			return err
 		}
@@ -507,13 +534,14 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		}
 		res.ResultType = resultResolvedType
 		res.ResultNatArgs = resultNatArgs
+		res.ResultHalfResolved = resultHalfResolved
 	}
 	return nil
 }
 
 func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, tlType *tlast.Combinator, lrc LocalResolveContext) error {
 	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[0].FieldName}} // TODO - PR
-	elementResolvedType, elementResolvedTypeBare, elementNatArgs, err := gen.getType(lrc, elementT, nil)
+	elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)
 	if err != nil {
 		return err
 	}
@@ -521,9 +549,10 @@ func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, 
 		wr:         myWrapper,
 		vectorLike: vectorLike,
 		element: Field{
-			t:       elementResolvedType,
-			bare:    elementResolvedTypeBare,
-			natArgs: elementNatArgs,
+			t:            elementResolvedType,
+			bare:         elementResolvedTypeBare,
+			natArgs:      elementNatArgs,
+			halfResolved: elementHalfResolved,
 		},
 	}
 	myWrapper.trw = res

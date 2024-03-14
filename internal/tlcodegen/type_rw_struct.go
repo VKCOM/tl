@@ -15,8 +15,9 @@ type TypeRWStruct struct {
 	wr     *TypeRWWrapper
 	Fields []Field
 
-	ResultType    *TypeRWWrapper
-	ResultNatArgs []ActualNatArg
+	ResultType         *TypeRWWrapper
+	ResultNatArgs      []ActualNatArg
+	ResultHalfResolved HalfResolvedArgument
 
 	fieldsDec    Deconflicter // TODO - add all generated methods here
 	fieldsDecCPP Deconflicter // TODO - add all generated methods here
@@ -29,29 +30,32 @@ func (trw *TypeRWStruct) isTypeDef() bool {
 	return len(trw.Fields) == 1 && trw.Fields[0].originalName == "" && trw.Fields[0].fieldMask == nil && !trw.Fields[0].recursive
 }
 
-func (trw *TypeRWStruct) isUnwrapTypeImpl(withAliases bool) bool {
+func (trw *TypeRWStruct) isUnwrapType() bool {
 	if !trw.isTypeDef() || trw.wr.preventUnwrap {
 		return false
 	}
-	_, isPrimitive := trw.Fields[0].t.trw.(*TypeRWPrimitive)
-	_, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
-	str, _ := trw.Fields[0].t.trw.(*TypeRWStruct)
-	isWrapped := str != nil && str.isUnwrapType()
-	if !withAliases {
-		return isPrimitive || isBuiltinBrackets || isWrapped
+	// Motivation - we want default wrappers for primitive types, vector and tuple to generate primitive language types
+	primitive, isPrimitive := trw.Fields[0].t.trw.(*TypeRWPrimitive)
+	if isPrimitive && primitive.tlType == trw.wr.tlName.String() {
+		return true
 	}
-	if str != nil && len(str.Fields) != 0 {
-		br, _ := str.Fields[0].t.trw.(*TypeRWBrackets)
-		isWrapped = br != nil && br.dictLike
+	brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
+	if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
+		return true
 	}
-	// fmt.Printf("tlName=%s isBuiltinBrackets=%v isWrapped=%v\n", trw.wr.tlName, isBuiltinBrackets, isWrapped)
-	// All custom wrappers including union elements are aliased. TODO - list of normal types from tlgen
-	primitiveDefault := trw.wr.tlName.String() == "int" || trw.wr.tlName.String() == "long" || trw.wr.tlName.String() == "string" || trw.wr.tlName.String() == "float" || trw.wr.tlName.String() == "double" || trw.wr.tlName.String() == "#"
-	return (isPrimitive && primitiveDefault) || isBuiltinBrackets || isWrapped
-}
-
-func (trw *TypeRWStruct) isUnwrapType() bool {
-	return trw.isUnwrapTypeImpl(true)
+	// in combined TL Dictionary is defined via Vector.
+	// dictionaryField {t:Type} key:string value:t = DictionaryField t;
+	// dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
+	// TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
+	str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
+	if isStruct && str.wr.tlName.String() == "vector" {
+		// repeat check above 1 level deeper
+		brackets, isBuiltinBrackets = str.Fields[0].t.trw.(*TypeRWBrackets)
+		if isBuiltinBrackets && brackets.dictLike {
+			return true
+		}
+	}
+	return false
 }
 
 func (trw *TypeRWStruct) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
@@ -103,16 +107,16 @@ func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWStruct) BeforeCodeGenerationStep2() {
-	if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
-		var nf []Field
-		for _, f := range trw.Fields {
-			if !f.recursive {
-				nf = append(nf, f)
-				//panic("recursive field in union " + trw.wr.tlName.String())
-			}
-		}
-		trw.Fields = nf
-	}
+	//if trw.wr.gen.options.Language == "cpp" { // TODO - temporary solution to benchmark combined tl
+	//	var nf []Field
+	//	for _, f := range trw.Fields {
+	//		if !f.recursive {
+	//			nf = append(nf, f)
+	//  // panic("recursive field in union " + trw.wr.tlName.String())
+	//}
+	//}
+	//trw.Fields = nf
+	//}
 }
 
 func (trw *TypeRWStruct) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
@@ -124,17 +128,10 @@ func (trw *TypeRWStruct) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]b
 }
 
 func (trw *TypeRWStruct) IsDictKeySafe() (isSafe bool, isString bool) {
+	if trw.isTypeDef() {
+		return trw.Fields[0].t.trw.IsDictKeySafe()
+	}
 	return false, false
-	// In the future - support typedefs
-	// if len(trw.Fields) == 0 {
-	//	return false
-	// }
-	// for _, field := range trw.Fields {
-	//	if field.recursive || !field.t.trw.IsDictKeySafe() {
-	//		return false
-	//	}
-	// }
-	// return true
 }
 
 // same code as in func (w *TypeRWWrapper) transformNatArgsToChild
@@ -206,7 +203,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
-	if trw.isUnwrapTypeImpl(false) {
+	if trw.isTypeDef() {
 		return trw.Fields[0].t.TypeJSONEmptyCondition(bytesVersion, val, ref)
 	}
 	return ""

@@ -34,7 +34,7 @@ type Client struct {
     Client  *rpc.Client
     Network string // should be either "tcp4" or "unix"
     Address string
-    ActorID uint64 // should be non-zero when using rpc-proxy
+    ActorID int64 // should be non-zero when using rpc-proxy
 }
 
 {%= writeClientsCode(gen.GlobalPackageName, namespace.types, directImports, ourTypes) %}
@@ -72,6 +72,24 @@ type(
 func {%s= typeString %}() {%s= wr.unionParent.TypeString2(false, directImports, nil, ourUnionParentType, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
         {%- endif -%}
     {%- endfor -%}
+    {%- for _, wr := range types -%}
+    {%- code
+         _, ok := wr.trw.(*TypeRWBool)
+    -%}
+        {%- if ok -%}
+            {%- code
+                localTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
+            -%}
+
+func {%s= localTypeString %}ReadBoxed(w []byte, v *bool) ([]byte, error) {
+    return {%s= globalTypeString %}ReadBoxed(w, v)
+}
+func {%s= localTypeString %}WriteBoxed(w []byte, v bool) ([]byte, error) {
+    return {%s= globalTypeString %}WriteBoxed(w, v)
+}
+        {%- endif -%}
+    {%- endfor -%}
 {%- endfunc -%}
 
 {%- func writeClientsCode(shortPackageName string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) -%}
@@ -97,6 +115,10 @@ func {%s= typeString %}() {%s= wr.unionParent.TypeString2(false, directImports, 
 func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {
     req := c.Client.GetRequest()
     req.ActorID = c.ActorID
+    {%- if fun.wr.HasAnnotation("read") -%}
+        req.ReadOnly = true
+    {%- endif -%}
+    req.FunctionName = "{%s= tlName %}"
     if extra != nil {
         req.Extra = *extra
     }
@@ -154,10 +176,6 @@ Raw{%s= funcTypeString %} func(ctx context.Context, hctx *rpc.HandlerContext) er
     {%- if totalFuns == 0 -%} {%- return -%} {%- endif -%}
 tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
 switch tag {
-    {%- code
-// TODO - we have to skip bytes in bytes.Buffer for Raw call
-// TODO - check that no bytes remains after reading
-    -%}
     {%- for _, wr := range types -%}
         {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
             {%- code
@@ -166,6 +184,7 @@ switch tag {
                 tlName := wr.tlName.String()
             -%}
 case {%s= tlTag %}: // {%s= tlName %}
+    hctx.RequestFunctionName = "{%s= tlName %}"
     if h.Raw{%s= funcTypeString %} != nil {
         hctx.Request = r
         err = h.Raw{%s= funcTypeString %}(ctx, hctx)

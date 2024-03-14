@@ -8,13 +8,13 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
 
 type TlsCombinatorRight struct {
-	Value TlsTypeExprUnion
+	Value TlsTypeExpr
 }
 
 func (TlsCombinatorRight) TLName() string { return "tls.combinatorRight" }
@@ -65,7 +65,7 @@ func (item *TlsCombinatorRight) readJSON(j interface{}) error {
 	for k := range _jm {
 		return ErrorInvalidJSONExcessElement("tls.combinatorRight", k)
 	}
-	if err := TlsTypeExprUnion__ReadJSON(&item.Value, _jValue); err != nil {
+	if err := TlsTypeExpr__ReadJSON(&item.Value, _jValue); err != nil {
 		return err
 	}
 	return nil

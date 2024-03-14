@@ -60,7 +60,6 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
     return ret
 }
 
-// AsUnion will be here
 `)
 		}
 	}
@@ -245,7 +244,7 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
 	if struct_.isTypeDef() {
-		asterisk := ifString(struct_.Fields[0].recursive, "*", "")
+		asterisk := ifString(struct_.Fields[0].recursive, "*", "") // actually never recursive due to condition in struct_.isTypeDef()
 		fieldTypeString := struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
 		qw422016.N().S(`type `)
@@ -577,7 +576,7 @@ func (item *`)
 }
 `)
 	} else {
-		// Sorting fields is bad idea. It is convenient when they are in TL order
+		// Sorting fields is bad idea. Most efficient parsing is if they are in TL order, because no look ahead required
 
 		qw422016.N().S(`
 `)
@@ -670,6 +669,11 @@ func (item *`)
 	// then we read the rest, passing the same field masks to every field reader
 
 	for _, field := range struct_.Fields {
+		// field names will be mandatory soon, except for typedefs which are processed separately
+
+		if field.originalName == "" {
+			continue
+		}
 		jsonField := fmt.Sprintf("_j%s", field.goName)
 		itemField := fmt.Sprintf("item.%s", field.goName)
 
@@ -702,6 +706,11 @@ func (item *`)
     }
 `)
 	for _, field := range struct_.Fields {
+		// field names will be mandatory soon, except for typedefs which are processed separately
+
+		if field.originalName == "" {
+			continue
+		}
 		if field.fieldMask == nil {
 			continue
 		}
@@ -790,6 +799,11 @@ func (item *`)
 		}
 	}
 	for _, field := range struct_.Fields {
+		// field names will be mandatory soon, except for typedefs which are processed separately
+
+		if field.originalName == "" {
+			continue
+		}
 		jsonField := fmt.Sprintf("_j%s", field.goName)
 		itemField := fmt.Sprintf("item.%s", field.goName)
 
@@ -823,27 +837,85 @@ func (item *`)
 				qw422016.N().S(` & (1 << `)
 				qw422016.E().V(field.BitNumber)
 				qw422016.N().S(`) != 0 {
-        `)
+`)
+				if field.recursive {
+					fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+
+					qw422016.N().S(`        if item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` == nil {
+            var value `)
+					qw422016.N().S(fieldTypeString)
+					qw422016.N().S(`
+            item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` = &value
+        }
+`)
+				}
+				qw422016.N().S(`        `)
 				qw422016.N().S(readingCode)
 				qw422016.N().S(`
     } else {
-        `)
-				qw422016.N().S(resettingCode)
-				qw422016.N().S(`
-    }
+`)
+				if field.recursive {
+					qw422016.N().S(`        if item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` != nil {
+            `)
+					qw422016.N().S(resettingCode)
+					qw422016.N().S(`
+        }
+`)
+				} else {
+					qw422016.N().S(`        `)
+					qw422016.N().S(resettingCode)
+					qw422016.N().S(`
+`)
+				}
+				qw422016.N().S(`    }
 `)
 			} else {
 				qw422016.N().S(`    if `)
 				qw422016.N().S(jsonField)
 				qw422016.N().S(` != nil {
-        `)
+`)
+				if field.recursive {
+					fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+
+					qw422016.N().S(`        if item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` == nil {
+            var value `)
+					qw422016.N().S(fieldTypeString)
+					qw422016.N().S(`
+            item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` = &value
+        }
+`)
+				}
+				qw422016.N().S(`        `)
 				qw422016.N().S(readingCode)
 				qw422016.N().S(`
     } else {
-        `)
-				qw422016.N().S(resettingCode)
-				qw422016.N().S(`
-    }
+`)
+				if field.recursive {
+					qw422016.N().S(`        if item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` != nil {
+            `)
+					qw422016.N().S(resettingCode)
+					qw422016.N().S(`
+        }
+`)
+				} else {
+					qw422016.N().S(`        `)
+					qw422016.N().S(resettingCode)
+					qw422016.N().S(`
+`)
+				}
+				qw422016.N().S(`    }
 `)
 			}
 		} else {
@@ -897,6 +969,11 @@ func (item *`)
     w = append(w, '{')
 `)
 	for _, field := range struct_.Fields {
+		// field names will be mandatory soon, except for typedefs which are processed separately
+
+		if field.originalName == "" {
+			continue
+		}
 		if field.t.IsTrueType() {
 			if field.fieldMask != nil && (field.fieldMask.isField || field.fieldMask.isArith) {
 				qw422016.N().S(`    if `)
@@ -1204,9 +1281,24 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(`
 `)
 		if finishFieldsMask {
-			qw422016.N().S(`} else { `)
-			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
-			qw422016.N().S(` }
+			qw422016.N().S(`} else {
+`)
+			if field.recursive {
+				qw422016.N().S(`        if item.`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(` != nil {
+            `)
+				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+				qw422016.N().S(`
+        }
+`)
+			} else {
+				qw422016.N().S(`        `)
+				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+				qw422016.N().S(`
+`)
+			}
+			qw422016.N().S(`}
 `)
 		}
 	}
@@ -1364,9 +1456,24 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 		qw422016.N().S(`
 `)
 		if finishFieldsMask {
-			qw422016.N().S(`} else { `)
-			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
-			qw422016.N().S(` }
+			qw422016.N().S(`} else {
+`)
+			if field.recursive {
+				qw422016.N().S(`        if item.`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(` != nil {
+            `)
+				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+				qw422016.N().S(`
+        }
+`)
+			} else {
+				qw422016.N().S(`        `)
+				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+				qw422016.N().S(`
+`)
+			}
+			qw422016.N().S(`}
 `)
 		}
 	}

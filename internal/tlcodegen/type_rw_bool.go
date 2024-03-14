@@ -19,7 +19,13 @@ type TypeRWBool struct {
 }
 
 func (trw *TypeRWBool) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
-	return "bool"
+	if !skipAlias {
+		return "bool"
+	}
+	if isLocal {
+		return addBytes(trw.wr.goLocalName, bytesVersion)
+	}
+	return trw.wr.ins.Prefix(directImports, ins) + addBytes(trw.wr.goGlobalName, bytesVersion)
 }
 
 func (trw *TypeRWBool) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -42,7 +48,7 @@ func (trw *TypeRWBool) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]boo
 }
 
 func (trw *TypeRWBool) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false // TODO - maybe in future
+	return false, false // TODO - low priority future
 }
 
 func (trw *TypeRWBool) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {

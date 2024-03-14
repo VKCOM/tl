@@ -6,7 +6,6 @@
 
 package tlcodegen
 
-/*
 import (
 	"fmt"
 	"strings"
@@ -16,14 +15,17 @@ func (trw *TypeRWMaybe) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 	trw.element.t.CPPFillRecursiveChildren(visitedNodes)
 }
 
-func (trw *TypeRWMaybe) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
+func (trw *TypeRWMaybe) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	hppInc.ns[trw.wr.fileName] = struct{}{}
-	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc, resolvedType.Args[0].T, halfResolve) + ">"
-	// return ifString(trw.wr.cppNamespaceQualifier == nsQualifier, "", trw.wr.cppNamespaceQualifier) +
-	//	addBytes(trw.goLocalName, bytesVersion)
+	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc) + ">"
 }
 
-func (trw *TypeRWMaybe) cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
+func (trw *TypeRWMaybe) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
+	hppInc.ns[trw.wr.fileName] = struct{}{}
+	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]) + ">"
+}
+
+func (trw *TypeRWMaybe) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	return ""
 }
 
@@ -36,20 +38,20 @@ func (trw *TypeRWMaybe) CPPTypeResettingCode(bytesVersion bool, val string) stri
 }
 
 func (trw *TypeRWMaybe) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, formatNatArgsCallCPP(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 	//return wrapLast(last, fmt.Sprintf("\t%s.Write%s( w %s)", val, addBare(bare), formatNatArgsCallCPP(natArgs)))
 }
 
 func (trw *TypeRWMaybe) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, formatNatArgsCallCPP(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 	//return wrapLast(last, fmt.Sprintf("\t%s.Read%s( r %s)", val, addBare(bare), formatNatArgsCallCPP(natArgs)))
 }
 
 func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc, trw.wr.resolvedType, false)
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
 
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
@@ -94,7 +96,7 @@ void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	/ *
+	/*
 			_ = fmt.Sprintf(`type %[1]s struct {
 			Value %[2]s // Значение имеет смысл при Ok=true
 			Ok    bool
@@ -144,6 +146,5 @@ void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				trw.okTag,
 				formatNatArgsDeclCPP(trw.wr.NatParams),
 			)
-	* /
+	*/
 }
-*/

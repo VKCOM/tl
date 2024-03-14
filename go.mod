@@ -8,6 +8,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/valyala/quicktemplate v1.7.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
+	pgregory.net/rapid v1.1.0
 )
 
 require (

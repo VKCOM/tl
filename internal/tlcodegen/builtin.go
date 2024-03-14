@@ -93,7 +93,7 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 				constructorName.Name += strconv.Itoa(elemCounter)
 			}
 			typeName := constructorName
-			typeName.Name = strings.Title(typeName.Name) //lint:ignore SA1019 "transfer to golang.org/x/text/cases in single PR; better idea?"
+			typeName.Name = ToUpperFirst(typeName.Name)
 			elemCounter++
 			for ; ; nextElemTag++ {
 				if _, ok := constructorTags[nextElemTag]; !ok {
@@ -222,10 +222,14 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 			if !newField.ScaleRepeat.ExplicitScale {
 				endRange := tlast.PositionRange{Outer: newField.ScaleRepeat.PR.Outer, Begin: newField.ScaleRepeat.PR.Begin, End: newField.ScaleRepeat.PR.Begin}
 				if fieldIndex == 0 { // Allow shortcut to last template parameters
+					if len(typ.TemplateArguments) == 0 {
+						// hren a:[int] = Hren;
+						return nil, endRange.BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references non-existing template parameter"))
+					}
 					// hren {n:#} a:[int] = Hren n;
 					a := typ.TemplateArguments[len(typ.TemplateArguments)-1]
 					if !a.IsNat {
-						e1 := endRange.BeautifulError(fmt.Errorf("anonymous scale repeat references last template parameter %q which should have type #", a.FieldName))
+						e1 := endRange.BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references last template parameter %q which should have type #", a.FieldName))
 						e2 := a.PR.BeautifulError(fmt.Errorf("see here"))
 						return nil, tlast.BeautifulError2(e1, e2)
 					}
@@ -233,7 +237,7 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 				} else {
 					prevField := newFields[len(newFields)-1]
 					if prevField.FieldType.Type.String() != "#" {
-						e1 := endRange.BeautifulError(fmt.Errorf("anonymous scale repeat references previous field %q which should have type #", prevField.FieldName))
+						e1 := endRange.BeautifulError(fmt.Errorf("anonymous scale repeat implicitly references previous field %q which should have type #", prevField.FieldName))
 						e2 := prevField.FieldType.PR.BeautifulError(fmt.Errorf("see here"))
 						return nil, tlast.BeautifulError2(e1, e2)
 					}

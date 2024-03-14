@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 var _ = basictl.NatWrite
@@ -83,7 +83,7 @@ type TlsArg struct {
 	VarNum      int32 // Conditional: item.Flags.1
 	ExistVarNum int32 // Conditional: item.Flags.2
 	ExistVarBit int32 // Conditional: item.Flags.2
-	Type        TlsTypeExprUnion
+	Type        TlsTypeExpr
 }
 
 func (TlsArg) TLName() string { return "tls.arg" }
@@ -253,7 +253,7 @@ func (item *TlsArg) readJSON(j interface{}) error {
 	} else {
 		item.ExistVarBit = 0
 	}
-	if err := TlsTypeExprUnion__ReadJSON(&item.Type, _jType); err != nil {
+	if err := TlsTypeExpr__ReadJSON(&item.Type, _jType); err != nil {
 		return err
 	}
 	return nil

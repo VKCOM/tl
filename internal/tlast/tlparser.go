@@ -104,7 +104,7 @@ type Field struct {
 type Combinator struct {
 	Builtin           bool
 	IsFunction        bool
-	Modifiers         []Modifier
+	Modifiers         []Modifier // TODO - rename to annotations
 	Construct         Constructor
 	TemplateArguments []TemplateArgument
 	Fields            []Field
