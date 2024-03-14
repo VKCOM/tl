@@ -53,10 +53,11 @@ func (trw *TypeRWBrackets) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper
 	trw.element.t.MarkWantsBytesVersion(visitedNodes)
 }
 
-func dictElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
+func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
+	// it is hard to mark Dictionary constructor as dictionary,
+	// because it is typedef to Vector or built-in brackets.
 	structElement, ok := wr.trw.(*TypeRWStruct)
-	// TODO - better ideas?
-	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.goGlobalName), "dictionary") {
+	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.tlName.Name), "dictionary") {
 		return false, false, Field{}, Field{}
 	}
 	if structElement.Fields[0].fieldMask != nil { // TODO - allowing this complicates json serialization
@@ -68,7 +69,7 @@ func dictElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 	if trw.vectorLike {
-		if ok, isString, kf, vf := dictElement(trw.element.t); ok {
+		if ok, isString, kf, vf := isDictionaryElement(trw.element.t); ok {
 			trw.dictLike = true
 			trw.dictKeyString = isString
 			trw.dictKeyField = kf
@@ -94,7 +95,7 @@ func (trw *TypeRWBrackets) fillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 }
 
 func (trw *TypeRWBrackets) IsDictKeySafe() (isSafe bool, isString bool) {
-	return false, false // !trw.dictLike && !trw.vectorLike && !trw.dynamicSize && trw.element.t.trw.IsDictKeySafe()
+	return false, false
 }
 
 func (trw *TypeRWBrackets) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {

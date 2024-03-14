@@ -246,6 +246,21 @@ func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(union.wr.NatPara
     }
     return string(w)
 }
+
+func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
+  return item.WriteJSON(nil)
+}
+
+func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
+    j, err := {%s= union.wr.gen.InternalPrefix()%}JsonBytesToInterface(b)
+    if err != nil {
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, err.Error())
+    }
+    if err = item.readJSON(j); err != nil {
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, err.Error())
+    }
+    return nil
+}
 {%- endif -%}
 {%- endfunc -%}
 
@@ -342,7 +357,9 @@ func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeSt
     {%- endfor -%}
     }
 
-    {%- if union.IsEnum -%} // TODO - deconflict name
+    {%- if union.IsEnum -%}
+    {%- code // TODO - deconflict name
+    -%}
 func {%s= goName %}__MakeEnum(i int) {%s= goName %} { return {%s= goName %}{index: i} }
     {%- endif -%}
 {%- endfunc -%}

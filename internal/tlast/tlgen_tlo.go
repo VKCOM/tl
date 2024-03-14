@@ -48,21 +48,21 @@ const (
 
 // at some point of TL schema compilation tlgen breaks primitive canonical form
 // in order to keep TLO compatible predefined primitive combinator form is used
-var builtinCombinators = map[string]tls.CombinatorUnion{
-	"int":    tls.CombinatorV4{Name: intTadInt32, Id: "int", TypeName: intTadInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: intTadInt32}.AsUnion()}}.AsUnion(),
-	"long":   tls.CombinatorV4{Name: longTagInt32, Id: "long", TypeName: longTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: longTagInt32}.AsUnion()}}.AsUnion(),
-	"float":  tls.CombinatorV4{Name: floatTagInt32, Id: "float", TypeName: floatTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: floatTagInt32}.AsUnion()}}.AsUnion(),
-	"double": tls.CombinatorV4{Name: doubleTagInt32, Id: "double", TypeName: doubleTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: doubleTagInt32}.AsUnion()}}.AsUnion(),
-	"string": tls.CombinatorV4{Name: stringTagInt32, Id: "string", TypeName: stringTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr{Name: stringTagInt32}.AsUnion()}}.AsUnion(),
+var builtinCombinators = map[string]tls.Combinator{
+	"int":    tls.CombinatorV4{Name: intTadInt32, Id: "int", TypeName: intTadInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr0{Name: intTadInt32}.AsUnion()}}.AsUnion(),
+	"long":   tls.CombinatorV4{Name: longTagInt32, Id: "long", TypeName: longTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr0{Name: longTagInt32}.AsUnion()}}.AsUnion(),
+	"float":  tls.CombinatorV4{Name: floatTagInt32, Id: "float", TypeName: floatTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr0{Name: floatTagInt32}.AsUnion()}}.AsUnion(),
+	"double": tls.CombinatorV4{Name: doubleTagInt32, Id: "double", TypeName: doubleTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr0{Name: doubleTagInt32}.AsUnion()}}.AsUnion(),
+	"string": tls.CombinatorV4{Name: stringTagInt32, Id: "string", TypeName: stringTagInt32, Left: tls.CombinatorLeftBuiltin{}.AsUnion(), Right: tls.CombinatorRight{Value: tls.TypeExpr0{Name: stringTagInt32}.AsUnion()}}.AsUnion(),
 }
 
-var builtinTypeExprUnions = map[string]tls.TypeExprUnion{
-	"#":      tls.TypeExpr{Name: natTag}.AsUnion(),
-	"int":    tls.TypeExpr{Name: intTadInt32, Flags: 1 << 0}.AsUnion(),
-	"long":   tls.TypeExpr{Name: longTagInt32, Flags: 1 << 0}.AsUnion(),
-	"float":  tls.TypeExpr{Name: floatTagInt32, Flags: 1 << 0}.AsUnion(),
-	"double": tls.TypeExpr{Name: doubleTagInt32, Flags: 1 << 0}.AsUnion(),
-	"string": tls.TypeExpr{Name: stringTagInt32, Flags: 1 << 0}.AsUnion(),
+var builtinTypeExprUnions = map[string]tls.TypeExpr{
+	"#":      tls.TypeExpr0{Name: natTag}.AsUnion(),
+	"int":    tls.TypeExpr0{Name: intTadInt32, Flags: 1 << 0}.AsUnion(),
+	"long":   tls.TypeExpr0{Name: longTagInt32, Flags: 1 << 0}.AsUnion(),
+	"float":  tls.TypeExpr0{Name: floatTagInt32, Flags: 1 << 0}.AsUnion(),
+	"double": tls.TypeExpr0{Name: doubleTagInt32, Flags: 1 << 0}.AsUnion(),
+	"string": tls.TypeExpr0{Name: stringTagInt32, Flags: 1 << 0}.AsUnion(),
 }
 
 var absentTypes = map[string]tls.Type{
@@ -98,7 +98,7 @@ func (ps *paramScope) find(f func(e param) bool) (param, bool) {
 	return param{}, false
 }
 
-func (tl TL) GenerateTLO() ([]byte, error) {
+func (tl TL) GenerateTLO() (tls.SchemaV4, error) {
 	allCombinators := make(map[string]*Combinator, len(tl))
 	for i, comb := range tl {
 		allCombinators[comb.Construct.Name.String()] = tl[i]
@@ -167,7 +167,7 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 		}
 	}
 
-	var constructors, functions []tls.CombinatorUnion
+	var constructors, functions []tls.Combinator
 	for _, c := range tl {
 		if builtin, ok := builtinCombinators[c.Construct.Name.String()]; ok {
 			constructors = append(constructors, builtin)
@@ -185,7 +185,7 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 			}
 		}
 		var mc paramScope
-		left := tls.CombinatorLeftUnion{}
+		left := tls.CombinatorLeft{}
 		args := make([]tls.Arg, 0, len(c.TemplateArguments)+len(c.Fields))
 		for i, ta := range c.TemplateArguments {
 			var tag int32
@@ -200,7 +200,7 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 				VarNum:      int32(i),
 				ExistVarNum: 0,
 				ExistVarBit: 0,
-				Type: tls.TypeExpr{
+				Type: tls.TypeExpr0{
 					Name:  tag,
 					Flags: 0, // todo: flags
 				}.AsUnion(),
@@ -217,45 +217,45 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 			}
 			fieldTypeExprUnion, err := combinatorToTypeExprUnion(mc, allCombinators, tlsTypes, &f, i+len(c.TemplateArguments))
 			if err != nil {
-				return nil, fmt.Errorf("error on converting field %s to tls.Arg: %w", f.String(), err)
+				return tls.SchemaV4{}, fmt.Errorf("error on converting field %s to tls.Arg: %w", f.String(), err)
 			}
 			args = append(args, fieldTypeExprUnion)
 			if !f.IsRepeated && f.FieldType.Type.String() == "#" {
 				mc.append(f.FieldName, f.FieldType.Type.String(), len(c.TemplateArguments)+i)
 			}
 		}
-		left = tls.CombinatorLeft{
+		left = tls.CombinatorLeft0{
 			ArgsNum: uint32(len(args)),
 			Args:    args,
 		}.AsUnion()
 
-		var right tls.TypeExprUnion
+		var right tls.TypeExpr
 		if c.IsFunction {
 			// can't use typeRefToTypeExpr: name build from constructors
 			tmp := typeRefToExprUnion(mc, allCombinators, tlsTypes, c.FuncDecl.Args)
 			if ctx, ok := mc.find(func(mc param) bool { return mc.name == c.FuncDecl.Type.String() }); ok {
 				right = tls.TypeVar{VarNum: int32(ctx.index)}.AsUnion()
 			} else {
-				right = tls.TypeExpr{
+				right = tls.TypeExpr0{
 					Name:        typeName,
 					ChildrenNum: uint32(len(tmp)),
 					Children:    tmp,
 				}.AsUnion()
 			}
 		} else {
-			right = tls.TypeExpr{
+			right = tls.TypeExpr0{
 				Name:        typeName,
 				Flags:       0, // todo: flags
 				ChildrenNum: uint32(len(c.TypeDecl.Arguments)),
-				Children: func() []tls.ExprUnion {
+				Children: func() []tls.Expr {
 					// mess with TypeDecl.Arguments and TemplateArguments caused by
 					// engine.query {X:Type} query:!X = engine.Query; the only combinator with right
 					// part not equal to left, still uses the assumption, that left and right parts
 					// are equal which is might be wrong
 					// so TODO - implement naive linear search over TemplateArguments
-					res := make([]tls.ExprUnion, 0, len(c.TypeDecl.Arguments))
+					res := make([]tls.Expr, 0, len(c.TypeDecl.Arguments))
 					for i := range c.TypeDecl.Arguments {
-						var exprUnion tls.ExprUnion
+						var exprUnion tls.Expr
 						if c.TemplateArguments[i].IsNat {
 							exprUnion = tls.ExprNat{Expr: tls.NatVar{VarNum: int32(i)}.AsUnion()}.AsUnion()
 						} else {
@@ -291,7 +291,7 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 		v4B, _ := functions[j].AsV4()
 		return v4A.Id < v4B.Id
 	})
-	s := tls.SchemaV4{
+	return tls.SchemaV4{
 		Version:        0, // always 0
 		Date:           int32(time.Now().Unix()),
 		TypesNum:       uint32(len(types)),
@@ -300,6 +300,13 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 		Constructors:   constructors,
 		FunctionsNum:   uint32(len(functions)),
 		Functions:      functions,
+	}, nil
+}
+
+func (tl TL) GenerateTLOBytes() ([]byte, error) {
+	s, err := tl.GenerateTLO()
+	if err != nil {
+		return nil, err
 	}
 	res, err := s.WriteBoxed(nil)
 	if err != nil {
@@ -308,7 +315,7 @@ func (tl TL) GenerateTLO() ([]byte, error) {
 	return res, nil
 }
 
-func typeRefToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, t *TypeRef, bare bool) tls.TypeExprUnion {
+func typeRefToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, t *TypeRef, bare bool) tls.TypeExpr {
 	if typeExpr, ok := builtinTypeExprUnions[t.Type.String()]; ok {
 		return typeExpr
 	}
@@ -317,7 +324,7 @@ func typeRefToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tls
 	if t.Bare || bare {
 		flags = 1
 	}
-	return tls.TypeExpr{
+	return tls.TypeExpr0{
 		// safe to use as primitives handled above
 		Name:        int32(allCombinators[t.Type.String()].Crc32()),
 		Flags:       flags,            // Is type expression bare
@@ -326,7 +333,7 @@ func typeRefToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tls
 	}.AsUnion()
 }
 
-func repeatedToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, rws *RepeatWithScale, fieldIndex int) (tls.TypeExprUnion, error) {
+func repeatedToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, rws *RepeatWithScale, fieldIndex int) (tls.TypeExpr, error) {
 	var res tls.Array
 	if rws.ExplicitScale {
 		if rws.Scale.IsArith {
@@ -335,14 +342,14 @@ func repeatedToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tl
 			if c, ok := mc.find(func(mc param) bool { return mc.name == rws.Scale.Scale }); ok {
 				res.Multiplicity = tls.NatVar{VarNum: int32(c.index)}.AsUnion()
 			} else {
-				return tls.TypeExprUnion{}, rws.Scale.PR.BeautifulError(errors.New("scale not found"))
+				return tls.TypeExpr{}, rws.Scale.PR.BeautifulError(errors.New("scale not found"))
 			}
 		}
 	} else {
 		if ctx, found := mc.find(func(mc param) bool { return mc.fieldIndex == fieldIndex-1 }); found {
 			res.Multiplicity = tls.NatVar{VarNum: int32(ctx.index)}.AsUnion()
 		} else {
-			return tls.TypeExprUnion{}, rws.PR.BeautifulError(errors.New("repeated type used without size: no scale, previous field/argument type not #"))
+			return tls.TypeExpr{}, rws.PR.BeautifulError(errors.New("repeated type used without size: no scale, previous field/argument type not #"))
 		}
 	}
 	res.ArgsNum = uint32(len(rws.Rep))
@@ -350,7 +357,7 @@ func repeatedToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tl
 	for i, f := range rws.Rep {
 		tlsArg, err := combinatorToTypeExprUnion(mc, allCombinators, tlsTypes, &f, i)
 		if err != nil {
-			return tls.TypeExprUnion{}, fmt.Errorf("error on converting rep %s to tls.TypeExprUnion: %w", f.String(), err)
+			return tls.TypeExpr{}, fmt.Errorf("error on converting rep %s to tls.TypeExpr: %w", f.String(), err)
 		}
 		res.Args = append(res.Args, tlsArg)
 		if !f.IsRepeated && f.FieldType.Type.String() == "#" {
@@ -370,7 +377,7 @@ func combinatorToTypeExprUnion(mc paramScope, allCombinators map[string]*Combina
 	} else if f.IsRepeated {
 		repeatedTypeExpr, err := repeatedToTypeExpr(mc, allCombinators, tlsTypes, &f.ScaleRepeat, fieldIndex)
 		if err != nil {
-			return tls.Arg{}, fmt.Errorf("error on converting scale repeate %s to tls.TypeExprUnion: %w", f.ScaleRepeat.String(), err)
+			return tls.Arg{}, fmt.Errorf("error on converting scale repeate %s to tls.TypeExpr: %w", f.ScaleRepeat.String(), err)
 		}
 		res.Type = repeatedTypeExpr
 	} else if c, ok := mc.find(func(mc param) bool { return mc.name == f.FieldType.Type.String() }); ok {
@@ -383,7 +390,7 @@ func combinatorToTypeExprUnion(mc paramScope, allCombinators map[string]*Combina
 		if f.FieldType.Bare {
 			flags |= 1
 		}
-		res.Type = tls.TypeExpr{
+		res.Type = tls.TypeExpr0{
 			Name:        tlsType.Name,
 			Flags:       flags,            // todo: flags
 			ChildrenNum: uint32(len(tmp)), // todo uint32(len(f.FieldType.Args)),
@@ -406,8 +413,8 @@ func combinatorToTypeExprUnion(mc paramScope, allCombinators map[string]*Combina
 	return res, nil
 }
 
-func typeRefToExprUnion(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, aots []ArithmeticOrType) []tls.ExprUnion {
-	var res []tls.ExprUnion
+func typeRefToExprUnion(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, aots []ArithmeticOrType) []tls.Expr {
+	var res []tls.Expr
 	for _, aot := range aots {
 		aotTypeString := aot.T.Type.String()
 		if aot.IsArith {
@@ -435,7 +442,7 @@ func typeRefToExprUnion(mc paramScope, allCombinators map[string]*Combinator, tl
 				flags |= 1
 			}
 			tmp := typeRefToExprUnion(mc, allCombinators, tlsTypes, aot.T.Args)
-			res = append(res, tls.ExprType{Expr: tls.TypeExpr{
+			res = append(res, tls.ExprType{Expr: tls.TypeExpr0{
 				// safe to use as primitives handled above
 				Name:        int32(combinator.Crc32()),
 				Flags:       flags,
@@ -450,7 +457,7 @@ func typeRefToExprUnion(mc paramScope, allCombinators map[string]*Combinator, tl
 				flags |= 1
 			}
 			tmp := typeRefToExprUnion(mc, allCombinators, tlsTypes, aot.T.Args)
-			res = append(res, tls.ExprType{Expr: tls.TypeExpr{
+			res = append(res, tls.ExprType{Expr: tls.TypeExpr0{
 				Name:        tlsType.Name,
 				Flags:       flags,
 				ChildrenNum: uint32(len(tmp)),

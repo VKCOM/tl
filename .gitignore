@@ -22,3 +22,5 @@ go.work
 
 /target
 /.tmp
+
+/.idea

@@ -6,7 +6,6 @@
 
 package tlcodegen
 
-/*
 import (
 	"fmt"
 	"strings"
@@ -19,10 +18,8 @@ func (trw *TypeRWBrackets) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrap
 	trw.element.t.CPPFillRecursiveChildren(visitedNodes)
 }
 
-func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
-	if !halfResolve {
-		hppInc.ns[trw.wr.fileName] = struct{}{}
-	}
+func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
+	hppInc.ns[trw.wr.fileName] = struct{}{}
 	//if trw.dictLike && !bytesVersion {
 	//	TODO - which arguments must map have is very complicated
 	//return fmt.Sprintf("std::map<%s, %s>",
@@ -30,15 +27,28 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *D
 	//	trw.dictValueField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictValueField.resolvedType, halfResolve))
 	//}
 	if trw.vectorLike || trw.dynamicSize {
-		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc, resolvedType.Args[0].T, halfResolve))
+		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc))
 	}
-	if resolvedType.Args[1].T.OriginalName != "" {
-		return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc, resolvedType.Args[0].T, halfResolve), resolvedType.Args[1].T.OriginalName)
-	}
-	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc, resolvedType.Args[0].T, halfResolve), trw.size)
+	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc), trw.size)
 }
 
-func (trw *TypeRWBrackets) cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
+func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
+	//if trw.dictLike && !bytesVersion {
+	//	TODO - which arguments must map have is very complicated
+	//return fmt.Sprintf("std::map<%s, %s>",
+	//	trw.dictKeyField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictKeyField.resolvedType, halfResolve),
+	//	trw.dictValueField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictValueField.resolvedType, halfResolve))
+	//}
+	if trw.vectorLike || trw.dynamicSize {
+		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]))
+	}
+	if halfResolved.Args[1].Name != "" {
+		return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]), halfResolved.Args[1].Name)
+	}
+	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]), trw.size)
+}
+
+func (trw *TypeRWBrackets) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	if trw.vectorLike || trw.dynamicSize {
 		return ""
 	}
@@ -53,7 +63,7 @@ func (trw *TypeRWBrackets) CPPHasBytesVersion() bool {
 }
 
 func (trw *TypeRWBrackets) CPPTypeResettingCode(bytesVersion bool, val string) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	if trw.dictLike || trw.dynamicSize || trw.vectorLike {
 		return fmt.Sprintf("\t%s.clear();", val)
 	}
@@ -61,13 +71,13 @@ func (trw *TypeRWBrackets) CPPTypeResettingCode(bytesVersion bool, val string) s
 }
 
 func (trw *TypeRWBrackets) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, formatNatArgsCallCPP(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
-	goGlobalName := addBytes(trw.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, formatNatArgsCallCPP(natArgs))
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
@@ -103,7 +113,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 	// valueFieldName := ""
 	switch {
 	// TODO - does not work yet
-	/ *
+	/*
 		case trw.dictLike && !bytesVersion:
 				keyTypeString = trw.dictKeyField.t.TypeString(bytesVersion)
 				valueTypeString = trw.dictValueField.t.TypeString(bytesVersion)
@@ -149,7 +159,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 				}
 
 				`
-	* /
+	*/
 	case trw.vectorLike:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
@@ -205,7 +215,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 }
 `
 	}
-	/ *
+	/*
 		_ = fmt.Sprintf(code,
 			addBytes(trw.goGlobalName, bytesVersion),
 			trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.wr.resolvedType.Args[0].T, false),
@@ -242,15 +252,15 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 				false,
 			),
 		)
-	* /
+	*/
 
 	hppDet.WriteString(fmt.Sprintf(hppDetCode,
-		addBytes(trw.goGlobalName, bytesVersion),
-		trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc, trw.wr.resolvedType.Args[0].T, false),
+		addBytes(trw.wr.goGlobalName, bytesVersion),
+		trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc),
 		trw.size,
 		formatNatArgsDeclCPP(trw.wr.NatParams),
 	))
-	tt := trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc, trw.wr.resolvedType.Args[0].T, false)
+	tt := trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc)
 	tr := trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "el",
 		trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
 		true)
@@ -264,7 +274,7 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 			true) + "\n\t\tel = tmp;"
 	}
 	cppDet.WriteString(fmt.Sprintf(cppCode,
-		addBytes(trw.goGlobalName, bytesVersion),
+		addBytes(trw.wr.goGlobalName, bytesVersion),
 		tt,
 		trw.size,
 		formatNatArgsDeclCPP(trw.wr.NatParams),
@@ -275,4 +285,3 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 	))
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 }
-*/

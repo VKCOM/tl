@@ -25,6 +25,7 @@ const (
 	lcIdentNS        = -11
 	ucIdentNS        = -12
 	eof              = -13 // so we always have next token in array
+	functionSign     = -14 // greedy => symbol
 )
 
 const (
@@ -179,7 +180,7 @@ func (l *lexer) checkPrimitive() bool {
 		lAngleBracket, rAngleBracket,
 		dotSign, plus, asterisk, exclamation,
 		colon, semiColon, whiteSpace,
-		tab, equalSign, questionMark, percentSign,
+		tab, questionMark, percentSign,
 		commaSign:
 		l.advance(1, int(c))
 		return true
@@ -197,6 +198,13 @@ func (l *lexer) checkPrimitive() bool {
 func (l *lexer) nextToken(allowDirty bool) error {
 	switch {
 	case l.checkPrimitive():
+		return nil
+	case l.str[0] == '=':
+		if strings.HasPrefix(l.str, "=>") {
+			l.advance(2, functionSign)
+		} else {
+			l.advance(1, '=')
+		}
 		return nil
 	case l.str[0] == '@':
 		return l.lexFunctionModifier()

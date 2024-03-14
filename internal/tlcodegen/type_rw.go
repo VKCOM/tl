@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 
+	"golang.org/x/exp/slices"
+
 	"github.com/vkcom/tl/internal/tlast"
 )
 
@@ -62,10 +64,11 @@ type TypeRWWrapper struct {
 	arguments []ResolvedArgument
 
 	goGlobalName string // globally unique, so could be used also in html anchors, internal C++ function names, etc.
-	goLocalName  string // TODO - make different var with local name for cpp
+	goLocalName  string
+	cppLocalName string
 
 	wantsBytesVersion bool
-	preventUnwrap     bool
+	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
 	hasBytesVersion bool
 
@@ -80,8 +83,6 @@ type TypeRWWrapper struct {
 	unionField  Field
 	unionIndex  int
 	unionIsEnum bool
-
-	// cppNamespaceQualifier string // full qualifier, like ::tl2::tlstatshouse::, or "" for builtin types
 
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
@@ -128,6 +129,25 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 	}
 	s.WriteByte('>')
 	return s.String()
+}
+
+func (w *TypeRWWrapper) HasAnnotation(str string) bool {
+	for _, m := range w.origTL[0].Modifiers {
+		if m.Name == str {
+			return true
+		}
+	}
+	return false
+}
+
+func (w *TypeRWWrapper) AnnotationsMask() uint32 {
+	var mask uint32
+	for bit, v := range w.gen.allAnnotations {
+		if w.HasAnnotation(v) {
+			mask |= (1 << bit)
+		}
+	}
+	return mask
 }
 
 // Assign structural names to external arguments
@@ -180,7 +200,6 @@ type DirectImports struct {
 }
 
 // for C++ includes
-/*
 type DirectIncludesCPP struct {
 	ns map[string]struct{}
 }
@@ -193,7 +212,6 @@ func (d DirectIncludesCPP) sortedNames() []string {
 	slices.Sort(sortedNames)
 	return sortedNames
 }
-*/
 
 func stringCompare(a string, b string) int {
 	if a < b {
@@ -310,29 +328,121 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
-/*
-	func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
-		if visitedNodes[w] {
-			return
-		}
-		visitedNodes[w] = true
-		w.trw.CPPFillRecursiveChildren(visitedNodes)
+func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
+	if visitedNodes[w] {
+		return
 	}
+	visitedNodes[w] = true
+	w.trw.CPPFillRecursiveChildren(visitedNodes)
+}
 
-	func (w *TypeRWWrapper) CPPTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
-		if halfResolve && resolvedType.OriginalName != "" {
-			return resolvedType.OriginalName
-		}
-		return w.trw.cppTypeStringInNamespace(bytesVersion, hppInc, resolvedType, halfResolve)
-	}
+func (w *TypeRWWrapper) CPPTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
+	return w.trw.cppTypeStringInNamespace(bytesVersion, hppInc)
+}
 
-	func (w *TypeRWWrapper) CPPDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
-		if halfResolve && resolvedType.OriginalName != "" {
-			return "{}"
-		}
-		return w.trw.cppDefaultInitializer(resolvedType, halfResolve)
+func (w *TypeRWWrapper) CPPTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
+	if halfResolved.Name != "" {
+		return halfResolved.Name
 	}
-*/
+	return w.trw.cppTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved)
+}
+
+func (w *TypeRWWrapper) CPPDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
+	if halfResolve && halfResolved.Name != "" {
+		return "{}"
+	}
+	return w.trw.cppDefaultInitializer(halfResolved, halfResolve)
+}
+
+func (w *TypeRWWrapper) cppNamespaceQualifier() string {
+	var s strings.Builder
+	s.WriteString("::")
+	s.WriteString(w.gen.options.RootCPPNamespace)
+	s.WriteString("::")
+	//myWrapper.cppNamespaceQualifier = "::" + gen.options.RootCPPNamespace + "::"
+	if w.tlName.Namespace != "" {
+		s.WriteString(w.tlName.Namespace)
+		s.WriteString("::")
+	}
+	return s.String()
+}
+
+func canonicalCPPName(name tlast.Name, insideNamespace string) string { // TODO
+	if name.Namespace == insideNamespace {
+		return name.Name
+	}
+	return name.Namespace + "_" + name.Name
+}
+
+func (w *TypeRWWrapper) fullyResolvedClassCppNameArgs() (string, []string) { // name in namespace, arguments decl
+	cppSuffix := strings.Builder{}
+	cppSuffix.WriteString(w.tlName.Name)
+	var cppArgsDecl []string
+	for i, a := range w.arguments {
+		fieldName := w.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
+		if a.isNat {
+			if a.isArith {
+				cppSuffix.WriteString(fieldName)
+				cppArgsDecl = append(cppArgsDecl, "uint32_t "+fieldName)
+			}
+		} else {
+			cppArgsDecl = append(cppArgsDecl, "typename "+fieldName)
+		}
+	}
+	return cppSuffix.String(), cppArgsDecl
+}
+
+func (w *TypeRWWrapper) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolve bool, halfResolved HalfResolvedArgument) (string, string, string) {
+	hppInc.ns[w.fileName] = struct{}{}
+	bName := strings.Builder{}
+	// bName.WriteString(w.cppNamespaceQualifier())
+	bName.WriteString(w.tlName.Name)
+	bCanonicalName := strings.Builder{}
+	bCanonicalName.WriteString(w.tlName.Name)
+	bArgs := strings.Builder{}
+	for i, a := range w.arguments {
+		fieldName := w.origTL[0].TemplateArguments[i].FieldName // arguments must be the same for all union elements
+		if a.isNat {
+			if a.isArith {
+				bName.WriteString(fieldName)
+				bCanonicalName.WriteString("-") // simple canonical format where each argument is preceded with '-'. Good for filenames also
+				bCanonicalName.WriteString(fieldName)
+				if bArgs.Len() == 0 {
+					bArgs.WriteString("<")
+				} else {
+					bArgs.WriteString(", ")
+				}
+				if halfResolve {
+					half := halfResolved.Args[i]
+					if half.Name != "" {
+						bArgs.WriteString(half.Name)
+						continue
+					}
+				}
+				bArgs.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+			}
+		} else {
+			if bArgs.Len() == 0 {
+				bArgs.WriteString("<")
+			} else {
+				bArgs.WriteString(", ")
+			}
+			if halfResolve {
+				half := halfResolved.Args[i]
+				if half.Name != "" {
+					bArgs.WriteString(half.Name)
+					continue
+				}
+			}
+			bArgs.WriteString(a.tip.CPPTypeStringInNamespace(bytesVersion, hppInc))
+		}
+	}
+	if bArgs.Len() != 0 {
+		bArgs.WriteString(">")
+	}
+	return bName.String(), bCanonicalName.String(), bArgs.String()
+}
+
 func (w *TypeRWWrapper) JSONHelpString() string {
 	return w.CanonicalStringTop()
 }
@@ -439,14 +549,15 @@ type TypeRW interface {
 	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
-	//CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
-	//cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string
-	//cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string
-	//CPPHasBytesVersion() bool
-	//CPPTypeResettingCode(bytesVersion bool, val string) string
-	//CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	//CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	//CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
+	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
+	cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string
+	cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string
+	cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string
+	CPPHasBytesVersion() bool
+	CPPTypeResettingCode(bytesVersion bool, val string) string
+	CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
 }
 
 type Field struct {
@@ -460,7 +571,8 @@ type Field struct {
 	fieldMask *ActualNatArg
 	BitNumber uint32 // only used when fieldMask != nil
 
-	natArgs []ActualNatArg
+	natArgs      []ActualNatArg
+	halfResolved HalfResolvedArgument
 
 	origTL tlast.Field
 }
@@ -477,43 +589,50 @@ func formatNatArg(fields []Field, arg ActualNatArg) string {
 		return "item." + fields[arg.FieldIndex].goName
 	}
 	if strings.HasPrefix(arg.name, "nat_") {
-		fmt.Printf("aha!")
+		panic("aha!") // TODO - remove
 	}
 	return "nat_" + arg.name
 }
 
-/*
 func formatNatArgCPP(fields []Field, arg ActualNatArg) string { // TODO - harmonize with formatNatArg?
-
-		if arg.isArith {
-			return strconv.FormatUint(uint64(arg.Arith.Res), 10)
-		}
-		if arg.isField {
-			return "item." + fields[arg.FieldIndex].cppName
-		}
-		return "nat_" + arg.name
+	if arg.isArith {
+		return strconv.FormatUint(uint64(arg.Arith.Res), 10)
 	}
-
-	func formatNatArgsCPP(fields []Field, natArgs []ActualNatArg) []string {
-		var result []string
-		for _, arg := range natArgs {
-			result = append(result, formatNatArgCPP(fields, arg))
-		}
-		return result
+	if arg.isField {
+		return "item." + fields[arg.FieldIndex].cppName
 	}
+	return "nat_" + arg.name
+}
 
-	func formatNatArgsCallCPP(natArgs []string) string {
-		return joinWithCommas(natArgs)
+func formatNatArgsCPP(fields []Field, natArgs []ActualNatArg) []string {
+	var result []string
+	for _, arg := range natArgs {
+		result = append(result, formatNatArgCPP(fields, arg))
 	}
+	return result
+}
 
-	func formatNatArgsDeclCPP(natArgs []string) string {
-		var s strings.Builder
-		for _, arg := range natArgs {
-			s.WriteString(fmt.Sprintf(", uint32_t %s", arg))
-		}
-		return s.String()
+func formatNatArgsCallCPP(natArgs []string) string {
+	return formatNatArgsDeclCall(natArgs)
+}
+
+func formatNatArgsDeclCPP(natArgs []string) string {
+	var s strings.Builder
+	for _, arg := range natArgs {
+		s.WriteString(fmt.Sprintf(", uint32_t nat_%s", arg))
 	}
-*/
+	return s.String()
+}
+
+// TODO - remove all trash functions and consolidate into 1 or 2
+func formatNatArgsAddNat(natArgs []string) []string {
+	var result []string
+	for _, arg := range natArgs {
+		result = append(result, "nat_"+arg)
+	}
+	return result
+}
+
 func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
@@ -591,45 +710,33 @@ var (
 	allUpperRegex = regexp.MustCompile(`^[A-Z][A-Z0-9]+$`)
 )
 
+// TODO - investigate if this function is good
 func CNameToCamelName(s string) string {
 	chunks := camelingRegex.FindAllString(s, -1)
 	for i, chunk := range chunks {
-		if allUpperRegex.MatchString(chunk) {
+		if allUpperRegex.MatchString(chunk) { // TODO - why?
 			chunks[i] = strings.ToUpper(chunk[:1]) + strings.ToLower(chunk[1:])
 		} else {
-			chunks[i] = strings.Title(chunk) //lint:ignore SA1019 "transfer to golang.org/x/text/cases in single PR"
+			chunks[i] = ToUpperFirst(chunk)
 		}
 	}
 	return strings.Join(chunks, "")
 }
 
-//func buildTlName(wr *TypeRWWrapper, natArgs []ActualNatArg) string {
-//	switch trw := wr.trw.(type) {
-//	case *TypeRWBool:
-//		return "bool"
-//	case *TypeRWBrackets:
-//		switch {
-//		case trw.dictLike:
-//			return fmt.Sprintf("%s (%s)", wr.tlName, buildTlName(trw.dictKeyField.t, trw.dictValueField.natArgs))
-//		case trw.vectorLike:
-//			return fmt.Sprintf("%s (%s)", wr.tlName, buildTlName(trw.element.t, trw.element.natArgs))
-//		case trw.dynamicSize:
-//			return fmt.Sprintf("%s (%s %s)", wr.tlName, trw.element.t.tlName, trw.element.natArgs[0].name)
-//		default:
-//			return fmt.Sprintf("%s (%s %d)", wr.tlName, trw.element.t.tlName, trw.size)
-//		}
-//	case *TypeRWMaybe:
-//		return fmt.Sprintf("%s (%s)", wr.tlName, buildTlName(trw.element.t, trw.element.natArgs))
-//	case *TypeRWPrimitive:
-//		return trw.tlType
-//	case *TypeRWStruct:
-//		log.Print("buildTlName STRUCT ", trw.goGlobalName, trw.Fields[0].originalType)
-//		var templateFields strings.Builder
-//		return fmt.Sprintf("%s (%s)", wr.tlName, templateFields.String())
-//	case *TypeRWUnion:
-//		log.Print("buildTlName UNION ", trw.goGlobalName)
-//		return wr.tlName.String()
-//	default:
-//		return ""
-//	}
-//}
+func ToUpperFirst(str string) string {
+	for i := range str {
+		if i != 0 {
+			return strings.ToUpper(str[:i]) + str[i:]
+		}
+	}
+	return strings.ToUpper(str) // zero or single rune
+}
+
+func ToLowerFirst(str string) string {
+	for i := range str {
+		if i != 0 {
+			return strings.ToLower(str[:i]) + str[i:]
+		}
+	}
+	return strings.ToLower(str) // zero or single rune
+}

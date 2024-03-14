@@ -33,8 +33,8 @@ func CreateObjectFromName(name string) meta.Object {
 func init() {
 	meta.SetGlobalFactoryCreateForObject(0x29dfe61b, func() meta.Object { var ret internal.TlsArg; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xd9fb20de, func() meta.Object { var ret internal.TlsArray; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x5c0a1ed5, func() meta.Object { var ret internal.TlsCombinator; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x4c12c6d9, func() meta.Object { var ret internal.TlsCombinatorLeft; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x5c0a1ed5, func() meta.Object { var ret internal.TlsCombinator0; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x4c12c6d9, func() meta.Object { var ret internal.TlsCombinatorLeft0; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xcd211f63, func() meta.Object { var ret internal.TlsCombinatorLeftBuiltin; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x2c064372, func() meta.Object { var ret internal.TlsCombinatorRight; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xe91692d5, func() meta.Object { var ret internal.TlsCombinatorV4; return &ret })
@@ -46,6 +46,6 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject(0xe4a8604b, func() meta.Object { var ret internal.TlsSchemaV3; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x90ac88d7, func() meta.Object { var ret internal.TlsSchemaV4; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x12eb4386, func() meta.Object { var ret internal.TlsType; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xc1863d08, func() meta.Object { var ret internal.TlsTypeExpr; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xc1863d08, func() meta.Object { var ret internal.TlsTypeExpr0; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x0142ceae, func() meta.Object { var ret internal.TlsTypeVar; return &ret })
 }

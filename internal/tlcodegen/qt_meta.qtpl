@@ -2,7 +2,7 @@
 
 {%- func (gen *Gen2) generateMeta() -%}
 {%s= HeaderComment %}
-{%- code typeWrappers := gen.generatedTypesList -%}
+{%- code typeWrappers := gen.generatedTypesList-%}
 package {%s MetaGoPackageName %}
 
 import (
@@ -81,11 +81,11 @@ func CreateObjectFromName(name string) Object {
 
 type TLItem struct {
     tag                uint32
+    annotations        uint32
     tlName             string
     createFunction     func() Function
     createFunctionLong func() Function
     createObject       func() Object
-    // TODO - annotations, etc
 }
 
 func (item TLItem) TLTag() uint32            { return item.tag }
@@ -97,6 +97,14 @@ func (item TLItem) CreateFunction() Function { return item.createFunction() }
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
+
+// Annotations
+{%- for bit, name := range gen.allAnnotations -%}
+{%- code
+ goName := ToUpperFirst(name)
+-%}
+func (item TLItem) Annotation{%s= goName %}() bool { return item.annotations & {%s= fmt.Sprintf("%#x", 1 << bit) %} != 0 }
+{%- endfor -%}
 
 // TLItem serves as a single type for all enum values
 func (item *TLItem) Reset()                         {}
@@ -217,7 +225,7 @@ func init() {
         {%- endif -%}
         "{%= wr.tlName.String() %}#{%s= fmt.Sprintf("%08x", wr.tlTag) %}",
         {%q= fmt.Sprintf("#%08x", wr.tlTag) %},
-        &TLItem{tag: {%s= fmt.Sprintf("%#x", wr.tlTag) %}, tlName: "{%= wr.tlName.String() %}"})
+        &TLItem{tag: {%s= fmt.Sprintf("%#x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("%#x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}"})
     {%- endif -%}
 {%- endstripspace -%}
 

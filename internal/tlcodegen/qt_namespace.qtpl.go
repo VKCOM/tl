@@ -74,7 +74,7 @@ type Client struct {
     Client  *rpc.Client
     Network string // should be either "tcp4" or "unix"
     Address string
-    ActorID uint64 // should be non-zero when using rpc-proxy
+    ActorID int64 // should be non-zero when using rpc-proxy
 }
 
 `)
@@ -150,6 +150,31 @@ func streamtypesAlias(qw422016 *qt422016.Writer, anyTypeAlias bool, namespace st
 `)
 		}
 	}
+	for _, wr := range types {
+		_, ok := wr.trw.(*TypeRWBool)
+
+		if ok {
+			localTypeString := wr.TypeString2(false, directImports, nil, true, true)
+			globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
+
+			qw422016.N().S(`
+func `)
+			qw422016.N().S(localTypeString)
+			qw422016.N().S(`ReadBoxed(w []byte, v *bool) ([]byte, error) {
+    return `)
+			qw422016.N().S(globalTypeString)
+			qw422016.N().S(`ReadBoxed(w, v)
+}
+func `)
+			qw422016.N().S(localTypeString)
+			qw422016.N().S(`WriteBoxed(w []byte, v bool) ([]byte, error) {
+    return `)
+			qw422016.N().S(globalTypeString)
+			qw422016.N().S(`WriteBoxed(w, v)
+}
+`)
+		}
+	}
 }
 
 func writetypesAlias(qq422016 qtio422016.Writer, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) {
@@ -213,6 +238,14 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`) (err error) {
     req := c.Client.GetRequest()
     req.ActorID = c.ActorID
+`)
+	if fun.wr.HasAnnotation("read") {
+		qw422016.N().S(`        req.ReadOnly = true
+`)
+	}
+	qw422016.N().S(`    req.FunctionName = "`)
+	qw422016.N().S(tlName)
+	qw422016.N().S(`"
     if extra != nil {
         req.Extra = *extra
     }
@@ -319,9 +352,6 @@ func streamhandleRequest(qw422016 *qt422016.Writer, types []*TypeRWWrapper, dire
 	qw422016.N().S(`tag, r, _ := basictl.NatReadTag(hctx.Request) // keep hctx.Request intact for handler chaining
 switch tag {
 `)
-	// TODO - we have to skip bytes in bytes.Buffer for Raw call
-	// TODO - check that no bytes remains after reading
-
 	for _, wr := range types {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			tlTag := fmt.Sprintf("%#08x", wr.tlTag)
@@ -333,6 +363,9 @@ switch tag {
 			qw422016.N().S(`: // `)
 			qw422016.N().S(tlName)
 			qw422016.N().S(`
+    hctx.RequestFunctionName = "`)
+			qw422016.N().S(tlName)
+			qw422016.N().S(`"
     if h.Raw`)
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(` != nil {

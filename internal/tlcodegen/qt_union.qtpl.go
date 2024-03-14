@@ -535,6 +535,35 @@ func (item `)
     }
     return string(w)
 }
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) MarshalJSON() ([]byte, error) {
+  return item.WriteJSON(nil)
+}
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) UnmarshalJSON(b []byte) error {
+    j, err := `)
+		qw422016.N().S(union.wr.gen.InternalPrefix())
+		qw422016.N().S(`JsonBytesToInterface(b)
+    if err != nil {
+        return `)
+		qw422016.N().S(union.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorInvalidJSON(`)
+		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().S(`, err.Error())
+    }
+    if err = item.readJSON(j); err != nil {
+        return `)
+		qw422016.N().S(union.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorInvalidJSON(`)
+		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().S(`, err.Error())
+    }
+    return nil
+}
 `)
 	}
 }
@@ -812,8 +841,9 @@ func (union *TypeRWUnion) streamgenerateEnumAlias(qw422016 *qt422016.Writer, byt
 
 `)
 	if union.IsEnum {
-		qw422016.N().S(`// TODO - deconflict name
-func `)
+		// TODO - deconflict name
+
+		qw422016.N().S(`func `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`__MakeEnum(i int) `)
 		qw422016.N().S(goName)

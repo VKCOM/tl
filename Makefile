@@ -7,12 +7,12 @@ BUILD_MACHINE    := $(if $(BUILD_MACHINE),$(BUILD_MACHINE),$(shell uname -n -m -
 BUILD_GO_VERSION := $(if $(BUILD_GO_VERSION),$(BUILD_GO_VERSION),$(shell go version | cut -d' ' -f3))
 
 COMMON_BUILD_VARS := \
-  -X 'github.com/vkcom/tl/internal/build.buildTimestamp=$(BUILD_TIME)' \
-  -X 'github.com/vkcom/tl/internal/build.machine=$(BUILD_MACHINE)' \
-  -X 'github.com/vkcom/tl/internal/build.commit=$(BUILD_COMMIT)' \
-  -X 'github.com/vkcom/tl/internal/build.version=$(BUILD_VERSION)' \
-  -X 'github.com/vkcom/tl/internal/build.commitTimestamp=$(BUILD_COMMIT_TS)' \
-  -X 'github.com/vkcom/tl/internal/build.branchName=$(BUILD_BRANCH)' \
+  -X 'github.com/vkcom/tl/pkg/build.buildTimestamp=$(BUILD_TIME)' \
+  -X 'github.com/vkcom/tl/pkg/build.machine=$(BUILD_MACHINE)' \
+  -X 'github.com/vkcom/tl/pkg/build.commit=$(BUILD_COMMIT)' \
+  -X 'github.com/vkcom/tl/pkg/build.version=$(BUILD_VERSION)' \
+  -X 'github.com/vkcom/tl/pkg/build.commitTimestamp=$(BUILD_COMMIT_TS)' \
+  -X 'github.com/vkcom/tl/pkg/build.branchName=$(BUILD_BRANCH)' \
 
 COMMON_LDFLAGS = $(COMMON_BUILD_VARS) -extldflags '-O2'
 

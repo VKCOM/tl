@@ -114,11 +114,11 @@ func CreateObjectFromName(name string) Object {
 
 type TLItem struct {
     tag                uint32
+    annotations        uint32
     tlName             string
     createFunction     func() Function
     createFunctionLong func() Function
     createObject       func() Object
-    // TODO - annotations, etc
 }
 
 func (item TLItem) TLTag() uint32            { return item.tag }
@@ -131,6 +131,19 @@ func (item TLItem) CreateFunction() Function { return item.createFunction() }
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
 
+// Annotations
+`)
+	for bit, name := range gen.allAnnotations {
+		goName := ToUpperFirst(name)
+
+		qw422016.N().S(`func (item TLItem) Annotation`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`() bool { return item.annotations & `)
+		qw422016.N().S(fmt.Sprintf("%#x", 1<<bit))
+		qw422016.N().S(` != 0 }
+`)
+	}
+	qw422016.N().S(`
 // TLItem serves as a single type for all enum values
 func (item *TLItem) Reset()                         {}
 `)
@@ -260,6 +273,8 @@ func init() {
 			qw422016.N().Q(fmt.Sprintf("#%08x", wr.tlTag))
 			qw422016.N().S(`,&TLItem{tag:`)
 			qw422016.N().S(fmt.Sprintf("%#x", wr.tlTag))
+			qw422016.N().S(`, annotations:`)
+			qw422016.N().S(fmt.Sprintf("%#x", wr.AnnotationsMask()))
 			qw422016.N().S(`, tlName: "`)
 			wr.tlName.StreamString(qw422016)
 			qw422016.N().S(`"})`)

@@ -6,7 +6,6 @@
 
 package tlcodegen
 
-/*
 import (
 	"fmt"
 	"strings"
@@ -15,11 +14,15 @@ import (
 func (trw *TypeRWPrimitive) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWPrimitive) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, resolvedType ResolvedType, halfResolve bool) string {
+func (trw *TypeRWPrimitive) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	return trw.cppPrimitiveType
 }
 
-func (trw *TypeRWPrimitive) cppDefaultInitializer(resolvedType ResolvedType, halfResolve bool) string {
+func (trw *TypeRWPrimitive) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
+	return trw.cppPrimitiveType
+}
+
+func (trw *TypeRWPrimitive) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	return trw.cppDefaultInit
 }
 
@@ -41,4 +44,3 @@ func (trw *TypeRWPrimitive) CPPTypeReadingCode(bytesVersion bool, val string, ba
 
 func (trw *TypeRWPrimitive) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
 }
-*/

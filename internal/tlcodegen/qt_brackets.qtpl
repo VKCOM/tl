@@ -60,7 +60,7 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= valueNat
     if j != nil {
         _map, _mapok = j.(map[string]interface{})
         if !_mapok {
-            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object") // TODO - better name
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
         }
     }
       l := len(_map)
@@ -138,7 +138,10 @@ func {%s= goName %}FillRandom(rand basictl.Rand, m *map[{%s= keyTypeString %}]{%
             {%- endif -%}
 func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
     var l uint32
-    if w, err = basictl.NatRead(w, &l); err != nil { // No sanity check required for map
+    if w, err = basictl.NatRead(w, &l); err != nil {
+        return w, err
+    }
+    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
     var data map[{%s= keyTypeString %}]{%s= valueTypeString %}
@@ -195,7 +198,7 @@ func {%s= goName %}ReadJSON(j interface{}, m *{%s= typeString %} {%s= valueNatAr
     if j != nil {
         _map, _mapok = j.(map[string]interface{})
         if !_mapok {
-            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object") // TODO - better name
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
         }
     }
     l := len(_map)
@@ -246,7 +249,7 @@ func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= 
     for _, key := range keys {
         value := m[key]
         w = basictl.JSONAddCommaIfNeeded(w)
-        w = basictl.JSONWriteString(w, key) // StringKey
+        w = basictl.JSONWriteString(w, key)
         w = append(w, ':')
         {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
     }

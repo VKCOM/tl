@@ -8,6 +8,7 @@ package tlast
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/TwiN/go-color"
@@ -37,24 +38,6 @@ func (pr PositionRange) BeautifulError(err error) *ParseError {
 	}
 }
 
-func (pr PositionRange) BeautifulWarning(err error) *ParseError {
-	pr.CheckValidity()
-	return &ParseError{
-		Err:       err,
-		Pos:       pr,
-		isWarning: true,
-	}
-}
-
-func (pr PositionRange) LogicError(err error) *ParseError {
-	pr.CheckValidity()
-	return &ParseError{
-		Err:        err,
-		Pos:        pr,
-		LogicError: true,
-	}
-}
-
 func BeautifulError2(original *ParseError, compare *ParseError) *ParseError {
 	original.compare = compare
 	return original
@@ -63,10 +46,7 @@ func BeautifulError2(original *ParseError, compare *ParseError) *ParseError {
 type ParseError struct {
 	Err error
 
-	Pos       PositionRange
-	isWarning bool
-
-	LogicError bool // write file dump and ask to send to developers
+	Pos PositionRange
 
 	compare *ParseError
 }
@@ -79,18 +59,23 @@ func (e ParseError) Unwrap() error {
 	return e.Err
 }
 
-func (e *ParseError) ConsolePrint(outmostError error) {
+func (e *ParseError) PrintWarning(out io.Writer, outmostError error) {
+	e.ConsolePrint(out, outmostError, true)
+	_, _ = fmt.Fprintf(out, "\n")
+}
+
+func (e *ParseError) ConsolePrint(out io.Writer, outmostError error, isWarning bool) {
 	if e.compare != nil {
-		e.compare.consolePrint(e.compare.Err, color.Purple)
+		e.compare.consolePrint(out, e.compare.Err, color.Purple, false)
 	}
 	c := color.Red
-	if e.isWarning {
+	if isWarning {
 		c = color.Yellow
 	}
 	if outmostError == nil {
 		outmostError = e.Err
 	}
-	e.consolePrint(outmostError, c)
+	e.consolePrint(out, outmostError, c, isWarning)
 }
 
 func safeRange(s string, b int, e int, anyCorrupted *bool) string {
@@ -101,7 +86,7 @@ func safeRange(s string, b int, e int, anyCorrupted *bool) string {
 	return s[b:e]
 }
 
-func (e *ParseError) consolePrint(err error, c string) {
+func (e *ParseError) consolePrint(out io.Writer, err error, c string, isWarning bool) {
 	// we check all ranges so that we do not crash in case of convoluted TL token replacements
 	fc := e.Pos.Outer.fileContent
 	anyCorrupted := e.Pos.Begin.fileContent != fc || e.Pos.End.fileContent != fc // combinator must be in one file
@@ -137,20 +122,20 @@ func (e *ParseError) consolePrint(err error, c string) {
 	}
 	after1 = strings.ReplaceAll(after1, "\t", tabSpaces)
 	if beforeEndLine != "" {
-		fmt.Printf("%s%s%s", beforeBegin, c, beforeEndLine)
+		_, _ = fmt.Fprintf(out, "%s%s%s", beforeBegin, c, beforeEndLine)
 	} else {
-		fmt.Printf("%s", beforeBegin)
+		_, _ = fmt.Fprintf(out, "%s", beforeBegin)
 	}
 	warnText := ""
-	if e.isWarning {
-		warnText = color.Yellow + "warning: " + color.Reset
+	if isWarning {
+		warnText = color.InYellow("warning: ")
 	}
 	if anyCorrupted {
-		fmt.Printf("%v\n", err.Error())
-		fmt.Printf("beautiful error context corrupted, %sinternal error%s, please report with TL file\n", color.Red, color.Reset)
+		_, _ = fmt.Fprintf(out, "%v\n", err.Error())
+		_, _ = fmt.Fprintf(out, "beautiful error context corrupted, %sinternal error%s, please report with TL file\n", color.InRed("internal error"), color.Reset)
 	} else {
-		fmt.Printf("%s%s%s%s%s\n", ourLineBeforeBegin, c, ourLineRed, color.Reset, after1)
-		fmt.Printf("%s%s%s%s-- %s%s\n", errLineBeforeBegin, color.Reset, errLineRed, color.Reset, warnText, after2) // keep lines same length in bytes
+		_, _ = fmt.Fprintf(out, "%s%s%s%s%s\n", ourLineBeforeBegin, c, ourLineRed, color.Reset, after1)
+		_, _ = fmt.Fprintf(out, "%s%s%s%s-- %s%s\n", errLineBeforeBegin, color.Reset, errLineRed, color.Reset, warnText, after2) // keep lines same length in bytes
 	}
 }
 

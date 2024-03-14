@@ -136,8 +136,8 @@ func (gen *Gen2) generateFactory(sortedImports []string, directImports *DirectIm
 	return qs422016
 }
 
-func (gen *Gen2) streamgenerateConstants(qw422016 *qt422016.Writer, comment, pkgName string) {
-	qw422016.N().S(comment)
+func (gen *Gen2) streamgenerateConstants(qw422016 *qt422016.Writer, commentString, pkgName string) {
+	qw422016.N().S(commentString)
 	qw422016.N().S(`
 package `)
 	qw422016.N().S(pkgName)
@@ -173,15 +173,15 @@ package `)
 `)
 }
 
-func (gen *Gen2) writegenerateConstants(qq422016 qtio422016.Writer, comment, pkgName string) {
+func (gen *Gen2) writegenerateConstants(qq422016 qtio422016.Writer, commentString, pkgName string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	gen.streamgenerateConstants(qw422016, comment, pkgName)
+	gen.streamgenerateConstants(qw422016, commentString, pkgName)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func (gen *Gen2) generateConstants(comment, pkgName string) string {
+func (gen *Gen2) generateConstants(commentString, pkgName string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	gen.writegenerateConstants(qb422016, comment, pkgName)
+	gen.writegenerateConstants(qb422016, commentString, pkgName)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016
