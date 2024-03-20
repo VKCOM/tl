@@ -8,7 +8,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"runtime/debug"
 
 	"github.com/vkcom/tl/internal/tlcodegen"
 )
@@ -37,6 +39,13 @@ func commonFlags(argv *arguments) {
 }
 
 func main() {
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		log.Printf("Failed to read build info")
+		return
+	}
+	fmt.Printf("tlgen version: %+v\n", bi.Main.Version)
+
 	log.SetFlags(0)
 
 	var argv arguments
