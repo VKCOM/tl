@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite
@@ -105,75 +105,121 @@ func (item *TlsSchema) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsSchema) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
 func (item *TlsSchema) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _TlsSchema[item.index].TLTag)
 	switch item.index {
 	case 0:
-		return item.valueV2.Write(w)
+		if w, err = item.valueV2.Write(w); err != nil {
+			return w, err
+		}
 	case 1:
-		return item.valueV3.Write(w)
+		if w, err = item.valueV3.Write(w); err != nil {
+			return w, err
+		}
 	case 2:
-		return item.valueV4.Write(w)
-	default: // Impossible due to panic above
-		return w, nil
+		if w, err = item.valueV4.Write(w); err != nil {
+			return w, err
+		}
 	}
+	return w, nil
 }
 
-func TlsSchema__ReadJSON(item *TlsSchema, j interface{}) error { return item.readJSON(j) }
-func (item *TlsSchema) readJSON(j interface{}) error {
-	_jm, _tag, err := JsonReadUnionType("tls.Schema", j)
+func (item *TlsSchema) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	_tag, _value, err := Json2ReadUnion("tls.Schema", in)
 	if err != nil {
 		return err
 	}
-	jvalue := _jm["value"]
 	switch _tag {
 	case "tls.schema_v2#3a2f9be2", "tls.schema_v2", "#3a2f9be2":
+		if !legacyTypeNames && _tag == "tls.schema_v2#3a2f9be2" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "tls.schema_v2#3a2f9be2")
+		}
 		item.index = 0
-		if err := TlsSchemaV2__ReadJSON(&item.valueV2, jvalue); err != nil {
+		var in2Pointer *basictl.JsonLexer
+		if _value != nil {
+			in2 := basictl.JsonLexer{Data: _value}
+			in2Pointer = &in2
+		}
+		if err := item.valueV2.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
 			return err
 		}
-		delete(_jm, "value")
 	case "tls.schema_v3#e4a8604b", "tls.schema_v3", "#e4a8604b":
+		if !legacyTypeNames && _tag == "tls.schema_v3#e4a8604b" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "tls.schema_v3#e4a8604b")
+		}
 		item.index = 1
-		if err := TlsSchemaV3__ReadJSON(&item.valueV3, jvalue); err != nil {
+		var in2Pointer *basictl.JsonLexer
+		if _value != nil {
+			in2 := basictl.JsonLexer{Data: _value}
+			in2Pointer = &in2
+		}
+		if err := item.valueV3.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
 			return err
 		}
-		delete(_jm, "value")
 	case "tls.schema_v4#90ac88d7", "tls.schema_v4", "#90ac88d7":
+		if !legacyTypeNames && _tag == "tls.schema_v4#90ac88d7" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Schema", "tls.schema_v4#90ac88d7")
+		}
 		item.index = 2
-		if err := TlsSchemaV4__ReadJSON(&item.valueV4, jvalue); err != nil {
+		var in2Pointer *basictl.JsonLexer
+		if _value != nil {
+			in2 := basictl.JsonLexer{Data: _value}
+			in2Pointer = &in2
+		}
+		if err := item.valueV4.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
 			return err
 		}
-		delete(_jm, "value")
 	default:
 		return ErrorInvalidUnionTagJSON("tls.Schema", _tag)
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.Schema", k)
 	}
 	return nil
 }
 
-func (item *TlsSchema) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsSchema) WriteJSONGeneral(w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsSchema) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsSchema) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsSchema) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		w = append(w, `{"type":"tls.schema_v2#3a2f9be2","value":`...)
-		if w, err = item.valueV2.WriteJSONOpt(short, w); err != nil {
+		if newTypeNames {
+			w = append(w, `{"type":"tls.schema_v2"`...)
+		} else {
+			w = append(w, `{"type":"tls.schema_v2#3a2f9be2"`...)
+		}
+		w = append(w, `,"value":`...)
+		if w, err = item.valueV2.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
 	case 1:
-		w = append(w, `{"type":"tls.schema_v3#e4a8604b","value":`...)
-		if w, err = item.valueV3.WriteJSONOpt(short, w); err != nil {
+		if newTypeNames {
+			w = append(w, `{"type":"tls.schema_v3"`...)
+		} else {
+			w = append(w, `{"type":"tls.schema_v3#e4a8604b"`...)
+		}
+		w = append(w, `,"value":`...)
+		if w, err = item.valueV3.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
 	case 2:
-		w = append(w, `{"type":"tls.schema_v4#90ac88d7","value":`...)
-		if w, err = item.valueV4.WriteJSONOpt(short, w); err != nil {
+		if newTypeNames {
+			w = append(w, `{"type":"tls.schema_v4"`...)
+		} else {
+			w = append(w, `{"type":"tls.schema_v4#90ac88d7"`...)
+		}
+		w = append(w, `,"value":`...)
+		if w, err = item.valueV4.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
@@ -195,11 +241,7 @@ func (item *TlsSchema) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsSchema) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.Schema", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.Schema", err.Error())
 	}
 	return nil
@@ -252,13 +294,18 @@ func (item *TlsSchemaV2) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.ConstructorNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsCombinatorBoxedRead(w, &item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorRead(w, &item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.FunctionsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsCombinatorBoxedRead(w, &item.Functions, item.FunctionsNum)
+	return BuiltinTupleTlsCombinatorRead(w, &item.Functions, item.FunctionsNum)
+}
+
+// This method is general version of Write, use it instead!
+func (item *TlsSchemaV2) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
 }
 
 func (item *TlsSchemaV2) Write(w []byte) (_ []byte, err error) {
@@ -269,11 +316,14 @@ func (item *TlsSchemaV2) Write(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.ConstructorNum)
-	if w, err = BuiltinTupleTlsCombinatorBoxedWrite(w, item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.FunctionsNum)
-	return BuiltinTupleTlsCombinatorBoxedWrite(w, item.Functions, item.FunctionsNum)
+	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Functions, item.FunctionsNum); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsSchemaV2) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -283,7 +333,12 @@ func (item *TlsSchemaV2) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsSchemaV2) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsSchemaV2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsSchemaV2) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x3a2f9be2)
 	return item.Write(w)
 }
@@ -296,108 +351,215 @@ func (item TlsSchemaV2) String() string {
 	return string(w)
 }
 
-func TlsSchemaV2__ReadJSON(item *TlsSchemaV2, j interface{}) error { return item.readJSON(j) }
-func (item *TlsSchemaV2) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.schema_v2", "expected json object")
+func (item *TlsSchemaV2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propVersionPresented bool
+	var propDatePresented bool
+	var propTypesNumPresented bool
+	var rawTypes []byte
+	var propConstructorNumPresented bool
+	var rawConstructors []byte
+	var propFunctionsNumPresented bool
+	var rawFunctions []byte
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "version":
+				if propVersionPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "version")
+				}
+				if err := Json2ReadInt32(in, &item.Version); err != nil {
+					return err
+				}
+				propVersionPresented = true
+			case "date":
+				if propDatePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "date")
+				}
+				if err := Json2ReadInt32(in, &item.Date); err != nil {
+					return err
+				}
+				propDatePresented = true
+			case "types_num":
+				if propTypesNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "types_num")
+				}
+				if err := Json2ReadUint32(in, &item.TypesNum); err != nil {
+					return err
+				}
+				propTypesNumPresented = true
+			case "types":
+				if rawTypes != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "types")
+				}
+				rawTypes = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "constructor_num":
+				if propConstructorNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "constructor_num")
+				}
+				if err := Json2ReadUint32(in, &item.ConstructorNum); err != nil {
+					return err
+				}
+				propConstructorNumPresented = true
+			case "constructors":
+				if rawConstructors != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "constructors")
+				}
+				rawConstructors = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "functions_num":
+				if propFunctionsNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "functions_num")
+				}
+				if err := Json2ReadUint32(in, &item.FunctionsNum); err != nil {
+					return err
+				}
+				propFunctionsNumPresented = true
+			case "functions":
+				if rawFunctions != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v2", "functions")
+				}
+				rawFunctions = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			default:
+				return ErrorInvalidJSONExcessElement("tls.schema_v2", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jVersion := _jm["version"]
-	delete(_jm, "version")
-	if err := JsonReadInt32(_jVersion, &item.Version); err != nil {
+	if !propVersionPresented {
+		item.Version = 0
+	}
+	if !propDatePresented {
+		item.Date = 0
+	}
+	if !propTypesNumPresented {
+		item.TypesNum = 0
+	}
+	if !propConstructorNumPresented {
+		item.ConstructorNum = 0
+	}
+	if !propFunctionsNumPresented {
+		item.FunctionsNum = 0
+	}
+	var inTypesPointer *basictl.JsonLexer
+	inTypes := basictl.JsonLexer{Data: rawTypes}
+	if rawTypes != nil {
+		inTypesPointer = &inTypes
+	}
+	if err := BuiltinTupleTlsTypeBoxedReadJSON(legacyTypeNames, inTypesPointer, &item.Types, item.TypesNum); err != nil {
 		return err
 	}
-	_jDate := _jm["date"]
-	delete(_jm, "date")
-	if err := JsonReadInt32(_jDate, &item.Date); err != nil {
+
+	var inConstructorsPointer *basictl.JsonLexer
+	inConstructors := basictl.JsonLexer{Data: rawConstructors}
+	if rawConstructors != nil {
+		inConstructorsPointer = &inConstructors
+	}
+	if err := BuiltinTupleTlsCombinatorReadJSON(legacyTypeNames, inConstructorsPointer, &item.Constructors, item.ConstructorNum); err != nil {
 		return err
 	}
-	_jTypesNum := _jm["types_num"]
-	delete(_jm, "types_num")
-	if err := JsonReadUint32(_jTypesNum, &item.TypesNum); err != nil {
+
+	var inFunctionsPointer *basictl.JsonLexer
+	inFunctions := basictl.JsonLexer{Data: rawFunctions}
+	if rawFunctions != nil {
+		inFunctionsPointer = &inFunctions
+	}
+	if err := BuiltinTupleTlsCombinatorReadJSON(legacyTypeNames, inFunctionsPointer, &item.Functions, item.FunctionsNum); err != nil {
 		return err
 	}
-	_jTypes := _jm["types"]
-	delete(_jm, "types")
-	_jConstructorNum := _jm["constructor_num"]
-	delete(_jm, "constructor_num")
-	if err := JsonReadUint32(_jConstructorNum, &item.ConstructorNum); err != nil {
-		return err
-	}
-	_jConstructors := _jm["constructors"]
-	delete(_jm, "constructors")
-	_jFunctionsNum := _jm["functions_num"]
-	delete(_jm, "functions_num")
-	if err := JsonReadUint32(_jFunctionsNum, &item.FunctionsNum); err != nil {
-		return err
-	}
-	_jFunctions := _jm["functions"]
-	delete(_jm, "functions")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.schema_v2", k)
-	}
-	if err := BuiltinTupleTlsTypeBoxedReadJSON(_jTypes, &item.Types, item.TypesNum); err != nil {
-		return err
-	}
-	if err := BuiltinTupleTlsCombinatorBoxedReadJSON(_jConstructors, &item.Constructors, item.ConstructorNum); err != nil {
-		return err
-	}
-	if err := BuiltinTupleTlsCombinatorBoxedReadJSON(_jFunctions, &item.Functions, item.FunctionsNum); err != nil {
-		return err
-	}
+
 	return nil
 }
 
-func (item *TlsSchemaV2) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsSchemaV2) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsSchemaV2) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsSchemaV2) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsSchemaV2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
-	if item.Version != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"version":`...)
-		w = basictl.JSONWriteInt32(w, item.Version)
+	backupIndexVersion := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"version":`...)
+	w = basictl.JSONWriteInt32(w, item.Version)
+	if (item.Version != 0) == false {
+		w = w[:backupIndexVersion]
 	}
-	if item.Date != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"date":`...)
-		w = basictl.JSONWriteInt32(w, item.Date)
+	backupIndexDate := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"date":`...)
+	w = basictl.JSONWriteInt32(w, item.Date)
+	if (item.Date != 0) == false {
+		w = w[:backupIndexDate]
 	}
-	if item.TypesNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"types_num":`...)
-		w = basictl.JSONWriteUint32(w, item.TypesNum)
+	backupIndexTypesNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"types_num":`...)
+	w = basictl.JSONWriteUint32(w, item.TypesNum)
+	if (item.TypesNum != 0) == false {
+		w = w[:backupIndexTypesNum]
 	}
-	if len(item.Types) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"types":`...)
-		if w, err = BuiltinTupleTlsTypeBoxedWriteJSONOpt(short, w, item.Types, item.TypesNum); err != nil {
-			return w, err
-		}
+	backupIndexTypes := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"types":`...)
+	if w, err = BuiltinTupleTlsTypeBoxedWriteJSONOpt(newTypeNames, short, w, item.Types, item.TypesNum); err != nil {
+		return w, err
 	}
-	if item.ConstructorNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructor_num":`...)
-		w = basictl.JSONWriteUint32(w, item.ConstructorNum)
+	if (len(item.Types) != 0) == false {
+		w = w[:backupIndexTypes]
 	}
-	if len(item.Constructors) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructors":`...)
-		if w, err = BuiltinTupleTlsCombinatorBoxedWriteJSONOpt(short, w, item.Constructors, item.ConstructorNum); err != nil {
-			return w, err
-		}
+	backupIndexConstructorNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructor_num":`...)
+	w = basictl.JSONWriteUint32(w, item.ConstructorNum)
+	if (item.ConstructorNum != 0) == false {
+		w = w[:backupIndexConstructorNum]
 	}
-	if item.FunctionsNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"functions_num":`...)
-		w = basictl.JSONWriteUint32(w, item.FunctionsNum)
+	backupIndexConstructors := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructors":`...)
+	if w, err = BuiltinTupleTlsCombinatorWriteJSONOpt(newTypeNames, short, w, item.Constructors, item.ConstructorNum); err != nil {
+		return w, err
 	}
-	if len(item.Functions) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"functions":`...)
-		if w, err = BuiltinTupleTlsCombinatorBoxedWriteJSONOpt(short, w, item.Functions, item.FunctionsNum); err != nil {
-			return w, err
-		}
+	if (len(item.Constructors) != 0) == false {
+		w = w[:backupIndexConstructors]
+	}
+	backupIndexFunctionsNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"functions_num":`...)
+	w = basictl.JSONWriteUint32(w, item.FunctionsNum)
+	if (item.FunctionsNum != 0) == false {
+		w = w[:backupIndexFunctionsNum]
+	}
+	backupIndexFunctions := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"functions":`...)
+	if w, err = BuiltinTupleTlsCombinatorWriteJSONOpt(newTypeNames, short, w, item.Functions, item.FunctionsNum); err != nil {
+		return w, err
+	}
+	if (len(item.Functions) != 0) == false {
+		w = w[:backupIndexFunctions]
 	}
 	return append(w, '}'), nil
 }
@@ -407,11 +569,7 @@ func (item *TlsSchemaV2) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsSchemaV2) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.schema_v2", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.schema_v2", err.Error())
 	}
 	return nil
@@ -464,13 +622,18 @@ func (item *TlsSchemaV3) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.ConstructorNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsCombinatorBoxedRead(w, &item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorRead(w, &item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.FunctionsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsCombinatorBoxedRead(w, &item.Functions, item.FunctionsNum)
+	return BuiltinTupleTlsCombinatorRead(w, &item.Functions, item.FunctionsNum)
+}
+
+// This method is general version of Write, use it instead!
+func (item *TlsSchemaV3) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
 }
 
 func (item *TlsSchemaV3) Write(w []byte) (_ []byte, err error) {
@@ -481,11 +644,14 @@ func (item *TlsSchemaV3) Write(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.ConstructorNum)
-	if w, err = BuiltinTupleTlsCombinatorBoxedWrite(w, item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.FunctionsNum)
-	return BuiltinTupleTlsCombinatorBoxedWrite(w, item.Functions, item.FunctionsNum)
+	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Functions, item.FunctionsNum); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsSchemaV3) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -495,7 +661,12 @@ func (item *TlsSchemaV3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsSchemaV3) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsSchemaV3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsSchemaV3) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xe4a8604b)
 	return item.Write(w)
 }
@@ -508,108 +679,215 @@ func (item TlsSchemaV3) String() string {
 	return string(w)
 }
 
-func TlsSchemaV3__ReadJSON(item *TlsSchemaV3, j interface{}) error { return item.readJSON(j) }
-func (item *TlsSchemaV3) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.schema_v3", "expected json object")
+func (item *TlsSchemaV3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propVersionPresented bool
+	var propDatePresented bool
+	var propTypesNumPresented bool
+	var rawTypes []byte
+	var propConstructorNumPresented bool
+	var rawConstructors []byte
+	var propFunctionsNumPresented bool
+	var rawFunctions []byte
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "version":
+				if propVersionPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "version")
+				}
+				if err := Json2ReadInt32(in, &item.Version); err != nil {
+					return err
+				}
+				propVersionPresented = true
+			case "date":
+				if propDatePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "date")
+				}
+				if err := Json2ReadInt32(in, &item.Date); err != nil {
+					return err
+				}
+				propDatePresented = true
+			case "types_num":
+				if propTypesNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "types_num")
+				}
+				if err := Json2ReadUint32(in, &item.TypesNum); err != nil {
+					return err
+				}
+				propTypesNumPresented = true
+			case "types":
+				if rawTypes != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "types")
+				}
+				rawTypes = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "constructor_num":
+				if propConstructorNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "constructor_num")
+				}
+				if err := Json2ReadUint32(in, &item.ConstructorNum); err != nil {
+					return err
+				}
+				propConstructorNumPresented = true
+			case "constructors":
+				if rawConstructors != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "constructors")
+				}
+				rawConstructors = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "functions_num":
+				if propFunctionsNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "functions_num")
+				}
+				if err := Json2ReadUint32(in, &item.FunctionsNum); err != nil {
+					return err
+				}
+				propFunctionsNumPresented = true
+			case "functions":
+				if rawFunctions != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v3", "functions")
+				}
+				rawFunctions = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			default:
+				return ErrorInvalidJSONExcessElement("tls.schema_v3", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jVersion := _jm["version"]
-	delete(_jm, "version")
-	if err := JsonReadInt32(_jVersion, &item.Version); err != nil {
+	if !propVersionPresented {
+		item.Version = 0
+	}
+	if !propDatePresented {
+		item.Date = 0
+	}
+	if !propTypesNumPresented {
+		item.TypesNum = 0
+	}
+	if !propConstructorNumPresented {
+		item.ConstructorNum = 0
+	}
+	if !propFunctionsNumPresented {
+		item.FunctionsNum = 0
+	}
+	var inTypesPointer *basictl.JsonLexer
+	inTypes := basictl.JsonLexer{Data: rawTypes}
+	if rawTypes != nil {
+		inTypesPointer = &inTypes
+	}
+	if err := BuiltinTupleTlsTypeBoxedReadJSON(legacyTypeNames, inTypesPointer, &item.Types, item.TypesNum); err != nil {
 		return err
 	}
-	_jDate := _jm["date"]
-	delete(_jm, "date")
-	if err := JsonReadInt32(_jDate, &item.Date); err != nil {
+
+	var inConstructorsPointer *basictl.JsonLexer
+	inConstructors := basictl.JsonLexer{Data: rawConstructors}
+	if rawConstructors != nil {
+		inConstructorsPointer = &inConstructors
+	}
+	if err := BuiltinTupleTlsCombinatorReadJSON(legacyTypeNames, inConstructorsPointer, &item.Constructors, item.ConstructorNum); err != nil {
 		return err
 	}
-	_jTypesNum := _jm["types_num"]
-	delete(_jm, "types_num")
-	if err := JsonReadUint32(_jTypesNum, &item.TypesNum); err != nil {
+
+	var inFunctionsPointer *basictl.JsonLexer
+	inFunctions := basictl.JsonLexer{Data: rawFunctions}
+	if rawFunctions != nil {
+		inFunctionsPointer = &inFunctions
+	}
+	if err := BuiltinTupleTlsCombinatorReadJSON(legacyTypeNames, inFunctionsPointer, &item.Functions, item.FunctionsNum); err != nil {
 		return err
 	}
-	_jTypes := _jm["types"]
-	delete(_jm, "types")
-	_jConstructorNum := _jm["constructor_num"]
-	delete(_jm, "constructor_num")
-	if err := JsonReadUint32(_jConstructorNum, &item.ConstructorNum); err != nil {
-		return err
-	}
-	_jConstructors := _jm["constructors"]
-	delete(_jm, "constructors")
-	_jFunctionsNum := _jm["functions_num"]
-	delete(_jm, "functions_num")
-	if err := JsonReadUint32(_jFunctionsNum, &item.FunctionsNum); err != nil {
-		return err
-	}
-	_jFunctions := _jm["functions"]
-	delete(_jm, "functions")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.schema_v3", k)
-	}
-	if err := BuiltinTupleTlsTypeBoxedReadJSON(_jTypes, &item.Types, item.TypesNum); err != nil {
-		return err
-	}
-	if err := BuiltinTupleTlsCombinatorBoxedReadJSON(_jConstructors, &item.Constructors, item.ConstructorNum); err != nil {
-		return err
-	}
-	if err := BuiltinTupleTlsCombinatorBoxedReadJSON(_jFunctions, &item.Functions, item.FunctionsNum); err != nil {
-		return err
-	}
+
 	return nil
 }
 
-func (item *TlsSchemaV3) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsSchemaV3) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsSchemaV3) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsSchemaV3) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsSchemaV3) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
-	if item.Version != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"version":`...)
-		w = basictl.JSONWriteInt32(w, item.Version)
+	backupIndexVersion := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"version":`...)
+	w = basictl.JSONWriteInt32(w, item.Version)
+	if (item.Version != 0) == false {
+		w = w[:backupIndexVersion]
 	}
-	if item.Date != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"date":`...)
-		w = basictl.JSONWriteInt32(w, item.Date)
+	backupIndexDate := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"date":`...)
+	w = basictl.JSONWriteInt32(w, item.Date)
+	if (item.Date != 0) == false {
+		w = w[:backupIndexDate]
 	}
-	if item.TypesNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"types_num":`...)
-		w = basictl.JSONWriteUint32(w, item.TypesNum)
+	backupIndexTypesNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"types_num":`...)
+	w = basictl.JSONWriteUint32(w, item.TypesNum)
+	if (item.TypesNum != 0) == false {
+		w = w[:backupIndexTypesNum]
 	}
-	if len(item.Types) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"types":`...)
-		if w, err = BuiltinTupleTlsTypeBoxedWriteJSONOpt(short, w, item.Types, item.TypesNum); err != nil {
-			return w, err
-		}
+	backupIndexTypes := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"types":`...)
+	if w, err = BuiltinTupleTlsTypeBoxedWriteJSONOpt(newTypeNames, short, w, item.Types, item.TypesNum); err != nil {
+		return w, err
 	}
-	if item.ConstructorNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructor_num":`...)
-		w = basictl.JSONWriteUint32(w, item.ConstructorNum)
+	if (len(item.Types) != 0) == false {
+		w = w[:backupIndexTypes]
 	}
-	if len(item.Constructors) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructors":`...)
-		if w, err = BuiltinTupleTlsCombinatorBoxedWriteJSONOpt(short, w, item.Constructors, item.ConstructorNum); err != nil {
-			return w, err
-		}
+	backupIndexConstructorNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructor_num":`...)
+	w = basictl.JSONWriteUint32(w, item.ConstructorNum)
+	if (item.ConstructorNum != 0) == false {
+		w = w[:backupIndexConstructorNum]
 	}
-	if item.FunctionsNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"functions_num":`...)
-		w = basictl.JSONWriteUint32(w, item.FunctionsNum)
+	backupIndexConstructors := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructors":`...)
+	if w, err = BuiltinTupleTlsCombinatorWriteJSONOpt(newTypeNames, short, w, item.Constructors, item.ConstructorNum); err != nil {
+		return w, err
 	}
-	if len(item.Functions) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"functions":`...)
-		if w, err = BuiltinTupleTlsCombinatorBoxedWriteJSONOpt(short, w, item.Functions, item.FunctionsNum); err != nil {
-			return w, err
-		}
+	if (len(item.Constructors) != 0) == false {
+		w = w[:backupIndexConstructors]
+	}
+	backupIndexFunctionsNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"functions_num":`...)
+	w = basictl.JSONWriteUint32(w, item.FunctionsNum)
+	if (item.FunctionsNum != 0) == false {
+		w = w[:backupIndexFunctionsNum]
+	}
+	backupIndexFunctions := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"functions":`...)
+	if w, err = BuiltinTupleTlsCombinatorWriteJSONOpt(newTypeNames, short, w, item.Functions, item.FunctionsNum); err != nil {
+		return w, err
+	}
+	if (len(item.Functions) != 0) == false {
+		w = w[:backupIndexFunctions]
 	}
 	return append(w, '}'), nil
 }
@@ -619,11 +897,7 @@ func (item *TlsSchemaV3) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsSchemaV3) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.schema_v3", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.schema_v3", err.Error())
 	}
 	return nil
@@ -676,13 +950,18 @@ func (item *TlsSchemaV4) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.ConstructorNum); err != nil {
 		return w, err
 	}
-	if w, err = BuiltinTupleTlsCombinatorBoxedRead(w, &item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorRead(w, &item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	if w, err = basictl.NatRead(w, &item.FunctionsNum); err != nil {
 		return w, err
 	}
-	return BuiltinTupleTlsCombinatorBoxedRead(w, &item.Functions, item.FunctionsNum)
+	return BuiltinTupleTlsCombinatorRead(w, &item.Functions, item.FunctionsNum)
+}
+
+// This method is general version of Write, use it instead!
+func (item *TlsSchemaV4) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
 }
 
 func (item *TlsSchemaV4) Write(w []byte) (_ []byte, err error) {
@@ -693,11 +972,14 @@ func (item *TlsSchemaV4) Write(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.ConstructorNum)
-	if w, err = BuiltinTupleTlsCombinatorBoxedWrite(w, item.Constructors, item.ConstructorNum); err != nil {
+	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Constructors, item.ConstructorNum); err != nil {
 		return w, err
 	}
 	w = basictl.NatWrite(w, item.FunctionsNum)
-	return BuiltinTupleTlsCombinatorBoxedWrite(w, item.Functions, item.FunctionsNum)
+	if w, err = BuiltinTupleTlsCombinatorWrite(w, item.Functions, item.FunctionsNum); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsSchemaV4) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -707,7 +989,12 @@ func (item *TlsSchemaV4) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsSchemaV4) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsSchemaV4) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsSchemaV4) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x90ac88d7)
 	return item.Write(w)
 }
@@ -720,108 +1007,215 @@ func (item TlsSchemaV4) String() string {
 	return string(w)
 }
 
-func TlsSchemaV4__ReadJSON(item *TlsSchemaV4, j interface{}) error { return item.readJSON(j) }
-func (item *TlsSchemaV4) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.schema_v4", "expected json object")
+func (item *TlsSchemaV4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propVersionPresented bool
+	var propDatePresented bool
+	var propTypesNumPresented bool
+	var rawTypes []byte
+	var propConstructorNumPresented bool
+	var rawConstructors []byte
+	var propFunctionsNumPresented bool
+	var rawFunctions []byte
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "version":
+				if propVersionPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "version")
+				}
+				if err := Json2ReadInt32(in, &item.Version); err != nil {
+					return err
+				}
+				propVersionPresented = true
+			case "date":
+				if propDatePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "date")
+				}
+				if err := Json2ReadInt32(in, &item.Date); err != nil {
+					return err
+				}
+				propDatePresented = true
+			case "types_num":
+				if propTypesNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "types_num")
+				}
+				if err := Json2ReadUint32(in, &item.TypesNum); err != nil {
+					return err
+				}
+				propTypesNumPresented = true
+			case "types":
+				if rawTypes != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "types")
+				}
+				rawTypes = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "constructor_num":
+				if propConstructorNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "constructor_num")
+				}
+				if err := Json2ReadUint32(in, &item.ConstructorNum); err != nil {
+					return err
+				}
+				propConstructorNumPresented = true
+			case "constructors":
+				if rawConstructors != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "constructors")
+				}
+				rawConstructors = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			case "functions_num":
+				if propFunctionsNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "functions_num")
+				}
+				if err := Json2ReadUint32(in, &item.FunctionsNum); err != nil {
+					return err
+				}
+				propFunctionsNumPresented = true
+			case "functions":
+				if rawFunctions != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.schema_v4", "functions")
+				}
+				rawFunctions = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			default:
+				return ErrorInvalidJSONExcessElement("tls.schema_v4", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jVersion := _jm["version"]
-	delete(_jm, "version")
-	if err := JsonReadInt32(_jVersion, &item.Version); err != nil {
+	if !propVersionPresented {
+		item.Version = 0
+	}
+	if !propDatePresented {
+		item.Date = 0
+	}
+	if !propTypesNumPresented {
+		item.TypesNum = 0
+	}
+	if !propConstructorNumPresented {
+		item.ConstructorNum = 0
+	}
+	if !propFunctionsNumPresented {
+		item.FunctionsNum = 0
+	}
+	var inTypesPointer *basictl.JsonLexer
+	inTypes := basictl.JsonLexer{Data: rawTypes}
+	if rawTypes != nil {
+		inTypesPointer = &inTypes
+	}
+	if err := BuiltinTupleTlsTypeBoxedReadJSON(legacyTypeNames, inTypesPointer, &item.Types, item.TypesNum); err != nil {
 		return err
 	}
-	_jDate := _jm["date"]
-	delete(_jm, "date")
-	if err := JsonReadInt32(_jDate, &item.Date); err != nil {
+
+	var inConstructorsPointer *basictl.JsonLexer
+	inConstructors := basictl.JsonLexer{Data: rawConstructors}
+	if rawConstructors != nil {
+		inConstructorsPointer = &inConstructors
+	}
+	if err := BuiltinTupleTlsCombinatorReadJSON(legacyTypeNames, inConstructorsPointer, &item.Constructors, item.ConstructorNum); err != nil {
 		return err
 	}
-	_jTypesNum := _jm["types_num"]
-	delete(_jm, "types_num")
-	if err := JsonReadUint32(_jTypesNum, &item.TypesNum); err != nil {
+
+	var inFunctionsPointer *basictl.JsonLexer
+	inFunctions := basictl.JsonLexer{Data: rawFunctions}
+	if rawFunctions != nil {
+		inFunctionsPointer = &inFunctions
+	}
+	if err := BuiltinTupleTlsCombinatorReadJSON(legacyTypeNames, inFunctionsPointer, &item.Functions, item.FunctionsNum); err != nil {
 		return err
 	}
-	_jTypes := _jm["types"]
-	delete(_jm, "types")
-	_jConstructorNum := _jm["constructor_num"]
-	delete(_jm, "constructor_num")
-	if err := JsonReadUint32(_jConstructorNum, &item.ConstructorNum); err != nil {
-		return err
-	}
-	_jConstructors := _jm["constructors"]
-	delete(_jm, "constructors")
-	_jFunctionsNum := _jm["functions_num"]
-	delete(_jm, "functions_num")
-	if err := JsonReadUint32(_jFunctionsNum, &item.FunctionsNum); err != nil {
-		return err
-	}
-	_jFunctions := _jm["functions"]
-	delete(_jm, "functions")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.schema_v4", k)
-	}
-	if err := BuiltinTupleTlsTypeBoxedReadJSON(_jTypes, &item.Types, item.TypesNum); err != nil {
-		return err
-	}
-	if err := BuiltinTupleTlsCombinatorBoxedReadJSON(_jConstructors, &item.Constructors, item.ConstructorNum); err != nil {
-		return err
-	}
-	if err := BuiltinTupleTlsCombinatorBoxedReadJSON(_jFunctions, &item.Functions, item.FunctionsNum); err != nil {
-		return err
-	}
+
 	return nil
 }
 
-func (item *TlsSchemaV4) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsSchemaV4) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsSchemaV4) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsSchemaV4) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsSchemaV4) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
-	if item.Version != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"version":`...)
-		w = basictl.JSONWriteInt32(w, item.Version)
+	backupIndexVersion := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"version":`...)
+	w = basictl.JSONWriteInt32(w, item.Version)
+	if (item.Version != 0) == false {
+		w = w[:backupIndexVersion]
 	}
-	if item.Date != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"date":`...)
-		w = basictl.JSONWriteInt32(w, item.Date)
+	backupIndexDate := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"date":`...)
+	w = basictl.JSONWriteInt32(w, item.Date)
+	if (item.Date != 0) == false {
+		w = w[:backupIndexDate]
 	}
-	if item.TypesNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"types_num":`...)
-		w = basictl.JSONWriteUint32(w, item.TypesNum)
+	backupIndexTypesNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"types_num":`...)
+	w = basictl.JSONWriteUint32(w, item.TypesNum)
+	if (item.TypesNum != 0) == false {
+		w = w[:backupIndexTypesNum]
 	}
-	if len(item.Types) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"types":`...)
-		if w, err = BuiltinTupleTlsTypeBoxedWriteJSONOpt(short, w, item.Types, item.TypesNum); err != nil {
-			return w, err
-		}
+	backupIndexTypes := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"types":`...)
+	if w, err = BuiltinTupleTlsTypeBoxedWriteJSONOpt(newTypeNames, short, w, item.Types, item.TypesNum); err != nil {
+		return w, err
 	}
-	if item.ConstructorNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructor_num":`...)
-		w = basictl.JSONWriteUint32(w, item.ConstructorNum)
+	if (len(item.Types) != 0) == false {
+		w = w[:backupIndexTypes]
 	}
-	if len(item.Constructors) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructors":`...)
-		if w, err = BuiltinTupleTlsCombinatorBoxedWriteJSONOpt(short, w, item.Constructors, item.ConstructorNum); err != nil {
-			return w, err
-		}
+	backupIndexConstructorNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructor_num":`...)
+	w = basictl.JSONWriteUint32(w, item.ConstructorNum)
+	if (item.ConstructorNum != 0) == false {
+		w = w[:backupIndexConstructorNum]
 	}
-	if item.FunctionsNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"functions_num":`...)
-		w = basictl.JSONWriteUint32(w, item.FunctionsNum)
+	backupIndexConstructors := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructors":`...)
+	if w, err = BuiltinTupleTlsCombinatorWriteJSONOpt(newTypeNames, short, w, item.Constructors, item.ConstructorNum); err != nil {
+		return w, err
 	}
-	if len(item.Functions) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"functions":`...)
-		if w, err = BuiltinTupleTlsCombinatorBoxedWriteJSONOpt(short, w, item.Functions, item.FunctionsNum); err != nil {
-			return w, err
-		}
+	if (len(item.Constructors) != 0) == false {
+		w = w[:backupIndexConstructors]
+	}
+	backupIndexFunctionsNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"functions_num":`...)
+	w = basictl.JSONWriteUint32(w, item.FunctionsNum)
+	if (item.FunctionsNum != 0) == false {
+		w = w[:backupIndexFunctionsNum]
+	}
+	backupIndexFunctions := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"functions":`...)
+	if w, err = BuiltinTupleTlsCombinatorWriteJSONOpt(newTypeNames, short, w, item.Functions, item.FunctionsNum); err != nil {
+		return w, err
+	}
+	if (len(item.Functions) != 0) == false {
+		w = w[:backupIndexFunctions]
 	}
 	return append(w, '}'), nil
 }
@@ -831,11 +1225,7 @@ func (item *TlsSchemaV4) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsSchemaV4) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.schema_v4", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.schema_v4", err.Error())
 	}
 	return nil

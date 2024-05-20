@@ -69,7 +69,7 @@ func IsUnionMaybe(tlType []*tlast.Combinator) (isMaybe bool, emptyDesc *tlast.Co
 
 // all non-trivial contents of [] is turned into new types
 // we make copy deep anough to not affect original constructors
-func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
+func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 	tl = append([]*tlast.Combinator{}, tl...)
 	constructorTags := map[uint32]*tlast.Combinator{}
 	constructorNames := map[string]*tlast.Combinator{}
@@ -79,52 +79,39 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 		constructorNames[typ.Construct.Name.String()] = typ // overwrite if same, collision check is in another place
 		typeNames[typ.TypeDecl.Name.String()] = typ         // overwrite if same, collision check is in another place
 	}
-	nextElemTag := uint32(1)
 	for typeIndex := 0; typeIndex < len(tl); typeIndex++ { // We append anonymous types while iterating
 		typ := tl[typeIndex]
 		var newFields []tlast.Field
-		elemCounter := 0
 		replaceRep := func(repFields []tlast.Field) tlast.TypeRef {
 			// All complex expressions will be replaced by a new type
 			// Deconflict names and tags
 			constructorName := typ.Construct.Name
 			constructorName.Name += "Elem"
-			if elemCounter != 0 {
-				constructorName.Name += strconv.Itoa(elemCounter)
-			}
 			typeName := constructorName
 			typeName.Name = ToUpperFirst(typeName.Name)
-			elemCounter++
-			for ; ; nextElemTag++ {
-				if _, ok := constructorTags[nextElemTag]; !ok {
+			suffix := ""
+			for s := 1; ; s++ {
+				if _, ok := constructorNames[constructorName.String()+suffix]; !ok {
 					break
 				}
-			}
-			suffix := ""
-			_, ok := constructorNames[constructorName.String()+suffix]
-			for s := 1; ok; s++ {
-				_, ok = constructorNames[constructorName.String()+suffix]
 				suffix = strconv.Itoa(s)
 			}
 			constructorName.Name += suffix
 			suffix = ""
-			_, ok = typeNames[typeName.String()+suffix]
-			for s := 1; ok; s++ {
-				_, ok = typeNames[typeName.String()+suffix]
+			for s := 1; ; s++ {
+				if _, ok := typeNames[typeName.String()+suffix]; !ok {
+					break
+				}
 				suffix = strconv.Itoa(s)
 			}
 			typeName.Name += suffix
-			tag := nextElemTag // copy to reference local var
-			if !forTLO {
-				tag = 0 // we need tags of elems only for TLO references
-			}
+			tag := uint32(0) // copy to reference local var
 			res := &tlast.Combinator{
 				Construct:         tlast.Constructor{Name: constructorName, ID: &tag},
 				TemplateArguments: typ.TemplateArguments,
 				Fields:            repFields,
 				TypeDecl:          tlast.TypeDeclaration{Name: typeName},
 			}
-			constructorTags[nextElemTag] = res
 			constructorNames[constructorName.String()] = res
 			typeNames[typeName.String()] = res
 			for _, f := range newFields {
@@ -177,24 +164,36 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 					return tWithArgs, err
 				}
 			} else if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil {
+				e1 := insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("tlgen has to invent name for type inside brackets, please give a good name to it manually"))
 				tWithArgs = replaceRep(insideField.ScaleRepeat.Rep)
+
+				if gen.options.WarningsAreErrors {
+					return tWithArgs, e1
+				}
+				e1.PrintWarning(gen.options.ErrorWriter, nil)
 			} else if insideField.ScaleRepeat.Rep[0].IsRepeated {
 				var err error
 				if tWithArgs, err = replaceRepeated(false, insideField.ScaleRepeat.Rep[0]); err != nil {
 					return tWithArgs, err
 				}
 			}
+			if toVector {
+				newFieldType := tlast.TypeRef{
+					Type: tlast.Name{Name: BuiltinVectorName},
+					Bare: true,
+					Args: []tlast.ArithmeticOrType{
+						{T: tWithArgs},
+					},
+				}
+				return newFieldType, nil
+			}
 			newFieldType := tlast.TypeRef{
 				Type: tlast.Name{Name: BuiltinTupleName},
 				Bare: true,
 				Args: []tlast.ArithmeticOrType{
-					{T: tWithArgs},
 					rep,
+					{T: tWithArgs},
 				},
-			}
-			if toVector {
-				newFieldType.Type = tlast.Name{Name: BuiltinVectorName}
-				newFieldType.Args = newFieldType.Args[:1]
 			}
 			return newFieldType, nil
 		}
@@ -204,19 +203,6 @@ func ReplaceSquareBracketsElem(tl tlast.TL, forTLO bool) (tlast.TL, error) {
 				continue
 			}
 			newField := field
-			if forTLO {
-				if len(field.ScaleRepeat.Rep) == 1 && field.ScaleRepeat.Rep[0].FieldName == "" && field.ScaleRepeat.Rep[0].Mask == nil && !field.ScaleRepeat.Rep[0].IsRepeated {
-					newFields = append(newFields, field)
-					continue
-				}
-				tWithArgs := replaceRep(field.ScaleRepeat.Rep)
-				newField.ScaleRepeat.Rep = []tlast.Field{{
-					FieldName: "",
-					FieldType: tWithArgs,
-				}}
-				newFields = append(newFields, newField)
-				continue
-			}
 			// It is hard to not destroy original fields in recursive algo, so we destroy them
 			toVector := false
 			if !newField.ScaleRepeat.ExplicitScale {

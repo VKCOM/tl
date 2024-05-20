@@ -8,12 +8,12 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite
 
-func BuiltinTupleTlsExprBoxedRead(w []byte, vec *[]TlsExpr, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprRead(w []byte, vec *[]TlsExpr, nat_n uint32) (_ []byte, err error) {
 	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
 		return w, err
 	}
@@ -30,7 +30,7 @@ func BuiltinTupleTlsExprBoxedRead(w []byte, vec *[]TlsExpr, nat_n uint32) (_ []b
 	return w, nil
 }
 
-func BuiltinTupleTlsExprBoxedWrite(w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprWrite(w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]TlsExpr", len(vec), nat_n)
 	}
@@ -42,35 +42,49 @@ func BuiltinTupleTlsExprBoxedWrite(w []byte, vec []TlsExpr, nat_n uint32) (_ []b
 	return w, nil
 }
 
-func BuiltinTupleTlsExprBoxedReadJSON(j interface{}, vec *[]TlsExpr, nat_n uint32) error {
-	_, _arr, err := JsonReadArrayFixedSize("[]TlsExpr", j, nat_n)
-	if err != nil {
-		return err
-	}
+func BuiltinTupleTlsExprReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]TlsExpr, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]TlsExpr, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	for i := range *vec {
-		if err := TlsExpr__ReadJSON(&(*vec)[i], _arr[i]); err != nil {
-			return err
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]TlsExpr", "expected json array")
 		}
+		for ; !in.IsDelim(']'); index++ {
+			if nat_n <= uint32(index) {
+				return ErrorInvalidJSON("[]TlsExpr", "array is longer than expected")
+			}
+			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]TlsExpr", "expected json array's end")
+		}
+	}
+	if uint32(index) != nat_n {
+		return ErrorWrongSequenceLength("[]TlsExpr", index, nat_n)
 	}
 	return nil
 }
 
-func BuiltinTupleTlsExprBoxedWriteJSON(w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleTlsExprBoxedWriteJSONOpt(false, w, vec, nat_n)
+func BuiltinTupleTlsExprWriteJSON(w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
+	return BuiltinTupleTlsExprWriteJSONOpt(true, false, w, vec, nat_n)
 }
-func BuiltinTupleTlsExprBoxedWriteJSONOpt(short bool, w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsExprWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []TlsExpr, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]TlsExpr", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(short, w); err != nil {
+		if w, err = elem.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 	}
@@ -146,63 +160,91 @@ func (item *TlsExpr) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsExpr) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
 func (item *TlsExpr) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _TlsExpr[item.index].TLTag)
 	switch item.index {
 	case 0:
-		return item.valueType.Write(w)
+		if w, err = item.valueType.Write(w); err != nil {
+			return w, err
+		}
 	case 1:
-		return item.valueNat.Write(w)
-	default: // Impossible due to panic above
-		return w, nil
+		w = item.valueNat.Write(w)
 	}
+	return w, nil
 }
 
-func TlsExpr__ReadJSON(item *TlsExpr, j interface{}) error { return item.readJSON(j) }
-func (item *TlsExpr) readJSON(j interface{}) error {
-	_jm, _tag, err := JsonReadUnionType("tls.Expr", j)
+func (item *TlsExpr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	_tag, _value, err := Json2ReadUnion("tls.Expr", in)
 	if err != nil {
 		return err
 	}
-	jvalue := _jm["value"]
 	switch _tag {
 	case "tls.exprType#ecc9da78", "tls.exprType", "#ecc9da78":
+		if !legacyTypeNames && _tag == "tls.exprType#ecc9da78" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", "tls.exprType#ecc9da78")
+		}
 		item.index = 0
-		if err := TlsExprType__ReadJSON(&item.valueType, jvalue); err != nil {
+		var in2Pointer *basictl.JsonLexer
+		if _value != nil {
+			in2 := basictl.JsonLexer{Data: _value}
+			in2Pointer = &in2
+		}
+		if err := item.valueType.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
 			return err
 		}
-		delete(_jm, "value")
 	case "tls.exprNat#dcb49bd8", "tls.exprNat", "#dcb49bd8":
+		if !legacyTypeNames && _tag == "tls.exprNat#dcb49bd8" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.Expr", "tls.exprNat#dcb49bd8")
+		}
 		item.index = 1
-		if err := TlsExprNat__ReadJSON(&item.valueNat, jvalue); err != nil {
+		var in2Pointer *basictl.JsonLexer
+		if _value != nil {
+			in2 := basictl.JsonLexer{Data: _value}
+			in2Pointer = &in2
+		}
+		if err := item.valueNat.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
 			return err
 		}
-		delete(_jm, "value")
 	default:
 		return ErrorInvalidUnionTagJSON("tls.Expr", _tag)
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.Expr", k)
 	}
 	return nil
 }
 
-func (item *TlsExpr) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsExpr) WriteJSONGeneral(w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsExpr) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsExpr) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsExpr) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		w = append(w, `{"type":"tls.exprType#ecc9da78","value":`...)
-		if w, err = item.valueType.WriteJSONOpt(short, w); err != nil {
+		if newTypeNames {
+			w = append(w, `{"type":"tls.exprType"`...)
+		} else {
+			w = append(w, `{"type":"tls.exprType#ecc9da78"`...)
+		}
+		w = append(w, `,"value":`...)
+		if w, err = item.valueType.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
 	case 1:
-		w = append(w, `{"type":"tls.exprNat#dcb49bd8","value":`...)
-		if w, err = item.valueNat.WriteJSONOpt(short, w); err != nil {
-			return w, err
+		if newTypeNames {
+			w = append(w, `{"type":"tls.exprNat"`...)
+		} else {
+			w = append(w, `{"type":"tls.exprNat#dcb49bd8"`...)
 		}
+		w = append(w, `,"value":`...)
+		w = item.valueNat.WriteJSONOpt(newTypeNames, short, w)
 		return append(w, '}'), nil
 	default: // Impossible due to panic above
 		return w, nil
@@ -222,11 +264,7 @@ func (item *TlsExpr) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsExpr) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.Expr", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.Expr", err.Error())
 	}
 	return nil
@@ -253,8 +291,14 @@ func (item *TlsExprNat) Read(w []byte) (_ []byte, err error) {
 	return item.Expr.ReadBoxed(w)
 }
 
-func (item *TlsExprNat) Write(w []byte) (_ []byte, err error) {
-	return item.Expr.WriteBoxed(w)
+// This method is general version of Write, use it instead!
+func (item *TlsExprNat) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *TlsExprNat) Write(w []byte) []byte {
+	w = item.Expr.WriteBoxed(w)
+	return w
 }
 
 func (item *TlsExprNat) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -264,59 +308,78 @@ func (item *TlsExprNat) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsExprNat) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsExprNat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *TlsExprNat) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0xdcb49bd8)
 	return item.Write(w)
 }
 
 func (item TlsExprNat) String() string {
-	w, err := item.WriteJSON(nil)
-	if err != nil {
-		return err.Error()
-	}
-	return string(w)
+	return string(item.WriteJSON(nil))
 }
 
-func TlsExprNat__ReadJSON(item *TlsExprNat, j interface{}) error { return item.readJSON(j) }
-func (item *TlsExprNat) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.exprNat", "expected json object")
+func (item *TlsExprNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propExprPresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "expr":
+				if propExprPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.exprNat", "expr")
+				}
+				if err := item.Expr.ReadJSON(legacyTypeNames, in); err != nil {
+					return err
+				}
+				propExprPresented = true
+			default:
+				return ErrorInvalidJSONExcessElement("tls.exprNat", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jExpr := _jm["expr"]
-	delete(_jm, "expr")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.exprNat", k)
-	}
-	if err := TlsNatExpr__ReadJSON(&item.Expr, _jExpr); err != nil {
-		return err
+	if !propExprPresented {
+		item.Expr.Reset()
 	}
 	return nil
 }
 
-func (item *TlsExprNat) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsExprNat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w), nil
 }
-func (item *TlsExprNat) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsExprNat) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsExprNat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"expr":`...)
-	if w, err = item.Expr.WriteJSONOpt(short, w); err != nil {
-		return w, err
-	}
-	return append(w, '}'), nil
+	w = item.Expr.WriteJSONOpt(newTypeNames, short, w)
+	return append(w, '}')
 }
 
 func (item *TlsExprNat) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil)
+	return item.WriteJSON(nil), nil
 }
 
 func (item *TlsExprNat) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.exprNat", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.exprNat", err.Error())
 	}
 	return nil
@@ -343,8 +406,16 @@ func (item *TlsExprType) Read(w []byte) (_ []byte, err error) {
 	return item.Expr.ReadBoxed(w)
 }
 
+// This method is general version of Write, use it instead!
+func (item *TlsExprType) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
+}
+
 func (item *TlsExprType) Write(w []byte) (_ []byte, err error) {
-	return item.Expr.WriteBoxed(w)
+	if w, err = item.Expr.WriteBoxed(w); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsExprType) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -354,7 +425,12 @@ func (item *TlsExprType) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsExprType) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsExprType) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsExprType) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xecc9da78)
 	return item.Write(w)
 }
@@ -367,31 +443,55 @@ func (item TlsExprType) String() string {
 	return string(w)
 }
 
-func TlsExprType__ReadJSON(item *TlsExprType, j interface{}) error { return item.readJSON(j) }
-func (item *TlsExprType) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.exprType", "expected json object")
+func (item *TlsExprType) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propExprPresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "expr":
+				if propExprPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.exprType", "expr")
+				}
+				if err := item.Expr.ReadJSON(legacyTypeNames, in); err != nil {
+					return err
+				}
+				propExprPresented = true
+			default:
+				return ErrorInvalidJSONExcessElement("tls.exprType", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jExpr := _jm["expr"]
-	delete(_jm, "expr")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.exprType", k)
-	}
-	if err := TlsTypeExpr__ReadJSON(&item.Expr, _jExpr); err != nil {
-		return err
+	if !propExprPresented {
+		item.Expr.Reset()
 	}
 	return nil
 }
 
-func (item *TlsExprType) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsExprType) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsExprType) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsExprType) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsExprType) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"expr":`...)
-	if w, err = item.Expr.WriteJSONOpt(short, w); err != nil {
+	if w, err = item.Expr.WriteJSONOpt(newTypeNames, short, w); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -402,11 +502,7 @@ func (item *TlsExprType) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsExprType) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.exprType", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.exprType", err.Error())
 	}
 	return nil

@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite
@@ -35,44 +35,54 @@ func BuiltinTupleTlsTypeBoxedWrite(w []byte, vec []TlsType, nat_n uint32) (_ []b
 		return w, ErrorWrongSequenceLength("[]TlsType", len(vec), nat_n)
 	}
 	for _, elem := range vec {
-		if w, err = elem.WriteBoxed(w); err != nil {
-			return w, err
-		}
+		w = elem.WriteBoxed(w)
 	}
 	return w, nil
 }
 
-func BuiltinTupleTlsTypeBoxedReadJSON(j interface{}, vec *[]TlsType, nat_n uint32) error {
-	_, _arr, err := JsonReadArrayFixedSize("[]TlsType", j, nat_n)
-	if err != nil {
-		return err
-	}
+func BuiltinTupleTlsTypeBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]TlsType, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]TlsType, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	for i := range *vec {
-		if err := TlsType__ReadJSON(&(*vec)[i], _arr[i]); err != nil {
-			return err
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]TlsType", "expected json array")
 		}
+		for ; !in.IsDelim(']'); index++ {
+			if nat_n <= uint32(index) {
+				return ErrorInvalidJSON("[]TlsType", "array is longer than expected")
+			}
+			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]TlsType", "expected json array's end")
+		}
+	}
+	if uint32(index) != nat_n {
+		return ErrorWrongSequenceLength("[]TlsType", index, nat_n)
 	}
 	return nil
 }
 
 func BuiltinTupleTlsTypeBoxedWriteJSON(w []byte, vec []TlsType, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleTlsTypeBoxedWriteJSONOpt(false, w, vec, nat_n)
+	return BuiltinTupleTlsTypeBoxedWriteJSONOpt(true, false, w, vec, nat_n)
 }
-func BuiltinTupleTlsTypeBoxedWriteJSONOpt(short bool, w []byte, vec []TlsType, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsTypeBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []TlsType, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]TlsType", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(short, w); err != nil {
-			return w, err
-		}
+		w = elem.WriteJSONOpt(newTypeNames, short, w)
 	}
 	return append(w, ']'), nil
 }
@@ -117,15 +127,19 @@ func (item *TlsType) Read(w []byte) (_ []byte, err error) {
 	return basictl.LongRead(w, &item.ParamsType)
 }
 
-func (item *TlsType) Write(w []byte) (_ []byte, err error) {
+// This method is general version of Write, use it instead!
+func (item *TlsType) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *TlsType) Write(w []byte) []byte {
 	w = basictl.IntWrite(w, item.Name)
-	if w, err = basictl.StringWrite(w, item.Id); err != nil {
-		return w, err
-	}
+	w = basictl.StringWrite(w, item.Id)
 	w = basictl.IntWrite(w, item.ConstructorsNum)
 	w = basictl.IntWrite(w, item.Flags)
 	w = basictl.IntWrite(w, item.Arity)
-	return basictl.LongWrite(w, item.ParamsType), nil
+	w = basictl.LongWrite(w, item.ParamsType)
+	return w
 }
 
 func (item *TlsType) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -135,109 +149,177 @@ func (item *TlsType) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsType) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsType) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *TlsType) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, 0x12eb4386)
 	return item.Write(w)
 }
 
 func (item TlsType) String() string {
-	w, err := item.WriteJSON(nil)
-	if err != nil {
-		return err.Error()
-	}
-	return string(w)
+	return string(item.WriteJSON(nil))
 }
 
-func TlsType__ReadJSON(item *TlsType, j interface{}) error { return item.readJSON(j) }
-func (item *TlsType) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.type", "expected json object")
+func (item *TlsType) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propNamePresented bool
+	var propIdPresented bool
+	var propConstructorsNumPresented bool
+	var propFlagsPresented bool
+	var propArityPresented bool
+	var propParamsTypePresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "name":
+				if propNamePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.type", "name")
+				}
+				if err := Json2ReadInt32(in, &item.Name); err != nil {
+					return err
+				}
+				propNamePresented = true
+			case "id":
+				if propIdPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.type", "id")
+				}
+				if err := Json2ReadString(in, &item.Id); err != nil {
+					return err
+				}
+				propIdPresented = true
+			case "constructors_num":
+				if propConstructorsNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.type", "constructors_num")
+				}
+				if err := Json2ReadInt32(in, &item.ConstructorsNum); err != nil {
+					return err
+				}
+				propConstructorsNumPresented = true
+			case "flags":
+				if propFlagsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.type", "flags")
+				}
+				if err := Json2ReadInt32(in, &item.Flags); err != nil {
+					return err
+				}
+				propFlagsPresented = true
+			case "arity":
+				if propArityPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.type", "arity")
+				}
+				if err := Json2ReadInt32(in, &item.Arity); err != nil {
+					return err
+				}
+				propArityPresented = true
+			case "params_type":
+				if propParamsTypePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.type", "params_type")
+				}
+				if err := Json2ReadInt64(in, &item.ParamsType); err != nil {
+					return err
+				}
+				propParamsTypePresented = true
+			default:
+				return ErrorInvalidJSONExcessElement("tls.type", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jName := _jm["name"]
-	delete(_jm, "name")
-	if err := JsonReadInt32(_jName, &item.Name); err != nil {
-		return err
+	if !propNamePresented {
+		item.Name = 0
 	}
-	_jId := _jm["id"]
-	delete(_jm, "id")
-	if err := JsonReadString(_jId, &item.Id); err != nil {
-		return err
+	if !propIdPresented {
+		item.Id = ""
 	}
-	_jConstructorsNum := _jm["constructors_num"]
-	delete(_jm, "constructors_num")
-	if err := JsonReadInt32(_jConstructorsNum, &item.ConstructorsNum); err != nil {
-		return err
+	if !propConstructorsNumPresented {
+		item.ConstructorsNum = 0
 	}
-	_jFlags := _jm["flags"]
-	delete(_jm, "flags")
-	if err := JsonReadInt32(_jFlags, &item.Flags); err != nil {
-		return err
+	if !propFlagsPresented {
+		item.Flags = 0
 	}
-	_jArity := _jm["arity"]
-	delete(_jm, "arity")
-	if err := JsonReadInt32(_jArity, &item.Arity); err != nil {
-		return err
+	if !propArityPresented {
+		item.Arity = 0
 	}
-	_jParamsType := _jm["params_type"]
-	delete(_jm, "params_type")
-	if err := JsonReadInt64(_jParamsType, &item.ParamsType); err != nil {
-		return err
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.type", k)
+	if !propParamsTypePresented {
+		item.ParamsType = 0
 	}
 	return nil
 }
 
-func (item *TlsType) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsType) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w), nil
 }
-func (item *TlsType) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsType) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsType) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
 	w = append(w, '{')
-	if item.Name != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"name":`...)
-		w = basictl.JSONWriteInt32(w, item.Name)
+	backupIndexName := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"name":`...)
+	w = basictl.JSONWriteInt32(w, item.Name)
+	if (item.Name != 0) == false {
+		w = w[:backupIndexName]
 	}
-	if len(item.Id) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"id":`...)
-		w = basictl.JSONWriteString(w, item.Id)
+	backupIndexId := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"id":`...)
+	w = basictl.JSONWriteString(w, item.Id)
+	if (len(item.Id) != 0) == false {
+		w = w[:backupIndexId]
 	}
-	if item.ConstructorsNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"constructors_num":`...)
-		w = basictl.JSONWriteInt32(w, item.ConstructorsNum)
+	backupIndexConstructorsNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"constructors_num":`...)
+	w = basictl.JSONWriteInt32(w, item.ConstructorsNum)
+	if (item.ConstructorsNum != 0) == false {
+		w = w[:backupIndexConstructorsNum]
 	}
-	if item.Flags != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"flags":`...)
-		w = basictl.JSONWriteInt32(w, item.Flags)
+	backupIndexFlags := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"flags":`...)
+	w = basictl.JSONWriteInt32(w, item.Flags)
+	if (item.Flags != 0) == false {
+		w = w[:backupIndexFlags]
 	}
-	if item.Arity != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"arity":`...)
-		w = basictl.JSONWriteInt32(w, item.Arity)
+	backupIndexArity := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"arity":`...)
+	w = basictl.JSONWriteInt32(w, item.Arity)
+	if (item.Arity != 0) == false {
+		w = w[:backupIndexArity]
 	}
-	if item.ParamsType != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"params_type":`...)
-		w = basictl.JSONWriteInt64(w, item.ParamsType)
+	backupIndexParamsType := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"params_type":`...)
+	w = basictl.JSONWriteInt64(w, item.ParamsType)
+	if (item.ParamsType != 0) == false {
+		w = w[:backupIndexParamsType]
 	}
-	return append(w, '}'), nil
+	return append(w, '}')
 }
 
 func (item *TlsType) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil)
+	return item.WriteJSON(nil), nil
 }
 
 func (item *TlsType) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.type", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.type", err.Error())
 	}
 	return nil

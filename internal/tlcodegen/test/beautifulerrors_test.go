@@ -4,7 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-package tlcodegen
+package test
 
 import (
 	"strings"
@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
 func TestBeautiful(t *testing.T) {
@@ -253,6 +254,15 @@ func TestBeautiful(t *testing.T) {
 			"",
 			"foo n:# \x1b[31m#\x1b[0m = Foo;\n        \x1b[0m^\x1b[0m-- anonymous fields are discouraged, except when used in '# a:[int]' pattern or when type has single anonymous field without fieldmask (typedef-like)  (line 1 col 9)\n",
 		},
+		{
+			"namespace must not differ by case only",
+			`
+service5.emptyOutput = service5.Output;
+service5.hrenOutput = ch_Proxy.Output;
+`,
+			"",
+			"\x1b[35mservice5.hrenOutput\x1b[0m = ch_Proxy.Output;\n\x1b[0m^^^^^^^^^^^^^^^^^^^\x1b[0m-- see here  (line 3 col 1)\nservice5.hrenOutput = \x1b[31mch_Proxy.Output\x1b[0m;\n                      \x1b[0m^^^^^^^^^^^^^^^\x1b[0m-- namespaces must not differ by only case  (line 3 col 23)\n",
+		},
 	}
 	for i, test := range errorTests {
 		errorBuffer.Reset()
@@ -265,7 +275,7 @@ func TestBeautiful(t *testing.T) {
 				parseError.ConsolePrint(&errorBuffer, err, false)
 				require.Equalf(t, test.parsingError, errorBuffer.String(), "errors for parsing stage didn't match for test %d", i)
 
-			} else if _, err := GenerateCode(ast, Gen2Options{ErrorWriter: &errorBuffer}); err != nil && errors.As(err, &parseError) {
+			} else if _, err := tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{ErrorWriter: &errorBuffer}); err != nil && errors.As(err, &parseError) {
 				parseError.ConsolePrint(&errorBuffer, err, false)
 				require.Equalf(t, test.compilationError, errorBuffer.String(), "errors for compiling stage didn't match for test %d", i)
 			}

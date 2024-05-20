@@ -334,7 +334,7 @@ func parseArithmeticOrTypeOpt(tokens tokenIterator, applyFlag bool, outer Positi
 		return &ArithmeticOrType{T: t, IsArith: true, Arith: *a}, rest, nil
 	}
 	var t *TypeRef
-	t, rest, err = parseTypeRef(rest, applyFlag, outer)
+	t, rest, err = parseTypeRef(rest, applyFlag, true, outer)
 	if err != nil {
 		return nil, tokens, err
 	}
@@ -482,7 +482,7 @@ func parseField(commentStart tokenIterator, tokens tokenIterator, outer Position
 	}
 	// typeStartPR := rest.skipWS(outer) - experimental beautiful error code below
 	var t *TypeRef
-	t, rest, err = parseTypeRef(rest, false, outer)
+	t, rest, err = parseTypeRef(rest, false, true, outer)
 	if err != nil {
 		// berr := err.(*ParseError)
 		// typeStartPR.End = berr.Pos.Begin
@@ -529,7 +529,7 @@ func parseFields(tokens tokenIterator, finishToken1 int, finishToken2 int, outer
 func parseFuncDecl(tokens tokenIterator, outer Position) (TypeRef, tokenIterator, error) {
 	// Separate function for better documentation
 	rest := tokens
-	t, rest, err := parseTypeRef(rest, true, outer)
+	t, rest, err := parseTypeRef(rest, true, false, outer)
 	if err != nil {
 		return TypeRef{}, tokens, err
 	}

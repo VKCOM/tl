@@ -15,6 +15,7 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"fmt"
+	"github.com/mailru/easyjson/jlexer"
 	"io"
 	"math"
 	"strconv"
@@ -32,6 +33,8 @@ const (
 	bigStringLen     = (1 << 24) - 1
 	hugeStringLen    = (1 << 56) - 1
 )
+
+type JsonLexer = jlexer.Lexer
 
 var errBadPadding = fmt.Errorf("non-canonical non-zero string padding")
 
@@ -132,14 +135,6 @@ func StringRead(r []byte, dst *string) ([]byte, error) {
 	return r, nil
 }
 
-func StringWrite(w []byte, v string) ([]byte, error) {
-	return writeString(w, v), nil
-}
-
-func StringWriteTruncated(w []byte, v string) []byte {
-	return writeString(w, v)
-}
-
 func StringReadBytes(r []byte, dst *[]byte) ([]byte, error) {
 	if len(r) == 0 {
 		return r, io.ErrUnexpectedEOF
@@ -205,14 +200,6 @@ func StringReadBytes(r []byte, dst *[]byte) ([]byte, error) {
 	return r[l+padding:], nil
 }
 
-func StringWriteBytes(w []byte, v []byte) ([]byte, error) {
-	return writeStringBytes(w, v), nil
-}
-
-func StringWriteBytesTruncated(w []byte, v []byte) []byte {
-	return writeStringBytes(w, v)
-}
-
 func NatPeekTag(r []byte) (uint32, error) {
 	if len(r) < 4 {
 		return 0, io.ErrUnexpectedEOF
@@ -241,7 +228,7 @@ func paddingLen(l int) int {
 	return int(-uint(l) % 4)
 }
 
-func writeString(w []byte, v string) []byte {
+func StringWrite(w []byte, v string) []byte {
 	l := int64(len(v))
 	var p int64
 	switch {
@@ -273,7 +260,7 @@ func writeString(w []byte, v string) []byte {
 	return w
 }
 
-func writeStringBytes(w []byte, v []byte) []byte {
+func StringWriteBytes(w []byte, v []byte) []byte {
 	l := int64(len(v))
 	var p int64
 	switch {
@@ -641,43 +628,113 @@ type Rand interface {
 	NormFloat64() float64
 }
 
-const RandomNatConstraint = 10
-
-func RandomNat(rand Rand) uint32 {
-	return rand.Uint32() % RandomNatConstraint
+type RandGenerator struct {
+	maxDepth uint32
+	curDepth uint32
+	r        Rand
 }
 
-func RandomInt(rand Rand) int32 {
-	return rand.Int31()
+func NewRandGenerator(r Rand) *RandGenerator {
+	const minDepth = 5
+	const maxDepth = 10
+	return &RandGenerator{
+		maxDepth: (r.Uint32() % (maxDepth - minDepth + 1)) + minDepth,
+		curDepth: 0,
+		r:        r,
+	}
 }
 
-func RandomLong(rand Rand) int64 {
-	return rand.Int63()
+func (rg *RandGenerator) IncreaseDepth() {
+	if rg.curDepth != rg.maxDepth {
+		rg.curDepth += 1
+	}
 }
 
-func RandomFloat(rand Rand) float32 {
-	return float32(rand.NormFloat64())
+func (rg *RandGenerator) DecreaseDepth() {
+	if rg.curDepth != 0 {
+		rg.curDepth -= 1
+	}
 }
 
-func RandomDouble(rand Rand) float64 {
-    return rand.NormFloat64()
+func (rg *RandGenerator) LimitValue(value uint32) uint32 {
+	const limit = 1024
+	value &= limit - 1
+	return value
+}
+
+func RandomUint(rg *RandGenerator) uint32 {
+	if rg.curDepth >= rg.maxDepth {
+		return 0
+	}
+	const probabilityBits = 20
+	const sourceMask = 1<<probabilityBits - 1
+
+	const w0 = 347_488
+	const w1to2 = 367_440 + w0
+	const w3to4 = 256_080 + w1to2
+	const w5to8 = 73_600 + w3to4
+	const w9to16 = 3_712 + w5to8
+	const w17to24 = 253 + w9to16
+	const w25to32 = 3 + w17to24
+	// last weight must be equal to 1<<probabilityBits
+
+	source := rg.r.Uint32()
+	categoryBits := source & sourceMask
+	bitMask := uint32(0)
+	if categoryBits < w0 {
+		bitMask = 0
+	} else if categoryBits < w1to2 {
+		bitMask = 1 + (source>>probabilityBits)&0b1
+	} else if categoryBits < w3to4 {
+		bitMask = 3 + (source>>probabilityBits)&0b1
+	} else if categoryBits < w5to8 {
+		bitMask = 5 + (source>>probabilityBits)&0b11
+	} else if categoryBits < w9to16 {
+		bitMask = 9 + (source>>probabilityBits)&0b111
+	} else if categoryBits < w17to24 {
+		bitMask = 17 + (source>>probabilityBits)&0b111
+	} else if categoryBits < w25to32 {
+		bitMask = 25 + (source>>probabilityBits)&0b111
+	}
+
+	bitMask = (1 << bitMask) - 1
+
+	return rg.r.Uint32() & bitMask
+}
+
+func RandomInt(rg *RandGenerator) int32 {
+	return rg.r.Int31()
+}
+
+func RandomLong(rg *RandGenerator) int64 {
+	return rg.r.Int63()
+}
+
+func RandomFloat(rg *RandGenerator) float32 {
+	return float32(rg.r.NormFloat64())
+}
+
+func RandomDouble(rg *RandGenerator) float64 {
+	return rg.r.NormFloat64()
 }
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 const lenLetters uint32 = uint32(len(letters))
 
-func RandomString(rand Rand) string {
-	res := make([]byte, rand.Uint32()%RandomNatConstraint)
+const RandomNatConstraint = 32
+
+func RandomString(rg *RandGenerator) string {
+	res := make([]byte, rg.r.Uint32()%RandomNatConstraint)
 	for i := range res {
-		res[i] = letters[rand.Uint32()%lenLetters]
+		res[i] = letters[rg.r.Uint32()%lenLetters]
 	}
 	return string(res)
 }
 
-func RandomStringBytes(rand Rand) []byte {
-	res := make([]byte, rand.Uint32()%RandomNatConstraint)
+func RandomStringBytes(rg *RandGenerator) []byte {
+	res := make([]byte, rg.r.Uint32()%RandomNatConstraint)
 	for i := range res {
-		res[i] = letters[rand.Uint32()%lenLetters]
+		res[i] = letters[rg.r.Uint32()%lenLetters]
 	}
 	return res
 }
@@ -692,6 +749,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"github.com/mailru/easyjson/jlexer"
 )
 `
 
@@ -747,8 +805,16 @@ func ErrorInvalidUnionTagJSON(typeName string, tag string) error {
 	return fmt.Errorf("invalid union %q tag: %q", typeName, tag)
 }
 
+func ErrorInvalidUnionLegacyTagJSON(typeName string, tag string) error {
+	return fmt.Errorf("legacy union %q tag %q, please remove suffix", typeName, tag)
+}
+
 func ErrorInvalidJSON(typeName string, msg string) error {
 	return fmt.Errorf("invalid json for type %q - %s", typeName, msg)
+}
+
+func ErrorInvalidJSONWithDuplicatingKeys(typeName string, field string) error {
+	return fmt.Errorf("invalid json for type %q: %q repeats several times", typeName, field)
 }
 
 func ErrorInvalidJSONExcessElement(typeName string, key string) error {
@@ -773,6 +839,54 @@ func JsonReadUnionType(typeName string, j interface{}) (map[string]interface{}, 
 	}
 	delete(jm, "type")
 	return jm, ret, nil
+}
+
+func Json2ReadUnion(typeName string, in *jlexer.Lexer) (string, []byte, error) {
+	if in == nil {
+		return "", nil, ErrorInvalidJSON(typeName, "expected json object")
+	}
+	var valueFound bool
+	var valueSlice []byte
+
+	var typeFound bool
+	var typeValue string
+
+	in.Delim('{')
+	if !in.Ok() {
+		return "", nil, in.Error()
+	}
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(true)
+		in.WantColon()
+		switch key {
+		case "value":
+			if valueFound {
+				return "", nil, ErrorInvalidJSONWithDuplicatingKeys(typeName, "value")
+			}
+			valueSlice = in.Raw()
+			valueFound = true
+		case "type":
+			if typeFound {
+				return "", nil, ErrorInvalidJSONWithDuplicatingKeys(typeName, "type")
+			}
+			typeValue = in.UnsafeString()
+			typeFound = true
+		default:
+			return "", nil, ErrorInvalidJSON(typeName, "unexpected field \"" + key + "\" in union")
+		}
+
+		in.WantComma()
+	}
+	in.Delim('}')
+	if !in.Ok() {
+		return "", nil, in.Error()
+	}
+	
+	if !typeFound {
+		return "", nil, ErrorInvalidJSON(typeName, "type is absent")
+	}
+
+	return typeValue, valueSlice, nil
 }
 
 func JsonReadMaybe(typeName string, j interface{}) (bool, interface{}, error) {
@@ -806,6 +920,56 @@ func JsonReadMaybe(typeName string, j interface{}) (bool, interface{}, error) {
 	return dst, jvalue, nil
 }
 
+func Json2ReadMaybe(typeName string, in *jlexer.Lexer) (bool, []byte, error) {
+	if in == nil {
+		return false, nil, nil
+	}
+	var valueFound bool
+	var valueSlice []byte
+
+	var okFound bool
+	var okValue bool
+
+	in.Delim('{')
+	if !in.Ok() {
+		return false, nil, ErrorInvalidJSON(typeName, "expected json object")
+	}
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(true)
+		in.WantColon()
+		switch key {
+		case "value":
+			if valueFound {
+				return false, nil, ErrorInvalidJSONWithDuplicatingKeys(typeName, "value")
+			}
+			valueSlice = in.Raw()
+			valueFound = true
+		case "ok":
+			if okFound {
+				return false, nil, ErrorInvalidJSONWithDuplicatingKeys(typeName, "ok")
+			}
+			okValue = in.Bool()
+			okFound = true
+		default:
+			return false, nil, ErrorInvalidJSON(typeName, "unexpected field \"" + key + "\" in maybe")
+		}
+
+		in.WantComma()
+	}
+	in.Delim('}')
+	if !in.Ok() {
+		return false, nil, in.Error()
+	}
+
+	if okFound && !okValue && valueSlice != nil {
+		return false, nil, ErrorInvalidJSON(typeName, "ok is false but value is presented in maybe")
+	}
+	if !okFound && valueSlice != nil {
+		okValue = true
+	}
+	return okValue, valueSlice, nil
+}
+
 func JsonReadArray(typeName string, j interface{}) (int, []interface{}, error) {
 	var arr []interface{}
 	var arrok bool
@@ -836,6 +1000,18 @@ func JsonReadBool(j interface{}, dst *bool) error {
 		return fmt.Errorf("invalid json for bool")
 	}
 	*dst = jj
+	return nil
+}
+
+func Json2ReadBool(in *jlexer.Lexer, dst *bool) error {
+	if in == nil {
+		*dst = false
+		return nil
+	}
+	*dst = in.Bool()
+	if !in.Ok() {
+		return in.Error()
+	}
 	return nil
 }
 
@@ -891,6 +1067,99 @@ func JsonReadStringBytes(j interface{}, dst *[]byte) error {
 	}
 }
 
+func Json2ReadString(in *jlexer.Lexer, dst *string) error {
+	if in == nil {
+		*dst = ""
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		*dst = in.String()
+	case jlexer.TokenDelim:
+		var findValue = false
+
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "` + binaryStringObjectKey + `":
+				if findValue {
+					return fmt.Errorf("` + binaryStringObjectKey + ` repeats several times") 
+				}
+				*dst = string(in.Bytes())
+				findValue = true
+			default:
+				return fmt.Errorf("unexpected field \"" + key + "\"")
+			}
+
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+
+		if !findValue {
+			return fmt.Errorf("` + binaryStringObjectKey + ` is absent")
+		}
+	default:
+		return fmt.Errorf("invalid json for string")
+	}
+	return nil
+}
+
+func Json2ReadStringBytes(in *jlexer.Lexer, dst *[]byte) error {
+	if in == nil {
+		*dst = nil
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		*dst = append((*dst)[:0], in.String()...)
+	case jlexer.TokenDelim:
+		var findValue = false
+
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "` + binaryStringObjectKey + `":
+				if findValue {
+					return fmt.Errorf("` + binaryStringObjectKey + ` repeats several times") 
+				}
+				*dst = in.Bytes()
+				findValue = true
+			default:
+				return fmt.Errorf("unexpected field \"" + key + "\"")
+			}
+
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+
+		if !findValue {
+			return fmt.Errorf("` + binaryStringObjectKey + ` is absent")
+		}
+	default:
+		return fmt.Errorf("invalid json for string")
+	}
+	return nil
+}
+
+
 // We allow to specify numbers as "123", so that JS can pass through int64 and bigger numbers
 func jsonNumberOrString(j interface{}) (string, bool) {
 	jn, ok := j.(json.Number)
@@ -918,6 +1187,31 @@ func JsonReadUint32(j interface{}, dst *uint32) error {
 	return nil
 }
 
+func Json2ReadUint32(in *jlexer.Lexer, dst *uint32) error {
+	if in == nil {
+		*dst = 0
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		src := in.UnsafeString()
+		value, err := strconv.ParseUint(src, 10, 32)
+		if err != nil {
+			return err
+		}
+		*dst = uint32(value)
+	case jlexer.TokenNumber:
+		*dst = in.Uint32()
+	default:
+		return fmt.Errorf("invalid json for uint32")
+	}
+	if !in.Ok() {
+		return in.Error()
+	}
+	return nil
+}
+
 func JsonReadInt32(j interface{}, dst *int32) error {
 	if j == nil {
 		*dst = 0
@@ -932,6 +1226,31 @@ func JsonReadInt32(j interface{}, dst *int32) error {
 		return fmt.Errorf("invalid number format for int32 %w", err)
 	}
 	*dst = int32(val)
+	return nil
+}
+
+func Json2ReadInt32(in *jlexer.Lexer, dst *int32) error {
+	if in == nil {
+		*dst = 0
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		src := in.UnsafeString()
+		value, err := strconv.ParseInt(src, 10, 32)
+		if err != nil {
+			return err
+		}
+		*dst = int32(value)
+	case jlexer.TokenNumber:
+		*dst = in.Int32()
+	default:
+		return fmt.Errorf("invalid json for int32")
+	}
+	if !in.Ok() {
+		return in.Error()
+	}
 	return nil
 }
 
@@ -952,6 +1271,31 @@ func JsonReadInt64(j interface{}, dst *int64) error {
 	return nil
 }
 
+func Json2ReadInt64(in *jlexer.Lexer, dst *int64) error {
+	if in == nil {
+		*dst = 0
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		src := in.UnsafeString()
+		value, err := strconv.ParseInt(src, 10, 64)
+		if err != nil {
+			return err
+		}
+		*dst = value
+	case jlexer.TokenNumber:
+		*dst = in.Int64()
+	default:
+		return fmt.Errorf("invalid json for int64")
+	}
+	if !in.Ok() {
+		return in.Error()
+	}
+	return nil
+}
+
 func JsonReadFloat32(j interface{}, dst *float32) error {
 	if j == nil {
 		*dst = 0
@@ -969,6 +1313,31 @@ func JsonReadFloat32(j interface{}, dst *float32) error {
 	return nil
 }
 
+func Json2ReadFloat32(in *jlexer.Lexer, dst *float32) error {
+	if in == nil {
+		*dst = 0
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		src := in.UnsafeString()
+		value, err := strconv.ParseFloat(src, 32)
+		if err != nil {
+			return err
+		}
+		*dst = float32(value)
+	case jlexer.TokenNumber:
+		*dst = in.Float32()
+	default:
+		return fmt.Errorf("invalid json for float32")
+	}
+	if !in.Ok() {
+		return in.Error()
+	}
+	return nil
+}
+
 func JsonReadFloat64(j interface{}, dst *float64) error {
 	if j == nil {
 		*dst = 0
@@ -983,6 +1352,31 @@ func JsonReadFloat64(j interface{}, dst *float64) error {
 		return fmt.Errorf("invalid number format for float64 %w", err)
 	}
 	*dst = val
+	return nil
+}
+
+func Json2ReadFloat64(in *jlexer.Lexer, dst *float64) error {
+	if in == nil {
+		*dst = 0
+		return nil
+	}
+
+	switch in.CurrentToken() {
+	case jlexer.TokenString:
+		src := in.UnsafeString()
+		value, err := strconv.ParseFloat(src, 64)
+		if err != nil {
+			return err
+		}
+		*dst = value
+	case jlexer.TokenNumber:
+		*dst = in.Float64()
+	default:
+		return fmt.Errorf("invalid json for float64")
+	}
+	if !in.Ok() {
+		return in.Error()
+	}
 	return nil
 }
 

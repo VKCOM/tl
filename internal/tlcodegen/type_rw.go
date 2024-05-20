@@ -70,23 +70,25 @@ type TypeRWWrapper struct {
 	wantsBytesVersion bool
 	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
-	hasBytesVersion bool
+	hasBytesVersion        bool
+	hasErrorInWriteMethods bool
 
 	fileName string
 	tlTag    uint32     // TODO - turn into function
 	tlName   tlast.Name // TODO - turn into function constructor name or union name for code generation
 	origTL   []*tlast.Combinator
 
-	isTopLevel bool
-
-	unionParent *TypeRWWrapper // a bit hackish, but simple
-	unionField  Field
+	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
-	unionIsEnum bool
 
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 }
+
+// Those have unique structure fully defined by the magic.
+// items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
+// they could not be distinguished by the magic. For example vector<int> and vector<long>.
+func (w *TypeRWWrapper) IsTopLevel() bool { return len(w.origTL[0].TemplateArguments) == 0 }
 
 func (w *TypeRWWrapper) CanonicalStringTop() string {
 	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
@@ -179,10 +181,11 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 		} else {
 			head, tail := a.tip.resolvedT2GoName(insideNamespace)
 			b.WriteString(head)
-			b.WriteString(tail)
-			if !a.bare {
+			canBare, _ := a.tip.trw.CanBeBareBoxed()
+			if !a.bare && canBare { // If it cannot be bare, save on redundant suffix
 				b.WriteString("Boxed")
 			}
+			b.WriteString(tail)
 		}
 	}
 	// We keep compatibility with legacy golang naming
@@ -236,7 +239,7 @@ func TypeRWWrapperLessGlobal(a *TypeRWWrapper, b *TypeRWWrapper) int {
 
 func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
 	if _, ok := w.trw.(*TypeRWStruct); ok {
-		if w.unionParent == nil || !w.unionIsEnum {
+		if w.unionParent == nil || !w.unionParent.IsEnum {
 			return true
 		}
 	}
@@ -250,8 +253,7 @@ func (w *TypeRWWrapper) ShouldWriteTypeAlias() bool { // TODO - interface method
 }
 
 func (w *TypeRWWrapper) ShouldWriteEnumElementAlias() bool {
-	_, ok := w.trw.(*TypeRWStruct)
-	return ok && w.unionParent != nil && w.unionIsEnum
+	return w.unionParent != nil && w.unionParent.IsEnum
 }
 
 func (w *TypeRWWrapper) MarkHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool {
@@ -260,6 +262,14 @@ func (w *TypeRWWrapper) MarkHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool
 	}
 	visitedNodes[w] = true
 	return w.trw.markHasBytesVersion(visitedNodes)
+}
+
+func (w *TypeRWWrapper) MarkWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
+	if visitedNodes[w] {
+		return false // We OR results of fields, so if we visited field, and it returned true, this true is already recorded
+	}
+	visitedNodes[w] = true
+	return w.trw.markWriteHasError(visitedNodes)
 }
 
 func (w *TypeRWWrapper) FillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
@@ -299,9 +309,9 @@ func (w *TypeRWWrapper) TypeRandomCode(bytesVersion bool, directImports *DirectI
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeRandomCode(bytesVersion, directImports, ins, val, natArgs, ref)
 }
-func (w *TypeRWWrapper) TypeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
+func (w *TypeRWWrapper) TypeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeWritingCode(bytesVersion, directImports, ins, val, bare, natArgs, ref, last)
+	return w.trw.typeWritingCode(bytesVersion, directImports, ins, val, bare, natArgs, ref, last, needError)
 }
 func (w *TypeRWWrapper) TypeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
@@ -311,13 +321,18 @@ func (w *TypeRWWrapper) TypeJSONEmptyCondition(bytesVersion bool, val string, re
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeJSONEmptyCondition(bytesVersion, val, ref)
 }
-func (w *TypeRWWrapper) TypeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+func (w *TypeRWWrapper) TypeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.typeJSONWritingCode(bytesVersion, directImports, ins, val, natArgs, ref)
+	return w.trw.typeJSONWritingCode(bytesVersion, directImports, ins, val, natArgs, ref, needError)
 }
 func (w *TypeRWWrapper) TypeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeJSONReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
+}
+
+func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
+	bytesVersion = bytesVersion && w.hasBytesVersion
+	return w.trw.typeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
 }
 
 func (w *TypeRWWrapper) IsTrueType() bool {
@@ -537,16 +552,19 @@ type TypeRW interface {
 
 	// methods below depend on target language
 	fillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
-	IsDictKeySafe() (isSafe bool, isString bool) // natives are safe, other types TBD
+	IsDictKeySafe() (isSafe bool, isString bool) // integers and string are safe, other types no
+	CanBeBareBoxed() (canBare bool, canBoxed bool)
 	typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string
 	markHasBytesVersion(visitedNodes map[*TypeRWWrapper]bool) bool
+	markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool
 	typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string
 	typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string
-	typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string
+	typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string
 	typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string
 	typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string
-	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string
+	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string
 	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
+	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
 	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
@@ -579,6 +597,39 @@ type Field struct {
 
 func (f *Field) Bare() bool {
 	return f.bare
+}
+
+func (f *Field) IsAffectingLocalFieldMasks() bool {
+	return f.fieldMask != nil && f.fieldMask.isField
+}
+
+func (f *Field) IsAffectedByExternalFieldMask() bool {
+	return f.fieldMask != nil && !f.fieldMask.isField
+}
+
+func (f *Field) IsTypeDependsFromLocalFields() bool {
+	for _, natArg := range f.natArgs {
+		if natArg.isField {
+			return true
+		}
+	}
+	return false
+}
+
+func (f *Field) HasNatArguments() bool {
+	return len(f.natArgs) != 0
+}
+
+func (f *Field) IsLocalIndependent() bool {
+	return !f.IsAffectingLocalFieldMasks() && !f.IsTypeDependsFromLocalFields()
+}
+
+func wrapWithError(wrap bool, wrappedType string) string {
+	if !wrap {
+		return wrappedType
+	} else {
+		return "(_ " + wrappedType + ", err error)"
+	}
 }
 
 func formatNatArg(fields []Field, arg ActualNatArg) string {
@@ -694,8 +745,12 @@ func wrapLast(last bool, code string) string {
 	return ifString(last, "return "+code+"", "if err := "+code+"; err != nil { return err }")
 }
 
-func wrapLastW(last bool, code string) string {
-	return ifString(last, "return "+code+"", "if w, err = "+code+"; err != nil { return w, err }")
+func wrapLastW(last bool, code string, needError bool) string {
+	if needError {
+		return ifString(last, "return "+code+"", "if w, err = "+code+"; err != nil { return w, err }")
+	} else {
+		return ifString(last, "return "+code+"", "w = "+code)
+	}
 }
 
 func ifString(value bool, t string, f string) string {

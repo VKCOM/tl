@@ -34,10 +34,10 @@ func CreateObjectFromName(name string) meta.Object {
 
 func init() {
 {%- for _, wr := range typeWrappers  -%}
-    {%- if wr.tlTag == 0 || !wr.isTopLevel -%} {%- continue -%} {%- endif -%}
+    {%- if wr.tlTag == 0 || !wr.IsTopLevel() -%} {%- continue -%} {%- endif -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0-%}
     {%- code tlTag := fmt.Sprintf("%#08x", wr.tlTag) -%}
-        {%- if wr.unionParent != nil && wr.unionIsEnum -%}
+        {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
             meta.SetGlobalFactoryCreateForEnumElement({%s tlTag %})
             {%- continue -%}
         {%- endif -%}

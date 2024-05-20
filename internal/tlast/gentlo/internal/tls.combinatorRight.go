@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite
@@ -28,8 +28,16 @@ func (item *TlsCombinatorRight) Read(w []byte) (_ []byte, err error) {
 	return item.Value.ReadBoxed(w)
 }
 
+// This method is general version of Write, use it instead!
+func (item *TlsCombinatorRight) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
+}
+
 func (item *TlsCombinatorRight) Write(w []byte) (_ []byte, err error) {
-	return item.Value.WriteBoxed(w)
+	if w, err = item.Value.WriteBoxed(w); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsCombinatorRight) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -39,7 +47,12 @@ func (item *TlsCombinatorRight) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsCombinatorRight) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsCombinatorRight) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsCombinatorRight) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x2c064372)
 	return item.Write(w)
 }
@@ -52,33 +65,55 @@ func (item TlsCombinatorRight) String() string {
 	return string(w)
 }
 
-func TlsCombinatorRight__ReadJSON(item *TlsCombinatorRight, j interface{}) error {
-	return item.readJSON(j)
-}
-func (item *TlsCombinatorRight) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.combinatorRight", "expected json object")
+func (item *TlsCombinatorRight) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propValuePresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "value":
+				if propValuePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorRight", "value")
+				}
+				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+					return err
+				}
+				propValuePresented = true
+			default:
+				return ErrorInvalidJSONExcessElement("tls.combinatorRight", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jValue := _jm["value"]
-	delete(_jm, "value")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.combinatorRight", k)
-	}
-	if err := TlsTypeExpr__ReadJSON(&item.Value, _jValue); err != nil {
-		return err
+	if !propValuePresented {
+		item.Value.Reset()
 	}
 	return nil
 }
 
-func (item *TlsCombinatorRight) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsCombinatorRight) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsCombinatorRight) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsCombinatorRight) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsCombinatorRight) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(short, w); err != nil {
+	if w, err = item.Value.WriteJSONOpt(newTypeNames, short, w); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -89,11 +124,7 @@ func (item *TlsCombinatorRight) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsCombinatorRight) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.combinatorRight", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.combinatorRight", err.Error())
 	}
 	return nil

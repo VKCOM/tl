@@ -66,10 +66,10 @@ type(
     {%- for _, wr := range types -%}
         {%- if wr.ShouldWriteEnumElementAlias() -%}
             {%- code
-                _, ourUnionParentType := ourTypes[wr.unionParent]
+                _, ourUnionParentLocal := ourTypes[wr.unionParent.wr]
                 typeString := wr.TypeString2(false, directImports, nil, true, true)
             -%}
-func {%s= typeString %}() {%s= wr.unionParent.TypeString2(false, directImports, nil, ourUnionParentType, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
+func {%s= typeString %}() {%s= wr.unionParent.wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
         {%- endif -%}
     {%- endfor -%}
     {%- for _, wr := range types -%}
@@ -85,7 +85,7 @@ func {%s= typeString %}() {%s= wr.unionParent.TypeString2(false, directImports, 
 func {%s= localTypeString %}ReadBoxed(w []byte, v *bool) ([]byte, error) {
     return {%s= globalTypeString %}ReadBoxed(w, v)
 }
-func {%s= localTypeString %}WriteBoxed(w []byte, v bool) ([]byte, error) {
+func {%s= localTypeString %}WriteBoxed(w []byte, v bool) []byte {
     return {%s= globalTypeString %}WriteBoxed(w, v)
 }
         {%- endif -%}
@@ -122,7 +122,7 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
     if extra != nil {
         req.Extra = *extra
     }
-    req.Body, err = args.WriteBoxed(req.Body)
+    req.Body, err = args.WriteBoxedGeneral(req.Body)
     if err != nil {
         return internal.ErrorClientWrite("{%s= tlName %}", err)
     }

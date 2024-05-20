@@ -21,16 +21,14 @@ type arguments struct {
 	CanonicalFormPath   string // combinators in canonical form, with comment of source schema file path
 	Outdir              string
 	IgnoreGeneratedCode bool // ignores generated code. TODO - remove, use language="" instead
-
-	legacy legacy // TODO - holds flags for tlgen1, remove
 }
 
 func commonFlags(argv *arguments) {
 	flag.StringVar(&argv.Outdir, "outdir", "",
-		`where to write generated files; "" for stdout`)
+		`where to write generated files`)
 	flag.StringVar(&argv.SchemaFileName, "schema", "",
 		"input TL schema in binary format")
-	flag.StringVar(&argv.TLPackageNameFull, "pkgPath", "gitlab.mvk.com/go/vkgo/pkg/vktl/gen_legacy/legacytl",
+	flag.StringVar(&argv.TLPackageNameFull, "pkgPath", "",
 		"package path to be used inside generated code")
 	flag.StringVar(&argv.BytesVersions, "generateByteVersions", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means 'none'.")
