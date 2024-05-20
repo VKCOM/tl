@@ -258,7 +258,7 @@ func TestBeautiful(t *testing.T) {
 			"namespace must not differ by case only",
 			`
 service5.emptyOutput = service5.Output;
-service5.hrenOutput = ch_Proxy.Output;
+service5.hrenOutput = service5.Output;
 `,
 			"",
 			"\x1b[35mservice5.hrenOutput\x1b[0m = ch_Proxy.Output;\n\x1b[0m^^^^^^^^^^^^^^^^^^^\x1b[0m-- see here  (line 3 col 1)\nservice5.hrenOutput = \x1b[31mch_Proxy.Output\x1b[0m;\n                      \x1b[0m^^^^^^^^^^^^^^^\x1b[0m-- namespaces must not differ by only case  (line 3 col 23)\n",
