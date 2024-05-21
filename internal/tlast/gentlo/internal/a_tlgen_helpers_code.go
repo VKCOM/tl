@@ -12,9 +12,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"strconv"
-
 	"github.com/mailru/easyjson/jlexer"
+	"strconv"
 )
 
 type UnionElement struct {

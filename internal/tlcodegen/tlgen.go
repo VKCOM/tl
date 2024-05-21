@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"sort"
 	"strings"
 	"sync/atomic"
@@ -48,7 +49,7 @@ const TlJSONHTML = "tljson.html"
 // Do not forget to bump version when making changes.
 // We do not want repository hash, because it advances automatically each time ANYTHING in repository changes, not only tlgen2.
 // And we do not want stable checksum of go files tlgen folder, because checksums are not comparable and there is no idea how old that version is
-const buildVersionString = "tlgen2 version 2024.03.13, hash of source code - "
+const buildVersionString = "tlgen2 version "
 
 var buildSHA256Checksum = "" // filled when building
 
@@ -65,6 +66,19 @@ type LocalResolveContext struct {
 
 	allowAnyConstructor bool   // we can reference all constructors (functions, union elements) directly internally
 	overrideFileName    string // used for unions and built-in vectors and tuples, so they are defined in the file of argument
+}
+
+func TLGenBuildInfo() (commit string, version string) {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" {
+				commit = setting.Value
+				break
+			}
+		}
+		version = info.Main.Version
+	}
+	return commit, version
 }
 
 // checkArgsCollision checks if passed name is already used in local context.
@@ -676,7 +690,8 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	if len(gen.Code) == 0 || written != 0 || len(relativeFiles) != 0 {
 		// motivation - do not modify marker file if no code changed. Greatly reduces efforts to refactor tlgen.
 		f := filepath.Join(outdir, markerFile)
-		code := buildVersionString + strings.TrimSpace(buildSHA256Checksum) + "\n" // stupid editors insist on empty line at the end
+		_, version := TLGenBuildInfo()
+		code := buildVersionString + strings.TrimSpace(version) + "\n" // stupid editors insist on empty line at the end
 		written++
 		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 			return fmt.Errorf("error writing file %q: %w", f, err)

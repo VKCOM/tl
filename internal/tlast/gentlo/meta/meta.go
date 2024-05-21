@@ -10,8 +10,8 @@ package meta
 import (
 	"fmt"
 
-	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
+	"github.com/vkcom/tl/pkg/basictl"
 )
 
 // We can create only types which have zero type arguments and zero nat arguments
@@ -74,7 +74,7 @@ func CreateObject(tag uint32) Object {
 	return nil
 }
 
-// name can be in any of 3 forms "service5.insert#7cf362ba", "service5.insert" or "#7cf362ba"
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateFunctionFromName(name string) Function {
 	if item := FactoryItemByTLName(name); item != nil && item.createFunction != nil {
 		return item.createFunction()
@@ -82,7 +82,7 @@ func CreateFunctionFromName(name string) Function {
 	return nil
 }
 
-// name can be in any of 3 forms "service5.insert#7cf362ba", "service5.insert" or "#7cf362ba"
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateObjectFromName(name string) Object {
 	if item := FactoryItemByTLName(name); item != nil && item.createObject != nil {
 		return item.createObject()

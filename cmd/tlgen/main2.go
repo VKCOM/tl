@@ -15,7 +15,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"runtime/debug"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -63,18 +62,7 @@ func addFlags(argv *arguments) {
 }
 
 func run(argv arguments) {
-	var commit, version = func() (commit string, version string) {
-		if info, ok := debug.ReadBuildInfo(); ok {
-			for _, setting := range info.Settings {
-				if setting.Key == "vcs.revision" {
-					commit = setting.Value
-					break
-				}
-			}
-			version = info.Main.Version
-		}
-		return commit, version
-	}()
+	var commit, version = tlcodegen.TLGenBuildInfo()
 	log.Printf("tlgen version: %s, commit: %s", version, commit)
 	if err := runMain(&argv); err != nil {
 		var parseError *tlast.ParseError
