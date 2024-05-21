@@ -99,3 +99,87 @@ func (item *VectorString) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+type VectorStringBytes [][]byte
+
+func (VectorStringBytes) TLName() string { return "vector" }
+func (VectorStringBytes) TLTag() uint32  { return 0x1cb5c415 }
+
+func (item *VectorStringBytes) Reset() {
+	ptr := (*[][]byte)(item)
+	*ptr = (*ptr)[:0]
+}
+
+func (item *VectorStringBytes) FillRandom(rg *basictl.RandGenerator) {
+	ptr := (*[][]byte)(item)
+	tlBuiltinVectorString.BuiltinVectorStringBytesFillRandom(rg, ptr)
+}
+
+func (item *VectorStringBytes) Read(w []byte) (_ []byte, err error) {
+	ptr := (*[][]byte)(item)
+	return tlBuiltinVectorString.BuiltinVectorStringBytesRead(w, ptr)
+}
+
+// This method is general version of Write, use it instead!
+func (item *VectorStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *VectorStringBytes) Write(w []byte) []byte {
+	ptr := (*[][]byte)(item)
+	return tlBuiltinVectorString.BuiltinVectorStringBytesWrite(w, *ptr)
+}
+
+func (item *VectorStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1cb5c415); err != nil {
+		return w, err
+	}
+	return item.Read(w)
+}
+
+// This method is general version of WriteBoxed, use it instead!
+func (item *VectorStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *VectorStringBytes) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x1cb5c415)
+	return item.Write(w)
+}
+
+func (item VectorStringBytes) String() string {
+	return string(item.WriteJSON(nil))
+}
+
+func (item *VectorStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	ptr := (*[][]byte)(item)
+	if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *VectorStringBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSON(w), nil
+}
+
+func (item *VectorStringBytes) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+
+func (item *VectorStringBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+	ptr := (*[][]byte)(item)
+	w = tlBuiltinVectorString.BuiltinVectorStringBytesWriteJSONOpt(newTypeNames, short, w, *ptr)
+	return w
+}
+func (item *VectorStringBytes) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *VectorStringBytes) UnmarshalJSON(b []byte) error {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+		return internal.ErrorInvalidJSON("vector", err.Error())
+	}
+	return nil
+}

@@ -97,3 +97,86 @@ func BuiltinTupleStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec
 	}
 	return append(w, ']'), nil
 }
+
+func BuiltinTupleStringBytesFillRandom(rg *basictl.RandGenerator, vec *[][]byte, nat_n uint32) {
+	rg.IncreaseDepth()
+	*vec = make([][]byte, nat_n)
+	for i := range *vec {
+		(*vec)[i] = basictl.RandomStringBytes(rg)
+	}
+	rg.DecreaseDepth()
+}
+
+func BuiltinTupleStringBytesRead(w []byte, vec *[][]byte, nat_n uint32) (_ []byte, err error) {
+	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
+		return w, err
+	}
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([][]byte, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	for i := range *vec {
+		if w, err = basictl.StringReadBytes(w, &(*vec)[i]); err != nil {
+			return w, err
+		}
+	}
+	return w, nil
+}
+
+func BuiltinTupleStringBytesWrite(w []byte, vec [][]byte, nat_n uint32) (_ []byte, err error) {
+	if uint32(len(vec)) != nat_n {
+		return w, internal.ErrorWrongSequenceLength("[][]byte", len(vec), nat_n)
+	}
+	for _, elem := range vec {
+		w = basictl.StringWriteBytes(w, elem)
+	}
+	return w, nil
+}
+
+func BuiltinTupleStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte, nat_n uint32) error {
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([][]byte, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[][]byte", "expected json array")
+		}
+		for ; !in.IsDelim(']'); index++ {
+			if nat_n <= uint32(index) {
+				return internal.ErrorInvalidJSON("[][]byte", "array is longer than expected")
+			}
+			if err := internal.Json2ReadStringBytes(in, &(*vec)[index]); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[][]byte", "expected json array's end")
+		}
+	}
+	if uint32(index) != nat_n {
+		return internal.ErrorWrongSequenceLength("[][]byte", index, nat_n)
+	}
+	return nil
+}
+
+func BuiltinTupleStringBytesWriteJSON(w []byte, vec [][]byte, nat_n uint32) (_ []byte, err error) {
+	return BuiltinTupleStringBytesWriteJSONOpt(true, false, w, vec, nat_n)
+}
+func BuiltinTupleStringBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec [][]byte, nat_n uint32) (_ []byte, err error) {
+	if uint32(len(vec)) != nat_n {
+		return w, internal.ErrorWrongSequenceLength("[][]byte", len(vec), nat_n)
+	}
+	w = append(w, '[')
+	for _, elem := range vec {
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = basictl.JSONWriteStringBytes(w, elem)
+	}
+	return append(w, ']'), nil
+}

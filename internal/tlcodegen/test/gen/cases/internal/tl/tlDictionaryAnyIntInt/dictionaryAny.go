@@ -10,6 +10,7 @@ package tlDictionaryAnyIntInt
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinVectorDictionaryFieldAnyIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryFieldAnyIntInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -94,6 +95,90 @@ func (item *DictionaryAnyIntInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *DictionaryAnyIntInt) UnmarshalJSON(b []byte) error {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+		return internal.ErrorInvalidJSON("dictionaryAny", err.Error())
+	}
+	return nil
+}
+
+type DictionaryAnyIntIntBytes []tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
+
+func (DictionaryAnyIntIntBytes) TLName() string { return "dictionaryAny" }
+func (DictionaryAnyIntIntBytes) TLTag() uint32  { return 0x1f4c6190 }
+
+func (item *DictionaryAnyIntIntBytes) Reset() {
+	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
+	*ptr = (*ptr)[:0]
+}
+
+func (item *DictionaryAnyIntIntBytes) FillRandom(rg *basictl.RandGenerator) {
+	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
+	tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesFillRandom(rg, ptr)
+}
+
+func (item *DictionaryAnyIntIntBytes) Read(w []byte) (_ []byte, err error) {
+	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
+	return tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesRead(w, ptr)
+}
+
+// This method is general version of Write, use it instead!
+func (item *DictionaryAnyIntIntBytes) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *DictionaryAnyIntIntBytes) Write(w []byte) []byte {
+	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
+	return tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesWrite(w, *ptr)
+}
+
+func (item *DictionaryAnyIntIntBytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x1f4c6190); err != nil {
+		return w, err
+	}
+	return item.Read(w)
+}
+
+// This method is general version of WriteBoxed, use it instead!
+func (item *DictionaryAnyIntIntBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *DictionaryAnyIntIntBytes) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x1f4c6190)
+	return item.Write(w)
+}
+
+func (item DictionaryAnyIntIntBytes) String() string {
+	return string(item.WriteJSON(nil))
+}
+
+func (item *DictionaryAnyIntIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
+	if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *DictionaryAnyIntIntBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSON(w), nil
+}
+
+func (item *DictionaryAnyIntIntBytes) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+
+func (item *DictionaryAnyIntIntBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
+	w = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesWriteJSONOpt(newTypeNames, short, w, *ptr)
+	return w
+}
+func (item *DictionaryAnyIntIntBytes) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *DictionaryAnyIntIntBytes) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("dictionaryAny", err.Error())
 	}

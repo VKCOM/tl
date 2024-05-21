@@ -33,26 +33,35 @@ import (
 )
 
 type (
-	DictionaryAnyDoubleInt      = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
-	DictionaryAnyIntInt         = tlDictionaryAnyIntInt.DictionaryAnyIntInt
-	DictionaryFieldAnyDoubleInt = tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
-	DictionaryFieldAnyIntInt    = tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
-	DictionaryFieldInt          = tlDictionaryFieldInt.DictionaryFieldInt
-	DictionaryFieldString       = tlDictionaryFieldString.DictionaryFieldString
-	DictionaryInt               = tlDictionaryInt.DictionaryInt
-	DictionaryString            = tlDictionaryString.DictionaryString
-	Int                         = tlInt.Int
-	Int32                       = tlInt32.Int32
-	Int64                       = tlInt64.Int64
-	IntMaybe                    = tlIntMaybe.IntMaybe
-	Long                        = tlLong.Long
-	String                      = tlString.String
-	True                        = tlTrue.True
-	TupleInt4                   = tlTupleInt4.TupleInt4
-	TupleString4                = tlTupleString4.TupleString4
-	VectorBenchmarksVruPosition = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
-	VectorDictionaryFieldInt    = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
-	VectorDictionaryFieldString = tlVectorDictionaryFieldString.VectorDictionaryFieldString
-	VectorInt                   = tlVectorInt.VectorInt
-	VectorString                = tlVectorString.VectorString
+	DictionaryAnyDoubleInt           = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
+	DictionaryAnyIntInt              = tlDictionaryAnyIntInt.DictionaryAnyIntInt
+	DictionaryAnyIntIntBytes         = tlDictionaryAnyIntInt.DictionaryAnyIntIntBytes
+	DictionaryFieldAnyDoubleInt      = tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
+	DictionaryFieldAnyIntInt         = tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
+	DictionaryFieldInt               = tlDictionaryFieldInt.DictionaryFieldInt
+	DictionaryFieldIntBytes          = tlDictionaryFieldInt.DictionaryFieldIntBytes
+	DictionaryFieldString            = tlDictionaryFieldString.DictionaryFieldString
+	DictionaryFieldStringBytes       = tlDictionaryFieldString.DictionaryFieldStringBytes
+	DictionaryInt                    = tlDictionaryInt.DictionaryInt
+	DictionaryIntBytes               = tlDictionaryInt.DictionaryIntBytes
+	DictionaryString                 = tlDictionaryString.DictionaryString
+	DictionaryStringBytes            = tlDictionaryString.DictionaryStringBytes
+	Int                              = tlInt.Int
+	Int32                            = tlInt32.Int32
+	Int64                            = tlInt64.Int64
+	IntMaybe                         = tlIntMaybe.IntMaybe
+	Long                             = tlLong.Long
+	String                           = tlString.String
+	True                             = tlTrue.True
+	TupleInt4                        = tlTupleInt4.TupleInt4
+	TupleString4                     = tlTupleString4.TupleString4
+	TupleString4Bytes                = tlTupleString4.TupleString4Bytes
+	VectorBenchmarksVruPosition      = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
+	VectorDictionaryFieldInt         = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
+	VectorDictionaryFieldIntBytes    = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes
+	VectorDictionaryFieldString      = tlVectorDictionaryFieldString.VectorDictionaryFieldString
+	VectorDictionaryFieldStringBytes = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
+	VectorInt                        = tlVectorInt.VectorInt
+	VectorString                     = tlVectorString.VectorString
+	VectorStringBytes                = tlVectorString.VectorStringBytes
 )

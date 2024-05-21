@@ -150,3 +150,95 @@ func BuiltinVectorDictionaryFieldAnyIntIntWriteJSONOpt(newTypeNames bool, short 
 	}
 	return append(w, '}')
 }
+
+func BuiltinVectorDictionaryFieldAnyIntIntBytesFillRandom(rg *basictl.RandGenerator, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) {
+	rg.IncreaseDepth()
+	l := rg.LimitValue(basictl.RandomUint(rg))
+	*vec = make([]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt, l)
+	for i := range *vec {
+		(*vec)[i].FillRandom(rg)
+	}
+	rg.DecreaseDepth()
+}
+
+func BuiltinVectorDictionaryFieldAnyIntIntBytesRead(w []byte, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) (_ []byte, err error) {
+	var l uint32
+	if w, err = basictl.NatRead(w, &l); err != nil {
+		return w, err
+	}
+	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+		return w, err
+	}
+	if uint32(cap(*vec)) < l {
+		*vec = make([]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt, l)
+	} else {
+		*vec = (*vec)[:l]
+	}
+	for i := range *vec {
+		if w, err = (*vec)[i].Read(w); err != nil {
+			return w, err
+		}
+	}
+	return w, nil
+}
+
+func BuiltinVectorDictionaryFieldAnyIntIntBytesWrite(w []byte, vec []tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) []byte {
+	w = basictl.NatWrite(w, uint32(len(vec)))
+	for _, elem := range vec {
+		w = elem.Write(w)
+	}
+	return w
+}
+
+func BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) error {
+	*vec = (*vec)[:cap(*vec)]
+	index := 0
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt", "expected json object")
+		}
+		for ; !in.IsDelim('}'); index++ {
+			if len(*vec) <= index {
+				var newValue tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
+				*vec = append(*vec, newValue)
+				*vec = (*vec)[:cap(*vec)]
+			}
+			keyBytes := []byte(in.UnsafeFieldName(false))
+			if !in.Ok() {
+				return internal.ErrorInvalidJSON("[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt", "expected correct json value in key")
+			}
+			in2 := basictl.JsonLexer{Data: keyBytes}
+			if err := internal.Json2ReadInt32(&in2, &(*vec)[index].Key); err != nil {
+				return err
+			}
+			in.WantColon()
+			if err := internal.Json2ReadInt32(in, &(*vec)[index].Value); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt", "expected json object's end")
+		}
+	}
+	*vec = (*vec)[:index]
+	return nil
+}
+
+func BuiltinVectorDictionaryFieldAnyIntIntBytesWriteJSON(w []byte, vec []tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) []byte {
+	return BuiltinVectorDictionaryFieldAnyIntIntBytesWriteJSONOpt(true, false, w, vec)
+}
+func BuiltinVectorDictionaryFieldAnyIntIntBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) []byte {
+	w = append(w, '{')
+	for _, elem := range vec {
+		key := elem.Key
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = append(w, `"`...)
+		w = basictl.JSONWriteInt32(w, key)
+		w = append(w, `":`...)
+		w = basictl.JSONWriteInt32(w, elem.Value)
+	}
+	return append(w, '}')
+}

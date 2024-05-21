@@ -10,6 +10,7 @@ package tlCasesBytesTestDictInt
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinVectorDictionaryFieldAnyIntInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryFieldAnyIntInt"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -127,6 +128,123 @@ func (item *CasesBytesTestDictInt) MarshalJSON() ([]byte, error) {
 }
 
 func (item *CasesBytesTestDictInt) UnmarshalJSON(b []byte) error {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+		return internal.ErrorInvalidJSON("cases_bytes.testDictInt", err.Error())
+	}
+	return nil
+}
+
+type CasesBytesTestDictIntBytes struct {
+	Dict []tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
+}
+
+func (CasesBytesTestDictIntBytes) TLName() string { return "cases_bytes.testDictInt" }
+func (CasesBytesTestDictIntBytes) TLTag() uint32  { return 0x453ace07 }
+
+func (item *CasesBytesTestDictIntBytes) Reset() {
+	item.Dict = item.Dict[:0]
+}
+
+func (item *CasesBytesTestDictIntBytes) FillRandom(rg *basictl.RandGenerator) {
+	tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesFillRandom(rg, &item.Dict)
+}
+
+func (item *CasesBytesTestDictIntBytes) Read(w []byte) (_ []byte, err error) {
+	return tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesRead(w, &item.Dict)
+}
+
+// This method is general version of Write, use it instead!
+func (item *CasesBytesTestDictIntBytes) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *CasesBytesTestDictIntBytes) Write(w []byte) []byte {
+	w = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesWrite(w, item.Dict)
+	return w
+}
+
+func (item *CasesBytesTestDictIntBytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x453ace07); err != nil {
+		return w, err
+	}
+	return item.Read(w)
+}
+
+// This method is general version of WriteBoxed, use it instead!
+func (item *CasesBytesTestDictIntBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *CasesBytesTestDictIntBytes) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x453ace07)
+	return item.Write(w)
+}
+
+func (item CasesBytesTestDictIntBytes) String() string {
+	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesBytesTestDictIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propDictPresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "dict":
+				if propDictPresented {
+					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictInt", "dict")
+				}
+				if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSON(legacyTypeNames, in, &item.Dict); err != nil {
+					return err
+				}
+				propDictPresented = true
+			default:
+				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testDictInt", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+	}
+	if !propDictPresented {
+		item.Dict = item.Dict[:0]
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *CasesBytesTestDictIntBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w), nil
+}
+
+func (item *CasesBytesTestDictIntBytes) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *CasesBytesTestDictIntBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+	w = append(w, '{')
+	backupIndexDict := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"dict":`...)
+	w = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesWriteJSONOpt(newTypeNames, short, w, item.Dict)
+	if (len(item.Dict) != 0) == false {
+		w = w[:backupIndexDict]
+	}
+	return append(w, '}')
+}
+
+func (item *CasesBytesTestDictIntBytes) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *CasesBytesTestDictIntBytes) UnmarshalJSON(b []byte) error {
 	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return internal.ErrorInvalidJSON("cases_bytes.testDictInt", err.Error())
 	}

@@ -75,7 +75,7 @@ goldmaster_nocompile: build
 		--outdir=./$(GEN_PATH)/cases \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
-		--generateByteVersions=cases_bytes \
+		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
 		--generateRPCCode=false \

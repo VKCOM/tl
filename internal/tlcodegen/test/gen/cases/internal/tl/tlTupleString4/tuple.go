@@ -99,3 +99,87 @@ func (item *TupleString4) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+type TupleString4Bytes [4][]byte
+
+func (TupleString4Bytes) TLName() string { return "tuple" }
+func (TupleString4Bytes) TLTag() uint32  { return 0x9770768a }
+
+func (item *TupleString4Bytes) Reset() {
+	ptr := (*[4][]byte)(item)
+	tlBuiltinTuple4String.BuiltinTuple4StringBytesReset(ptr)
+}
+
+func (item *TupleString4Bytes) FillRandom(rg *basictl.RandGenerator) {
+	ptr := (*[4][]byte)(item)
+	tlBuiltinTuple4String.BuiltinTuple4StringBytesFillRandom(rg, ptr)
+}
+
+func (item *TupleString4Bytes) Read(w []byte) (_ []byte, err error) {
+	ptr := (*[4][]byte)(item)
+	return tlBuiltinTuple4String.BuiltinTuple4StringBytesRead(w, ptr)
+}
+
+// This method is general version of Write, use it instead!
+func (item *TupleString4Bytes) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *TupleString4Bytes) Write(w []byte) []byte {
+	ptr := (*[4][]byte)(item)
+	return tlBuiltinTuple4String.BuiltinTuple4StringBytesWrite(w, ptr)
+}
+
+func (item *TupleString4Bytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x9770768a); err != nil {
+		return w, err
+	}
+	return item.Read(w)
+}
+
+// This method is general version of WriteBoxed, use it instead!
+func (item *TupleString4Bytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *TupleString4Bytes) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x9770768a)
+	return item.Write(w)
+}
+
+func (item TupleString4Bytes) String() string {
+	return string(item.WriteJSON(nil))
+}
+
+func (item *TupleString4Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	ptr := (*[4][]byte)(item)
+	if err := tlBuiltinTuple4String.BuiltinTuple4StringBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
+		return err
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *TupleString4Bytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSON(w), nil
+}
+
+func (item *TupleString4Bytes) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+
+func (item *TupleString4Bytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+	ptr := (*[4][]byte)(item)
+	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWriteJSONOpt(newTypeNames, short, w, ptr)
+	return w
+}
+func (item *TupleString4Bytes) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *TupleString4Bytes) UnmarshalJSON(b []byte) error {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+		return internal.ErrorInvalidJSON("tuple", err.Error())
+	}
+	return nil
+}

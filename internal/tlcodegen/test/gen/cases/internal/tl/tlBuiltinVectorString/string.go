@@ -92,3 +92,81 @@ func BuiltinVectorStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, ve
 	}
 	return append(w, ']')
 }
+
+func BuiltinVectorStringBytesFillRandom(rg *basictl.RandGenerator, vec *[][]byte) {
+	rg.IncreaseDepth()
+	l := rg.LimitValue(basictl.RandomUint(rg))
+	*vec = make([][]byte, l)
+	for i := range *vec {
+		(*vec)[i] = basictl.RandomStringBytes(rg)
+	}
+	rg.DecreaseDepth()
+}
+func BuiltinVectorStringBytesRead(w []byte, vec *[][]byte) (_ []byte, err error) {
+	var l uint32
+	if w, err = basictl.NatRead(w, &l); err != nil {
+		return w, err
+	}
+	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+		return w, err
+	}
+	if uint32(cap(*vec)) < l {
+		*vec = make([][]byte, l)
+	} else {
+		*vec = (*vec)[:l]
+	}
+	for i := range *vec {
+		if w, err = basictl.StringReadBytes(w, &(*vec)[i]); err != nil {
+			return w, err
+		}
+	}
+	return w, nil
+}
+
+func BuiltinVectorStringBytesWrite(w []byte, vec [][]byte) []byte {
+	w = basictl.NatWrite(w, uint32(len(vec)))
+	for _, elem := range vec {
+		w = basictl.StringWriteBytes(w, elem)
+	}
+	return w
+}
+
+func BuiltinVectorStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte) error {
+	*vec = (*vec)[:cap(*vec)]
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[][]byte", "expected json array")
+		}
+		for ; !in.IsDelim(']'); index++ {
+			if len(*vec) <= index {
+				var newValue []byte
+				*vec = append(*vec, newValue)
+				*vec = (*vec)[:cap(*vec)]
+			}
+			if err := internal.Json2ReadStringBytes(in, &(*vec)[index]); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[][]byte", "expected json array's end")
+		}
+	}
+	*vec = (*vec)[:index]
+	return nil
+}
+
+func BuiltinVectorStringBytesWriteJSON(w []byte, vec [][]byte) []byte {
+	return BuiltinVectorStringBytesWriteJSONOpt(true, false, w, vec)
+}
+func BuiltinVectorStringBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec [][]byte) []byte {
+	w = append(w, '[')
+	for _, elem := range vec {
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = basictl.JSONWriteStringBytes(w, elem)
+	}
+	return append(w, ']')
+}

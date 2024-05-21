@@ -83,3 +83,72 @@ func BuiltinTuple4StringWriteJSONOpt(newTypeNames bool, short bool, w []byte, ve
 	}
 	return append(w, ']')
 }
+
+func BuiltinTuple4StringBytesReset(vec *[4][]byte) {
+	for i := range *vec {
+		(*vec)[i] = (*vec)[i][:0]
+	}
+}
+
+func BuiltinTuple4StringBytesFillRandom(rg *basictl.RandGenerator, vec *[4][]byte) {
+	rg.IncreaseDepth()
+	for i := range *vec {
+		(*vec)[i] = basictl.RandomStringBytes(rg)
+	}
+	rg.DecreaseDepth()
+}
+
+func BuiltinTuple4StringBytesRead(w []byte, vec *[4][]byte) (_ []byte, err error) {
+	for i := range *vec {
+		if w, err = basictl.StringReadBytes(w, &(*vec)[i]); err != nil {
+			return w, err
+		}
+	}
+	return w, nil
+}
+
+func BuiltinTuple4StringBytesWrite(w []byte, vec *[4][]byte) []byte {
+	for _, elem := range *vec {
+		w = basictl.StringWriteBytes(w, elem)
+	}
+	return w
+}
+
+func BuiltinTuple4StringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[4][]byte) error {
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[4][]byte", "expected json array")
+		}
+		for ; !in.IsDelim(']'); index++ {
+			if index == 4 {
+				return internal.ErrorWrongSequenceLength("[4][]byte", index+1, 4)
+			}
+			if err := internal.Json2ReadStringBytes(in, &(*vec)[index]); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return internal.ErrorInvalidJSON("[4][]byte", "expected json array's end")
+		}
+	}
+	if index != 4 {
+		return internal.ErrorWrongSequenceLength("[4][]byte", index+1, 4)
+	}
+	return nil
+}
+
+func BuiltinTuple4StringBytesWriteJSON(w []byte, vec *[4][]byte) []byte {
+	return BuiltinTuple4StringBytesWriteJSONOpt(true, false, w, vec)
+}
+func BuiltinTuple4StringBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[4][]byte) []byte {
+	w = append(w, '[')
+	for _, elem := range *vec {
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = basictl.JSONWriteStringBytes(w, elem)
+	}
+	return append(w, ']')
+}

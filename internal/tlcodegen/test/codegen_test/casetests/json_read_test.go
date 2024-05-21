@@ -27,6 +27,8 @@ type mappingSuccess struct {
 	goldenInput string
 	// json alternatives which map to goldenInput
 	alternatives []string
+	// wrong json alternatives
+	incorrectAlternatives []string
 }
 
 type mappingTest struct {
@@ -67,6 +69,23 @@ func runMappingTest(t *testing.T, mt mappingTest) {
 
 				assert.Nil(t, writeAgainErr)
 				assert.Equal(t, success.goldenInput, string(writeAgainData))
+			})
+
+			if t.Failed() {
+				return
+			}
+		}
+
+		for aId, alternative := range success.incorrectAlternatives {
+			t.Run(fmt.Sprintf("Object %d - Wrong alternative %d", sId, aId), func(t *testing.T) {
+				mt.object.FillRandom(rg)
+				readErr := mt.object.ReadJSON(false, &basictl.JsonLexer{Data: []byte(alternative)})
+
+				assert.Nil(t, readErr)
+				writeData, writeErr := mt.object.MarshalJSON()
+
+				assert.Nil(t, writeErr)
+				assert.NotEqual(t, success.goldenInput, string(writeData))
 			})
 
 			if t.Failed() {
@@ -324,7 +343,7 @@ func TestDictionaryString(t *testing.T) {
 
 func TestDictionaryStringStringBytes(t *testing.T) {
 	test := mappingTest{
-		object: &tlcases_bytes.TestDictStringString{},
+		object: &tlcases_bytes.TestDictStringStringBytes{},
 		successes: []mappingSuccess{
 			{
 				goldenInput: `{}`,
@@ -334,9 +353,12 @@ func TestDictionaryStringStringBytes(t *testing.T) {
 			},
 			{
 				goldenInput: `{"dict":{"k1":"1","k2":"2"}}`,
-				alternatives: []string{
+				incorrectAlternatives: []string{
 					`{"dict":{"k2":"2","k1":"1"}}`,
 				},
+			},
+			{
+				goldenInput: `{"dict":{"k1":"1","k2":"2","k3":"3","k4":"4","k5":"5","k6":"6","k7":"7","k8":"8","k9":"9"}}`,
 			},
 		},
 		failures: []string{
@@ -349,7 +371,7 @@ func TestDictionaryStringStringBytes(t *testing.T) {
 
 func TestDictionaryStringBytes(t *testing.T) {
 	test := mappingTest{
-		object: &tlcases_bytes.TestDictString{},
+		object: &tlcases_bytes.TestDictStringBytes{},
 		successes: []mappingSuccess{
 			{
 				goldenInput: `{}`,
@@ -359,7 +381,7 @@ func TestDictionaryStringBytes(t *testing.T) {
 			},
 			{
 				goldenInput: `{"dict":{"k1":1,"k2":2}}`,
-				alternatives: []string{
+				incorrectAlternatives: []string{
 					`{"dict":{"k2":2,"k1":1}}`,
 				},
 			},
@@ -396,7 +418,7 @@ func TestDictionaryInt(t *testing.T) {
 
 func TestDictionaryIntBytes(t *testing.T) {
 	test := mappingTest{
-		object: &tlcases_bytes.TestDictInt{},
+		object: &tlcases_bytes.TestDictIntBytes{},
 		successes: []mappingSuccess{
 			{
 				goldenInput: `{}`,

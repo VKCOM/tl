@@ -128,3 +128,116 @@ func (item *CasesBytesTestTuple) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+type CasesBytesTestTupleBytes struct {
+	Tpl [4][]byte
+}
+
+func (CasesBytesTestTupleBytes) TLName() string { return "cases_bytes.testTuple" }
+func (CasesBytesTestTupleBytes) TLTag() uint32  { return 0x2dd3bacf }
+
+func (item *CasesBytesTestTupleBytes) Reset() {
+	tlBuiltinTuple4String.BuiltinTuple4StringBytesReset(&item.Tpl)
+}
+
+func (item *CasesBytesTestTupleBytes) FillRandom(rg *basictl.RandGenerator) {
+	tlBuiltinTuple4String.BuiltinTuple4StringBytesFillRandom(rg, &item.Tpl)
+}
+
+func (item *CasesBytesTestTupleBytes) Read(w []byte) (_ []byte, err error) {
+	return tlBuiltinTuple4String.BuiltinTuple4StringBytesRead(w, &item.Tpl)
+}
+
+// This method is general version of Write, use it instead!
+func (item *CasesBytesTestTupleBytes) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
+}
+
+func (item *CasesBytesTestTupleBytes) Write(w []byte) []byte {
+	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWrite(w, &item.Tpl)
+	return w
+}
+
+func (item *CasesBytesTestTupleBytes) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0x2dd3bacf); err != nil {
+		return w, err
+	}
+	return item.Read(w)
+}
+
+// This method is general version of WriteBoxed, use it instead!
+func (item *CasesBytesTestTupleBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *CasesBytesTestTupleBytes) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0x2dd3bacf)
+	return item.Write(w)
+}
+
+func (item CasesBytesTestTupleBytes) String() string {
+	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesBytesTestTupleBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propTplPresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "tpl":
+				if propTplPresented {
+					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testTuple", "tpl")
+				}
+				if err := tlBuiltinTuple4String.BuiltinTuple4StringBytesReadJSON(legacyTypeNames, in, &item.Tpl); err != nil {
+					return err
+				}
+				propTplPresented = true
+			default:
+				return internal.ErrorInvalidJSONExcessElement("cases_bytes.testTuple", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+	}
+	if !propTplPresented {
+		tlBuiltinTuple4String.BuiltinTuple4StringBytesReset(&item.Tpl)
+	}
+	return nil
+}
+
+// This method is general version of WriteJSON, use it instead!
+func (item *CasesBytesTestTupleBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w), nil
+}
+
+func (item *CasesBytesTestTupleBytes) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *CasesBytesTestTupleBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+	w = append(w, '{')
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"tpl":`...)
+	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWriteJSONOpt(newTypeNames, short, w, &item.Tpl)
+	return append(w, '}')
+}
+
+func (item *CasesBytesTestTupleBytes) MarshalJSON() ([]byte, error) {
+	return item.WriteJSON(nil), nil
+}
+
+func (item *CasesBytesTestTupleBytes) UnmarshalJSON(b []byte) error {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
+		return internal.ErrorInvalidJSON("cases_bytes.testTuple", err.Error())
+	}
+	return nil
+}
