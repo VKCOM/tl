@@ -165,7 +165,6 @@ func `)
 				qw422016.N().S(valueNatArgsDecl)
 				qw422016.N().S(`) error {
 	*vec = (*vec)[:cap(*vec)]
-	arr := *vec
 	index := 0
 	if in != nil {
         in.Delim('{')
@@ -184,10 +183,10 @@ func `)
                 *vec = append(*vec, newValue)
                 *vec = (*vec)[:cap(*vec)]
             }
-            arr[index].Key = append(arr[index].Key[:0], in.UnsafeFieldName(true)...)
+            (*vec)[index].Key = append((*vec)[index].Key[:0], in.UnsafeFieldName(true)...)
             in.WantColon()
             `)
-				qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "arr[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+				qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
 				qw422016.N().S(`
             in.WantComma()
         }
@@ -302,7 +301,6 @@ func `)
 				qw422016.N().S(valueNatArgsDecl)
 				qw422016.N().S(`) error {
 	*vec = (*vec)[:cap(*vec)]
-	arr := *vec
 	index := 0
 	if in != nil {
         in.Delim('{')
@@ -331,11 +329,11 @@ func `)
             }
             in2 := basictl.JsonLexer{Data: keyBytes}
             `)
-				qw422016.N().S(tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "arr[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
+				qw422016.N().S(tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "(*vec)[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false))
 				qw422016.N().S(`
             in.WantColon()
             `)
-				qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "arr[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
+				qw422016.N().S(tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false))
 				qw422016.N().S(`
             in.WantComma()
         }
