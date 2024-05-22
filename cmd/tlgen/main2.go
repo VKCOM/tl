@@ -95,6 +95,9 @@ func runMain(argv *arguments) error {
 	if argv.SchemaFileName != "" {
 		return fmt.Errorf("--schema argument is removed, specify 1 or more input TL schema filenames after flags")
 	}
+	if argv.GenerateRPCCode && argv.BasicRPCPath == "" {
+		return fmt.Errorf("--basicRPCPath must be specified or set --generateRPCCode=false if you don't use rpc code")
+	}
 	args = append(args, flag.Args()...)
 	if len(args) == 0 {
 		return fmt.Errorf("specify 1 or more input TL schema filenames after flags")
