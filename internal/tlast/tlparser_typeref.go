@@ -22,7 +22,7 @@ import "fmt"
 //	'?'                               - we prohibit it, instead it is parsed as type body
 //
 // if applyFlag == true then it will try to parse a b c d type without brackets (used when there is outer brackets)
-func parseTypeRef(tokens tokenIterator, applyFlag bool, outer Position) (*TypeRef, tokenIterator, error) {
+func parseTypeRef(tokens tokenIterator, applyFlag bool, allowRoundBracket bool, outer Position) (*TypeRef, tokenIterator, error) {
 	rest := tokens
 	var pt *TypeRef
 	var err error
@@ -36,11 +36,17 @@ func parseTypeRef(tokens tokenIterator, applyFlag bool, outer Position) (*TypeRe
 
 	bare := rest.expect(percentSign)
 
+	rest.skipWS(outer)
+	startOfSomething := rest
+
 	pt, rest, err = parseTypeRefInRoundBracketsOpt(rest, outer)
 	if err != nil {
 		return nil, tokens, err // fmt.Errorf("t in round brackets error: %w", err)
 	}
 	if pt != nil {
+		if !allowRoundBracket {
+			return pt, rest, parseErrToken(fmt.Errorf("for historic reasons, round brackets are not allowed here"), startOfSomething.front(), outer)
+		}
 		pt.Bare = pt.Bare || bare
 		pt.PR = pr
 		pt.PR.End = rest.front().pos
@@ -93,7 +99,7 @@ func parseTypeRefInRoundBracketsOpt(tokens tokenIterator, outer Position) (*Type
 	}
 	var res *TypeRef
 	var err error
-	res, rest, err = parseTypeRef(rest, true, outer)
+	res, rest, err = parseTypeRef(rest, true, true, outer)
 	if err != nil {
 		return nil, tokens, err // fmt.Errorf("bad t: %w", err)
 	}

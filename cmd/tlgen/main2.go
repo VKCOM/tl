@@ -26,11 +26,6 @@ import (
 
 const tlExt = ".tl"
 
-type legacy struct{}
-
-var _ = legacy{}
-var _ = arguments{}.legacy
-
 func addFlags(argv *arguments) {
 	flag.StringVar(&argv.Language, "language", "go",
 		`generation target language`)
@@ -40,9 +35,11 @@ func addFlags(argv *arguments) {
 		"if empty, 'basictl' package will be generated in output dir, otherwise imports will be generated")
 	flag.BoolVar(&argv.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
+	flag.BoolVar(&argv.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,
+		"whether to generate methods to read json in old way")
 	flag.BoolVar(&argv.GenerateRPCCode, "generateRPCCode", true,
 		"whether to generate *_server.go files")
-	flag.StringVar(&argv.BasicRPCPath, "basicRPCPath", "gitlab.mvk.com/go/vkgo/pkg/rpc",
+	flag.StringVar(&argv.BasicRPCPath, "basicRPCPath", "",
 		"path to rpc package")
 	flag.StringVar(&argv.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
@@ -50,6 +47,8 @@ func addFlags(argv *arguments) {
 		"generate file with combinators in canonical form")
 	flag.BoolVar(&argv.SchemaDocumentation, "generateSchemaDocumentation", false,
 		"whether to generate .html representation of schema in to tljson.html file")
+	flag.StringVar(&argv.SchemaURLTemplate, "schemaURLTemplate", "",
+		"template for url to current schema if documentation is generated")
 	flag.BoolVar(&argv.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 	flag.StringVar(&argv.TypesWhileList, "typesWhiteList", "",
@@ -63,6 +62,8 @@ func addFlags(argv *arguments) {
 }
 
 func run(argv arguments) {
+	var commit, version = tlcodegen.TLGenBuildInfo()
+	log.Printf("tlgen version: %s, commit: %s", version, commit)
 	if err := runMain(&argv); err != nil {
 		var parseError *tlast.ParseError
 		if errors.As(err, &parseError) {
@@ -73,7 +74,11 @@ func run(argv arguments) {
 		log.Printf("TL Generation Failed")
 		os.Exit(1)
 	} else {
-		log.Printf("TL Generation Success")
+		if argv.Language == "" {
+			log.Printf("TL Linter Success")
+		} else {
+			log.Printf("TL Generation Success")
+		}
 	}
 }
 
@@ -88,7 +93,10 @@ func runMain(argv *arguments) error {
 		argv.Language = ""
 	}
 	if argv.SchemaFileName != "" {
-		args = append(args, argv.SchemaFileName)
+		return fmt.Errorf("--schema argument is removed, specify 1 or more input TL schema filenames after flags")
+	}
+	if argv.GenerateRPCCode && argv.BasicRPCPath == "" {
+		return fmt.Errorf("--basicRPCPath must be specified or set --generateRPCCode=false if you don't use rpc code")
 	}
 	args = append(args, flag.Args()...)
 	if len(args) == 0 {
@@ -115,6 +123,9 @@ func runMain(argv *arguments) error {
 		return err // Do not add excess info to already long parse error
 	}
 	if argv.Language != "" {
+		if argv.Outdir == "" {
+			return fmt.Errorf("--outdir should not be empty")
+		}
 		if err = gen.WriteToDir(argv.Outdir); err != nil {
 			return err // Context is already in err
 		}
@@ -152,7 +163,9 @@ func runMain(argv *arguments) error {
 		}
 		var buf bytes.Buffer
 		fullAst.WriteGenerate2TL(&buf)
-		return os.WriteFile(argv.CanonicalFormPath, buf.Bytes(), 0644)
+		if err := os.WriteFile(argv.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
+			return err
+		}
 	}
 	return nil
 }

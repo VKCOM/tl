@@ -81,7 +81,7 @@ func (trw *TypeRWStruct) CPPTypeReadingCode(bytesVersion bool, val string, bare 
 func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
 	goLocalName := addBytes(trw.wr.goLocalName, bytesVersion)
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	//if trw.wr.unionParent != nil && trw.wr.unionIsEnum {
+	//if trw.wr.unionParent != nil && trw.wr.unionParentIsEnum {
 	//	return
 	//}
 	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()

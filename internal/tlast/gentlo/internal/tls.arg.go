@@ -42,35 +42,49 @@ func BuiltinTupleTlsArgBoxedWrite(w []byte, vec []TlsArg, nat_n uint32) (_ []byt
 	return w, nil
 }
 
-func BuiltinTupleTlsArgBoxedReadJSON(j interface{}, vec *[]TlsArg, nat_n uint32) error {
-	_, _arr, err := JsonReadArrayFixedSize("[]TlsArg", j, nat_n)
-	if err != nil {
-		return err
-	}
+func BuiltinTupleTlsArgBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]TlsArg, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]TlsArg, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	for i := range *vec {
-		if err := TlsArg__ReadJSON(&(*vec)[i], _arr[i]); err != nil {
-			return err
+	index := 0
+	if in != nil {
+		in.Delim('[')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]TlsArg", "expected json array")
 		}
+		for ; !in.IsDelim(']'); index++ {
+			if nat_n <= uint32(index) {
+				return ErrorInvalidJSON("[]TlsArg", "array is longer than expected")
+			}
+			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+				return err
+			}
+			in.WantComma()
+		}
+		in.Delim(']')
+		if !in.Ok() {
+			return ErrorInvalidJSON("[]TlsArg", "expected json array's end")
+		}
+	}
+	if uint32(index) != nat_n {
+		return ErrorWrongSequenceLength("[]TlsArg", index, nat_n)
 	}
 	return nil
 }
 
 func BuiltinTupleTlsArgBoxedWriteJSON(w []byte, vec []TlsArg, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleTlsArgBoxedWriteJSONOpt(false, w, vec, nat_n)
+	return BuiltinTupleTlsArgBoxedWriteJSONOpt(true, false, w, vec, nat_n)
 }
-func BuiltinTupleTlsArgBoxedWriteJSONOpt(short bool, w []byte, vec []TlsArg, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleTlsArgBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []TlsArg, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]TlsArg", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(short, w); err != nil {
+		if w, err = elem.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 	}
@@ -159,10 +173,13 @@ func (item *TlsArg) Read(w []byte) (_ []byte, err error) {
 	return item.Type.ReadBoxed(w)
 }
 
+// This method is general version of Write, use it instead!
+func (item *TlsArg) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
+}
+
 func (item *TlsArg) Write(w []byte) (_ []byte, err error) {
-	if w, err = basictl.StringWrite(w, item.Id); err != nil {
-		return w, err
-	}
+	w = basictl.StringWrite(w, item.Id)
 	w = basictl.NatWrite(w, item.Flags)
 	if item.Flags&(1<<1) != 0 {
 		w = basictl.IntWrite(w, item.VarNum)
@@ -173,7 +190,10 @@ func (item *TlsArg) Write(w []byte) (_ []byte, err error) {
 	if item.Flags&(1<<2) != 0 {
 		w = basictl.IntWrite(w, item.ExistVarBit)
 	}
-	return item.Type.WriteBoxed(w)
+	if w, err = item.Type.WriteBoxed(w); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsArg) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -183,7 +203,12 @@ func (item *TlsArg) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsArg) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsArg) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsArg) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x29dfe61b)
 	return item.Write(w)
 }
@@ -196,83 +221,134 @@ func (item TlsArg) String() string {
 	return string(w)
 }
 
-func TlsArg__ReadJSON(item *TlsArg, j interface{}) error { return item.readJSON(j) }
-func (item *TlsArg) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.arg", "expected json object")
-	}
-	_jId := _jm["id"]
-	delete(_jm, "id")
-	if err := JsonReadString(_jId, &item.Id); err != nil {
-		return err
-	}
-	_jFlags := _jm["flags"]
-	delete(_jm, "flags")
-	if err := JsonReadUint32(_jFlags, &item.Flags); err != nil {
-		return err
-	}
-	_jVarNum := _jm["var_num"]
-	delete(_jm, "var_num")
-	_jExistVarNum := _jm["exist_var_num"]
-	delete(_jm, "exist_var_num")
-	_jExistVarBit := _jm["exist_var_bit"]
-	delete(_jm, "exist_var_bit")
-	_jType := _jm["type"]
-	delete(_jm, "type")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.arg", k)
-	}
-	if _jVarNum != nil {
-		item.Flags |= 1 << 1
-	}
-	if _jExistVarNum != nil {
-		item.Flags |= 1 << 2
-	}
-	if _jExistVarBit != nil {
-		item.Flags |= 1 << 2
-	}
-	if _jVarNum != nil {
-		if err := JsonReadInt32(_jVarNum, &item.VarNum); err != nil {
-			return err
+func (item *TlsArg) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propIdPresented bool
+	var propFlagsPresented bool
+	var propVarNumPresented bool
+	var propExistVarNumPresented bool
+	var propExistVarBitPresented bool
+	var propTypePresented bool
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
 		}
-	} else {
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "id":
+				if propIdPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "id")
+				}
+				if err := Json2ReadString(in, &item.Id); err != nil {
+					return err
+				}
+				propIdPresented = true
+			case "flags":
+				if propFlagsPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "flags")
+				}
+				if err := Json2ReadUint32(in, &item.Flags); err != nil {
+					return err
+				}
+				propFlagsPresented = true
+			case "var_num":
+				if propVarNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "var_num")
+				}
+				if err := Json2ReadInt32(in, &item.VarNum); err != nil {
+					return err
+				}
+				propVarNumPresented = true
+			case "exist_var_num":
+				if propExistVarNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "exist_var_num")
+				}
+				if err := Json2ReadInt32(in, &item.ExistVarNum); err != nil {
+					return err
+				}
+				propExistVarNumPresented = true
+			case "exist_var_bit":
+				if propExistVarBitPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "exist_var_bit")
+				}
+				if err := Json2ReadInt32(in, &item.ExistVarBit); err != nil {
+					return err
+				}
+				propExistVarBitPresented = true
+			case "type":
+				if propTypePresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.arg", "type")
+				}
+				if err := item.Type.ReadJSON(legacyTypeNames, in); err != nil {
+					return err
+				}
+				propTypePresented = true
+			default:
+				return ErrorInvalidJSONExcessElement("tls.arg", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
+	}
+	if !propIdPresented {
+		item.Id = ""
+	}
+	if !propFlagsPresented {
+		item.Flags = 0
+	}
+	if !propVarNumPresented {
 		item.VarNum = 0
 	}
-	if _jExistVarNum != nil {
-		if err := JsonReadInt32(_jExistVarNum, &item.ExistVarNum); err != nil {
-			return err
-		}
-	} else {
+	if !propExistVarNumPresented {
 		item.ExistVarNum = 0
 	}
-	if _jExistVarBit != nil {
-		if err := JsonReadInt32(_jExistVarBit, &item.ExistVarBit); err != nil {
-			return err
-		}
-	} else {
+	if !propExistVarBitPresented {
 		item.ExistVarBit = 0
 	}
-	if err := TlsTypeExpr__ReadJSON(&item.Type, _jType); err != nil {
-		return err
+	if !propTypePresented {
+		item.Type.Reset()
+	}
+	if propVarNumPresented {
+		item.Flags |= 1 << 1
+	}
+	if propExistVarNumPresented {
+		item.Flags |= 1 << 2
+	}
+	if propExistVarBitPresented {
+		item.Flags |= 1 << 2
 	}
 	return nil
 }
 
-func (item *TlsArg) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsArg) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsArg) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsArg) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsArg) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
-	if len(item.Id) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"id":`...)
-		w = basictl.JSONWriteString(w, item.Id)
+	backupIndexId := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"id":`...)
+	w = basictl.JSONWriteString(w, item.Id)
+	if (len(item.Id) != 0) == false {
+		w = w[:backupIndexId]
 	}
-	if item.Flags != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"flags":`...)
-		w = basictl.JSONWriteUint32(w, item.Flags)
+	backupIndexFlags := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"flags":`...)
+	w = basictl.JSONWriteUint32(w, item.Flags)
+	if (item.Flags != 0) == false {
+		w = w[:backupIndexFlags]
 	}
 	if item.Flags&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -291,7 +367,7 @@ func (item *TlsArg) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"type":`...)
-	if w, err = item.Type.WriteJSONOpt(short, w); err != nil {
+	if w, err = item.Type.WriteJSONOpt(newTypeNames, short, w); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -302,11 +378,7 @@ func (item *TlsArg) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsArg) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.arg", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.arg", err.Error())
 	}
 	return nil

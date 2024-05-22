@@ -1,0 +1,5156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TL JSON help</title>
+  </head>
+  <body>
+    <h1>Schema</h1>
+    <ul>
+      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
+    </ul>
+    <h1>Functions</h1>
+    <ul>
+      <li>
+        <a href="#AbCall1">
+        <code>ab.call1</code></a>
+        → <code><a href="#AbTypeB">ab.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall2">
+        <code>ab.call2</code></a>
+        → <code><a href="#CdTypeB">cd.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall3">
+        <code>ab.call3</code></a>
+        → <code><a href="#TypeB">TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall4">
+        <code>ab.call4</code></a>
+        → <code><a href="#AbTypeB">ab.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall5">
+        <code>ab.call5</code></a>
+        → <code><a href="#CdTypeB">cd.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall6">
+        <code>ab.call6</code></a>
+        → <code><a href="#TypeB">TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall7">
+        <code>ab.call7</code></a>
+        → <code><a href="#AbTypeB">ab.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall8">
+        <code>ab.call8</code></a>
+        → <code><a href="#CdTypeB">cd.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#AbCall9">
+        <code>ab.call9</code></a>
+        → <code><a href="#TypeB">TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call1">
+        <code>call1</code></a>
+        → <code><a href="#AbTypeB">ab.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call2">
+        <code>call2</code></a>
+        → <code><a href="#CdTypeB">cd.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call3">
+        <code>call3</code></a>
+        → <code><a href="#TypeB">TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call4">
+        <code>call4</code></a>
+        → <code><a href="#AbTypeB">ab.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call5">
+        <code>call5</code></a>
+        → <code><a href="#CdTypeB">cd.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call6">
+        <code>call6</code></a>
+        → <code><a href="#TypeB">TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call7">
+        <code>call7</code></a>
+        → <code><a href="#AbTypeB">ab.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call8">
+        <code>call8</code></a>
+        → <code><a href="#CdTypeB">cd.TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Call9">
+        <code>call9</code></a>
+        → <code><a href="#TypeB">TypeB</a></code>
+      </li>
+      <li>
+        <a href="#Service5Insert">
+        <code>service5.insert</code></a>
+        → <code><a href="#Service5Output">service5.Output</a></code>
+      </li>
+      <li>
+        <a href="#Service5LongInsert">
+        <code>service5Long.insert</code></a>
+        → <code><a href="#Service5LongOutput">service5Long.Output</a></code>
+      </li>
+      <li>
+        <a href="#UsefulServiceGetUserEntity">
+        <code>usefulService.getUserEntity</code></a>
+        → <code><a href="#UsefulServiceGetUserEntityResultBoxedMaybe">Maybe&lt;usefulService.GetUserEntityResult&lt;fields_mask&gt;&gt;</a></code>
+      </li>
+    </ul>
+    <h1>Types</h1>
+<h2 id="#">#</h2>
+Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
+
+<h2 id="AColor">a.Color</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td><span title='Can be also specified as "a.color" or "#f35d7a69"' style="color:MediumVioletRed">"a.color#f35d7a69"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "a.red" or "#b83a723d"' style="color:MediumVioletRed">"a.red#b83a723d"</span></td><td></td>
+          <td>
+    <code style="color:DarkCyan">// Enum comment - red</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "a.green" or "#6127e7b8"' style="color:MediumVioletRed">"a.green#6127e7b8"</span></td><td></td>
+          <td>
+    <code style="color:DarkCyan">// Enum comment - green</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "b.red" or "#a9471844"' style="color:MediumVioletRed">"b.red#a9471844"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "a.blue" or "#623360f3"' style="color:MediumVioletRed">"a.blue#623360f3"</span></td><td></td>
+          <td>
+    <code style="color:DarkCyan">/* Enum comment - blue, but</code></td></tr><tr><td colspan="3">
+    <code style="color:DarkCyan">continues on the next line */</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>a.color#f35d7a69 = a.Color;</code>
+    </li>
+    <li>
+    <code>a.red#b83a723d = a.Color;</code>
+    </li>
+    <li>
+    <code>a.green#6127e7b8 = a.Color;</code>
+    </li>
+    <li>
+    <code>b.red#a9471844 = a.Color;</code>
+    </li>
+    <li>
+    <code>a.blue#623360f3 = a.Color;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="AColorBoxedMaybe">Maybe&lt;a.Color&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#AColor">a.Color</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="AInner">a.inner&lt;#&gt;</h2>
+    <code style="color:DarkCyan">//----- Test Dependent types</code></br>
+
+External # (nat) arguments: <b>I</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [I × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>a.inner#ec5089b9 {I:#}{I:Type} a:%(__tuple I int) = a.Inner I;</code>
+  </dd>
+</dl>
+
+<h2 id="AInner3">a.inner&lt;3&gt;</h2>
+    <code style="color:DarkCyan">//----- Test Dependent types</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [3 × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>a.inner#ec5089b9 {I:#}{I:Type} a:%(__tuple I int) = a.Inner I;</code>
+  </dd>
+</dl>
+
+<h2 id="AMiddlePairAInnerAInnerAInnerBoxed3">a.middle&lt;#,pair&lt;a.inner&lt;#&gt;,a.inner&lt;#&gt;&gt;,a.Inner&lt;3&gt;&gt;</h2>
+
+External # (nat) arguments: <b>W, PXI, PYI</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#AInner">a.inner&lt;W&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#PairPairAInnerAInnerAInnerBoxed3">pair&lt;pair&lt;a.inner&lt;PXI&gt;,a.inner&lt;PYI&gt;&gt;,a.Inner&lt;3&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>a.middle#af5e2b14 {W:#}{W:Type} {P:Type} {Q:Type} a:(a.inner W) b:(pair P Q) = a.Middle W P Q;</code>
+  </dd>
+</dl>
+
+
+<h2 id="AMyUnion">a.MyUnion</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "a.uNionA" or "#a7662843"' style="color:MediumVioletRed">"a.uNionA#a7662843"</span>,</td><td>"value":<a href="#AUNionA">a.uNionA</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "au.nionA" or "#df61f632"' style="color:MediumVioletRed">"au.nionA#df61f632"</span>,</td><td>"value":<a href="#AuNionA">au.nionA</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>a.uNionA#a7662843 a:int = a.MyUnion;</code>
+    </li>
+    <li>
+    <code>au.nionA#df61f632 b:int = a.MyUnion;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="ATop2">a.top2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"m"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: <a href="#AMiddlePairAInnerAInnerAInnerBoxed3">a.middle&lt;m,pair&lt;a.inner&lt;n&gt;,a.inner&lt;n&gt;&gt;,a.Inner&lt;3&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>a.top2#7082d18f n:# m:# c:(a.middle m (pair (a.inner n) (a.inner n)) (a.Inner 3)) = a.Top2;</code>
+  </dd>
+</dl>
+
+<h2 id="AUNionA">a.uNionA</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>a.uNionA#a7662843 a:int = a.MyUnion;</code>
+  </dd>
+</dl>
+
+
+<h2 id="AbCall1">ab.call1</h2>
+
+<p></p>
+  Returns <code><a href="#AbTypeB">ab.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call1#20c5fb2d x:ab.typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall2">ab.call2</h2>
+
+<p></p>
+  Returns <code><a href="#CdTypeB">cd.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call2#77d5f057 x:ab.typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall3">ab.call3</h2>
+
+<p></p>
+  Returns <code><a href="#TypeB">TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call3#0a083445 x:ab.typeA = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall4">ab.call4</h2>
+
+<p></p>
+  Returns <code><a href="#AbTypeB">ab.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call4#c1220a1e x:cd.typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall5">ab.call5</h2>
+
+<p></p>
+  Returns <code><a href="#CdTypeB">cd.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call5#7ba4d28d x:cd.typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall6">ab.call6</h2>
+
+<p></p>
+  Returns <code><a href="#TypeB">TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call6#84d815cb x:cd.typeA = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall7">ab.call7</h2>
+
+<p></p>
+  Returns <code><a href="#AbTypeB">ab.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call7#46ec10bf x:typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall8">ab.call8</h2>
+
+<p></p>
+  Returns <code><a href="#CdTypeB">cd.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call8#1b8652d9 x:typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCall9">ab.call9</h2>
+
+<p></p>
+  Returns <code><a href="#TypeB">TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read ab.call9#75de906c x:typeA = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCode">ab.code</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.code#7651b1ac x:int = ab.Response;</code>
+    <code style="color:DarkCyan">// Union comment - Code</code></br>
+  </dd>
+</dl>
+
+<h2 id="AbCounterChangeRequestPeriods">ab.CounterChangeRequestPeriods</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "ab.counterChangeRequestPeriodsMany" or "#14a35d80"' style="color:MediumVioletRed">"ab.counterChangeRequestPeriodsMany#14a35d80"</span>,</td><td>"value":<a href="#AbCounterChangeRequestPeriodsMany">ab.counterChangeRequestPeriodsMany</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "ab.counterChangeRequestPeriodsOne" or "#d9c36de5"' style="color:MediumVioletRed">"ab.counterChangeRequestPeriodsOne#d9c36de5"</span>,</td><td>"value":<a href="#AbCounterChangeRequestPeriodsOne">ab.counterChangeRequestPeriodsOne</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>ab.counterChangeRequestPeriodsMany#14a35d80 objects_peridos:(vector int) = ab.CounterChangeRequestPeriods;</code>
+    </li>
+    <li>
+    <code>ab.counterChangeRequestPeriodsOne#d9c36de5 period:long = ab.CounterChangeRequestPeriods;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="AbCounterChangeRequestPeriodsMany">ab.counterChangeRequestPeriodsMany</h2>
+    <code style="color:DarkCyan">// remove common prefix</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"objects_peridos"</td><td>: [&lt;int32&gt;, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.counterChangeRequestPeriodsMany#14a35d80 objects_peridos:(vector int) = ab.CounterChangeRequestPeriods;</code>
+  </dd>
+</dl>
+
+<h2 id="AbCounterChangeRequestPeriodsOne">ab.counterChangeRequestPeriodsOne</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"period"</td><td>: &lt;int64&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.counterChangeRequestPeriodsOne#d9c36de5 period:long = ab.CounterChangeRequestPeriods;</code>
+  </dd>
+</dl>
+
+
+<h2 id="AbMyType">ab.myType</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.myType#e0e96c86 x:int = ab.MyType;</code>
+  </dd>
+</dl>
+
+<h2 id="AbMyTypeBoxedMaybe">Maybe&lt;ab.MyType&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#AbMyType">ab.MyType</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="AbMyTypeMaybe">Maybe&lt;ab.myType&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#AbMyType">ab.myType</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="AbResponse">ab.Response</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "ab.empty" or "#1ec6a63e"' style="color:MediumVioletRed">"ab.empty#1ec6a63e"</span>}</td><td></td>          <td>
+    <code style="color:DarkCyan">// Union comment - Empty</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "ab.code" or "#7651b1ac"' style="color:MediumVioletRed">"ab.code#7651b1ac"</span>,</td><td>"value":<a href="#AbCode">ab.code</a>}</td>          <td>
+    <code style="color:DarkCyan">// Union comment - Code</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "ab.alias" or "#944aaa97"' style="color:MediumVioletRed">"ab.alias#944aaa97"</span>,</td><td>"value":<a href="#AbAlias">ab.alias</a>}</td>          <td>
+    <code style="color:DarkCyan">/* Union comment - Multiline</code></td></tr><tr><td colspan="3">
+    <code style="color:DarkCyan">alias */</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "cd.response" or "#8c202f64"' style="color:MediumVioletRed">"cd.response#8c202f64"</span>,</td><td>"value":<a href="#CdResponse">cd.response</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>ab.empty#1ec6a63e = ab.Response;</code>
+    </li>
+    <li>
+    <code>ab.code#7651b1ac x:int = ab.Response;</code>
+    </li>
+    <li>
+    <code>ab.alias#944aaa97 int = ab.Response;</code>
+    </li>
+    <li>
+    <code>cd.response#8c202f64 x:int str:string = ab.Response;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="AbTestMaybe">ab.testMaybe</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#IntMaybe">Maybe&lt;int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AbMyTypeMaybe">Maybe&lt;ab.myType&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: <a href="#CdMyTypeMaybe">Maybe&lt;cd.myType&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: <a href="#AbMyTypeBoxedMaybe">Maybe&lt;ab.MyType&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.testMaybe#4dac492a n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe ab.MyType) = ab.TestMaybe;</code>
+  </dd>
+</dl>
+
+<h2 id="AbTopLevel1">ab.topLevel1</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#NoStr">noStr</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#NoStr">noStr</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.topLevel1#e67bce28 a:noStr b:noStr = ab.TopLevel1;</code>
+  </dd>
+</dl>
+
+<h2 id="AbTopLevel2">ab.topLevel2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#NoStr">noStr</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#UseStr">useStr</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.topLevel2#cef933fb a:noStr b:useStr = ab.TopLevel2;</code>
+  </dd>
+</dl>
+
+<h2 id="AbTypeA">ab.typeA</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.typeA#a99fef6a x:int = ab.TypeA;</code>
+  </dd>
+</dl>
+
+<h2 id="AbTypeB">ab.typeB</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.typeB#ff2e6d58 x:ab.typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="AbTypeC">ab.typeC</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.typeC#69920d6e x:cd.typeA = ab.TypeC;</code>
+  </dd>
+</dl>
+
+<h2 id="AbTypeD">ab.typeD</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.typeD#76615bf1 x:typeA = ab.TypeD;</code>
+  </dd>
+</dl>
+
+<h2 id="AbUseCycle">ab.useCycle</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#Cyc2MyCycle">cyc2.myCycle</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [<a href="#AColor">a.Color</a>, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.useCycle#71687381 a:cyc2.myCycle b:(vector a.Color) = ab.UseCycle;</code>
+  </dd>
+</dl>
+
+<h2 id="AbUseDictString">ab.useDictString</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"tags"</td><td>: {&lt;string&gt;: &lt;string&gt;}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>ab.useDictString#3325d884 fields_mask:# tags:%(Dictionary string) = ab.UseDictString;</code>
+  </dd>
+</dl>
+
+<h2 id="AuNionA">au.nionA</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>au.nionA#df61f632 b:int = a.MyUnion;</code>
+  </dd>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="Call1">call1</h2>
+
+<p></p>
+  Returns <code><a href="#AbTypeB">ab.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call1#a7302fbc x:ab.typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call2">call2</h2>
+
+<p></p>
+  Returns <code><a href="#CdTypeB">cd.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call2#f02024c6 x:ab.typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call3">call3</h2>
+
+<p></p>
+  Returns <code><a href="#TypeB">TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call3#6ace6718 x:ab.typeA = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call4">call4</h2>
+
+<p></p>
+  Returns <code><a href="#AbTypeB">ab.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call4#46d7de8f x:cd.typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call5">call5</h2>
+
+<p></p>
+  Returns <code><a href="#CdTypeB">cd.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call5#fc51061c x:cd.typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call6">call6</h2>
+
+<p></p>
+  Returns <code><a href="#TypeB">TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call6#e41e4696 x:cd.typeA = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call7">call7</h2>
+
+<p></p>
+  Returns <code><a href="#AbTypeB">ab.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call7#262a43e2 x:typeA = ab.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call8">call8</h2>
+
+<p></p>
+  Returns <code><a href="#CdTypeB">cd.TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call8#7b400184 x:typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="Call9">call9</h2>
+
+<p></p>
+  Returns <code><a href="#TypeB">TypeB</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>read call9#67a0d62d x:typeA = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="CdMyType">cd.myType</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.myType#eab6a6b4 x:int = cd.MyType;</code>
+  </dd>
+</dl>
+
+<h2 id="CdMyTypeMaybe">Maybe&lt;cd.myType&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#CdMyType">cd.myType</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="CdResponse">cd.response</h2>
+    <code style="color:DarkCyan">// Also union comment</code></br>
+    <code style="color:DarkCyan">// Multiline Alias</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"str"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.response#8c202f64 x:int str:string = ab.Response;</code>
+  </dd>
+</dl>
+
+<h2 id="CdTopLevel3">cd.topLevel3</h2>
+    <code style="color:DarkCyan">// comment for TopLevel3</code></br>
+    <code style="color:DarkCyan">// also comment for TopLevel3</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#UseStr">useStr</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#HalfStr">halfStr</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.topLevel3#5cd1ca89 a:useStr b:halfStr = cd.TopLevel3;</code>
+  </dd>
+</dl>
+
+<h2 id="CdTypeA">cd.typeA</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.typeA#a831a920 x:int = cd.TypeA;</code>
+  </dd>
+</dl>
+
+<h2 id="CdTypeB">cd.typeB</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.typeB#377b4996 x:ab.typeA = cd.TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="CdTypeC">cd.typeC</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.typeC#db0f93d4 x:ab.typeA = cd.TypeC;</code>
+  </dd>
+</dl>
+
+<h2 id="CdTypeD">cd.typeD</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#TypeA">typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.typeD#b5528285 x:typeA = cd.TypeD;</code>
+  </dd>
+</dl>
+
+<h2 id="CdUseCycle">cd.useCycle</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#Cyc2MyCycle">cyc2.myCycle</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AColorBoxedMaybe">Maybe&lt;a.Color&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cd.useCycle#6ed67ca0 a:cyc2.myCycle b:(Maybe a.Color) = cd.UseCycle;</code>
+  </dd>
+</dl>
+
+<h2 id="Cyc1MyCycle">cyc1.myCycle</h2>
+    <code style="color:DarkCyan">//----- Test Recursive between namespaces</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#Cyc2MyCycle">cyc2.myCycle</a></td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cyc1.myCycle#136ecc9e fields_mask:# a:fields_mask.0?cyc2.myCycle = cyc1.MyCycle;</code>
+  </dd>
+</dl>
+
+<h2 id="Cyc2MyCycle">cyc2.myCycle</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#Cyc3MyCycleMaybe">Maybe&lt;cyc3.myCycle&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AColor">a.Color</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cyc2.myCycle#fba5eecb fields_mask:# a:(Maybe cyc3.myCycle) b:a.Color = cyc2.MyCycle;</code>
+  </dd>
+</dl>
+
+<h2 id="Cyc3MyCycle">cyc3.myCycle</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [<a href="#Cyc1MyCycle">cyc1.myCycle</a>, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cyc3.myCycle#47866860 fields_mask:# a:(vector cyc1.myCycle) = cyc3.MyCycle;</code>
+  </dd>
+</dl>
+
+<h2 id="Cyc3MyCycleMaybe">Maybe&lt;cyc3.myCycle&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#Cyc3MyCycle">cyc3.myCycle</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="CycleTuple">cycleTuple</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [2 × <a href="#CycleTuple">cycleTuple</a>],</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [n × <a href="#CycleTuple">cycleTuple</a>],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: [3 × &lt;int32&gt;]</td>
+          <td>// n bit #2
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cycleTuple#c867fae3 n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?%(__tuple 3 int) = CycleTuple;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemIntPairIntInt">dictionaryElem&lt;int,pair&lt;int,int&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#PairIntInt">pair&lt;int,int&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemLongPairIntInt">dictionaryElem&lt;long,pair&lt;int,int&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#PairIntInt">pair&lt;int,int&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemPairBoolAColorInt">dictionaryElem&lt;pair&lt;Bool,a.Color&gt;,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: <a href="#PairBoolAColor">pair&lt;Bool,a.Color&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemPairFloatDoubleInt">dictionaryElem&lt;pair&lt;float,double&gt;,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: <a href="#PairFloatDouble">pair&lt;float,double&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemPairIntIntInt">dictionaryElem&lt;pair&lt;int,int&gt;,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: <a href="#PairIntInt">pair&lt;int,int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemPairIntPairMultiPointStringInt">dictionaryElem&lt;pair&lt;int,pair&lt;multiPoint,string&gt;&gt;,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: <a href="#PairIntPairMultiPointString">pair&lt;int,pair&lt;multiPoint,string&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemStrangeString">dictionaryElemStrange&lt;string&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
+          <td>// key bit #31
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElemStrange#e3b2385c {v:Type} key:# value:key.31?v = DictionaryElemStrange v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemStringPairIntInt">dictionaryElem&lt;string,pair&lt;int,int&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#PairIntInt">pair&lt;int,int&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemTupleStringInt">dictionaryElem&lt;tuple&lt;string,#&gt;,int&gt;</h2>
+
+External # (nat) arguments: <b>k</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: [k × &lt;string&gt;],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElem#a69d7dd0 {k:Type} {v:Type} key:k value:v = DictionaryElem k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryElemUglyIntString">dictionaryElemUgly&lt;#,int,string&gt;</h2>
+
+External # (nat) arguments: <b>f</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;int32&gt;,</td>
+          <td>// f bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
+          <td>// f bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryElemUgly#e6790546 {f:#}{f:Type} {k:Type} {v:Type} key:f.0?k value:f.1?v = DictionaryElemUgly f k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryFieldString">dictionaryField&lt;string&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed">dictionaryField&lt;usefulService.UserEntityPaymentItem&lt;#&gt;&gt;</h2>
+
+External # (nat) arguments: <b>t</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#UsefulServiceUserEntityPaymentItem">usefulService.UserEntityPaymentItem&lt;t&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+  </dd>
+</dl>
+
+
+
+<h2 id="DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe">Maybe&lt;Dictionary&lt;usefulService.UserEntityPaymentItem&lt;#&gt;&gt;&gt;</h2>
+
+External # (nat) arguments: <b>t</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: {&lt;string&gt;: <a href="#UsefulServiceUserEntityPaymentItem">usefulService.UserEntityPaymentItem&lt;t&gt;</a>}}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="HalfStr">halfStr</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#NoStr">noStr</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: <a href="#UseStr">useStr</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>halfStr#647ddaf5 x:noStr y:useStr = HalfStr;</code>
+  </dd>
+</dl>
+
+<h2 id="Hren">hren</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"next"</td><td>: <a href="#HrenMaybe">Maybe&lt;hren&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>hren#12ab5219 next:(Maybe hren) = Hren;</code>
+  </dd>
+</dl>
+
+<h2 id="HrenMaybe">Maybe&lt;hren&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#Hren">hren</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="Inner">inner&lt;#&gt;</h2>
+    <code style="color:DarkCyan">//----- Test Bracket replace</code></br>
+
+External # (nat) arguments: <b>X</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>inner#3b53db83 {X:#}{X:Type} a:int = Inner X;</code>
+  </dd>
+</dl>
+
+<h2 id="InnerMaybe">innerMaybe&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>X</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#TupleIntMaybe">Maybe&lt;tuple&lt;int,X&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>innerMaybe#0a7d3b9e {X:#}{X:Type} a:(Maybe (tuple int X)) = InnerMaybe X;</code>
+  </dd>
+</dl>
+
+<h2 id="InnerMaybe0">innerMaybe&lt;0&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#TupleInt0Maybe">Maybe&lt;tuple&lt;int,0&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>innerMaybe#0a7d3b9e {X:#}{X:Type} a:(Maybe (tuple int X)) = InnerMaybe X;</code>
+  </dd>
+</dl>
+
+
+
+
+<h2 id="IntBoxedMaybe">Maybe&lt;Int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: &lt;int32&gt;}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="IntMaybe">Maybe&lt;int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: &lt;int32&gt;}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="MaybeTest1">maybeTest1</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#IntMaybe">Maybe&lt;int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#IntBoxedMaybe">Maybe&lt;Int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: <a href="#TupleInt3Maybe">Maybe&lt;tuple&lt;int,3&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: <a href="#TupleIntBoxed3Maybe">Maybe&lt;tuple&lt;Int,3&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+          <tr><td colspan="4">
+            <code style="color:DarkCyan">// This comment is before field e</code>
+          </td></tr>
+          <tr><td colspan="4">
+            <code style="color:DarkCyan">// Second line of comment before field e</code>
+          </td></tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: <a href="#InnerMaybe">InnerMaybe&lt;n&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f"</td><td>: <a href="#InnerMaybe0">InnerMaybe&lt;0&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"g"</td><td>: <a href="#VectorIntMaybe">Maybe&lt;vector&lt;int&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"h"</td><td>: <a href="#VectorIntBoxedMaybe">Maybe&lt;Vector&lt;int&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"i"</td><td>: <a href="#TupleInt3BoxedMaybe">Maybe&lt;Tuple&lt;int,3&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"j"</td><td>: <a href="#TupleIntBoxed0BoxedMaybe">Maybe&lt;Tuple&lt;Int,0&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>maybeTest1#c457763c n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3)) e:(InnerMaybe n) f:(InnerMaybe 0) g:(Maybe (vector int)) h:(Maybe (Vector int)) i:(Maybe (Tuple int 3)) j:(Maybe (Tuple Int 0)) = MaybeTest1;</code>
+  </dd>
+</dl>
+
+<h2 id="MaybeWrapperInt3">maybeWrapper&lt;int,3&gt;</h2>
+    <code style="color:DarkCyan">//---- test maybe</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#TupleInt3Maybe">Maybe&lt;tuple&lt;int,3&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>maybeWrapper#723390c4 {T:Type} {N:#}{N:Type} a:(Maybe (tuple T N)) = MaybeWrapper T N;</code>
+  </dd>
+</dl>
+
+<h2 id="MultiPoint">multiPoint</h2>
+    <code style="color:DarkCyan">// Multiline comment before combinator</code></br>
+    <code style="color:DarkCyan">///*----- Test Multiple native wrappers</code></br>
+    <code style="color:DarkCyan">//*/</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [3 × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [3 × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: [3 × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: [3 × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: [3 × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f"</td><td>: [3 × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>multiPoint#0e1ae81e a:%(__tuple 3 int) b:%(__tuple 3 Int) c:%(__tuple 3 int32) d:%(__tuple 3 Int32) e:%(__tuple 3 myInt32) f:%(__tuple 3 MyInt32) = MultiPoint;</code>
+  </dd>
+</dl>
+
+
+
+<h2 id="MyNat">myNat</h2>
+    <code style="color:DarkCyan">//----- Test Recursive types</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#MyNat">myNat</a></td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>myNat#c60c1b41 fields_mask:# a:fields_mask.0?myNat = MyNat;</code>
+  </dd>
+</dl>
+
+<h2 id="MyNat2">MyNat2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "myZero" or "#8d868379"' style="color:MediumVioletRed">"myZero#8d868379"</span>}</td><td></td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "myPlus" or "#79e0c6df"' style="color:MediumVioletRed">"myPlus#79e0c6df"</span>,</td><td>"value":<a href="#MyPlus">myPlus</a>}</td>          <td>
+    <code style="color:DarkCyan">// struct with field</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>myZero#8d868379 = MyNat2;</code>
+    </li>
+    <li>
+    <code>myPlus#79e0c6df a:MyNat2 = MyNat2;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="MyNat3">MyNat3</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "myZero3" or "#103a40cf"' style="color:MediumVioletRed">"myZero3#103a40cf"</span>}</td><td></td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "myPlus3" or "#692c291b"' style="color:MediumVioletRed">"myPlus3#692c291b"</span>,</td><td>"value":<a href="#MyPlus3">myPlus3</a>}</td>          <td>
+    <code style="color:DarkCyan">// typedef</code></td></tr><tr><td colspan="3">
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>myZero3#103a40cf = MyNat3;</code>
+    </li>
+    <li>
+    <code>myPlus3#692c291b MyNat3 = MyNat3;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="MyPlus">myPlus</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#MyNat2">MyNat2</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>myPlus#79e0c6df a:MyNat2 = MyNat2;</code>
+    <code style="color:DarkCyan">// struct with field</code></br>
+  </dd>
+</dl>
+
+
+
+
+<h2 id="NativeWrappers">nativeWrappers</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>nativeWrappers#344ddf50 a:int b:Int c:int32 d:Int32 e:myInt32 f:MyInt32 = NativeWrappers;</code>
+    <code style="color:DarkCyan">// combinator comment</code></br>
+  </dd>
+</dl>
+
+<h2 id="NoStr">noStr</h2>
+    <code style="color:DarkCyan">//---- test bytes version propagation</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>noStr#3a728324 x:int = NoStr;</code>
+  </dd>
+</dl>
+
+<h2 id="PairAInnerAInner">pair&lt;a.inner&lt;#&gt;,a.inner&lt;#&gt;&gt;</h2>
+
+External # (nat) arguments: <b>X, Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#AInner">a.inner&lt;X&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AInner">a.inner&lt;Y&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairBoolAColor">pair&lt;Bool,a.Color&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;bool&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AColor">a.Color</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairFloatDouble">pair&lt;float,double&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;float32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;float64&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairIntInt">pair&lt;int,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairIntLong">pair&lt;int,long&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;int64&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairIntPairMultiPointString">pair&lt;int,pair&lt;multiPoint,string&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#PairMultiPointString">pair&lt;multiPoint,string&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairMultiPointString">pair&lt;multiPoint,string&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#MultiPoint">multiPoint</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="PairPairAInnerAInnerAInnerBoxed3">pair&lt;pair&lt;a.inner&lt;#&gt;,a.inner&lt;#&gt;&gt;,a.Inner&lt;3&gt;&gt;</h2>
+
+External # (nat) arguments: <b>XXI, XYI</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#PairAInnerAInner">pair&lt;a.inner&lt;XXI&gt;,a.inner&lt;XYI&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#AInner3">a.Inner&lt;3&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>pair#0f3c47ab {X:Type} {Y:Type} a:X b:Y = Pair X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace">replace</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#Replace1">replace1&lt;n&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a1"</td><td>: <a href="#Replace13">replace1&lt;3&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#Replace2">replace2</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: <a href="#Replace3">replace3</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: <a href="#Replace4">replace4&lt;n&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d1"</td><td>: <a href="#Replace43">replace4&lt;3&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: <a href="#Replace5">replace5</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"g"</td><td>: <a href="#Replace6">replace6</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"h"</td><td>: <a href="#Replace7">replace7</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"i"</td><td>: <a href="#Replace8">replace8</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"j"</td><td>: <a href="#Replace9">replace9</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"k"</td><td>: <a href="#Replace10">replace10</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"l"</td><td>: <a href="#Replace11Long">replace11&lt;n,long&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"m"</td><td>: <a href="#Replace12">replace12</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"o"</td><td>: <a href="#Replace13Long">replace13&lt;n,long&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"p"</td><td>: <a href="#Replace14Long">replace14&lt;n,long&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"q"</td><td>: <a href="#Replace15">replace15</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace#323db63e n:# a:(replace1 n) a1:(replace1 3) b:replace2 c:replace3 d:(replace4 n) d1:(replace4 3) e:replace5 g:replace6 h:replace7 i:replace8 j:replace9 k:replace10 l:(replace11 n long) m:replace12 o:(replace13 n long) p:(replace14 n long) q:replace15 = Replace;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace1">replace1&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace1#89eac43a {n:#}{n:Type} a:%(__tuple n int) = Replace1 n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace10">replace10</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × [3 × <a href="#Replace10Elem">replace10Elem&lt;n&gt;</a>]]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace10#fc81f008 n:# a:%(__tuple n %(__tuple 3 (replace10Elem n))) = Replace10;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace10Elem">replace10Elem&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace10Elem {n:#}{n:Type} a:int b:int = Replace10Elem n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace11ElemLong">replace11Elem&lt;#,long,#&gt;</h2>
+
+External # (nat) arguments: <b>n, k</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [3 × <a href="#PairIntLong">Pair&lt;int,long&gt;</a>],</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: [n × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace11Elem {n:#}{n:Type} {X:Type} {k:#}{k:Type} b:n.0?%(__tuple 3 (Pair int X)) c:%(__tuple n int) = Replace11Elem n X k;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace11Long">replace11&lt;#,long&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"k"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [k × <a href="#Replace11ElemLong">replace11Elem&lt;n,long,k&gt;</a>]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace11#bf5944e6 {n:#}{n:Type} {X:Type} k:# a:%(__tuple k (replace11Elem n X k)) = Replace11 n X;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace12">replace12</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × [3 × <a href="#Replace12Elem">replace12Elem&lt;n&gt;</a>]]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace12#ec121094 n:# a:%(__tuple n %(__tuple 3 (replace12Elem n))) = Replace12;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace12Elem">replace12Elem&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace12Elem {n:#}{n:Type} a:n.0?int = Replace12Elem n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace13">replace1&lt;3&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [3 × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace1#89eac43a {n:#}{n:Type} a:%(__tuple n int) = Replace1 n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace13ElemLong">replace13Elem&lt;#,long,#&gt;</h2>
+
+External # (nat) arguments: <b>n, k</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [k × <a href="#PairIntLong">Pair&lt;int,long&gt;</a>],</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: [n × &lt;int32&gt;]</td>
+          <td>// k bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace13Elem {n:#}{n:Type} {X:Type} {k:#}{k:Type} b:n.0?%(__tuple k (Pair int X)) c:k.0?%(__tuple n int) = Replace13Elem n X k;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace13Long">replace13&lt;#,long&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"k"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [k × <a href="#Replace13ElemLong">replace13Elem&lt;n,long,k&gt;</a>]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace13#c6f00b71 {n:#}{n:Type} {X:Type} k:# a:%(__tuple k (replace13Elem n X k)) = Replace13 n X;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace14ElemElemLong">replace14ElemElem&lt;#,long,#&gt;</h2>
+
+External # (nat) arguments: <b>n, k</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: [k × &lt;int64&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace14ElemElem {n:#}{n:Type} {X:Type} {k:#}{k:Type} x:int y:%(__tuple k X) = Replace14ElemElem n X k;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace14ElemLong">replace14Elem&lt;#,long,#&gt;</h2>
+
+External # (nat) arguments: <b>n, k</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [3 × <a href="#Replace14ElemElemLong">replace14ElemElem&lt;n,long,k&gt;</a>],</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace14Elem {n:#}{n:Type} {X:Type} {k:#}{k:Type} b:n.0?%(__tuple 3 (replace14ElemElem n X k)) c:int = Replace14Elem n X k;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace14Long">replace14&lt;#,long&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"k"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [k × <a href="#Replace14ElemLong">replace14Elem&lt;n,long,k&gt;</a>]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace14#0b9801f9 {n:#}{n:Type} {X:Type} k:# a:%(__tuple k (replace14Elem n X k)) = Replace14 n X;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace15">replace15</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × <a href="#Replace15Elem">replace15Elem&lt;n&gt;</a>],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [n × <a href="#Replace15Elem1">replace15Elem1&lt;n&gt;</a>],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: [n × <a href="#Replace15Elem2">replace15Elem2&lt;n&gt;</a>]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace15#2280e430 n:# a:%(__tuple n (replace15Elem n)) b:%(__tuple n (replace15Elem1 n)) c:%(__tuple n (replace15Elem2 n)) = Replace15;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace15Elem">replace15Elem&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace15Elem {n:#}{n:Type} x:int y:int = Replace15Elem n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace15Elem1">replace15Elem1&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: &lt;int64&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace15Elem1 {n:#}{n:Type} x:long y:long = Replace15Elem1 n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace15Elem2">replace15Elem2&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"z"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace15Elem2 {n:#}{n:Type} x:int y:int z:int = Replace15Elem2 n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace17">replace17</h2>
+    <code style="color:DarkCyan">// replace16 n:int k:# m:# a:z*[b:# c:z*[int] k:# d:k*[int]] = Replace16; - interesting errors</code></br>
+    <code style="color:DarkCyan">// replace16 n:int k:# m:# a:[b:# c:n*[int] k:# d:k*[int]] = Replace16; - interesting errors</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: [&lt;int32&gt;, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: [&lt;int32&gt;, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace17#f46f9b9b x:%(__vector int) a:int y:%(__vector int) = Replace17;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace18">replace18</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [[[&lt;int32&gt;, ...], ...], ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace18#704dd712 a:%(__vector %(__vector %(__vector int))) = Replace18;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace2">replace2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace2#e2d4ebee n:# a:%(__tuple n int) = Replace2;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace3">replace3</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [3 × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace3#51e324e4 a:%(__tuple 3 int) = Replace3;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace4">replace4&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace4#87995fb4 {n:#}{n:Type} a:%(__tuple n int) = Replace4 n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace43">replace4&lt;3&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [3 × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace4#87995fb4 {n:#}{n:Type} a:%(__tuple n int) = Replace4 n;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace5">replace5</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace5#8b5bc78a n:# a:%(__tuple n int) = Replace5;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace6">replace6</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [&lt;int32&gt;, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace6#abd49d06 a:%(__vector int) = Replace6;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace7">replace7</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"m"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [m × [m × &lt;int32&gt;]]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace7#f4c66d9f n:# m:# a:%(__tuple n %(__tuple m int)) = Replace7;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace8">replace8</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × [3 × &lt;int32&gt;]]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace8#d626c117 n:# a:%(__tuple n %(__tuple 3 int)) = Replace8;</code>
+  </dd>
+</dl>
+
+<h2 id="Replace9">replace9</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × [3 × <a href="#Inner">Inner&lt;n&gt;</a>]]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>replace9#95d598c5 n:# a:%(__tuple n %(__tuple 3 (Inner n))) = Replace9;</code>
+  </dd>
+</dl>
+
+
+<h2 id="Service5Insert">service5.insert</h2>
+
+<p></p>
+  Returns <code><a href="#Service5Output">service5.Output</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"flags"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"persistent"</td><td>: true</td>
+          <td>// flags bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>readwrite service5.insert#7cf362ba flags:# persistent:flags.0?%True = service5.Output;</code>
+  </dd>
+</dl>
+
+
+<h2 id="Service5LongInsert">service5Long.insert</h2>
+
+<p></p>
+  Returns <code><a href="#Service5LongOutput">service5Long.Output</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"flags"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"persistent"</td><td>: true</td>
+          <td>// flags bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>readwrite service5Long.insert#7cf362bb flags:# persistent:flags.0?%True = service5Long.Output;</code>
+  </dd>
+</dl>
+
+<h2 id="Service5LongOutput">service5Long.Output</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "service5Long.emptyOutput" or "#ff8f7db9"' style="color:MediumVioletRed">"service5Long.emptyOutput#ff8f7db9"</span>}</td><td></td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "service5Long.stringOutput" or "#dc170ff5"' style="color:MediumVioletRed">"service5Long.stringOutput#dc170ff5"</span>,</td><td>"value":<a href="#Service5LongStringOutput">service5Long.stringOutput</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>service5Long.emptyOutput#ff8f7db9 = service5Long.Output;</code>
+    </li>
+    <li>
+    <code>service5Long.stringOutput#dc170ff5 http_code:long response:string = service5Long.Output;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="Service5LongStringOutput">service5Long.stringOutput</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"http_code"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"response"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>service5Long.stringOutput#dc170ff5 http_code:long response:string = service5Long.Output;</code>
+  </dd>
+</dl>
+
+<h2 id="Service5Output">service5.Output</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "service5.emptyOutput" or "#ff8f7db8"' style="color:MediumVioletRed">"service5.emptyOutput#ff8f7db8"</span>}</td><td></td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "service5.stringOutput" or "#dc170ff4"' style="color:MediumVioletRed">"service5.stringOutput#dc170ff4"</span>,</td><td>"value":<a href="#Service5StringOutput">service5.stringOutput</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>service5.emptyOutput#ff8f7db8 = service5.Output;</code>
+    </li>
+    <li>
+    <code>service5.stringOutput#dc170ff4 http_code:int response:string = service5.Output;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="Service5StringOutput">service5.stringOutput</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"http_code"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"response"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>service5.stringOutput#dc170ff4 http_code:int response:string = service5.Output;</code>
+  </dd>
+</dl>
+
+
+<h2 id="TestMaybe">testMaybe</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#IntMaybe">Maybe&lt;int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#IntBoxedMaybe">Maybe&lt;Int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: <a href="#VectorIntMaybe">Maybe&lt;vector&lt;int&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: <a href="#TupleInt3Maybe">Maybe&lt;tuple&lt;int,3&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// comment for d field</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: <a href="#TupleIntMaybe">Maybe&lt;tuple&lt;int,n&gt;&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f"</td><td>: <a href="#MaybeWrapperInt3">maybeWrapper&lt;int,3&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>testMaybe#88920e90 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (vector int)) d:(Maybe (tuple int 3)) e:(Maybe (tuple int n)) f:(maybeWrapper int 3) = TestMaybe;</code>
+  </dd>
+</dl>
+
+<h2 id="TestMaybe2">testMaybe2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#IntMaybe">Maybe&lt;int&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"g"</td><td>: <a href="#AbMyTypeMaybe">Maybe&lt;ab.myType&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>testMaybe2#0aa03cf2 n:# a:(Maybe int) g:(Maybe ab.myType) = TestMaybe2;</code>
+  </dd>
+</dl>
+
+
+
+
+
+
+<h2 id="TupleInt0Maybe">Maybe&lt;tuple&lt;int,0&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [0 × &lt;int32&gt;]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="TupleInt3BoxedMaybe">Maybe&lt;Tuple&lt;int,3&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [3 × &lt;int32&gt;]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="TupleInt3Maybe">Maybe&lt;tuple&lt;int,3&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [3 × &lt;int32&gt;]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="TupleIntBoxed0BoxedMaybe">Maybe&lt;Tuple&lt;Int,0&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [0 × &lt;int32&gt;]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+<h2 id="TupleIntBoxed3Maybe">Maybe&lt;tuple&lt;Int,3&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [3 × &lt;int32&gt;]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="TupleIntMaybe">Maybe&lt;tuple&lt;int,#&gt;&gt;</h2>
+
+External # (nat) arguments: <b>t</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [t × &lt;int32&gt;]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+
+<h2 id="TypeA">typeA</h2>
+    <code style="color:DarkCyan">//----- Test function calls to and from namespaces</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>typeA#157673c1 x:int = TypeA;</code>
+  </dd>
+</dl>
+
+<h2 id="TypeB">typeB</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>typeB#9d024802 x:int = TypeB;</code>
+  </dd>
+</dl>
+
+<h2 id="TypeC">typeC</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#AbTypeA">ab.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>typeC#6b8ef43f x:ab.typeA = TypeC;</code>
+  </dd>
+</dl>
+
+<h2 id="TypeD">typeD</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: <a href="#CdTypeA">cd.typeA</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>typeD#b1f4369e x:cd.typeA = TypeD;</code>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsUse">unionArgsUse</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"k"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#UnionArgsXXXInt">UnionArgsXXX&lt;int,k&gt;</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: <a href="#UnionArgsXXXLong">UnionArgsXXX&lt;long,n&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>unionArgsUse#742161d2 k:# n:# a:(UnionArgsXXX int k) b:(UnionArgsXXX long n) = UnionArgsUse;</code>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsXXX1Int">unionArgsXXX1&lt;int,#&gt;</h2>
+    <code style="color:DarkCyan">//----- Unions</code></br>
+
+External # (nat) arguments: <b>Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: [Y × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#}{Y:Type} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsXXX1Long">unionArgsXXX1&lt;long,#&gt;</h2>
+    <code style="color:DarkCyan">//----- Unions</code></br>
+
+External # (nat) arguments: <b>Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: [Y × &lt;int64&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#}{Y:Type} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsXXX2Int">unionArgsXXX2&lt;int,#&gt;</h2>
+
+External # (nat) arguments: <b>Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#}{Y:Type} a:int = UnionArgsXXX X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsXXX2Long">unionArgsXXX2&lt;long,#&gt;</h2>
+
+External # (nat) arguments: <b>Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#}{Y:Type} a:int = UnionArgsXXX X Y;</code>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsXXXInt">UnionArgsXXX&lt;int,#&gt;</h2>
+
+External # (nat) arguments: <b>Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "unionArgsXXX1" or "#e7978c97"' style="color:MediumVioletRed">"unionArgsXXX1#e7978c97"</span>,</td><td>"value":<a href="#UnionArgsXXX1Int">unionArgsXXX1&lt;int,#&gt;</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "unionArgsXXX2" or "#6daed784"' style="color:MediumVioletRed">"unionArgsXXX2#6daed784"</span>,</td><td>"value":<a href="#UnionArgsXXX2Int">unionArgsXXX2&lt;int,#&gt;</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#}{Y:Type} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+    </li>
+    <li>
+    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#}{Y:Type} a:int = UnionArgsXXX X Y;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="UnionArgsXXXLong">UnionArgsXXX&lt;long,#&gt;</h2>
+
+External # (nat) arguments: <b>Y</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "unionArgsXXX1" or "#e7978c97"' style="color:MediumVioletRed">"unionArgsXXX1#e7978c97"</span>,</td><td>"value":<a href="#UnionArgsXXX1Long">unionArgsXXX1&lt;long,#&gt;</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "unionArgsXXX2" or "#6daed784"' style="color:MediumVioletRed">"unionArgsXXX2#6daed784"</span>,</td><td>"value":<a href="#UnionArgsXXX2Long">unionArgsXXX2&lt;long,#&gt;</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>unionArgsXXX1#e7978c97 {X:Type} {Y:#}{Y:Type} x:(tuple X Y) = UnionArgsXXX X Y;</code>
+    </li>
+    <li>
+    <code>unionArgsXXX2#6daed784 {X:Type} {Y:#}{Y:Type} a:int = UnionArgsXXX X Y;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="UseDictUgly">useDictUgly</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [<a href="#DictionaryElemUglyIntString">dictionaryElemUgly&lt;n,int,string&gt;</a>, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: {&lt;uint32&gt;: &lt;string&gt;},</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"c"</td><td>: [<a href="#DictionaryElemPairIntIntInt">dictionaryElem&lt;pair&lt;int,int&gt;,int&gt;</a>, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"d"</td><td>: [<a href="#DictionaryElemTupleStringInt">dictionaryElem&lt;tuple&lt;string,n&gt;,int&gt;</a>, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: [<a href="#DictionaryElemPairBoolAColorInt">dictionaryElem&lt;pair&lt;Bool,a.Color&gt;,int&gt;</a>, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f"</td><td>: [<a href="#DictionaryElemPairFloatDoubleInt">dictionaryElem&lt;pair&lt;float,double&gt;,int&gt;</a>, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"g"</td><td>: [<a href="#DictionaryElemPairIntPairMultiPointStringInt">dictionaryElem&lt;pair&lt;int,pair&lt;multiPoint,string&gt;&gt;,int&gt;</a>, ...],</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: {&lt;int32&gt;: <a href="#PairIntInt">pair&lt;int,int&gt;</a>},</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"y"</td><td>: {&lt;int64&gt;: <a href="#PairIntInt">pair&lt;int,int&gt;</a>},</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"z"</td><td>: {&lt;string&gt;: <a href="#PairIntInt">pair&lt;int,int&gt;</a>}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>useDictUgly#fb9ce817 n:# a:%(__vector (dictionaryElemUgly n int string)) b:%(__vector (dictionaryElemStrange string)) c:%(__vector (dictionaryElem (pair int int) int)) d:%(__vector (dictionaryElem (tuple string n) int)) e:%(__vector (dictionaryElem (pair Bool a.Color) int)) f:%(__vector (dictionaryElem (pair float double) int)) g:%(__vector (dictionaryElem (pair int (pair multiPoint string)) int)) x:%(__vector (dictionaryElem int (pair int int))) y:%(__vector (dictionaryElem long (pair int int))) z:%(__vector (dictionaryElem string (pair int int))) = UseDictUgly;</code>
+  </dd>
+</dl>
+
+<h2 id="UseResponse">useResponse</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: [n × <a href="#AbResponse">ab.Response</a>]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>useResponse#0a63ec5f n:# x:%(__tuple n ab.Response) = UseResponse;</code>
+  </dd>
+</dl>
+
+<h2 id="UseStr">useStr</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"x"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>useStr#9aa3dee5 x:string = UseStr;</code>
+  </dd>
+</dl>
+
+<h2 id="UsefulServiceGetUserEntity">usefulService.getUserEntity</h2>
+
+<p></p>
+  Returns <code><a href="#UsefulServiceGetUserEntityResultBoxedMaybe">Maybe&lt;usefulService.GetUserEntityResult&lt;fields_mask&gt;&gt;</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"stage_id"</td><td>: &lt;string&gt;</td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>readwrite usefulService.getUserEntity#3c857e52 fields_mask:# stage_id:fields_mask.0?string = (Maybe (usefulService.GetUserEntityResult fields_mask));</code>
+  </dd>
+</dl>
+
+<h2 id="UsefulServiceGetUserEntityResult">usefulService.getUserEntityResult&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>fields_mask</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"entity_id"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"payment_items"</td><td>: <a href="#DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe">Maybe&lt;Dictionary&lt;usefulService.UserEntityPaymentItem&lt;fields_mask&gt;&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>usefulService.getUserEntityResult#e494698a {fields_mask:#}{fields_mask:Type} entity_id:string payment_items:(Maybe (Dictionary (usefulService.UserEntityPaymentItem fields_mask))) = usefulService.GetUserEntityResult fields_mask;</code>
+  </dd>
+</dl>
+
+<h2 id="UsefulServiceGetUserEntityResultBoxedMaybe">Maybe&lt;usefulService.GetUserEntityResult&lt;#&gt;&gt;</h2>
+
+External # (nat) arguments: <b>t</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#UsefulServiceGetUserEntityResult">usefulService.GetUserEntityResult&lt;t&gt;</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="UsefulServiceUserEntityPaymentItem">usefulService.userEntityPaymentItem&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>fields_mask</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"id"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"promo"</td><td>: <a href="#UsefulServiceUserEntityPaymentItemPromoBoxedMaybe">Maybe&lt;usefulService.UserEntityPaymentItemPromo&lt;fields_mask&gt;&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>usefulService.userEntityPaymentItem#4f798680 {fields_mask:#}{fields_mask:Type} id:string promo:(Maybe (usefulService.UserEntityPaymentItemPromo fields_mask)) = usefulService.UserEntityPaymentItem fields_mask;</code>
+  </dd>
+</dl>
+
+<h2 id="UsefulServiceUserEntityPaymentItemPromo">usefulService.userEntityPaymentItemPromo&lt;#&gt;</h2>
+    <code style="color:DarkCyan">//----- Test Dictionaries</code></br>
+
+External # (nat) arguments: <b>fields_mask</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"content"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>usefulService.userEntityPaymentItemPromo#24c7ec9f {fields_mask:#}{fields_mask:Type} content:string = usefulService.UserEntityPaymentItemPromo fields_mask;</code>
+  </dd>
+</dl>
+
+<h2 id="UsefulServiceUserEntityPaymentItemPromoBoxedMaybe">Maybe&lt;usefulService.UserEntityPaymentItemPromo&lt;#&gt;&gt;</h2>
+
+External # (nat) arguments: <b>t</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: <a href="#UsefulServiceUserEntityPaymentItemPromo">usefulService.UserEntityPaymentItemPromo&lt;t&gt;</a>}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+
+
+
+
+<h2 id="VectorIntBoxedMaybe">Maybe&lt;Vector&lt;int&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [&lt;int32&gt;, ...]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="VectorIntMaybe">Maybe&lt;vector&lt;int&gt;&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: [&lt;int32&gt;, ...]}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"sort"
 	"strings"
 	"sync/atomic"
@@ -48,7 +49,7 @@ const TlJSONHTML = "tljson.html"
 // Do not forget to bump version when making changes.
 // We do not want repository hash, because it advances automatically each time ANYTHING in repository changes, not only tlgen2.
 // And we do not want stable checksum of go files tlgen folder, because checksums are not comparable and there is no idea how old that version is
-const buildVersionString = "tlgen2 version 2024.03.13, hash of source code - "
+const buildVersionString = "tlgen2 version "
 
 var buildSHA256Checksum = "" // filled when building
 
@@ -65,6 +66,19 @@ type LocalResolveContext struct {
 
 	allowAnyConstructor bool   // we can reference all constructors (functions, union elements) directly internally
 	overrideFileName    string // used for unions and built-in vectors and tuples, so they are defined in the file of argument
+}
+
+func TLGenBuildInfo() (commit string, version string) {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range info.Settings {
+			if setting.Key == "vcs.revision" {
+				commit = setting.Value
+				break
+			}
+		}
+		version = info.Main.Version
+	}
+	return commit, version
 }
 
 // checkArgsCollision checks if passed name is already used in local context.
@@ -240,7 +254,7 @@ func (n *InternalNamespace) mergeFrom(from *InternalNamespace, internalNamespace
 func (n *InternalNamespace) sortedElements() []string {
 	var elements []string
 	for _, t := range n.Types {
-		elements = append(elements, t.goGlobalName)
+		elements = append(elements, t.goGlobalName) // TODO - change to tlName.String() and fix problems
 	}
 	slices.Sort(elements)
 	return elements
@@ -293,21 +307,23 @@ type Namespace struct {
 }
 
 type Gen2Options struct {
-	TypesWhileList       string
-	BytesVersions        string
-	TLPackageNameFull    string
-	BasicPackageNameFull string // if empty, will be created
-	Verbose              bool
-	GenerateRPCCode      bool
-	BasicRPCPath         string
-	GenerateRandomCode   bool
-	SchemaDocumentation  bool
-	SplitInternal        bool
-	Language             string
-	RootCPPNamespace     string
-	CopyrightFilePath    string
-	WarningsAreErrors    bool
-	ErrorWriter          io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+	TypesWhileList         string
+	BytesVersions          string
+	TLPackageNameFull      string
+	BasicPackageNameFull   string // if empty, will be created
+	Verbose                bool
+	GenerateRPCCode        bool
+	BasicRPCPath           string
+	GenerateRandomCode     bool
+	GenerateLegacyJsonRead bool
+	SchemaDocumentation    bool
+	SchemaURLTemplate      string
+	SplitInternal          bool
+	Language               string
+	RootCPPNamespace       string
+	CopyrightFilePath      string
+	WarningsAreErrors      bool
+	ErrorWriter            io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 }
 
 type Gen2 struct {
@@ -373,8 +389,8 @@ func (gen *Gen2) getNamespace(n string) *Namespace {
 		na.decGo.deconflictName("Handle")
 		na.decGo.deconflictName("Client")
 		// TODO - if we want lowercase C++ identifiers, we need to add ~100 reserved keywords here
-		// na.decGo.deconflictName("double")
-		// na.decGo.deconflictName("int")
+		// na.decCpp.deconflictName("double")
+		// na.decCpp.deconflictName("int")
 		// etc...
 	}
 	return na
@@ -396,6 +412,36 @@ func checkTagCollisions(tl tlast.TL) error {
 			return tlast.BeautifulError2(e1, e2)
 		}
 		constructorTags[crc32] = typ
+	}
+	return nil
+}
+
+func checkNamespaceCollisions(tl tlast.TL) error {
+	namespaces := map[string]struct {
+		s  string
+		pr tlast.PositionRange
+	}{}
+	for _, typ := range tl {
+		ns := strings.ToLower(typ.Construct.Name.Namespace)
+		if col, ok := namespaces[ns]; ok && col.s != typ.Construct.Name.Namespace {
+			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("namespaces must not differ by only case"))
+			e2 := col.pr.BeautifulError(errSeeHere)
+			return tlast.BeautifulError2(e1, e2)
+		}
+		namespaces[ns] = struct {
+			s  string
+			pr tlast.PositionRange
+		}{typ.Construct.Name.Namespace, typ.Construct.NamePR}
+		ns = strings.ToLower(typ.TypeDecl.Name.Namespace)
+		if col, ok := namespaces[ns]; ok && col.s != typ.TypeDecl.Name.Namespace {
+			e1 := typ.TypeDecl.NamePR.BeautifulError(fmt.Errorf("namespaces must not differ by only case"))
+			e2 := col.pr.BeautifulError(errSeeHere)
+			return tlast.BeautifulError2(e1, e2)
+		}
+		namespaces[ns] = struct {
+			s  string
+			pr tlast.PositionRange
+		}{typ.TypeDecl.Name.Namespace, typ.TypeDecl.NamePR}
 	}
 	return nil
 }
@@ -644,7 +690,8 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	if len(gen.Code) == 0 || written != 0 || len(relativeFiles) != 0 {
 		// motivation - do not modify marker file if no code changed. Greatly reduces efforts to refactor tlgen.
 		f := filepath.Join(outdir, markerFile)
-		code := buildVersionString + strings.TrimSpace(buildSHA256Checksum) + "\n" // stupid editors insist on empty line at the end
+		_, version := TLGenBuildInfo()
+		code := buildVersionString + strings.TrimSpace(version) + "\n" // stupid editors insist on empty line at the end
 		written++
 		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 			return fmt.Errorf("error writing file %q: %w", f, err)
@@ -674,14 +721,6 @@ func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 }
 
 func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
-	options.TLPackageNameFull = strings.TrimSpace(options.TLPackageNameFull)
-	if options.TLPackageNameFull == "" { // for testing, empty path should be prohibited in main argv parsing
-		options.TLPackageNameFull = "github.com/vkcom/tl/internal/tlcodegen/output/tl"
-	}
-	options.TLPackageNameFull = strings.TrimSuffix(options.TLPackageNameFull, "/")
-	if options.RootCPPNamespace == "" {
-		options.RootCPPNamespace = "tl2"
-	}
 	gen := &Gen2{
 		options:    &options,
 		Code:       map[string]string{},
@@ -694,12 +733,14 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		generatedTypes:     map[string]*TypeRWWrapper{},
 	}
 	switch options.Language {
-	case "go", "cpp", "":
-		break
-	default:
-		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported", options.Language)
-	}
-	if options.Language == "go" {
+	case "": // linting
+	case "go":
+		options.TLPackageNameFull = strings.TrimSpace(options.TLPackageNameFull)
+		options.TLPackageNameFull = strings.TrimSuffix(options.TLPackageNameFull, "/")
+		if options.TLPackageNameFull == "" { // for testing, empty path should be prohibited in main argv parsing
+			options.TLPackageNameFull = "github.com/vkcom/tl/internal/tlcodegen/output/tl"
+		}
+
 		elements := strings.Split(options.TLPackageNameFull, "/")
 		if len(elements) < 3 {
 			return nil, fmt.Errorf("full go package name must have 2 non-empty rightmost path elements, for example '.../output/tl")
@@ -721,11 +762,15 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			}
 			gen.BasicPackageNameFull = gen.options.BasicPackageNameFull
 		}
-	}
-	if options.Language == "cpp" {
+	case "cpp":
+		if options.RootCPPNamespace == "" {
+			options.RootCPPNamespace = "tl2"
+		}
 		gen.RootCPPNamespaceElements = strings.Split(options.RootCPPNamespace, "::")
 		gen.DetailsCPPNamespaceElements = []string{options.RootCPPNamespace, "details"} // TODO - rename to prevent collisions with TL namespace details
 		gen.DetailsCPPNamespace = options.RootCPPNamespace + "::details"
+	default:
+		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported, plus '' for linting", options.Language)
 	}
 	typesWhiteList := strings.Split(options.TypesWhileList, ",")
 	for i := 0; i < len(typesWhiteList); i++ {
@@ -753,8 +798,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			cppResetValue:     "%s = 0;",
 			writeJSONValue:    "basictl.JSONWriteUint32",
 			readJSONValue:     gen.InternalPrefix() + "JsonReadUint32",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadUint32",
 			resetValue:        "%s = 0",
-			randomValue:       "basictl.RandomNat",
+			randomValue:       "basictl.RandomUint",
 			writeValue:        "basictl.NatWrite",
 			readValue:         "basictl.NatRead",
 		}, {
@@ -766,6 +812,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			cppResetValue:     "%s = 0;",
 			writeJSONValue:    "basictl.JSONWriteInt32",
 			readJSONValue:     gen.InternalPrefix() + "JsonReadInt32",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadInt32",
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomInt",
 			writeValue:        "basictl.IntWrite",
@@ -779,6 +826,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			cppResetValue:     "%s = 0;",
 			writeJSONValue:    "basictl.JSONWriteInt64",
 			readJSONValue:     gen.InternalPrefix() + "JsonReadInt64",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadInt64",
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomLong",
 			writeValue:        "basictl.LongWrite",
@@ -792,6 +840,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			cppResetValue:     "%s = 0;",
 			writeJSONValue:    "basictl.JSONWriteFloat32",
 			readJSONValue:     gen.InternalPrefix() + "JsonReadFloat32",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadFloat32",
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomFloat",
 			writeValue:        "basictl.FloatWrite",
@@ -805,6 +854,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			cppResetValue:     "%s = 0;",
 			writeJSONValue:    "basictl.JSONWriteFloat64",
 			readJSONValue:     gen.InternalPrefix() + "JsonReadFloat64",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadFloat64",
 			resetValue:        "%s = 0",
 			randomValue:       "basictl.RandomDouble",
 			writeValue:        "basictl.DoubleWrite",
@@ -818,15 +868,15 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			cppResetValue:     "%s.clear();",
 			writeJSONValue:    "basictl.JSONWriteString",
 			readJSONValue:     gen.InternalPrefix() + "JsonReadString",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadString",
 			resetValue:        "%s = \"\"",
 			randomValue:       "basictl.RandomString",
 			writeValue:        "basictl.StringWrite",
 			readValue:         "basictl.StringRead",
-			writeHasError:     true,
 		},
 	}
 	builtinBeautifulText := fmt.Sprintf(`
-%s {t:Type} {n:#} ? = _ t n; // builtin tuple
+%s {n:#} {t:Type} n*[t] = _ n t; // builtin tuple
 %s {t:Type} # [t] = _ t; // builtin vector
 `, BuiltinTupleName, BuiltinVectorName)
 	primitiveTypes := map[string]*TypeRWPrimitive{}
@@ -866,9 +916,12 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	if err := checkTagCollisions(tl); err != nil {
 		return nil, err
 	}
+	if err := checkNamespaceCollisions(tl); err != nil {
+		return nil, err
+	}
 
 	// ReplaceSquareBrackets will generate types with id 0, we will not generate boxed methods for such types
-	if tl, err = ReplaceSquareBracketsElem(tl, false); err != nil {
+	if tl, err = gen.ReplaceSquareBracketsElem(tl); err != nil {
 		return nil, fmt.Errorf("replacing with canonical tuples: %w", err)
 	}
 	err = gen.buildMapDescriptors(tl)
@@ -1096,6 +1149,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	for _, v := range sortedTypes {
 		visitedNodes := map[*TypeRWWrapper]bool{}
 		v.hasBytesVersion = v.MarkHasBytesVersion(visitedNodes)
+		visitedNodes = map[*TypeRWWrapper]bool{}
+		v.hasErrorInWriteMethods = v.MarkWriteHasError(visitedNodes)
 	}
 	// detect recursion loops first
 	if options.Verbose {

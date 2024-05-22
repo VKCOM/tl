@@ -21,7 +21,8 @@ type TypeRWPrimitive struct {
 	readValue      string
 	writeJSONValue string
 	readJSONValue  string
-	writeHasError  bool
+	readJSON2Value string
+	writeHasError  bool // we keep this for future types
 
 	cppFunctionSuffix string
 	cppPrimitiveType  string
@@ -47,6 +48,10 @@ func (trw *TypeRWPrimitive) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]
 	return trw.tlType == "string"
 }
 
+func (trw *TypeRWPrimitive) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
+	return false
+}
+
 func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
@@ -66,6 +71,10 @@ func (trw *TypeRWPrimitive) IsDictKeySafe() (isSafe bool, isString bool) {
 	return !trw.isFloat(), trw.tlType == "string"
 }
 
+func (trw *TypeRWPrimitive) CanBeBareBoxed() (canBare bool, canBoxed bool) {
+	return true, false
+}
+
 func (trw *TypeRWPrimitive) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	if bytesVersion {
 		if ref {
@@ -78,26 +87,24 @@ func (trw *TypeRWPrimitive) typeResettingCode(bytesVersion bool, directImports *
 
 func (trw *TypeRWPrimitive) typeRandomCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
 	if bytesVersion {
-		return fmt.Sprintf("%s = %sBytes(rand)", addAsterisk(ref, val), trw.randomValue)
+		return fmt.Sprintf("%s = %sBytes(rg)", addAsterisk(ref, val), trw.randomValue)
 	}
-	return fmt.Sprintf("%s = %s(rand)", addAsterisk(ref, val), trw.randomValue)
+	return fmt.Sprintf("%s = %s(rg)", addAsterisk(ref, val), trw.randomValue)
 }
 
-func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
+func (trw *TypeRWPrimitive) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	if !bare {
 		log.Panicf("trw %q cannot be boxed", trw.tlType)
 	}
-	if trw.writeValue == "" {
-		log.Panicf("trw %q cannot be bare", trw.tlType)
-	}
-	if bytesVersion {
-		return wrapLastW(last, fmt.Sprintf("basictl.StringWriteBytes(w, %s )", addAsterisk(ref, val)))
-	}
-	code := fmt.Sprintf("%s(w, %s)", trw.writeValue, addAsterisk(ref, val))
+	code := fmt.Sprintf("%s(w, %s)", addBytes(trw.writeValue, bytesVersion), addAsterisk(ref, val))
 	if trw.writeHasError {
-		return wrapLastW(last, code)
+		return wrapLastW(last, code, needError)
 	}
-	return ifString(last, "return "+code+", nil", "w = "+code)
+	if needError {
+		return ifString(last, "return "+code+", nil", "w = "+code)
+	} else {
+		return ifString(last, "return "+code, "w = "+code)
+	}
 }
 
 func (trw *TypeRWPrimitive) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -112,12 +119,12 @@ func (trw *TypeRWPrimitive) typeReadingCode(bytesVersion bool, directImports *Di
 		log.Panicf("trw %q cannot be boxed", trw.tlType)
 	}
 	if bytesVersion {
-		return wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)))
+		return wrapLastW(last, fmt.Sprintf("basictl.StringReadBytes(w, %s )", addAmpersand(ref, val)), true)
 	}
-	return wrapLastW(last, fmt.Sprintf("%s(w, %s)", trw.readValue, addAmpersand(ref, val)))
+	return wrapLastW(last, fmt.Sprintf("%s(w, %s)", trw.readValue, addAmpersand(ref, val)), true)
 }
 
-func (trw *TypeRWPrimitive) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+func (trw *TypeRWPrimitive) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {
 	writeJSONValue := trw.writeJSONValue
 	if bytesVersion {
 		writeJSONValue += "Bytes"
@@ -127,6 +134,14 @@ func (trw *TypeRWPrimitive) typeJSONWritingCode(bytesVersion bool, directImports
 
 func (trw *TypeRWPrimitive) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	readJSONValue := trw.readJSONValue
+	if bytesVersion {
+		readJSONValue += "Bytes"
+	}
+	return wrapLast(false, fmt.Sprintf("%s(%s, %s)", readJSONValue, jvalue, addAmpersand(ref, val)))
+}
+
+func (trw *TypeRWPrimitive) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
+	readJSONValue := trw.readJSON2Value
 	if bytesVersion {
 		readJSONValue += "Bytes"
 	}

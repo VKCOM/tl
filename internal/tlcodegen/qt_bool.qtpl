@@ -1,16 +1,15 @@
 {%- import "fmt" -%}
 {%- func  (trw *TypeRWBool) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
 const ( {%= trw.generateBoolAlias() %} )
-
 func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}ReadBoxed(w []byte, v *bool) ([]byte, error) {
     return basictl.ReadBool(w, v, {%s= trw.falseGoName %}, {%s= trw.trueGoName %})
 }
 
-func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}WriteBoxed(w []byte, v bool) ([]byte, error) {
+func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}WriteBoxed(w []byte, v bool) []byte {
     if v {
-        return basictl.NatWrite(w, 0x{%s= fmt.Sprintf("%x", trw.trueTag) %}), nil
+        return basictl.NatWrite(w, 0x{%s= fmt.Sprintf("%x", trw.trueTag) %})
     }
-    return basictl.NatWrite(w, 0x{%s= fmt.Sprintf("%x", trw.falseTag) %}), nil
+    return basictl.NatWrite(w, 0x{%s= fmt.Sprintf("%x", trw.falseTag) %})
 }
 {%- endfunc -%}
 

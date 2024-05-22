@@ -9,6 +9,7 @@ package tlcodegen
 import (
 	"fmt"
 	"log"
+	"sort"
 )
 
 type TypeRWStruct struct {
@@ -79,6 +80,17 @@ func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]boo
 	return result
 }
 
+func (trw *TypeRWStruct) markWriteHasError(visitedNodes map[*TypeRWWrapper]bool) bool {
+	result := false
+	for _, f := range trw.Fields {
+		result = result || f.t.MarkWriteHasError(visitedNodes)
+	}
+	if trw.ResultType != nil {
+		result = result || trw.ResultType.MarkWriteHasError(visitedNodes)
+	}
+	return result
+}
+
 func (trw *TypeRWStruct) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool) {
 	if !trw.isTypeDef() {
 		return
@@ -104,6 +116,202 @@ func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))
+}
+
+func (trw *TypeRWStruct) GetAllLocallyAffectedByTrueTypeFieldMasks() []Field {
+	nats := make([]Field, 0)
+	containingNats := make(map[int]bool)
+
+	for _, field := range trw.Fields {
+		if field.IsAffectingLocalFieldMasks() && field.t.IsTrueType() {
+			index := field.fieldMask.FieldIndex
+			if _, contains := containingNats[index]; !contains {
+				nats = append(nats, trw.Fields[index])
+				containingNats[index] = true
+			}
+		}
+	}
+
+	return nats
+}
+
+func (trw *TypeRWStruct) GetAllLocallyAffectedFieldMasks() []Field {
+	nats := make([]Field, 0)
+	containingNats := make(map[int]bool)
+
+	for _, field := range trw.Fields {
+		if field.IsAffectingLocalFieldMasks() {
+			index := field.fieldMask.FieldIndex
+			if _, contains := containingNats[index]; !contains {
+				nats = append(nats, trw.Fields[index])
+				containingNats[index] = true
+			}
+		}
+	}
+
+	return nats
+}
+
+type FieldNatProperties = int
+
+const (
+	FieldIsNotNat        FieldNatProperties = 0
+	FieldIsNat           FieldNatProperties = 1
+	FieldUsedAsFieldMask FieldNatProperties = 2
+	FieldUsedAsSize      FieldNatProperties = 4
+)
+
+func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties, []uint32) {
+	if fieldId < 0 || len(trw.Fields) <= fieldId {
+		return FieldIsNotNat, nil
+	}
+	targetField := trw.Fields[fieldId]
+	pr, isPr := targetField.t.trw.(*TypeRWPrimitive)
+	if !isPr || pr.tlType != "#" {
+		return FieldIsNotNat, nil
+	}
+	result := FieldIsNat
+	affectedIndexes := make(map[uint32]bool)
+	natParamUsageMap := make(map[VisitedTypeNatParam]VisitResult)
+	for i, f := range trw.Fields {
+		if i == fieldId {
+			continue
+		}
+		if f.fieldMask != nil &&
+			f.fieldMask.isField &&
+			f.fieldMask.FieldIndex == fieldId {
+			affectedIndexes[f.BitNumber] = true
+			result |= FieldUsedAsFieldMask
+		}
+		natIndexes := make([]int, 0)
+		for j, natArg := range f.natArgs {
+			if natArg.isField && natArg.FieldIndex == fieldId {
+				natIndexes = append(natIndexes, j)
+			}
+		}
+		for _, j := range natIndexes {
+			visit(f.t, j, &natParamUsageMap, &affectedIndexes, &result)
+		}
+	}
+	indexes := make([]uint32, 0)
+	for i := range affectedIndexes {
+		indexes = append(indexes, i)
+	}
+	// not necessary
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
+	return result, indexes
+}
+
+type VisitedTypeNatParam struct {
+	Type_    string
+	NatIndex int
+}
+
+type VisitResult = int
+
+const (
+	VisitSuccess VisitResult = iota
+	VisitFail
+	VisitInProgress
+)
+
+func visit(
+	t *TypeRWWrapper,
+	natIndex int,
+	visitResults *map[VisitedTypeNatParam]VisitResult,
+	affectedIndexes *map[uint32]bool,
+	natProps *FieldNatProperties,
+) VisitResult {
+	natParamName := t.NatParams[natIndex]
+	typeName := t.goGlobalName
+	key := VisitedTypeNatParam{typeName, natIndex}
+
+	visitResult, isVisited := (*visitResults)[key]
+	if isVisited {
+		return visitResult
+	}
+	(*visitResults)[key] = VisitInProgress
+
+	switch i := t.trw.(type) {
+	case *TypeRWStruct:
+		{
+			for _, f := range i.Fields {
+				if f.fieldMask != nil &&
+					!f.fieldMask.isField &&
+					!f.fieldMask.isArith &&
+					natParamName == f.fieldMask.name {
+					*natProps |= FieldUsedAsFieldMask
+					(*affectedIndexes)[f.BitNumber] = true
+					(*visitResults)[key] = VisitSuccess
+				}
+				natIndexes := make([]int, 0)
+				for i, natParam := range f.t.NatParams {
+					if natParam == natParamName {
+						natIndexes = append(natIndexes, i)
+					}
+				}
+				for _, index := range natIndexes {
+					res := visit(f.t, index, visitResults, affectedIndexes, natProps)
+					if res == VisitSuccess {
+						(*visitResults)[key] = VisitSuccess
+					}
+				}
+			}
+		}
+	case *TypeRWUnion:
+		{
+			for _, f := range i.Fields {
+				res := visit(f.t, natIndex, visitResults, affectedIndexes, natProps)
+				if res == VisitSuccess {
+					(*visitResults)[key] = VisitSuccess
+				}
+			}
+		}
+	case *TypeRWMaybe:
+		{
+			res := visit(i.element.t, natIndex, visitResults, affectedIndexes, natProps)
+			if res == VisitSuccess {
+				(*visitResults)[key] = VisitSuccess
+			}
+		}
+	case *TypeRWBrackets:
+		{
+			*natProps |= FieldUsedAsSize
+			elementType := i.element.t
+			natIndexes := make([]int, 0)
+			for i, natParam := range elementType.NatParams {
+				if natParam == natParamName {
+					natIndexes = append(natIndexes, i)
+				}
+			}
+			for _, index := range natIndexes {
+				res := visit(elementType, index, visitResults, affectedIndexes, natProps)
+				if res == VisitSuccess {
+					(*visitResults)[key] = VisitSuccess
+				}
+			}
+		}
+	}
+
+	if (*visitResults)[key] == VisitInProgress {
+		(*visitResults)[key] = VisitFail
+	}
+	return (*visitResults)[key]
+}
+
+// AllAffectedFieldMasks f must be from trw.Fields
+func (trw *TypeRWStruct) AllAffectedFieldMasks(f Field) (nats []Field, bits []uint32) {
+	curField := f
+	for curField.IsAffectingLocalFieldMasks() {
+		ancestor := trw.Fields[curField.fieldMask.FieldIndex]
+		nats = append(nats, ancestor)
+		bits = append(bits, curField.BitNumber)
+		curField = ancestor
+	}
+
+	return
 }
 
 func (trw *TypeRWStruct) BeforeCodeGenerationStep2() {
@@ -132,6 +340,10 @@ func (trw *TypeRWStruct) IsDictKeySafe() (isSafe bool, isString bool) {
 		return trw.Fields[0].t.trw.IsDictKeySafe()
 	}
 	return false, false
+}
+
+func (trw *TypeRWStruct) CanBeBareBoxed() (canBare bool, canBoxed bool) {
+	return true, true
 }
 
 // same code as in func (w *TypeRWWrapper) transformNatArgsToChild
@@ -171,21 +383,21 @@ func (trw *TypeRWStruct) typeRandomCode(bytesVersion bool, directImports *Direct
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeRandomCode(bytesVersion, directImports, ins, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
-	return fmt.Sprintf("%s.FillRandom(rand %s)", val, joinWithCommas(natArgs))
+	return fmt.Sprintf("%s.FillRandom(rg %s)", val, joinWithCommas(natArgs))
 }
 
-func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
+func (trw *TypeRWStruct) typeWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool, needError bool) string {
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
 			prefix = fmt.Sprintf("w = basictl.NatWrite(w, 0x%x)\n", trw.wr.tlTag)
 		}
-		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), ref, last)
+		return prefix + trw.Fields[0].t.TypeWritingCode(bytesVersion, directImports, ins, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), ref, last, needError)
 		// was
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
 		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Write%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
+	return wrapLastW(last, fmt.Sprintf("%s.Write%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), needError)
 }
 
 func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, bare bool, natArgs []string, ref bool, last bool) string {
@@ -199,7 +411,7 @@ func (trw *TypeRWStruct) typeReadingCode(bytesVersion bool, directImports *Direc
 		// goName := addBytes(trw.goGlobalName, bytesVersion)
 		// return wrapLastW(last, fmt.Sprintf("(*%s)(%s).Read%s(w%s)", trw.wr.ins.Prefix(ins)+goName, addAmpersand(ref, val), addBare(bare), joinWithCommas(natArgs)))
 	}
-	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)))
+	return wrapLastW(last, fmt.Sprintf("%s.Read%s(w %s)", val, addBare(bare), joinWithCommas(natArgs)), true)
 }
 
 func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
@@ -209,17 +421,27 @@ func (trw *TypeRWStruct) typeJSONEmptyCondition(bytesVersion bool, val string, r
 	return ""
 }
 
-func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool) string {
+func (trw *TypeRWStruct) typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string {
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.replaceUnwrapArgs(natArgs), ref)
+		return trw.Fields[0].t.TypeJSONWritingCode(bytesVersion, directImports, ins, val, trw.replaceUnwrapArgs(natArgs), ref, needError)
 	}
-	return fmt.Sprintf("if w, err = %s.WriteJSONOpt(short, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
+	if needError {
+		return fmt.Sprintf("if w, err = %s.WriteJSONOpt(newTypeNames, short, w %s); err != nil { return w, err }", val, joinWithCommas(natArgs))
+	} else {
+		return fmt.Sprintf("w = %s.WriteJSONOpt(newTypeNames, short, w %s)", val, joinWithCommas(natArgs))
+	}
 }
 
 func (trw *TypeRWStruct) typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeJSONReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
-	goName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %s__ReadJSON(%s, %s %s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goName, addAmpersand(ref, val), jvalue, joinWithCommas(natArgs))
+	return fmt.Sprintf("if err := %s.ReadJSONLegacy(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.replaceUnwrapArgs(natArgs), ref)
+	}
+	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }

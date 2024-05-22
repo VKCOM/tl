@@ -5,6 +5,7 @@
         natCall := formatNatArgsDeclCall(tuple.wr.NatParams)
         typeString := tuple.wr.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
         elementTypeString := tuple.element.t.TypeString2(bytesVersion, directImports, tuple.wr.ins, false, false)
+        writeElementNeedsError := tuple.element.t.hasErrorInWriteMethods
     -%}
     {%- switch -%}
         {%- case tuple.dictLike -%}
@@ -18,12 +19,14 @@
             -%}
             {%- if bytesVersion -%}
                 {%- if tuple.wr.gen.options.GenerateRandomCode -%}
-func {%s= goName %}FillRandom(rand basictl.Rand, vec *{%s= typeString %} {%s= natDecl %}) {
-    l := basictl.RandomNat(rand)
+func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %} {%s= natDecl %}) {
+    rg.IncreaseDepth()
+    l := rg.LimitValue(basictl.RandomUint(rg))
     *vec = make([]{%s= elementTypeString %}, l)
     for i := range *vec {
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
+    rg.DecreaseDepth()
 }
                 {%- endif -%}
 
@@ -46,15 +49,21 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     return w, nil
 }
 
-func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return w, nil
+    {%- else -%}
+    return w
+    {%- endif -%}
 }
 
-func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+                {%- if tuple.dictKeyString -%}
+{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
+func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
     var _map map[string]interface{}
     var _mapok bool
     if j != nil {
@@ -71,8 +80,7 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= valueNat
     }
     i := 0
     arr := *vec
-                {%- if tuple.dictKeyString -%}
-for key, _jvalue := range _map {
+    for key, _jvalue := range _map {
         arr[i].{%s= tuple.dictKeyField.goName %} = append(arr[i].{%s= tuple.dictKeyField.goName %}[:0], key...)
         {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "arr[i]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, ) %}
         i++
@@ -80,21 +88,72 @@ for key, _jvalue := range _map {
     return nil
 }
 
-func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= valueNatArgsCall %})
+{%- endif -%}
+func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+	*vec = (*vec)[:cap(*vec)]
+	index := 0
+	if in != nil {
+        in.Delim('{')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
+        }
+        for ;!in.IsDelim('}'); index++ {
+            if len(*vec) <= index {
+                var newValue {%s= elementTypeString %}
+                *vec = append(*vec, newValue)
+                *vec = (*vec)[:cap(*vec)]
+            }
+            (*vec)[index].Key = append((*vec)[index].Key[:0], in.UnsafeFieldName(true)...)
+            in.WantColon()
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            in.WantComma()
+        }
+        in.Delim('}')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object's end")
+        }
+    }
+	*vec = (*vec)[:index]
+	return nil
 }
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
+
+func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= valueNatArgsCall %})
+}
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '{')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
         w = basictl.JSONWriteStringBytes(w, elem.{%s= tuple.dictKeyField.goName %})
         w = append(w, ':')
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
+    {%- else -%}
+    return append(w, '}')
+    {%- endif -%}
 }
                 {%- else -%}
-for _jkey, _jvalue := range _map {
+{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
+func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+    var _map map[string]interface{}
+    var _mapok bool
+    if j != nil {
+        _map, _mapok = j.(map[string]interface{})
+        if !_mapok {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
+        }
+    }
+      l := len(_map)
+    if cap(*vec) < l {
+        *vec = make([]{%s= elementTypeString %}, l)
+    } else {
+        *vec = (*vec)[:l]
+    }
+    i := 0
+    arr := *vec
+    for _jkey, _jvalue := range _map {
         {%s= tuple.dictKeyField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jkey", "arr[i]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
         {%s= tuple.dictValueField.t.TypeJSONReadingCode(bytesVersion, directImports, tuple.wr.ins, "_jvalue", "arr[i]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
         i++
@@ -102,20 +161,58 @@ for _jkey, _jvalue := range _map {
     return nil
 }
 
-func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= valueNatArgsCall %})
+{%- endif -%}
+func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+	*vec = (*vec)[:cap(*vec)]
+	index := 0
+	if in != nil {
+        in.Delim('{')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
+        }
+        for ;!in.IsDelim('}'); index++ {
+            if len(*vec) <= index {
+                var newValue {%s= elementTypeString %}
+                *vec = append(*vec, newValue)
+                *vec = (*vec)[:cap(*vec)]
+            }
+            keyBytes := []byte(in.UnsafeFieldName(false))
+            if !in.Ok() {
+                return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected correct json value in key")
+            }
+            in2 := basictl.JsonLexer{Data: keyBytes}
+            {%s= tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "(*vec)[index]."+keyFieldName, formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+            in.WantColon()
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            in.WantComma()
+        }
+        in.Delim('}')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object's end")
+        }
+    }
+	*vec = (*vec)[:index]
+	return nil
 }
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
+
+func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= valueNatArgsCall %})
+}
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '{')
     for _, elem := range vec {
         key := elem.{%s= keyFieldName %}
         w = basictl.JSONAddCommaIfNeeded(w)
         w = append(w, `"`...)
-        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false, tuple.dictKeyField.t.hasErrorInWriteMethods) %}
         w = append(w, `":`...)
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem."+valueFieldName, formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
     }
+    {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
+    {%- else -%}
+    return append(w, '}')
+    {%- endif -%}
 }
                 {%- endif -%}
             {%- else -%}
@@ -126,14 +223,16 @@ func {%s= goName %}Reset(m map[{%s= keyTypeString %}]{%s= valueTypeString %}) {
 }
 
             {%- if tuple.wr.gen.options.GenerateRandomCode -%}
-func {%s= goName %}FillRandom(rand basictl.Rand, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {
-    l := basictl.RandomNat(rand)
+func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {
+    rg.IncreaseDepth()
+    l := rg.LimitValue(basictl.RandomUint(rg))
     *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %}, l)
     for i := 0; i < int(l); i++ {
         var elem {%s= elementTypeString %}
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false) %}
         (*m)[elem.{%s= keyFieldName %}] = elem.{%s= valueFieldName %}
     }
+    rg.DecreaseDepth()
 }
             {%- endif -%}
 func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
@@ -165,10 +264,14 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
     return w, nil
 }
 
-func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = basictl.NatWrite(w, uint32(len(m)))
     if len(m) == 0 {
+    {%- if writeElementNeedsError -%}
         return w, nil
+    {%- else -%}
+        return w
+    {%- endif -%}
     }
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
@@ -187,12 +290,17 @@ func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeStr
     for _, key := range keys {
         val := m[key]
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:val}
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return w, nil
+    {%- else -%}
+    return w
+    {%- endif -%}
 }
 
-func {%s= goName %}ReadJSON(j interface{}, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
+func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
     var _map map[string]interface{}
     var _mapok bool
     if j != nil {
@@ -215,7 +323,7 @@ func {%s= goName %}ReadJSON(j interface{}, m *{%s= typeString %} {%s= valueNatAr
             delete(data, k)
         }
     }
-for _jkey, _jvalue := range _map {
+    for _jkey, _jvalue := range _map {
                 {%- if tuple.dictKeyString -%}
                 {%- else -%}
         var key {%s= keyTypeString %}
@@ -232,11 +340,58 @@ for _jkey, _jvalue := range _map {
     return nil
 }
 
-func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, m{%s= valueNatArgsCall %})
+{%- endif -%}
+func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+	var data map[{%s= keyTypeString %}]{%s= valueTypeString %}
+	if *m == nil {
+	    *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %}, 0)
+	    data = *m
+	} else {
+        data = *m
+        for k := range data {
+            delete(data, k)
+        }
+    }
+    if in != nil {
+        in.Delim('{')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object")
+        }
+        for !in.IsDelim('}') {
+        {%- if tuple.dictKeyString -%}
+            key := in.UnsafeFieldName(true)
+            in.WantColon()
+            var value {%s= valueTypeString %}
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            data[key] = value
+        {%- else -%}
+            keyBytes := []byte(in.UnsafeFieldName(false))
+            in.WantColon()
+            if !in.Ok() {
+                return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected correct json value in key")
+            }
+            in2 := basictl.JsonLexer{Data: keyBytes}
+            var key {%s= keyTypeString %}
+            {%s= tuple.dictKeyField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "&in2", "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+            var value {%s= valueTypeString %}
+            {%s= tuple.dictValueField.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+            data[key] = value
+        {%- endif -%}
+            in.WantComma()
+        }
+        in.Delim('}')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json object's end")
+        }
+    }
+    return nil
+}
+
+func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    return {%s= goName %}WriteJSONOpt(true, false, w, m{%s= valueNatArgsCall %})
 }
                 {%- if tuple.dictKeyString -%}
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) (_ []byte, err error) {
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)
@@ -251,12 +406,16 @@ func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= 
         w = basictl.JSONAddCommaIfNeeded(w)
         w = basictl.JSONWriteString(w, key)
         w = append(w, ':')
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
     }
+    {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
+    {%- else -%}
+    return append(w, '}')
+    {%- endif -%}
 }
                 {%- else -%}
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, m {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)
@@ -272,22 +431,28 @@ func {%s= goName %}WriteJSONOpt(short bool, w []byte, m {%s= typeString %} {%s= 
         value := m[key]
         w = basictl.JSONAddCommaIfNeeded(w)
         w = append(w, `"`...)
-        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false ) %}
+        {%s= tuple.dictKeyField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "key", formatNatArgs(nil, tuple.dictKeyField.natArgs), false, tuple.dictKeyField.t.hasErrorInWriteMethods) %}
         w = append(w, `":`...)
-        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false ) %}
+        {%s= tuple.dictValueField.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "value", formatNatArgs(nil, tuple.dictValueField.natArgs), false, tuple.dictValueField.t.hasErrorInWriteMethods) %}
     }
+    {%- if writeElementNeedsError -%}
     return append(w, '}'), nil
+    {%- else -%}
+    return append(w, '}')
+    {%- endif -%}
 }
                 {%- endif -%}
             {%- endif -%}
         {%- case tuple.vectorLike -%}
             {%- if tuple.wr.gen.options.GenerateRandomCode -%}
-func {%s= goName %}FillRandom(rand basictl.Rand, vec *{%s= typeString %} {%s= natDecl %}) {
-    l := basictl.RandomNat(rand)
+func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %} {%s= natDecl %}) {
+    rg.IncreaseDepth()
+    l := rg.LimitValue(basictl.RandomUint(rg))
     *vec = make([]{%s= elementTypeString %}, l)
     for i := range *vec {
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
+    rg.DecreaseDepth()
 }
             {%- endif -%}
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
@@ -309,15 +474,20 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     return w, nil
 }
 
-func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return w, nil
+    {%- else -%}
+    return w
+    {%- endif -%}
 }
 
-func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
+{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
+func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
     l, _arr, err := {%s= tuple.wr.gen.InternalPrefix()%}JsonReadArray({%q= typeString %}, j)
     if err != nil {
         return err
@@ -333,25 +503,58 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl 
     return nil
 }
 
-func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= natCall %})
+{%- endif -%}
+func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+    *vec = (*vec)[:cap(*vec)]
+    index := 0
+    if in != nil {
+        in.Delim('[')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json array")
+        }
+        for ;!in.IsDelim(']'); index++ {
+            if len(*vec) <= index {
+                var newValue {%s= elementTypeString %}
+                *vec = append(*vec, newValue)
+                *vec = (*vec)[:cap(*vec)]
+            }
+            {%s= tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", formatNatArgs(nil, tuple.element.natArgs), false) %}
+             in.WantComma()
+        }
+        in.Delim(']')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json array's end")
+        }
+    }
+    *vec = (*vec)[:index]
+    return nil
 }
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+
+func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '[')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
-        {%s= tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false ) %}
+        {%s= tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return append(w, ']'), nil
+    {%- else -%}
+    return append(w, ']')
+    {%- endif -%}
 }
 
         {%- case tuple.dynamicSize -%}
             {%- if tuple.wr.gen.options.GenerateRandomCode -%}
-func {%s= goName %}FillRandom(rand basictl.Rand, vec *{%s= typeString %} {%s= natDecl %}) {
+func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %} {%s= natDecl %}) {
+    rg.IncreaseDepth()
     *vec = make([]{%s= elementTypeString %}, nat_n)
     for i := range *vec {
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
+    rg.DecreaseDepth()
 }
             {%- endif -%}
 
@@ -375,12 +578,13 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []
         return w, {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, len(vec), nat_n)
     }
     for _, elem := range vec {
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
     return w, nil
 }
 
-func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
+{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
+func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
     _, _arr, err := {%s= tuple.wr.gen.InternalPrefix()%}JsonReadArrayFixedSize({%q= typeString %}, j, nat_n)
     if err != nil {
         return err
@@ -396,17 +600,48 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl 
     return nil
 }
 
-func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= natCall %})
+{%- endif -%}
+func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+    if uint32(cap(*vec)) < nat_n {
+        *vec = make([]{%s= elementTypeString %}, nat_n)
+    } else {
+        *vec = (*vec)[:nat_n]
+    }
+    index := 0
+    if in != nil {
+        in.Delim('[')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json array")
+        }
+        for ;!in.IsDelim(']'); index++ {
+            if nat_n <= uint32(index) {
+                return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "array is longer than expected")
+            }
+            {%s= tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", formatNatArgs(nil, tuple.element.natArgs), false) %}
+             in.WantComma()
+        }
+        in.Delim(']')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json array's end")
+        }
+    }
+    if uint32(index) != nat_n {
+        return {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, index, nat_n)
+    }
+    return nil
 }
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+
+func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     if uint32(len(vec)) != nat_n {
         return w, {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, len(vec), nat_n)
     }
     w = append(w, '[')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
-        {%s= tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false, ) %}
+        {%s= tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false, writeElementNeedsError) %}
     }
     return append(w, ']'), nil
 }
@@ -419,10 +654,12 @@ func {%s= goName %}Reset(vec *{%s= typeString %}) {
 }
 
             {%- if tuple.wr.gen.options.GenerateRandomCode -%}
-func {%s= goName %}FillRandom(rand basictl.Rand, vec *{%s= typeString %} {%s= natDecl %}) {
+func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %} {%s= natDecl %}) {
+    rg.IncreaseDepth()
     for i := range *vec {
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
     }
+    rg.DecreaseDepth()
 }
             {%- endif -%}
 
@@ -433,14 +670,19 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     return w, nil
 }
 
-func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     for _, elem := range *vec {
-        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false) %}
+        {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return w, nil
+    {%- else -%}
+    return w
+    {%- endif -%}
 }
 
-func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
+{%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
+func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
     _, _arr, err := {%s= tuple.wr.gen.InternalPrefix()%}JsonReadArrayFixedSize({%q= typeString %}, j, {%v tuple.size %})
     if err != nil {
         return err
@@ -451,16 +693,46 @@ func {%s= goName %}ReadJSON(j interface{}, vec *{%s= typeString %} {%s= natDecl 
     return nil
 }
 
-func {%s= goName %}WriteJSON(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(false, w, vec{%s= natCall %})
+{%- endif -%}
+func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+    index := 0
+    if in != nil {
+        in.Delim('[')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json array")
+        }
+        for ;!in.IsDelim(']'); index++ {
+            if index == {%v tuple.size %} {
+                return {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, index + 1, {%v tuple.size %})
+            }
+            {%s= tuple.element.t.TypeJSON2ReadingCode(bytesVersion, directImports, tuple.wr.ins, "in", "(*vec)[index]", formatNatArgs(nil, tuple.element.natArgs), false) %}
+            in.WantComma()
+        }
+        in.Delim(']')
+        if !in.Ok() {
+            return {%s= tuple.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= typeString %}, "expected json array's end")
+        }
+    }
+    if index != {%v tuple.size %} {
+        return {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, index + 1, {%v tuple.size %})
+    }
+    return nil
 }
-func {%s= goName %}WriteJSONOpt(short bool, w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+
+func {%s= goName %}WriteJSON(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= natCall %})
+}
+func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '[')
     for _, elem := range *vec {
         w = basictl.JSONAddCommaIfNeeded(w)
-        {%s= tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false) %}
+        {%s= tuple.element.t.TypeJSONWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", formatNatArgs(nil, tuple.element.natArgs), false, writeElementNeedsError) %}
     }
+    {%- if writeElementNeedsError -%}
     return append(w, ']'), nil
+    {%- else -%}
+    return append(w, ']')
+    {%- endif -%}
 }
     {%- endswitch -%}
 {%- endfunc -%}

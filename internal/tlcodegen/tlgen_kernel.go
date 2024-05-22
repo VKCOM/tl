@@ -16,7 +16,7 @@ import (
 
 // Instantiation kernel of tlgen.
 
-func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *TypeRWWrapper) (*TypeRWWrapper, bool, []ActualNatArg, HalfResolvedArgument, error) {
+func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *TypeRWUnion) (*TypeRWWrapper, bool, []ActualNatArg, HalfResolvedArgument, error) {
 	tName := t.Type.String()
 	// Each named reference is either global type, global constructor, local param or local field
 	if localArg, ok := lrc.localNatArgs[tName]; ok {
@@ -107,7 +107,6 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 	kernelType := &TypeRWWrapper{
 		gen:         gen,
 		origTL:      tlType,
-		isTopLevel:  len(td.TemplateArguments) == 0, // TODO - correct?
 		unionParent: unionParent,
 	}
 	var actualNatArgs []ActualNatArg
@@ -268,12 +267,12 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			_, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinTuple" + tail)
 			// built-in tuple has no local name. TODO - invent one?
-			return gen.GenerateVectorTuple(myWrapper, false, tlType[0], lrc)
+			return gen.GenerateTuple(myWrapper, tlType[0], lrc)
 		case BuiltinVectorName:
 			_, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
 			// built-in vector has no local name. TODO - invent one?
-			return gen.GenerateVectorTuple(myWrapper, true, tlType[0], lrc)
+			return gen.GenerateVector(myWrapper, tlType[0], lrc)
 		}
 		head, tail := myWrapper.resolvedT2GoName("")
 		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
@@ -422,13 +421,12 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 				},
 			})
 		}
-		fieldResolvedType, fieldResolvedTypeBare, fieldNatArgs, fieldHalfResolved, err := gen.getType(lrc, fieldType, myWrapper)
+		fieldResolvedType, fieldResolvedTypeBare, fieldNatArgs, fieldHalfResolved, err := gen.getType(lrc, fieldType, res)
 		if err != nil {
 			return err
 		}
-		// fieldResolvedType.unionParent = myWrapper // Already set by getType
+		// fieldResolvedType.unionParent = res // Already set by getType
 		fieldResolvedType.unionIndex = i
-		fieldResolvedType.unionIsEnum = isEnum
 		if !fieldResolvedTypeBare {
 			return fieldType.PR.BeautifulError(fmt.Errorf("union element resolved type %q cannot be boxed", fieldResolvedType.CanonicalStringTop()))
 		}
@@ -457,7 +455,6 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			// origTL:       ?, // We do not want to set it here for now
 		}
 		res.Fields = append(res.Fields, newField)
-		fieldResolvedType.unionField = newField
 	}
 	return nil
 }
@@ -539,15 +536,15 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 	return nil
 }
 
-func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, tlType *tlast.Combinator, lrc LocalResolveContext) error {
-	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[0].FieldName}} // TODO - PR
+func (gen *Gen2) GenerateTuple(myWrapper *TypeRWWrapper, tlType *tlast.Combinator, lrc LocalResolveContext) error {
+	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[1].FieldName}} // TODO - PR
 	elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)
 	if err != nil {
 		return err
 	}
 	res := &TypeRWBrackets{
 		wr:         myWrapper,
-		vectorLike: vectorLike,
+		vectorLike: false,
 		element: Field{
 			t:            elementResolvedType,
 			bare:         elementResolvedTypeBare,
@@ -557,11 +554,30 @@ func (gen *Gen2) GenerateVectorTuple(myWrapper *TypeRWWrapper, vectorLike bool, 
 	}
 	myWrapper.trw = res
 	myWrapper.fileName = elementResolvedType.fileName
-	if !res.vectorLike {
-		res.dynamicSize = !myWrapper.arguments[1].isArith
-		if myWrapper.arguments[1].isArith {
-			res.size = myWrapper.arguments[1].Arith.Res
-		}
+	res.dynamicSize = !myWrapper.arguments[0].isArith
+	if myWrapper.arguments[0].isArith {
+		res.size = myWrapper.arguments[0].Arith.Res
 	}
+	return nil
+}
+
+func (gen *Gen2) GenerateVector(myWrapper *TypeRWWrapper, tlType *tlast.Combinator, lrc LocalResolveContext) error {
+	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[0].FieldName}} // TODO - PR
+	elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)
+	if err != nil {
+		return err
+	}
+	res := &TypeRWBrackets{
+		wr:         myWrapper,
+		vectorLike: true,
+		element: Field{
+			t:            elementResolvedType,
+			bare:         elementResolvedTypeBare,
+			natArgs:      elementNatArgs,
+			halfResolved: elementHalfResolved,
+		},
+	}
+	myWrapper.trw = res
+	myWrapper.fileName = elementResolvedType.fileName
 	return nil
 }

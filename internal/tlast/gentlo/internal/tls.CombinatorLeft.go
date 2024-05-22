@@ -72,55 +72,79 @@ func (item *TlsCombinatorLeft) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsCombinatorLeft) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
 func (item *TlsCombinatorLeft) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, _TlsCombinatorLeft[item.index].TLTag)
 	switch item.index {
 	case 0:
 		return w, nil
 	case 1:
-		return item.valueCombinatorLeft.Write(w)
-	default: // Impossible due to panic above
-		return w, nil
+		if w, err = item.valueCombinatorLeft.Write(w); err != nil {
+			return w, err
+		}
 	}
+	return w, nil
 }
 
-func TlsCombinatorLeft__ReadJSON(item *TlsCombinatorLeft, j interface{}) error {
-	return item.readJSON(j)
-}
-func (item *TlsCombinatorLeft) readJSON(j interface{}) error {
-	_jm, _tag, err := JsonReadUnionType("tls.CombinatorLeft", j)
+func (item *TlsCombinatorLeft) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	_tag, _value, err := Json2ReadUnion("tls.CombinatorLeft", in)
 	if err != nil {
 		return err
 	}
-	jvalue := _jm["value"]
 	switch _tag {
 	case "tls.combinatorLeftBuiltin#cd211f63", "tls.combinatorLeftBuiltin", "#cd211f63":
+		if !legacyTypeNames && _tag == "tls.combinatorLeftBuiltin#cd211f63" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", "tls.combinatorLeftBuiltin#cd211f63")
+		}
 		item.index = 0
 	case "tls.combinatorLeft#4c12c6d9", "tls.combinatorLeft", "#4c12c6d9":
+		if !legacyTypeNames && _tag == "tls.combinatorLeft#4c12c6d9" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.CombinatorLeft", "tls.combinatorLeft#4c12c6d9")
+		}
 		item.index = 1
-		if err := TlsCombinatorLeft0__ReadJSON(&item.valueCombinatorLeft, jvalue); err != nil {
+		var in2Pointer *basictl.JsonLexer
+		if _value != nil {
+			in2 := basictl.JsonLexer{Data: _value}
+			in2Pointer = &in2
+		}
+		if err := item.valueCombinatorLeft.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
 			return err
 		}
-		delete(_jm, "value")
 	default:
 		return ErrorInvalidUnionTagJSON("tls.CombinatorLeft", _tag)
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.CombinatorLeft", k)
 	}
 	return nil
 }
 
-func (item *TlsCombinatorLeft) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsCombinatorLeft) WriteJSONGeneral(w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsCombinatorLeft) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsCombinatorLeft) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsCombinatorLeft) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		return append(w, `{"type":"tls.combinatorLeftBuiltin#cd211f63"}`...), nil
+		if newTypeNames {
+			w = append(w, `{"type":"tls.combinatorLeftBuiltin"`...)
+		} else {
+			w = append(w, `{"type":"tls.combinatorLeftBuiltin#cd211f63"`...)
+		}
+		return append(w, '}'), nil
 	case 1:
-		w = append(w, `{"type":"tls.combinatorLeft#4c12c6d9","value":`...)
-		if w, err = item.valueCombinatorLeft.WriteJSONOpt(short, w); err != nil {
+		if newTypeNames {
+			w = append(w, `{"type":"tls.combinatorLeft"`...)
+		} else {
+			w = append(w, `{"type":"tls.combinatorLeft#4c12c6d9"`...)
+		}
+		w = append(w, `,"value":`...)
+		if w, err = item.valueCombinatorLeft.WriteJSONOpt(newTypeNames, short, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
@@ -142,11 +166,7 @@ func (item *TlsCombinatorLeft) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsCombinatorLeft) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.CombinatorLeft", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.CombinatorLeft", err.Error())
 	}
 	return nil
@@ -178,9 +198,17 @@ func (item *TlsCombinatorLeft0) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTupleTlsArgBoxedRead(w, &item.Args, item.ArgsNum)
 }
 
+// This method is general version of Write, use it instead!
+func (item *TlsCombinatorLeft0) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w)
+}
+
 func (item *TlsCombinatorLeft0) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.ArgsNum)
-	return BuiltinTupleTlsArgBoxedWrite(w, item.Args, item.ArgsNum)
+	if w, err = BuiltinTupleTlsArgBoxedWrite(w, item.Args, item.ArgsNum); err != nil {
+		return w, err
+	}
+	return w, nil
 }
 
 func (item *TlsCombinatorLeft0) ReadBoxed(w []byte) (_ []byte, err error) {
@@ -190,7 +218,12 @@ func (item *TlsCombinatorLeft0) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-func (item *TlsCombinatorLeft0) WriteBoxed(w []byte) ([]byte, error) {
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsCombinatorLeft0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w)
+}
+
+func (item *TlsCombinatorLeft0) WriteBoxed(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x4c12c6d9)
 	return item.Write(w)
 }
@@ -203,46 +236,85 @@ func (item TlsCombinatorLeft0) String() string {
 	return string(w)
 }
 
-func TlsCombinatorLeft0__ReadJSON(item *TlsCombinatorLeft0, j interface{}) error {
-	return item.readJSON(j)
-}
-func (item *TlsCombinatorLeft0) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.combinatorLeft", "expected json object")
+func (item *TlsCombinatorLeft0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	var propArgsNumPresented bool
+	var rawArgs []byte
+
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			key := in.UnsafeFieldName(true)
+			in.WantColon()
+			switch key {
+			case "args_num":
+				if propArgsNumPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorLeft", "args_num")
+				}
+				if err := Json2ReadUint32(in, &item.ArgsNum); err != nil {
+					return err
+				}
+				propArgsNumPresented = true
+			case "args":
+				if rawArgs != nil {
+					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorLeft", "args")
+				}
+				rawArgs = in.Raw()
+				if !in.Ok() {
+					return in.Error()
+				}
+			default:
+				return ErrorInvalidJSONExcessElement("tls.combinatorLeft", key)
+			}
+			in.WantComma()
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
-	_jArgsNum := _jm["args_num"]
-	delete(_jm, "args_num")
-	if err := JsonReadUint32(_jArgsNum, &item.ArgsNum); err != nil {
+	if !propArgsNumPresented {
+		item.ArgsNum = 0
+	}
+	var inArgsPointer *basictl.JsonLexer
+	inArgs := basictl.JsonLexer{Data: rawArgs}
+	if rawArgs != nil {
+		inArgsPointer = &inArgs
+	}
+	if err := BuiltinTupleTlsArgBoxedReadJSON(legacyTypeNames, inArgsPointer, &item.Args, item.ArgsNum); err != nil {
 		return err
 	}
-	_jArgs := _jm["args"]
-	delete(_jm, "args")
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.combinatorLeft", k)
-	}
-	if err := BuiltinTupleTlsArgBoxedReadJSON(_jArgs, &item.Args, item.ArgsNum); err != nil {
-		return err
-	}
+
 	return nil
 }
 
-func (item *TlsCombinatorLeft0) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsCombinatorLeft0) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TlsCombinatorLeft0) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsCombinatorLeft0) WriteJSON(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsCombinatorLeft0) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
-	if item.ArgsNum != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"args_num":`...)
-		w = basictl.JSONWriteUint32(w, item.ArgsNum)
+	backupIndexArgsNum := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"args_num":`...)
+	w = basictl.JSONWriteUint32(w, item.ArgsNum)
+	if (item.ArgsNum != 0) == false {
+		w = w[:backupIndexArgsNum]
 	}
-	if len(item.Args) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"args":`...)
-		if w, err = BuiltinTupleTlsArgBoxedWriteJSONOpt(short, w, item.Args, item.ArgsNum); err != nil {
-			return w, err
-		}
+	backupIndexArgs := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"args":`...)
+	if w, err = BuiltinTupleTlsArgBoxedWriteJSONOpt(newTypeNames, short, w, item.Args, item.ArgsNum); err != nil {
+		return w, err
+	}
+	if (len(item.Args) != 0) == false {
+		w = w[:backupIndexArgs]
 	}
 	return append(w, '}'), nil
 }
@@ -252,11 +324,7 @@ func (item *TlsCombinatorLeft0) MarshalJSON() ([]byte, error) {
 }
 
 func (item *TlsCombinatorLeft0) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.combinatorLeft", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.combinatorLeft", err.Error())
 	}
 	return nil
@@ -274,56 +342,76 @@ type TlsCombinatorLeftBuiltin struct {
 func (TlsCombinatorLeftBuiltin) TLName() string { return "tls.combinatorLeftBuiltin" }
 func (TlsCombinatorLeftBuiltin) TLTag() uint32  { return 0xcd211f63 }
 
-func (item *TlsCombinatorLeftBuiltin) Reset()                         {}
-func (item *TlsCombinatorLeftBuiltin) Read(w []byte) ([]byte, error)  { return w, nil }
-func (item *TlsCombinatorLeftBuiltin) Write(w []byte) ([]byte, error) { return w, nil }
-func (item *TlsCombinatorLeftBuiltin) ReadBoxed(w []byte) ([]byte, error) {
-	return basictl.NatReadExactTag(w, 0xcd211f63)
+func (item *TlsCombinatorLeftBuiltin) Reset() {}
+
+func (item *TlsCombinatorLeftBuiltin) Read(w []byte) (_ []byte, err error) { return w, nil }
+
+// This method is general version of Write, use it instead!
+func (item *TlsCombinatorLeftBuiltin) WriteGeneral(w []byte) (_ []byte, err error) {
+	return item.Write(w), nil
 }
-func (item *TlsCombinatorLeftBuiltin) WriteBoxed(w []byte) ([]byte, error) {
-	return basictl.NatWrite(w, 0xcd211f63), nil
+
+func (item *TlsCombinatorLeftBuiltin) Write(w []byte) []byte {
+	return w
+}
+
+func (item *TlsCombinatorLeftBuiltin) ReadBoxed(w []byte) (_ []byte, err error) {
+	if w, err = basictl.NatReadExactTag(w, 0xcd211f63); err != nil {
+		return w, err
+	}
+	return item.Read(w)
+}
+
+// This method is general version of WriteBoxed, use it instead!
+func (item *TlsCombinatorLeftBuiltin) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteBoxed(w), nil
+}
+
+func (item *TlsCombinatorLeftBuiltin) WriteBoxed(w []byte) []byte {
+	w = basictl.NatWrite(w, 0xcd211f63)
+	return item.Write(w)
 }
 
 func (item TlsCombinatorLeftBuiltin) String() string {
-	w, err := item.WriteJSON(nil)
-	if err != nil {
-		return err.Error()
-	}
-	return string(w)
+	return string(item.WriteJSON(nil))
 }
 
-func TlsCombinatorLeftBuiltin__ReadJSON(item *TlsCombinatorLeftBuiltin, j interface{}) error {
-	return item.readJSON(j)
-}
-func (item *TlsCombinatorLeftBuiltin) readJSON(j interface{}) error {
-	_jm, _ok := j.(map[string]interface{})
-	if j != nil && !_ok {
-		return ErrorInvalidJSON("tls.combinatorLeftBuiltin", "expected json object")
-	}
-	for k := range _jm {
-		return ErrorInvalidJSONExcessElement("tls.combinatorLeftBuiltin", k)
+func (item *TlsCombinatorLeftBuiltin) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	if in != nil {
+		in.Delim('{')
+		if !in.Ok() {
+			return in.Error()
+		}
+		for !in.IsDelim('}') {
+			return ErrorInvalidJSON("tls.combinatorLeftBuiltin", "this object can't have properties")
+		}
+		in.Delim('}')
+		if !in.Ok() {
+			return in.Error()
+		}
 	}
 	return nil
 }
 
-func (item *TlsCombinatorLeftBuiltin) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(false, w)
+// This method is general version of WriteJSON, use it instead!
+func (item *TlsCombinatorLeftBuiltin) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(true, false, w), nil
 }
-func (item *TlsCombinatorLeftBuiltin) WriteJSONOpt(short bool, w []byte) (_ []byte, err error) {
+
+func (item *TlsCombinatorLeftBuiltin) WriteJSON(w []byte) []byte {
+	return item.WriteJSONOpt(true, false, w)
+}
+func (item *TlsCombinatorLeftBuiltin) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
 	w = append(w, '{')
-	return append(w, '}'), nil
+	return append(w, '}')
 }
 
 func (item *TlsCombinatorLeftBuiltin) MarshalJSON() ([]byte, error) {
-	return item.WriteJSON(nil)
+	return item.WriteJSON(nil), nil
 }
 
 func (item *TlsCombinatorLeftBuiltin) UnmarshalJSON(b []byte) error {
-	j, err := JsonBytesToInterface(b)
-	if err != nil {
-		return ErrorInvalidJSON("tls.combinatorLeftBuiltin", err.Error())
-	}
-	if err = item.readJSON(j); err != nil {
+	if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
 		return ErrorInvalidJSON("tls.combinatorLeftBuiltin", err.Error())
 	}
 	return nil

@@ -18,6 +18,13 @@ COMMON_LDFLAGS = $(COMMON_BUILD_VARS) -extldflags '-O2'
 
 GO = go
 
+TEST_PATH := internal/tlcodegen/test
+TLS_PATH := $(TEST_PATH)/tls
+GEN_PATH := $(TEST_PATH)/gen
+TLOS_PATH := $(GEN_PATH)
+BASIC_TL_PATH := github.com/vkcom/tl/pkg/basictl
+
+TL_BYTE_VERSIONS := ch_proxy.,ab.
 SHA256_CHECKSUM := $(shell go run ./cmd/sha256sum ./internal)
 ifndef SHA256_CHECKSUM
 $(error SHA256_CHECKSUM failed to set, problem with go run cmd/sha256sum internal)
@@ -33,11 +40,91 @@ build:
 
 tlo-bootstrap: build
 	@./target/bin/tlgen \
-		-pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
-		-basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		-generateRPCCode=false \
-		-outdir=./internal/tlast/gentlo \
-		-schema=./internal/tlast/tls.tl
+		--copyrightPath=./COPYRIGHT \
+		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
+		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
+		--generateRPCCode=false \
+		--outdir=./internal/tlast/gentlo \
+		./internal/tlast/tls.tl
+
+.PHONY: gen_check
+gen_check: build
+	@./target/bin/tlgen --split-internal -v --language=go \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./$(GEN_PATH)/schema \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/schema/tl \
+		--tloPath=./$(TLOS_PATH)/test.tlo \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateLegacyJsonRead=false \
+		--generateRPCCode=false \
+		./$(TLS_PATH)/schema.tl
+
+.PHONY: gen
+gen: gen_check
+	@echo "Checking that generated code actually compiles..."
+	@$(GO) build ./$(GEN_PATH)/schema/...
+
+.PHONY: gen_dev
+gen_dev: qtpl gen
+
+.PHONY: goldmaster_nocompile
+goldmaster_nocompile: build
+	@./target/bin/tlgen --language=go --split-internal -v \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./$(GEN_PATH)/cases \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=cases_bytes. \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		--generateRPCCode=false \
+		./$(TLS_PATH)/cases.tl
+	@./target/bin/tlgen --language=go --split-internal -v \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./$(GEN_PATH)/goldmaster \
+		--generateSchemaDocumentation \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster/tl \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		--generateRPCCode=false \
+		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+	@./target/bin/tlgen --language=go -v \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./$(GEN_PATH)/goldmaster_nosplit \
+		--generateSchemaDocumentation \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--tloPath=./$(TLOS_PATH)/goldmaster.tlo \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		--generateRPCCode=false \
+		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+
+.PHONY: goldmaster
+goldmaster: goldmaster_nocompile
+	@echo "Checking that generated code actually compiles..."
+	$(GO) build ./$(GEN_PATH)/cases/...
+	$(GO) build ./$(GEN_PATH)/goldmaster/...
+	$(GO) build ./$(GEN_PATH)/goldmaster_nosplit/...
+
+.PHONY: gen_tlo
+gen_tlo: build # do not set --basicPkgPath, or you'll have hard time updating basictl
+	@./target/bin/tlgen --language=go \
+		--copyrightPath=./COPYRIGHT \
+		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
+		--generateRPCCode=false \
+		--outdir=./internal/tlast/gentlo \
+		./internal/tlast/tls.tl
+
+
+.PHONY: gen_all
+gen_all: tlo-bootstrap gen goldmaster
 
 qtpl:
 	@if ! [ -x "$(command -v qtc)"]; then \
@@ -49,3 +136,11 @@ qtpl:
 		qtc -dir=./internal -skipLineComments; \
 	fi
 
+# TODO: in progress...
+#.PHONY: cpp
+#cpp: build
+#	@./target/bin/tlgen -language=cpp -v \
+#		--outdir=./test/cpp \
+#		--basicPkgPath=gitlab.mvk.com/go/vkgo/pkg/basictl \
+#		./test/cpp.tl
+#	g++ -o test/test_cpp test/test_cpp.cpp test/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
