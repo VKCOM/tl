@@ -1,6 +1,6 @@
 name: CI
 run-name: CI for TLGen
-on: [push]
+on: ["push", "pull_request"]
 jobs:
   ci-go:
     runs-on: ubuntu-latest
