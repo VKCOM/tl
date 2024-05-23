@@ -1,4 +1,5 @@
-name: "CI"
+name: CI
+run-name: CI for TLGen
 on: [push]
 jobs:
   ci-go:
