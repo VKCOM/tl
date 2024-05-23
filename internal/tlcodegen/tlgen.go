@@ -68,6 +68,7 @@ type LocalResolveContext struct {
 	overrideFileName    string // used for unions and built-in vectors and tuples, so they are defined in the file of argument
 }
 
+// TODO: change to return only useful info
 func TLGenBuildInfo() (commit string, version string) {
 	if info, ok := debug.ReadBuildInfo(); ok {
 		for _, setting := range info.Settings {
