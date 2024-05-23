@@ -1,12 +1,10 @@
 name: "CI"
 on:
+  push:
+    branches: [ master ]
   pull_request:
-    branches:
-      - master
-    paths:
-      - '**.go'
-      - 'go.mod'
-      - 'go.sum'
+    branches: [ master ]
+    paths: ['**.qtpl', '**.go', 'go.mod', 'go.sum']
 jobs:
   ci-go:
     runs-on: ubuntu-latest
