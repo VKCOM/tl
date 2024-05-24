@@ -37,7 +37,7 @@ func addFlags(argv *arguments) {
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&argv.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,
 		"whether to generate methods to read json in old way")
-	flag.BoolVar(&argv.GenerateRPCCode, "generateRPCCode", true,
+	flag.BoolVar(&argv.GenerateRPCCode, "generateRPCCode", false,
 		"whether to generate *_server.go files")
 	flag.StringVar(&argv.BasicRPCPath, "basicRPCPath", "",
 		"path to rpc package")
