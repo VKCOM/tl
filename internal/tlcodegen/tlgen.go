@@ -735,6 +735,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	switch options.Language {
 	case "": // linting
 	case "go":
+		if options.GenerateRPCCode && options.BasicRPCPath == "" {
+			return nil, fmt.Errorf("--basicRPCPath must be specified or set --generateRPCCode=false if you don't use rpc code")
+		}
 		options.TLPackageNameFull = strings.TrimSpace(options.TLPackageNameFull)
 		options.TLPackageNameFull = strings.TrimSuffix(options.TLPackageNameFull, "/")
 		if options.TLPackageNameFull == "" { // for testing, empty path should be prohibited in main argv parsing

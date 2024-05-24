@@ -18,18 +18,14 @@ import (
 type arguments struct {
 	tlcodegen.Gen2Options
 
-	SchemaFileName      string // not recommended
-	TLOPath             string
-	CanonicalFormPath   string // combinators in canonical form, with comment of source schema file path
-	Outdir              string
-	IgnoreGeneratedCode bool // ignores generated code. TODO - remove, use language="" instead
+	TLOPath           string
+	CanonicalFormPath string // combinators in canonical form, with comment of source schema file path
+	Outdir            string
 }
 
 func commonFlags(argv *arguments) {
 	flag.StringVar(&argv.Outdir, "outdir", "",
 		`where to write generated files`)
-	flag.StringVar(&argv.SchemaFileName, "schema", "",
-		"input TL schema in binary format")
 	flag.StringVar(&argv.TLPackageNameFull, "pkgPath", "",
 		"package path to be used inside generated code")
 	flag.StringVar(&argv.BytesVersions, "generateByteVersions", "",
