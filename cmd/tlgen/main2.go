@@ -26,53 +26,70 @@ import (
 
 const tlExt = ".tl"
 
-func addFlags(argv *arguments) {
-	flag.StringVar(&argv.Language, "language", "go",
+func parseFlags(opt *tlcodegen.Gen2Options) {
+	// General
+	flag.StringVar(&opt.Language, "language", "go",
 		`generation target language`)
-	flag.StringVar(&argv.RootCPPNamespace, "cpp-namespace", "",
-		`c++ root namespace, separated by '::' if more than 1 element`)
-	flag.StringVar(&argv.BasicPackageNameFull, "basicPkgPath", "",
-		"if empty, 'basictl' package will be generated in output dir, otherwise imports will be generated")
-	flag.BoolVar(&argv.GenerateRandomCode, "generateRandomCode", false,
-		"whether to generate methods for random filling structs")
-	flag.BoolVar(&argv.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,
-		"whether to generate methods to read json in old way")
-	flag.BoolVar(&argv.GenerateRPCCode, "generateRPCCode", false,
-		"whether to generate *_server.go files")
-	flag.StringVar(&argv.BasicRPCPath, "basicRPCPath", "",
-		"path to rpc package")
-	flag.StringVar(&argv.TLOPath, "tloPath", "",
-		"whether to serialize TL schema in binary form")
-	flag.StringVar(&argv.CanonicalFormPath, "canonicalFormPath", "",
-		"generate file with combinators in canonical form")
-	flag.BoolVar(&argv.SchemaDocumentation, "generateSchemaDocumentation", false,
-		"whether to generate .html representation of schema in to tljson.html file")
-	flag.StringVar(&argv.SchemaURLTemplate, "schemaURLTemplate", "",
-		"template for url to current schema if documentation is generated")
-	flag.BoolVar(&argv.SplitInternal, "split-internal", false,
-		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
-	flag.StringVar(&argv.TypesWhileList, "typesWhiteList", "",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means 'all'")
-	flag.StringVar(&argv.CopyrightFilePath, "copyrightPath", "",
+	flag.StringVar(&opt.Outdir, "outdir", "",
+		`where to write generated files`)
+	flag.StringVar(&opt.CopyrightFilePath, "copyrightPath", "",
 		"path to file with copyright text")
-	flag.BoolVar(&argv.WarningsAreErrors, "Werror", false,
+	flag.BoolVar(&opt.WarningsAreErrors, "Werror", false,
 		"treat all warnings as errors")
+	flag.BoolVar(&opt.Verbose, "v", false,
+		"verbose mode that prints debug info")
+
+	// Go
+	flag.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",
+		"if empty, 'basictl' package will be generated in output dir, otherwise imports will be generated")
+	flag.StringVar(&opt.TLPackageNameFull, "pkgPath", "",
+		"package path to be used inside generated code")
+	flag.BoolVar(&opt.GenerateRPCCode, "generateRPCCode", false,
+		"whether to generate *_server.go files")
+	flag.StringVar(&opt.BasicRPCPath, "basicRPCPath", "",
+		"path to rpc package")
+	flag.StringVar(&opt.BytesVersions, "generateByteVersions", "",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means 'none'.")
+	flag.StringVar(&opt.TypesWhileList, "typesWhiteList", "",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means 'all'")
+	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
+		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
+	flag.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
+		"whether to generate methods for random filling structs")
+	flag.BoolVar(&opt.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,
+		"whether to generate methods to read json in old way")
+	flag.BoolVar(&opt.SchemaDocumentation, "generateSchemaDocumentation", false,
+		"whether to generate .html representation of schema in to tljson.html file")
+	flag.StringVar(&opt.SchemaURLTemplate, "schemaURLTemplate", "",
+		"template for url to current schema if documentation is generated")
+
+	// C++
+	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
+		`c++ root namespace, separated by '::' if more than 1 element`)
+
+	// .tlo
+	flag.StringVar(&opt.TLOPath, "tloPath", "",
+		"whether to serialize TL schema in binary form")
+	flag.StringVar(&opt.CanonicalFormPath, "canonicalFormPath", "",
+		"generate file with combinators in canonical form")
+
+	flag.Parse()
 }
 
-func run(argv arguments) {
+func run(opt tlcodegen.Gen2Options) {
 	var commit, version = tlcodegen.TLGenBuildInfo()
 	log.Printf("tlgen version: %s, commit: %s", version, commit)
-	if err := runMain(&argv); err != nil {
+	if err := runMain(&opt); err != nil {
 		var parseError *tlast.ParseError
 		if errors.As(err, &parseError) {
-			parseError.ConsolePrint(argv.ErrorWriter, err, false)
+			parseError.ConsolePrint(opt.ErrorWriter, err, false)
 		} else {
 			log.Println(err.Error())
 		}
 		log.Printf("TL Generation Failed")
 		os.Exit(1)
 	} else {
-		if argv.Language == "" {
+		if opt.Language == "" {
 			log.Printf("TL Linter Success")
 		} else {
 			log.Printf("TL Generation Success")
@@ -80,12 +97,12 @@ func run(argv arguments) {
 	}
 }
 
-func runMain(argv *arguments) error {
+func runMain(opt *tlcodegen.Gen2Options) error {
 	var ast tlast.TL
 	var fullAst tlast.TL
 	var args []string
-	if argv.ErrorWriter == nil {
-		argv.ErrorWriter = os.Stdout
+	if opt.ErrorWriter == nil {
+		opt.ErrorWriter = os.Stdout
 	}
 	args = append(args, flag.Args()...)
 	if len(args) == 0 {
@@ -107,20 +124,20 @@ func runMain(argv *arguments) error {
 		ast = append(ast, tl...)
 		fullAst = append(fullAst, fullTl...)
 	}
-	gen, err := tlcodegen.GenerateCode(ast, argv.Gen2Options)
+	gen, err := tlcodegen.GenerateCode(ast, *opt)
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
-	if argv.Language != "" {
-		if argv.Outdir == "" {
+	if opt.Language != "" {
+		if opt.Outdir == "" {
 			return fmt.Errorf("--outdir should not be empty")
 		}
-		if err = gen.WriteToDir(argv.Outdir); err != nil {
+		if err = gen.WriteToDir(opt.Outdir); err != nil {
 			return err // Context is already in err
 		}
 	}
-	if argv.TLOPath != "" {
-		if argv.Verbose {
+	if opt.TLOPath != "" {
+		if opt.Verbose {
 			log.Print("generating tlo file")
 		}
 		s, err := fullAst.GenerateTLO()
@@ -131,7 +148,7 @@ func runMain(argv *arguments) error {
 		if err != nil {
 			return fmt.Errorf("error writing boxed tlo: %w", err)
 		}
-		if err := os.WriteFile(argv.TLOPath, buf, 0644); err != nil {
+		if err := os.WriteFile(opt.TLOPath, buf, 0644); err != nil {
 			return fmt.Errorf("error writing tlo file: %w", err)
 		}
 		buf, err = s.WriteJSON(nil)
@@ -142,17 +159,17 @@ func runMain(argv *arguments) error {
 		if err = json.Indent(&prettyJSON, buf, "", "  "); err != nil {
 			return fmt.Errorf("error pretty printing json tlo: %w", err)
 		}
-		if err := os.WriteFile(argv.TLOPath+".json", prettyJSON.Bytes(), 0644); err != nil {
+		if err := os.WriteFile(opt.TLOPath+".json", prettyJSON.Bytes(), 0644); err != nil {
 			return fmt.Errorf("error writing tlo json file: %w", err)
 		}
 	}
-	if argv.CanonicalFormPath != "" {
-		if argv.Verbose {
+	if opt.CanonicalFormPath != "" {
+		if opt.Verbose {
 			log.Print("generating file with combinators in canonical form")
 		}
 		var buf bytes.Buffer
 		fullAst.WriteGenerate2TL(&buf)
-		if err := os.WriteFile(argv.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
+		if err := os.WriteFile(opt.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
 			return err
 		}
 	}
