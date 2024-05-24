@@ -307,23 +307,33 @@ type Namespace struct {
 }
 
 type Gen2Options struct {
-	TypesWhileList         string
-	BytesVersions          string
-	TLPackageNameFull      string
+	// General
+	Language          string
+	Outdir            string
+	CopyrightFilePath string
+	WarningsAreErrors bool
+	Verbose           bool
+	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+
+	// Go
 	BasicPackageNameFull   string // if empty, will be created
-	Verbose                bool
+	TLPackageNameFull      string
 	GenerateRPCCode        bool
 	BasicRPCPath           string
+	BytesVersions          string
+	TypesWhileList         string
+	SplitInternal          bool
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
 	SchemaURLTemplate      string
-	SplitInternal          bool
-	Language               string
-	RootCPPNamespace       string
-	CopyrightFilePath      string
-	WarningsAreErrors      bool
-	ErrorWriter            io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+
+	// C++
+	RootCPPNamespace string
+
+	// .tlo
+	TLOPath           string
+	CanonicalFormPath string // combinators in canonical form, with comment of source schema file path
 }
 
 type Gen2 struct {
@@ -735,6 +745,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	switch options.Language {
 	case "": // linting
 	case "go":
+		if options.GenerateRPCCode && options.BasicRPCPath == "" {
+			return nil, fmt.Errorf("--basicRPCPath must be specified or set --generateRPCCode=false if you don't use rpc code")
+		}
 		options.TLPackageNameFull = strings.TrimSpace(options.TLPackageNameFull)
 		options.TLPackageNameFull = strings.TrimSuffix(options.TLPackageNameFull, "/")
 		if options.TLPackageNameFull == "" { // for testing, empty path should be prohibited in main argv parsing
