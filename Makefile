@@ -137,10 +137,11 @@ qtpl:
 	fi
 
 # TODO: in progress...
-#.PHONY: cpp
-#cpp: build
-#	@./target/bin/tlgen -language=cpp -v \
-#		--outdir=./test/cpp \
-#		--basicPkgPath=gitlab.mvk.com/go/vkgo/pkg/basictl \
-#		./test/cpp.tl
-#	g++ -o test/test_cpp test/test_cpp.cpp test/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+.PHONY: cpp
+cpp: build
+	@./target/bin/tlgen -language=cpp -v \
+		--outdir=./$(GEN_PATH)/cpp \
+		--generateRPCCode=false \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		./$(TLS_PATH)/cpp.tl
+	g++ -o $(TEST_PATH)/test_cpp $(TEST_PATH)/test_cpp.cpp $(TEST_PATH)/gen/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
