@@ -69,6 +69,7 @@ type LocalResolveContext struct {
 }
 
 // TODO: change to provide more useful information
+// another tets diff
 func TLGenBuildInfo() (commit string, version string) {
 	if info, ok := debug.ReadBuildInfo(); ok {
 		for _, setting := range info.Settings {
