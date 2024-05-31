@@ -136,11 +136,11 @@ qtpl:
 		qtc -dir=./internal -skipLineComments; \
 	fi
 
-# TODO: in progress...
-#.PHONY: cpp
-#cpp: build
-#	@./target/bin/tlgen -language=cpp -v \
-#		--outdir=./test/cpp \
-#		--basicPkgPath=gitlab.mvk.com/go/vkgo/pkg/basictl \
-#		./test/cpp.tl
-#	g++ -o test/test_cpp test/test_cpp.cpp test/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+.PHONY: cpp
+cpp: build
+	@./target/bin/tlgen -language=cpp -v \
+		--outdir=./$(GEN_PATH)/cpp \
+		--generateRPCCode=false \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		./$(TLS_PATH)/cpp.tl
+	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
