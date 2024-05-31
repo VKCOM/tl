@@ -1202,7 +1202,6 @@ type Constructor struct {
 }
 
 type TypeName = tlast.Name
-
 type Type struct {
 	IsBasic       bool
 	Name          TypeName
@@ -1214,7 +1213,7 @@ type EvaluatedTypeArgument struct {
 	Index int
 
 	// union variants
-	Constant     string         // 0
+	Constant     uint32         // 0
 	Variable     string         // 1
 	TypeVariable string         // 3
 	Type         *TypeReduction // 2
@@ -1254,13 +1253,13 @@ func (tr *TypeReduction) String() string {
 			for i, arg := range tr.Arguments {
 				switch arg.Index {
 				case 0:
-					s += "C" + arg.Constant
+					s += "Con" + strconv.FormatInt(int64(arg.Constant), 10)
 				case 1:
-					s += "V"
+					s += "Var"
 				case 2:
 					s += arg.Type.String()
 				case 3:
-					s += "TV"
+					s += "TypeVar"
 				}
 				if len(tr.Arguments) != i+1 {
 					s += ","
@@ -1294,18 +1293,17 @@ func processCombinators(types map[string]*tlast.Combinator) {
 			}
 		}
 		targetType := existingTypes[declaredType]
-		constrId := len(targetType.Constructors)
 		constructor := Constructor{
 			Name:   currentConstructor,
 			Fields: comb.Fields,
-			Id:     uint(constrId),
+			Id:     uint(len(targetType.Constructors)),
 			Type:   targetType,
 		}
 		targetType.Constructors = append(targetType.Constructors, &constructor)
 		existingConstructors[currentConstructor] = &constructor
 	}
 
-	typeReductions := make(map[*Type]*map[*TypeReduction]bool)
+	typeReductions := make(map[*Type]*map[string]*TypeReduction)
 
 	for _, comb := range existingTypes {
 		if len(comb.TypeArguments) != 0 {
@@ -1325,14 +1323,14 @@ func processCombinators(types map[string]*tlast.Combinator) {
 	for tp, rds := range typeReductions {
 		fmt.Println(tp.Name.String())
 		for rd, _ := range *rds {
-			fmt.Println("\t", rd.String())
+			fmt.Println("\t", rd)
 		}
 	}
 }
 
 func reduce(
 	targetTypeReduction TypeReduction,
-	visitedReductions *map[*Type]*map[*TypeReduction]bool,
+	visitedReductions *map[*Type]*map[string]*TypeReduction,
 	types *map[TypeName]*Type,
 	constructors *map[ConstructorName]*Constructor,
 ) {
@@ -1340,24 +1338,6 @@ func reduce(
 		if arg.Index == 2 {
 			reduce(*arg.Type, visitedReductions, types, constructors)
 		}
-	}
-
-	trs, ok := (*visitedReductions)[targetTypeReduction.ReferenceType()]
-	if !ok {
-		tmp := make(map[*TypeReduction]bool)
-		(*visitedReductions)[targetTypeReduction.ReferenceType()] = &tmp
-		trs = &tmp
-	}
-
-	_, ok = (*trs)[&targetTypeReduction]
-	if !ok {
-		(*trs)[&targetTypeReduction] = true
-	} else {
-		return
-	}
-
-	if targetTypeReduction.ReferenceType().IsBasic {
-		return
 	}
 
 	var visitingConstructors []*Constructor
@@ -1382,36 +1362,66 @@ func reduce(
 func reduceConstructor(
 	constructor *Constructor,
 	args []EvaluatedTypeArgument,
-	visitedReductions *map[*Type]*map[*TypeReduction]bool,
+	visitedReductions *map[*Type]*map[string]*TypeReduction,
 	types *map[TypeName]*Type,
 	constructors *map[ConstructorName]*Constructor,
 ) {
+	if constructor == nil || constructor.Type.IsBasic {
+		return
+	}
+
 	trs, ok := (*visitedReductions)[constructor.Type]
 	if !ok {
-		tmp := make(map[*TypeReduction]bool)
+		tmp := make(map[string]*TypeReduction)
 		(*visitedReductions)[constructor.Type] = &tmp
 		trs = &tmp
 	}
 
 	constructorReduction := TypeReduction{IsType: false, Constructor: constructor, Arguments: args}
 
-	_, ok = (*trs)[&constructorReduction]
+	_, ok = (*trs)[constructorReduction.String()]
 	if !ok {
-		(*trs)[&constructorReduction] = true
+		(*trs)[constructorReduction.String()] = &constructorReduction
 	} else {
 		return
 	}
 
-	if constructor == nil {
-		return
-	}
+	defaultFields := calculateDefaultFields(constructor, args)
+
 	for _, field := range constructor.Fields {
 		fieldType := toTypeReduction(field.FieldType, types, constructors)
 		if fieldType != nil {
-			fillTypeReduction(fieldType, constructor.Type, args)
+			fillTypeReduction(fieldType, args, constructor.Type, &defaultFields)
 			reduce(*fieldType, visitedReductions, types, constructors)
 		}
 	}
+}
+
+func calculateDefaultFields(
+	constructor *Constructor,
+	args []EvaluatedTypeArgument,
+) map[string]bool {
+	defaults := make(map[string]bool)
+
+	for _, field := range constructor.Fields {
+		if field.Mask != nil {
+			name := field.Mask.MaskName
+			bit := field.Mask.BitNumber
+			if _, ok := defaults[name]; ok {
+				defaults[field.FieldName] = true
+				continue
+			}
+			if argIndex := findArgByName(name, constructor.Type.TypeArguments); argIndex != -1 {
+				arg := args[argIndex]
+				if arg.Index == 0 && (arg.Constant&(1<<bit) == 0) {
+					defaults[field.FieldName] = true
+					continue
+				}
+			}
+		}
+	}
+
+	return defaults
 }
 
 func findArgByName(targetArg string, args []tlast.TemplateArgument) int {
@@ -1425,8 +1435,9 @@ func findArgByName(targetArg string, args []tlast.TemplateArgument) int {
 
 func fillTypeReduction(
 	typeReduction *TypeReduction,
-	originalType *Type,
 	args []EvaluatedTypeArgument,
+	originalType *Type,
+	defaultFields *map[string]bool,
 ) {
 	for argI, arg := range typeReduction.Arguments {
 		switch arg.Index {
@@ -1435,10 +1446,12 @@ func fillTypeReduction(
 			j := findArgByName(arg.Variable, originalType.TypeArguments)
 			if j != -1 && args[j].Index == 0 {
 				typeReduction.Arguments[argI] = args[j]
+			} else if _, ok := (*defaultFields)[arg.Variable]; ok {
+				typeReduction.Arguments[argI] = EvaluatedTypeArgument{Index: 0, Constant: 0}
 			}
 		// type
 		case 2:
-			fillTypeReduction(arg.Type, originalType, args)
+			fillTypeReduction(arg.Type, args, originalType, defaultFields)
 		// type var
 		case 3:
 			j := findArgByName(arg.TypeVariable, originalType.TypeArguments)
@@ -1478,7 +1491,7 @@ func toTypeReduction(
 		if actualArg.IsArith {
 			evalArguments = append(evalArguments, EvaluatedTypeArgument{
 				Index:    0,
-				Constant: strconv.FormatInt(int64(actualArg.Arith.Res), 10),
+				Constant: actualArg.Arith.Res,
 			})
 		} else if typeArg.IsNat {
 			evalArguments = append(evalArguments, EvaluatedTypeArgument{
