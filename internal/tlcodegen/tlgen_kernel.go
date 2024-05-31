@@ -278,11 +278,13 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
 		head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
 		myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
+		//actualName, _, _ := myWrapper.cppTypeStringInNamespace(false, &DirectIncludesCPP{ns: map[string]struct{}{}}, false, HalfResolvedArgument{})
 		actualName, canonicalName, _ := myWrapper.cppTypeStringInNamespace(false, &DirectIncludesCPP{ns: map[string]struct{}{}}, false, HalfResolvedArgument{})
 		otherRW, ok := namespace.cppTemplates[canonicalName]
 		if ok {
 			myWrapper.cppLocalName = otherRW.cppLocalName
 		} else {
+			//myWrapper.cppLocalName = namespace.decCpp.deconflictName(ToUpperFirst(actualName) + tail)
 			myWrapper.cppLocalName = namespace.decCpp.deconflictName(ToUpperFirst(actualName))
 			namespace.cppTemplates[canonicalName] = myWrapper
 		}

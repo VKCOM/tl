@@ -46,6 +46,18 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved(bytesVersion boo
 		return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]), halfResolved.Args[1].Name)
 	}
 	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]), trw.size)
+
+	//if trw.vectorLike || trw.dynamicSize {
+	//	index := 0
+	//	if len(halfResolved.Args) > 1 {
+	//		index = 1
+	//	}
+	//	return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[index]))
+	//}
+	//if halfResolved.Args[1].Name != "" {
+	//	return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), halfResolved.Args[0].Name)
+	//}
+	//return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), trw.size)
 }
 
 func (trw *TypeRWBrackets) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {

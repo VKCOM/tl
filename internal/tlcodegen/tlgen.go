@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"runtime/debug"
 	"sort"
+	"strconv"
 	"strings"
 	"sync/atomic"
 
@@ -347,9 +348,10 @@ type Gen2 struct {
 	// parsed TL
 	supportedAnnotations map[string]int
 	typeDescriptors      map[string][]*tlast.Combinator
-	singleConstructors   map[string]*tlast.Combinator // only types with 1 constructor, no functions
-	allConstructors      map[string]*tlast.Combinator // for printing beautiful errors
-	allAnnotations       []string                     // position is bit
+
+	singleConstructors map[string]*tlast.Combinator // only types with 1 constructor, no functions
+	allConstructors    map[string]*tlast.Combinator // for printing beautiful errors
+	allAnnotations     []string                     // position is bit
 
 	// generation
 	builtinTypes       map[string]*TypeRWWrapper
@@ -1033,6 +1035,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		sort.Strings(gen.allAnnotations)
 	}
 	skippedDueToWhitelist := 0
+
+	processCombinators(gen.allConstructors)
+
 	for _, typ := range tl {
 		if GenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {
 			t := tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
@@ -1186,4 +1191,317 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	return gen, nil
+}
+
+type ConstructorName = tlast.Name
+type Constructor struct {
+	Type   *Type
+	Id     uint
+	Name   ConstructorName
+	Fields []tlast.Field
+}
+
+type TypeName = tlast.Name
+
+type Type struct {
+	IsBasic       bool
+	Name          TypeName
+	TypeArguments []tlast.TemplateArgument
+	Constructors  []*Constructor
+}
+
+type EvaluatedTypeArgument struct {
+	Index int
+
+	// union variants
+	Constant     string         // 0
+	Variable     string         // 1
+	TypeVariable string         // 3
+	Type         *TypeReduction // 2
+}
+
+type TypeReduction struct {
+	IsType bool
+
+	Type        *Type
+	Constructor *Constructor
+
+	Arguments []EvaluatedTypeArgument
+}
+
+func (tr *TypeReduction) ReferenceName() (name tlast.Name) {
+	if tr.IsType {
+		name = tr.Type.Name
+	} else {
+		name = tr.Constructor.Name
+	}
+	return
+}
+
+func (tr *TypeReduction) ReferenceType() *Type {
+	if tr.IsType {
+		return tr.Type
+	}
+	return tr.Constructor.Type
+}
+
+func (tr *TypeReduction) String() string {
+	s := ""
+	if tr.Type != nil || tr.Constructor != nil {
+		s += tr.ReferenceName().String()
+		if len(tr.Arguments) != 0 {
+			s += "<"
+			for i, arg := range tr.Arguments {
+				switch arg.Index {
+				case 0:
+					s += "C" + arg.Constant
+				case 1:
+					s += "V"
+				case 2:
+					s += arg.Type.String()
+				case 3:
+					s += "TV"
+				}
+				if len(tr.Arguments) != i+1 {
+					s += ","
+				}
+			}
+			s += ">"
+		}
+	}
+	return s
+}
+
+func processCombinators(types map[string]*tlast.Combinator) {
+	existingTypes := make(map[TypeName]*Type)
+	existingConstructors := make(map[ConstructorName]*Constructor)
+
+	for _, comb := range types {
+		if comb.IsFunction {
+			continue
+		}
+		declaredType := comb.TypeDecl.Name
+		if comb.Builtin {
+			declaredType = comb.Construct.Name
+		}
+		currentConstructor := comb.Construct.Name
+		if _, presented := existingTypes[declaredType]; !presented {
+			existingTypes[declaredType] = &Type{
+				IsBasic:       comb.Builtin,
+				Name:          declaredType,
+				Constructors:  []*Constructor{},
+				TypeArguments: comb.TemplateArguments,
+			}
+		}
+		targetType := existingTypes[declaredType]
+		constrId := len(targetType.Constructors)
+		constructor := Constructor{
+			Name:   currentConstructor,
+			Fields: comb.Fields,
+			Id:     uint(constrId),
+			Type:   targetType,
+		}
+		targetType.Constructors = append(targetType.Constructors, &constructor)
+		existingConstructors[currentConstructor] = &constructor
+	}
+
+	typeReductions := make(map[*Type]*map[*TypeReduction]bool)
+
+	for _, comb := range existingTypes {
+		if len(comb.TypeArguments) != 0 {
+			continue
+		}
+		reduce(
+			TypeReduction{
+				IsType: true,
+				Type:   existingTypes[comb.Name],
+			},
+			&typeReductions,
+			&existingTypes,
+			&existingConstructors,
+		)
+	}
+
+	for tp, rds := range typeReductions {
+		fmt.Println(tp.Name.String())
+		for rd, _ := range *rds {
+			fmt.Println("\t", rd.String())
+		}
+	}
+}
+
+func reduce(
+	targetTypeReduction TypeReduction,
+	visitedReductions *map[*Type]*map[*TypeReduction]bool,
+	types *map[TypeName]*Type,
+	constructors *map[ConstructorName]*Constructor,
+) {
+	for _, arg := range targetTypeReduction.Arguments {
+		if arg.Index == 2 {
+			reduce(*arg.Type, visitedReductions, types, constructors)
+		}
+	}
+
+	trs, ok := (*visitedReductions)[targetTypeReduction.ReferenceType()]
+	if !ok {
+		tmp := make(map[*TypeReduction]bool)
+		(*visitedReductions)[targetTypeReduction.ReferenceType()] = &tmp
+		trs = &tmp
+	}
+
+	_, ok = (*trs)[&targetTypeReduction]
+	if !ok {
+		(*trs)[&targetTypeReduction] = true
+	} else {
+		return
+	}
+
+	if targetTypeReduction.ReferenceType().IsBasic {
+		return
+	}
+
+	var visitingConstructors []*Constructor
+
+	if targetTypeReduction.IsType {
+		visitingConstructors = targetTypeReduction.Type.Constructors
+	} else {
+		visitingConstructors = append(visitingConstructors, targetTypeReduction.Constructor)
+	}
+
+	for _, constr := range visitingConstructors {
+		reduceConstructor(
+			constr,
+			targetTypeReduction.Arguments,
+			visitedReductions,
+			types,
+			constructors,
+		)
+	}
+}
+
+func reduceConstructor(
+	constructor *Constructor,
+	args []EvaluatedTypeArgument,
+	visitedReductions *map[*Type]*map[*TypeReduction]bool,
+	types *map[TypeName]*Type,
+	constructors *map[ConstructorName]*Constructor,
+) {
+	trs, ok := (*visitedReductions)[constructor.Type]
+	if !ok {
+		tmp := make(map[*TypeReduction]bool)
+		(*visitedReductions)[constructor.Type] = &tmp
+		trs = &tmp
+	}
+
+	constructorReduction := TypeReduction{IsType: false, Constructor: constructor, Arguments: args}
+
+	_, ok = (*trs)[&constructorReduction]
+	if !ok {
+		(*trs)[&constructorReduction] = true
+	} else {
+		return
+	}
+
+	if constructor == nil {
+		return
+	}
+	for _, field := range constructor.Fields {
+		fieldType := toTypeReduction(field.FieldType, types, constructors)
+		if fieldType != nil {
+			fillTypeReduction(fieldType, constructor.Type, args)
+			reduce(*fieldType, visitedReductions, types, constructors)
+		}
+	}
+}
+
+func findArgByName(targetArg string, args []tlast.TemplateArgument) int {
+	for i, arg := range args {
+		if arg.FieldName == targetArg {
+			return i
+		}
+	}
+	return -1
+}
+
+func fillTypeReduction(
+	typeReduction *TypeReduction,
+	originalType *Type,
+	args []EvaluatedTypeArgument,
+) {
+	for argI, arg := range typeReduction.Arguments {
+		switch arg.Index {
+		// nat var
+		case 1:
+			j := findArgByName(arg.Variable, originalType.TypeArguments)
+			if j != -1 && args[j].Index == 0 {
+				typeReduction.Arguments[argI] = args[j]
+			}
+		// type
+		case 2:
+			fillTypeReduction(arg.Type, originalType, args)
+		// type var
+		case 3:
+			j := findArgByName(arg.TypeVariable, originalType.TypeArguments)
+			if j != -1 && args[j].Index == 2 {
+				typeReduction.Arguments[argI] = args[j]
+			}
+		}
+	}
+}
+
+func toTypeReduction(
+	typeRef tlast.TypeRef,
+	types *map[TypeName]*Type,
+	constructors *map[ConstructorName]*Constructor,
+) *TypeReduction {
+	var reduction TypeReduction
+
+	typeName := typeRef.Type
+	var targetType *Type
+
+	if constr, isConstructor := (*constructors)[typeName]; isConstructor {
+		reduction.IsType = false
+		reduction.Constructor = constr
+		targetType = constr.Type
+	} else if typ, isType := (*types)[typeName]; isType {
+		reduction.IsType = true
+		reduction.Type = typ
+		targetType = typ
+	} else {
+		return nil
+	}
+
+	evalArguments := make([]EvaluatedTypeArgument, 0)
+
+	for i, actualArg := range typeRef.Args {
+		typeArg := targetType.TypeArguments[i]
+		if actualArg.IsArith {
+			evalArguments = append(evalArguments, EvaluatedTypeArgument{
+				Index:    0,
+				Constant: strconv.FormatInt(int64(actualArg.Arith.Res), 10),
+			})
+		} else if typeArg.IsNat {
+			evalArguments = append(evalArguments, EvaluatedTypeArgument{
+				Index:    1,
+				Variable: actualArg.T.Type.Name,
+			})
+		} else {
+			typ := toTypeReduction(actualArg.T, types, constructors)
+			if typ != nil {
+				evalArguments = append(evalArguments, EvaluatedTypeArgument{
+					Index: 2,
+					Type:  typ,
+				})
+			} else {
+				evalArguments = append(evalArguments, EvaluatedTypeArgument{
+					Index:        3,
+					TypeVariable: actualArg.T.Type.Name,
+				})
+			}
+		}
+	}
+
+	reduction.Arguments = evalArguments
+
+	return &reduction
 }
