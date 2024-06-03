@@ -39,25 +39,16 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved(bytesVersion boo
 	//	trw.dictKeyField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictKeyField.resolvedType, halfResolve),
 	//	trw.dictValueField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictValueField.resolvedType, halfResolve))
 	//}
-	if trw.vectorLike || trw.dynamicSize {
+	if trw.vectorLike {
 		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]))
 	}
-	if halfResolved.Args[1].Name != "" {
-		return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]), halfResolved.Args[1].Name)
+	if trw.dynamicSize {
+		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]))
 	}
-	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]), trw.size)
-
-	//if trw.vectorLike || trw.dynamicSize {
-	//	index := 0
-	//	if len(halfResolved.Args) > 1 {
-	//		index = 1
-	//	}
-	//	return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[index]))
-	//}
-	//if halfResolved.Args[1].Name != "" {
-	//	return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), halfResolved.Args[0].Name)
-	//}
-	//return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), trw.size)
+	if halfResolved.Args[0].Name != "" {
+		return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), halfResolved.Args[0].Name)
+	}
+	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), trw.size)
 }
 
 func (trw *TypeRWBrackets) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {

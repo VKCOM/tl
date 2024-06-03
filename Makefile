@@ -136,7 +136,6 @@ qtpl:
 		qtc -dir=./internal -skipLineComments; \
 	fi
 
-# TODO: in progress...
 .PHONY: cpp
 cpp: build
 	@./target/bin/tlgen -language=cpp -v \
@@ -144,4 +143,4 @@ cpp: build
 		--generateRPCCode=false \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		./$(TLS_PATH)/cpp.tl
-	g++ -o $(TEST_PATH)/test_cpp $(TEST_PATH)/test_cpp.cpp $(TEST_PATH)/gen/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter

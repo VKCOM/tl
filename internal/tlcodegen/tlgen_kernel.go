@@ -173,6 +173,7 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 	exist, ok := gen.generatedTypes[canonicalName]
 	if !ok {
 		// log.Printf("adding canonical type: %s\n", canonicalName)
+		//log.Printf("   half resolved type: %v\n", halfResolved)
 		gen.generatedTypes[canonicalName] = kernelType
 		gen.generatedTypesList = append(gen.generatedTypesList, kernelType)
 		// We added our type already, so others can reference it

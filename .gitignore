@@ -24,3 +24,6 @@ go.work
 /.tmp
 
 /.idea
+
+/internal/tlcodegen/test/gen/test_cpp
+internal/tlcodegen/test/gen/cpp/
