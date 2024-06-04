@@ -416,7 +416,7 @@ func (trw *TypeRWUnion) CPPSetters(bytesVersion bool) string {
 	var s strings.Builder
 	for fieldIndex, field := range trw.Fields {
 		if field.t.IsTrueType() {
-			s.WriteString(fmt.Sprintf("\tvoid set_%s() { value.emplace<%d>(); }\n", field.cppName, fieldIndex))
+			s.WriteString(fmt.Sprintf("\tvoid set_%s() { value.emplace<%d>({}); }\n", field.cppName, fieldIndex))
 		}
 	}
 	return s.String()
