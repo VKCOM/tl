@@ -386,6 +386,12 @@ func (trw *TypeRWWrapper) replaceUnwrapHalfResolvedName(topHalfResolved HalfReso
 
 // same code as in func (w *TypeRWWrapper) transformNatArgsToChild, replaceUnwrapArgs
 func (trw *TypeRWWrapper) replaceUnwrapHalfResolved(topHalfResolved HalfResolvedArgument, halfResolved HalfResolvedArgument) HalfResolvedArgument {
+	// example
+	// tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+	// innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
+	// when unwrapping we need to change tuple<int, X> into __tuple<X, int>
+	// halfResolved references in field of tuple<int, X> are to "n", "t" local template args
+	// we must look up in tuple<int, X> to replace "n" "t" into "X", ""
 	var result HalfResolvedArgument
 	result.Name = trw.replaceUnwrapHalfResolvedName(topHalfResolved, halfResolved.Name)
 	for _, arg := range halfResolved.Args {
