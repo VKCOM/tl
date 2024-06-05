@@ -372,6 +372,28 @@ outer:
 	return result
 }
 
+func (trw *TypeRWWrapper) replaceUnwrapHalfResolvedName(topHalfResolved HalfResolvedArgument, name string) string {
+	if name == "" {
+		return ""
+	}
+	for i, arg := range trw.origTL[0].TemplateArguments {
+		if arg.FieldName == name {
+			return topHalfResolved.Args[i].Name
+		}
+	}
+	return ""
+}
+
+// same code as in func (w *TypeRWWrapper) transformNatArgsToChild, replaceUnwrapArgs
+func (trw *TypeRWWrapper) replaceUnwrapHalfResolved(topHalfResolved HalfResolvedArgument, halfResolved HalfResolvedArgument) HalfResolvedArgument {
+	var result HalfResolvedArgument
+	result.Name = trw.replaceUnwrapHalfResolvedName(topHalfResolved, halfResolved.Name)
+	for _, arg := range halfResolved.Args {
+		result.Args = append(result.Args, trw.replaceUnwrapHalfResolved(topHalfResolved, arg))
+	}
+	return result
+}
+
 func (trw *TypeRWStruct) typeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, ref bool) string {
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.TypeResettingCode(bytesVersion, directImports, ins, val, ref)

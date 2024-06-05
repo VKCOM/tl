@@ -20,7 +20,7 @@ func (trw *TypeRWStruct) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrappe
 }
 
 func (trw *TypeRWStruct) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	if trw.isUnwrapType() { // TODO - when replacing typedefs, we must make name resolution
+	if trw.isUnwrapType() {
 		return trw.Fields[0].t.CPPTypeStringInNamespace(bytesVersion, hppInc)
 	}
 	_, _, args := trw.wr.cppTypeStringInNamespace(bytesVersion, hppInc, false, HalfResolvedArgument{})
@@ -28,8 +28,9 @@ func (trw *TypeRWStruct) cppTypeStringInNamespace(bytesVersion bool, hppInc *Dir
 }
 
 func (trw *TypeRWStruct) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
-	if trw.isUnwrapType() { // TODO - when replacing typedefs, we must make name resolution
-		return trw.Fields[0].t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved) // trw.Fields[0].resolvedType
+	if trw.isUnwrapType() {
+		halfResolvedUnwrapped := trw.wr.replaceUnwrapHalfResolved(halfResolved, trw.Fields[0].halfResolved)
+		return trw.Fields[0].t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolvedUnwrapped)
 	}
 	_, _, args := trw.wr.cppTypeStringInNamespace(bytesVersion, hppInc, true, halfResolved)
 	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + args
