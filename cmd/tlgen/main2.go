@@ -28,7 +28,7 @@ const tlExt = ".tl"
 
 func parseFlags(opt *tlcodegen.Gen2Options) {
 	// General
-	flag.StringVar(&opt.Language, "language", "go",
+	flag.StringVar(&opt.Language, "language", "",
 		`generation target language`)
 	flag.StringVar(&opt.Outdir, "outdir", "",
 		`where to write generated files`)
