@@ -26,7 +26,7 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
 
-	cppAllInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
+	cppAllInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
 	var hpp strings.Builder
 	var hppDet strings.Builder
 	var cppDet strings.Builder
@@ -38,10 +38,10 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		internalFiles[ff] = append(internalFiles[ff], typeRw)
 	}
 	for ff, types := range internalFiles {
-		hppInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		hppIncFwd := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		hppDetInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
-		cppDetInc := &DirectIncludesCPP{ns: map[string]struct{}{}}
+		hppInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
+		hppIncFwd := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
+		hppDetInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
+		cppDetInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
 		multipleDefinitions := map[string]struct{}{}
 		for _, typeRw := range types {
 			// log.Printf("type: %s\n", typeRw.tlName.String())
@@ -68,7 +68,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
 			continue
 		}
-		cppAllInc.ns[ff.fileName] = struct{}{}
+		cppAllInc.ns[ff.fileName] = CppIncludeInfo{types[0].typeComponent}
 		hppStr := hpp.String()
 		hppDetStr := hppDet.String()
 		cppDetStr := cppDet.String()
@@ -115,7 +115,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	var cppMake strings.Builder
 	var cppMakeO strings.Builder
 	var cppMake1 strings.Builder
-	for _, n := range cppAllInc.sortedNames() {
+	for _, n := range cppAllInc.sortedIncludes(gen.componentsOrder) {
 		cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n+"_details", cppExt))
 		cppMake1.WriteString(fmt.Sprintf("%s.o: details/%s%s details/%s%s\n", n+"_details", n+"_details", cppExt, n+"_details", hppExt))
 		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -c details/%s%s\n", n+"_details", cppExt))

@@ -28,11 +28,20 @@ func (trw *TypeRWStruct) cppTypeStringInNamespace(bytesVersion bool, hppInc *Dir
 }
 
 func (trw *TypeRWStruct) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
-	if trw.isUnwrapType() { // TODO - when replacing typedefs, we must make name resolution
-		return trw.Fields[0].t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved) // trw.Fields[0].resolvedType
+	if trw.isUnwrapType() {
+		halfResolvedUnwrapped := trw.wr.replaceUnwrapHalfResolved(halfResolved, trw.Fields[0].halfResolved)
+		return trw.Fields[0].t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolvedUnwrapped)
 	}
 	_, _, args := trw.wr.cppTypeStringInNamespace(bytesVersion, hppInc, true, halfResolved)
 	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + args
+}
+
+func (trw *TypeRWStruct) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
+	if trw.isUnwrapType() {
+		eval := trw.wr.gen.typesInfo.FieldTypeReduction(typeReduction.Type, 0)
+		return trw.Fields[0].t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, eval)
+	}
+	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + trw.wr.cppTypeArguments(bytesVersion, typeReduction.Type)
 }
 
 func (trw *TypeRWStruct) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
@@ -73,13 +82,14 @@ func (trw *TypeRWStruct) CPPTypeReadingCode(bytesVersion bool, val string, bare 
 		if !bare {
 			prefix = fmt.Sprintf("\ts.nat_read_exact_tag(0x%x);\n", trw.wr.tlTag)
 		}
-		return prefix + trw.Fields[0].t.trw.CPPTypeReadingCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
+		s := prefix + trw.Fields[0].t.trw.CPPTypeReadingCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
+		return s
 	}
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	s := fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return s
 }
 
 func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
-	goLocalName := addBytes(trw.wr.goLocalName, bytesVersion)
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	//if trw.wr.unionParent != nil && trw.wr.unionParentIsEnum {
 	//	return
@@ -95,6 +105,14 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	if trw.wr.tlName.Namespace != "" {
 		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
 	}
+
+	if !forwardDeclaration {
+		for _, typeDep := range trw.AllTypeDependencies() {
+			if typeDep.typeComponent == trw.wr.typeComponent {
+				typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
+			}
+		}
+	}
 	cppStartNamespace(hpp, typeNamespace)
 	// hpp.WriteString("// " + goLocalName + "\n") - uncommenting will lead to multiple definition error
 	if len(myArgsDecl) != 0 {
@@ -107,26 +125,72 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	}
 	if trw.isTypeDef() {
 		field := trw.Fields[0]
-		fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
-		hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, fieldFullType))
+
+		if !field.t.origTL[0].Builtin && len(trw.wr.arguments) != 0 {
+			// TODO TODO TODO temporary solution
+			ti := trw.wr.gen.typesInfo
+			tlName := trw.wr.tlName
+
+			_, isType := ti.Types[tlName]
+			typeReduction := TypeReduction{IsType: isType}
+			if isType {
+				typeReduction.Type = ti.Types[tlName]
+			} else {
+				typeReduction.Constructor = ti.Constructors[tlName]
+			}
+			for i, arg := range typeReduction.ReferenceType().TypeArguments {
+				evalArg := EvaluatedType{}
+				if arg.IsNat {
+					evalArg.Index = 1
+					evalArg.Variable = arg.FieldName
+					if trw.wr.arguments[i].isArith {
+						// set true only here
+						evalArg.VariableActsAsConstant = true
+					}
+				} else {
+					evalArg.Index = 3
+					evalArg.TypeVariable = arg.FieldName
+				}
+				typeReduction.Arguments = append(typeReduction.Arguments, evalArg)
+			}
+
+			typeRed := ti.FieldTypeReduction(&typeReduction, 0)
+			for _, typeRw := range trw.Fields[0].t.ActualTypeDependencies(typeRed) {
+				hppInc.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent}
+			}
+			hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)))
+		} else {
+			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
+			hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, fieldFullType))
+		}
 	} else {
 		hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
 		for _, field := range trw.Fields {
-			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
+			hppIncByField := DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
+			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, &hppIncByField, field.halfResolved)
 			fieldsMaskComment := ""
 			//if field.fieldMask != nil {
 			//	fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArgCPP(trw.Fields, *field.fieldMask), field.BitNumber)
 			//}
 			if field.recursive {
+				// TODO make better
+				for includeType, includeInfo := range hppIncByField.ns {
+					if includeInfo.componentId == trw.wr.typeComponent {
+						delete(hppIncByField.ns, includeType)
+					}
+				}
 				anyRecursive = true // requires destructor in cpp file
 				hpp.WriteString(fmt.Sprintf("\tstd::shared_ptr<%s> %s{};%s\n", fieldFullType, field.cppName, fieldsMaskComment))
 			} else {
 				hpp.WriteString(fmt.Sprintf("\t%s %s%s;%s\n", fieldFullType, field.cppName, field.t.CPPDefaultInitializer(field.halfResolved, true), fieldsMaskComment))
 			}
+			for includeType, includeInfo := range hppIncByField.ns {
+				hppInc.ns[includeType] = includeInfo
+			}
 			//hpp.WriteString(fmt.Sprintf("\t// DebugString: %s\n", field.resolvedType.DebugString()))
 		}
 		if anyRecursive { // && len(trw.cppArgs) != 0
-			hpp.WriteString(fmt.Sprintf("\n\t~%s() {}\n", goLocalName)) // TODO - move destructor to cpp
+			hpp.WriteString(fmt.Sprintf("\n\t~%s() {}\n", trw.wr.cppLocalName)) // TODO - move destructor to cpp
 			// cppDet.WriteString(fmt.Sprintf("%s%s::~%s() {}\n", trw.wr.cppNamespaceQualifier, goLocalName, goLocalName))
 		}
 		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
@@ -223,15 +287,15 @@ void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 			myFullType,
 			formatNatArgsDeclCPP(trw.wr.NatParams)))
 
-		cppDet.WriteString(fmt.Sprintf(`
+		s := fmt.Sprintf(`
 void %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	s.nat_read_exact_tag(0x%08[9]x);
-	%[1]sRead(s, item%[8]s);
+	%[7]s::%[1]sRead(s, item%[8]s);
 }
 
 void %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 	s.nat_write(0x%08[9]x);
-	%[1]sWrite(s, item%[8]s);
+	%[7]s::%[1]sWrite(s, item%[8]s);
 }
 `,
 			goGlobalName,
@@ -243,7 +307,8 @@ void %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.wr.gen.DetailsCPPNamespace,
 			formatNatArgsCallCPP(trw.wr.NatParams),
 			trw.wr.tlTag,
-		))
+		)
+		cppDet.WriteString(s)
 
 	}
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)

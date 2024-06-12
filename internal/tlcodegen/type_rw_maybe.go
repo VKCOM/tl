@@ -40,6 +40,20 @@ func (trw *TypeRWMaybe) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	trw.element.t.MarkWantsBytesVersion(visitedNodes)
 }
 
+func (trw *TypeRWMaybe) AllPossibleRecursionProducers() []*TypeRWWrapper {
+	return trw.element.t.trw.AllPossibleRecursionProducers()
+}
+
+func (trw *TypeRWMaybe) AllTypeDependencies() []*TypeRWWrapper {
+	return nil
+}
+
+func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+	visitedNodes[trw.wr] = 1
+	trw.element.t.trw.FillRecursiveChildren(visitedNodes, currentPath)
+	visitedNodes[trw.wr] = 2
+}
+
 func (trw *TypeRWMaybe) BeforeCodeGenerationStep1() {
 }
 

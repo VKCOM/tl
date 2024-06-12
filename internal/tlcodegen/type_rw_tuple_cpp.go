@@ -19,7 +19,7 @@ func (trw *TypeRWBrackets) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrap
 }
 
 func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
 	//if trw.dictLike && !bytesVersion {
 	//	TODO - which arguments must map have is very complicated
 	//return fmt.Sprintf("std::map<%s, %s>",
@@ -49,6 +49,19 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved(bytesVersion boo
 		return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), halfResolved.Args[0].Name)
 	}
 	return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[1]), trw.size)
+}
+
+func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
+	switch len(typeReduction.Type.Arguments) {
+	case 1:
+		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]))
+	case 2:
+		if typeReduction.Type.Arguments[1].VariableActsAsConstant {
+			return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]), typeReduction.Type.Arguments[1].Variable)
+		}
+		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]))
+	}
+	return ""
 }
 
 func (trw *TypeRWBrackets) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
@@ -84,6 +97,10 @@ func (trw *TypeRWBrackets) CPPTypeReadingCode(bytesVersion bool, val string, bar
 }
 
 func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
+	if forwardDeclaration {
+		trw.element.t.trw.CPPGenerateCode(hpp, hppInc, hppIncFwd, hppDet, hppDetInc, cppDet, cppDetInc, bytesVersion, true)
+		return
+	}
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 	hppDetCode := `

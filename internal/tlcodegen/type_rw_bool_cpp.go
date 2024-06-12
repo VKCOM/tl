@@ -15,12 +15,16 @@ func (trw *TypeRWBool) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]
 }
 
 func (trw *TypeRWBool) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
 	return "bool"
 }
 
 func (trw *TypeRWBool) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
+	return "bool"
+}
+
+func (trw *TypeRWBool) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
 	return "bool"
 }
 

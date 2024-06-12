@@ -58,6 +58,17 @@ func (trw *TypeRWPrimitive) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]
 func (trw *TypeRWPrimitive) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWPrimitive) AllPossibleRecursionProducers() []*TypeRWWrapper {
+	return nil
+}
+
+func (trw *TypeRWPrimitive) AllTypeDependencies() []*TypeRWWrapper {
+	return nil
+}
+
+func (trw *TypeRWPrimitive) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+}
+
 func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {
 }
 

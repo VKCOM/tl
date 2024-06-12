@@ -16,13 +16,17 @@ func (trw *TypeRWMaybe) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 }
 
 func (trw *TypeRWMaybe) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
 	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc) + ">"
 }
 
 func (trw *TypeRWMaybe) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
 	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]) + ">"
+}
+
+func (trw *TypeRWMaybe) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
+	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]) + ">"
 }
 
 func (trw *TypeRWMaybe) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
@@ -50,6 +54,10 @@ func (trw *TypeRWMaybe) CPPTypeReadingCode(bytesVersion bool, val string, bare b
 }
 
 func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
+	if forwardDeclaration {
+		trw.element.t.trw.CPPGenerateCode(hpp, hppInc, hppIncFwd, hppDet, hppDetInc, cppDet, cppDetInc, bytesVersion, true)
+		return
+	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
 

@@ -40,22 +40,22 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	if isPrimitive && primitive.tlType == trw.wr.tlName.String() {
 		return true
 	}
-	brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
-	if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
-		return true
-	}
+	//brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
+	//if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
+	//	return true
+	//}
 	// in combined TL Dictionary is defined via Vector.
 	// dictionaryField {t:Type} key:string value:t = DictionaryField t;
 	// dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 	// TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
-	str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
-	if isStruct && str.wr.tlName.String() == "vector" {
-		// repeat check above 1 level deeper
-		brackets, isBuiltinBrackets = str.Fields[0].t.trw.(*TypeRWBrackets)
-		if isBuiltinBrackets && brackets.dictLike {
-			return true
-		}
-	}
+	//str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
+	//if isStruct && str.wr.tlName.String() == "vector" {
+	//	// repeat check above 1 level deeper
+	//	brackets, isBuiltinBrackets := str.Fields[0].t.trw.(*TypeRWBrackets)
+	//	if isBuiltinBrackets && brackets.dictLike {
+	//		return true
+	//	}
+	//}
 	return false
 }
 
@@ -76,6 +76,34 @@ func (trw *TypeRWStruct) markHasBytesVersion(visitedNodes map[*TypeRWWrapper]boo
 	}
 	if trw.ResultType != nil {
 		result = result || trw.ResultType.MarkHasBytesVersion(visitedNodes)
+	}
+	return result
+}
+
+func (trw *TypeRWWrapper) replaceUnwrapHalfResolvedName(topHalfResolved HalfResolvedArgument, name string) string {
+	if name == "" {
+		return ""
+	}
+	for i, arg := range trw.origTL[0].TemplateArguments {
+		if arg.FieldName == name {
+			return topHalfResolved.Args[i].Name
+		}
+	}
+	return ""
+}
+
+// same code as in func (w *TypeRWWrapper) transformNatArgsToChild, replaceUnwrapArgs
+func (trw *TypeRWWrapper) replaceUnwrapHalfResolved(topHalfResolved HalfResolvedArgument, halfResolved HalfResolvedArgument) HalfResolvedArgument {
+	// example
+	// tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+	// innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
+	// when unwrapping we need to change tuple<int, X> into __tuple<X, int>
+	// halfResolved references in field of tuple<int, X> are to "n", "t" local template args
+	// we must look up in tuple<int, X> to replace "n" "t" into "X", ""
+	var result HalfResolvedArgument
+	result.Name = trw.replaceUnwrapHalfResolvedName(topHalfResolved, halfResolved.Name)
+	for _, arg := range halfResolved.Args {
+		result.Args = append(result.Args, trw.replaceUnwrapHalfResolved(topHalfResolved, arg))
 	}
 	return result
 }
@@ -107,12 +135,65 @@ func (trw *TypeRWStruct) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]b
 	}
 }
 
-func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
-	for i, f := range trw.Fields {
-		visitedNodes := map[*TypeRWWrapper]bool{}
-		f.t.trw.fillRecursiveChildren(visitedNodes)
-		trw.Fields[i].recursive = visitedNodes[trw.wr]
+func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {
+	var result []*TypeRWWrapper
+	for _, typeDep := range trw.wr.arguments {
+		if typeDep.tip != nil {
+			result = append(result, typeDep.tip.trw.AllPossibleRecursionProducers()...)
+		}
 	}
+	if !trw.isTypeDef() {
+		result = append(result, trw.wr)
+	}
+	return result
+}
+
+func (trw *TypeRWStruct) AllTypeDependencies() (res []*TypeRWWrapper) {
+	used := make(map[*TypeRWWrapper]bool)
+	red := trw.wr.gen.typesInfo.TypeNameToGenericTypeReduction(trw.wr.tlName)
+
+	for i, f := range trw.Fields {
+		fieldRed := trw.wr.gen.typesInfo.FieldTypeReduction(&red, i)
+		deps := f.t.ActualTypeDependencies(fieldRed)
+		for _, dep := range deps {
+			used[dep] = true
+		}
+	}
+
+	for tp, _ := range used {
+		res = append(res, tp)
+	}
+	return
+}
+
+func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+	if visitedNodes[trw.wr] != 0 {
+		return
+	}
+	*currentPath = append(*currentPath, trw.wr)
+	visitedNodes[trw.wr] = 1
+	for i, f := range trw.Fields {
+		if f.recursive {
+			continue
+		}
+		for _, typeDep := range f.t.trw.AllPossibleRecursionProducers() {
+			if visitedNodes[typeDep] == 1 {
+				trw.Fields[i].recursive = true
+			} else {
+				typeDep.trw.FillRecursiveChildren(visitedNodes, currentPath)
+			}
+		}
+	}
+	*currentPath = (*currentPath)[:len(*currentPath)-1]
+	visitedNodes[trw.wr] = 2
+}
+
+func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
+	//for i, f := range trw.Fields {
+	//	visitedNodes := map[*TypeRWWrapper]bool{}
+	//	f.t.trw.fillRecursiveChildren(visitedNodes)
+	//	trw.Fields[i].recursive = visitedNodes[trw.wr]
+	//}
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))

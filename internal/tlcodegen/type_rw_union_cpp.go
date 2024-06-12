@@ -29,6 +29,10 @@ func (trw *TypeRWUnion) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, 
 	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + args
 }
 
+func (trw *TypeRWUnion) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
+	return ""
+}
+
 func (trw *TypeRWUnion) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	return ""
 }
@@ -58,9 +62,24 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 
 	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
 	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
-	fmt.Printf("Ts: %s %s\n", myFullType, strings.Join(myArgsDecl, ", "))
-	fmt.Printf("    %s\n", trw.wr.cppLocalName)
+	//fmt.Printf("Ts: %s %s\n", myFullType, strings.Join(myArgsDecl, ", "))
+	//fmt.Printf("    %s\n", trw.wr.cppLocalName)
 	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+
+	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
+	if trw.wr.tlName.Namespace != "" {
+		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
+	}
+
+	if forwardDeclaration {
+		cppStartNamespace(hpp, typeNamespace)
+		if len(myArgsDecl) != 0 {
+			hpp.WriteString("template<" + strings.Join(myArgsDecl, ", ") + ">\n")
+		}
+		hpp.WriteString("struct " + trw.wr.cppLocalName + ";")
+		cppFinishNamespace(hpp, typeNamespace)
+		return
+	}
 
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	hppDet.WriteString(fmt.Sprintf(`
@@ -71,15 +90,12 @@ void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	for _, field := range trw.Fields {
-		if field.recursive {
-			field.t.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
+	for _, typeDep := range trw.AllTypeDependencies() {
+		if typeDep.typeComponent == trw.wr.typeComponent {
+			typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
 		}
 	}
-	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
-	if trw.wr.tlName.Namespace != "" {
-		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
-	}
+
 	cppStartNamespace(hpp, typeNamespace)
 	if len(myArgsDecl) != 0 {
 		hpp.WriteString("template<" + strings.Join(myArgsDecl, ", ") + ">\n")
@@ -125,8 +141,8 @@ static const uint32_t %[1]s_tbl_tl_tag[]{%[3]s};
 `,
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 			trw.CPPTypeResettingCode(bytesVersion, "*this"),
-			trw.CPPTypeReadingCode(bytesVersion, "*this", false, trw.wr.NatParams, true),
-			trw.CPPTypeWritingCode(bytesVersion, "*this", false, trw.wr.NatParams, true)))
+			trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+			trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
 		cppDet.WriteString(fmt.Sprintf(`
 void %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
 %[3]s
@@ -144,8 +160,8 @@ uint32_t %[5]s::tl_tag() const {
 `,
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 			trw.CPPTypeResettingCode(bytesVersion, "*this"),
-			trw.CPPTypeReadingCode(bytesVersion, "*this", false, trw.wr.NatParams, true),
-			trw.CPPTypeWritingCode(bytesVersion, "*this", false, trw.wr.NatParams, true),
+			trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+			trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 			myFullTypeNoPrefix,
 			goGlobalName))
 	}
@@ -414,9 +430,14 @@ func (trw *TypeRWUnion) CPPWriteFields(bytesVersion bool) string {
 
 func (trw *TypeRWUnion) CPPSetters(bytesVersion bool) string {
 	var s strings.Builder
+	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
 	for fieldIndex, field := range trw.Fields {
 		if field.t.IsTrueType() {
-			s.WriteString(fmt.Sprintf("\tvoid set_%s() { value.emplace<%d>({}); }\n", field.cppName, fieldIndex))
+			initValue := ""
+			if len(myArgsDecl) != 0 {
+				initValue = "{}"
+			}
+			s.WriteString(fmt.Sprintf("\tvoid set_%s() { value.emplace<%d>(%s); }\n", field.cppName, fieldIndex, initValue))
 		}
 	}
 	return s.String()

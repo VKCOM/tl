@@ -12,8 +12,6 @@ import (
 	"strconv"
 	"strings"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/vkcom/tl/internal/tlast"
 )
 
@@ -43,6 +41,8 @@ func (d *Deconflicter) deconflictName(s string) string {
 	return s
 }
 
+var bannedCppFieldNames = []string{"and", "or", "friend", "xor", "operator", "errno", "class", "short", "default", "signed"}
+
 func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
 	d.deconflictName("int")
 	d.deconflictName("double")
@@ -51,6 +51,10 @@ func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
 	d.deconflictName("else")
 	d.deconflictName("inline")
 	d.deconflictName("namespace")
+
+	for _, word := range bannedCppFieldNames {
+		d.deconflictName(word)
+	}
 }
 
 type TypeRWWrapper struct {
@@ -83,6 +87,9 @@ type TypeRWWrapper struct {
 
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
+
+	typeComponent       int
+	forwardDeclarations map[*TypeRWWrapper]bool
 }
 
 // Those have unique structure fully defined by the magic.
@@ -171,6 +178,29 @@ func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNa
 	return result
 }
 
+func (w *TypeRWWrapper) ActualTypeDependencies(evalType EvaluatedType) (res []*TypeRWWrapper) {
+	r := make(map[*TypeRWWrapper]bool)
+	w.actualTypeDependenciesRecur(evalType, &r)
+	for arg, _ := range r {
+		res = append(res, arg)
+	}
+	return
+}
+
+func (w *TypeRWWrapper) actualTypeDependenciesRecur(evalType EvaluatedType, used *map[*TypeRWWrapper]bool) {
+	if evalType.Index != TypeConstant {
+		return
+	}
+	if !(*used)[w] {
+		(*used)[w] = true
+	}
+	for i, arg := range w.arguments {
+		if arg.tip != nil {
+			arg.tip.actualTypeDependenciesRecur(evalType.Type.Arguments[i], used)
+		}
+	}
+}
+
 func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail string) {
 	b := strings.Builder{}
 	for _, a := range w.arguments {
@@ -202,9 +232,13 @@ type DirectImports struct {
 	importSort bool
 }
 
+type CppIncludeInfo struct {
+	componentId int
+}
+
 // for C++ includes
 type DirectIncludesCPP struct {
-	ns map[string]struct{}
+	ns map[string]CppIncludeInfo
 }
 
 func (d DirectIncludesCPP) sortedNames() []string {
@@ -212,8 +246,29 @@ func (d DirectIncludesCPP) sortedNames() []string {
 	for im := range d.ns { // Imports of this file.
 		sortedNames = append(sortedNames, im)
 	}
-	slices.Sort(sortedNames)
 	return sortedNames
+}
+
+func (d DirectIncludesCPP) sortedIncludes(componentOrder []int) (result []string) {
+	compIdToPosition := make(map[int]int)
+
+	for i, cId := range componentOrder {
+		compIdToPosition[cId] = i
+	}
+
+	filesByCID := make([][]string, len(componentOrder))
+
+	for im, cppInfo := range d.ns { // Imports of this file.
+		filesByCID[compIdToPosition[cppInfo.componentId]] = append(filesByCID[compIdToPosition[cppInfo.componentId]], im)
+	}
+
+	for _, files := range filesByCID {
+		for _, f := range files {
+			result = append(result, f)
+		}
+	}
+
+	return
 }
 
 func stringCompare(a string, b string) int {
@@ -362,6 +417,13 @@ func (w *TypeRWWrapper) CPPTypeStringInNamespaceHalfResolved(bytesVersion bool, 
 	return w.trw.cppTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved)
 }
 
+func (w *TypeRWWrapper) CPPTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
+	if typeReduction.Type == nil {
+		return typeReduction.TypeVariable
+	}
+	return w.trw.cppTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction)
+}
+
 func (w *TypeRWWrapper) CPPDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	if halfResolve && halfResolved.Name != "" {
 		return "{}"
@@ -407,8 +469,39 @@ func (w *TypeRWWrapper) fullyResolvedClassCppNameArgs() (string, []string) { // 
 	return cppSuffix.String(), cppArgsDecl
 }
 
+func (w *TypeRWWrapper) cppTypeArguments(bytesVersion bool, typeRedaction *TypeReduction) string {
+	arguments := make([]string, 0)
+	for i, a := range w.arguments {
+		evalArg := typeRedaction.Arguments[i]
+		if a.isNat {
+			if evalArg.Index == 0 {
+				arguments = append(arguments, strconv.FormatInt(int64(evalArg.Constant), 10))
+			} else if evalArg.Index == 1 && evalArg.VariableActsAsConstant {
+				arguments = append(arguments, evalArg.Variable)
+			}
+		} else {
+			if evalArg.Index == 3 {
+				arguments = append(arguments, evalArg.TypeVariable)
+			} else if evalArg.Index == 2 {
+				arguments = append(arguments, a.tip.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, evalArg))
+			}
+		}
+	}
+	s := ""
+	for i, arg := range arguments {
+		if i != 0 {
+			s += ", "
+		}
+		s += arg
+	}
+	if s != "" {
+		s = "<" + s + ">"
+	}
+	return s
+}
+
 func (w *TypeRWWrapper) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolve bool, halfResolved HalfResolvedArgument) (string, string, string) {
-	hppInc.ns[w.fileName] = struct{}{}
+	hppInc.ns[w.fileName] = CppIncludeInfo{w.typeComponent}
 	bName := strings.Builder{}
 	// bName.WriteString(w.cppNamespaceQualifier())
 	bName.WriteString(w.tlName.Name)
@@ -545,7 +638,11 @@ outer:
 type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
-	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
+	fillRecursiveUnwrap(vistrwitedNodes map[*TypeRWWrapper]bool)
+
+	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper)
+	AllPossibleRecursionProducers() []*TypeRWWrapper
+	AllTypeDependencies() []*TypeRWWrapper
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
 	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
@@ -569,6 +666,7 @@ type TypeRW interface {
 
 	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string
+	cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string
 	cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string
 	cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string
 	CPPHasBytesVersion() bool
