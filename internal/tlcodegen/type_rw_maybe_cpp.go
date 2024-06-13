@@ -17,12 +17,12 @@ func (trw *TypeRWMaybe) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 
 func (trw *TypeRWMaybe) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	hppInc.ns[trw.wr.fileName] = struct{}{}
-	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc) + ">"
+	return "std::optional<" + trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc) + ">"
 }
 
 func (trw *TypeRWMaybe) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
 	hppInc.ns[trw.wr.fileName] = struct{}{}
-	return "::basictl::optional<" + trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]) + ">"
+	return "std::optional<" + trw.element.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, halfResolved.Args[0]) + ">"
 }
 
 func (trw *TypeRWMaybe) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
@@ -39,13 +39,13 @@ func (trw *TypeRWMaybe) CPPTypeResettingCode(bytesVersion bool, val string) stri
 
 func (trw *TypeRWMaybe) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 	//return wrapLast(last, fmt.Sprintf("\t%s.Write%s( w %s)", val, addBare(bare), formatNatArgsCallCPP(natArgs)))
 }
 
 func (trw *TypeRWMaybe) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 	//return wrapLast(last, fmt.Sprintf("\t%s.Read%s( r %s)", val, addBare(bare), formatNatArgsCallCPP(natArgs)))
 }
 
@@ -56,8 +56,8 @@ func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 	hppDet.WriteString(fmt.Sprintf(`
-void %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 
 `, goGlobalName,
 		myFullType,
@@ -66,22 +66,26 @@ void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 		trw.wr.tlTag))
 
 	cppDet.WriteString(fmt.Sprintf(`
-void %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
-	if (s.bool_read(0x%[4]x, 0x%[5]x)) {
+bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
+	bool has_item = false;
+	if (!s.bool_read(has_item, 0x%[4]x, 0x%[5]x)) { return false; }
+	if (has_item) {
 		if (!item) {
 			item.emplace();
 		}
 	%[7]s
-		return;
+		return true;
 	}
 	item.reset();
+	return true;
 }
 
-void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
-	s.nat_write(item ? 0x%[5]x : 0x%[4]x);
+bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
+	if (!s.nat_write(item ? 0x%[5]x : 0x%[4]x)) { return false; }
 	if (item) {
 	%[8]s
 	}
+	return true;
 }
 `,
 		goGlobalName,
