@@ -212,6 +212,7 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) 
 	for(auto && el : item) {
 	%[5]s
 	}
+	return true;
 }
 
 bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
