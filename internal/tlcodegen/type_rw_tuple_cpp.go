@@ -75,12 +75,12 @@ func (trw *TypeRWBrackets) CPPTypeResettingCode(bytesVersion bool, val string) s
 
 func (trw *TypeRWBrackets) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
@@ -88,8 +88,8 @@ func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectI
 
 	hppDetCode := `
 void %[1]sReset(std::array<%[2]s, %[3]d>& item);
-void %[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s);
-void %[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
+bool %[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s);
+bool %[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
 `
 	cppCode := `
 void %[8]s::%[1]sReset(std::array<%[2]s, %[3]d>& item) {
@@ -98,16 +98,18 @@ void %[8]s::%[1]sReset(std::array<%[2]s, %[3]d>& item) {
 	}
 }
 
-void %[8]s::%[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s) {
+bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s) {
 	for(auto && el : item) {
 	%[5]s
 	}
+	return true;
 }
 
-void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s) {
+bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s) {
 	for(const auto & el : item) {
 	%[6]s
 	}
+	return true;
 }
 `
 	// keyTypeString := ""
@@ -166,55 +168,60 @@ void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 	case trw.vectorLike:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
-void %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
-void %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
+bool %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
+bool %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
 `
 		cppCode = `
 void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
 	item.resize(0); // TODO - unwrap
 }
 
-void %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
-	auto len = s.nat_read();
+bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
+	uint32_t len = 0;
+	if (!s.nat_read(len)) { return false; }
 	// TODO - check length sanity
 	item.resize(len);
 	for(auto && el : item) {
 	%[5]s
 	}
+	return true;
 }
 
-void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
-	s.nat_write(item.size());
+bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
+	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
 	%[6]s
 	}
+	return true;
 }
 `
 	case trw.dynamicSize:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
-void %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
-void %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
+bool %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
+bool %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
 `
 		cppCode = `
 void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
 	item.resize(0);
 }
 
-void %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
+bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
 	// TODO - check length sanity
 	item.resize(nat_n);
 	for(auto && el : item) {
 	%[5]s
 	}
+	return true;
 }
 
-void %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
+bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
 	if (item.size() != nat_n)
-		::basictl::throwSequenceLengthWrong();
+		return s.set_error_sequence_length();
 	for(const auto & el : item) {
 	%[6]s
 	}
+	return true;
 }
 `
 	}
