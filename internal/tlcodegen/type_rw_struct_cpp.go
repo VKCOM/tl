@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"golang.org/x/exp/slices"
 	"strings"
 )
 
@@ -107,7 +108,10 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	}
 
 	if !forwardDeclaration {
-		for _, typeDep := range trw.AllTypeDependencies() {
+		deps := trw.AllTypeDependencies()
+		slices.SortFunc(deps, TypeComparator)
+
+		for _, typeDep := range deps {
 			if typeDep.typeComponent == trw.wr.typeComponent {
 				typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
 			}

@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"io"
 	"log"
 	"os"
@@ -694,6 +695,9 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 			if string(was) == code {
 				notTouched++
 				continue
+			} else {
+				fmt.Printf("File \"%s\":\n", f)
+				fmt.Println(cmp.Diff(string(was), code))
 			}
 		}
 		if filepathName != TlJSONHTML { // not deterministic, do not write marker if json help changed
@@ -715,9 +719,9 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	}
 	for filepathName := range relativeFiles {
 		f := filepath.Join(outdir, filepathName)
-		//if strings.HasSuffix(f, ".o") {
-		//	continue
-		//}
+		if strings.HasSuffix(f, ".o") {
+			continue
+		}
 		deleted++
 		if err := os.Remove(f); err != nil {
 			return fmt.Errorf("error deleting previous file %q: %w", f, err)
@@ -1141,6 +1145,10 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			fmt.Printf("prevented unwrap of %v\n", v.tlName)
 		}
 	}
+
+	_, order := findAllTypesDependencyComponents(sortedTypes)
+	gen.componentsOrder = order
+
 	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		if len(v.arguments) == 0 {
@@ -1149,36 +1157,6 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			v.trw.FillRecursiveChildren(visitedNodes, &currentPath)
 		}
 	}
-
-	_, order := findAllTypesDependencyComponents(sortedTypes)
-	gen.componentsOrder = order
-
-	//deps, order := findAllTypesDependencyComponents(sortedTypes)
-	//gen.componentsOrder = order
-	//
-	//compoments := make(map[int][]*TypeRWWrapper)
-	//cmpnts := make([]int, 0)
-	//
-	//for _, v := range sortedTypes {
-	//	if _, ok := compoments[v.typeComponent]; !ok {
-	//		cmpnts = append(cmpnts, v.typeComponent)
-	//	}
-	//	compoments[v.typeComponent] = append(compoments[v.typeComponent], v)
-	//}
-	//
-	//sort.Ints(cmpnts)
-	//
-	//for i, _ := range cmpnts {
-	//	cId := order[i]
-	//	curDeps := make([]int, 0)
-	//	for dep, _ := range deps[cId] {
-	//		curDeps = append(curDeps, dep)
-	//	}
-	//	fmt.Printf("C[%d]: %v\n", cId, curDeps)
-	//	for _, tp := range compoments[cId] {
-	//		fmt.Printf("\tGo: %s, TL: %s\n", tp.goGlobalName, tp.tlName.String())
-	//	}
-	//}
 
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep1()
@@ -1251,6 +1229,19 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	return gen, nil
 }
 
+var TypeComparator = func(a, b *TypeRWWrapper) int {
+	return strings.Compare(a.goGlobalName, b.goGlobalName)
+}
+
+func stabilizeOrder(mp *map[*TypeRWWrapper][]*TypeRWWrapper) (keyOrder []*TypeRWWrapper) {
+	for k, v := range *mp {
+		slices.SortFunc(v, TypeComparator)
+		keyOrder = append(keyOrder, k)
+	}
+	slices.SortFunc(keyOrder, TypeComparator)
+	return
+}
+
 func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]bool, []int) {
 	dependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 	reverseDependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
@@ -1262,6 +1253,9 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 			reverseDependencyGraph[tpV] = append(reverseDependencyGraph[tpV], tpU)
 		}
 	}
+
+	_ = stabilizeOrder(&dependencyGraph)
+	_ = stabilizeOrder(&reverseDependencyGraph)
 
 	visitedTypes := make(map[*TypeRWWrapper]bool)
 	order := make([]*TypeRWWrapper, 0)
@@ -1303,12 +1297,27 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 		}
 	}
 
+	componentsOrdered := make([]int, 0)
+	componentsDepsOrdered := make(map[int][]int)
+
+	for componentId, itsDeps := range componentsDeps {
+		componentsOrdered = append(componentsOrdered, componentId)
+		list := make([]int, len(itsDeps))
+		for dep, _ := range itsDeps {
+			list = append(list, dep)
+		}
+		sort.Ints(list)
+		componentsDepsOrdered[componentId] = list
+	}
+
+	sort.Ints(componentsOrdered)
+
 	compOrder := make([]int, 0)
 	compVisited := make(map[int]bool)
 
-	for cmp := range componentsDeps {
-		if !compVisited[cmp] {
-			sortComponents(cmp, &compVisited, &componentsDeps, &compOrder)
+	for comp := range componentsOrdered {
+		if !compVisited[comp] {
+			sortComponents(comp, &compVisited, &componentsDepsOrdered, &compOrder)
 		}
 	}
 
@@ -1345,9 +1354,9 @@ func findAllTypesDependencyComponentsStep2(
 	}
 }
 
-func sortComponents(target int, visited *map[int]bool, deps *map[int]map[int]bool, order *[]int) {
+func sortComponents(target int, visited *map[int]bool, deps *map[int][]int, order *[]int) {
 	(*visited)[target] = true
-	for next, _ := range (*deps)[target] {
+	for _, next := range (*deps)[target] {
 		if !(*visited)[next] {
 			sortComponents(next, visited, deps, order)
 		}
@@ -1449,9 +1458,6 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 	existingConstructors := make(map[ConstructorName]*Constructor)
 
 	for _, comb := range types {
-		//if comb.IsFunction {
-		//	continue
-		//}
 		declaredType := comb.TypeDecl.Name
 		if comb.Builtin {
 			declaredType = comb.Construct.Name
