@@ -526,7 +526,7 @@ func (w *TypeRWWrapper) cppTypeStringInNamespace(bytesVersion bool, hppInc *Dire
 				} else {
 					bArgs.WriteString(", ")
 				}
-				if halfResolve {
+				if halfResolve && i < len(halfResolved.Args) {
 					half := halfResolved.Args[i]
 					if half.Name != "" {
 						bArgs.WriteString(half.Name)
@@ -541,7 +541,7 @@ func (w *TypeRWWrapper) cppTypeStringInNamespace(bytesVersion bool, hppInc *Dire
 			} else {
 				bArgs.WriteString(", ")
 			}
-			if halfResolve {
+			if halfResolve && i < len(halfResolved.Args) {
 				half := halfResolved.Args[i]
 				if half.Name != "" {
 					bArgs.WriteString(half.Name)

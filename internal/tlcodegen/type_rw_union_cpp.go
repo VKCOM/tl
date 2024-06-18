@@ -48,12 +48,12 @@ func (trw *TypeRWUnion) CPPTypeResettingCode(bytesVersion bool, val string) stri
 
 func (trw *TypeRWUnion) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
@@ -84,8 +84,8 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	hppDet.WriteString(fmt.Sprintf(`
 void %[1]sReset(%[2]s& item);
-void %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 `, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
 
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
@@ -121,7 +121,7 @@ void %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 	hpp.WriteString(trw.CPPSetters(bytesVersion))
 
 	hpp.WriteString(`
-	::basictl::string_view tl_name() const;
+	std::string_view tl_name() const;
 	uint32_t tl_tag() const;
 `)
 
@@ -136,21 +136,23 @@ static const uint32_t %[1]s_tbl_tl_tag[]{%[3]s};
 	if len(myArgsDecl) == 0 {
 		// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 		hpp.WriteString(fmt.Sprintf(`
-	void read_boxed(::basictl::tl_istream & s%[1]s);
-	void write_boxed(::basictl::tl_ostream & s%[1]s)const;
+	bool read_boxed(::basictl::tl_istream & s%[1]s);
+	bool write_boxed(::basictl::tl_ostream & s%[1]s)const;
 `,
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 			trw.CPPTypeResettingCode(bytesVersion, "*this"),
 			trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 			trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
 		cppDet.WriteString(fmt.Sprintf(`
-void %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
+bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
 %[3]s
+	return true;
 }
-void %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const {
+bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const {
 %[4]s
+	return true;
 }
-::basictl::string_view %[5]s::tl_name() const {
+std::string_view %[5]s::tl_name() const {
 	return %[6]s_tbl_tl_name[value.index()];
 }
 uint32_t %[5]s::tl_tag() const {
@@ -173,17 +175,19 @@ void %[7]s::%[1]sReset(%[2]s& item) {
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-void %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
+bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	switch (s.nat_read()) {
 %[5]s	default:
-		::basictl::throwUnionTagWrong();
+		return s.set_error_union_tag();
     }
+	return true;
 }
 
-void %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
+bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 	s.nat_write(%[1]s_tbl_tl_tag[item.value.index()]);
 	switch (item.value.index()) {
 %[6]s	}
+	return true;
 }
 `,
 		goGlobalName,

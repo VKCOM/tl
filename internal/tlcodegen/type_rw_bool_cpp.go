@@ -42,12 +42,12 @@ func (trw *TypeRWBool) CPPTypeResettingCode(bytesVersion bool, val string) strin
 
 func (trw *TypeRWBool) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sWrite%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBool) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\t::%s::%sRead%s(s, %s%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
@@ -65,17 +65,17 @@ func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInclu
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 	hppDet.WriteString(fmt.Sprintf(`
-void %[1]sReadBoxed(::basictl::tl_istream & s, bool& item);
-void %[1]sWriteBoxed(::basictl::tl_ostream & s, bool item);
+bool %[1]sReadBoxed(::basictl::tl_istream & s, bool& item);
+bool %[1]sWriteBoxed(::basictl::tl_ostream & s, bool item);
 `, addBytes(trw.wr.goGlobalName, bytesVersion)))
 
 	cppDet.WriteString(fmt.Sprintf(`
-void %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, bool& item) {
-	item = s.bool_read(0x%[2]x, 0x%[3]x);
+bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, bool& item) {
+	return s.bool_read(item, 0x%[2]x, 0x%[3]x);
 }
 
-void %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
-	s.nat_write(item ? 0x%[3]x : 0x%[2]x);
+bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
+	return s.nat_write(item ? 0x%[3]x : 0x%[2]x);
 }
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName, trw.wr.gen.DetailsCPPNamespace))
 
