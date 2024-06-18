@@ -160,7 +160,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		typeDependencies := field.t.ActualTypeDependencies(typeRed)
 		for _, typeRw := range typeDependencies {
 			if typeRw.cppLocalName != "" {
-				hppInc.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent}
+				hppInc.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
 			}
 		}
 		hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)))
@@ -178,7 +178,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 				if typeRw.trw.IsWrappingType() {
 					continue
 				}
-				hppIncByField.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent}
+				hppIncByField.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
 			}
 
 			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)

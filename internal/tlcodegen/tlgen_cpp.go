@@ -68,7 +68,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
 			continue
 		}
-		cppAllInc.ns[ff.fileName] = CppIncludeInfo{types[0].typeComponent}
+		cppAllInc.ns[ff.fileName] = CppIncludeInfo{types[0].typeComponent, types[0].tlName.Namespace}
 		hppStr := hpp.String()
 		hppDetStr := hppDet.String()
 		cppDetStr := cppDet.String()
@@ -118,12 +118,31 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	var cppMake strings.Builder
 	var cppMakeO strings.Builder
 	var cppMake1 strings.Builder
-	for _, n := range cppAllInc.sortedIncludes(gen.componentsOrder) {
-		cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n+"_details", cppExt))
-		cppMake1.WriteString(fmt.Sprintf("%s.o: details/%s%s details/%s%s\n", n+"_details", n+"_details", cppExt, n+"_details", hppExt))
-		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -c details/%s%s\n", n+"_details", cppExt))
-		cppMakeO.WriteString(fmt.Sprintf("%s.o ", n+"_details"))
+
+	for _, nf := range cppAllInc.splitByNamespaces() {
+		namespace := nf.Namespace
+		if namespace == "" {
+			namespace = "__common"
+		}
+
+		var cppMake1UsedFiles strings.Builder
+		var cppMake1Namespace strings.Builder
+
+		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder) {
+			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n+"_details", cppExt))
+			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n+"_details", cppExt))
+			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n+"_details", cppExt, n+"_details", hppExt))
+		}
+
+		cppMake1.WriteString(fmt.Sprintf("build/%s.o: %s\n", namespace+"_namespace_details", cppMake1UsedFiles.String()))
+		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o build/%[1]s.o -c details/%[1]s%[2]s\n", namespace+"_namespace_details", cppExt))
+		cppMakeO.WriteString(fmt.Sprintf("build/%s.o ", namespace+"_namespace_details"))
+
+		if err := gen.addCodeFile(fmt.Sprintf("details/%s%s", namespace+"_namespace_details", cppExt), cppMake1Namespace.String()); err != nil {
+			return err
+		}
 	}
+
 	cppMake.WriteString(`
 CC = g++
 CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
@@ -142,6 +161,9 @@ main.o: main.cpp
 		return err
 	}
 	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
+		return err
+	}
+	if err := gen.addCodeFile("build/info.txt", ".o files here!"); err != nil {
 		return err
 	}
 	// if gen.options.Verbose {

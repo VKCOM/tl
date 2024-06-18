@@ -236,6 +236,7 @@ type DirectImports struct {
 
 type CppIncludeInfo struct {
 	componentId int
+	namespace   string
 }
 
 // for C++ includes
@@ -251,6 +252,30 @@ type DirectIncludesCPP struct {
 //	sort.Strings(sortedNames)
 //	return sortedNames
 //}
+
+type NamespaceFiles struct {
+	Namespace string
+	Includes  DirectIncludesCPP
+}
+
+func (d DirectIncludesCPP) splitByNamespaces() (result []NamespaceFiles) {
+	namespaces := make(map[string]int)
+
+	for file, include := range d.ns {
+		ns := include.namespace
+		if namespaces[ns] == 0 {
+			namespaces[ns] = len(namespaces) + 1
+			result = append(result, NamespaceFiles{Namespace: ns, Includes: DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}})
+		}
+		result[namespaces[ns]-1].Includes.ns[file] = include
+	}
+
+	slices.SortFunc(result, func(a, b NamespaceFiles) int {
+		return strings.Compare(a.Namespace, b.Namespace)
+	})
+
+	return
+}
 
 func (d DirectIncludesCPP) sortedIncludes(componentOrder []int) (result []string) {
 	compIdToPosition := make(map[int]int)
@@ -507,7 +532,7 @@ func (w *TypeRWWrapper) cppTypeArguments(bytesVersion bool, typeRedaction *TypeR
 }
 
 func (w *TypeRWWrapper) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolve bool, halfResolved HalfResolvedArgument) (string, string, string) {
-	hppInc.ns[w.fileName] = CppIncludeInfo{w.typeComponent}
+	hppInc.ns[w.fileName] = CppIncludeInfo{w.typeComponent, w.tlName.Namespace}
 	bName := strings.Builder{}
 	// bName.WriteString(w.cppNamespaceQualifier())
 	bName.WriteString(w.tlName.Name)
