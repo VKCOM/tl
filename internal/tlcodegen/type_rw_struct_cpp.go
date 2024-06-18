@@ -60,7 +60,7 @@ func (trw *TypeRWStruct) CPPTypeWritingCode(bytesVersion bool, val string, bare 
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
-			prefix = fmt.Sprintf("\tif (!s.nat_write(0x%x)) { return false; }\n", trw.wr.tlTag)
+			prefix = fmt.Sprintf("\tif (!s.nat_write(0x%08x)) { return false; }\n", trw.wr.tlTag)
 		}
 		return prefix + trw.Fields[0].t.trw.CPPTypeWritingCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
 	}
@@ -72,7 +72,7 @@ func (trw *TypeRWStruct) CPPTypeReadingCode(bytesVersion bool, val string, bare 
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
-			prefix = fmt.Sprintf("\tif (!s.nat_read_exact_tag(0x%x)) { return false;}\n", trw.wr.tlTag)
+			prefix = fmt.Sprintf("\tif (!s.nat_read_exact_tag(0x%08x)) { return false;}\n", trw.wr.tlTag)
 		}
 		return prefix + trw.Fields[0].t.trw.CPPTypeReadingCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
 	}
