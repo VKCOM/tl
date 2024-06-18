@@ -21,7 +21,7 @@ type InnerMaybe struct {
 }
 
 func (InnerMaybe) TLName() string { return "innerMaybe" }
-func (InnerMaybe) TLTag() uint32  { return 0xa7d3b9e }
+func (InnerMaybe) TLTag() uint32  { return 0x0a7d3b9e }
 
 func (item *InnerMaybe) Reset() {
 	item.A.Reset()
@@ -48,7 +48,7 @@ func (item *InnerMaybe) Write(w []byte, nat_X uint32) (_ []byte, err error) {
 }
 
 func (item *InnerMaybe) ReadBoxed(w []byte, nat_X uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xa7d3b9e); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0a7d3b9e); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_X)
@@ -60,7 +60,7 @@ func (item *InnerMaybe) WriteBoxedGeneral(w []byte, nat_X uint32) (_ []byte, err
 }
 
 func (item *InnerMaybe) WriteBoxed(w []byte, nat_X uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xa7d3b9e)
+	w = basictl.NatWrite(w, 0x0a7d3b9e)
 	return item.Write(w, nat_X)
 }
 

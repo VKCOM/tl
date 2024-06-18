@@ -24,7 +24,7 @@ type TestMaybe2 struct {
 }
 
 func (TestMaybe2) TLName() string { return "testMaybe2" }
-func (TestMaybe2) TLTag() uint32  { return 0xaa03cf2 }
+func (TestMaybe2) TLTag() uint32  { return 0x0aa03cf2 }
 
 func (item *TestMaybe2) Reset() {
 	item.N = 0
@@ -60,7 +60,7 @@ func (item *TestMaybe2) Write(w []byte) []byte {
 }
 
 func (item *TestMaybe2) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xaa03cf2); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0aa03cf2); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -72,7 +72,7 @@ func (item *TestMaybe2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TestMaybe2) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xaa03cf2)
+	w = basictl.NatWrite(w, 0x0aa03cf2)
 	return item.Write(w)
 }
 

@@ -125,7 +125,7 @@ func (item*`)
 `)
 	for i, field := range union.Fields {
 		qw422016.N().S(`    case `)
-		qw422016.N().S(fmt.Sprintf("%#x", field.t.tlTag))
+		qw422016.N().S(fmt.Sprintf("0x%08x", field.t.tlTag))
 		qw422016.N().S(`:
         item.index = `)
 		qw422016.N().D(i)
@@ -1088,7 +1088,7 @@ func (union *TypeRWUnion) streamgenerateEnumAlias(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(`UnionElement{
 `)
 	for _, x := range union.Fields {
-		tlTag := fmt.Sprintf("%#x", x.t.tlTag)
+		tlTag := fmt.Sprintf("0x%08x", x.t.tlTag)
 		tlString := fmt.Sprintf("%s#%08x", x.t.tlName, x.t.tlTag)
 		tlName := x.t.tlName.String()
 

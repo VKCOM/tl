@@ -18,7 +18,7 @@ type AbCall3 struct {
 }
 
 func (AbCall3) TLName() string { return "ab.call3" }
-func (AbCall3) TLTag() uint32  { return 0xa083445 }
+func (AbCall3) TLTag() uint32  { return 0x0a083445 }
 
 func (item *AbCall3) Reset() {
 	item.X.Reset()
@@ -43,7 +43,7 @@ func (item *AbCall3) Write(w []byte) []byte {
 }
 
 func (item *AbCall3) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xa083445); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0a083445); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -55,7 +55,7 @@ func (item *AbCall3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *AbCall3) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xa083445)
+	w = basictl.NatWrite(w, 0x0a083445)
 	return item.Write(w)
 }
 

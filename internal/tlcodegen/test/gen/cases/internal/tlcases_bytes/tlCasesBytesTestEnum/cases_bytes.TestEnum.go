@@ -17,7 +17,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 var _CasesBytesTestEnum = [3]internal.UnionElement{
 	{TLTag: 0x58aad3f5, TLName: "cases_bytes.testEnum1", TLString: "cases_bytes.testEnum1#58aad3f5"},
-	{TLTag: 0xb47add, TLName: "cases_bytes.testEnum2", TLString: "cases_bytes.testEnum2#00b47add"},
+	{TLTag: 0x00b47add, TLName: "cases_bytes.testEnum2", TLString: "cases_bytes.testEnum2#00b47add"},
 	{TLTag: 0x81911ffa, TLName: "cases_bytes.testEnum3", TLString: "cases_bytes.testEnum3#81911ffa"},
 }
 
@@ -62,7 +62,7 @@ func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 	case 0x58aad3f5:
 		item.index = 0
 		return w, nil
-	case 0xb47add:
+	case 0x00b47add:
 		item.index = 1
 		return w, nil
 	case 0x81911ffa:

@@ -70,7 +70,7 @@ func init() {
 			continue
 		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 {
-			tlTag := fmt.Sprintf("%#08x", wr.tlTag)
+			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
 
 			if wr.unionParent != nil && wr.unionParent.IsEnum {
 				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)

@@ -21,7 +21,7 @@ type PairIntInt struct {
 }
 
 func (PairIntInt) TLName() string { return "pair" }
-func (PairIntInt) TLTag() uint32  { return 0xf3c47ab }
+func (PairIntInt) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairIntInt) Reset() {
 	item.A = 0
@@ -52,7 +52,7 @@ func (item *PairIntInt) Write(w []byte) []byte {
 }
 
 func (item *PairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -64,7 +64,7 @@ func (item *PairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairIntInt) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
