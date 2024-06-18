@@ -327,9 +327,7 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.wr.gen.DetailsCPPNamespace,
 			formatNatArgsCallCPP(trw.wr.NatParams),
 			trw.wr.tlTag,
-		)
-		cppDet.WriteString(s)
-
+		))
 	}
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 }
