@@ -1657,18 +1657,20 @@ func fillTypeReduction(
 	for argI, arg := range typeReduction.Arguments {
 		switch arg.Index {
 		// nat var
-		case 1:
+		case NumberVariable:
 			j := findArgByName(arg.Variable, originalType.TypeArguments)
 			if j != -1 && args[j].Index == NumberConstant {
 				typeReduction.Arguments[argI] = args[j]
+			} else if j != -1 && args[j].Index == NumberVariable && args[j].VariableActsAsConstant {
+				typeReduction.Arguments[argI].VariableActsAsConstant = true
 			} else if _, ok := (*defaultFields)[arg.Variable]; ok {
 				typeReduction.Arguments[argI] = EvaluatedType{Index: NumberConstant, Constant: 0}
 			}
 		// type
-		case 2:
+		case TypeConstant:
 			fillTypeReduction(arg.Type, args, originalType, defaultFields)
 		// type var
-		case 3:
+		case TypeVariable:
 			j := findArgByName(arg.TypeVariable, originalType.TypeArguments)
 			if j != -1 {
 				index := args[j].Index

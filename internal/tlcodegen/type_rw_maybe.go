@@ -48,6 +48,10 @@ func (trw *TypeRWMaybe) AllTypeDependencies() []*TypeRWWrapper {
 	return nil
 }
 
+func (trw *TypeRWMaybe) IsWrappingType() bool {
+	return true
+}
+
 func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
 	visitedNodes[trw.wr] = 1
 	trw.element.t.trw.FillRecursiveChildren(visitedNodes, currentPath)

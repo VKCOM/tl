@@ -30,7 +30,7 @@ func (trw *TypeRWUnion) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, 
 }
 
 func (trw *TypeRWUnion) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
-	return ""
+	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + trw.wr.cppTypeArguments(bytesVersion, typeReduction.Type)
 }
 
 func (trw *TypeRWUnion) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {

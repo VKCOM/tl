@@ -78,7 +78,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hpp.WriteString("#pragma once\n\n")
 		hppDet.WriteString("#pragma once\n\n")
 		hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", basicTLFilepathName))
-		for _, n := range hppInc.sortedNames() {
+		for _, n := range hppInc.sortedIncludes(gen.componentsOrder) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
 		}
 		hpp.WriteString("\n\n")
@@ -88,11 +88,14 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		// for _, n := range hppIncFwd.sortedNames() {
 		//	hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
 		// }
-		for _, n := range hppDetInc.sortedNames() {
+		for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder) {
 			hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, hppExt))
 		}
 		cppDet.WriteString(fmt.Sprintf("#include \"%s_details%s\"\n", ff.fileName, hppExt))
-		for _, n := range cppDetInc.sortedNames() {
+		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder) {
+			if n == ff.fileName {
+				continue
+			}
 			cppDet.WriteString(fmt.Sprintf("#include \"%s_details%s\"\n", n, hppExt))
 		}
 		filepathName := ff.fileName + hppExt

@@ -127,51 +127,63 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		cppFinishNamespace(hpp, typeNamespace)
 		return
 	}
+
+	ti := trw.wr.gen.typesInfo
+	tlName := trw.wr.tlName
+
+	_, isType := ti.Types[tlName]
+	typeReduction := TypeReduction{IsType: isType}
+	if isType {
+		typeReduction.Type = ti.Types[tlName]
+	} else {
+		typeReduction.Constructor = ti.Constructors[tlName]
+	}
+	for i, arg := range typeReduction.ReferenceType().TypeArguments {
+		evalArg := EvaluatedType{}
+		if arg.IsNat {
+			evalArg.Index = 1
+			evalArg.Variable = arg.FieldName
+			if trw.wr.arguments[i].isArith {
+				// set true only here
+				evalArg.VariableActsAsConstant = true
+			}
+		} else {
+			evalArg.Index = 3
+			evalArg.TypeVariable = arg.FieldName
+		}
+		typeReduction.Arguments = append(typeReduction.Arguments, evalArg)
+	}
+
 	if trw.isTypeDef() {
 		field := trw.Fields[0]
 
-		if !field.t.origTL[0].Builtin && len(trw.wr.arguments) != 0 {
-			// TODO TODO TODO temporary solution
-			ti := trw.wr.gen.typesInfo
-			tlName := trw.wr.tlName
-
-			_, isType := ti.Types[tlName]
-			typeReduction := TypeReduction{IsType: isType}
-			if isType {
-				typeReduction.Type = ti.Types[tlName]
-			} else {
-				typeReduction.Constructor = ti.Constructors[tlName]
-			}
-			for i, arg := range typeReduction.ReferenceType().TypeArguments {
-				evalArg := EvaluatedType{}
-				if arg.IsNat {
-					evalArg.Index = 1
-					evalArg.Variable = arg.FieldName
-					if trw.wr.arguments[i].isArith {
-						// set true only here
-						evalArg.VariableActsAsConstant = true
-					}
-				} else {
-					evalArg.Index = 3
-					evalArg.TypeVariable = arg.FieldName
-				}
-				typeReduction.Arguments = append(typeReduction.Arguments, evalArg)
-			}
-
-			typeRed := ti.FieldTypeReduction(&typeReduction, 0)
-			for _, typeRw := range trw.Fields[0].t.ActualTypeDependencies(typeRed) {
+		//if !field.t.origTL[0].Builtin && len(trw.wr.arguments) != 0 {
+		typeRed := ti.FieldTypeReduction(&typeReduction, 0)
+		typeDependencies := field.t.ActualTypeDependencies(typeRed)
+		for _, typeRw := range typeDependencies {
+			if typeRw.cppLocalName != "" {
 				hppInc.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent}
 			}
-			hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)))
-		} else {
-			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
-			hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, fieldFullType))
 		}
+		hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)))
+		//} else {
+		//	fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
+		//	hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, fieldFullType))
+		//}
 	} else {
 		hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
-		for _, field := range trw.Fields {
+		for i, field := range trw.Fields {
 			hppIncByField := DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
-			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, &hppIncByField, field.halfResolved)
+
+			typeRed := ti.FieldTypeReduction(&typeReduction, i)
+			for _, typeRw := range trw.Fields[i].t.ActualTypeDependencies(typeRed) {
+				if typeRw.trw.IsWrappingType() {
+					continue
+				}
+				hppIncByField.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent}
+			}
+
+			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)
 			fieldsMaskComment := ""
 			//if field.fieldMask != nil {
 			//	fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArgCPP(trw.Fields, *field.fieldMask), field.BitNumber)

@@ -89,8 +89,7 @@ type TypeRWWrapper struct {
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 
-	typeComponent       int
-	forwardDeclarations map[*TypeRWWrapper]bool
+	typeComponent int
 }
 
 // Those have unique structure fully defined by the magic.
@@ -259,9 +258,13 @@ func (d DirectIncludesCPP) sortedIncludes(componentOrder []int) (result []string
 	}
 
 	filesByCID := make([][]string, len(componentOrder))
+	used := make(map[string]bool)
 
 	for im, cppInfo := range d.ns { // Imports of this file.
-		filesByCID[compIdToPosition[cppInfo.componentId]] = append(filesByCID[compIdToPosition[cppInfo.componentId]], im)
+		if !used[im] {
+			used[im] = true
+			filesByCID[compIdToPosition[cppInfo.componentId]] = append(filesByCID[compIdToPosition[cppInfo.componentId]], im)
+		}
 	}
 
 	for _, files := range filesByCID {
@@ -477,15 +480,15 @@ func (w *TypeRWWrapper) cppTypeArguments(bytesVersion bool, typeRedaction *TypeR
 	for i, a := range w.arguments {
 		evalArg := typeRedaction.Arguments[i]
 		if a.isNat {
-			if evalArg.Index == 0 {
+			if evalArg.Index == NumberConstant {
 				arguments = append(arguments, strconv.FormatInt(int64(evalArg.Constant), 10))
-			} else if evalArg.Index == 1 && evalArg.VariableActsAsConstant {
+			} else if evalArg.Index == NumberVariable && evalArg.VariableActsAsConstant {
 				arguments = append(arguments, evalArg.Variable)
 			}
 		} else {
-			if evalArg.Index == 3 {
+			if evalArg.Index == TypeVariable {
 				arguments = append(arguments, evalArg.TypeVariable)
-			} else if evalArg.Index == 2 {
+			} else if evalArg.Index == TypeConstant {
 				arguments = append(arguments, a.tip.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, evalArg))
 			}
 		}
@@ -646,6 +649,7 @@ type TypeRW interface {
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper)
 	AllPossibleRecursionProducers() []*TypeRWWrapper
 	AllTypeDependencies() []*TypeRWWrapper
+	IsWrappingType() bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
 	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set

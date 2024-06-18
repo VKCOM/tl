@@ -85,6 +85,10 @@ func (trw *TypeRWUnion) AllTypeDependencies() (res []*TypeRWWrapper) {
 	return
 }
 
+func (trw *TypeRWUnion) IsWrappingType() bool {
+	return false
+}
+
 func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 

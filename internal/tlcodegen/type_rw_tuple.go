@@ -94,6 +94,10 @@ func (trw *TypeRWBrackets) AllTypeDependencies() (res []*TypeRWWrapper) {
 	return nil
 }
 
+func (trw *TypeRWBrackets) IsWrappingType() bool {
+	return false
+}
+
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 	if trw.vectorLike {
 		if ok, isString, kf, vf := isDictionaryElement(trw.element.t); ok {

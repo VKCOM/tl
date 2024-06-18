@@ -56,10 +56,10 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved2(bytesVersion bo
 	case 1:
 		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]))
 	case 2:
-		if typeReduction.Type.Arguments[1].VariableActsAsConstant {
-			return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]), typeReduction.Type.Arguments[1].Variable)
+		if typeReduction.Type.Arguments[0].VariableActsAsConstant {
+			return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[1]), typeReduction.Type.Arguments[0].Variable)
 		}
-		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]))
+		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[1]))
 	}
 	return ""
 }
