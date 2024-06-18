@@ -51,19 +51,17 @@ func (trw *TypeRWUnion) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	}
 }
 
-func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	if visitedNodes[trw.wr] != 0 {
 		return
 	}
-	*currentPath = append(*currentPath, trw.wr)
 	visitedNodes[trw.wr] = 1
 	for _, f := range trw.Fields {
 		if f.recursive {
 			continue
 		}
-		f.t.trw.FillRecursiveChildren(visitedNodes, currentPath)
+		f.t.trw.FillRecursiveChildren(visitedNodes, generic)
 	}
-	*currentPath = (*currentPath)[:len(*currentPath)-1]
 	visitedNodes[trw.wr] = 2
 }
 
@@ -78,7 +76,7 @@ func (trw *TypeRWUnion) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWUnion) AllTypeDependencies() (res []*TypeRWWrapper) {
+func (trw *TypeRWUnion) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
 	for _, f := range trw.Fields {
 		res = append(res, f.t)
 	}

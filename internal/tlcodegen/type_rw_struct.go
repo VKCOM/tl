@@ -148,19 +148,32 @@ func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWStruct) AllTypeDependencies() (res []*TypeRWWrapper) {
+func (trw *TypeRWStruct) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
 	used := make(map[*TypeRWWrapper]bool)
-	red := trw.wr.gen.typesInfo.TypeNameToGenericTypeReduction(trw.wr.tlName)
+	ti := trw.wr.gen.typesInfo
+	red := ti.TypeNameToGenericTypeReduction(trw.wr.tlName)
 
 	for i, f := range trw.Fields {
-		fieldRed := trw.wr.gen.typesInfo.FieldTypeReduction(&red, i)
-		deps := f.t.ActualTypeDependencies(fieldRed)
+		var deps []*TypeRWWrapper
+		if generic {
+			fieldRed := ti.FieldTypeReduction(&red, i)
+			deps = f.t.ActualTypeDependencies(fieldRed)
+		} else {
+			deps = append(deps, f.t)
+		}
 		for _, dep := range deps {
 			used[dep] = true
 		}
 	}
 
-	for tp, _ := range used {
+	if countFunctions && trw.ResultType != nil {
+		returnRed := ti.TypeNameToGenericTypeReduction(trw.ResultType.tlName)
+		for _, t := range trw.ResultType.ActualTypeDependencies(EvaluatedType{Index: TypeConstant, Type: &returnRed}) {
+			used[t] = true
+		}
+	}
+
+	for tp := range used {
 		res = append(res, tp)
 	}
 	return
@@ -170,25 +183,33 @@ func (trw *TypeRWStruct) IsWrappingType() bool {
 	return trw.isUnwrapType()
 }
 
-func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	if visitedNodes[trw.wr] != 0 {
 		return
 	}
-	*currentPath = append(*currentPath, trw.wr)
 	visitedNodes[trw.wr] = 1
+
+	ti := trw.wr.gen.typesInfo
+	red := ti.TypeNameToGenericTypeReduction(trw.wr.tlName)
+
 	for i, f := range trw.Fields {
 		if f.recursive {
 			continue
 		}
-		for _, typeDep := range f.t.trw.AllPossibleRecursionProducers() {
+		var typeDeps []*TypeRWWrapper
+		if generic {
+			typeDeps = f.t.ActualTypeDependencies(ti.FieldTypeReduction(&red, i))
+		} else {
+			typeDeps = f.t.trw.AllPossibleRecursionProducers()
+		}
+		for _, typeDep := range typeDeps {
 			if visitedNodes[typeDep] == 1 {
 				trw.Fields[i].recursive = true
 			} else {
-				typeDep.trw.FillRecursiveChildren(visitedNodes, currentPath)
+				typeDep.trw.FillRecursiveChildren(visitedNodes, generic)
 			}
 		}
 	}
-	*currentPath = (*currentPath)[:len(*currentPath)-1]
 	visitedNodes[trw.wr] = 2
 }
 
@@ -453,34 +474,6 @@ outer:
 			}
 		}
 		log.Panicf("internal compiler error, nat parameter %s not found for unwrap type of goName %s", arg.name, trw.wr.goGlobalName)
-	}
-	return result
-}
-
-func (trw *TypeRWWrapper) replaceUnwrapHalfResolvedName(topHalfResolved HalfResolvedArgument, name string) string {
-	if name == "" {
-		return ""
-	}
-	for i, arg := range trw.origTL[0].TemplateArguments {
-		if arg.FieldName == name {
-			return topHalfResolved.Args[i].Name
-		}
-	}
-	return ""
-}
-
-// same code as in func (w *TypeRWWrapper) transformNatArgsToChild, replaceUnwrapArgs
-func (trw *TypeRWWrapper) replaceUnwrapHalfResolved(topHalfResolved HalfResolvedArgument, halfResolved HalfResolvedArgument) HalfResolvedArgument {
-	// example
-	// tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
-	// innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
-	// when unwrapping we need to change tuple<int, X> into __tuple<X, int>
-	// halfResolved references in field of tuple<int, X> are to "n", "t" local template args
-	// we must look up in tuple<int, X> to replace "n" "t" into "X", ""
-	var result HalfResolvedArgument
-	result.Name = trw.replaceUnwrapHalfResolvedName(topHalfResolved, halfResolved.Name)
-	for _, arg := range halfResolved.Args {
-		result.Args = append(result.Args, trw.replaceUnwrapHalfResolved(topHalfResolved, arg))
 	}
 	return result
 }

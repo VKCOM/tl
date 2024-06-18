@@ -44,17 +44,20 @@ func (trw *TypeRWMaybe) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return trw.element.t.trw.AllPossibleRecursionProducers()
 }
 
-func (trw *TypeRWMaybe) AllTypeDependencies() []*TypeRWWrapper {
-	return nil
+func (trw *TypeRWMaybe) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
+	if !generic {
+		res = append(res, trw.element.t)
+	}
+	return
 }
 
 func (trw *TypeRWMaybe) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	visitedNodes[trw.wr] = 1
-	trw.element.t.trw.FillRecursiveChildren(visitedNodes, currentPath)
+	trw.element.t.trw.FillRecursiveChildren(visitedNodes, generic)
 	visitedNodes[trw.wr] = 2
 }
 

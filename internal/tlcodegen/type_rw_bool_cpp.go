@@ -15,12 +15,12 @@ func (trw *TypeRWBool) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]
 }
 
 func (trw *TypeRWBool) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
+	hppInc.ns[trw.wr] = CppIncludeInfo{componentId: trw.wr.typeComponent, namespace: trw.wr.tlName.Namespace}
 	return "bool"
 }
 
 func (trw *TypeRWBool) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
-	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
+	hppInc.ns[trw.wr] = CppIncludeInfo{componentId: trw.wr.typeComponent, namespace: trw.wr.tlName.Namespace}
 	return "bool"
 }
 
@@ -47,7 +47,7 @@ func (trw *TypeRWBool) CPPTypeWritingCode(bytesVersion bool, val string, bare bo
 
 func (trw *TypeRWBool) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
@@ -55,21 +55,27 @@ func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInclu
 	if trw.wr.tlName.Namespace != "" {
 		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
 	}
-	cppStartNamespace(hpp, typeNamespace)
-	// TODO - better names of enums
-	hpp.WriteString(fmt.Sprintf(`
+	if hpp != nil {
+		cppStartNamespace(hpp, typeNamespace)
+		// TODO - better names of enums
+		hpp.WriteString(fmt.Sprintf(`
 	enum { %[4]s = 0x%[2]x, %[5]s = 0x%[3]x };
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName))
-	cppFinishNamespace(hpp, typeNamespace)
+		cppFinishNamespace(hpp, typeNamespace)
+	}
+	if hppDet != nil {
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
-
-	hppDet.WriteString(fmt.Sprintf(`
+		hppDet.WriteString(fmt.Sprintf(`
 bool %[1]sReadBoxed(::basictl::tl_istream & s, bool& item);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, bool item);
 `, addBytes(trw.wr.goGlobalName, bytesVersion)))
 
-	cppDet.WriteString(fmt.Sprintf(`
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
+
+	if cppDet != nil {
+		cppDet.WriteString(fmt.Sprintf(`
 bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, bool& item) {
 	return s.bool_read(item, 0x%[2]x, 0x%[3]x);
 }
@@ -79,5 +85,5 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
 }
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName, trw.wr.gen.DetailsCPPNamespace))
 
-	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
 }

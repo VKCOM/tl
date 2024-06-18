@@ -8,8 +8,8 @@ package tlcodegen
 
 import (
 	"fmt"
+	"golang.org/x/exp/slices"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -79,9 +79,15 @@ type TypeRWWrapper struct {
 	hasErrorInWriteMethods bool
 
 	fileName string
-	tlTag    uint32     // TODO - turn into function
-	tlName   tlast.Name // TODO - turn into function constructor name or union name for code generation
-	origTL   []*tlast.Combinator
+
+	// cpp info
+	hppDetailsFileName string
+	cppDetailsFileName string
+	groupName          string
+
+	tlTag  uint32     // TODO - turn into function
+	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation
+	origTL []*tlast.Combinator
 
 	unionParent *TypeRWUnion // a bit hackish, but simple
 	unionIndex  int
@@ -181,9 +187,10 @@ func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNa
 func (w *TypeRWWrapper) ActualTypeDependencies(evalType EvaluatedType) (res []*TypeRWWrapper) {
 	r := make(map[*TypeRWWrapper]bool)
 	w.actualTypeDependenciesRecur(evalType, &r)
-	for arg, _ := range r {
+	for arg := range r {
 		res = append(res, arg)
 	}
+	slices.SortFunc(res, TypeComparator)
 	return
 }
 
@@ -234,44 +241,88 @@ type DirectImports struct {
 
 type CppIncludeInfo struct {
 	componentId int
+	namespace   string
 }
 
 // for C++ includes
 type DirectIncludesCPP struct {
-	ns map[string]CppIncludeInfo
+	ns map[*TypeRWWrapper]CppIncludeInfo
 }
 
-func (d DirectIncludesCPP) sortedNames() []string {
-	var sortedNames []string
-	for im := range d.ns { // Imports of this file.
-		sortedNames = append(sortedNames, im)
-	}
-	sort.Strings(sortedNames)
-	return sortedNames
+type TypeDefinitionVariation struct {
+	NeedBytesVersion bool
 }
 
-func (d DirectIncludesCPP) sortedIncludes(componentOrder []int) (result []string) {
-	compIdToPosition := make(map[int]int)
+//func (d DirectIncludesCPP) sortedNames() []string {
+//	var sortedNames []string
+//	for im := range d.ns { // Imports of this file.
+//		sortedNames = append(sortedNames, im)
+//	}
+//	sort.Strings(sortedNames)
+//	return sortedNames
+//}
 
-	for i, cId := range componentOrder {
-		compIdToPosition[cId] = i
+type NamespaceFiles struct {
+	Namespace string
+	Includes  DirectIncludesCPP
+}
+
+func (d DirectIncludesCPP) splitByNamespaces() (result []NamespaceFiles) {
+	namespaces := make(map[string]int)
+
+	for file, include := range d.ns {
+		ns := include.namespace
+		if namespaces[ns] == 0 {
+			namespaces[ns] = len(namespaces) + 1
+			result = append(result, NamespaceFiles{Namespace: ns, Includes: DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}})
+		}
+		result[namespaces[ns]-1].Includes.ns[file] = include
 	}
 
-	filesByCID := make([][]string, len(componentOrder))
-	used := make(map[string]bool)
+	slices.SortFunc(result, func(a, b NamespaceFiles) int {
+		return strings.Compare(a.Namespace, b.Namespace)
+	})
 
-	for im, cppInfo := range d.ns { // Imports of this file.
-		if !used[im] {
-			used[im] = true
-			filesByCID[compIdToPosition[cppInfo.componentId]] = append(filesByCID[compIdToPosition[cppInfo.componentId]], im)
+	return
+}
+
+type Pair[L, R any] struct {
+	left  L
+	right R
+}
+
+// not stable
+func mapToPairArray[L comparable, R any](m *map[L]R) (res []Pair[L, R]) {
+	for k, v := range *m {
+		res = append(res, Pair[L, R]{k, v})
+	}
+	return
+}
+
+func (d DirectIncludesCPP) sortedIncludes(componentOrder []int, typeToFile func(wrapper *TypeRWWrapper) string) (result []string) {
+	includeNamesToTypes := make(map[string]int)
+
+	for tp, _ := range d.ns {
+		include := typeToFile(tp)
+		if _, ok := includeNamesToTypes[include]; !ok {
+			includeNamesToTypes[include] = tp.typeComponent
+		} else {
+			includeNamesToTypes[include] = min(includeNamesToTypes[include], tp.typeComponent)
 		}
 	}
 
-	for _, files := range filesByCID {
-		sort.Strings(files)
-		for _, f := range files {
-			result = append(result, f)
+	includeNamesToTypesList := mapToPairArray(&includeNamesToTypes)
+	slices.SortFunc(includeNamesToTypesList, func(a, b Pair[string, int]) int {
+		typeDiff := a.right - b.right
+		if typeDiff == 0 {
+			return strings.Compare(a.left, b.left)
+		} else {
+			return typeDiff
 		}
+	})
+
+	for _, includeInfo := range includeNamesToTypesList {
+		result = append(result, includeInfo.left)
 	}
 
 	return
@@ -507,7 +558,7 @@ func (w *TypeRWWrapper) cppTypeArguments(bytesVersion bool, typeRedaction *TypeR
 }
 
 func (w *TypeRWWrapper) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolve bool, halfResolved HalfResolvedArgument) (string, string, string) {
-	hppInc.ns[w.fileName] = CppIncludeInfo{w.typeComponent}
+	hppInc.ns[w] = CppIncludeInfo{w.typeComponent, w.tlName.Namespace}
 	bName := strings.Builder{}
 	// bName.WriteString(w.cppNamespaceQualifier())
 	bName.WriteString(w.tlName.Name)
@@ -644,11 +695,11 @@ outer:
 type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
-	fillRecursiveUnwrap(vistrwitedNodes map[*TypeRWWrapper]bool)
+	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
-	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper)
+	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
 	AllPossibleRecursionProducers() []*TypeRWWrapper
-	AllTypeDependencies() []*TypeRWWrapper
+	AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper
 	IsWrappingType() bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some

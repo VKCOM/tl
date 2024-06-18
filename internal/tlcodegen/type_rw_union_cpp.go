@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"strings"
 )
 
@@ -53,97 +54,105 @@ func (trw *TypeRWUnion) CPPTypeWritingCode(bytesVersion bool, val string, bare b
 
 func (trw *TypeRWUnion) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
-	// goLocalName := addBytes(trw.goLocalName, bytesVersion)
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 
 	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
-	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
-	//fmt.Printf("Ts: %s %s\n", myFullType, strings.Join(myArgsDecl, ", "))
-	//fmt.Printf("    %s\n", trw.wr.cppLocalName)
-	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
 
 	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
 	if trw.wr.tlName.Namespace != "" {
 		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
 	}
+	if hpp != nil {
+		if forwardDeclaration {
+			cppStartNamespace(hpp, typeNamespace)
+			if len(myArgsDecl) != 0 {
+				hpp.WriteString("template<" + strings.Join(myArgsDecl, ", ") + ">\n")
+			}
+			hpp.WriteString("struct " + trw.wr.cppLocalName + ";")
+			cppFinishNamespace(hpp, typeNamespace)
+			return
+		}
 
-	if forwardDeclaration {
+		for _, typeDep := range trw.AllTypeDependencies(true, false) {
+			if typeDep.typeComponent == trw.wr.typeComponent {
+				typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
+			}
+		}
+
 		cppStartNamespace(hpp, typeNamespace)
 		if len(myArgsDecl) != 0 {
 			hpp.WriteString("template<" + strings.Join(myArgsDecl, ", ") + ">\n")
 		}
-		hpp.WriteString("struct " + trw.wr.cppLocalName + ";")
-		cppFinishNamespace(hpp, typeNamespace)
-		return
-	}
-
-	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
-	hppDet.WriteString(fmt.Sprintf(`
-void %[1]sReset(%[2]s& item);
-bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
-`, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
-
-	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
-
-	for _, typeDep := range trw.AllTypeDependencies() {
-		if typeDep.typeComponent == trw.wr.typeComponent {
-			typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
+		hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
+		hpp.WriteString("\tstd::variant<")
+		for filedIndex, field := range trw.Fields {
+			if filedIndex != 0 {
+				hpp.WriteString(", ")
+			}
+			if field.recursive {
+				fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppIncFwd, field.halfResolved)
+				hpp.WriteString(fmt.Sprintf("std::shared_ptr<%s>", fieldFullType))
+			} else {
+				fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
+				hpp.WriteString(fieldFullType)
+				//hpp.WriteString(fmt.Sprintf("\t// DebugString: %s\n", field.resolvedType.DebugString()))
+			}
 		}
-	}
+		hpp.WriteString("> value;\n\n")
+		hpp.WriteString(trw.CPPGetters(bytesVersion))
+		hpp.WriteString("\n")
+		hpp.WriteString(trw.CPPSetters(bytesVersion))
 
-	cppStartNamespace(hpp, typeNamespace)
-	if len(myArgsDecl) != 0 {
-		hpp.WriteString("template<" + strings.Join(myArgsDecl, ", ") + ">\n")
-	}
-	hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
-	hpp.WriteString("\tstd::variant<")
-	for filedIndex, field := range trw.Fields {
-		if filedIndex != 0 {
-			hpp.WriteString(", ")
-		}
-		if field.recursive {
-			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppIncFwd, field.halfResolved)
-			hpp.WriteString(fmt.Sprintf("std::shared_ptr<%s>", fieldFullType))
-		} else {
-			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
-			hpp.WriteString(fieldFullType)
-			//hpp.WriteString(fmt.Sprintf("\t// DebugString: %s\n", field.resolvedType.DebugString()))
-		}
-	}
-	hpp.WriteString("> value;\n\n")
-	hpp.WriteString(trw.CPPGetters(bytesVersion))
-	hpp.WriteString("\n")
-	hpp.WriteString(trw.CPPSetters(bytesVersion))
-
-	hpp.WriteString(`
+		hpp.WriteString(`
 	std::string_view tl_name() const;
 	uint32_t tl_tag() const;
 `)
 
-	cppDet.WriteString(fmt.Sprintf(`
-static const std::string_view %[1]s_tbl_tl_name[]{%[2]s};
-static const uint32_t %[1]s_tbl_tl_tag[]{%[3]s};
-`,
-		goGlobalName,
-		trw.CPPAllNames(bytesVersion),
-		trw.CPPAllTags(bytesVersion)))
-
-	if len(myArgsDecl) == 0 {
-		// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
-		hpp.WriteString(fmt.Sprintf(`
+		if len(myArgsDecl) == 0 {
+			// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
+			hpp.WriteString(fmt.Sprintf(`
 	bool read_boxed(::basictl::tl_istream & s%[1]s);
 	bool write_boxed(::basictl::tl_ostream & s%[1]s)const;
 `,
-			formatNatArgsDeclCPP(trw.wr.NatParams),
-			trw.CPPTypeResettingCode(bytesVersion, "*this"),
-			trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
-			trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
+				formatNatArgsDeclCPP(trw.wr.NatParams),
+				trw.CPPTypeResettingCode(bytesVersion, "*this"),
+				trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+				trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
+		}
+		hpp.WriteString("};\n")
+		cppFinishNamespace(hpp, typeNamespace)
+	}
+
+	hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+	myFullType := trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
+	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+
+	if hppDet != nil {
+		utils.AppendMap(&hppTmpInclude.ns, &hppDetInc.ns)
+
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+		hppDet.WriteString(fmt.Sprintf(`
+void %[1]sReset(%[2]s& item);
+bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+`, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
+
+	if cppDet != nil {
 		cppDet.WriteString(fmt.Sprintf(`
+static const std::string_view %[1]s_tbl_tl_name[]{%[2]s};
+static const uint32_t %[1]s_tbl_tl_tag[]{%[3]s};
+`,
+			goGlobalName,
+			trw.CPPAllNames(bytesVersion),
+			trw.CPPAllTags(bytesVersion)))
+		if len(myArgsDecl) == 0 {
+			cppDet.WriteString(fmt.Sprintf(`
 bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
 %[3]s
 	return true;
@@ -160,23 +169,22 @@ uint32_t %[5]s::tl_tag() const {
 }
 
 `,
-			formatNatArgsDeclCPP(trw.wr.NatParams),
-			trw.CPPTypeResettingCode(bytesVersion, "*this"),
-			trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
-			trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
-			myFullTypeNoPrefix,
-			goGlobalName))
-	}
-	hpp.WriteString("};\n")
-	cppFinishNamespace(hpp, typeNamespace)
-
-	cppDet.WriteString(fmt.Sprintf(`
+				formatNatArgsDeclCPP(trw.wr.NatParams),
+				trw.CPPTypeResettingCode(bytesVersion, "*this"),
+				trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+				trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+				myFullTypeNoPrefix,
+				goGlobalName))
+		}
+		cppDet.WriteString(fmt.Sprintf(`
 void %[7]s::%[1]sReset(%[2]s& item) {
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
 bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
-	switch (s.nat_read()) {
+	uint32_t nat;
+	s.nat_read(nat);
+	switch (nat) {
 %[5]s	default:
 		return s.set_error_union_tag();
     }
@@ -190,14 +198,15 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 	return true;
 }
 `,
-		goGlobalName,
-		myFullType,
-		formatNatArgsDeclCPP(trw.wr.NatParams),
-		"",
-		trw.CPPReadFields(bytesVersion, hppInc, cppDetInc),
-		trw.CPPWriteFields(bytesVersion),
-		trw.wr.gen.DetailsCPPNamespace,
-	))
+			goGlobalName,
+			myFullType,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			"",
+			trw.CPPReadFields(bytesVersion, hppInc, cppDetInc),
+			trw.CPPWriteFields(bytesVersion),
+			trw.wr.gen.DetailsCPPNamespace,
+		))
+	}
 	/*
 			code := `type %[1]s struct {%[2]s}
 

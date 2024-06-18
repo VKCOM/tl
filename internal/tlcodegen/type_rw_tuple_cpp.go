@@ -19,7 +19,7 @@ func (trw *TypeRWBrackets) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrap
 }
 
 func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
+	hppInc.ns[trw.wr] = CppIncludeInfo{componentId: trw.wr.typeComponent, namespace: trw.wr.tlName.Namespace}
 	//if trw.dictLike && !bytesVersion {
 	//	TODO - which arguments must map have is very complicated
 	//return fmt.Sprintf("std::map<%s, %s>",
@@ -58,6 +58,9 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved2(bytesVersion bo
 	case 2:
 		if typeReduction.Type.Arguments[0].VariableActsAsConstant {
 			return fmt.Sprintf("std::array<%s, %s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[1]), typeReduction.Type.Arguments[0].Variable)
+		}
+		if typeReduction.Type.Arguments[0].Index == NumberConstant {
+			return fmt.Sprintf("std::array<%s, %d>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[1]), typeReduction.Type.Arguments[0].Constant)
 		}
 		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[1]))
 	}
@@ -101,7 +104,6 @@ func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectI
 		trw.element.t.trw.CPPGenerateCode(hpp, hppInc, hppIncFwd, hppDet, hppDetInc, cppDet, cppDetInc, bytesVersion, true)
 		return
 	}
-	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 	hppDetCode := `
 void %[1]sReset(std::array<%[2]s, %[3]d>& item);
@@ -242,6 +244,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 }
 `
 	}
+	// TODO remove such giant comments...
 	/*
 		_ = fmt.Sprintf(code,
 			addBytes(trw.goGlobalName, bytesVersion),
@@ -281,34 +284,42 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 		)
 	*/
 
-	hppDet.WriteString(fmt.Sprintf(hppDetCode,
-		addBytes(trw.wr.goGlobalName, bytesVersion),
-		trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc),
-		trw.size,
-		formatNatArgsDeclCPP(trw.wr.NatParams),
-	))
-	tt := trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc)
-	tr := trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "el",
-		trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
-		true)
-	tw := trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "el",
-		trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
-		true)
-	if tt == "bool" {
-		// std::vector<bool> has special value-like reference type
-		tr = "\tbool tmp = false;\n\t" + trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "tmp",
-			trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
-			true) + "\n\t\tel = tmp;"
+	if hppDet != nil {
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+
+		hppDet.WriteString(fmt.Sprintf(hppDetCode,
+			addBytes(trw.wr.goGlobalName, bytesVersion),
+			trw.element.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+			trw.size,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+		))
+
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
-	cppDet.WriteString(fmt.Sprintf(cppCode,
-		addBytes(trw.wr.goGlobalName, bytesVersion),
-		tt,
-		trw.size,
-		formatNatArgsDeclCPP(trw.wr.NatParams),
-		tr,
-		tw,
-		trw.element.t.trw.CPPTypeResettingCode(bytesVersion, "el"),
-		trw.wr.gen.DetailsCPPNamespace,
-	))
-	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+
+	if cppDet != nil {
+		tt := trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc)
+		tr := trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "el",
+			trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+			true)
+		tw := trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "el",
+			trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+			true)
+		if tt == "bool" {
+			// std::vector<bool> has special value-like reference type
+			tr = "\tbool tmp = false;\n\t" + trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "tmp",
+				trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				true) + "\n\t\tel = tmp;"
+		}
+		cppDet.WriteString(fmt.Sprintf(cppCode,
+			addBytes(trw.wr.goGlobalName, bytesVersion),
+			tt,
+			trw.size,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			tr,
+			tw,
+			trw.element.t.trw.CPPTypeResettingCode(bytesVersion, "el"),
+			trw.wr.gen.DetailsCPPNamespace,
+		))
+	}
 }

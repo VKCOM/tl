@@ -332,6 +332,7 @@ type Gen2Options struct {
 
 	// C++
 	RootCPPNamespace string
+	SeparateFiles    bool
 
 	// .tlo
 	TLOPath           string
@@ -1149,15 +1150,14 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	_, order := findAllTypesDependencyComponents(sortedTypes)
 	gen.componentsOrder = order
 
-	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		if len(v.arguments) == 0 {
 			visitedNodes := make(map[*TypeRWWrapper]int)
-			currentPath := make([]*TypeRWWrapper, 0)
-			v.trw.FillRecursiveChildren(visitedNodes, &currentPath)
+			v.trw.FillRecursiveChildren(visitedNodes, true)
 		}
 	}
 
+	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep1()
 	}
@@ -1247,7 +1247,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 	reverseDependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 
 	for _, tpU := range types {
-		dependencies := tpU.trw.AllTypeDependencies()
+		dependencies := tpU.trw.AllTypeDependencies(true, false)
 		for _, tpV := range dependencies {
 			dependencyGraph[tpU] = append(dependencyGraph[tpU], tpV)
 			reverseDependencyGraph[tpV] = append(reverseDependencyGraph[tpV], tpU)
@@ -1290,7 +1290,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 		if _, ok := componentsDeps[tpU.typeComponent]; !ok {
 			componentsDeps[tpU.typeComponent] = make(map[int]bool)
 		}
-		for _, tpV := range tpU.trw.AllTypeDependencies() {
+		for _, tpV := range tpU.trw.AllTypeDependencies(true, false) {
 			if tpU.typeComponent != tpV.typeComponent {
 				componentsDeps[tpU.typeComponent][tpV.typeComponent] = true
 			}
@@ -1303,7 +1303,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 	for componentId, itsDeps := range componentsDeps {
 		componentsOrdered = append(componentsOrdered, componentId)
 		list := make([]int, len(itsDeps))
-		for dep, _ := range itsDeps {
+		for dep := range itsDeps {
 			list = append(list, dep)
 		}
 		sort.Ints(list)
@@ -1504,43 +1504,6 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 	//printResults(ti)
 
 	return &ti
-}
-
-func printResults(ti TypesInfo) {
-	for tp, rds := range ti.TypeReductions {
-		suffix := ""
-		for i, tpArg := range tp.TypeArguments {
-			if i != 0 {
-				suffix += ","
-			}
-			if tpArg.IsNat {
-				suffix += "#"
-			} else {
-				suffix += "*"
-			}
-		}
-		if len(tp.TypeArguments) != 0 {
-			suffix = "<" + suffix + ">"
-		}
-		fmt.Println(tp.Name.String() + suffix)
-		for _, trd := range *rds {
-			fmt.Println("\t", trd)
-			if !trd.IsType {
-				for i, f := range trd.Constructor.Fields {
-					ftrd := ti.FieldTypeReduction(trd, i)
-					s := ""
-					if ftrd.Index == TypeVariable {
-						s = "[" + ftrd.TypeVariable + "]"
-					} else if ftrd.Index == TypeConstant {
-						if ftrd.Type != nil {
-							s = ftrd.Type.String()
-						}
-					}
-					fmt.Println("\t\t", "\""+f.FieldName+"\":", s)
-				}
-			}
-		}
-	}
 }
 
 func reduce(
@@ -1783,4 +1746,19 @@ func (ti *TypesInfo) TypeNameToGenericTypeReduction(t TypeName) TypeReduction {
 	}
 
 	return rd
+}
+
+func (ti *TypesInfo) TypeRWWrapperToTypeReduction(t *TypeRWWrapper) TypeReduction {
+	tr := ti.TypeNameToGenericTypeReduction(t.tlName)
+	for i, arg := range t.arguments {
+		if arg.tip != nil {
+			evalArg := ti.TypeRWWrapperToTypeReduction(arg.tip)
+			tr.Arguments[i] = EvaluatedType{Index: TypeConstant, Type: &evalArg}
+		} else {
+			if arg.isArith {
+				tr.Arguments[i] = EvaluatedType{Index: NumberConstant, Constant: arg.Arith.Res}
+			}
+		}
+	}
+	return tr
 }

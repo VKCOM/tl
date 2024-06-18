@@ -62,7 +62,7 @@ func (trw *TypeRWPrimitive) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return nil
 }
 
-func (trw *TypeRWPrimitive) AllTypeDependencies() []*TypeRWWrapper {
+func (trw *TypeRWPrimitive) AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper {
 	return nil
 }
 
@@ -70,7 +70,7 @@ func (trw *TypeRWPrimitive) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWPrimitive) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWPrimitive) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
 func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {
