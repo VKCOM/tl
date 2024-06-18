@@ -160,7 +160,7 @@ func (trw *TypeRWStruct) AllTypeDependencies() (res []*TypeRWWrapper) {
 		}
 	}
 
-	for tp, _ := range used {
+	for tp := range used {
 		res = append(res, tp)
 	}
 	return

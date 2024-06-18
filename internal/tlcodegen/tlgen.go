@@ -1303,7 +1303,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 	for componentId, itsDeps := range componentsDeps {
 		componentsOrdered = append(componentsOrdered, componentId)
 		list := make([]int, len(itsDeps))
-		for dep, _ := range itsDeps {
+		for dep := range itsDeps {
 			list = append(list, dep)
 		}
 		sort.Ints(list)
@@ -1504,43 +1504,6 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 	//printResults(ti)
 
 	return &ti
-}
-
-func printResults(ti TypesInfo) {
-	for tp, rds := range ti.TypeReductions {
-		suffix := ""
-		for i, tpArg := range tp.TypeArguments {
-			if i != 0 {
-				suffix += ","
-			}
-			if tpArg.IsNat {
-				suffix += "#"
-			} else {
-				suffix += "*"
-			}
-		}
-		if len(tp.TypeArguments) != 0 {
-			suffix = "<" + suffix + ">"
-		}
-		fmt.Println(tp.Name.String() + suffix)
-		for _, trd := range *rds {
-			fmt.Println("\t", trd)
-			if !trd.IsType {
-				for i, f := range trd.Constructor.Fields {
-					ftrd := ti.FieldTypeReduction(trd, i)
-					s := ""
-					if ftrd.Index == TypeVariable {
-						s = "[" + ftrd.TypeVariable + "]"
-					} else if ftrd.Index == TypeConstant {
-						if ftrd.Type != nil {
-							s = ftrd.Type.String()
-						}
-					}
-					fmt.Println("\t\t", "\""+f.FieldName+"\":", s)
-				}
-			}
-		}
-	}
 }
 
 func reduce(

@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"golang.org/x/exp/slices"
 	"regexp"
 	"sort"
 	"strconv"
@@ -181,9 +182,10 @@ func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNa
 func (w *TypeRWWrapper) ActualTypeDependencies(evalType EvaluatedType) (res []*TypeRWWrapper) {
 	r := make(map[*TypeRWWrapper]bool)
 	w.actualTypeDependenciesRecur(evalType, &r)
-	for arg, _ := range r {
+	for arg := range r {
 		res = append(res, arg)
 	}
+	slices.SortFunc(res, TypeComparator)
 	return
 }
 
@@ -241,14 +243,14 @@ type DirectIncludesCPP struct {
 	ns map[string]CppIncludeInfo
 }
 
-func (d DirectIncludesCPP) sortedNames() []string {
-	var sortedNames []string
-	for im := range d.ns { // Imports of this file.
-		sortedNames = append(sortedNames, im)
-	}
-	sort.Strings(sortedNames)
-	return sortedNames
-}
+//func (d DirectIncludesCPP) sortedNames() []string {
+//	var sortedNames []string
+//	for im := range d.ns { // Imports of this file.
+//		sortedNames = append(sortedNames, im)
+//	}
+//	sort.Strings(sortedNames)
+//	return sortedNames
+//}
 
 func (d DirectIncludesCPP) sortedIncludes(componentOrder []int) (result []string) {
 	compIdToPosition := make(map[int]int)
@@ -269,9 +271,7 @@ func (d DirectIncludesCPP) sortedIncludes(componentOrder []int) (result []string
 
 	for _, files := range filesByCID {
 		sort.Strings(files)
-		for _, f := range files {
-			result = append(result, f)
-		}
+		result = append(result, files...)
 	}
 
 	return
