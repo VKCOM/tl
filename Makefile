@@ -35,7 +35,7 @@ build:
 	@$(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
 
 tlo-bootstrap: build
-	@./target/bin/tlgen \
+	@./target/bin/tlgen -v --language=go \
 		--copyrightPath=./COPYRIGHT \
 		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
