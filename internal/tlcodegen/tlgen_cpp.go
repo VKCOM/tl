@@ -137,15 +137,19 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder) {
 			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n+"_details", cppExt))
-			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n+"_details", cppExt))
+			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n+"_details", cppExt))
 			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n+"_details", cppExt, n+"_details", hppExt))
 		}
 
-		cppMake1.WriteString(fmt.Sprintf("build/%s.o: details/%s%s %s\n", namespace+"_namespace_details", namespace+"_namespace_details", cppExt, cppMake1UsedFiles.String()))
-		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o build/%[1]s.o -c details/%[1]s%[2]s\n", namespace+"_namespace_details", cppExt))
-		cppMakeO.WriteString(fmt.Sprintf("build/%s.o ", namespace+"_namespace_details"))
+		namespaceDetails := namespace + "_details"
+		namespaceFilePath := "details/namespaces/" + namespaceDetails + cppExt
+		buildFilePath := "build/" + namespaceDetails + ".o"
 
-		if err := gen.addCodeFile(fmt.Sprintf("details/%s%s", namespace+"_namespace_details", cppExt), cppMake1Namespace.String()); err != nil {
+		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
+		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o %s -c %s\n", buildFilePath, namespaceFilePath))
+		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
+
+		if err := gen.addCodeFile(namespaceFilePath, cppMake1Namespace.String()); err != nil {
 			return err
 		}
 	}
