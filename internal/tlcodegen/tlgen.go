@@ -51,8 +51,6 @@ const TlJSONHTML = "tljson.html"
 // And we do not want stable checksum of go files tlgen folder, because checksums are not comparable and there is no idea how old that version is
 const buildVersionString = "tlgen2 version "
 
-var buildSHA256Checksum = "" // filled when building
-
 var (
 	errSeeHere                = fmt.Errorf("see here")
 	errFieldNameCollision     = fmt.Errorf("field name collision")
@@ -326,7 +324,7 @@ type Gen2Options struct {
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
-	SchemaURLTemplate      string
+	SchemaURL              string
 
 	// C++
 	RootCPPNamespace string
@@ -701,7 +699,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 		// motivation - do not modify marker file if no code changed. Greatly reduces efforts to refactor tlgen.
 		f := filepath.Join(outdir, markerFile)
 		_, version := TLGenBuildInfo()
-		code := buildVersionString + strings.TrimSpace(version) + "\n" // stupid editors insist on empty line at the end
+		code := buildVersionString + strings.TrimSpace(version) + "\n" // many editors insist on empty line at the end
 		written++
 		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 			return fmt.Errorf("error writing file %q: %w", f, err)
@@ -1193,7 +1191,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	if options.SchemaDocumentation {
-		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, buildSHA256Checksum)); err != nil {
+		_, version := TLGenBuildInfo()
+		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, version)); err != nil {
 			return nil, err
 		}
 	}
