@@ -1,12 +1,9 @@
 {% package tlcodegen %}
 
 {% import "fmt" %}
-{% import "time" %}
 {% import "strings" %}
 
-{% import "github.com/vkcom/tl/pkg/build" %}
-
-{%- func tlJSON(gen *Gen2, buildSHA256Checksum string) -%}
+{%- func tlJSON(gen *Gen2, tlgenVersion string) -%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,8 +14,9 @@
   <body>
     <h1>Schema</h1>
     <ul>
-      {%- if gen.options.SchemaURLTemplate != "" -%}
-      <li><abbr>TL</abbr> schema: <a href="{%s= fmt.Sprintf(gen.options.SchemaURLTemplate, build.Commit()) %}"><code>{%s build.Commit() %}</code></a> commit timestamp {%s time.Unix(int64(build.CommitTimestamp()), 0).Format(time.RFC3339) %} compiled at {%s build.Time() %}</li>
+      <li>tlgen version: {%s tlgenVersion %}</li>
+      {%- if gen.options.SchemaURL != "" -%}
+      <li><abbr>TL</abbr> <a href="{%s gen.options.SchemaURL %}">schema</a></li>
       {%- endif -%}
       <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
     </ul>

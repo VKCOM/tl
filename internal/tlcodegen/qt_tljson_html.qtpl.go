@@ -5,11 +5,7 @@ package tlcodegen
 
 import "fmt"
 
-import "time"
-
 import "strings"
-
-import "github.com/vkcom/tl/pkg/build"
 
 import (
 	qtio422016 "io"
@@ -22,7 +18,7 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
-func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, buildSHA256Checksum string) {
+func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, tlgenVersion string) {
 	qw422016.N().S(`<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,17 +29,14 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, buildSHA256Checksum stri
   <body>
     <h1>Schema</h1>
     <ul>
+      <li>tlgen version: `)
+	qw422016.E().S(tlgenVersion)
+	qw422016.N().S(`</li>
 `)
-	if gen.options.SchemaURLTemplate != "" {
-		qw422016.N().S(`      <li><abbr>TL</abbr> schema: <a href="`)
-		qw422016.N().S(fmt.Sprintf(gen.options.SchemaURLTemplate, build.Commit()))
-		qw422016.N().S(`"><code>`)
-		qw422016.E().S(build.Commit())
-		qw422016.N().S(`</code></a> commit timestamp `)
-		qw422016.E().S(time.Unix(int64(build.CommitTimestamp()), 0).Format(time.RFC3339))
-		qw422016.N().S(` compiled at `)
-		qw422016.E().S(build.Time())
-		qw422016.N().S(`</li>
+	if gen.options.SchemaURL != "" {
+		qw422016.N().S(`      <li><abbr>TL</abbr> <a href="`)
+		qw422016.E().S(gen.options.SchemaURL)
+		qw422016.N().S(`">schema</a></li>
 `)
 	}
 	qw422016.N().S(`      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
@@ -82,15 +75,15 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
 `)
 }
 
-func writetlJSON(qq422016 qtio422016.Writer, gen *Gen2, buildSHA256Checksum string) {
+func writetlJSON(qq422016 qtio422016.Writer, gen *Gen2, tlgenVersion string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streamtlJSON(qw422016, gen, buildSHA256Checksum)
+	streamtlJSON(qw422016, gen, tlgenVersion)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func tlJSON(gen *Gen2, buildSHA256Checksum string) string {
+func tlJSON(gen *Gen2, tlgenVersion string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writetlJSON(qb422016, gen, buildSHA256Checksum)
+	writetlJSON(qb422016, gen, tlgenVersion)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

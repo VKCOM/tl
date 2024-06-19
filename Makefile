@@ -25,18 +25,14 @@ TLOS_PATH := $(GEN_PATH)
 BASIC_TL_PATH := github.com/vkcom/tl/pkg/basictl
 
 TL_BYTE_VERSIONS := ch_proxy.,ab.
-SHA256_CHECKSUM := $(shell go run ./cmd/sha256sum ./internal)
-ifndef SHA256_CHECKSUM
-$(error SHA256_CHECKSUM failed to set, problem with go run cmd/sha256sum internal)
-endif
 
 .PHONY: build
 
 all: build
 
 build:
-	@echo "Building tlgen with sha256 checksum $(SHA256_CHECKSUM)"
-	@$(GO) build -ldflags "$(COMMON_LDFLAGS)  -X 'github.com/vkcom/tl/internal/tlcodegen.buildSHA256Checksum=$(SHA256_CHECKSUM)'" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+	@echo "Building tlgen"
+	@$(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
 
 tlo-bootstrap: build
 	@./target/bin/tlgen \
@@ -84,6 +80,7 @@ goldmaster_nocompile: build
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster \
 		--generateSchemaDocumentation \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
@@ -96,6 +93,7 @@ goldmaster_nocompile: build
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster_nosplit \
 		--generateSchemaDocumentation \
+		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \

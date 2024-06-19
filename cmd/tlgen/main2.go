@@ -60,7 +60,7 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"whether to generate methods to read json in old way")
 	flag.BoolVar(&opt.SchemaDocumentation, "generateSchemaDocumentation", false,
 		"whether to generate .html representation of schema in to tljson.html file")
-	flag.StringVar(&opt.SchemaURLTemplate, "schemaURLTemplate", "",
+	flag.StringVar(&opt.SchemaURL, "schemaURL", "",
 		"template for url to current schema if documentation is generated")
 
 	// C++
