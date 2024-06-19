@@ -68,7 +68,14 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
 			continue
 		}
+		// default value
 		cppAllInc.ns[ff.fileName] = CppIncludeInfo{types[0].typeComponent, types[0].tlName.Namespace}
+		for _, typeInFile := range types {
+			if ff.fileName == typeInFile.tlName.String() {
+				cppAllInc.ns[ff.fileName] = CppIncludeInfo{typeInFile.typeComponent, typeInFile.tlName.Namespace}
+				break
+			}
+		}
 		hppStr := hpp.String()
 		hppDetStr := hppDet.String()
 		cppDetStr := cppDet.String()
@@ -134,7 +141,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n+"_details", cppExt, n+"_details", hppExt))
 		}
 
-		cppMake1.WriteString(fmt.Sprintf("build/%s.o: %s\n", namespace+"_namespace_details", cppMake1UsedFiles.String()))
+		cppMake1.WriteString(fmt.Sprintf("build/%s.o: details/%s%s %s\n", namespace+"_namespace_details", namespace+"_namespace_details", cppExt, cppMake1UsedFiles.String()))
 		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o build/%[1]s.o -c details/%[1]s%[2]s\n", namespace+"_namespace_details", cppExt))
 		cppMakeO.WriteString(fmt.Sprintf("build/%s.o ", namespace+"_namespace_details"))
 
