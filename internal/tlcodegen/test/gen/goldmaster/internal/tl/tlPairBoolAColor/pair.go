@@ -23,7 +23,7 @@ type PairBoolAColor struct {
 }
 
 func (PairBoolAColor) TLName() string { return "pair" }
-func (PairBoolAColor) TLTag() uint32  { return 0xf3c47ab }
+func (PairBoolAColor) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairBoolAColor) Reset() {
 	item.A = false
@@ -54,7 +54,7 @@ func (item *PairBoolAColor) Write(w []byte) []byte {
 }
 
 func (item *PairBoolAColor) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -66,7 +66,7 @@ func (item *PairBoolAColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairBoolAColor) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 

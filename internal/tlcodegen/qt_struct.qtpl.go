@@ -18,7 +18,7 @@ var (
 
 func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
-	tlTag := fmt.Sprintf("%#x", struct_.wr.tlTag)
+	tlTag := fmt.Sprintf("0x%08x", struct_.wr.tlTag)
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods

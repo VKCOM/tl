@@ -348,7 +348,7 @@ switch tag {
 `)
 	for _, wr := range types {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-			tlTag := fmt.Sprintf("%#08x", wr.tlTag)
+			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
 			tlName := wr.tlName.String()
 

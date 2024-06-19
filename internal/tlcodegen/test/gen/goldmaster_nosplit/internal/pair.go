@@ -171,7 +171,7 @@ type PairAInnerAInner struct {
 }
 
 func (PairAInnerAInner) TLName() string { return "pair" }
-func (PairAInnerAInner) TLTag() uint32  { return 0xf3c47ab }
+func (PairAInnerAInner) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairAInnerAInner) Reset() {
 	item.A.Reset()
@@ -206,7 +206,7 @@ func (item *PairAInnerAInner) Write(w []byte, nat_X uint32, nat_Y uint32) (_ []b
 }
 
 func (item *PairAInnerAInner) ReadBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_X, nat_Y)
@@ -218,7 +218,7 @@ func (item *PairAInnerAInner) WriteBoxedGeneral(w []byte, nat_X uint32, nat_Y ui
 }
 
 func (item *PairAInnerAInner) WriteBoxed(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w, nat_X, nat_Y)
 }
 
@@ -311,7 +311,7 @@ type PairBoolAColor struct {
 }
 
 func (PairBoolAColor) TLName() string { return "pair" }
-func (PairBoolAColor) TLTag() uint32  { return 0xf3c47ab }
+func (PairBoolAColor) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairBoolAColor) Reset() {
 	item.A = false
@@ -342,7 +342,7 @@ func (item *PairBoolAColor) Write(w []byte) []byte {
 }
 
 func (item *PairBoolAColor) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -354,7 +354,7 @@ func (item *PairBoolAColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairBoolAColor) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
@@ -450,7 +450,7 @@ type PairFloatDouble struct {
 }
 
 func (PairFloatDouble) TLName() string { return "pair" }
-func (PairFloatDouble) TLTag() uint32  { return 0xf3c47ab }
+func (PairFloatDouble) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairFloatDouble) Reset() {
 	item.A = 0
@@ -481,7 +481,7 @@ func (item *PairFloatDouble) Write(w []byte) []byte {
 }
 
 func (item *PairFloatDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -493,7 +493,7 @@ func (item *PairFloatDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairFloatDouble) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
@@ -593,7 +593,7 @@ type PairIntInt struct {
 }
 
 func (PairIntInt) TLName() string { return "pair" }
-func (PairIntInt) TLTag() uint32  { return 0xf3c47ab }
+func (PairIntInt) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairIntInt) Reset() {
 	item.A = 0
@@ -624,7 +624,7 @@ func (item *PairIntInt) Write(w []byte) []byte {
 }
 
 func (item *PairIntInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -636,7 +636,7 @@ func (item *PairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairIntInt) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
@@ -736,7 +736,7 @@ type PairIntLong struct {
 }
 
 func (PairIntLong) TLName() string { return "pair" }
-func (PairIntLong) TLTag() uint32  { return 0xf3c47ab }
+func (PairIntLong) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairIntLong) Reset() {
 	item.A = 0
@@ -767,7 +767,7 @@ func (item *PairIntLong) Write(w []byte) []byte {
 }
 
 func (item *PairIntLong) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -779,7 +779,7 @@ func (item *PairIntLong) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairIntLong) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
@@ -879,7 +879,7 @@ type PairIntPairMultiPointString struct {
 }
 
 func (PairIntPairMultiPointString) TLName() string { return "pair" }
-func (PairIntPairMultiPointString) TLTag() uint32  { return 0xf3c47ab }
+func (PairIntPairMultiPointString) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairIntPairMultiPointString) Reset() {
 	item.A = 0
@@ -910,7 +910,7 @@ func (item *PairIntPairMultiPointString) Write(w []byte) []byte {
 }
 
 func (item *PairIntPairMultiPointString) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -922,7 +922,7 @@ func (item *PairIntPairMultiPointString) WriteBoxedGeneral(w []byte) (_ []byte, 
 }
 
 func (item *PairIntPairMultiPointString) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
@@ -1018,7 +1018,7 @@ type PairMultiPointString struct {
 }
 
 func (PairMultiPointString) TLName() string { return "pair" }
-func (PairMultiPointString) TLTag() uint32  { return 0xf3c47ab }
+func (PairMultiPointString) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairMultiPointString) Reset() {
 	item.A.Reset()
@@ -1049,7 +1049,7 @@ func (item *PairMultiPointString) Write(w []byte) []byte {
 }
 
 func (item *PairMultiPointString) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -1061,7 +1061,7 @@ func (item *PairMultiPointString) WriteBoxedGeneral(w []byte) (_ []byte, err err
 }
 
 func (item *PairMultiPointString) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 
@@ -1157,7 +1157,7 @@ type PairPairAInnerAInnerAInnerBoxed3 struct {
 }
 
 func (PairPairAInnerAInnerAInnerBoxed3) TLName() string { return "pair" }
-func (PairPairAInnerAInnerAInnerBoxed3) TLTag() uint32  { return 0xf3c47ab }
+func (PairPairAInnerAInnerAInnerBoxed3) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) Reset() {
 	item.A.Reset()
@@ -1190,7 +1190,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) Write(w []byte, nat_XXI uint32, na
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) ReadBoxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_XXI, nat_XYI)
@@ -1202,7 +1202,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) WriteBoxedGeneral(w []byte, nat_XX
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteBoxed(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w, nat_XXI, nat_XYI)
 }
 

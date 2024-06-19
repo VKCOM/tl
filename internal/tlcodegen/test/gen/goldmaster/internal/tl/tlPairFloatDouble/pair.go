@@ -21,7 +21,7 @@ type PairFloatDouble struct {
 }
 
 func (PairFloatDouble) TLName() string { return "pair" }
-func (PairFloatDouble) TLTag() uint32  { return 0xf3c47ab }
+func (PairFloatDouble) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairFloatDouble) Reset() {
 	item.A = 0
@@ -52,7 +52,7 @@ func (item *PairFloatDouble) Write(w []byte) []byte {
 }
 
 func (item *PairFloatDouble) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -64,7 +64,7 @@ func (item *PairFloatDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *PairFloatDouble) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 

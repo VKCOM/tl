@@ -232,7 +232,7 @@ func init() {
 	fillObject("cases_bytes.testDictString#6c04d6ce", "#6c04d6ce", &TLItem{tag: 0x6c04d6ce, annotations: 0x0, tlName: "cases_bytes.testDictString"})
 	fillObject("cases_bytes.testDictStringString#ad69c772", "#ad69c772", &TLItem{tag: 0xad69c772, annotations: 0x0, tlName: "cases_bytes.testDictStringString"})
 	fillObject("cases_bytes.testEnum1#58aad3f5", "#58aad3f5", &TLItem{tag: 0x58aad3f5, annotations: 0x0, tlName: "cases_bytes.testEnum1"})
-	fillObject("cases_bytes.testEnum2#00b47add", "#00b47add", &TLItem{tag: 0xb47add, annotations: 0x0, tlName: "cases_bytes.testEnum2"})
+	fillObject("cases_bytes.testEnum2#00b47add", "#00b47add", &TLItem{tag: 0x00b47add, annotations: 0x0, tlName: "cases_bytes.testEnum2"})
 	fillObject("cases_bytes.testEnum3#81911ffa", "#81911ffa", &TLItem{tag: 0x81911ffa, annotations: 0x0, tlName: "cases_bytes.testEnum3"})
 	fillObject("cases_bytes.testEnumContainer#32b92037", "#32b92037", &TLItem{tag: 0x32b92037, annotations: 0x0, tlName: "cases_bytes.testEnumContainer"})
 	fillObject("cases_bytes.testTuple#2dd3bacf", "#2dd3bacf", &TLItem{tag: 0x2dd3bacf, annotations: 0x0, tlName: "cases_bytes.testTuple"})
