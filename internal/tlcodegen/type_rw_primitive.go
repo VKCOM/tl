@@ -62,7 +62,7 @@ func (trw *TypeRWPrimitive) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return nil
 }
 
-func (trw *TypeRWPrimitive) AllTypeDependencies() []*TypeRWWrapper {
+func (trw *TypeRWPrimitive) AllTypeDependencies(generic bool) []*TypeRWWrapper {
 	return nil
 }
 

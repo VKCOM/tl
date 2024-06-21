@@ -59,7 +59,14 @@ func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		return
 	}
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
+	newTypeDeps := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+
+	myFullType := trw.cppTypeStringInNamespace(bytesVersion, &newTypeDeps)
+
+	for k, v := range newTypeDeps.ns {
+		(*hppDetInc).ns[k] = v
+		(*cppDetInc).ns[k] = v
+	}
 
 	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 

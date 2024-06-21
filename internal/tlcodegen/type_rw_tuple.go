@@ -90,8 +90,11 @@ func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWBrackets) AllTypeDependencies() (res []*TypeRWWrapper) {
-	return nil
+func (trw *TypeRWBrackets) AllTypeDependencies(generic bool) (res []*TypeRWWrapper) {
+	if !generic {
+		res = append(res, trw.element.t)
+	}
+	return
 }
 
 func (trw *TypeRWBrackets) IsWrappingType() bool {

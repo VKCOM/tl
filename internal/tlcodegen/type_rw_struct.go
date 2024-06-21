@@ -148,7 +148,7 @@ func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWStruct) AllTypeDependencies() (res []*TypeRWWrapper) {
+func (trw *TypeRWStruct) AllTypeDependencies(generic bool) (res []*TypeRWWrapper) {
 	used := make(map[*TypeRWWrapper]bool)
 	red := trw.wr.gen.typesInfo.TypeNameToGenericTypeReduction(trw.wr.tlName)
 

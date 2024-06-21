@@ -90,7 +90,7 @@ bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 
 	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	for _, typeDep := range trw.AllTypeDependencies() {
+	for _, typeDep := range trw.AllTypeDependencies(true) {
 		if typeDep.typeComponent == trw.wr.typeComponent {
 			typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
 		}

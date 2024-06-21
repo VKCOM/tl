@@ -1247,7 +1247,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 	reverseDependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 
 	for _, tpU := range types {
-		dependencies := tpU.trw.AllTypeDependencies()
+		dependencies := tpU.trw.AllTypeDependencies(true)
 		for _, tpV := range dependencies {
 			dependencyGraph[tpU] = append(dependencyGraph[tpU], tpV)
 			reverseDependencyGraph[tpV] = append(reverseDependencyGraph[tpV], tpU)
@@ -1290,7 +1290,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 		if _, ok := componentsDeps[tpU.typeComponent]; !ok {
 			componentsDeps[tpU.typeComponent] = make(map[int]bool)
 		}
-		for _, tpV := range tpU.trw.AllTypeDependencies() {
+		for _, tpV := range tpU.trw.AllTypeDependencies(true) {
 			if tpU.typeComponent != tpV.typeComponent {
 				componentsDeps[tpU.typeComponent][tpV.typeComponent] = true
 			}

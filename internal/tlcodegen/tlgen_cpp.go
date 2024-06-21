@@ -31,9 +31,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 	typesCounter := 0
 
-	for _, typeRw := range gen.generatedTypesList {
-		gen.decideCppCodeDestinations(typeRw)
-	}
+	gen.decideCppCodeDestinations(gen.generatedTypesList)
 
 	internalFiles2 := map[InsFile]map[string][]*TypeRWWrapper{}
 
@@ -247,8 +245,142 @@ main.o: main.cpp
 	return nil
 }
 
-func (gen *Gen2) decideCppCodeDestinations(t *TypeRWWrapper) {
-	// TODO
-	t.detailsFileName = t.fileName + "_details"
-	t.groupName = t.tlName.Namespace
+func sliceToSet[T comparable](s []T) map[T]bool {
+	m := make(map[T]bool)
+	for _, e := range s {
+		m[e] = true
+	}
+	return m
+}
+
+// unstable
+func setToSlice[T comparable](s map[T]bool) []T {
+	m := make([]T, 0)
+	for k, _ := range s {
+		m = append(m, k)
+	}
+	return m
+}
+
+func mapSlice[A, B any](in []A, f func(A) B) (out []B) {
+	for _, e := range in {
+		out = append(out, f(e))
+	}
+	return
+}
+
+func filterSlice[A any](in []A, f func(A) bool) (out []A) {
+	for _, e := range in {
+		if f(e) {
+			out = append(out, e)
+		}
+	}
+	return
+}
+
+func putPairToSetOfPairs[K, V comparable](in *map[K]map[V]bool, k K, v V) {
+	if _, ok := (*in)[k]; !ok {
+		(*in)[k] = make(map[V]bool)
+	}
+	(*in)[k][v] = true
+}
+
+func reverseSetOfPairs[K, V comparable](in map[K]map[V]bool) map[V]map[K]bool {
+	m := make(map[V]map[K]bool)
+
+	for k, vs := range in {
+		for v, _ := range vs {
+			putPairToSetOfPairs(&m, v, k)
+		}
+	}
+
+	return m
+}
+
+func findAllReachableTypeByGroup(v *TypeRWWrapper, visited *map[*TypeRWWrapper]bool, result *[]*TypeRWWrapper) {
+	if v.groupName != "" {
+		return
+	}
+	if (*visited)[v] {
+		return
+	}
+	(*visited)[v] = true
+	*result = append(*result, v)
+
+	for _, w := range v.trw.AllTypeDependencies(false) {
+		findAllReachableTypeByGroup(w, visited, result)
+	}
+}
+
+func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
+	const IndependentTypes = "__independent_types"
+	const NoNamespaceGroup = ""
+
+	for _, t := range allTypes {
+		t.detailsFileName = t.fileName + "_details"
+		t.groupName = t.tlName.Namespace
+		if t.fileName != t.tlName.String() {
+			for _, t2 := range allTypes {
+				if t.fileName == t2.tlName.String() {
+					t.groupName = t2.tlName.Namespace
+					break
+				}
+			}
+		}
+	}
+
+	allTypesWithoutGroup := make([]*TypeRWWrapper, 0)
+	allTypesWithoutGroupMap := make(map[*TypeRWWrapper]bool)
+
+	allTypesWithoutGroupUsages := make(map[*TypeRWWrapper]map[string]bool)
+
+	for _, t := range allTypes {
+		if t.groupName != NoNamespaceGroup {
+			continue
+		}
+		allTypesWithoutGroup = append(allTypesWithoutGroup, t)
+		allTypesWithoutGroupMap[t] = true
+	}
+
+	for _, t := range allTypes {
+		//if t.groupName == "" {
+		//	continue
+		//}
+		for _, dep := range t.trw.AllTypeDependencies(false) {
+			if dep.groupName == NoNamespaceGroup {
+				if _, ok := allTypesWithoutGroupUsages[dep]; !ok {
+					allTypesWithoutGroupUsages[dep] = make(map[string]bool)
+				}
+				allTypesWithoutGroupUsages[dep][t.groupName] = true
+			}
+		}
+	}
+
+	groupToFirstVisits := reverseSetOfPairs(allTypesWithoutGroupUsages)
+	for group, firstLayer := range groupToFirstVisits {
+		visited := make(map[*TypeRWWrapper]bool)
+		result := make([]*TypeRWWrapper, 0)
+
+		for v, _ := range firstLayer {
+			findAllReachableTypeByGroup(v, &visited, &result)
+		}
+
+		for _, v := range result {
+			putPairToSetOfPairs(&allTypesWithoutGroupUsages, v, group)
+		}
+	}
+
+	for _, t := range allTypesWithoutGroup {
+		usages := allTypesWithoutGroupUsages[t]
+
+		if len(usages) == 0 {
+			t.groupName = IndependentTypes
+		} else if len(usages) == 1 {
+			usage := setToSlice(usages)[0]
+			if usage != NoNamespaceGroup {
+				t.groupName = usage
+				t.detailsFileName = usage + "_" + t.detailsFileName
+			}
+		}
+	}
 }

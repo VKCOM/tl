@@ -697,7 +697,7 @@ type TypeRW interface {
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper)
 	AllPossibleRecursionProducers() []*TypeRWWrapper
-	AllTypeDependencies() []*TypeRWWrapper
+	AllTypeDependencies(generic bool) []*TypeRWWrapper
 	IsWrappingType() bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
