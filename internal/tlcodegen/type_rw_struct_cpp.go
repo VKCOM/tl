@@ -160,7 +160,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		typeDependencies := field.t.ActualTypeDependencies(typeRed)
 		for _, typeRw := range typeDependencies {
 			if typeRw.cppLocalName != "" {
-				hppInc.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
+				hppInc.ns[typeRw] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
 			}
 		}
 		hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)))
@@ -171,14 +171,14 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	} else {
 		hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
 		for i, field := range trw.Fields {
-			hppIncByField := DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
+			hppIncByField := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
 			typeRed := ti.FieldTypeReduction(&typeReduction, i)
 			for _, typeRw := range trw.Fields[i].t.ActualTypeDependencies(typeRed) {
 				if typeRw.trw.IsWrappingType() {
 					continue
 				}
-				hppIncByField.ns[typeRw.fileName] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
+				hppIncByField.ns[typeRw] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
 			}
 
 			fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)
@@ -189,7 +189,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 			if field.recursive {
 				// TODO make better
 				for includeType, includeInfo := range hppIncByField.ns {
-					if includeInfo.componentId == trw.wr.typeComponent {
+					if includeInfo.componentId == trw.wr.typeComponent || includeType.cppLocalName == "" {
 						delete(hppIncByField.ns, includeType)
 					}
 				}

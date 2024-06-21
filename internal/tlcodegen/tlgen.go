@@ -1747,3 +1747,18 @@ func (ti *TypesInfo) TypeNameToGenericTypeReduction(t TypeName) TypeReduction {
 
 	return rd
 }
+
+func (ti *TypesInfo) TypeRWWrapperToTypeReduction(t *TypeRWWrapper) TypeReduction {
+	tr := ti.TypeNameToGenericTypeReduction(t.tlName)
+	for i, arg := range t.arguments {
+		if arg.tip != nil {
+			evalArg := ti.TypeRWWrapperToTypeReduction(arg.tip)
+			tr.Arguments[i] = EvaluatedType{Index: TypeConstant, Type: &evalArg}
+		} else {
+			if arg.isArith {
+				tr.Arguments[i] = EvaluatedType{Index: NumberConstant, Constant: arg.Arith.Res}
+			}
+		}
+	}
+	return tr
+}

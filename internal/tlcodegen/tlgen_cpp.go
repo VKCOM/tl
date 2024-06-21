@@ -26,107 +26,131 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
 
-	cppAllInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
+	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	var hpp strings.Builder
-	var hppDet strings.Builder
-	var cppDet strings.Builder
+
 	typesCounter := 0
-	typesCounterBytes := 0
-	internalFiles := map[InsFile][]*TypeRWWrapper{}
+
 	for _, typeRw := range gen.generatedTypesList {
-		ff := InsFile{ins: typeRw.ins, fileName: typeRw.fileName}
-		internalFiles[ff] = append(internalFiles[ff], typeRw)
+		gen.decideCppCodeDestinations(typeRw)
 	}
-	for ff, types := range internalFiles {
-		hppInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
-		hppIncFwd := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
-		hppDetInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
-		cppDetInc := &DirectIncludesCPP{ns: map[string]CppIncludeInfo{}}
-		multipleDefinitions := map[string]struct{}{}
-		for _, typeRw := range types {
-			// log.Printf("type: %s\n", typeRw.tlName.String())
-			// log.Printf("      %s\n", typeRw.resolvedType.String())
-			typesCounter++
-			var hppDefinition strings.Builder
-			typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, &hppDet, hppDetInc, &cppDet, cppDetInc, false, false)
-			def := hppDefinition.String()
-			if _, ok := multipleDefinitions[def]; !ok {
-				multipleDefinitions[def] = struct{}{}
-				hpp.WriteString(def)
-			}
-			if typeRw.wantsBytesVersion && typeRw.trw.CPPHasBytesVersion() {
-				hppDefinition.Reset()
-				typesCounterBytes++
-				typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, &hppDet, hppDetInc, &cppDet, cppDetInc, true, false)
-				def = hppDefinition.String()
-				if _, ok := multipleDefinitions[def]; !ok {
-					multipleDefinitions[def] = struct{}{}
-					hpp.WriteString(def)
+
+	internalFiles2 := map[InsFile]map[string][]*TypeRWWrapper{}
+
+	for _, typeRw := range gen.generatedTypesList {
+		hppDef := InsFile{ins: typeRw.ins, fileName: typeRw.fileName}
+		if _, ok := internalFiles2[hppDef]; !ok {
+			internalFiles2[hppDef] = make(map[string][]*TypeRWWrapper)
+		}
+		internalFiles2[hppDef][typeRw.detailsFileName] = append(internalFiles2[hppDef][typeRw.detailsFileName], typeRw)
+	}
+
+	// for each type header ~ tl combinator
+	for ff, details := range internalFiles2 {
+		hppInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+		hppIncFwd := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+		typeDefinitions := map[string]bool{}
+
+		// for each file with specifications
+		for detailFile, specs := range details {
+			hppDetInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+			cppDetInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+			var hppDet strings.Builder
+			var cppDet strings.Builder
+
+			// for each specification
+			for _, typeRw := range specs {
+				// init all variants for specification (ex. byte version)
+				typeDefVariations := make([]TypeDefinitionVariation, 1)
+				{
+					if typeRw.wantsBytesVersion && typeRw.trw.CPPHasBytesVersion() {
+						typeDefVariations = append(typeDefVariations, TypeDefinitionVariation{NeedBytesVersion: true})
+					}
+				}
+
+				for _, typeDefVariation := range typeDefVariations {
+					typesCounter++
+					var hppDefinition strings.Builder
+					typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, &hppDet, hppDetInc, &cppDet, cppDetInc, typeDefVariation.NeedBytesVersion, false)
+					def := hppDefinition.String()
+					if !typeDefinitions[def] {
+						typeDefinitions[def] = true
+						hpp.WriteString(def)
+					}
 				}
 			}
-		}
-		if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
-			continue
-		}
-		// default value
-		cppAllInc.ns[ff.fileName] = CppIncludeInfo{types[0].typeComponent, types[0].tlName.Namespace}
-		for _, typeInFile := range types {
-			if ff.fileName == typeInFile.tlName.String() {
-				cppAllInc.ns[ff.fileName] = CppIncludeInfo{typeInFile.typeComponent, typeInFile.tlName.Namespace}
-				break
+
+			if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
+				continue
+			}
+
+			// all specs in one file must be in group
+			cppAllInc.ns[specs[0]] = CppIncludeInfo{-1, specs[0].groupName}
+
+			hppDetStr := hppDet.String()
+			cppDetStr := cppDet.String()
+
+			hppDet.Reset()
+			cppDet.Reset()
+
+			hppDet.WriteString("#pragma once\n\n")
+			hppDet.WriteString(fmt.Sprintf("#include \"../%s\"\n", basicTLFilepathName))
+
+			hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", ff.fileName, hppExt))
+			for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
+				if n == ff.fileName {
+					continue
+				}
+				hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, hppExt))
+			}
+			hppDet.WriteString("\n")
+
+			cppDet.WriteString(fmt.Sprintf("#include \"%s%s\"\n", detailFile, hppExt))
+			for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.detailsFileName }) {
+				if n == detailFile {
+					continue
+				}
+				cppDet.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
+			}
+			cppDet.WriteString("\n")
+
+			filepathName := filepath.Join("details", detailFile+hppExt)
+			if err := gen.addCodeFile(filepathName, gen.copyrightText+hppDet.String()+hppDetStr); err != nil {
+				return err
+			}
+			filepathName = filepath.Join("details", detailFile+cppExt)
+			if err := gen.addCodeFile(filepathName, gen.copyrightText+cppDet.String()+cppDetStr); err != nil {
+				return err
 			}
 		}
+
+		if hpp.Len() == 0 {
+			continue
+		}
+
 		hppStr := hpp.String()
-		hppDetStr := hppDet.String()
-		cppDetStr := cppDet.String()
 		hpp.Reset()
-		hppDet.Reset()
-		cppDet.Reset()
 		hpp.WriteString("#pragma once\n\n")
-		hppDet.WriteString("#pragma once\n\n")
 		hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", basicTLFilepathName))
-		for _, n := range hppInc.sortedIncludes(gen.componentsOrder) {
+		for _, n := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
 		}
 		hpp.WriteString("\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", ff.fileName, hppExt))
-		hppDet.WriteString(fmt.Sprintf("#include \"../%s\"\n", basicTLFilepathName))
 		hpp.WriteString(hppStr)
-		// for _, n := range hppIncFwd.sortedNames() {
-		//	hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
-		// }
-		for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder) {
-			hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, hppExt))
-		}
-		cppDet.WriteString(fmt.Sprintf("#include \"%s_details%s\"\n", ff.fileName, hppExt))
-		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder) {
-			if n == ff.fileName {
-				continue
-			}
-			cppDet.WriteString(fmt.Sprintf("#include \"%s_details%s\"\n", n, hppExt))
-		}
 		filepathName := ff.fileName + hppExt
 		if err := gen.addCodeFile(filepathName, gen.copyrightText+hpp.String()); err != nil {
 			return err
 		}
 		hpp.Reset()
-		filepathName = filepath.Join("details", ff.fileName+"_details"+hppExt)
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+hppDet.String()+hppDetStr); err != nil {
-			return err
-		}
-		hppDet.Reset()
-		filepathName = filepath.Join("details", ff.fileName+"_details"+cppExt)
-		if err := gen.addCodeFile(filepathName, gen.copyrightText+cppDet.String()+cppDetStr); err != nil {
-			return err
-		}
-		cppDet.Reset()
 	}
+
 	var cppAll strings.Builder
 	var cppMake strings.Builder
 	var cppMakeO strings.Builder
 	var cppMake1 strings.Builder
 
 	for _, nf := range cppAllInc.splitByNamespaces() {
+		// it is a group
 		namespace := nf.Namespace
 		if namespace == "" {
 			namespace = "__common"
@@ -135,13 +159,13 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
 
-		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder) {
-			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n+"_details", cppExt))
-			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n+"_details", cppExt))
-			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n+"_details", cppExt, n+"_details", hppExt))
+		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.detailsFileName }) {
+			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n, cppExt))
+			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, cppExt))
+			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n, cppExt, n, hppExt))
 		}
 
-		namespaceDetails := namespace + "_details"
+		namespaceDetails := namespace
 		namespaceFilePath := "details/namespaces/" + namespaceDetails + cppExt
 		buildFilePath := "build/" + namespaceDetails + ".o"
 
@@ -221,4 +245,10 @@ main.o: main.cpp
 	//	gen.Code[filepathName] = string(formattedCode)
 	// }
 	return nil
+}
+
+func (gen *Gen2) decideCppCodeDestinations(t *TypeRWWrapper) {
+	// TODO
+	t.detailsFileName = t.fileName + "_details"
+	t.groupName = t.tlName.Namespace
 }
