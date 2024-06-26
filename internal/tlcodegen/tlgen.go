@@ -667,7 +667,6 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 		return fmt.Errorf("outdir %q not empty and has no %q marker file, please clean manually", outdir, markerFile)
 	}
 	delete(relativeFiles, markerFile) // special treatment, never delete it
-	delete(relativeFiles, TlJSONHTML) // not deterministic, always write
 	notTouched := 0
 	written := 0
 	deleted := 0
@@ -687,9 +686,6 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				notTouched++
 				continue
 			}
-		}
-		if filepathName != TlJSONHTML { // not deterministic, do not write marker if json help changed
-			written++
 		}
 		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 			return fmt.Errorf("error writing file %q: %w", f, err)
