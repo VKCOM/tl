@@ -58,29 +58,30 @@ func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		trw.element.t.trw.CPPGenerateCode(hpp, hppInc, hppIncFwd, hppDet, hppDetInc, cppDet, cppDetInc, bytesVersion, true)
 		return
 	}
-	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	newTypeDeps := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+	if hppDet != nil && cppDet != nil {
+		goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+		newTypeDeps := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
-	myFullType := trw.cppTypeStringInNamespace(bytesVersion, &newTypeDeps)
+		myFullType := trw.cppTypeStringInNamespace(bytesVersion, &newTypeDeps)
 
-	for k, v := range newTypeDeps.ns {
-		(*hppDetInc).ns[k] = v
-		(*cppDetInc).ns[k] = v
-	}
+		for k, v := range newTypeDeps.ns {
+			(*hppDetInc).ns[k] = v
+			(*cppDetInc).ns[k] = v
+		}
 
-	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	hppDet.WriteString(fmt.Sprintf(`
+		hppDet.WriteString(fmt.Sprintf(`
 bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 
 `, goGlobalName,
-		myFullType,
-		formatNatArgsDeclCPP(trw.wr.NatParams),
-		formatNatArgsCallCPP(trw.wr.NatParams),
-		trw.wr.tlTag))
+			myFullType,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			formatNatArgsCallCPP(trw.wr.NatParams),
+			trw.wr.tlTag))
 
-	cppDet.WriteString(fmt.Sprintf(`
+		cppDet.WriteString(fmt.Sprintf(`
 bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	bool has_item = false;
 	if (!s.bool_read(has_item, 0x%[4]x, 0x%[5]x)) { return false; }
@@ -103,67 +104,68 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 	return true;
 }
 `,
-		goGlobalName,
-		myFullType,
-		formatNatArgsDeclCPP(trw.wr.NatParams),
-		trw.emptyTag,
-		trw.okTag,
-		trw.wr.gen.DetailsCPPNamespace,
-		trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
-		trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
-	))
+			goGlobalName,
+			myFullType,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			trw.emptyTag,
+			trw.okTag,
+			trw.wr.gen.DetailsCPPNamespace,
+			trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
+			trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
+		))
 
-	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	/*
-			_ = fmt.Sprintf(`type %[1]s struct {
-			Value %[2]s // Значение имеет смысл при Ok=true
-			Ok    bool
-		}
-
-		func (item *%[1]s) Reset() {
-			item.Ok = false
-		}
-
-		func (item *%[1]s) ReadBoxed(r *bytes.Buffer%[8]s) error {
-			if err := readBool(r, &item.Ok, %#[6]x, %#[7]x); err != nil {
-				return err
+		/*
+				_ = fmt.Sprintf(`type %[1]s struct {
+				Value %[2]s // Значение имеет смысл при Ok=true
+				Ok    bool
 			}
-			if item.Ok {
-				%[3]s
-			}
-			%[5]s
-			return nil
-		}
 
-		func (item *%[1]s) WriteBoxed(w *bytes.Buffer%[8]s) error {
-			writeBool(w, item.Ok, %#[6]x, %#[7]x)
-			if item.Ok {
-				%[4]s
+			func (item *%[1]s) Reset() {
+				item.Ok = false
 			}
-			return nil
-		}
-		`,
-				addBytes(trw.goGlobalName, bytesVersion),
-				trw.element.t.TypeString(bytesVersion),
-				trw.element.t.TypeReadingCode(bytesVersion, trw.wr.ins,
-					"item.Value",
-					trw.element.bare,
-					formatNatArgsCPP(nil, trw.element.natArgs),
-					false,
-					true,
-				),
-				trw.element.t.TypeWritingCode(bytesVersion, trw.wr.ins,
-					"item.Value",
-					trw.element.bare,
-					formatNatArgsCPP(nil, trw.element.natArgs),
-					false,
-					true,
-				),
-				trw.element.t.TypeResettingCode(bytesVersion, trw.wr.ins, "item.Value", false),
-				trw.emptyTag,
-				trw.okTag,
-				formatNatArgsDeclCPP(trw.wr.NatParams),
-			)
-	*/
+
+			func (item *%[1]s) ReadBoxed(r *bytes.Buffer%[8]s) error {
+				if err := readBool(r, &item.Ok, %#[6]x, %#[7]x); err != nil {
+					return err
+				}
+				if item.Ok {
+					%[3]s
+				}
+				%[5]s
+				return nil
+			}
+
+			func (item *%[1]s) WriteBoxed(w *bytes.Buffer%[8]s) error {
+				writeBool(w, item.Ok, %#[6]x, %#[7]x)
+				if item.Ok {
+					%[4]s
+				}
+				return nil
+			}
+			`,
+					addBytes(trw.goGlobalName, bytesVersion),
+					trw.element.t.TypeString(bytesVersion),
+					trw.element.t.TypeReadingCode(bytesVersion, trw.wr.ins,
+						"item.Value",
+						trw.element.bare,
+						formatNatArgsCPP(nil, trw.element.natArgs),
+						false,
+						true,
+					),
+					trw.element.t.TypeWritingCode(bytesVersion, trw.wr.ins,
+						"item.Value",
+						trw.element.bare,
+						formatNatArgsCPP(nil, trw.element.natArgs),
+						false,
+						true,
+					),
+					trw.element.t.TypeResettingCode(bytesVersion, trw.wr.ins, "item.Value", false),
+					trw.emptyTag,
+					trw.okTag,
+					formatNatArgsDeclCPP(trw.wr.NatParams),
+				)
+		*/
+	}
 }

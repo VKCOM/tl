@@ -332,6 +332,7 @@ type Gen2Options struct {
 
 	// C++
 	RootCPPNamespace string
+	SeparateFiles    bool
 
 	// .tlo
 	TLOPath           string

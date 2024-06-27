@@ -55,21 +55,23 @@ func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInclu
 	if trw.wr.tlName.Namespace != "" {
 		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
 	}
-	cppStartNamespace(hpp, typeNamespace)
-	// TODO - better names of enums
-	hpp.WriteString(fmt.Sprintf(`
+	if hpp != nil {
+		cppStartNamespace(hpp, typeNamespace)
+		// TODO - better names of enums
+		hpp.WriteString(fmt.Sprintf(`
 	enum { %[4]s = 0x%[2]x, %[5]s = 0x%[3]x };
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName))
-	cppFinishNamespace(hpp, typeNamespace)
+		cppFinishNamespace(hpp, typeNamespace)
+	}
+	if hppDet != nil && cppDet != nil {
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
-	cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
-
-	hppDet.WriteString(fmt.Sprintf(`
+		hppDet.WriteString(fmt.Sprintf(`
 bool %[1]sReadBoxed(::basictl::tl_istream & s, bool& item);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, bool item);
 `, addBytes(trw.wr.goGlobalName, bytesVersion)))
 
-	cppDet.WriteString(fmt.Sprintf(`
+		cppDet.WriteString(fmt.Sprintf(`
 bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, bool& item) {
 	return s.bool_read(item, 0x%[2]x, 0x%[3]x);
 }
@@ -79,5 +81,6 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
 }
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName, trw.wr.gen.DetailsCPPNamespace))
 
-	cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
 }
