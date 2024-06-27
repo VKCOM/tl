@@ -30,6 +30,9 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// General
 	flag.StringVar(&opt.Language, "language", "",
 		`generation target language (go, cpp). Empty for linter.`)
+	ignoreGeneratedCode := false
+	flag.BoolVar(&ignoreGeneratedCode, "ignoreGeneratedCode", false,
+		"flag is ignored, because default generator is linting now")
 	flag.StringVar(&opt.Outdir, "outdir", "",
 		`where to write generated files`)
 	flag.StringVar(&opt.CopyrightFilePath, "copyrightPath", "",
