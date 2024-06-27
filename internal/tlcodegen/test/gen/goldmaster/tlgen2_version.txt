@@ -1,1 +1,4 @@
-tlgen2 version (devel)
+tlgen version: (devel)
+schema commit: abcdefgh
+schema version: 301812000 (1979-07-26 04:40:00 +0000 UTC)
+schema url: https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl

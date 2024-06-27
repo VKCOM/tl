@@ -1,6 +1,7 @@
 {% package tlcodegen %}
 
 {% import "fmt" %}
+{% import "time" %}
 {% import "strings" %}
 
 {%- func tlJSON(gen *Gen2, tlgenVersion string) -%}
@@ -16,7 +17,13 @@
     <ul>
       <li>tlgen version: {%s tlgenVersion %}</li>
       {%- if gen.options.SchemaURL != "" -%}
-      <li><abbr>TL</abbr> <a href="{%s gen.options.SchemaURL %}">schema</a></li>
+      <li><abbr>TL</abbr> schema <a href="{%s gen.options.SchemaURL %}">url</a></li>
+      {%- endif -%}
+      {%- if gen.options.SchemaCommit != "" -%}
+      <li><abbr>TL</abbr> schema commit: {%s gen.options.SchemaCommit %}</li>
+      {%- endif -%}
+      {%- if gen.options.SchemaTimestamp != 0 -%}
+      <li><abbr>TL</abbr> schema version: {%v gen.options.SchemaTimestamp %} ({%v time.Unix(int64(gen.options.SchemaTimestamp),0).UTC() %})</li>
       {%- endif -%}
       <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
     </ul>

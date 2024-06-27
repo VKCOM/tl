@@ -5,6 +5,8 @@ package tlcodegen
 
 import "fmt"
 
+import "time"
+
 import "strings"
 
 import (
@@ -34,9 +36,23 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, tlgenVersion string) {
 	qw422016.N().S(`</li>
 `)
 	if gen.options.SchemaURL != "" {
-		qw422016.N().S(`      <li><abbr>TL</abbr> <a href="`)
+		qw422016.N().S(`      <li><abbr>TL</abbr> schema <a href="`)
 		qw422016.E().S(gen.options.SchemaURL)
-		qw422016.N().S(`">schema</a></li>
+		qw422016.N().S(`">url</a></li>
+`)
+	}
+	if gen.options.SchemaCommit != "" {
+		qw422016.N().S(`      <li><abbr>TL</abbr> schema commit: `)
+		qw422016.E().S(gen.options.SchemaCommit)
+		qw422016.N().S(`</li>
+`)
+	}
+	if gen.options.SchemaTimestamp != 0 {
+		qw422016.N().S(`      <li><abbr>TL</abbr> schema version: `)
+		qw422016.E().V(gen.options.SchemaTimestamp)
+		qw422016.N().S(` (`)
+		qw422016.E().V(time.Unix(int64(gen.options.SchemaTimestamp), 0).UTC())
+		qw422016.N().S(`)</li>
 `)
 	}
 	qw422016.N().S(`      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
