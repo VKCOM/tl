@@ -740,7 +740,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	case "": // linting
 	case "go":
 		if options.GenerateRPCCode && options.BasicRPCPath == "" {
-			return nil, fmt.Errorf("--basicRPCPath must be specified or set --generateRPCCode=false if you don't use rpc code")
+			return nil, fmt.Errorf("--basicRPCPath must be specified if --generateRPCCode is set")
 		}
 		options.TLPackageNameFull = strings.TrimSpace(options.TLPackageNameFull)
 		options.TLPackageNameFull = strings.TrimSuffix(options.TLPackageNameFull, "/")

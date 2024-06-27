@@ -39,7 +39,6 @@ tlo-bootstrap: build
 		--copyrightPath=./COPYRIGHT \
 		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
 		--basicPkgPath=github.com/vkcom/tl/pkg/basictl \
-		--generateRPCCode=false \
 		--outdir=./internal/tlast/gentlo \
 		./internal/tlast/tls.tl
 
@@ -53,7 +52,6 @@ gen_check: build
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateLegacyJsonRead=false \
-		--generateRPCCode=false \
 		./$(TLS_PATH)/schema.tl
 
 .PHONY: gen
@@ -74,7 +72,6 @@ goldmaster_nocompile: build
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		--generateRPCCode=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tlgen --language=go --split-internal -v \
 		--copyrightPath=./COPYRIGHT \
@@ -86,7 +83,6 @@ goldmaster_nocompile: build
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		--generateRPCCode=false \
 		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tlgen --language=go -v \
@@ -100,7 +96,6 @@ goldmaster_nocompile: build
 		--tloPath=./$(TLOS_PATH)/goldmaster.tlo \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
-		--generateRPCCode=false \
 		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 
@@ -116,7 +111,6 @@ gen_tlo: build # do not set --basicPkgPath, or you'll have hard time updating ba
 	@./target/bin/tlgen --language=go \
 		--copyrightPath=./COPYRIGHT \
 		--pkgPath=github.com/vkcom/tl/internal/tlast/gentlo/tl \
-		--generateRPCCode=false \
 		--outdir=./internal/tlast/gentlo \
 		./internal/tlast/tls.tl
 
@@ -138,7 +132,6 @@ qtpl:
 cpp: build
 	@./target/bin/tlgen -language=cpp -v \
 		--outdir=./$(GEN_PATH)/cpp \
-		--generateRPCCode=false \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		./$(TLS_PATH)/cpp.tl
 	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
