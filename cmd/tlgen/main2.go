@@ -64,7 +64,11 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.BoolVar(&opt.SchemaDocumentation, "generateSchemaDocumentation", false,
 		"whether to generate .html representation of schema in to tljson.html file")
 	flag.StringVar(&opt.SchemaURL, "schemaURL", "",
-		"template for url to current schema if documentation is generated")
+		"url of schema (for documentation)")
+	flag.UintVar(&opt.SchemaTimestamp, "schemaTimestamp", 0,
+		"timestamp of schema (for documentation, TLO version)")
+	flag.StringVar(&opt.SchemaCommit, "schemaCommit", "",
+		"commit of schema (for documentation)")
 
 	// C++
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
@@ -80,8 +84,6 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 }
 
 func run(opt tlcodegen.Gen2Options) {
-	var commit, version = tlcodegen.TLGenBuildInfo()
-	log.Printf("tlgen version: %s, commit: %s", version, commit)
 	if err := runMain(&opt); err != nil {
 		var parseError *tlast.ParseError
 		if errors.As(err, &parseError) {
@@ -89,25 +91,28 @@ func run(opt tlcodegen.Gen2Options) {
 		} else {
 			log.Println(err.Error())
 		}
-		log.Printf("TL Generation Failed")
-		os.Exit(1)
-	} else {
 		if opt.Language == "" {
-			log.Printf("TL Linter Success")
+			log.Printf("TL Linter Failed")
 		} else {
-			log.Printf("TL Generation Success")
+			log.Printf("TL Generation Failed")
 		}
+		os.Exit(1)
+		return
+	}
+	if opt.Language == "" {
+		log.Printf("TL Linter Success")
+	} else {
+		log.Printf("TL Generation Success")
 	}
 }
 
 func runMain(opt *tlcodegen.Gen2Options) error {
 	var ast tlast.TL
 	var fullAst tlast.TL
-	var args []string
 	if opt.ErrorWriter == nil {
 		opt.ErrorWriter = os.Stdout
 	}
-	args = append(args, flag.Args()...)
+	args := flag.Args()
 	if len(args) == 0 {
 		return fmt.Errorf("specify 1 or more input TL schema filenames after flags")
 	}
@@ -143,7 +148,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		if opt.Verbose {
 			log.Print("generating tlo file")
 		}
-		s, err := fullAst.GenerateTLO()
+		s, err := fullAst.GenerateTLO(uint32(opt.SchemaTimestamp))
 		if err != nil {
 			return fmt.Errorf("error on generating tlo: %w", err)
 		}

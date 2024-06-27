@@ -98,7 +98,7 @@ func (ps *paramScope) find(f func(e param) bool) (param, bool) {
 	return param{}, false
 }
 
-func (tl TL) GenerateTLO() (tls.SchemaV4, error) {
+func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 	allCombinators := make(map[string]*Combinator, len(tl))
 	for i, comb := range tl {
 		allCombinators[comb.Construct.Name.String()] = tl[i]
@@ -291,9 +291,13 @@ func (tl TL) GenerateTLO() (tls.SchemaV4, error) {
 		v4B, _ := functions[j].AsV4()
 		return v4A.Id < v4B.Id
 	})
+	date := version
+	if version == 0 {
+		date = uint32(time.Now().Unix())
+	}
 	return tls.SchemaV4{
-		Version:        0, // always 0
-		Date:           int32(time.Now().Unix()),
+		Version:        int32(version), // TODO - must be changed to # in tl definition
+		Date:           int32(date),    // TODO - must be changed to # in tl definition
 		TypesNum:       uint32(len(types)),
 		Types:          types,
 		ConstructorNum: uint32(len(constructors)),
@@ -301,18 +305,6 @@ func (tl TL) GenerateTLO() (tls.SchemaV4, error) {
 		FunctionsNum:   uint32(len(functions)),
 		Functions:      functions,
 	}, nil
-}
-
-func (tl TL) GenerateTLOBytes() ([]byte, error) {
-	s, err := tl.GenerateTLO()
-	if err != nil {
-		return nil, err
-	}
-	res, err := s.WriteBoxed(nil)
-	if err != nil {
-		return nil, fmt.Errorf("can't write TLO boxed: %w", err)
-	}
-	return res, nil
 }
 
 func typeRefToTypeExpr(mc paramScope, allCombinators map[string]*Combinator, tlsTypes map[string]*tls.Type, t *TypeRef, bare bool) tls.TypeExpr {
