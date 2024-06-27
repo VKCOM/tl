@@ -79,7 +79,7 @@ goldmaster_nocompile: build
 		--generateSchemaDocumentation \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
-		--schemaTimestamp=301812000 \
+		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
@@ -93,7 +93,7 @@ goldmaster_nocompile: build
 		--generateSchemaDocumentation \
 		--schemaURL="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/goldmaster.tl" \
 		--schemaCommit=abcdefgh \
-		--schemaTimestamp=301812000 \
+		--schemaTimestamp=301822800 \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \

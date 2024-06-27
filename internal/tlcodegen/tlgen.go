@@ -666,9 +666,9 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	}
 	markerContent := fmt.Sprintf(buildVersionFormat,
 		strings.TrimSpace(TLGenVersion()),
+		strings.TrimSpace(gen.options.SchemaURL),
 		strings.TrimSpace(gen.options.SchemaCommit),
-		gen.options.SchemaTimestamp, time.Unix(int64(gen.options.SchemaTimestamp), 0).UTC(),
-		strings.TrimSpace(gen.options.SchemaURL))
+		gen.options.SchemaTimestamp, time.Unix(int64(gen.options.SchemaTimestamp), 0).UTC())
 	if err := gen.addCodeFile(markerFile, markerContent); err != nil {
 		return err
 	}
@@ -692,6 +692,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				continue
 			}
 		}
+		written++
 		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 			return fmt.Errorf("error writing file %q: %w", f, err)
 		}
