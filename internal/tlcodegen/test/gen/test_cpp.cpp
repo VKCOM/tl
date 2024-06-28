@@ -1,6 +1,5 @@
 #include <iostream>
 #include "cpp/a.top2.hpp"
-#include "cpp/a.top3.hpp"
 
 std::string to_hex(const uint8_t *data, size_t count) {
 	static const char hexdigits[] = "0123456789abcdef";
@@ -16,6 +15,8 @@ std::string to_hex(const uint8_t *data, size_t count) {
 
 int main() {
 	basictl::tl_ostream_string str;
+	basictl::tl_ostream_string str2;
+
 
     tl2::a::Top2 top2;
 
@@ -23,18 +24,8 @@ int main() {
     auto & buf = str.get_buffer();
     std::cout << top2.tl_name() << ": " << to_hex(reinterpret_cast<const uint8_t *>(buf.data()), buf.size()) << std::endl;
 
-    tl2::a::Top3 top3;
-    top3.n = 2;
-    // top3.a.a = "Hi!";
-    top3.c.b.a.a.push_back(5);
-    top3.c.b.a.a.push_back(7);
+//    top3.write(str2);
 
-	basictl::tl_ostream_string str2;
-
-    top3.write(str2);
-
-    auto & buf2 = str2.get_buffer();
-    std::cout << top3.tl_name() << ": " << to_hex(reinterpret_cast<const uint8_t *>(buf2.data()), buf2.size()) << std::endl;
-
+//    std::cout << top3.tl_name() << ": " << to_hex(reinterpret_cast<const uint8_t *>(buf2.data()), buf2.size()) << std::endl;
     return 0;
 }

@@ -15,12 +15,16 @@ func (trw *TypeRWBool) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]
 }
 
 func (trw *TypeRWBool) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
 	return "bool"
 }
 
 func (trw *TypeRWBool) cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string {
-	hppInc.ns[trw.wr.fileName] = struct{}{}
+	hppInc.ns[trw.wr.fileName] = CppIncludeInfo{componentId: trw.wr.typeComponent}
+	return "bool"
+}
+
+func (trw *TypeRWBool) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
 	return "bool"
 }
 
@@ -43,7 +47,7 @@ func (trw *TypeRWBool) CPPTypeWritingCode(bytesVersion bool, val string, bare bo
 
 func (trw *TypeRWBool) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {

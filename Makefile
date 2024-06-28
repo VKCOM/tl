@@ -132,10 +132,18 @@ qtpl:
 		qtc -dir=./internal -skipLineComments; \
 	fi
 
-.PHONY: cpp
-cpp: build
+.PHONY: cpp_build
+cpp_build:
+	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+
+.PHONY: cpp_gen
+cpp_gen: build
 	@./target/bin/tlgen -language=cpp -v \
 		--outdir=./$(GEN_PATH)/cpp \
 		--basicPkgPath=$(BASIC_TL_PATH) \
 		./$(TLS_PATH)/cpp.tl
-	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+
+.PHONY: cpp
+cpp:
+	$(MAKE) cpp_gen
+	$(MAKE) cpp_build

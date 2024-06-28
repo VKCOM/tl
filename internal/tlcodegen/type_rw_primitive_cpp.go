@@ -22,6 +22,10 @@ func (trw *TypeRWPrimitive) cppTypeStringInNamespaceHalfResolved(bytesVersion bo
 	return trw.cppPrimitiveType
 }
 
+func (trw *TypeRWPrimitive) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
+	return trw.cppPrimitiveType
+}
+
 func (trw *TypeRWPrimitive) cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string {
 	return trw.cppDefaultInit
 }
