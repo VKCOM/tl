@@ -168,116 +168,6 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		}
 	}
 
-	//internalFiles2 := map[InsFile]map[string][]*TypeRWWrapper{}
-	//
-	//for _, typeRw := range gen.generatedTypesList {
-	//	hppDef := InsFile{ins: typeRw.ins, fileName: typeRw.fileName}
-	//	if _, ok := internalFiles2[hppDef]; !ok {
-	//		internalFiles2[hppDef] = make(map[string][]*TypeRWWrapper)
-	//	}
-	//	internalFiles2[hppDef][typeRw.detailsFileName] = append(internalFiles2[hppDef][typeRw.detailsFileName], typeRw)
-	//}
-	//
-	//// for each type header ~ tl combinator
-	//for ff, details := range internalFiles2 {
-	//	var hpp strings.Builder
-	//	hppInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
-	//	hppIncFwd := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
-	//	typeDefinitions := map[string]bool{}
-	//
-	//	// for each file with specifications
-	//	for detailFile, specs := range details {
-	//		hppDetInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
-	//		cppDetInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
-	//		var hppDet strings.Builder
-	//		var cppDet strings.Builder
-	//
-	//		// for each specification
-	//		for _, typeRw := range specs {
-	//			// init all variants for specification (ex. byte version)
-	//			typeDefVariations := make([]TypeDefinitionVariation, 1)
-	//			{
-	//				if typeRw.wantsBytesVersion && typeRw.trw.CPPHasBytesVersion() {
-	//					typeDefVariations = append(typeDefVariations, TypeDefinitionVariation{NeedBytesVersion: true})
-	//				}
-	//			}
-	//
-	//			for _, typeDefVariation := range typeDefVariations {
-	//				typesCounter++
-	//				var hppDefinition strings.Builder
-	//				typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, &hppDet, hppDetInc, &cppDet, cppDetInc, typeDefVariation.NeedBytesVersion, false)
-	//				def := hppDefinition.String()
-	//				if !typeDefinitions[def] {
-	//					typeDefinitions[def] = true
-	//					hpp.WriteString(def)
-	//				}
-	//			}
-	//		}
-	//
-	//		if hpp.Len() == 0 && hppDet.Len() == 0 && cppDet.Len() == 0 {
-	//			continue
-	//		}
-	//
-	//		// all specs in one file must be in group
-	//		cppAllInc.ns[specs[0]] = CppIncludeInfo{-1, specs[0].groupName}
-	//
-	//		hppDetStr := hppDet.String()
-	//		cppDetStr := cppDet.String()
-	//
-	//		hppDet.Reset()
-	//		cppDet.Reset()
-	//
-	//		hppDet.WriteString("#pragma once\n\n")
-	//		hppDet.WriteString(fmt.Sprintf("#include \"../%s\"\n", basicTLFilepathName))
-	//
-	//		hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", ff.fileName, hppExt))
-	//		for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
-	//			if n == ff.fileName {
-	//				continue
-	//			}
-	//			hppDet.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, hppExt))
-	//		}
-	//		hppDet.WriteString("\n")
-	//
-	//		cppDet.WriteString(fmt.Sprintf("#include \"%s%s\"\n", detailFile, hppExt))
-	//		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.detailsFileName }) {
-	//			if n == detailFile {
-	//				continue
-	//			}
-	//			cppDet.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
-	//		}
-	//		cppDet.WriteString("\n")
-	//
-	//		filepathName := filepath.Join("details", detailFile+hppExt)
-	//		if err := gen.addCodeFile(filepathName, gen.copyrightText+hppDet.String()+hppDetStr); err != nil {
-	//			return err
-	//		}
-	//		filepathName = filepath.Join("details", detailFile+cppExt)
-	//		if err := gen.addCodeFile(filepathName, gen.copyrightText+cppDet.String()+cppDetStr); err != nil {
-	//			return err
-	//		}
-	//	}
-	//
-	//	if hpp.Len() == 0 {
-	//		continue
-	//	}
-	//
-	//	hppStr := hpp.String()
-	//	hpp.Reset()
-	//	hpp.WriteString("#pragma once\n\n")
-	//	hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", basicTLFilepathName))
-	//	for _, n := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
-	//		hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
-	//	}
-	//	hpp.WriteString("\n\n")
-	//	hpp.WriteString(hppStr)
-	//	filepathName := ff.fileName + hppExt
-	//	if err := gen.addCodeFile(filepathName, gen.copyrightText+hpp.String()); err != nil {
-	//		return err
-	//	}
-	//	hpp.Reset()
-	//}
-
 	var cppAll strings.Builder
 	var cppMake strings.Builder
 	var cppMakeO strings.Builder
@@ -286,9 +176,6 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	for _, nf := range cppAllInc.splitByNamespaces() {
 		// it is a group
 		namespace := nf.Namespace
-		if namespace == "" {
-			namespace = "__common"
-		}
 
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
@@ -399,6 +286,7 @@ func findAllReachableTypeByGroup(v *TypeRWWrapper, visited *map[*TypeRWWrapper]b
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	const IndependentTypes = "__independent_types"
 	const NoNamespaceGroup = ""
+	const CommonGroup = "__common"
 
 	for _, t := range allTypes {
 		t.detailsFileName = t.fileName + "_details"
@@ -479,6 +367,9 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 	if !gen.options.SeparateFiles {
 		for _, t := range allTypes {
+			if t.groupName == "" {
+				t.groupName = CommonGroup
+			}
 			t.detailsFileName = t.groupName + "_group_details"
 		}
 	}
