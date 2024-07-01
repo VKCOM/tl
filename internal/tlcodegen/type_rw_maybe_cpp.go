@@ -84,7 +84,7 @@ bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 
 	if cppDet != nil { // cpp details
 		for k, v := range newTypeDeps.ns {
-			(*hppDetInc).ns[k] = v
+			(*cppDetInc).ns[k] = v
 		}
 
 		cppDet.WriteString(fmt.Sprintf(`

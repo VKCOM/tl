@@ -289,7 +289,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 
 		hppDet.WriteString(fmt.Sprintf(hppDetCode,
 			addBytes(trw.wr.goGlobalName, bytesVersion),
-			trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc),
+			trw.element.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
 			trw.size,
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 		))

@@ -415,8 +415,12 @@ func (trw *TypeRWStruct) CPPReadFields(bytesVersion bool, hppDetInc *DirectInclu
 			s.WriteString(fmt.Sprintf("\t"+`if (!item.%[2]s) { item.%[2]s = std::make_shared<%[1]s>(); }
 `, field.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc), field.cppName))
 		}
-		_ = field.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc) // only fill includes
-		_ = field.t.CPPTypeStringInNamespace(bytesVersion, hppDetInc) // only fill includes
+		if cppDetInc != nil {
+			_ = field.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc) // only fill includes
+		}
+		if hppDetInc != nil {
+			_ = field.t.CPPTypeStringInNamespace(bytesVersion, hppDetInc) // only fill includes
+		}
 		s.WriteString(strings.Repeat("\t", indent))
 		s.WriteString(
 			field.t.trw.CPPTypeReadingCode(bytesVersion, addAsterisk(field.recursive, "item."+field.cppName),
