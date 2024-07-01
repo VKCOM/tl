@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"strings"
 )
 
@@ -126,9 +127,12 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		cppFinishNamespace(hpp, typeNamespace)
 	}
 
-	if hppDet != nil && cppDet != nil {
-		myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
-		myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+	hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+	myFullType := trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
+	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+
+	if hppDet != nil {
+		utils.AppendMap(&hppTmpInclude.ns, &hppDetInc.ns)
 
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 		hppDet.WriteString(fmt.Sprintf(`
@@ -137,7 +141,9 @@ bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 `, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
 
+	if cppDet != nil {
 		cppDet.WriteString(fmt.Sprintf(`
 static const std::string_view %[1]s_tbl_tl_name[]{%[2]s};
 static const uint32_t %[1]s_tbl_tl_tag[]{%[3]s};

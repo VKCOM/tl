@@ -80,8 +80,10 @@ type TypeRWWrapper struct {
 
 	fileName string
 
-	detailsFileName string
-	groupName       string
+	// cpp info
+	hppDetailsFileName string
+	cppDetailsFileName string
+	groupName          string
 
 	tlTag  uint32     // TODO - turn into function
 	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation

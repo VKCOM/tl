@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 	"strings"
 )
@@ -232,10 +233,32 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		}
 		cppFinishNamespace(hpp, typeNamespace)
 	}
-	if hppDet != nil && cppDet != nil {
-		myFullType := trw.cppTypeStringInNamespace(bytesVersion, hppDetInc)
-		myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
 
+	hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+	myFullType := trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
+	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+
+	if hppDet != nil {
+		utils.AppendMap(&hppTmpInclude.ns, &hppDetInc.ns)
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+		hppDet.WriteString(fmt.Sprintf(`
+void %[1]sReset(%[2]s& item);
+bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+`, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
+
+		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
+			hppDet.WriteString(fmt.Sprintf(`bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+`,
+				goGlobalName,
+				myFullType,
+				formatNatArgsDeclCPP(trw.wr.NatParams)))
+		}
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
+
+	if cppDet != nil {
 		if !trw.isTypeDef() {
 			if len(myArgsDecl) == 0 {
 				cppDet.WriteString(fmt.Sprintf(`
@@ -295,21 +318,7 @@ bool %[7]s::%[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.wr.gen.DetailsCPPNamespace,
 		))
 
-		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
-		hppDet.WriteString(fmt.Sprintf(`
-void %[1]sReset(%[2]s& item);
-bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
-`, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
-
 		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
-			hppDet.WriteString(fmt.Sprintf(`bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
-`,
-				goGlobalName,
-				myFullType,
-				formatNatArgsDeclCPP(trw.wr.NatParams)))
-
 			cppDet.WriteString(fmt.Sprintf(`
 bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	if (!s.nat_read_exact_tag(0x%08[9]x)) { return false; }
@@ -332,7 +341,6 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				trw.wr.tlTag,
 			))
 		}
-		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
 }
 

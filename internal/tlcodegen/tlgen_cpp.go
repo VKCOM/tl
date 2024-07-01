@@ -39,8 +39,8 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 	for _, t := range gen.generatedTypesList {
 		typeHeadersByFileName[t.fileName] = append(typeHeadersByFileName[t.fileName], t)
-		utils.PutPairToSetOfPairs(&groupsToDetails, t.groupName, t.detailsFileName)
-		detailsToSpecs[t.detailsFileName] = append(detailsToSpecs[t.detailsFileName], t)
+		utils.PutPairToSetOfPairs(&groupsToDetails, t.groupName, t.cppDetailsFileName)
+		detailsToSpecs[t.cppDetailsFileName] = append(detailsToSpecs[t.cppDetailsFileName], t)
 	}
 
 	for group, groupDetails := range groupsToDetails {
@@ -149,7 +149,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			hppDet.WriteString("\n")
 
 			cppDet.WriteString(fmt.Sprintf("#include \"%s%s\"\n", detailsFile, hppExt))
-			for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.detailsFileName }) {
+			for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName }) {
 				if n == detailsFile {
 					continue
 				}
@@ -180,7 +180,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
 
-		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.detailsFileName }) {
+		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName }) {
 			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n, cppExt))
 			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"../%s%s\"\n", n, cppExt))
 			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n, cppExt, n, hppExt))
@@ -289,16 +289,16 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	const CommonGroup = "__common"
 
 	for _, t := range allTypes {
-		t.detailsFileName = t.fileName + "_details"
+		t.cppDetailsFileName = t.fileName + "_details"
 		t.groupName = t.tlName.Namespace
 		if t.unionParent != nil {
 			t.groupName = t.unionParent.wr.tlName.Namespace
 		}
 		if t.fileName != t.tlName.String() {
 			//if t.tlName.String() == "" {
-			//	t.detailsFileName = "builtin_" + t.cppLocalName
+			//	t.cppDetailsFileName = "builtin_" + t.cppLocalName
 			//} else {
-			//	t.detailsFileName = t.tlName.String() + "_details"
+			//	t.cppDetailsFileName = t.tlName.String() + "_details"
 			//}
 			for _, t2 := range allTypes {
 				if t.fileName == t2.tlName.String() {
@@ -355,12 +355,12 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 		if len(usages) == 0 {
 			t.groupName = IndependentTypes
-			t.detailsFileName = IndependentTypes + "_" + t.detailsFileName
+			t.cppDetailsFileName = IndependentTypes + "_" + t.cppDetailsFileName
 		} else if len(usages) == 1 {
 			usage := utils.SetToSlice(&usages)[0]
 			if usage != NoNamespaceGroup {
 				t.groupName = usage
-				t.detailsFileName = usage + "_" + t.detailsFileName
+				t.cppDetailsFileName = usage + "_" + t.cppDetailsFileName
 			}
 		}
 	}
@@ -370,7 +370,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			if t.groupName == "" {
 				t.groupName = CommonGroup
 			}
-			t.detailsFileName = t.groupName + "_group_details"
+			t.cppDetailsFileName = t.groupName + "_group_details"
 		}
 	}
 }

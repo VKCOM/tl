@@ -59,3 +59,19 @@ func ReverseSetOfPairs[K, V comparable](in map[K]map[V]bool) map[V]map[K]bool {
 
 	return m
 }
+
+func AppendMap[K comparable, V any](values, to *map[K]V) {
+	for k, v := range *values {
+		(*to)[k] = v
+	}
+}
+
+func AppendMapWithResolving[K comparable, V any](values, to *map[K]V, resolver func(key K, value1, value2 V) V) {
+	for k, v := range *values {
+		if v2, ok := (*to)[k]; ok {
+			(*to)[k] = resolver(k, v, v2)
+		} else {
+			(*to)[k] = v
+		}
+	}
+}

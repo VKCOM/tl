@@ -63,7 +63,7 @@ func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInclu
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName))
 		cppFinishNamespace(hpp, typeNamespace)
 	}
-	if hppDet != nil && cppDet != nil {
+	if hppDet != nil {
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 		hppDet.WriteString(fmt.Sprintf(`
@@ -71,6 +71,10 @@ bool %[1]sReadBoxed(::basictl::tl_istream & s, bool& item);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, bool item);
 `, addBytes(trw.wr.goGlobalName, bytesVersion)))
 
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
+
+	if cppDet != nil {
 		cppDet.WriteString(fmt.Sprintf(`
 bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, bool& item) {
 	return s.bool_read(item, 0x%[2]x, 0x%[3]x);
@@ -81,6 +85,5 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
 }
 `, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName, trw.wr.gen.DetailsCPPNamespace))
 
-		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
 }
