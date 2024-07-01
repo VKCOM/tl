@@ -78,7 +78,7 @@ func (trw *TypeRWUnion) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWUnion) AllTypeDependencies() (res []*TypeRWWrapper) {
+func (trw *TypeRWUnion) AllTypeDependencies(generic bool) (res []*TypeRWWrapper) {
 	for _, f := range trw.Fields {
 		res = append(res, f.t)
 	}

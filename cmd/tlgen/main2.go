@@ -66,6 +66,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// C++
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
 		`c++ root namespace, separated by '::' if more than 1 element`)
+	flag.BoolVar(&opt.SeparateFiles, "cpp-separate-files", false,
+		`separate .cpp files for types in one namespace`)
 
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",

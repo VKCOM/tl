@@ -332,6 +332,7 @@ type Gen2Options struct {
 
 	// C++
 	RootCPPNamespace string
+	SeparateFiles    bool
 
 	// .tlo
 	TLOPath           string
@@ -1247,7 +1248,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 	reverseDependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 
 	for _, tpU := range types {
-		dependencies := tpU.trw.AllTypeDependencies()
+		dependencies := tpU.trw.AllTypeDependencies(true)
 		for _, tpV := range dependencies {
 			dependencyGraph[tpU] = append(dependencyGraph[tpU], tpV)
 			reverseDependencyGraph[tpV] = append(reverseDependencyGraph[tpV], tpU)
@@ -1290,7 +1291,7 @@ func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]b
 		if _, ok := componentsDeps[tpU.typeComponent]; !ok {
 			componentsDeps[tpU.typeComponent] = make(map[int]bool)
 		}
-		for _, tpV := range tpU.trw.AllTypeDependencies() {
+		for _, tpV := range tpU.trw.AllTypeDependencies(true) {
 			if tpU.typeComponent != tpV.typeComponent {
 				componentsDeps[tpU.typeComponent][tpV.typeComponent] = true
 			}
@@ -1746,4 +1747,19 @@ func (ti *TypesInfo) TypeNameToGenericTypeReduction(t TypeName) TypeReduction {
 	}
 
 	return rd
+}
+
+func (ti *TypesInfo) TypeRWWrapperToTypeReduction(t *TypeRWWrapper) TypeReduction {
+	tr := ti.TypeNameToGenericTypeReduction(t.tlName)
+	for i, arg := range t.arguments {
+		if arg.tip != nil {
+			evalArg := ti.TypeRWWrapperToTypeReduction(arg.tip)
+			tr.Arguments[i] = EvaluatedType{Index: TypeConstant, Type: &evalArg}
+		} else {
+			if arg.isArith {
+				tr.Arguments[i] = EvaluatedType{Index: NumberConstant, Constant: arg.Arith.Res}
+			}
+		}
+	}
+	return tr
 }
