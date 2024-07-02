@@ -697,7 +697,7 @@ type TypeRW interface {
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
 	fillRecursiveUnwrap(vistrwitedNodes map[*TypeRWWrapper]bool)
 
-	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper)
+	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
 	AllPossibleRecursionProducers() []*TypeRWWrapper
 	AllTypeDependencies(generic bool) []*TypeRWWrapper
 	IsWrappingType() bool

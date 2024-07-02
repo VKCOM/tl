@@ -170,25 +170,33 @@ func (trw *TypeRWStruct) IsWrappingType() bool {
 	return trw.isUnwrapType()
 }
 
-func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	if visitedNodes[trw.wr] != 0 {
 		return
 	}
-	*currentPath = append(*currentPath, trw.wr)
 	visitedNodes[trw.wr] = 1
+
+	ti := trw.wr.gen.typesInfo
+	red := ti.TypeNameToGenericTypeReduction(trw.wr.tlName)
+
 	for i, f := range trw.Fields {
 		if f.recursive {
 			continue
 		}
-		for _, typeDep := range f.t.trw.AllPossibleRecursionProducers() {
+		var typeDeps []*TypeRWWrapper
+		if generic {
+			typeDeps = f.t.ActualTypeDependencies(ti.FieldTypeReduction(&red, i))
+		} else {
+			typeDeps = f.t.trw.AllPossibleRecursionProducers()
+		}
+		for _, typeDep := range typeDeps {
 			if visitedNodes[typeDep] == 1 {
 				trw.Fields[i].recursive = true
 			} else {
-				typeDep.trw.FillRecursiveChildren(visitedNodes, currentPath)
+				typeDep.trw.FillRecursiveChildren(visitedNodes, generic)
 			}
 		}
 	}
-	*currentPath = (*currentPath)[:len(*currentPath)-1]
 	visitedNodes[trw.wr] = 2
 }
 

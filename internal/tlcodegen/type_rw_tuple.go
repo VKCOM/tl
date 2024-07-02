@@ -74,9 +74,9 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	return ok, isString, structElement.Fields[0], structElement.Fields[1]
 }
 
-func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	for _, typeDep := range trw.AllPossibleRecursionProducers() {
-		typeDep.trw.FillRecursiveChildren(visitedNodes, currentPath)
+		typeDep.trw.FillRecursiveChildren(visitedNodes, generic)
 	}
 }
 

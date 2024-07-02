@@ -54,7 +54,7 @@ func (trw *TypeRWBool) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWBool) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWBool) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
 func (trw *TypeRWBool) BeforeCodeGenerationStep1() {

@@ -1150,15 +1150,14 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	_, order := findAllTypesDependencyComponents(sortedTypes)
 	gen.componentsOrder = order
 
-	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		if len(v.arguments) == 0 {
 			visitedNodes := make(map[*TypeRWWrapper]int)
-			currentPath := make([]*TypeRWWrapper, 0)
-			v.trw.FillRecursiveChildren(visitedNodes, &currentPath)
+			v.trw.FillRecursiveChildren(visitedNodes, true)
 		}
 	}
 
+	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep1()
 	}

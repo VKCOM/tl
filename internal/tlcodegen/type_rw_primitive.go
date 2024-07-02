@@ -70,7 +70,7 @@ func (trw *TypeRWPrimitive) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWPrimitive) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWPrimitive) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 
 func (trw *TypeRWPrimitive) BeforeCodeGenerationStep1() {

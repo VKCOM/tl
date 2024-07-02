@@ -55,9 +55,9 @@ func (trw *TypeRWMaybe) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, currentPath *[]*TypeRWWrapper) {
+func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	visitedNodes[trw.wr] = 1
-	trw.element.t.trw.FillRecursiveChildren(visitedNodes, currentPath)
+	trw.element.t.trw.FillRecursiveChildren(visitedNodes, generic)
 	visitedNodes[trw.wr] = 2
 }
 
