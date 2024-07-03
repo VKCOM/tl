@@ -90,7 +90,7 @@ func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWBrackets) AllTypeDependencies(generic bool) (res []*TypeRWWrapper) {
+func (trw *TypeRWBrackets) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
 	if !generic {
 		res = append(res, trw.element.t)
 	}

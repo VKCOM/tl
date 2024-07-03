@@ -101,7 +101,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	}
 	if hpp != nil {
 		if !forwardDeclaration {
-			deps := trw.AllTypeDependencies(true)
+			deps := trw.AllTypeDependencies(true, false)
 			slices.SortFunc(deps, TypeComparator)
 
 			for _, typeDep := range deps {

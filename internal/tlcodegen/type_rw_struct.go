@@ -148,15 +148,28 @@ func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return result
 }
 
-func (trw *TypeRWStruct) AllTypeDependencies(generic bool) (res []*TypeRWWrapper) {
+func (trw *TypeRWStruct) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
 	used := make(map[*TypeRWWrapper]bool)
-	red := trw.wr.gen.typesInfo.TypeNameToGenericTypeReduction(trw.wr.tlName)
+	ti := trw.wr.gen.typesInfo
+	red := ti.TypeNameToGenericTypeReduction(trw.wr.tlName)
 
 	for i, f := range trw.Fields {
-		fieldRed := trw.wr.gen.typesInfo.FieldTypeReduction(&red, i)
-		deps := f.t.ActualTypeDependencies(fieldRed)
+		var deps []*TypeRWWrapper
+		if generic {
+			fieldRed := ti.FieldTypeReduction(&red, i)
+			deps = f.t.ActualTypeDependencies(fieldRed)
+		} else {
+			deps = append(deps, f.t)
+		}
 		for _, dep := range deps {
 			used[dep] = true
+		}
+	}
+
+	if countFunctions && trw.ResultType != nil {
+		returnRed := ti.TypeNameToGenericTypeReduction(trw.ResultType.tlName)
+		for _, t := range trw.ResultType.ActualTypeDependencies(EvaluatedType{Index: TypeConstant, Type: &returnRed}) {
+			used[t] = true
 		}
 	}
 

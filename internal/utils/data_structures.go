@@ -8,6 +8,14 @@ func SliceToSet[T comparable](s *[]T) map[T]bool {
 	return m
 }
 
+func CopyMap[K comparable, V any](m *map[K]V) map[K]V {
+	m2 := make(map[K]V)
+	for k, v := range *m {
+		m2[k] = v
+	}
+	return m2
+}
+
 // unstable
 func Keys[K comparable, V any](m *map[K]V) (res []K) {
 	for k, _ := range *m {

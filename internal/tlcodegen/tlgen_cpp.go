@@ -11,6 +11,7 @@ import (
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -214,8 +215,24 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName }) {
 			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n, cppExt))
 			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"../code/%s%s\"\n", n, cppExt))
-			//cppMake1UsedFiles.WriteString(fmt.Sprintf("details/%s%s details/%s%s ", n, cppExt, n, hppExt))
 			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/code/%s%s", n, cppExt))
+
+			usedTypes := detailsCpps[n]
+			usedTypes = utils.FilterSlice(usedTypes, func(w *TypeRWWrapper) bool {
+				return createdDetailsHpps[w.hppDetailsFileName]
+			})
+
+			hppDets := utils.MapSlice(&usedTypes, func(a *TypeRWWrapper) string {
+				return a.hppDetailsFileName
+			})
+
+			hppDetsSet := utils.SliceToSet(&hppDets)
+			hppDetsList := utils.SetToSlice(&hppDetsSet)
+
+			sort.Strings(hppDetsList)
+			for _, h := range hppDetsList {
+				cppMake1UsedFiles.WriteString(fmt.Sprintf(" details/headers/%s%s", h, hppExt))
+			}
 		}
 
 		namespaceDetails := namespace
@@ -300,21 +317,6 @@ main.o: main.cpp
 	return nil
 }
 
-func findAllReachableTypeByGroup(v *TypeRWWrapper, visited *map[*TypeRWWrapper]bool, result *[]*TypeRWWrapper) {
-	if v.groupName != "" {
-		return
-	}
-	if (*visited)[v] {
-		return
-	}
-	(*visited)[v] = true
-	*result = append(*result, v)
-
-	for _, w := range v.trw.AllTypeDependencies(false) {
-		findAllReachableTypeByGroup(w, visited, result)
-	}
-}
-
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	const IndependentTypes = "__independent_types"
 	const NoNamespaceGroup = ""
@@ -324,15 +326,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = t.fileName + "_details"
 		t.hppDetailsFileName = t.cppDetailsFileName
 		t.groupName = t.tlName.Namespace
-		if t.unionParent != nil {
-			t.groupName = t.unionParent.wr.tlName.Namespace
-		}
 		if t.fileName != t.tlName.String() {
-			//if t.tlName.String() == "" {
-			//	t.cppDetailsFileName = "builtin_" + t.cppLocalName
-			//} else {
-			//	t.cppDetailsFileName = t.tlName.String() + "_details"
-			//}
 			for _, t2 := range allTypes {
 				if t.fileName == t2.tlName.String() {
 					t.groupName = t2.tlName.Namespace
@@ -345,6 +339,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	allTypesWithoutGroup := make([]*TypeRWWrapper, 0)
 	allTypesWithoutGroupMap := make(map[*TypeRWWrapper]bool)
 	allTypesWithoutGroupUsages := make(map[*TypeRWWrapper]map[string]bool)
+	reverseDepsEdges := make(map[*TypeRWWrapper]map[*TypeRWWrapper]bool)
 
 	for _, t := range allTypes {
 		if t.groupName != NoNamespaceGroup {
@@ -355,52 +350,90 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	}
 
 	for _, t := range allTypes {
-		for _, dep := range t.trw.AllTypeDependencies(false) {
+		for _, dep := range t.trw.AllTypeDependencies(false, true) {
 			if dep.groupName == NoNamespaceGroup {
-				if _, ok := allTypesWithoutGroupUsages[dep]; !ok {
-					allTypesWithoutGroupUsages[dep] = make(map[string]bool)
-				}
-				allTypesWithoutGroupUsages[dep][t.groupName] = true
+				utils.PutPairToSetOfPairs(&allTypesWithoutGroupUsages, dep, t.groupName)
+				utils.PutPairToSetOfPairs(&reverseDepsEdges, dep, t)
 			}
 		}
 	}
 
-	groupToFirstVisits := utils.ReverseSetOfPairs(allTypesWithoutGroupUsages)
-	for group, firstLayer := range groupToFirstVisits {
-		visited := make(map[*TypeRWWrapper]bool)
-		result := make([]*TypeRWWrapper, 0)
+	// bfs
+	edges := make(map[*TypeRWWrapper][]*TypeRWWrapper)
+	reverseEdges := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 
-		for v, _ := range firstLayer {
-			findAllReachableTypeByGroup(v, &visited, &result)
-		}
-
-		for _, v := range result {
-			utils.PutPairToSetOfPairs(&allTypesWithoutGroupUsages, v, group)
+	for _, from := range allTypes {
+		for _, to := range from.trw.AllTypeDependencies(false, true) {
+			if to.groupName == NoNamespaceGroup {
+				edges[from] = append(edges[from], to)
+				reverseEdges[to] = append(reverseEdges[to], from)
+			}
 		}
 	}
 
-	for _, t := range allTypesWithoutGroup {
-		usages := allTypesWithoutGroupUsages[t]
-
-		if len(usages) == 0 {
+	for _, t := range allTypes {
+		if t.groupName == NoNamespaceGroup && edges[t] == nil && reverseEdges[t] == nil {
 			t.groupName = IndependentTypes
-			t.cppDetailsFileName = IndependentTypes + "_" + t.cppDetailsFileName
-			t.hppDetailsFileName = t.cppDetailsFileName
-		} else if len(usages) == 1 {
-			usage := utils.SetToSlice(&usages)[0]
-			if usage != NoNamespaceGroup {
-				t.groupName = usage
-				t.cppDetailsFileName = usage + "_" + t.cppDetailsFileName
-				t.hppDetailsFileName = t.cppDetailsFileName
+		}
+	}
+
+	visited := make(map[*TypeRWWrapper]bool)
+	front := make(map[*TypeRWWrapper]bool)
+
+	for t, _ := range edges {
+		if t.groupName != NoNamespaceGroup {
+			front[t] = true
+		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
+			front[t] = true
+			t.groupName = IndependentTypes
+		}
+	}
+
+	utils.AppendMap(&front, &visited)
+
+	edgesCount := make(map[*TypeRWWrapper]int)
+
+	for len(front) != 0 {
+		newFront := make(map[*TypeRWWrapper]bool)
+		for v, _ := range front {
+			for _, to := range edges[v] {
+				if visited[to] {
+					continue
+				}
+				if _, ok := edgesCount[to]; !ok {
+					edgesCount[to] = len(reverseEdges[to])
+				}
+				edgesCount[to]--
+				if edgesCount[to] == 0 {
+					visited[to] = true
+					newFront[to] = true
+					groups := make(map[string]bool)
+					for _, from := range reverseEdges[to] {
+						groups[from.groupName] = true
+					}
+					if len(groups) == 1 {
+						to.groupName = utils.SetToSlice(&groups)[0]
+						if to.groupName != CommonGroup && to.groupName != IndependentTypes {
+							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+						}
+						to.hppDetailsFileName = to.cppDetailsFileName
+					} else if len(groups) > 1 {
+						to.groupName = CommonGroup
+					}
+				}
 			}
+		}
+		front = newFront
+	}
+
+	for _, t := range allTypes {
+		if t.groupName == NoNamespaceGroup {
+			t.groupName = CommonGroup
 		}
 	}
 
 	if !gen.options.SeparateFiles {
 		for _, t := range allTypes {
-			if t.groupName == "" {
-				t.groupName = CommonGroup
-			}
 			t.cppDetailsFileName = t.groupName + "_group_details"
 		}
 	}

@@ -695,11 +695,11 @@ outer:
 type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
-	fillRecursiveUnwrap(vistrwitedNodes map[*TypeRWWrapper]bool)
+	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
 	AllPossibleRecursionProducers() []*TypeRWWrapper
-	AllTypeDependencies(generic bool) []*TypeRWWrapper
+	AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper
 	IsWrappingType() bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some

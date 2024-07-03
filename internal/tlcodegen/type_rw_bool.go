@@ -46,7 +46,7 @@ func (trw *TypeRWBool) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return nil
 }
 
-func (trw *TypeRWBool) AllTypeDependencies(generic bool) []*TypeRWWrapper {
+func (trw *TypeRWBool) AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper {
 	return nil
 }
 

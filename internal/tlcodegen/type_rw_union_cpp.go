@@ -77,7 +77,7 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 			return
 		}
 
-		for _, typeDep := range trw.AllTypeDependencies(true) {
+		for _, typeDep := range trw.AllTypeDependencies(true, false) {
 			if typeDep.typeComponent == trw.wr.typeComponent {
 				typeDep.trw.CPPGenerateCode(hpp, nil, nil, nil, hppDetInc, nil, cppDetInc, bytesVersion, true)
 			}
