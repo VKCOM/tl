@@ -23,7 +23,7 @@ type Replace14Long struct {
 }
 
 func (Replace14Long) TLName() string { return "replace14" }
-func (Replace14Long) TLTag() uint32  { return 0xb9801f9 }
+func (Replace14Long) TLTag() uint32  { return 0x0b9801f9 }
 
 func (item *Replace14Long) Reset() {
 	item.K = 0
@@ -62,7 +62,7 @@ func (item *Replace14Long) Write(w []byte, nat_n uint32) (_ []byte, err error) {
 }
 
 func (item *Replace14Long) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xb9801f9); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0b9801f9); err != nil {
 		return w, err
 	}
 	return item.Read(w, nat_n)
@@ -74,7 +74,7 @@ func (item *Replace14Long) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, 
 }
 
 func (item *Replace14Long) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xb9801f9)
+	w = basictl.NatWrite(w, 0x0b9801f9)
 	return item.Write(w, nat_n)
 }
 

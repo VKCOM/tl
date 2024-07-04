@@ -23,7 +23,7 @@ type UseResponse struct {
 }
 
 func (UseResponse) TLName() string { return "useResponse" }
-func (UseResponse) TLTag() uint32  { return 0xa63ec5f }
+func (UseResponse) TLTag() uint32  { return 0x0a63ec5f }
 
 func (item *UseResponse) Reset() {
 	item.N = 0
@@ -57,7 +57,7 @@ func (item *UseResponse) Write(w []byte) (_ []byte, err error) {
 }
 
 func (item *UseResponse) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xa63ec5f); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0a63ec5f); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -69,7 +69,7 @@ func (item *UseResponse) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *UseResponse) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xa63ec5f)
+	w = basictl.NatWrite(w, 0x0a63ec5f)
 	return item.Write(w)
 }
 

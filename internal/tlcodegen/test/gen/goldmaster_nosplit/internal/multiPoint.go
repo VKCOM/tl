@@ -23,7 +23,7 @@ type MultiPoint struct {
 }
 
 func (MultiPoint) TLName() string { return "multiPoint" }
-func (MultiPoint) TLTag() uint32  { return 0xe1ae81e }
+func (MultiPoint) TLTag() uint32  { return 0x0e1ae81e }
 
 func (item *MultiPoint) Reset() {
 	BuiltinTuple3IntReset(&item.A)
@@ -78,7 +78,7 @@ func (item *MultiPoint) Write(w []byte) []byte {
 }
 
 func (item *MultiPoint) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xe1ae81e); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0e1ae81e); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -90,7 +90,7 @@ func (item *MultiPoint) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *MultiPoint) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xe1ae81e)
+	w = basictl.NatWrite(w, 0x0e1ae81e)
 	return item.Write(w)
 }
 

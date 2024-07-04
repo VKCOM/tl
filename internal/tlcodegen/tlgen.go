@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"strings"
 	"sync/atomic"
+	"time"
 
 	"golang.org/x/exp/slices"
 
@@ -48,12 +49,11 @@ const (
 
 const TlJSONHTML = "tljson.html"
 
-// Do not forget to bump version when making changes.
-// We do not want repository hash, because it advances automatically each time ANYTHING in repository changes, not only tlgen2.
-// And we do not want stable checksum of go files tlgen folder, because checksums are not comparable and there is no idea how old that version is
-const buildVersionString = "tlgen2 version "
-
-var buildSHA256Checksum = "" // filled when building
+const buildVersionFormat = `tlgen version: %s
+schema url: %s
+schema commit: %s
+schema version: %d (%v)
+`
 
 var (
 	errSeeHere                = fmt.Errorf("see here")
@@ -70,17 +70,11 @@ type LocalResolveContext struct {
 	overrideFileName    string // used for unions and built-in vectors and tuples, so they are defined in the file of argument
 }
 
-func TLGenBuildInfo() (commit string, version string) {
+func TLGenVersion() string {
 	if info, ok := debug.ReadBuildInfo(); ok {
-		for _, setting := range info.Settings {
-			if setting.Key == "vcs.revision" {
-				commit = setting.Value
-				break
-			}
-		}
-		version = info.Main.Version
+		return info.Main.Version
 	}
-	return commit, version
+	return ""
 }
 
 // checkArgsCollision checks if passed name is already used in local context.
@@ -328,7 +322,9 @@ type Gen2Options struct {
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
-	SchemaURLTemplate      string
+	SchemaURL              string
+	SchemaTimestamp        uint // for TLO version/date
+	SchemaCommit           string
 
 	// C++
 	RootCPPNamespace string
@@ -676,8 +672,14 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	if len(relativeFiles) != 0 && !relativeFiles[markerFile] {
 		return fmt.Errorf("outdir %q not empty and has no %q marker file, please clean manually", outdir, markerFile)
 	}
-	delete(relativeFiles, markerFile) // special treatment, never delete it
-	delete(relativeFiles, TlJSONHTML) // not deterministic, always write
+	markerContent := fmt.Sprintf(buildVersionFormat,
+		strings.TrimSpace(TLGenVersion()),
+		strings.TrimSpace(gen.options.SchemaURL),
+		strings.TrimSpace(gen.options.SchemaCommit),
+		gen.options.SchemaTimestamp, time.Unix(int64(gen.options.SchemaTimestamp), 0).UTC())
+	if err := gen.addCodeFile(markerFile, markerContent); err != nil {
+		return err
+	}
 	notTouched := 0
 	written := 0
 	deleted := 0
@@ -701,18 +703,6 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				fmt.Println(cmp.Diff(string(was), code))
 			}
 		}
-		if filepathName != TlJSONHTML { // not deterministic, do not write marker if json help changed
-			written++
-		}
-		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
-			return fmt.Errorf("error writing file %q: %w", f, err)
-		}
-	}
-	if len(gen.Code) == 0 || written != 0 || len(relativeFiles) != 0 {
-		// motivation - do not modify marker file if no code changed. Greatly reduces efforts to refactor tlgen.
-		f := filepath.Join(outdir, markerFile)
-		_, version := TLGenBuildInfo()
-		code := buildVersionString + strings.TrimSpace(version) + "\n" // stupid editors insist on empty line at the end
 		written++
 		if err := os.WriteFile(f, []byte(code), 0644); err != nil {
 			return fmt.Errorf("error writing file %q: %w", f, err)
@@ -760,7 +750,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	case "": // linting
 	case "go":
 		if options.GenerateRPCCode && options.BasicRPCPath == "" {
-			return nil, fmt.Errorf("--basicRPCPath must be specified or set --generateRPCCode=false if you don't use rpc code")
+			return nil, fmt.Errorf("--basicRPCPath must be specified if --generateRPCCode is set")
 		}
 		options.TLPackageNameFull = strings.TrimSpace(options.TLPackageNameFull)
 		options.TLPackageNameFull = strings.TrimSuffix(options.TLPackageNameFull, "/")
@@ -1221,7 +1211,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	if options.SchemaDocumentation {
-		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, buildSHA256Checksum)); err != nil {
+		if err := gen.addCodeFile(TlJSONHTML, tlJSON(gen, TLGenVersion())); err != nil {
 			return nil, err
 		}
 	}

@@ -7,20 +7,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"runtime/debug"
 
 	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
 func main() {
-	bi, ok := debug.ReadBuildInfo()
-	if !ok {
-		log.Printf("Failed to read build info")
-		return
-	}
-	fmt.Printf("tlgen version: %+v\n", bi.Main.Version)
+	log.Printf("tlgen version: %s", tlcodegen.TLGenVersion())
 
 	log.SetFlags(0)
 

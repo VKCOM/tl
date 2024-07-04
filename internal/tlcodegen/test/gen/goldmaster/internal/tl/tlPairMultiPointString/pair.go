@@ -22,7 +22,7 @@ type PairMultiPointString struct {
 }
 
 func (PairMultiPointString) TLName() string { return "pair" }
-func (PairMultiPointString) TLTag() uint32  { return 0xf3c47ab }
+func (PairMultiPointString) TLTag() uint32  { return 0x0f3c47ab }
 
 func (item *PairMultiPointString) Reset() {
 	item.A.Reset()
@@ -53,7 +53,7 @@ func (item *PairMultiPointString) Write(w []byte) []byte {
 }
 
 func (item *PairMultiPointString) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf3c47ab); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f3c47ab); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -65,7 +65,7 @@ func (item *PairMultiPointString) WriteBoxedGeneral(w []byte) (_ []byte, err err
 }
 
 func (item *PairMultiPointString) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf3c47ab)
+	w = basictl.NatWrite(w, 0x0f3c47ab)
 	return item.Write(w)
 }
 

@@ -54,7 +54,7 @@ func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err
     }
     switch tag {
     {%- for i, field := range union.Fields -%}
-    case {%s= fmt.Sprintf("%#x", field.t.tlTag) %}:
+    case {%s= fmt.Sprintf("0x%08x", field.t.tlTag) %}:
         item.index = {%d i %}
         {%- if field.t.IsTrueType() -%}
         return w, nil
@@ -487,7 +487,7 @@ func (item *{%s= goGlobalName %}) Set{%s= field.goName %}(value {%s= fieldTypeSt
     var _{%s= goName %} = [{%d len(union.Fields) %}]{%s= union.wr.gen.InternalPrefix()%}UnionElement{
     {%- for _, x := range union.Fields -%}
         {%- code
-            tlTag := fmt.Sprintf("%#x", x.t.tlTag )
+            tlTag := fmt.Sprintf("0x%08x", x.t.tlTag )
             tlString := fmt.Sprintf("%s#%08x", x.t.tlName, x.t.tlTag)
             tlName := x.t.tlName.String()
         -%}

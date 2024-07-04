@@ -411,7 +411,7 @@ func (trw *TypeRWUnion) CPPAllTags(bytesVersion bool) string {
 		if fieldIndex != 0 {
 			s.WriteString(", ")
 		}
-		s.WriteString(fmt.Sprintf("0x%x", field.t.tlTag))
+		s.WriteString(fmt.Sprintf("0x%08x", field.t.tlTag))
 	}
 	return s.String()
 }
@@ -467,7 +467,7 @@ func (trw *TypeRWUnion) CPPGetters(bytesVersion bool) string {
 func (trw *TypeRWUnion) CPPReadFields(bytesVersion bool, hppInc *DirectIncludesCPP, cppDetInc *DirectIncludesCPP) string {
 	var s strings.Builder
 	for fieldIndex, field := range trw.Fields {
-		s.WriteString(fmt.Sprintf("\tcase 0x%x:\n\t\tif (item.value.index() != %d) { item.value.emplace<%d>(); }\n", field.t.tlTag, fieldIndex, fieldIndex))
+		s.WriteString(fmt.Sprintf("\tcase 0x%08x:\n\t\tif (item.value.index() != %d) { item.value.emplace<%d>(); }\n", field.t.tlTag, fieldIndex, fieldIndex))
 		if !field.t.IsTrueType() {
 			s.WriteString("\t")
 			_ = field.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc) // only fill includes

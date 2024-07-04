@@ -267,7 +267,7 @@ func init() {
         {%- endif -%}
         "{%= wr.tlName.String() %}#{%s= fmt.Sprintf("%08x", wr.tlTag) %}",
         {%q= fmt.Sprintf("#%08x", wr.tlTag) %},
-        &TLItem{tag: {%s= fmt.Sprintf("%#x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("%#x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}"})
+        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}"})
     {%- endif -%}
 {%- endstripspace -%}
 

@@ -36,7 +36,7 @@ func init() {
 {%- for _, wr := range typeWrappers  -%}
     {%- if wr.tlTag == 0 || !wr.IsTopLevel() -%} {%- continue -%} {%- endif -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0-%}
-    {%- code tlTag := fmt.Sprintf("%#08x", wr.tlTag) -%}
+    {%- code tlTag := fmt.Sprintf("0x%08x", wr.tlTag) -%}
         {%- if wr.unionParent != nil && wr.unionParent.IsEnum -%}
             meta.SetGlobalFactoryCreateForEnumElement({%s tlTag %})
             {%- continue -%}
