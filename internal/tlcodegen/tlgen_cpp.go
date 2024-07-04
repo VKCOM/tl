@@ -48,7 +48,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	}
 
 	for group, groupDetails := range groupsToDetails {
-		for det, _ := range groupDetails {
+		for det := range groupDetails {
 			for _, spec := range detailsCpps[det] {
 				if spec.groupName != group {
 					return fmt.Errorf(`in details "%s" has different groups mentioned: "%s" and "%s"`, det, group, spec.groupName)
@@ -336,7 +336,6 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		}
 	}
 
-	allTypesWithoutGroup := make([]*TypeRWWrapper, 0)
 	allTypesWithoutGroupMap := make(map[*TypeRWWrapper]bool)
 	allTypesWithoutGroupUsages := make(map[*TypeRWWrapper]map[string]bool)
 	reverseDepsEdges := make(map[*TypeRWWrapper]map[*TypeRWWrapper]bool)
@@ -345,7 +344,6 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		if t.groupName != NoNamespaceGroup {
 			continue
 		}
-		allTypesWithoutGroup = append(allTypesWithoutGroup, t)
 		allTypesWithoutGroupMap[t] = true
 	}
 
@@ -380,7 +378,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	visited := make(map[*TypeRWWrapper]bool)
 	front := make(map[*TypeRWWrapper]bool)
 
-	for t, _ := range edges {
+	for t := range edges {
 		if t.groupName != NoNamespaceGroup {
 			front[t] = true
 		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
@@ -395,7 +393,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 	for len(front) != 0 {
 		newFront := make(map[*TypeRWWrapper]bool)
-		for v, _ := range front {
+		for v := range front {
 			for _, to := range edges[v] {
 				if visited[to] {
 					continue

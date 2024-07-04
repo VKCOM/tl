@@ -302,7 +302,7 @@ func mapToPairArray[L comparable, R any](m *map[L]R) (res []Pair[L, R]) {
 func (d DirectIncludesCPP) sortedIncludes(componentOrder []int, typeToFile func(wrapper *TypeRWWrapper) string) (result []string) {
 	includeNamesToTypes := make(map[string]int)
 
-	for tp, _ := range d.ns {
+	for tp := range d.ns {
 		include := typeToFile(tp)
 		if _, ok := includeNamesToTypes[include]; !ok {
 			includeNamesToTypes[include] = tp.typeComponent

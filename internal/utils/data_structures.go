@@ -18,7 +18,7 @@ func CopyMap[K comparable, V any](m *map[K]V) map[K]V {
 
 // unstable
 func Keys[K comparable, V any](m *map[K]V) (res []K) {
-	for k, _ := range *m {
+	for k := range *m {
 		res = append(res, k)
 	}
 	return
@@ -27,7 +27,7 @@ func Keys[K comparable, V any](m *map[K]V) (res []K) {
 // unstable
 func SetToSlice[T comparable](s *map[T]bool) []T {
 	m := make([]T, 0)
-	for k, _ := range *s {
+	for k := range *s {
 		m = append(m, k)
 	}
 	return m
@@ -60,7 +60,7 @@ func ReverseSetOfPairs[K, V comparable](in map[K]map[V]bool) map[V]map[K]bool {
 	m := make(map[V]map[K]bool)
 
 	for k, vs := range in {
-		for v, _ := range vs {
+		for v := range vs {
 			PutPairToSetOfPairs(&m, v, k)
 		}
 	}
