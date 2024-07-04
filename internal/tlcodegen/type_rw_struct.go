@@ -40,22 +40,22 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	if isPrimitive && primitive.tlType == trw.wr.tlName.String() {
 		return true
 	}
-	//brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
-	//if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
-	//	return true
-	//}
-	// in combined TL Dictionary is defined via Vector.
-	// dictionaryField {t:Type} key:string value:t = DictionaryField t;
-	// dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
-	// TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
-	//str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
-	//if isStruct && str.wr.tlName.String() == "vector" {
-	//	// repeat check above 1 level deeper
-	//	brackets, isBuiltinBrackets := str.Fields[0].t.trw.(*TypeRWBrackets)
-	//	if isBuiltinBrackets && brackets.dictLike {
-	//		return true
-	//	}
-	//}
+	brackets, isBuiltinBrackets := trw.Fields[0].t.trw.(*TypeRWBrackets)
+	if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
+		return true
+	}
+	//in combined TL Dictionary is defined via Vector.
+	//dictionaryField {t:Type} key:string value:t = DictionaryField t;
+	//dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
+	//TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
+	str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
+	if isStruct && str.wr.tlName.String() == "vector" {
+		// repeat check above 1 level deeper
+		brackets, isBuiltinBrackets := str.Fields[0].t.trw.(*TypeRWBrackets)
+		if isBuiltinBrackets && brackets.dictLike {
+			return true
+		}
+	}
 	return false
 }
 
@@ -214,11 +214,13 @@ func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]i
 }
 
 func (trw *TypeRWStruct) BeforeCodeGenerationStep1() {
-	//for i, f := range trw.Fields {
-	//	visitedNodes := map[*TypeRWWrapper]bool{}
-	//	f.t.trw.fillRecursiveChildren(visitedNodes)
-	//	trw.Fields[i].recursive = visitedNodes[trw.wr]
-	//}
+	if trw.wr.gen.options.Language == "go" {
+		for i, f := range trw.Fields {
+			visitedNodes := map[*TypeRWWrapper]bool{}
+			f.t.trw.fillRecursiveChildren(visitedNodes)
+			trw.Fields[i].recursive = visitedNodes[trw.wr]
+		}
+	}
 	trw.setNames = make([]string, len(trw.Fields))
 	trw.clearNames = make([]string, len(trw.Fields))
 	trw.isSetNames = make([]string, len(trw.Fields))

@@ -1137,13 +1137,15 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		}
 	}
 
-	_, order := findAllTypesDependencyComponents(sortedTypes)
-	gen.componentsOrder = order
+	if options.Language == "cpp" {
+		_, order := findAllTypesDependencyComponents(sortedTypes)
+		gen.componentsOrder = order
 
-	for _, v := range sortedTypes {
-		if len(v.arguments) == 0 {
-			visitedNodes := make(map[*TypeRWWrapper]int)
-			v.trw.FillRecursiveChildren(visitedNodes, true)
+		for _, v := range sortedTypes {
+			if len(v.arguments) == 0 {
+				visitedNodes := make(map[*TypeRWWrapper]int)
+				v.trw.FillRecursiveChildren(visitedNodes, true)
+			}
 		}
 	}
 
