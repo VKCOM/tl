@@ -8,12 +8,14 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/google/go-cmp/cmp"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime/debug"
 	"sort"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -308,6 +310,7 @@ type Gen2Options struct {
 	WarningsAreErrors bool
 	Verbose           bool
 	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+	SplitInternal     bool
 
 	// Go
 	BasicPackageNameFull   string // if empty, will be created
@@ -316,7 +319,6 @@ type Gen2Options struct {
 	BasicRPCPath           string
 	BytesVersions          string
 	TypesWhileList         string
-	SplitInternal          bool
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
@@ -326,6 +328,7 @@ type Gen2Options struct {
 
 	// C++
 	RootCPPNamespace string
+	SeparateFiles    bool
 
 	// .tlo
 	TLOPath           string
@@ -369,6 +372,10 @@ type Gen2 struct {
 	TLO           []byte            // schema represented in tlo format, described using tls.* combinator
 	Code          map[string]string // fileName->Content, split by file names relative to output dir
 	copyrightText string
+
+	// new options
+	typesInfo       *TypesInfo
+	componentsOrder []int
 }
 
 func (gen *Gen2) InternalPrefix() string {
@@ -690,6 +697,11 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 			if string(was) == code {
 				notTouched++
 				continue
+			} else {
+				if gen.options.Verbose {
+					fmt.Printf("File \"%s\":\n", f)
+					fmt.Println(cmp.Diff(string(was), code))
+				}
 			}
 		}
 		written++
@@ -698,8 +710,11 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 		}
 	}
 	for filepathName := range relativeFiles {
-		deleted++
 		f := filepath.Join(outdir, filepathName)
+		if strings.HasSuffix(f, ".o") {
+			continue
+		}
+		deleted++
 		if err := os.Remove(f); err != nil {
 			return fmt.Errorf("error deleting previous file %q: %w", f, err)
 		}
@@ -1036,6 +1051,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		sort.Strings(gen.allAnnotations)
 	}
 	skippedDueToWhitelist := 0
+
+	gen.typesInfo = processCombinators(gen.allConstructors)
+
 	for _, typ := range tl {
 		if GenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {
 			t := tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
@@ -1119,6 +1137,19 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			fmt.Printf("prevented unwrap of %v\n", v.tlName)
 		}
 	}
+
+	if options.Language == "cpp" {
+		_, order := findAllTypesDependencyComponents(sortedTypes)
+		gen.componentsOrder = order
+
+		for _, v := range sortedTypes {
+			if len(v.arguments) == 0 {
+				visitedNodes := make(map[*TypeRWWrapper]int)
+				v.trw.FillRecursiveChildren(visitedNodes, true)
+			}
+		}
+	}
+
 	// in BeforeCodeGenerationStep we split recursion. Which links will be broken depends on order of nodes visited
 	for _, v := range sortedTypes {
 		v.trw.BeforeCodeGenerationStep1()
@@ -1189,4 +1220,538 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	return gen, nil
+}
+
+var TypeComparator = func(a, b *TypeRWWrapper) int {
+	return strings.Compare(a.goGlobalName, b.goGlobalName)
+}
+
+func stabilizeOrder(mp *map[*TypeRWWrapper][]*TypeRWWrapper) (keyOrder []*TypeRWWrapper) {
+	for k, v := range *mp {
+		slices.SortFunc(v, TypeComparator)
+		keyOrder = append(keyOrder, k)
+	}
+	slices.SortFunc(keyOrder, TypeComparator)
+	return
+}
+
+func findAllTypesDependencyComponents(types []*TypeRWWrapper) (map[int]map[int]bool, []int) {
+	dependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
+	reverseDependencyGraph := make(map[*TypeRWWrapper][]*TypeRWWrapper)
+
+	for _, tpU := range types {
+		dependencies := tpU.trw.AllTypeDependencies(true, false)
+		for _, tpV := range dependencies {
+			dependencyGraph[tpU] = append(dependencyGraph[tpU], tpV)
+			reverseDependencyGraph[tpV] = append(reverseDependencyGraph[tpV], tpU)
+		}
+	}
+
+	_ = stabilizeOrder(&dependencyGraph)
+	_ = stabilizeOrder(&reverseDependencyGraph)
+
+	visitedTypes := make(map[*TypeRWWrapper]bool)
+	order := make([]*TypeRWWrapper, 0)
+	for _, tp := range types {
+		if !visitedTypes[tp] {
+			findAllTypesDependencyComponentsStep1(
+				tp,
+				&visitedTypes,
+				&dependencyGraph,
+				&order,
+			)
+		}
+	}
+	visitedTypes = make(map[*TypeRWWrapper]bool)
+	component := 1
+	for i := len(order) - 1; i >= 0; i-- {
+		target := order[i]
+		if !visitedTypes[target] {
+			findAllTypesDependencyComponentsStep2(
+				target,
+				&visitedTypes,
+				&reverseDependencyGraph,
+				component,
+			)
+			component += 1
+		}
+	}
+
+	componentsDeps := make(map[int]map[int]bool)
+
+	for _, tpU := range types {
+		if _, ok := componentsDeps[tpU.typeComponent]; !ok {
+			componentsDeps[tpU.typeComponent] = make(map[int]bool)
+		}
+		for _, tpV := range tpU.trw.AllTypeDependencies(true, false) {
+			if tpU.typeComponent != tpV.typeComponent {
+				componentsDeps[tpU.typeComponent][tpV.typeComponent] = true
+			}
+		}
+	}
+
+	componentsOrdered := make([]int, 0)
+	componentsDepsOrdered := make(map[int][]int)
+
+	for componentId, itsDeps := range componentsDeps {
+		componentsOrdered = append(componentsOrdered, componentId)
+		list := make([]int, len(itsDeps))
+		for dep := range itsDeps {
+			list = append(list, dep)
+		}
+		sort.Ints(list)
+		componentsDepsOrdered[componentId] = list
+	}
+
+	sort.Ints(componentsOrdered)
+
+	compOrder := make([]int, 0)
+	compVisited := make(map[int]bool)
+
+	for comp := range componentsOrdered {
+		if !compVisited[comp] {
+			sortComponents(comp, &compVisited, &componentsDepsOrdered, &compOrder)
+		}
+	}
+
+	//slices.Reverse(compOrder)
+
+	return componentsDeps, compOrder
+}
+
+func findAllTypesDependencyComponentsStep1(
+	tp *TypeRWWrapper,
+	visited *map[*TypeRWWrapper]bool,
+	typeDeps *map[*TypeRWWrapper][]*TypeRWWrapper,
+	order *[]*TypeRWWrapper) {
+	(*visited)[tp] = true
+	for _, tpDep := range (*typeDeps)[tp] {
+		if !(*visited)[tpDep] {
+			findAllTypesDependencyComponentsStep1(tpDep, visited, typeDeps, order)
+		}
+	}
+	*order = append(*order, tp)
+}
+
+func findAllTypesDependencyComponentsStep2(
+	tp *TypeRWWrapper,
+	visited *map[*TypeRWWrapper]bool,
+	typeDeps *map[*TypeRWWrapper][]*TypeRWWrapper,
+	component int) {
+	(*visited)[tp] = true
+	tp.typeComponent = component
+	for _, tpDep := range (*typeDeps)[tp] {
+		if !(*visited)[tpDep] {
+			findAllTypesDependencyComponentsStep2(tpDep, visited, typeDeps, component)
+		}
+	}
+}
+
+func sortComponents(target int, visited *map[int]bool, deps *map[int][]int, order *[]int) {
+	(*visited)[target] = true
+	for _, next := range (*deps)[target] {
+		if !(*visited)[next] {
+			sortComponents(next, visited, deps, order)
+		}
+	}
+	*order = append(*order, target)
+}
+
+type ConstructorName = tlast.Name
+type Constructor struct {
+	Type   *TypeDefinition
+	Id     uint
+	Name   ConstructorName
+	Fields []tlast.Field
+}
+
+type TypeName = tlast.Name
+type TypeDefinition struct {
+	IsBasic       bool
+	Name          TypeName
+	TypeArguments []tlast.TemplateArgument
+	Constructors  []*Constructor
+}
+
+type EvaluatedTypeVariant = int
+
+const (
+	NumberConstant EvaluatedTypeVariant = 0
+	NumberVariable EvaluatedTypeVariant = 1
+	TypeConstant   EvaluatedTypeVariant = 2
+	TypeVariable   EvaluatedTypeVariant = 3
+)
+
+type EvaluatedType struct {
+	Index EvaluatedTypeVariant
+
+	// union variants
+	Constant     uint32         // 0
+	Variable     string         // 1
+	Type         *TypeReduction // 2
+	TypeVariable string         // 3
+
+	VariableActsAsConstant bool // only if Index == 1 and only for type declarations
+}
+
+type TypeReduction struct {
+	IsType bool
+
+	Type        *TypeDefinition
+	Constructor *Constructor
+
+	Arguments []EvaluatedType
+}
+
+func (tr *TypeReduction) ReferenceName() (name tlast.Name) {
+	if tr.IsType {
+		name = tr.Type.Name
+	} else {
+		name = tr.Constructor.Name
+	}
+	return
+}
+
+func (tr *TypeReduction) ReferenceType() *TypeDefinition {
+	if tr.IsType {
+		return tr.Type
+	}
+	return tr.Constructor.Type
+}
+
+func (tr *TypeReduction) String() string {
+	s := ""
+	if tr.Type != nil || tr.Constructor != nil {
+		s += tr.ReferenceName().String()
+		if len(tr.Arguments) != 0 {
+			s += "<"
+			for i, arg := range tr.Arguments {
+				switch arg.Index {
+				case 0:
+					s += "Con" + strconv.FormatInt(int64(arg.Constant), 10)
+				case 1:
+					s += "Var"
+				case 2:
+					s += arg.Type.String()
+				case 3:
+					s += "TypeVar"
+				}
+				if len(tr.Arguments) != i+1 {
+					s += ","
+				}
+			}
+			s += ">"
+		}
+	}
+	return s
+}
+
+func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
+	existingTypes := make(map[TypeName]*TypeDefinition)
+	existingConstructors := make(map[ConstructorName]*Constructor)
+
+	for _, comb := range types {
+		declaredType := comb.TypeDecl.Name
+		if comb.Builtin {
+			declaredType = comb.Construct.Name
+		}
+		currentConstructor := comb.Construct.Name
+		if _, presented := existingTypes[declaredType]; !presented {
+			existingTypes[declaredType] = &TypeDefinition{
+				IsBasic:       comb.Builtin,
+				Name:          declaredType,
+				Constructors:  []*Constructor{},
+				TypeArguments: comb.TemplateArguments,
+			}
+		}
+		targetType := existingTypes[declaredType]
+		constructor := Constructor{
+			Name:   currentConstructor,
+			Fields: comb.Fields,
+			Id:     uint(len(targetType.Constructors)),
+			Type:   targetType,
+		}
+		targetType.Constructors = append(targetType.Constructors, &constructor)
+		existingConstructors[currentConstructor] = &constructor
+	}
+
+	typeReductions := make(map[*TypeDefinition]*map[string]*TypeReduction)
+
+	for _, comb := range existingTypes {
+		if len(comb.TypeArguments) != 0 {
+			continue
+		}
+		reduce(
+			TypeReduction{
+				IsType: true,
+				Type:   existingTypes[comb.Name],
+			},
+			&typeReductions,
+			&existingTypes,
+			&existingConstructors,
+		)
+	}
+
+	ti := TypesInfo{Types: existingTypes, Constructors: existingConstructors, TypeReductions: typeReductions}
+
+	//printResults(ti)
+
+	return &ti
+}
+
+func reduce(
+	targetTypeReduction TypeReduction,
+	visitedReductions *map[*TypeDefinition]*map[string]*TypeReduction,
+	types *map[TypeName]*TypeDefinition,
+	constructors *map[ConstructorName]*Constructor,
+) {
+	for _, arg := range targetTypeReduction.Arguments {
+		if arg.Index == TypeConstant {
+			reduce(*arg.Type, visitedReductions, types, constructors)
+		}
+	}
+
+	var visitingConstructors []*Constructor
+
+	if targetTypeReduction.IsType {
+		visitingConstructors = targetTypeReduction.Type.Constructors
+	} else {
+		visitingConstructors = append(visitingConstructors, targetTypeReduction.Constructor)
+	}
+
+	for _, constr := range visitingConstructors {
+		reduceConstructor(
+			constr,
+			targetTypeReduction.Arguments,
+			visitedReductions,
+			types,
+			constructors,
+		)
+	}
+}
+
+func reduceConstructor(
+	constructor *Constructor,
+	args []EvaluatedType,
+	visitedReductions *map[*TypeDefinition]*map[string]*TypeReduction,
+	types *map[TypeName]*TypeDefinition,
+	constructors *map[ConstructorName]*Constructor,
+) {
+	if constructor == nil || constructor.Type.IsBasic {
+		return
+	}
+
+	trs, ok := (*visitedReductions)[constructor.Type]
+	if !ok {
+		tmp := make(map[string]*TypeReduction)
+		(*visitedReductions)[constructor.Type] = &tmp
+		trs = &tmp
+	}
+
+	constructorReduction := TypeReduction{IsType: false, Constructor: constructor, Arguments: args}
+
+	_, ok = (*trs)[constructorReduction.String()]
+	if !ok {
+		(*trs)[constructorReduction.String()] = &constructorReduction
+	} else {
+		return
+	}
+
+	defaultFields := calculateDefaultFields(constructor, args)
+
+	for _, field := range constructor.Fields {
+		fieldType := toTypeReduction(field.FieldType, types, constructors)
+		if fieldType != nil {
+			fillTypeReduction(fieldType, args, constructor.Type, &defaultFields)
+			reduce(*fieldType, visitedReductions, types, constructors)
+		}
+	}
+}
+
+func calculateDefaultFields(
+	constructor *Constructor,
+	args []EvaluatedType,
+) map[string]bool {
+	defaults := make(map[string]bool)
+
+	for _, field := range constructor.Fields {
+		if field.Mask != nil {
+			name := field.Mask.MaskName
+			bit := field.Mask.BitNumber
+			if _, ok := defaults[name]; ok {
+				defaults[field.FieldName] = true
+				continue
+			}
+			if argIndex := findArgByName(name, constructor.Type.TypeArguments); argIndex != -1 {
+				arg := args[argIndex]
+				if arg.Index == 0 && (arg.Constant&(1<<bit) == 0) {
+					defaults[field.FieldName] = true
+					continue
+				}
+			}
+		}
+	}
+
+	return defaults
+}
+
+func findArgByName(targetArg string, args []tlast.TemplateArgument) int {
+	for i, arg := range args {
+		if arg.FieldName == targetArg {
+			return i
+		}
+	}
+	return -1
+}
+
+func fillTypeReduction(
+	typeReduction *TypeReduction,
+	args []EvaluatedType,
+	originalType *TypeDefinition,
+	defaultFields *map[string]bool,
+) {
+	for argI, arg := range typeReduction.Arguments {
+		switch arg.Index {
+		// nat var
+		case NumberVariable:
+			j := findArgByName(arg.Variable, originalType.TypeArguments)
+			if j != -1 && args[j].Index == NumberConstant {
+				typeReduction.Arguments[argI] = args[j]
+			} else if j != -1 && args[j].Index == NumberVariable && args[j].VariableActsAsConstant {
+				typeReduction.Arguments[argI].VariableActsAsConstant = true
+			} else if _, ok := (*defaultFields)[arg.Variable]; ok {
+				typeReduction.Arguments[argI] = EvaluatedType{Index: NumberConstant, Constant: 0}
+			}
+		// type
+		case TypeConstant:
+			fillTypeReduction(arg.Type, args, originalType, defaultFields)
+		// type var
+		case TypeVariable:
+			j := findArgByName(arg.TypeVariable, originalType.TypeArguments)
+			if j != -1 {
+				index := args[j].Index
+				if index == TypeConstant || index == TypeVariable {
+					typeReduction.Arguments[argI] = args[j]
+				}
+			}
+		}
+	}
+}
+
+func toTypeReduction(
+	typeRef tlast.TypeRef,
+	types *map[TypeName]*TypeDefinition,
+	constructors *map[ConstructorName]*Constructor,
+) *TypeReduction {
+	var reduction TypeReduction
+
+	typeName := typeRef.Type
+	var targetType *TypeDefinition
+
+	if constr, isConstructor := (*constructors)[typeName]; isConstructor {
+		reduction.IsType = false
+		reduction.Constructor = constr
+		targetType = constr.Type
+	} else if typ, isType := (*types)[typeName]; isType {
+		reduction.IsType = true
+		reduction.Type = typ
+		targetType = typ
+	} else {
+		return nil
+	}
+
+	evalArguments := make([]EvaluatedType, 0)
+
+	for i, actualArg := range typeRef.Args {
+		typeArg := targetType.TypeArguments[i]
+		if actualArg.IsArith {
+			evalArguments = append(evalArguments, EvaluatedType{
+				Index:    NumberConstant,
+				Constant: actualArg.Arith.Res,
+			})
+		} else if typeArg.IsNat {
+			evalArguments = append(evalArguments, EvaluatedType{
+				Index:    NumberVariable,
+				Variable: actualArg.T.Type.Name,
+			})
+		} else {
+			typ := toTypeReduction(actualArg.T, types, constructors)
+			if typ != nil {
+				evalArguments = append(evalArguments, EvaluatedType{
+					Index: TypeConstant,
+					Type:  typ,
+				})
+			} else {
+				evalArguments = append(evalArguments, EvaluatedType{
+					Index:        TypeVariable,
+					TypeVariable: actualArg.T.Type.Name,
+				})
+			}
+		}
+	}
+
+	reduction.Arguments = evalArguments
+
+	return &reduction
+}
+
+type TypesInfo struct {
+	Types          map[TypeName]*TypeDefinition
+	Constructors   map[ConstructorName]*Constructor
+	TypeReductions map[*TypeDefinition]*map[string]*TypeReduction
+}
+
+// works for given constructor or for 1-st
+func (ti *TypesInfo) FieldTypeReduction(tr *TypeReduction, fieldId int) EvaluatedType {
+	constructor := tr.Constructor
+	if tr.IsType {
+		constructor = tr.ReferenceType().Constructors[0]
+	}
+	field := constructor.Fields[fieldId]
+	fieldType := toTypeReduction(field.FieldType, &ti.Types, &ti.Constructors)
+	if fieldType == nil {
+		genericName := field.FieldType.Type.Name
+		i := findArgByName(genericName, tr.ReferenceType().TypeArguments)
+		if i == -1 || tr.Arguments[i].Type == nil {
+			return EvaluatedType{Index: TypeVariable, TypeVariable: genericName}
+		}
+		return EvaluatedType{Index: TypeConstant, Type: tr.Arguments[i].Type}
+	}
+	defaultValues := calculateDefaultFields(constructor, tr.Arguments)
+	fillTypeReduction(fieldType, tr.Arguments, tr.ReferenceType(), &defaultValues)
+	return EvaluatedType{Index: TypeConstant, Type: fieldType}
+}
+
+func (ti *TypesInfo) TypeNameToGenericTypeReduction(t TypeName) TypeReduction {
+	var rd TypeReduction
+	rd.Type, rd.IsType = ti.Types[t]
+	rd.Constructor = ti.Constructors[t]
+
+	refType := rd.ReferenceType()
+	for i, arg := range refType.TypeArguments {
+		var evalType EvaluatedType
+		if arg.IsNat {
+			evalType = EvaluatedType{Index: NumberVariable, Variable: fmt.Sprintf("_Nat%d", i)}
+		} else {
+			evalType = EvaluatedType{Index: TypeVariable, TypeVariable: fmt.Sprintf("_Type%d", i)}
+		}
+		rd.Arguments = append(rd.Arguments, evalType)
+	}
+
+	return rd
+}
+
+func (ti *TypesInfo) TypeRWWrapperToTypeReduction(t *TypeRWWrapper) TypeReduction {
+	tr := ti.TypeNameToGenericTypeReduction(t.tlName)
+	for i, arg := range t.arguments {
+		if arg.tip != nil {
+			evalArg := ti.TypeRWWrapperToTypeReduction(arg.tip)
+			tr.Arguments[i] = EvaluatedType{Index: TypeConstant, Type: &evalArg}
+		} else {
+			if arg.isArith {
+				tr.Arguments[i] = EvaluatedType{Index: NumberConstant, Constant: arg.Arith.Res}
+			}
+		}
+	}
+	return tr
 }

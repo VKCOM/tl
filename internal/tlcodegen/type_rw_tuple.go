@@ -74,6 +74,33 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	return ok, isString, structElement.Fields[0], structElement.Fields[1]
 }
 
+func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
+	for _, typeDep := range trw.AllPossibleRecursionProducers() {
+		typeDep.trw.FillRecursiveChildren(visitedNodes, generic)
+	}
+}
+
+func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
+	var result []*TypeRWWrapper
+	for _, typeDep := range trw.wr.arguments {
+		if typeDep.tip != nil {
+			result = append(result, typeDep.tip.trw.AllPossibleRecursionProducers()...)
+		}
+	}
+	return result
+}
+
+func (trw *TypeRWBrackets) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
+	if !generic {
+		res = append(res, trw.element.t)
+	}
+	return
+}
+
+func (trw *TypeRWBrackets) IsWrappingType() bool {
+	return false
+}
+
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {
 	if trw.vectorLike {
 		if ok, isString, kf, vf := isDictionaryElement(trw.element.t); ok {

@@ -42,6 +42,21 @@ func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 func (trw *TypeRWBool) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWBool) AllPossibleRecursionProducers() []*TypeRWWrapper {
+	return nil
+}
+
+func (trw *TypeRWBool) AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper {
+	return nil
+}
+
+func (trw *TypeRWBool) IsWrappingType() bool {
+	return true
+}
+
+func (trw *TypeRWBool) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
+}
+
 func (trw *TypeRWBool) BeforeCodeGenerationStep1() {
 }
 

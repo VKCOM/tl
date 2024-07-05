@@ -51,14 +51,52 @@ func (trw *TypeRWUnion) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	}
 }
 
+func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
+	if visitedNodes[trw.wr] != 0 {
+		return
+	}
+	visitedNodes[trw.wr] = 1
+	for _, f := range trw.Fields {
+		if f.recursive {
+			continue
+		}
+		f.t.trw.FillRecursiveChildren(visitedNodes, generic)
+	}
+	visitedNodes[trw.wr] = 2
+}
+
+func (trw *TypeRWUnion) AllPossibleRecursionProducers() []*TypeRWWrapper {
+	var result []*TypeRWWrapper
+	for _, typeDep := range trw.wr.arguments {
+		if typeDep.tip != nil {
+			result = append(result, typeDep.tip.trw.AllPossibleRecursionProducers()...)
+		}
+	}
+	result = append(result, trw.wr)
+	return result
+}
+
+func (trw *TypeRWUnion) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
+	for _, f := range trw.Fields {
+		res = append(res, f.t)
+	}
+	return
+}
+
+func (trw *TypeRWUnion) IsWrappingType() bool {
+	return false
+}
+
 func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 
 func (trw *TypeRWUnion) BeforeCodeGenerationStep2() {
-	for i, f := range trw.Fields {
-		visitedNodes := map[*TypeRWWrapper]bool{}
-		f.t.trw.fillRecursiveChildren(visitedNodes)
-		trw.Fields[i].recursive = visitedNodes[trw.wr]
+	if trw.wr.gen.options.Language == "go" {
+		for i, f := range trw.Fields {
+			visitedNodes := map[*TypeRWWrapper]bool{}
+			f.t.trw.fillRecursiveChildren(visitedNodes)
+			trw.Fields[i].recursive = visitedNodes[trw.wr]
+		}
 	}
 	//if trw.wr.gen.options.Language == "cpp" { // Temporary solution to benchmark combined tl
 	//	var nf []Field
