@@ -41,6 +41,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"treat all warnings as errors")
 	flag.BoolVar(&opt.Verbose, "v", false,
 		"verbose mode that prints debug info")
+	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
+		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 
 	// Go
 	flag.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",
@@ -55,8 +57,6 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means 'none'.")
 	flag.StringVar(&opt.TypesWhileList, "typesWhiteList", "",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means 'all'")
-	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
-		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 	flag.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&opt.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,
@@ -73,8 +73,6 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// C++
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
 		`c++ root namespace, separated by '::' if more than 1 element`)
-	flag.BoolVar(&opt.SeparateFiles, "cpp-separate-files", false,
-		`separate .cpp files for types in one namespace`)
 
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
