@@ -222,12 +222,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 				return createdDetailsHpps[w.hppDetailsFileName]
 			})
 
-			hppDets := utils.MapSlice(&usedTypes, func(a *TypeRWWrapper) string {
+			hppDets := utils.MapSlice(usedTypes, func(a *TypeRWWrapper) string {
 				return a.hppDetailsFileName
 			})
 
-			hppDetsSet := utils.SliceToSet(&hppDets)
-			hppDetsList := utils.SetToSlice(&hppDetsSet)
+			hppDetsList := utils.SetToSlice(utils.SliceToSet(hppDets))
 
 			sort.Strings(hppDetsList)
 			for _, h := range hppDetsList {
@@ -387,7 +386,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		}
 	}
 
-	utils.AppendMap(&front, &visited)
+	utils.AppendMap(front, &visited)
 
 	edgesCount := make(map[*TypeRWWrapper]int)
 
@@ -410,7 +409,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 						groups[from.groupName] = true
 					}
 					if len(groups) == 1 {
-						to.groupName = utils.SetToSlice(&groups)[0]
+						to.groupName = utils.SetToSlice(groups)[0]
 						if to.groupName != CommonGroup && to.groupName != IndependentTypes {
 							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
 						}

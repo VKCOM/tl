@@ -1,40 +1,40 @@
 package utils
 
-func SliceToSet[T comparable](s *[]T) map[T]bool {
+func SliceToSet[T comparable](s []T) map[T]bool {
 	m := make(map[T]bool)
-	for _, e := range *s {
+	for _, e := range s {
 		m[e] = true
 	}
 	return m
 }
 
-func CopyMap[K comparable, V any](m *map[K]V) map[K]V {
+func CopyMap[K comparable, V any](m map[K]V) map[K]V {
 	m2 := make(map[K]V)
-	for k, v := range *m {
+	for k, v := range m {
 		m2[k] = v
 	}
 	return m2
 }
 
 // unstable
-func Keys[K comparable, V any](m *map[K]V) (res []K) {
-	for k := range *m {
+func Keys[K comparable, V any](m map[K]V) (res []K) {
+	for k := range m {
 		res = append(res, k)
 	}
 	return
 }
 
 // unstable
-func SetToSlice[T comparable](s *map[T]bool) []T {
+func SetToSlice[T comparable](s map[T]bool) []T {
 	m := make([]T, 0)
-	for k := range *s {
+	for k := range s {
 		m = append(m, k)
 	}
 	return m
 }
 
-func MapSlice[A, B any](in *[]A, f func(A) B) (out []B) {
-	for _, e := range *in {
+func MapSlice[A, B any](in []A, f func(A) B) (out []B) {
+	for _, e := range in {
 		out = append(out, f(e))
 	}
 	return
@@ -68,14 +68,14 @@ func ReverseSetOfPairs[K, V comparable](in map[K]map[V]bool) map[V]map[K]bool {
 	return m
 }
 
-func AppendMap[K comparable, V any](values, to *map[K]V) {
-	for k, v := range *values {
+func AppendMap[K comparable, V any](values map[K]V, to *map[K]V) {
+	for k, v := range values {
 		(*to)[k] = v
 	}
 }
 
-func AppendMapWithResolving[K comparable, V any](values, to *map[K]V, resolver func(key K, value1, value2 V) V) {
-	for k, v := range *values {
+func AppendMapWithResolving[K comparable, V any](values map[K]V, to *map[K]V, resolver func(key K, value1, value2 V) V) {
+	for k, v := range values {
 		if v2, ok := (*to)[k]; ok {
 			(*to)[k] = resolver(k, v, v2)
 		} else {

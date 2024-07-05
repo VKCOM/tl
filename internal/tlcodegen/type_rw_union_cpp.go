@@ -132,7 +132,7 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
 
 	if hppDet != nil {
-		utils.AppendMap(&hppTmpInclude.ns, &hppDetInc.ns)
+		utils.AppendMap(hppTmpInclude.ns, &hppDetInc.ns)
 
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 		hppDet.WriteString(fmt.Sprintf(`
