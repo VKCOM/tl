@@ -356,10 +356,9 @@ type Gen2 struct {
 	// parsed TL
 	supportedAnnotations map[string]int
 	typeDescriptors      map[string][]*tlast.Combinator
-
-	singleConstructors map[string]*tlast.Combinator // only types with 1 constructor, no functions
-	allConstructors    map[string]*tlast.Combinator // for printing beautiful errors
-	allAnnotations     []string                     // position is bit
+	singleConstructors   map[string]*tlast.Combinator // only types with 1 constructor, no functions
+	allConstructors      map[string]*tlast.Combinator // for printing beautiful errors
+	allAnnotations       []string                     // position is bit
 
 	// generation
 	builtinTypes       map[string]*TypeRWWrapper
