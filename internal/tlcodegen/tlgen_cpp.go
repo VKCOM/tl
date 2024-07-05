@@ -430,7 +430,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		}
 	}
 
-	if !gen.options.SeparateFiles {
+	if !gen.options.SplitInternal {
 		for _, t := range allTypes {
 			t.cppDetailsFileName = t.groupName + "_group_details"
 		}

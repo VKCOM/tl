@@ -310,6 +310,7 @@ type Gen2Options struct {
 	WarningsAreErrors bool
 	Verbose           bool
 	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
+	SplitInternal     bool
 
 	// Go
 	BasicPackageNameFull   string // if empty, will be created
@@ -318,7 +319,6 @@ type Gen2Options struct {
 	BasicRPCPath           string
 	BytesVersions          string
 	TypesWhileList         string
-	SplitInternal          bool
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
@@ -698,8 +698,10 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				notTouched++
 				continue
 			} else {
-				fmt.Printf("File \"%s\":\n", f)
-				fmt.Println(cmp.Diff(string(was), code))
+				if gen.options.Verbose {
+					fmt.Printf("File \"%s\":\n", f)
+					fmt.Println(cmp.Diff(string(was), code))
+				}
 			}
 		}
 		written++
