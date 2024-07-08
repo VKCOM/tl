@@ -1,0 +1,817 @@
+{
+  "Tests": {
+    "TestReadOrder": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"n\":1,\"m\":2,\"a\":[[1,2]]}",
+          "Alternatives": [
+            "{\"n\": 1,\"m\": 2,\"a\": [[1,2]]}",
+            "{\"n\": 1,\"m\": 2,\"a\": [[1,2]]}",
+            "{\"m\": 2,\"n\": 1,\"a\": [[1,2]]}",
+            "{\"a\": [[1,2]],\"n\": 1,\"m\": 2}",
+            "{\"m\": 2,\"a\": [[1,2]],\"n\": 1}",
+            "{\"a\": [[1,2]],\"m\": 2,\"n\": 1}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": null
+    },
+    "TestArray": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"arr\":[],\"n\":0}",
+            "{\"arr\": []}",
+            "{\"n\": 0}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"n\":3,\"arr\":[1,2,3]}",
+          "Alternatives": [
+            "{\"arr\":[1,2,3],\"n\":3}",
+            "{\"n\":3, \"arr\":[1,2,3]}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"arr\":[1,2],\"n\":3}",
+        "{\"arr\":[1,2,3,4],\"n\":3}",
+        "{\"arr\":[1,2,\"3a\"],\"n\":3}"
+      ]
+    },
+    "TestArrayBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"arr\":[],\"n\":0}",
+            "{\"arr\": []}",
+            "{\"n\": 0}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"n\":3,\"arr\":[\"1\",\"2\",\"3\"]}",
+          "Alternatives": [
+            "{\"arr\":[\"1\",\"2\",\"3\"],\"n\":3}",
+            "{\"n\":3, \"arr\":[\"1\",\"2\",\"3\"]}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"arr\":[\"1\",\"2\"],\"n\":3}",
+        "{\"arr\":[\"1\",\"2\",\"3\",\"4\"],\"n\":3}",
+        "{\"arr\":[1,2,\"3a\"],\"n\":3}"
+      ]
+    },
+    "TestVector": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"arr\":[]}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"arr\":[1,2,3]}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"arr\":[1,2,\"3a\"]}"
+      ]
+    },
+    "TestVectorBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"arr\":[]}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"arr\":[\"1\",\"2\",\"3\"]}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"arr\":[1,2,\"3a\"]}"
+      ]
+    },
+    "TestTuple": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"tpl\":[1,2,3,4]}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"tpl\":[1,2]}",
+        "{\"tpl\":[1,2,3,4,5]}",
+        "{\"tpl\":[1,2,\"3a\",4]}"
+      ]
+    },
+    "TestTupleBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"tpl\":[\"1\",\"2\",\"3\",\"4\"]}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"tpl\":[\"1\",\"2\",\"3\"]}",
+        "{\"tpl\":[\"1\",\"2\",\"3\",\"4\",\"5\"]}",
+        "{\"tpl\":[1,2,\"3a\",4]}"
+      ]
+    },
+    "TestDictionaryString": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":{\"k1\":1,\"k2\":2}}",
+          "Alternatives": [
+            "{\"dict\":{\"k2\":2,\"k1\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"dict\":{\"k1\":1,\"k2\":\"2a\"}}",
+        "{\"dict\":{2:1,\"k2\":2}}"
+      ]
+    },
+    "TestDictionaryStringBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":{\"k1\":1,\"k2\":2}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": [
+            "{\"dict\":{\"k2\":2,\"k1\":1}}"
+          ]
+        }
+      ],
+      "Failures": [
+        "{\"dict\":{\"k1\":1,\"k2\":\"2a\"}}",
+        "{\"dict\":{2:1,\"k2\":2}}"
+      ]
+    },
+    "TestDictionaryStringStringBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":{\"k1\":\"1\",\"k2\":\"2\"}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": [
+            "{\"dict\":{\"k2\":\"2\",\"k1\":\"1\"}}"
+          ]
+        },
+        {
+          "GoldenInput": "{\"dict\":{\"k1\":\"1\",\"k2\":\"2\",\"k3\":\"3\",\"k4\":\"4\",\"k5\":\"5\",\"k6\":\"6\",\"k7\":\"7\",\"k8\":\"8\",\"k9\":\"9\"}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"dict\":{\"k1\":\"1\",\"k2\":2}}",
+        "{\"dict\":{2:\"1\",\"k2\":\"2\"}}"
+      ]
+    },
+    "TestDictionaryInt": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":{\"1\":1,\"2\":2}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"dict\":{1:1,2:\"2a\"}}",
+        "{\"dict\":{\"1\":1,2:2}}"
+      ]
+    },
+    "TestDictionaryIntBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":{\"1\":1,\"2\":2}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"dict\":{1:1,2:\"2a\"}}",
+        "{\"dict\":{\"1\":1,2:2}}"
+      ]
+    },
+    "TestDictionaryAny": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":[]}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":[{\"key\":1,\"value\":1},{\"key\":2.1,\"value\":2}]}",
+          "Alternatives": [
+            "{\"dict\":[{\"key\":\"1.0\",\"value\":1},{\"key\":\"2.1\",\"value\":2}]}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"dict\":[{\"key\":\"1.0\",\"value\":1},{\"key\":\"2.1\",\"value\":\"2a\"}]}",
+        "{\"dict\":[{\"key\":\"1.0\",\"value\":1},{\"key\":\"2.a\",\"value\":2}]}"
+      ]
+    },
+    "TestDictionaryAnyBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"dict\":[]}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"dict\":[{\"key\":1,\"value\":1},{\"key\":2.1,\"value\":2}]}",
+          "Alternatives": [
+            "{\"dict\":[{\"key\":\"1.0\",\"value\":1},{\"key\":\"2.1\",\"value\":2}]}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"dict\":[{\"key\":\"1.0\",\"value\":1},{\"key\":\"2.1\",\"value\":\"2a\"}]}",
+        "{\"dict\":[{\"key\":\"1.0\",\"value\":1},{\"key\":\"2.a\",\"value\":2}]}"
+      ]
+    },
+    "TestMaybe": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"value\":{\"ok\":false}}",
+            "{\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"ok\":true}}",
+          "Alternatives": [
+            "{\"value\":{\"ok\":true, \"value\":0}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"ok\":true,\"value\":1}}",
+          "Alternatives": [
+            "{\"value\":{\"value\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"value\":{\"ok\":false,\"value\":1}}"
+      ]
+    },
+    "TestUnion": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"value\":{\"type\":\"cases.testUnion1\",\"value\":{\"value\":1}}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"type\":\"cases.testUnion2\",\"value\":{\"value\":\"2\"}}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"type\":\"cases.testUnion1\",\"value\":{}}}",
+          "Alternatives": [
+            "{\"value\":{\"type\":\"cases.testUnion1\"}}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"value\":{\"value\":1}}",
+        "{\"value\":{}}"
+      ]
+    },
+    "TestEnum": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"value\":\"cases.testEnum1\"}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":\"cases.testEnum2\"}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"value\":\"cases.testEnum-1\"}",
+        "{\"value\":1}"
+      ]
+    },
+    "TestEnumBytes": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"value\":\"cases.testEnum1\"}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":\"cases.testEnum2\"}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"value\":\"cases.testEnum-1\"}",
+        "{\"value\":1}"
+      ]
+    },
+    "TestLocalFieldMask": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"f1\":3,\"f2\":2,\"f3\":true,\"f4\":true}",
+          "Alternatives": [
+            "{\"f1\":2,\"f3\":true,\"f4\":true}",
+            "{\"f1\":2,\"f4\":true}",
+            "{\"f1\":2,\"f2\":2}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f1\":2}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f1\":1,\"f2\":2,\"f3\":true,\"f4\":true}",
+          "Alternatives": [
+            "{\"f3\": true}",
+            "{\"f4\": true}",
+            "{\"f2\": 2}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f1\":1,\"f2\":0}",
+          "Alternatives": [
+            "{\"f2\":0}",
+            "{\"f3\":false}",
+            "{\"f3\":false,\"f4\":false}",
+            "{\"f1\":1,\"f2\":0,\"f3\":false}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"f2\":0,\"f3\":true,\"f4\":false}",
+        "{\"f2\":2,\"f3\":false}"
+      ]
+    },
+    "TestLocalFieldMaskRecursive": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"f0\":1,\"f1\":2,\"f2\":4,\"t1\":true,\"t2\":true,\"t3\":true}",
+          "Alternatives": [
+            "{\"t1\":true,\"t2\":true,\"t3\":true}",
+            "{\"t3\":true}",
+            "{\"f2\":4}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f0\":1,\"f1\":2,\"f2\":0,\"t1\":true,\"t2\":true}",
+          "Alternatives": [
+            "{\"t3\":false}",
+            "{\"t3\":false}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f0\":15,\"f1\":0,\"t1\":true}",
+          "Alternatives": [
+            "{\"f0\":15}",
+            "{\"f0\":14, \"t1\": true}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f0\":1,\"f1\":15,\"f2\":0,\"t1\":true,\"t2\":true}",
+          "Alternatives": [
+            "{\"f1\":15}",
+            "{\"f1\":13, \"t2\":true}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f0\":31,\"f1\":2,\"f2\":15,\"t1\":true,\"t2\":true,\"t3\":true}",
+          "Alternatives": [
+            "{\"f0\":30,\"f2\":15}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f0\":1,\"f1\":31,\"f2\":15,\"t1\":true,\"t2\":true,\"t3\":true}",
+          "Alternatives": [
+            "{\"f1\":29,\"f2\":15}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f0\":25,\"f1\":31,\"f2\":15,\"t1\":true,\"t2\":true,\"t3\":true}",
+          "Alternatives": [
+            "{\"f0\":24,\"f1\":29,\"f2\":15}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"f2\":1,\"t2\":false}",
+        "{\"t1\":false, \"t3\":true}"
+      ]
+    },
+    "TestOuterFieldMask": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"f\":1,\"inner\":{\"f1\":1,\"f3\":[1]}}",
+          "Alternatives": null,
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"inner\":{}}",
+          "Alternatives": [
+            "{\"f\":0,\"inner\":{}}",
+            "{\"f\":0}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"f\":1,\"inner\":{\"f1\":0,\"f3\":[1]}}",
+          "Alternatives": [
+            "{\"f\":1,\"inner\":{\"f3\":[1]}}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"f\":1,\"inner\":{\"f3\":[1,2]}}",
+        "{\"f\":1,\"inner\":{\"f1\":1,\"f2\":true}}",
+        "{\"f\":1,\"inner\":{\"f1\":1}}",
+        "{\"f\":0,\"inner\":{\"f1\":1}}"
+      ]
+    },
+    "TestBeforeReadBitValidation": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"n\":3,\"a\":[1,1,1],\"b\":[1,1,1]}",
+          "Alternatives": [
+            "{\"a\":[1,1,1],\"b\":[1,1,1],\"n\":3}",
+            "{\"a\":[1,1,1],\"b\":[1,1,1]}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"a\":[1],\"b\":[1,1],\"n\":1}"
+      ]
+    },
+    "TestRecursiveTypes": {
+      "Successes": [
+        {
+          "GoldenInput": "{}",
+          "Alternatives": [
+            "{\"fields_mask\":0}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"fields_mask\":1,\"a\":{}}",
+          "Alternatives": [
+            "{\"fields_mask\":1}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{}}}",
+          "Alternatives": [
+            "{\"a\":{\"a\":{\"fields_mask\":0},\"fields_mask\":1},\"fields_mask\":1}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{\"fields_mask\":2}}}}",
+          "Alternatives": [
+            "{\"a\":{\"a\":{\"a\":{\"fields_mask\":2},\"fields_mask\":0},\"fields_mask\":1},\"fields_mask\":1}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{}}}}",
+          "Alternatives": [
+            "{\"a\":{\"a\":{\"fields_mask\":1},\"fields_mask\":1},\"fields_mask\":1}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": null
+    },
+    "TestReadWithDifferentNatDependencies": {
+      "Successes": [
+        {
+          "GoldenInput": "{\"value\":{\"f00\":239}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f00\":239}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}",
+            "{\"outer\":0}",
+            "{}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f01\":{}}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":0}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[1],\"local\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"local\":0}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":0}}",
+          "Alternatives": [
+            "{\"outer\":1,\"value\":{\"f03\":[1]}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":239}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[1],\"f10\":239,\"local\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":239}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[1],\"f10\":239}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":0}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[1],\"local\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[2,2],\"f11\":true,\"local\":2}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":3,\"f02\":[3,3,3],\"f10\":0,\"f11\":true}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[3,3,3],\"f11\":true,\"local\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":0}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[1],\"local\":1}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[2,2],\"f11\":true}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f11\":false}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":4,\"f02\":[4,4,4,4],\"f12\":[4,4,4,4]}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[4,4,4,4],\"f12\":[4,4,4,4],\"local\":4}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[2,2],\"local\":2}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":1,\"value\":{\"local\":8,\"f02\":[8,8,8,8,8,8,8,8],\"f03\":[1],\"f13\":[1],\"f20\":0}}",
+          "Alternatives": [
+            "{\"outer\":1,\"value\":{\"f02\":[8,8,8,8,8,8,8,8],\"f03\":[1],\"f13\":[1],\"local\":8}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[2,2],\"local\":2}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":239}}",
+          "Alternatives": [
+            "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":239}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":0}}",
+          "Alternatives": [
+            "{\"outer\":1,\"value\":{\"f03\":[1]}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":4,\"value\":{\"local\":2,\"f02\":[2,2],\"f03\":[4,4,4,4],\"f11\":true,\"f22\":[2,2]}}",
+          "Alternatives": [
+            "{\"outer\":4,\"value\":{\"f02\":[2,2],\"f03\":[4,4,4,4],\"f22\":[2,2],\"local\":2}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":4,\"value\":{\"f03\":[4,4,4,4],\"f22\":[]}}",
+          "Alternatives": [
+            "{\"outer\":4,\"value\":{\"f02\":[],\"f03\":[4,4,4,4],\"local\":0}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f02\":[2,2],\"local\":2}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"outer\":8,\"value\":{\"f03\":[8,8,8,8,8,8,8,8],\"f23\":[8,8,8,8,8,8,8,8]}}",
+          "Alternatives": [
+            "{\"outer\":8,\"value\":{\"f03\":[8,8,8,8,8,8,8,8],\"f23\":[8,8,8,8,8,8,8,8]}}"
+          ],
+          "IncorrectAlternatives": null
+        },
+        {
+          "GoldenInput": "{\"value\":{}}",
+          "Alternatives": [
+            "{\"outer\":0,\"value\":{\"f03\":[]}}"
+          ],
+          "IncorrectAlternatives": null
+        }
+      ],
+      "Failures": [
+        "{\"outer\":0,\"value\":{\"f01\":{\"key\":\"value\"}}}",
+        "{\"outer\":0,\"value\":{\"local\":1}}",
+        "{\"outer\":1,\"value\":{\"f23\":[1]}}",
+        "{\"outer\":0,\"value\":{\"f02\":[2,2],\"f11\":false,\"local\":2}}",
+        "{\"outer\":0,\"value\":{\"f02\":[4,4,4,4],\"local\":4}}",
+        "{\"outer\":0,\"value\":{\"f02\":[4,4,4,4],\"f12\":[3,3,3],\"local\":4}}",
+        "{\"outer\":1,\"value\":{\"f02\":[8,8,8,8,8,8,8,8],\"f03\":[1],\"f13\":[3,3,3],\"local\":8}}",
+        "{\"outer\":1,\"value\":{\"f02\":[8,8,8,8,8,8,8,8],\"f03\":[1],\"local\":8}}",
+        "{\"outer\":0,\"value\":{\"f03\":[],\"f10\":239}}",
+        "{\"outer\":2,\"value\":{\"f02\":[2,2],\"f21\":true}}",
+        "{\"outer\":0,\"value\":{\"f02\":[2,2],\"f22\":[2,2],\"local\":2}}",
+        "{\"outer\":4,\"value\":{\"f02\":[2,2],\"f03\":[4,4,4,4],\"local\":2}}",
+        "{\"outer\":0,\"value\":{\"f03\":[8,8,8,8,8,8,8,8],\"f23\":[8,8,8,8,8,8,8,8]}}",
+        "{\"outer\":8,\"value\":{\"f03\":[8,8,8,8,8,8,8,8],\"f23\":[3,3,3]}}",
+        "{\"outer\":8,\"value\":{\"f03\":[8,8,8,8,8,8,8,8]}}"
+      ]
+    }
+  }
+}
