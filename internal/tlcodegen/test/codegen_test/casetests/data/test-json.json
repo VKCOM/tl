@@ -1,6 +1,7 @@
 {
   "Tests": {
     "TestReadOrder": {
+      "TestingType": "cases.replace7",
       "Successes": [
         {
           "GoldenInput": "{\"n\":1,\"m\":2,\"a\":[[1,2]]}",
@@ -18,6 +19,7 @@
       "Failures": null
     },
     "TestArray": {
+      "TestingType": "cases.testArray",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -44,6 +46,8 @@
       ]
     },
     "TestArrayBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testArray",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -70,6 +74,7 @@
       ]
     },
     "TestVector": {
+      "TestingType": "cases.testVector",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -89,6 +94,8 @@
       ]
     },
     "TestVectorBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testVector",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -108,6 +115,7 @@
       ]
     },
     "TestTuple": {
+      "TestingType": "cases.testTuple",
       "Successes": [
         {
           "GoldenInput": "{\"tpl\":[1,2,3,4]}",
@@ -122,6 +130,8 @@
       ]
     },
     "TestTupleBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testTuple",
       "Successes": [
         {
           "GoldenInput": "{\"tpl\":[\"1\",\"2\",\"3\",\"4\"]}",
@@ -136,6 +146,7 @@
       ]
     },
     "TestDictionaryString": {
+      "TestingType": "cases.testDictString",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -158,6 +169,8 @@
       ]
     },
     "TestDictionaryStringBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testDictString",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -180,6 +193,8 @@
       ]
     },
     "TestDictionaryStringStringBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testDictStringString",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -207,6 +222,7 @@
       ]
     },
     "TestDictionaryInt": {
+      "TestingType": "cases.testDictInt",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -227,6 +243,8 @@
       ]
     },
     "TestDictionaryIntBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testDictInt",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -247,6 +265,7 @@
       ]
     },
     "TestDictionaryAny": {
+      "TestingType": "cases.testDictAny",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -269,6 +288,8 @@
       ]
     },
     "TestDictionaryAnyBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testDictAny",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -291,6 +312,7 @@
       ]
     },
     "TestMaybe": {
+      "TestingType": "cases.testMaybe",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -320,6 +342,7 @@
       ]
     },
     "TestUnion": {
+      "TestingType": "cases.testUnionContainer",
       "Successes": [
         {
           "GoldenInput": "{\"value\":{\"type\":\"cases.testUnion1\",\"value\":{\"value\":1}}}",
@@ -345,6 +368,7 @@
       ]
     },
     "TestEnum": {
+      "TestingType": "cases.testEnumContainer",
       "Successes": [
         {
           "GoldenInput": "{\"value\":\"cases.testEnum1\"}",
@@ -363,6 +387,8 @@
       ]
     },
     "TestEnumBytes": {
+      "UseBytes": true,
+      "TestingType": "cases_bytes.testEnumContainer",
       "Successes": [
         {
           "GoldenInput": "{\"value\":\"cases.testEnum1\"}",
@@ -381,6 +407,7 @@
       ]
     },
     "TestLocalFieldMask": {
+      "TestingType": "cases.testLocalFieldmask",
       "Successes": [
         {
           "GoldenInput": "{\"f1\":3,\"f2\":2,\"f3\":true,\"f4\":true}",
@@ -422,6 +449,7 @@
       ]
     },
     "TestLocalFieldMaskRecursive": {
+      "TestingType": "cases.testRecursiveFieldMask",
       "Successes": [
         {
           "GoldenInput": "{\"f0\":1,\"f1\":2,\"f2\":4,\"t1\":true,\"t2\":true,\"t3\":true}",
@@ -489,6 +517,7 @@
       ]
     },
     "TestOuterFieldMask": {
+      "TestingType": "cases.testOutFieldMaskContainer",
       "Successes": [
         {
           "GoldenInput": "{\"f\":1,\"inner\":{\"f1\":1,\"f3\":[1]}}",
@@ -519,6 +548,7 @@
       ]
     },
     "TestBeforeReadBitValidation": {
+      "TestingType": "cases.testBeforeReadBitValidation",
       "Successes": [
         {
           "GoldenInput": "{\"n\":3,\"a\":[1,1,1],\"b\":[1,1,1]}",
@@ -534,6 +564,7 @@
       ]
     },
     "TestRecursiveTypes": {
+      "TestingType": "cases.myCycle2",
       "Successes": [
         {
           "GoldenInput": "{}",
@@ -574,6 +605,7 @@
       "Failures": null
     },
     "TestReadWithDifferentNatDependencies": {
+      "TestingType": "cases.testAllPossibleFieldConfigsContainer",
       "Successes": [
         {
           "GoldenInput": "{\"value\":{\"f00\":239}}",
