@@ -13,9 +13,8 @@ import (
 	"os"
 
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory_bytes"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases_bytes"
 	"github.com/vkcom/tl/pkg/basictl"
 
 	"github.com/stretchr/testify/assert"
@@ -32,6 +31,10 @@ type MappingSuccess struct {
 }
 
 type mappingTestSamples struct {
+	// TL name for type to test
+	TestingType string
+	// use bytes version of code
+	UseBytes bool
 	// json values which must success
 	Successes []MappingSuccess
 	// json values which must fail on read
@@ -192,35 +195,11 @@ func TestGeneralCases(t *testing.T) {
 		return
 	}
 
-	testObjects := map[string]meta.Object{
-		"TestReadOrder":                        &tlcases.Replace7{},
-		"TestArray":                            &tlcases.TestArray{},
-		"TestArrayBytes":                       &tlcases_bytes.TestArray{},
-		"TestVector":                           &tlcases.TestVector{},
-		"TestVectorBytes":                      &tlcases_bytes.TestVector{},
-		"TestTuple":                            &tlcases.TestTuple{},
-		"TestTupleBytes":                       &tlcases_bytes.TestTuple{},
-		"TestDictionaryString":                 &tlcases.TestDictString{},
-		"TestDictionaryStringStringBytes":      &tlcases_bytes.TestDictStringStringBytes{},
-		"TestDictionaryStringBytes":            &tlcases_bytes.TestDictStringBytes{},
-		"TestDictionaryInt":                    &tlcases.TestDictInt{},
-		"TestDictionaryIntBytes":               &tlcases_bytes.TestDictIntBytes{},
-		"TestDictionaryAny":                    &tlcases.TestDictAny{},
-		"TestDictionaryAnyBytes":               &tlcases_bytes.TestDictAny{},
-		"TestMaybe":                            &tlcases.TestMaybe{},
-		"TestUnion":                            &tlcases.TestUnionContainer{},
-		"TestEnum":                             &tlcases.TestEnumContainer{},
-		"TestEnumBytes":                        &tlcases_bytes.TestEnumContainer{},
-		"TestLocalFieldMask":                   &tlcases.TestLocalFieldmask{},
-		"TestLocalFieldMaskRecursive":          &tlcases.TestRecursiveFieldmask{},
-		"TestOuterFieldMask":                   &tlcases.TestOutFieldMaskContainer{},
-		"TestBeforeReadBitValidation":          &tlcases.TestBeforeReadBitValidation{},
-		"TestRecursiveTypes":                   &tlcases.MyCycle2{},
-		"TestReadWithDifferentNatDependencies": &tlcases.TestAllPossibleFieldConfigsContainer{},
-	}
-
 	for testName, testValues := range tests.Tests {
-		testObject := testObjects[testName]
+		testObject := factory.CreateObjectFromName(testValues.TestingType)
+		if testValues.UseBytes {
+			testObject = factory_bytes.CreateObjectFromNameBytes(testValues.TestingType)
+		}
 		if testObject == nil {
 			t.Fatalf("No testing object for test \"%s\"", testName)
 			return

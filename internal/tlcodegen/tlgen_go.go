@@ -235,6 +235,9 @@ var _ = basictl.NatWrite
 		if err := gen.addCodeFile(filepath.Join(FactoryGoPackageName, FactoryGoPackageName+goExt), gen.copyrightText+gen.generateFactory(sortedNames, directImports)); err != nil {
 			return err
 		}
+		if err := gen.addCodeFile(filepath.Join(FactoryGoPackageNameBytes, FactoryGoPackageNameBytes+goExt), gen.copyrightText+gen.generateFactoryBytes(sortedNames, directImports)); err != nil {
+			return err
+		}
 		if err := gen.addCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+goExt), gen.copyrightText+gen.generateMeta()); err != nil {
 			return err
 		}
