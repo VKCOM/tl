@@ -41,6 +41,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"treat all warnings as errors")
 	flag.BoolVar(&opt.Verbose, "v", false,
 		"verbose mode that prints debug info")
+	flag.BoolVar(&opt.PrintDiff, "print-diff", false,
+		"prints diff of outdir contents before and after generating")
 	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 
@@ -92,17 +94,17 @@ func run(opt tlcodegen.Gen2Options) {
 			log.Println(err.Error())
 		}
 		if opt.Language == "" {
-			log.Printf("TL Linter Failed")
+			log.Printf("TL Linter Failed") // do not check Verbose
 		} else {
-			log.Printf("TL Generation Failed")
+			log.Printf("TL Generation Failed") // do not check Verbose
 		}
 		os.Exit(1)
 		return
 	}
 	if opt.Language == "" {
-		log.Printf("TL Linter Success")
+		log.Printf("TL Linter Success") // do not check Verbose
 	} else {
-		log.Printf("TL Generation Success")
+		log.Printf("TL Generation Success") // do not check Verbose
 	}
 }
 
@@ -146,7 +148,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	}
 	if opt.TLOPath != "" {
 		if opt.Verbose {
-			log.Print("generating tlo file")
+			log.Print("generating TLO file...")
 		}
 		s, err := fullAst.GenerateTLO(uint32(opt.SchemaTimestamp))
 		if err != nil {
@@ -173,7 +175,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	}
 	if opt.CanonicalFormPath != "" {
 		if opt.Verbose {
-			log.Print("generating file with combinators in canonical form")
+			log.Print("generating file with combinators in canonical form,,,")
 		}
 		var buf bytes.Buffer
 		fullAst.WriteGenerate2TL(&buf)

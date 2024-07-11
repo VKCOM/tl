@@ -27,7 +27,7 @@ type Service1Longvalue struct {
 }
 
 func (Service1Longvalue) TLName() string { return "service1.longvalue" }
-func (Service1Longvalue) TLTag() uint32  { return 0x82e0945 }
+func (Service1Longvalue) TLTag() uint32  { return 0x082e0945 }
 
 func (item *Service1Longvalue) Reset() {
 	item.Value = 0
@@ -53,7 +53,7 @@ func (item *Service1Longvalue) Write(w []byte) []byte {
 }
 
 func (item *Service1Longvalue) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x82e0945); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x082e0945); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -65,7 +65,7 @@ func (item *Service1Longvalue) WriteBoxedGeneral(w []byte) (_ []byte, err error)
 }
 
 func (item *Service1Longvalue) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x82e0945)
+	w = basictl.NatWrite(w, 0x082e0945)
 	return item.Write(w)
 }
 
@@ -731,7 +731,7 @@ func (item *Service1StrvalueWithTime) UnmarshalJSON(b []byte) error {
 var _Service1Value = [5]internal.UnionElement{
 	{TLTag: 0x1d670b96, TLName: "service1.not_found", TLString: "service1.not_found#1d670b96"},
 	{TLTag: 0x5faa0c52, TLName: "service1.strvalue", TLString: "service1.strvalue#5faa0c52"},
-	{TLTag: 0x82e0945, TLName: "service1.longvalue", TLString: "service1.longvalue#082e0945"},
+	{TLTag: 0x082e0945, TLName: "service1.longvalue", TLString: "service1.longvalue#082e0945"},
 	{TLTag: 0x98b1a484, TLName: "service1.strvalueWithTime", TLString: "service1.strvalueWithTime#98b1a484"},
 	{TLTag: 0xa04606ec, TLName: "service1.longvalueWithTime", TLString: "service1.longvalueWithTime#a04606ec"},
 }
@@ -842,7 +842,7 @@ func (item *Service1Value) ReadBoxed(w []byte) (_ []byte, err error) {
 	case 0x5faa0c52:
 		item.index = 1
 		return item.valueStrvalue.Read(w)
-	case 0x82e0945:
+	case 0x082e0945:
 		item.index = 2
 		return item.valueLongvalue.Read(w)
 	case 0x98b1a484:

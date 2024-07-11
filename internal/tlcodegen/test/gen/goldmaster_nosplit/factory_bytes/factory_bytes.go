@@ -132,5 +132,6 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytes(0xfb9ce817, func() meta.Object { var ret internal.UseDictUgly; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x0a63ec5f, func() meta.Object { var ret internal.UseResponse; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x9aa3dee5, func() meta.Object { var ret internal.UseStrBytes; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0xdfdd4180, func() meta.Object { var ret internal.UseTrue; return &ret })
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x3c857e52, func() meta.Object { var ret internal.UsefulServiceGetUserEntity; return &ret }, func() meta.Function { var ret internal.UsefulServiceGetUserEntity; return &ret }, nil)
 }

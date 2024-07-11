@@ -21,7 +21,7 @@ type Service1GetKeysStat struct {
 }
 
 func (Service1GetKeysStat) TLName() string { return "service1.getKeysStat" }
-func (Service1GetKeysStat) TLTag() uint32  { return 0x6cecd58 }
+func (Service1GetKeysStat) TLTag() uint32  { return 0x06cecd58 }
 
 func (item *Service1GetKeysStat) Reset() {
 	item.Period = 0
@@ -42,7 +42,7 @@ func (item *Service1GetKeysStat) Write(w []byte) []byte {
 }
 
 func (item *Service1GetKeysStat) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x6cecd58); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x06cecd58); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -54,7 +54,7 @@ func (item *Service1GetKeysStat) WriteBoxedGeneral(w []byte) (_ []byte, err erro
 }
 
 func (item *Service1GetKeysStat) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x6cecd58)
+	w = basictl.NatWrite(w, 0x06cecd58)
 	return item.Write(w)
 }
 

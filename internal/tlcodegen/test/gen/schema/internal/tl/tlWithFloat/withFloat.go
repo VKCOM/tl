@@ -22,7 +22,7 @@ type WithFloat struct {
 }
 
 func (WithFloat) TLName() string { return "withFloat" }
-func (WithFloat) TLTag() uint32  { return 0x71b8685 }
+func (WithFloat) TLTag() uint32  { return 0x071b8685 }
 
 func (item *WithFloat) Reset() {
 	item.X = 0
@@ -57,7 +57,7 @@ func (item *WithFloat) Write(w []byte) []byte {
 }
 
 func (item *WithFloat) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x71b8685); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x071b8685); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -69,7 +69,7 @@ func (item *WithFloat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *WithFloat) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x71b8685)
+	w = basictl.NatWrite(w, 0x071b8685)
 	return item.Write(w)
 }
 

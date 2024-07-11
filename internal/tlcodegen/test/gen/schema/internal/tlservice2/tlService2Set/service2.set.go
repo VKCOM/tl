@@ -28,7 +28,7 @@ type Service2Set struct {
 }
 
 func (Service2Set) TLName() string { return "service2.set" }
-func (Service2Set) TLTag() uint32  { return 0xd31f63d }
+func (Service2Set) TLTag() uint32  { return 0x0d31f63d }
 
 func (item *Service2Set) Reset() {
 	item.ObjectIdLength = 0
@@ -80,7 +80,7 @@ func (item *Service2Set) Write(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service2Set) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xd31f63d); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0d31f63d); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -92,7 +92,7 @@ func (item *Service2Set) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service2Set) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0xd31f63d)
+	w = basictl.NatWrite(w, 0x0d31f63d)
 	return item.Write(w)
 }
 
