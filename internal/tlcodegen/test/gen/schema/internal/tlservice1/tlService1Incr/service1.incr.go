@@ -22,7 +22,7 @@ type Service1Incr struct {
 }
 
 func (Service1Incr) TLName() string { return "service1.incr" }
-func (Service1Incr) TLTag() uint32  { return 0xf96b56e }
+func (Service1Incr) TLTag() uint32  { return 0x0f96b56e }
 
 func (item *Service1Incr) Reset() {
 	item.Key = ""
@@ -48,7 +48,7 @@ func (item *Service1Incr) Write(w []byte) []byte {
 }
 
 func (item *Service1Incr) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf96b56e); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f96b56e); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -60,7 +60,7 @@ func (item *Service1Incr) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service1Incr) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf96b56e)
+	w = basictl.NatWrite(w, 0x0f96b56e)
 	return item.Write(w)
 }
 

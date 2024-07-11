@@ -48,7 +48,7 @@ dictionaryFieldAny {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;
 dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = DictionaryAny k v;
 
 true = True; // this can be used as void type and serialized to empty array in PHP
-useTrue fm:# a:fm.0?true b:fm.1?True c:true d:True = UseTrue;
+useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue; // we give warnings for many fields of this kind
 
 //---- test bytes version propagation
 noStr x:int = NoStr;

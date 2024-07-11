@@ -8,7 +8,6 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"io"
 	"log"
 	"os"
@@ -20,11 +19,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/TwiN/go-color"
-
+	"github.com/google/go-cmp/cmp"
 	"github.com/vkcom/tl/internal/tlast"
+
+	"golang.org/x/exp/slices"
 )
 
 const BuiltinTupleName = "__tuple"
@@ -310,6 +309,7 @@ type Gen2Options struct {
 	CopyrightFilePath string
 	WarningsAreErrors bool
 	Verbose           bool
+	PrintDiff         bool
 	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 	SplitInternal     bool
 
@@ -526,7 +526,7 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 			}
 			// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
 			if EnableWarningsSimpleTypeName && strings.ToLower(cName.Name) != typePrefix &&
-				!EnableWarningsSimpleTypeNameSkipLegacy(cName.String()) {
+				!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) {
 				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
 				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
 				if gen.options.WarningsAreErrors {
@@ -564,7 +564,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 	for _, typ := range types {
 		conName := strings.ToLower(typ.Construct.Name.Name)
 		if EnableWarningsUnionNamespace && typ.Construct.Name.Namespace != typ.TypeDecl.Name.Namespace &&
-			!EnableWarningsUnionNamespaceSkipLegacy(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) {
+			!LegacyEnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor namespace %q should match type namespace %q", typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -575,7 +575,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 		if EnableWarningsUnionNamePrefix &&
 			!strings.HasPrefix(conName, typePrefix) &&
 			!strings.HasSuffix(conName, typeSuffix) &&
-			!EnableWarningsUnionNamePrefixSkipLegacy(typ.Construct.Name.Name, typePrefix, typeSuffix) { // same check as in generateType
+			!LegacyEnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) { // same check as in generateType
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor should have type name prefix or suffix %q", typePrefix))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -585,7 +585,7 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 			continue
 		}
 		if EnableWarningsUnionNameExact && conName == typePrefix &&
-			!EnableWarningsUnionNameExactSkipLegacy(typ.Construct.Name.String()) {
+			!LegacyEnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor name should not exactly match type name %q", typePrefix))
 			e2 := typ.TypeDecl.PR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -699,7 +699,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 				notTouched++
 				continue
 			} else {
-				if gen.options.Verbose {
+				if gen.options.PrintDiff {
 					fmt.Printf("File \"%s\":\n", f)
 					fmt.Println(cmp.Diff(string(was), code))
 				}
@@ -724,6 +724,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 		f := filepath.Join(outdir, relativeDirs[i])
 		_ = os.Remove(f) // non-empty dirs simply will not remove. This is good enough for us
 	}
+	// do not check Verbose
 	fmt.Printf("%d target files did not change so were not touched, %d written, %d deleted\n", notTouched, written, deleted)
 	return nil
 }
@@ -1056,7 +1057,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	gen.typesInfo = processCombinators(gen.allConstructors)
 
 	for _, typ := range tl {
-		if GenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {
+		if LegacyGenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {
 			t := tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
 			argT := tlast.TypeRef{Type: tlast.Name{
 				Namespace: "",
@@ -1105,6 +1106,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			}
 		}
 	}
+	LegacyPrintGlobalMap()
+
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
 	// This loop can be before or after loops below, it is convenient to fill sortedTypes inside, so this loop is here

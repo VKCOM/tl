@@ -19,7 +19,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 var _EitherService6ErrorVectorService6FindResultRow = [2]internal.UnionElement{
-	{TLTag: 0xa29cd5d, TLName: "left", TLString: "left#0a29cd5d"},
+	{TLTag: 0x0a29cd5d, TLName: "left", TLString: "left#0a29cd5d"},
 	{TLTag: 0xdf3ecb3b, TLName: "right", TLString: "right#df3ecb3b"},
 }
 
@@ -80,7 +80,7 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) 
 		return w, err
 	}
 	switch tag {
-	case 0xa29cd5d:
+	case 0x0a29cd5d:
 		item.index = 0
 		return item.valueLeft.Read(w)
 	case 0xdf3ecb3b:
@@ -204,7 +204,7 @@ type LeftService6ErrorVectorService6FindResultRow struct {
 }
 
 func (LeftService6ErrorVectorService6FindResultRow) TLName() string { return "left" }
-func (LeftService6ErrorVectorService6FindResultRow) TLTag() uint32  { return 0xa29cd5d }
+func (LeftService6ErrorVectorService6FindResultRow) TLTag() uint32  { return 0x0a29cd5d }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) Reset() {
 	item.Value.Reset()
@@ -225,7 +225,7 @@ func (item *LeftService6ErrorVectorService6FindResultRow) Write(w []byte) []byte
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xa29cd5d); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0a29cd5d); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -237,7 +237,7 @@ func (item *LeftService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xa29cd5d)
+	w = basictl.NatWrite(w, 0x0a29cd5d)
 	return item.Write(w)
 }
 

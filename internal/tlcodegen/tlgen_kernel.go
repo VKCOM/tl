@@ -519,6 +519,30 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		if err := lrc.checkArgsCollision(field.FieldName, field.PRName, errFieldNameCollision); err != nil {
 			return err
 		}
+		if newField.t.IsTrueType() && !newField.Bare() &&
+			newField.t.origTL[0].TypeDecl.Name.String() == "True" &&
+			newField.t.origTL[0].Construct.Name.String() == "true" &&
+			!LegacyAllowTrueBoxed(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) {
+			// We compare type by name, because there is examples of other true types which are to be extended
+			// to unions or have added fields in the future
+			e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("true type fields should be bare, use 'true' or '%%True' instead"))
+			if gen.options.WarningsAreErrors {
+				return e1
+			}
+			e1.PrintWarning(gen.options.ErrorWriter, nil)
+		}
+		if _, ok := newField.t.trw.(*TypeRWBool); ok {
+			if newField.t.origTL[0].TypeDecl.Name.String() == "Bool" &&
+				newField.fieldMask != nil && !newField.fieldMask.isArith && newField.fieldMask.isField &&
+				!LegacyAllowBoolFieldsmask(myWrapper.origTL[0].Construct.Name.String(), field.FieldName) {
+				// We compare type by name to make warning more narrow at first.
+				e1 := field.FieldType.PR.BeautifulError(fmt.Errorf("Bool type under fields mask has 3 states, you probably want to use 'true' instead of 'Bool'"))
+				if gen.options.WarningsAreErrors {
+					return e1
+				}
+				e1.PrintWarning(gen.options.ErrorWriter, nil)
+			}
+		}
 		lrc.localNatArgs[field.FieldName] = arg
 	}
 	if tlType.IsFunction {

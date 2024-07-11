@@ -24,7 +24,7 @@ type TasksTaskInfo struct {
 }
 
 func (TasksTaskInfo) TLName() string { return "tasks.taskInfo" }
-func (TasksTaskInfo) TLTag() uint32  { return 0x6f0c6a6 }
+func (TasksTaskInfo) TLTag() uint32  { return 0x06f0c6a6 }
 
 func (item *TasksTaskInfo) Reset() {
 	item.TypeName = ""
@@ -55,7 +55,7 @@ func (item *TasksTaskInfo) Write(w []byte) []byte {
 }
 
 func (item *TasksTaskInfo) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x6f0c6a6); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x06f0c6a6); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -67,7 +67,7 @@ func (item *TasksTaskInfo) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TasksTaskInfo) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x6f0c6a6)
+	w = basictl.NatWrite(w, 0x06f0c6a6)
 	return item.Write(w)
 }
 

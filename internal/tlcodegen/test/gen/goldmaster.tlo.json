@@ -1827,7 +1827,7 @@
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
-            "args_num": 5,
+            "args_num": 6,
             "args": [
               {
                 "id": "fm",
@@ -1881,6 +1881,18 @@
                   "type": "tls.typeExpr",
                   "value": {
                     "name": 1072550713
+                  }
+                }
+              },
+              {
+                "id": "e",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 2,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 621535874
                   }
                 }
               }

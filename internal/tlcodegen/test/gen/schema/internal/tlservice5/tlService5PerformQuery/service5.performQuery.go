@@ -21,7 +21,7 @@ type Service5PerformQuery struct {
 }
 
 func (Service5PerformQuery) TLName() string { return "service5.performQuery" }
-func (Service5PerformQuery) TLTag() uint32  { return 0x19d80a5 }
+func (Service5PerformQuery) TLTag() uint32  { return 0x019d80a5 }
 
 func (item *Service5PerformQuery) Reset() {
 	item.Query = ""
@@ -42,7 +42,7 @@ func (item *Service5PerformQuery) Write(w []byte) []byte {
 }
 
 func (item *Service5PerformQuery) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x19d80a5); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x019d80a5); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -54,7 +54,7 @@ func (item *Service5PerformQuery) WriteBoxedGeneral(w []byte) (_ []byte, err err
 }
 
 func (item *Service5PerformQuery) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x19d80a5)
+	w = basictl.NatWrite(w, 0x019d80a5)
 	return item.Write(w)
 }
 

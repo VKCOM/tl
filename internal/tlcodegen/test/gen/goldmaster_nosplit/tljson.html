@@ -4980,8 +4980,16 @@ External # (nat) arguments: <b>Y</b>
         </tr>
         <tr>
 
-          <td>&nbsp;&nbsp;"d"</td><td>: true</td>
+          <td>&nbsp;&nbsp;"d"</td><td>: true,</td>
           <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"e"</td><td>: &lt;bool&gt;</td>
+          <td>// fm bit #2
+</td>
           <td>
           </td>
         </tr>
@@ -4990,7 +4998,8 @@ External # (nat) arguments: <b>Y</b>
 </code></dd>
   <dt>TL</dt>
   <dd>
-    <code>useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True = UseTrue;</code>
+    <code>useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue;</code>
+    <code style="color:DarkCyan">// we give warnings for many fields of this kind</code></br>
   </dd>
 </dl>
 

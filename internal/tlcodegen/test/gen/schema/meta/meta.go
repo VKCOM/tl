@@ -90,13 +90,46 @@ func CreateObjectFromName(name string) Object {
 	return nil
 }
 
+func CreateFunctionBytes(tag uint32) Function {
+	if item := FactoryItemByTLTagBytes(tag); item != nil && item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	return nil
+}
+
+func CreateObjectBytes(tag uint32) Object {
+	if item := FactoryItemByTLTagBytes(tag); item != nil && item.createObjectBytes != nil {
+		return item.createObjectBytes()
+	}
+	return nil
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateFunctionFromNameBytes(name string) Function {
+	if item := FactoryItemByTLNameBytes(name); item != nil && item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	return nil
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateObjectFromNameBytes(name string) Object {
+	if item := FactoryItemByTLNameBytes(name); item != nil && item.createObjectBytes != nil {
+		return item.createObjectBytes()
+	}
+	return nil
+}
+
 type TLItem struct {
-	tag                uint32
-	annotations        uint32
-	tlName             string
-	createFunction     func() Function
-	createFunctionLong func() Function
-	createObject       func() Object
+	tag                     uint32
+	annotations             uint32
+	tlName                  string
+	createFunction          func() Function
+	createFunctionLong      func() Function
+	createObject            func() Object
+	createFunctionBytes     func() Function
+	createFunctionLongBytes func() Function
+	createObjectBytes       func() Object
 }
 
 func (item TLItem) TLTag() uint32            { return item.tag }
@@ -166,9 +199,21 @@ func FactoryItemByTLName(name string) *TLItem {
 	return itemsByName[name]
 }
 
+func FactoryItemByTLTagBytes(tag uint32) *TLItem {
+	return itemsBytesByTag[tag]
+}
+
+func FactoryItemByTLNameBytes(name string) *TLItem {
+	return itemsBytesByName[name]
+}
+
 var itemsByTag = map[uint32]*TLItem{}
 
 var itemsByName = map[string]*TLItem{}
+
+var itemsBytesByTag = map[uint32]*TLItem{}
+
+var itemsBytesByName = map[string]*TLItem{}
 
 func SetGlobalFactoryCreateForFunction(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
 	item := itemsByTag[itemTag]
@@ -196,6 +241,40 @@ func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
 	item.createObject = func() Object { return item }
 }
 
+func SetGlobalFactoryCreateForFunctionBytes(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
+	item := itemsBytesByTag[itemTag]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = createObject
+	item.createFunctionBytes = createFunction
+	item.createFunctionLongBytes = createFunctionLong
+}
+
+func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Object) {
+	item := itemsBytesByTag[itemTag]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = createObject
+}
+
+func SetGlobalFactoryCreateForEnumElementBytes(itemTag uint32) {
+	item := itemsBytesByTag[itemTag]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = func() Object { return item }
+}
+
+func pleaseImportFactoryBytesObject() Object {
+	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
+}
+
+func pleaseImportFactoryBytesFunction() Function {
+	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
+}
+
 func pleaseImportFactoryObject() Object {
 	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
 }
@@ -209,7 +288,12 @@ func fillObject(n1 string, n2 string, item *TLItem) {
 	itemsByName[item.tlName] = item
 	itemsByName[n1] = item
 	itemsByName[n2] = item
+	itemsBytesByTag[item.tag] = item
+	itemsBytesByName[item.tlName] = item
+	itemsBytesByName[n1] = item
+	itemsBytesByName[n2] = item
 	item.createObject = pleaseImportFactoryObject
+	item.createObjectBytes = pleaseImportFactoryBytesObject
 	// code below is as fast, but allocates some extra strings which are already in binary const segment due to JSON code
 	// itemsByName[fmt.Sprintf("%s#%08x", item.tlName, item.tag)] = item
 	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
@@ -218,6 +302,7 @@ func fillObject(n1 string, n2 string, item *TLItem) {
 func fillFunction(n1 string, n2 string, item *TLItem) {
 	fillObject(n1, n2, item)
 	item.createFunction = pleaseImportFactoryFunction
+	item.createFunctionBytes = pleaseImportFactoryBytesFunction
 }
 
 func init() {
@@ -277,7 +362,7 @@ func init() {
 	fillFunction("service1.add#481df8be", "#481df8be", &TLItem{tag: 0x481df8be, annotations: 0x1, tlName: "service1.add"})
 	fillFunction("service1.addOrGet#6a42faad", "#6a42faad", &TLItem{tag: 0x6a42faad, annotations: 0x1, tlName: "service1.addOrGet"})
 	fillFunction("service1.addOrIncr#90c4b402", "#90c4b402", &TLItem{tag: 0x90c4b402, annotations: 0x1, tlName: "service1.addOrIncr"})
-	fillFunction("service1.append#04dec671", "#04dec671", &TLItem{tag: 0x4dec671, annotations: 0x1, tlName: "service1.append"})
+	fillFunction("service1.append#04dec671", "#04dec671", &TLItem{tag: 0x04dec671, annotations: 0x1, tlName: "service1.append"})
 	fillFunction("service1.cas#51851964", "#51851964", &TLItem{tag: 0x51851964, annotations: 0x1, tlName: "service1.cas"})
 	fillFunction("service1.decr#eb179ce7", "#eb179ce7", &TLItem{tag: 0xeb179ce7, annotations: 0x1, tlName: "service1.decr"})
 	fillFunction("service1.delete#83277767", "#83277767", &TLItem{tag: 0x83277767, annotations: 0x1, tlName: "service1.delete"})
@@ -288,26 +373,26 @@ func init() {
 	fillFunction("service1.exists#e0284c9e", "#e0284c9e", &TLItem{tag: 0xe0284c9e, annotations: 0x1, tlName: "service1.exists"})
 	fillFunction("service1.get#29099b19", "#29099b19", &TLItem{tag: 0x29099b19, annotations: 0x1, tlName: "service1.get"})
 	fillFunction("service1.getExpireTime#5a731070", "#5a731070", &TLItem{tag: 0x5a731070, annotations: 0x1, tlName: "service1.getExpireTime"})
-	fillFunction("service1.getKeysStat#06cecd58", "#06cecd58", &TLItem{tag: 0x6cecd58, annotations: 0x1, tlName: "service1.getKeysStat"})
+	fillFunction("service1.getKeysStat#06cecd58", "#06cecd58", &TLItem{tag: 0x06cecd58, annotations: 0x1, tlName: "service1.getKeysStat"})
 	fillFunction("service1.getKeysStatPeriods#8cdf39e3", "#8cdf39e3", &TLItem{tag: 0x8cdf39e3, annotations: 0x1, tlName: "service1.getKeysStatPeriods"})
 	fillFunction("service1.getWildcard#2f2abf13", "#2f2abf13", &TLItem{tag: 0x2f2abf13, annotations: 0x1, tlName: "service1.getWildcard"})
 	fillFunction("service1.getWildcardDict#72bbc81b", "#72bbc81b", &TLItem{tag: 0x72bbc81b, annotations: 0x1, tlName: "service1.getWildcardDict"})
 	fillFunction("service1.getWildcardList#56b6ead4", "#56b6ead4", &TLItem{tag: 0x56b6ead4, annotations: 0x1, tlName: "service1.getWildcardList"})
 	fillFunction("service1.getWildcardWithFlags#5f6a1f78", "#5f6a1f78", &TLItem{tag: 0x5f6a1f78, annotations: 0x1, tlName: "service1.getWildcardWithFlags"})
-	fillFunction("service1.incr#0f96b56e", "#0f96b56e", &TLItem{tag: 0xf96b56e, annotations: 0x1, tlName: "service1.incr"})
+	fillFunction("service1.incr#0f96b56e", "#0f96b56e", &TLItem{tag: 0x0f96b56e, annotations: 0x1, tlName: "service1.incr"})
 	fillObject("service1.keysStat#f0f6bc68", "#f0f6bc68", &TLItem{tag: 0xf0f6bc68, annotations: 0x0, tlName: "service1.keysStat"})
-	fillObject("service1.longvalue#082e0945", "#082e0945", &TLItem{tag: 0x82e0945, annotations: 0x0, tlName: "service1.longvalue"})
+	fillObject("service1.longvalue#082e0945", "#082e0945", &TLItem{tag: 0x082e0945, annotations: 0x0, tlName: "service1.longvalue"})
 	fillObject("service1.longvalueWithTime#a04606ec", "#a04606ec", &TLItem{tag: 0xa04606ec, annotations: 0x0, tlName: "service1.longvalueWithTime"})
 	fillObject("service1.not_found#1d670b96", "#1d670b96", &TLItem{tag: 0x1d670b96, annotations: 0x0, tlName: "service1.not_found"})
 	fillFunction("service1.replace#7f2c447d", "#7f2c447d", &TLItem{tag: 0x7f2c447d, annotations: 0x1, tlName: "service1.replace"})
 	fillFunction("service1.replaceOrIncr#9d1bdcfd", "#9d1bdcfd", &TLItem{tag: 0x9d1bdcfd, annotations: 0x1, tlName: "service1.replaceOrIncr"})
-	fillFunction("service1.set#05ae5f66", "#05ae5f66", &TLItem{tag: 0x5ae5f66, annotations: 0x1, tlName: "service1.set"})
+	fillFunction("service1.set#05ae5f66", "#05ae5f66", &TLItem{tag: 0x05ae5f66, annotations: 0x1, tlName: "service1.set"})
 	fillFunction("service1.setOrIncr#772e390d", "#772e390d", &TLItem{tag: 0x772e390d, annotations: 0x1, tlName: "service1.setOrIncr"})
 	fillObject("service1.strvalue#5faa0c52", "#5faa0c52", &TLItem{tag: 0x5faa0c52, annotations: 0x0, tlName: "service1.strvalue"})
 	fillObject("service1.strvalueWithTime#98b1a484", "#98b1a484", &TLItem{tag: 0x98b1a484, annotations: 0x0, tlName: "service1.strvalueWithTime"})
 	fillFunction("service1.touch#b737aa03", "#b737aa03", &TLItem{tag: 0xb737aa03, annotations: 0x1, tlName: "service1.touch"})
 	fillFunction("service2.addOrIncrMany#5aa52489", "#5aa52489", &TLItem{tag: 0x5aa52489, annotations: 0x2, tlName: "service2.addOrIncrMany"})
-	fillFunction("service2.set#0d31f63d", "#0d31f63d", &TLItem{tag: 0xd31f63d, annotations: 0x4, tlName: "service2.set"})
+	fillFunction("service2.set#0d31f63d", "#0d31f63d", &TLItem{tag: 0x0d31f63d, annotations: 0x4, tlName: "service2.set"})
 	fillFunction("service2.setObjectTtl#6f98f025", "#6f98f025", &TLItem{tag: 0x6f98f025, annotations: 0x4, tlName: "service2.setObjectTtl"})
 	fillFunction("service3.createProduct#b7d92bd9", "#b7d92bd9", &TLItem{tag: 0xb7d92bd9, annotations: 0x1, tlName: "service3.createProduct"})
 	fillFunction("service3.deleteAllProducts#4494acc2", "#4494acc2", &TLItem{tag: 0x4494acc2, annotations: 0x1, tlName: "service3.deleteAllProducts"})
@@ -332,7 +417,7 @@ func init() {
 	fillObject("service5.emptyOutput#11e46879", "#11e46879", &TLItem{tag: 0x11e46879, annotations: 0x0, tlName: "service5.emptyOutput"})
 	fillFunction("service5.insert#c911ee2c", "#c911ee2c", &TLItem{tag: 0xc911ee2c, annotations: 0x1, tlName: "service5.insert"})
 	fillObject("service5.params#12ae5cb5", "#12ae5cb5", &TLItem{tag: 0x12ae5cb5, annotations: 0x0, tlName: "service5.params"})
-	fillFunction("service5.performQuery#019d80a5", "#019d80a5", &TLItem{tag: 0x19d80a5, annotations: 0x1, tlName: "service5.performQuery"})
+	fillFunction("service5.performQuery#019d80a5", "#019d80a5", &TLItem{tag: 0x019d80a5, annotations: 0x1, tlName: "service5.performQuery"})
 	fillFunction("service5.query#b3b62513", "#b3b62513", &TLItem{tag: 0xb3b62513, annotations: 0x1, tlName: "service5.query"})
 	fillObject("service5.stringOutput#179e9863", "#179e9863", &TLItem{tag: 0x179e9863, annotations: 0x0, tlName: "service5.stringOutput"})
 	fillObject("service6.error#738553ef", "#738553ef", &TLItem{tag: 0x738553ef, annotations: 0x0, tlName: "service6.error"})
@@ -354,15 +439,15 @@ func init() {
 	fillObject("tasks.queueTypeSettings#561fbc09", "#561fbc09", &TLItem{tag: 0x561fbc09, annotations: 0x0, tlName: "tasks.queueTypeSettings"})
 	fillObject("tasks.queueTypeStats#e1b785f2", "#e1b785f2", &TLItem{tag: 0xe1b785f2, annotations: 0x0, tlName: "tasks.queueTypeStats"})
 	fillObject("tasks.task#7c23bc2c", "#7c23bc2c", &TLItem{tag: 0x7c23bc2c, annotations: 0x0, tlName: "tasks.task"})
-	fillObject("tasks.taskInfo#06f0c6a6", "#06f0c6a6", &TLItem{tag: 0x6f0c6a6, annotations: 0x0, tlName: "tasks.taskInfo"})
-	fillObject("tasks.taskStatusInProgress#06ef70e7", "#06ef70e7", &TLItem{tag: 0x6ef70e7, annotations: 0x0, tlName: "tasks.taskStatusInProgress"})
+	fillObject("tasks.taskInfo#06f0c6a6", "#06f0c6a6", &TLItem{tag: 0x06f0c6a6, annotations: 0x0, tlName: "tasks.taskInfo"})
+	fillObject("tasks.taskStatusInProgress#06ef70e7", "#06ef70e7", &TLItem{tag: 0x06ef70e7, annotations: 0x0, tlName: "tasks.taskStatusInProgress"})
 	fillObject("tasks.taskStatusNotCurrentlyInEngine#b207caaa", "#b207caaa", &TLItem{tag: 0xb207caaa, annotations: 0x0, tlName: "tasks.taskStatusNotCurrentlyInEngine"})
-	fillObject("tasks.taskStatusScheduled#0aca80a9", "#0aca80a9", &TLItem{tag: 0xaca80a9, annotations: 0x0, tlName: "tasks.taskStatusScheduled"})
+	fillObject("tasks.taskStatusScheduled#0aca80a9", "#0aca80a9", &TLItem{tag: 0x0aca80a9, annotations: 0x0, tlName: "tasks.taskStatusScheduled"})
 	fillObject("tasks.taskStatusWaiting#16739c2c", "#16739c2c", &TLItem{tag: 0x16739c2c, annotations: 0x0, tlName: "tasks.taskStatusWaiting"})
 	fillObject("tree_stats.objectLimitValueDouble#5dfb8816", "#5dfb8816", &TLItem{tag: 0x5dfb8816, annotations: 0x0, tlName: "tree_stats.objectLimitValueDouble"})
 	fillObject("tree_stats.objectLimitValueLong#73111993", "#73111993", &TLItem{tag: 0x73111993, annotations: 0x0, tlName: "tree_stats.objectLimitValueLong"})
 	fillObject("true#3fedd339", "#3fedd339", &TLItem{tag: 0x3fedd339, annotations: 0x0, tlName: "true"})
 	fillFunction("unique.get#ce89bbf2", "#ce89bbf2", &TLItem{tag: 0xce89bbf2, annotations: 0x1, tlName: "unique.get"})
-	fillFunction("unique.stringToInt#0f766c35", "#0f766c35", &TLItem{tag: 0xf766c35, annotations: 0x1, tlName: "unique.stringToInt"})
-	fillObject("withFloat#071b8685", "#071b8685", &TLItem{tag: 0x71b8685, annotations: 0x0, tlName: "withFloat"})
+	fillFunction("unique.stringToInt#0f766c35", "#0f766c35", &TLItem{tag: 0x0f766c35, annotations: 0x1, tlName: "unique.stringToInt"})
+	fillObject("withFloat#071b8685", "#071b8685", &TLItem{tag: 0x071b8685, annotations: 0x0, tlName: "withFloat"})
 }

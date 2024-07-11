@@ -24,7 +24,7 @@ type Service1Append struct {
 }
 
 func (Service1Append) TLName() string { return "service1.append" }
-func (Service1Append) TLTag() uint32  { return 0x4dec671 }
+func (Service1Append) TLTag() uint32  { return 0x04dec671 }
 
 func (item *Service1Append) Reset() {
 	item.Key = ""
@@ -60,7 +60,7 @@ func (item *Service1Append) Write(w []byte) []byte {
 }
 
 func (item *Service1Append) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x4dec671); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x04dec671); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -72,7 +72,7 @@ func (item *Service1Append) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Service1Append) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x4dec671)
+	w = basictl.NatWrite(w, 0x04dec671)
 	return item.Write(w)
 }
 

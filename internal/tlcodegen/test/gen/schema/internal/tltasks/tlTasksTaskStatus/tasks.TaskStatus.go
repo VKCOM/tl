@@ -17,9 +17,9 @@ var _ = internal.ErrorInvalidEnumTag
 
 var _TasksTaskStatus = [4]internal.UnionElement{
 	{TLTag: 0xb207caaa, TLName: "tasks.taskStatusNotCurrentlyInEngine", TLString: "tasks.taskStatusNotCurrentlyInEngine#b207caaa"},
-	{TLTag: 0xaca80a9, TLName: "tasks.taskStatusScheduled", TLString: "tasks.taskStatusScheduled#0aca80a9"},
+	{TLTag: 0x0aca80a9, TLName: "tasks.taskStatusScheduled", TLString: "tasks.taskStatusScheduled#0aca80a9"},
 	{TLTag: 0x16739c2c, TLName: "tasks.taskStatusWaiting", TLString: "tasks.taskStatusWaiting#16739c2c"},
-	{TLTag: 0x6ef70e7, TLName: "tasks.taskStatusInProgress", TLString: "tasks.taskStatusInProgress#06ef70e7"},
+	{TLTag: 0x06ef70e7, TLName: "tasks.taskStatusInProgress", TLString: "tasks.taskStatusInProgress#06ef70e7"},
 }
 
 func TasksTaskStatus__MakeEnum(i int) TasksTaskStatus { return TasksTaskStatus{index: i} }
@@ -54,13 +54,13 @@ func (item *TasksTaskStatus) ReadBoxed(w []byte) (_ []byte, err error) {
 	case 0xb207caaa:
 		item.index = 0
 		return w, nil
-	case 0xaca80a9:
+	case 0x0aca80a9:
 		item.index = 1
 		return w, nil
 	case 0x16739c2c:
 		item.index = 2
 		return w, nil
-	case 0x6ef70e7:
+	case 0x06ef70e7:
 		item.index = 3
 		return w, nil
 	default:

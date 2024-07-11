@@ -19,6 +19,7 @@ type UseTrue struct {
 	// B (TrueType) // Conditional: item.Fm.1
 	// C (TrueType)
 	// D (TrueType)
+	E bool // Conditional: item.Fm.2
 }
 
 func (UseTrue) TLName() string { return "useTrue" }
@@ -42,8 +43,19 @@ func (item *UseTrue) SetB(v bool) {
 }
 func (item UseTrue) IsSetB() bool { return item.Fm&(1<<1) != 0 }
 
+func (item *UseTrue) SetE(v bool) {
+	item.E = v
+	item.Fm |= 1 << 2
+}
+func (item *UseTrue) ClearE() {
+	item.E = false
+	item.Fm &^= 1 << 2
+}
+func (item UseTrue) IsSetE() bool { return item.Fm&(1<<2) != 0 }
+
 func (item *UseTrue) Reset() {
 	item.Fm = 0
+	item.E = false
 }
 
 func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
@@ -56,6 +68,14 @@ func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
 	if maskFm&(1<<1) != 0 {
 		item.Fm |= (1 << 1)
 	}
+	if maskFm&(1<<2) != 0 {
+		item.Fm |= (1 << 2)
+	}
+	if item.Fm&(1<<2) != 0 {
+		item.E = basictl.RandomUint(rg)&1 == 1
+	} else {
+		item.E = false
+	}
 }
 
 func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
@@ -67,7 +87,17 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 			return w, err
 		}
 	}
-	return basictl.NatReadExactTag(w, 0x3fedd339)
+	if w, err = basictl.NatReadExactTag(w, 0x3fedd339); err != nil {
+		return w, err
+	}
+	if item.Fm&(1<<2) != 0 {
+		if w, err = BoolReadBoxed(w, &item.E); err != nil {
+			return w, err
+		}
+	} else {
+		item.E = false
+	}
+	return w, nil
 }
 
 // This method is general version of Write, use it instead!
@@ -81,6 +111,9 @@ func (item *UseTrue) Write(w []byte) []byte {
 		w = basictl.NatWrite(w, 0x3fedd339)
 	}
 	w = basictl.NatWrite(w, 0x3fedd339)
+	if item.Fm&(1<<2) != 0 {
+		w = BoolWriteBoxed(w, item.E)
+	}
 	return w
 }
 
@@ -111,6 +144,7 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	var trueTypeAValue bool
 	var trueTypeBPresented bool
 	var trueTypeBValue bool
+	var propEPresented bool
 
 	if in != nil {
 		in.Delim('{')
@@ -155,6 +189,14 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 				if err := tmpD.ReadJSON(legacyTypeNames, in); err != nil {
 					return err
 				}
+			case "e":
+				if propEPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("useTrue", "e")
+				}
+				if err := Json2ReadBool(in, &item.E); err != nil {
+					return err
+				}
+				propEPresented = true
 			default:
 				return ErrorInvalidJSONExcessElement("useTrue", key)
 			}
@@ -168,6 +210,9 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	if !propFmPresented {
 		item.Fm = 0
 	}
+	if !propEPresented {
+		item.E = false
+	}
 	if trueTypeAPresented {
 		if trueTypeAValue {
 			item.Fm |= 1 << 0
@@ -177,6 +222,9 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 		if trueTypeBValue {
 			item.Fm |= 1 << 1
 		}
+	}
+	if propEPresented {
+		item.Fm |= 1 << 2
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeAPresented && !trueTypeAValue && (item.Fm&(1<<0) != 0) {
@@ -213,6 +261,11 @@ func (item *UseTrue) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byt
 	if item.Fm&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"b":true`...)
+	}
+	if item.Fm&(1<<2) != 0 {
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = append(w, `"e":`...)
+		w = basictl.JSONWriteBool(w, item.E)
 	}
 	return append(w, '}')
 }

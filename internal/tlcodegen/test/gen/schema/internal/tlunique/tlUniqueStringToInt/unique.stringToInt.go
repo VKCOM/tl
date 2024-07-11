@@ -20,7 +20,7 @@ type UniqueStringToInt struct {
 }
 
 func (UniqueStringToInt) TLName() string { return "unique.stringToInt" }
-func (UniqueStringToInt) TLTag() uint32  { return 0xf766c35 }
+func (UniqueStringToInt) TLTag() uint32  { return 0x0f766c35 }
 
 func (item *UniqueStringToInt) Reset() {
 	item.Key = ""
@@ -41,7 +41,7 @@ func (item *UniqueStringToInt) Write(w []byte) []byte {
 }
 
 func (item *UniqueStringToInt) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xf766c35); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0f766c35); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -53,7 +53,7 @@ func (item *UniqueStringToInt) WriteBoxedGeneral(w []byte) (_ []byte, err error)
 }
 
 func (item *UniqueStringToInt) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xf766c35)
+	w = basictl.NatWrite(w, 0x0f766c35)
 	return item.Write(w)
 }
 
