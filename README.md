@@ -13,6 +13,16 @@ The TL format is characterized by compactness and high efficiency.
 TL is schema-driven format. Tool caled `tlgen` is used to generate structs/classes and (de)serialization methods.
 
 
+## Running without installation 
+
+You can run tool without installation. This is recommended way for most use cases.
+
+```
+go run github.com/vkcom/tl/cmd/tlgen@latest <options>
+```
+
+For build scripts, you can pin particular version instead of `latest`.
+
 ## Installation
 
 Install `tlgen` with the following command

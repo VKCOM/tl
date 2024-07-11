@@ -31,7 +31,6 @@ TL_BYTE_VERSIONS := ch_proxy.,ab.
 all: build
 
 build:
-	@echo "Building tlgen"
 	@$(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
 
 tlo-bootstrap: build
@@ -147,3 +146,9 @@ cpp_gen: build
 cpp:
 	$(MAKE) cpp_gen
 	$(MAKE) cpp_build
+
+# target should be as close as possible to github actions used to enable merge
+.PHONY: check
+check: build
+	@go test $(shell go list ./cmd/... ./internal/... ./pkg/... | grep -v /internal/tlcodegen/test/gen/)
+	@go run honnef.co/go/tools/cmd/staticcheck@v0.4.7 ./... # update version together with github actions
