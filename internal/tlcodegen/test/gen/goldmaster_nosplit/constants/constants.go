@@ -137,6 +137,7 @@ const (
 	UseDictUgly                             = 0xfb9ce817 // useDictUgly
 	UseResponse                             = 0x0a63ec5f // useResponse
 	UseStr                                  = 0x9aa3dee5 // useStr
+	UseTrue                                 = 0xe77a6abc // useTrue
 	UsefulServiceGetUserEntity              = 0x3c857e52 // usefulService.getUserEntity
 	UsefulServiceGetUserEntityResult        = 0xe494698a // usefulService.getUserEntityResult
 	UsefulServiceUserEntityPaymentItem      = 0x4f798680 // usefulService.userEntityPaymentItem

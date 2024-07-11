@@ -4940,6 +4940,46 @@ External # (nat) arguments: <b>Y</b>
   </dd>
 </dl>
 
+<h2 id="UseTrue">useTrue</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fm"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: true,</td>
+          <td>// fm bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: true</td>
+          <td>// fm bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>useTrue#e77a6abc fm:# a:fm.0?true b:fm.1?True = UseTrue;</code>
+  </dd>
+</dl>
+
 <h2 id="UsefulServiceGetUserEntity">usefulService.getUserEntity</h2>
 
 <p></p>

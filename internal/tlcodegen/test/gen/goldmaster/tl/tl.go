@@ -121,6 +121,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseDictUgly"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorAColor"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorCyc1MyCycle"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorDictionaryFieldString"
@@ -255,6 +256,7 @@ type (
 	UseResponse                                                  = tlUseResponse.UseResponse
 	UseStr                                                       = tlUseStr.UseStr
 	UseStrBytes                                                  = tlUseStr.UseStrBytes
+	UseTrue                                                      = tlUseTrue.UseTrue
 	VectorAColor                                                 = tlVectorAColor.VectorAColor
 	VectorCyc1MyCycle                                            = tlVectorCyc1MyCycle.VectorCyc1MyCycle
 	VectorDictionaryFieldString                                  = tlVectorDictionaryFieldString.VectorDictionaryFieldString
