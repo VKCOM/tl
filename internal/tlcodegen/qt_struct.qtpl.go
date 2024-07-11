@@ -1878,10 +1878,15 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 		return
 	}
 	for _, field := range struct_.Fields {
+		writingCode := ""
 		if field.t.IsTrueType() {
-			continue
+			if field.Bare() {
+				continue
+			}
+			writingCode = fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag)
+		} else {
+			writingCode = field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
 		}
-		writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
 
 		if field.fieldMask != nil {
 			qw422016.N().S(`        if `)
@@ -1940,7 +1945,7 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 	lastWritten := false
 
 	for i, field := range struct_.Fields {
-		if field.t.IsTrueType() {
+		if field.t.IsTrueType() && field.Bare() {
 			continue
 		}
 		if field.fieldMask != nil {
@@ -1967,28 +1972,39 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 		last := i == len(struct_.Fields)-1 && field.fieldMask == nil
 		lastWritten = lastWritten || last
 
-		qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last))
-		qw422016.N().S(`
-`)
-		if field.fieldMask != nil {
-			qw422016.N().S(`} else {
-`)
-			if field.recursive {
-				qw422016.N().S(`        if item.`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` != nil {
-`)
-			}
-			qw422016.N().S(`            `)
-			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+		if field.t.IsTrueType() {
+			qw422016.N().S(wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true))
 			qw422016.N().S(`
 `)
-			if field.recursive {
-				qw422016.N().S(`        }
+		} else {
+			qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last))
+			qw422016.N().S(`
+`)
+		}
+		if field.fieldMask != nil {
+			if field.t.IsTrueType() {
+				qw422016.N().S(`}
+`)
+			} else {
+				qw422016.N().S(`} else {
+`)
+				if field.recursive {
+					qw422016.N().S(`        if item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` != nil {
+`)
+				}
+				qw422016.N().S(`            `)
+				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+				qw422016.N().S(`
+`)
+				if field.recursive {
+					qw422016.N().S(`        }
+`)
+				}
+				qw422016.N().S(`}
 `)
 			}
-			qw422016.N().S(`}
-`)
 		}
 	}
 	if !lastWritten {

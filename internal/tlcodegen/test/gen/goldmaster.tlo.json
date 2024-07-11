@@ -362,7 +362,7 @@
       "constructors_num": 1
     },
     {
-      "name": -411407684,
+      "name": -539147904,
       "id": "UseTrue",
       "constructors_num": 1
     },
@@ -1821,13 +1821,13 @@
     {
       "type": "tls.combinator_v4",
       "value": {
-        "name": -411407684,
+        "name": -539147904,
         "id": "useTrue",
-        "type_name": -411407684,
+        "type_name": -539147904,
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
-            "args_num": 3,
+            "args_num": 5,
             "args": [
               {
                 "id": "fm",
@@ -1864,6 +1864,25 @@
                     "name": 1072550713
                   }
                 }
+              },
+              {
+                "id": "c",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1072550713,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "d",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1072550713
+                  }
+                }
               }
             ]
           }
@@ -1872,7 +1891,7 @@
           "value": {
             "type": "tls.typeExpr",
             "value": {
-              "name": -411407684
+              "name": -539147904
             }
           }
         }

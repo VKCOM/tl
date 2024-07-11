@@ -9,6 +9,7 @@ package tlUseTrue
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -19,10 +20,12 @@ type UseTrue struct {
 	Fm uint32
 	// A (TrueType) // Conditional: item.Fm.0
 	// B (TrueType) // Conditional: item.Fm.1
+	// C (TrueType)
+	// D (TrueType)
 }
 
 func (UseTrue) TLName() string { return "useTrue" }
-func (UseTrue) TLTag() uint32  { return 0xe77a6abc }
+func (UseTrue) TLTag() uint32  { return 0xdfdd4180 }
 
 func (item *UseTrue) SetA(v bool) {
 	if v {
@@ -62,7 +65,12 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.Fm); err != nil {
 		return w, err
 	}
-	return w, nil
+	if item.Fm&(1<<1) != 0 {
+		if w, err = basictl.NatReadExactTag(w, 0x3fedd339); err != nil {
+			return w, err
+		}
+	}
+	return basictl.NatReadExactTag(w, 0x3fedd339)
 }
 
 // This method is general version of Write, use it instead!
@@ -72,11 +80,15 @@ func (item *UseTrue) WriteGeneral(w []byte) (_ []byte, err error) {
 
 func (item *UseTrue) Write(w []byte) []byte {
 	w = basictl.NatWrite(w, item.Fm)
+	if item.Fm&(1<<1) != 0 {
+		w = basictl.NatWrite(w, 0x3fedd339)
+	}
+	w = basictl.NatWrite(w, 0x3fedd339)
 	return w
 }
 
 func (item *UseTrue) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xe77a6abc); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xdfdd4180); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -88,7 +100,7 @@ func (item *UseTrue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *UseTrue) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xe77a6abc)
+	w = basictl.NatWrite(w, 0xdfdd4180)
 	return item.Write(w)
 }
 
@@ -136,6 +148,16 @@ func (item *UseTrue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 					return err
 				}
 				trueTypeBPresented = true
+			case "c":
+				var tmpC tlTrue.True
+				if err := tmpC.ReadJSON(legacyTypeNames, in); err != nil {
+					return err
+				}
+			case "d":
+				var tmpD tlTrue.True
+				if err := tmpD.ReadJSON(legacyTypeNames, in); err != nil {
+					return err
+				}
 			default:
 				return internal.ErrorInvalidJSONExcessElement("useTrue", key)
 			}
