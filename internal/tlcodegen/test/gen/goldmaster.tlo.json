@@ -1,7 +1,7 @@
 {
   "version": 301822800,
   "date": 301822800,
-  "types_num": 98,
+  "types_num": 99,
   "types": [
     {
       "name": 1885708031,
@@ -362,6 +362,11 @@
       "constructors_num": 1
     },
     {
+      "name": -411407684,
+      "id": "UseTrue",
+      "constructors_num": 1
+    },
+    {
       "name": 481674261,
       "id": "Vector",
       "constructors_num": 1,
@@ -550,7 +555,7 @@
       "params_type": 1
     }
   ],
-  "constructor_num": 113,
+  "constructor_num": 114,
   "constructors": [
     {
       "type": "tls.combinator_v4",
@@ -1808,6 +1813,66 @@
             "type": "tls.typeExpr",
             "value": {
               "name": 1072550713
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": -411407684,
+        "id": "useTrue",
+        "type_name": -411407684,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 3,
+            "args": [
+              {
+                "id": "fm",
+                "flags": 2,
+                "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "a",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1072550713,
+                    "flags": 1
+                  }
+                }
+              },
+              {
+                "id": "b",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 1,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1072550713
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": -411407684
             }
           }
         }

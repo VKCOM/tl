@@ -64,6 +64,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseDictUgly"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseResponse"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseStr"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUseTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlATop2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall2"
@@ -229,5 +230,6 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject(0xfb9ce817, func() meta.Object { var ret tlUseDictUgly.UseDictUgly; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x0a63ec5f, func() meta.Object { var ret tlUseResponse.UseResponse; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x9aa3dee5, func() meta.Object { var ret tlUseStr.UseStr; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xe77a6abc, func() meta.Object { var ret tlUseTrue.UseTrue; return &ret })
 	meta.SetGlobalFactoryCreateForFunction(0x3c857e52, func() meta.Object { var ret tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity; return &ret }, func() meta.Function { var ret tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity; return &ret }, nil)
 }

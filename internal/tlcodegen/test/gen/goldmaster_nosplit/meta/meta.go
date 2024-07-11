@@ -323,5 +323,6 @@ func init() {
 	fillObject("useDictUgly#fb9ce817", "#fb9ce817", &TLItem{tag: 0xfb9ce817, annotations: 0x0, tlName: "useDictUgly"})
 	fillObject("useResponse#0a63ec5f", "#0a63ec5f", &TLItem{tag: 0x0a63ec5f, annotations: 0x0, tlName: "useResponse"})
 	fillObject("useStr#9aa3dee5", "#9aa3dee5", &TLItem{tag: 0x9aa3dee5, annotations: 0x0, tlName: "useStr"})
+	fillObject("useTrue#e77a6abc", "#e77a6abc", &TLItem{tag: 0xe77a6abc, annotations: 0x0, tlName: "useTrue"})
 	fillFunction("usefulService.getUserEntity#3c857e52", "#3c857e52", &TLItem{tag: 0x3c857e52, annotations: 0x2, tlName: "usefulService.getUserEntity"})
 }

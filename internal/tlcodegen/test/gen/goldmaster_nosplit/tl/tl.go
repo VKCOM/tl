@@ -136,6 +136,7 @@ type (
 	UseResponse                                                  = internal.UseResponse
 	UseStr                                                       = internal.UseStr
 	UseStrBytes                                                  = internal.UseStrBytes
+	UseTrue                                                      = internal.UseTrue
 	VectorAColor                                                 = internal.VectorAColor
 	VectorCyc1MyCycle                                            = internal.VectorCyc1MyCycle
 	VectorDictionaryFieldString                                  = internal.VectorDictionaryFieldString
