@@ -1,0 +1,704 @@
+{
+  "TestWriteBoxed": [
+    {
+      "TestName": "tasks.getAnyTask",
+      "TLType": "tasks.getAnyTask",
+      "TestingObjectData": {},
+      "ExpectedOutput": "4a9c7dbb"
+    },
+    {
+      "TestName": "tasks.getQueueTypes0",
+      "TLType": "tasks.getQueueTypes",
+      "TestingObjectData": {
+        "settings_mask": 12,
+        "stats_mask": 413234
+      },
+      "ExpectedOutput": "5434457a 0000000c 00064e32"
+    },
+    {
+      "TestName": "tasks.getQueueTypes1",
+      "TLType": "tasks.getQueueTypes",
+      "TestingObjectData": {},
+      "ExpectedOutput": "5434457a 00000000 00000000"
+    },
+    {
+      "TestName": "tasks.getQueueTypes2",
+      "TLType": "tasks.getQueueTypes",
+      "TestingObjectData": {
+        "settings_mask": 4294967295,
+        "stats_mask": 4294967295
+      },
+      "ExpectedOutput": "5434457a ffffffff ffffffff"
+    },
+    {
+      "TestName": "tasks.getTaskFromQueue0",
+      "TLType": "tasks.getTaskFromQueue",
+      "TestingObjectData": {},
+      "ExpectedOutput": "6a52b698 00000000 00000000"
+    },
+    {
+      "TestName": "tasks.getTaskFromQueue1",
+      "TLType": "tasks.getTaskFromQueue",
+      "TestingObjectData": {
+        "type_name": "type",
+        "queue_id": [
+          900,
+          800,
+          700,
+          600,
+          500,
+          600,
+          700,
+          800,
+          900
+        ]
+      },
+      "ExpectedOutput": "6a52b698 70797404 00000065 00000009 00000384 00000320 000002bc 00000258 000001f4 00000258 000002bc 00000320 00000384"
+    },
+    {
+      "TestName": "tasks.addTask0",
+      "TLType": "tasks.addTask",
+      "TestingObjectData": {
+        "type_name": "foobar",
+        "queue_id": [
+          1,
+          2,
+          3
+        ],
+        "task": {
+          "flags": 297520349,
+          "tag": [
+            4
+          ],
+          "data": "123"
+        }
+      },
+      "ExpectedOutput": "2ca073d5 6f6f6606 00726162 00000003 00000001 00000002 00000003 00000000 11bbccdd 00000001 00000004 33323103"
+    },
+    {
+      "TestName": "tasks.addTask1",
+      "TLType": "tasks.addTask",
+      "TestingObjectData": {
+        "type_name": "x",
+        "queue_id": [
+          3
+        ],
+        "task": {
+          "fields_mask": 10,
+          "data": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "retries": 10,
+          "deadline": 600000
+        }
+      },
+      "ExpectedOutput": "2ca073d5 00007801 00000001 00000003 0000000a 00000000 00000000 000100fe 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 0000000a 000927c0"
+    },
+    {
+      "TestName": "tasks.addTask2",
+      "TLType": "tasks.addTask",
+      "TestingObjectData": {
+        "queue_id": [
+          13029
+        ],
+        "task": {
+          "fields_mask": 15,
+          "flags": 1232,
+          "id": 777,
+          "retries": 2,
+          "scheduled_time": 102,
+          "deadline": 600000
+        }
+      },
+      "ExpectedOutput": "2ca073d5 00000000 00000001 000032e5 0000000f 000004d0 00000000 00000000 00000309 00000000 00000002 00000066 000927c0"
+    },
+    {
+      "TestName": "tasks.addTask3",
+      "TLType": "tasks.addTask",
+      "TestingObjectData": {
+        "task": {
+          "fields_mask": 1,
+          "id": 0
+        }
+      },
+      "ExpectedOutput": "2ca073d5 00000000 00000000 00000001 00000000 00000000 00000000 00000000 00000000"
+    },
+    {
+      "TestName": "tasks.getQueueSize0",
+      "TLType": "tasks.getQueueSize",
+      "TestingObjectData": {
+        "type_name": "a a a a",
+        "queue_id": [
+          0
+        ]
+      },
+      "ExpectedOutput": "d8fcda03 61206107 61206120 00000001 00000000 00000000"
+    },
+    {
+      "TestName": "tasks.getQueueSize1",
+      "TLType": "tasks.getQueueSize",
+      "TestingObjectData": {
+        "fields_mask": 1
+      },
+      "ExpectedOutput": "d8fcda03 00000000 00000000 00000001"
+    },
+    {
+      "TestName": "tasks.getQueueSize2",
+      "TLType": "tasks.getQueueSize",
+      "TestingObjectData": {
+        "fields_mask": 7
+      },
+      "ExpectedOutput": "d8fcda03 00000000 00000000 00000007"
+    },
+    {
+      "TestName": "boxedVector32_0",
+      "TLType": "boxedVector32",
+      "TestingObjectData": {},
+      "ExpectedOutput": "bbadef07 1cb5c415 00000000"
+    },
+    {
+      "TestName": "boxedVector32_1",
+      "TLType": "boxedVector32",
+      "TestingObjectData": {
+        "x": [
+          1,
+          2,
+          3
+        ]
+      },
+      "ExpectedOutput": "bbadef07 1cb5c415 00000003 00000001 00000002 00000003"
+    },
+    {
+      "TestName": "boxedVector32BoxedElem_0",
+      "TLType": "boxedVector32BoxedElem",
+      "TestingObjectData": {},
+      "ExpectedOutput": "591cecd4 1cb5c415 00000000"
+    },
+    {
+      "TestName": "boxedVector32BoxedElem_1",
+      "TLType": "boxedVector32BoxedElem",
+      "TestingObjectData": {
+        "x": [
+          1,
+          2,
+          3
+        ]
+      },
+      "ExpectedOutput": "591cecd4 1cb5c415 00000003 a8509bda 00000001 a8509bda 00000002 a8509bda 00000003"
+    },
+    {
+      "TestName": "boxedVector64_0",
+      "TLType": "boxedVector64",
+      "TestingObjectData": {},
+      "ExpectedOutput": "83659ba8 1cb5c415 00000000"
+    },
+    {
+      "TestName": "boxedVector64_1",
+      "TLType": "boxedVector64",
+      "TestingObjectData": {
+        "x": [
+          1,
+          2,
+          3
+        ]
+      },
+      "ExpectedOutput": "83659ba8 1cb5c415 00000003 22076cba 00000001 00000000 22076cba 00000002 00000000 22076cba 00000003 00000000"
+    },
+    {
+      "TestName": "boxedTuple0",
+      "TLType": "boxedTuple",
+      "TestingObjectData": {
+        "x": [
+          0,
+          0,
+          0
+        ]
+      },
+      "ExpectedOutput": "30c9d533 9770768a 00000000 00000000 00000000"
+    },
+    {
+      "TestName": "boxedTuple1",
+      "TLType": "boxedTuple",
+      "TestingObjectData": {
+        "x": [
+          1,
+          2,
+          3
+        ]
+      },
+      "ExpectedOutput": "30c9d533 9770768a 00000001 00000002 00000003"
+    },
+    {
+      "TestName": "boxedString0",
+      "TLType": "boxedString",
+      "TestingObjectData": {
+        "x": ""
+      },
+      "ExpectedOutput": "548994db b5286e24 00000000"
+    },
+    {
+      "TestName": "boxedString1",
+      "TLType": "boxedString",
+      "TestingObjectData": {
+        "x": "abcd"
+      },
+      "ExpectedOutput": "548994db b5286e24 63626104 00000064"
+    },
+    {
+      "TestName": "boxedInt0",
+      "TLType": "boxedInt",
+      "TestingObjectData": {
+        "x": 0
+      },
+      "ExpectedOutput": "5688ebaf a8509bda 00000000"
+    },
+    {
+      "TestName": "boxedInt1",
+      "TLType": "boxedInt",
+      "TestingObjectData": {
+        "x": 1133423
+      },
+      "ExpectedOutput": "5688ebaf a8509bda 00114b6f"
+    },
+    {
+      "TestName": "getMyValueInt0",
+      "TLType": "getMyValue",
+      "TestingObjectData": {
+        "x": {}
+      },
+      "ExpectedOutput": "b3df27fe c12375b7 a8509bda 00000000"
+    },
+    {
+      "TestName": "getMyValueInt1",
+      "TLType": "getMyValue",
+      "TestingObjectData": {
+        "x": {}
+      },
+      "ExpectedOutput": "b3df27fe c12375b7 a8509bda 00000001"
+    },
+    {
+      "TestName": "getMyValueString0",
+      "TLType": "getMyValue",
+      "TestingObjectData": {
+        "x": {}
+      },
+      "ExpectedOutput": "b3df27fe c8bfa969 b5286e24 00000000"
+    },
+    {
+      "TestName": "getMyValueString1",
+      "TLType": "getMyValue",
+      "TestingObjectData": {
+        "x": {}
+      },
+      "ExpectedOutput": "b3df27fe c8bfa969 b5286e24 6473610b 61646373 33646473"
+    },
+    {
+      "TestName": "getMyDictOfInt0",
+      "TLType": "getMyDictOfInt",
+      "TestingObjectData": {
+        "x": {}
+      },
+      "ExpectedOutput": "166f962c b8019a3d 00000000"
+    },
+    {
+      "TestName": "getMyDictOfInt1",
+      "TLType": "getMyDictOfInt",
+      "TestingObjectData": {
+        "x": {
+          "a": 0
+        }
+      },
+      "ExpectedOutput": "166f962c b8019a3d 00000001 00006101 00000000"
+    },
+    {
+      "TestName": "getDouble0",
+      "TLType": "getDouble",
+      "TestingObjectData": {
+        "x": 0
+      },
+      "ExpectedOutput": "39711d7b 2210c154 00000000 00000000"
+    },
+    {
+      "TestName": "getDouble1",
+      "TLType": "getDouble",
+      "TestingObjectData": {
+        "x": 3234.63
+      },
+      "ExpectedOutput": "39711d7b 2210c154 8f5c28f6 40a94542"
+    },
+    {
+      "TestName": "getDouble2",
+      "TLType": "getDouble",
+      "TestingObjectData": {
+        "x": -120.00001
+      },
+      "ExpectedOutput": "39711d7b 2210c154 29f16b12 c05e0000"
+    },
+    {
+      "TestName": "getNonOptNat0/nil",
+      "TLType": "getNonOptNat",
+      "TestingObjectData": {
+        "n": 0,
+        "xs": null
+      },
+      "ExpectedOutput": "67665961 00000000 9770768a"
+    },
+    {
+      "TestName": "getNonOptNat0/[]",
+      "TLType": "getNonOptNat",
+      "TestingObjectData": {
+        "n": 0,
+        "xs": []
+      },
+      "ExpectedOutput": "67665961 00000000 9770768a"
+    },
+    {
+      "TestName": "getNonOptNat2",
+      "TLType": "getNonOptNat",
+      "TestingObjectData": {
+        "n": 2,
+        "xs": [
+          1,
+          2
+        ]
+      },
+      "ExpectedOutput": "67665961 00000002 9770768a 00000001 00000002"
+    },
+    {
+      "TestName": "getFloat/0",
+      "TLType": "getFloat",
+      "TestingObjectData": {
+        "x": 0
+      },
+      "ExpectedOutput": "25a7bc68 00000000"
+    },
+    {
+      "TestName": "getFloat/small",
+      "TLType": "getFloat",
+      "TestingObjectData": {
+        "x": -42
+      },
+      "ExpectedOutput": "25a7bc68 c2280000"
+    },
+    {
+      "TestName": "getFloat/big",
+      "TLType": "getFloat",
+      "TestingObjectData": {
+        "x": 93455350000
+      },
+      "ExpectedOutput": "25a7bc68 51ae12fc"
+    }
+  ],
+  "TestReadFunction": [
+    {
+      "FunctionName": "getStats",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "e1b785f2 00000000",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "getStats",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "e1b785f2 00000001 fffffff1 000000ff",
+      "ResultJson": "{\"fields_mask\":1,\"waiting_size\":1099511627761}"
+    },
+    {
+      "FunctionName": "getStats",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "e1b785f2 00000002 fffffff2 000000ff",
+      "ResultJson": "{\"fields_mask\":2,\"scheduled_size\":1099511627762}"
+    },
+    {
+      "FunctionName": "getStats",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "e1b785f2 00000004 fffffff3 000000ff",
+      "ResultJson": "{\"fields_mask\":4,\"in_progress_size\":1099511627763}"
+    },
+    {
+      "FunctionName": "getStats",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "e1b785f2 00000008 00fffff4",
+      "ResultJson": "{\"fields_mask\":8,\"num_queues\":16777204}"
+    },
+    {
+      "FunctionName": "getStats",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "e1b785f2 0000000f fffffff1 000000ff fffffff2 000000ff fffffff3 000000ff 00fffff4",
+      "ResultJson": "{\"fields_mask\":15,\"waiting_size\":1099511627761,\"scheduled_size\":1099511627762,\"in_progress_size\":1099511627763,\"num_queues\":16777204}"
+    },
+    {
+      "FunctionName": "getMaybeIface",
+      "FunctionBody": "{\"x\":{\"type\":\"service1.not_found\"}}",
+      "ResultBytes": "27930a7b",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "getMaybeIface",
+      "FunctionBody": "{\"x\":{\"type\":\"service1.not_found\"}}",
+      "ResultBytes": "3f9c8ef8 082e0945 00000066 00000000 00000000",
+      "ResultJson": "{\"ok\":true,\"value\":{\"type\":\"service1.longvalue\",\"value\":{\"value\":102}}}"
+    },
+    {
+      "FunctionName": "getMaybeIface",
+      "FunctionBody": "{\"x\":{\"type\":\"service1.not_found\"}}",
+      "ResultBytes": "3f9c8ef8 5faa0c52 6c65680d 202c6f6c 6c726f77 00002164 00000000",
+      "ResultJson": "{\"ok\":true,\"value\":{\"type\":\"service1.strvalue\",\"value\":{\"value\":\"hello, world!\"}}}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{}",
+      "ResultBytes": "1d942543",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{\"fields_mask\":1}",
+      "ResultBytes": "1d942543 00000001",
+      "ResultJson": "{\"waiting_size\":1}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{\"fields_mask\":2}",
+      "ResultBytes": "1d942543 00000002",
+      "ResultJson": "{\"scheduled_size\":2}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{\"fields_mask\":4}",
+      "ResultBytes": "1d942543 00000003",
+      "ResultJson": "{\"in_progress_size\":3}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{\"fields_mask\":5}",
+      "ResultBytes": "1d942543 00000001 00000003",
+      "ResultJson": "{\"waiting_size\":1,\"in_progress_size\":3}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{\"fields_mask\":7}",
+      "ResultBytes": "1d942543 00000000 00000000 00000000",
+      "ResultJson": "{\"waiting_size\":0,\"scheduled_size\":0,\"in_progress_size\":0}"
+    },
+    {
+      "FunctionName": "tasks.getQueueSize",
+      "FunctionBody": "{\"fields_mask\":7}",
+      "ResultBytes": "1d942543 00000001 00000002 00000003",
+      "ResultJson": "{\"waiting_size\":1,\"scheduled_size\":2,\"in_progress_size\":3}"
+    },
+    {
+      "FunctionName": "tasks.getAnyTask",
+      "FunctionBody": "{}",
+      "ResultBytes": "27930a7b",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "tasks.getAnyTask",
+      "FunctionBody": "{}",
+      "ResultBytes": "3f9c8ef8 00000000 00000000 00000000 00000000 00000000 00000000",
+      "ResultJson": "{\"ok\":true,\"value\":{\"task\":{}}}"
+    },
+    {
+      "FunctionName": "tasks.getAnyTask",
+      "FunctionBody": "{}",
+      "ResultBytes": "3f9c8ef8 00000000 00000000 00000000 00000000 00000000 00000000",
+      "ResultJson": "{\"ok\":true,\"value\":{\"task\":{}}}"
+    },
+    {
+      "FunctionName": "tasks.getAnyTask",
+      "FunctionBody": "{}",
+      "ResultBytes": "3f9c8ef8 00000000 00000000 00000000 00000000 00000000 00000000",
+      "ResultJson": "{\"ok\":true,\"value\":{\"task\":{}}}"
+    },
+    {
+      "FunctionName": "tasks.getAnyTask",
+      "FunctionBody": "{}",
+      "ResultBytes": "3f9c8ef8 6d6f730e 79742065 6e206570 00656d61 00000000 00000000 00000001 00000003 00000000 00000000 00000000 6568740f 74616420 74732061 676e6972",
+      "ResultJson": "{\"ok\":true,\"value\":{\"type_name\":\"some type name\",\"task\":{\"flags\":1,\"tag\":[0,0,0],\"data\":\"the data string\"}}}"
+    },
+    {
+      "FunctionName": "getMyValue",
+      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "ResultBytes": "c12375b7 a8509bda 00000000",
+      "ResultJson": "{\"type\":\"myInt\",\"value\":{}}"
+    },
+    {
+      "FunctionName": "getMyValue",
+      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "ResultBytes": "c12375b7 a8509bda ffffffff",
+      "ResultJson": "{\"type\":\"myInt\",\"value\":{\"val1\":-1}}"
+    },
+    {
+      "FunctionName": "getMyValue",
+      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "ResultBytes": "c12375b7 a8509bda 0756ce93",
+      "ResultJson": "{\"type\":\"myInt\",\"value\":{\"val1\":123129491}}"
+    },
+    {
+      "FunctionName": "getMyValue",
+      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "ResultBytes": "c8bfa969 b5286e24 00000000",
+      "ResultJson": "{\"type\":\"myString\",\"value\":{}}"
+    },
+    {
+      "FunctionName": "getMyValue",
+      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "ResultBytes": "c8bfa969 b5286e24 33323103",
+      "ResultJson": "{\"type\":\"myString\",\"value\":{\"val2\":\"123\"}}"
+    },
+    {
+      "FunctionName": "getMyValue",
+      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "ResultBytes": "c8bfa969 b5286e24 00012cfe 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878",
+      "ResultJson": "{\"type\":\"myString\",\"value\":{\"val2\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}}"
+    },
+    {
+      "FunctionName": "getMyDictOfInt",
+      "FunctionBody": "{}",
+      "ResultBytes": "b8019a3d 00000000",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "getMyDictOfInt",
+      "FunctionBody": "{}",
+      "ResultBytes": "b8019a3d 00000000",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "getMyDictOfInt",
+      "FunctionBody": "{}",
+      "ResultBytes": "b8019a3d 00000001 00007801 00000001",
+      "ResultJson": "{\"x\":1}"
+    },
+    {
+      "FunctionName": "getMyDictOfInt",
+      "FunctionBody": "{}",
+      "ResultBytes": "b8019a3d 00000003 00003101 00000001 00003201 00000002 00003301 00000003",
+      "ResultJson": "{\"1\":1,\"2\":2,\"3\":3}"
+    },
+    {
+      "FunctionName": "boxedTupleSlice2",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "25d1a1be 00000000 9770768a",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "boxedTupleSlice2",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "25d1a1be 00000000 9770768a",
+      "ResultJson": "{}"
+    },
+    {
+      "FunctionName": "boxedTupleSlice2",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "25d1a1be 00000003 9770768a a8509bda 00000001 a8509bda 00000002 a8509bda 00000003",
+      "ResultJson": "{\"n\":3,\"data\":[1,2,3]}"
+    },
+    {
+      "FunctionName": "boxedTupleSlice2",
+      "FunctionBody": "{\"x\":{}}",
+      "ResultBytes": "25d1a1be 00000003 9770768a a8509bda 00000003 a8509bda 00000002 a8509bda 00000001",
+      "ResultJson": "{\"n\":3,\"data\":[3,2,1]}"
+    },
+    {
+      "FunctionName": "boxedTupleSlice3",
+      "FunctionBody": "{}",
+      "ResultBytes": "9770768a",
+      "ResultJson": "[]"
+    },
+    {
+      "FunctionName": "boxedTupleSlice3",
+      "FunctionBody": "{}",
+      "ResultBytes": "9770768a",
+      "ResultJson": "[]"
+    },
+    {
+      "FunctionName": "boxedTupleSlice3",
+      "FunctionBody": "{\"n\":1,\"x\":[1]}",
+      "ResultBytes": "9770768a 00000001",
+      "ResultJson": "[1]"
+    },
+    {
+      "FunctionName": "boxedTupleSlice3",
+      "FunctionBody": "{\"n\":2,\"x\":[1,2]}",
+      "ResultBytes": "9770768a 00000001 00000002",
+      "ResultJson": "[1,2]"
+    },
+    {
+      "FunctionName": "boxedArray",
+      "FunctionBody": "{\"x\":{\"data\":[0,0]}}",
+      "ResultBytes": "288f64f0 9770768a a8509bda 00000000 a8509bda 00000000",
+      "ResultJson": "{\"data\":[0,0]}"
+    },
+    {
+      "FunctionName": "boxedArray",
+      "FunctionBody": "{\"x\":{\"data\":[0,0]}}",
+      "ResultBytes": "288f64f0 9770768a a8509bda 00000001 a8509bda 00000002",
+      "ResultJson": "{\"data\":[1,2]}"
+    },
+    {
+      "FunctionName": "boxedArray",
+      "FunctionBody": "{\"x\":{\"data\":[0,0]}}",
+      "ResultBytes": "288f64f0 9770768a a8509bda 00000002 a8509bda 00000001",
+      "ResultJson": "{\"data\":[2,1]}"
+    },
+    {
+      "FunctionName": "getMyDouble",
+      "FunctionBody": "{}",
+      "ResultBytes": "90a6c726 2210c154 00000000 00000000",
+      "ResultJson": "0"
+    },
+    {
+      "FunctionName": "getMyDouble",
+      "FunctionBody": "{}",
+      "ResultBytes": "90a6c726 2210c154 00000000 3ff00000",
+      "ResultJson": "1"
+    },
+    {
+      "FunctionName": "getMyDouble",
+      "FunctionBody": "{}",
+      "ResultBytes": "90a6c726 2210c154 9999999a 3fb99999",
+      "ResultJson": "0.1"
+    },
+    {
+      "FunctionName": "getMyDouble",
+      "FunctionBody": "{}",
+      "ResultBytes": "90a6c726 2210c154 e147ae14 4090247a",
+      "ResultJson": "1033.12"
+    },
+    {
+      "FunctionName": "getMyDouble",
+      "FunctionBody": "{}",
+      "ResultBytes": "90a6c726 2210c154 e147ae14 c090247a",
+      "ResultJson": "-1033.12"
+    },
+    {
+      "FunctionName": "getFloat",
+      "FunctionBody": "{}",
+      "ResultBytes": "824dab22 00000000",
+      "ResultJson": "0"
+    },
+    {
+      "FunctionName": "getFloat",
+      "FunctionBody": "{}",
+      "ResultBytes": "824dab22 43c4cccd",
+      "ResultJson": "393.6"
+    },
+    {
+      "FunctionName": "getFloat",
+      "FunctionBody": "{}",
+      "ResultBytes": "824dab22 c9985c01",
+      "ResultJson": "-1248128.1"
+    },
+    {
+      "FunctionName": "service2.addOrIncrMany",
+      "FunctionBody": "{\"objectIdLength\":4,\"intCountersNum\":3,\"floatCountersNum\":2,\"objectsNum\":2,\"intCounters\":[100,200,300],\"floatCounters\":[5,8],\"deltas\":[{\"id\":{\"id\":[1,2,3,4]},\"counters\":{\"intCounters\":[500,600,700],\"floatCounters\":[-0.5,11.5]}},{\"id\":{\"id\":[5,6,7,8]},\"counters\":{\"intCounters\":[5000,6000,7000],\"floatCounters\":[-0.05,110.5]}}]}",
+      "ResultBytes": "9770768a 00000001 00000002 00000003 00000000 40160000 00000000 c05bd000 00000004 00000005 00000006 00000000 c0160000 00000000 3ff40000",
+      "ResultJson": "[{\"intCounters\":[1,2,3],\"floatCounters\":[5.5,-111.25]},{\"intCounters\":[4,5,6],\"floatCounters\":[-5.5,1.25]}]"
+    },
+    {
+      "FunctionName": "service2.addOrIncrMany",
+      "FunctionBody": "{\"floatCountersNum\":1,\"objectsNum\":1,\"floatCounters\":[8],\"deltas\":[{\"id\":{},\"counters\":{\"floatCounters\":[-0.05]}}]}",
+      "ResultBytes": "9770768a 9999999a 3fb99999",
+      "ResultJson": "[{\"floatCounters\":[0.1]}]"
+    }
+  ]
+}
