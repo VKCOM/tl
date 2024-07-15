@@ -99,30 +99,6 @@ func checkTestCase2(t *testing.T, x interface{}, y interface{}, goldStandard []b
 	}
 }
 
-func checkTestCase2New(t *testing.T, x interface{}, y interface{}, goldStandard []byte, write func([]byte) ([]byte, error), read func([]byte) ([]byte, error)) {
-	buf, err := write(nil)
-	if err != nil {
-		t.Fatalf("write error: %v\n", err)
-	}
-	if goldStandard != nil { // We skip non-deterministic writes
-		require.Equal(t, goldStandard, buf)
-	}
-	buf, err = read(buf)
-	if err != nil {
-		t.Fatalf("read error: %v\n", err)
-	}
-	if len(buf) != 0 {
-		t.Fatalf("excess bytes: %v\n", buf)
-	}
-	// Пока в кодогенераторе нет чётких правил для
-	// nil slice -vs- empty slice, поэтому при
-	// сравнении объектов считаем пустой и nil слайсы эквивалентными.
-	diff := cmp.Diff(x, y, cmpopts.EquateEmpty(), cmp.AllowUnexported(tl.MyValue{}, tlservice1.Value{}, tltasks.TaskStatus{}))
-	if diff != "" {
-		t.Fatalf("diff:\n%s", diff)
-	}
-}
-
 func checkJSONCase2(t *testing.T, x interface{}, z interface{}, jsonStandard string, write1 func([]byte) ([]byte, error), write2 func([]byte) ([]byte, error), read func(*basictl.JsonLexer) error) {
 	w1, err := write1(nil)
 	if err != nil {
@@ -153,14 +129,6 @@ func checkJSONCase2(t *testing.T, x interface{}, z interface{}, jsonStandard str
 	if diff != "" {
 		t.Fatalf("json diff:\n%s", diff)
 	}
-}
-
-func checkJSONCase3(t *testing.T, x interface{}, z interface{}, jsonStandard string, write1 func(bool, bool, []byte) ([]byte, error), write2 func(bool, bool, []byte) ([]byte, error), read func(*basictl.JsonLexer) error) {
-	checkJSONCase2(t, x, z, jsonStandard, func(w []byte) ([]byte, error) {
-		return write1(false, false, w)
-	}, func(w []byte) ([]byte, error) {
-		return write2(false, false, w)
-	}, read)
 }
 
 func TestWriteArgs(t *testing.T) {
