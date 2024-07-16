@@ -169,7 +169,8 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 				hppIncByField := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
 				typeRed := ti.FieldTypeReduction(&typeReduction, i)
-				for _, typeRw := range trw.Fields[i].t.ActualTypeDependencies(typeRed) {
+				typeDeps := trw.Fields[i].t.ActualTypeDependencies(typeRed)
+				for _, typeRw := range typeDeps {
 					if typeRw.trw.IsWrappingType() {
 						continue
 					}

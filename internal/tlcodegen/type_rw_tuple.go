@@ -98,6 +98,10 @@ func (trw *TypeRWBrackets) AllTypeDependencies(generic, countFunctions bool) (re
 }
 
 func (trw *TypeRWBrackets) IsWrappingType() bool {
+	isBuiltinStructure := len(trw.wr.origTL) == 1 && trw.wr.origTL[0].Builtin
+	if isBuiltinStructure {
+		return trw.element.t.trw.IsWrappingType()
+	}
 	return false
 }
 
