@@ -91,16 +91,20 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			continue
 		}
 
+		filepathName := header + hppExt
+
 		hppStr := hpp.String()
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
-		hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", basicTLFilepathName))
+		{
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+		}
 		for _, n := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
-		filepathName := header + hppExt
+
 		if err := gen.addCodeFile(filepathName, gen.copyrightText+hpp.String()); err != nil {
 			return err
 		}
@@ -137,8 +141,9 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 		hppDet.WriteString("#pragma once\n\n")
 		hppDet.WriteString(fmt.Sprintf("#include \"../../%s\"\n", basicTLFilepathName))
-
-		hppDet.WriteString(fmt.Sprintf("#include \"../../%s%s\"\n", specs[0].fileName, hppExt))
+		if createdHpps[specs[0].fileName] {
+			hppDet.WriteString(fmt.Sprintf("#include \"../../%s%s\"\n", specs[0].fileName, hppExt))
+		}
 		for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			if n == specs[0].fileName {
 				continue
@@ -258,9 +263,9 @@ main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 `)
 	cppMake.WriteString(cppMake1.String())
-	if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
-		return err
-	}
+	//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
+	//	return err
+	//}
 	if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
 		return err
 	}
@@ -434,4 +439,21 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			t.cppDetailsFileName = t.groupName + "_group_details"
 		}
 	}
+}
+
+func splitDirAndFile(fp string) (string, string) {
+	fullPath := strings.Split(fp, "/")
+	return strings.Join(fullPath[:len(fullPath)-1], "/"), fullPath[len(fullPath)-1]
+}
+
+func getCppDiff(base string, target string) string {
+	dir1, _ := splitDirAndFile(base)
+	dir2, file := splitDirAndFile(target)
+	diff, _ := filepath.Rel(dir1, dir2)
+	if diff == "." {
+		diff = ""
+	} else {
+		diff += "/"
+	}
+	return diff + file
 }
