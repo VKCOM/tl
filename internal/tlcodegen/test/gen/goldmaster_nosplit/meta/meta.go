@@ -92,14 +92,14 @@ func CreateObjectFromName(name string) Object {
 }
 
 func CreateFunctionBytes(tag uint32) Function {
-	if item := FactoryItemByTLTagBytes(tag); item != nil && item.createFunctionBytes != nil {
+	if item := FactoryItemByTLTag(tag); item != nil && item.createFunctionBytes != nil {
 		return item.createFunctionBytes()
 	}
 	return nil
 }
 
 func CreateObjectBytes(tag uint32) Object {
-	if item := FactoryItemByTLTagBytes(tag); item != nil && item.createObjectBytes != nil {
+	if item := FactoryItemByTLTag(tag); item != nil && item.createObjectBytes != nil {
 		return item.createObjectBytes()
 	}
 	return nil
@@ -107,7 +107,7 @@ func CreateObjectBytes(tag uint32) Object {
 
 // name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateFunctionFromNameBytes(name string) Function {
-	if item := FactoryItemByTLNameBytes(name); item != nil && item.createFunctionBytes != nil {
+	if item := FactoryItemByTLName(name); item != nil && item.createFunctionBytes != nil {
 		return item.createFunctionBytes()
 	}
 	return nil
@@ -115,7 +115,7 @@ func CreateFunctionFromNameBytes(name string) Function {
 
 // name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
 func CreateObjectFromNameBytes(name string) Object {
-	if item := FactoryItemByTLNameBytes(name); item != nil && item.createObjectBytes != nil {
+	if item := FactoryItemByTLName(name); item != nil && item.createObjectBytes != nil {
 		return item.createObjectBytes()
 	}
 	return nil
@@ -200,21 +200,9 @@ func FactoryItemByTLName(name string) *TLItem {
 	return itemsByName[name]
 }
 
-func FactoryItemByTLTagBytes(tag uint32) *TLItem {
-	return itemsBytesByTag[tag]
-}
-
-func FactoryItemByTLNameBytes(name string) *TLItem {
-	return itemsBytesByName[name]
-}
-
 var itemsByTag = map[uint32]*TLItem{}
 
 var itemsByName = map[string]*TLItem{}
-
-var itemsBytesByTag = map[uint32]*TLItem{}
-
-var itemsBytesByName = map[string]*TLItem{}
 
 func SetGlobalFactoryCreateForFunction(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
 	item := itemsByTag[itemTag]
@@ -243,7 +231,7 @@ func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
 }
 
 func SetGlobalFactoryCreateForFunctionBytes(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
-	item := itemsBytesByTag[itemTag]
+	item := itemsByTag[itemTag]
 	if item == nil {
 		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
 	}
@@ -253,7 +241,7 @@ func SetGlobalFactoryCreateForFunctionBytes(itemTag uint32, createObject func() 
 }
 
 func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Object) {
-	item := itemsBytesByTag[itemTag]
+	item := itemsByTag[itemTag]
 	if item == nil {
 		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
 	}
@@ -261,7 +249,7 @@ func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Ob
 }
 
 func SetGlobalFactoryCreateForEnumElementBytes(itemTag uint32) {
-	item := itemsBytesByTag[itemTag]
+	item := itemsByTag[itemTag]
 	if item == nil {
 		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
 	}
@@ -289,10 +277,6 @@ func fillObject(n1 string, n2 string, item *TLItem) {
 	itemsByName[item.tlName] = item
 	itemsByName[n1] = item
 	itemsByName[n2] = item
-	itemsBytesByTag[item.tag] = item
-	itemsBytesByName[item.tlName] = item
-	itemsBytesByName[n1] = item
-	itemsBytesByName[n2] = item
 	item.createObject = pleaseImportFactoryObject
 	item.createObjectBytes = pleaseImportFactoryBytesObject
 	// code below is as fast, but allocates some extra strings which are already in binary const segment due to JSON code
