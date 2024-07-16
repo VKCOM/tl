@@ -99,8 +99,8 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		{
 			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
 		}
-		for _, n := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
-			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", n, hppExt))
+		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
+			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
@@ -136,23 +136,24 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			continue
 		}
 
+		filepathName := detailsHeader + hppExt
+
 		hppDetStr := hppDet.String()
 		hppDet.Reset()
 
 		hppDet.WriteString("#pragma once\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"../../%s\"\n", basicTLFilepathName))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
 		if createdHpps[specs[0].fileName] {
-			hppDet.WriteString(fmt.Sprintf("#include \"../../%s%s\"\n", specs[0].fileName, hppExt))
+			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
 		}
 		for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			if n == specs[0].fileName {
 				continue
 			}
-			hppDet.WriteString(fmt.Sprintf("#include \"../../%s%s\"\n", n, hppExt))
+			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
 		}
 		hppDet.WriteString("\n")
 
-		filepathName := filepath.Join("details", "headers", detailsHeader+hppExt)
 		if err := gen.addCodeFile(filepathName, gen.copyrightText+hppDet.String()+hppDetStr); err != nil {
 			return err
 		}
@@ -182,6 +183,8 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			continue
 		}
 
+		filepathName := detailsFile + cppExt
+
 		// all specs in one file must be in group
 		cppAllInc.ns[specs[0]] = CppIncludeInfo{-1, specs[0].groupName}
 		cppDetStr := cppDet.String()
@@ -194,33 +197,35 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			cppDetInc.ns[spec] = CppIncludeInfo{componentId: spec.typeComponent, namespace: spec.groupName}
 		}
 		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.hppDetailsFileName }) {
-			cppDet.WriteString(fmt.Sprintf("#include \"../headers/%s%s\"\n", n, hppExt))
+			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
 		}
 		cppDet.WriteString("\n")
 
-		filepathName := filepath.Join("details", "code", detailsFile+cppExt)
 		if err := gen.addCodeFile(filepathName, gen.copyrightText+cppDet.String()+cppDetStr); err != nil {
 			return err
 		}
 		createdDetailsCpps[detailsFile] = true
 	}
 
-	var cppAll strings.Builder
 	var cppMake strings.Builder
 	var cppMakeO strings.Builder
 	var cppMake1 strings.Builder
 
+	const MakefilePath = "Makefile"
+
 	for _, nf := range cppAllInc.splitByNamespaces() {
 		// it is a group
 		namespace := nf.Namespace
+		namespaceDetails := namespace
+		namespaceFilePath := "details/namespaces/" + namespaceDetails + cppExt
+		buildFilePath := "build/" + namespaceDetails + ".o"
 
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
 
 		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName }) {
-			cppAll.WriteString(fmt.Sprintf("#include \"details/%s%s\"\n", n, cppExt))
-			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"../code/%s%s\"\n", n, cppExt))
-			cppMake1UsedFiles.WriteString(fmt.Sprintf("details/code/%s%s", n, cppExt))
+			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(namespaceFilePath, n+cppExt)))
+			cppMake1UsedFiles.WriteString(fmt.Sprintf("%s", getCppDiff(MakefilePath, n+cppExt)))
 
 			usedTypes := detailsCpps[n]
 			usedTypes = utils.FilterSlice(usedTypes, func(w *TypeRWWrapper) bool {
@@ -235,13 +240,9 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 			sort.Strings(hppDetsList)
 			for _, h := range hppDetsList {
-				cppMake1UsedFiles.WriteString(fmt.Sprintf(" details/headers/%s%s", h, hppExt))
+				cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(MakefilePath, h+hppExt)))
 			}
 		}
-
-		namespaceDetails := namespace
-		namespaceFilePath := "details/namespaces/" + namespaceDetails + cppExt
-		buildFilePath := "build/" + namespaceDetails + ".o"
 
 		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
 		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o %s -c %s\n", buildFilePath, namespaceFilePath))
@@ -439,6 +440,12 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			t.cppDetailsFileName = t.groupName + "_group_details"
 		}
 	}
+
+	for _, t := range allTypes {
+		t.hppDetailsFileName = filepath.Join("details", "headers", t.hppDetailsFileName)
+		t.cppDetailsFileName = filepath.Join("details", "code", t.cppDetailsFileName)
+	}
+
 }
 
 func splitDirAndFile(fp string) (string, string) {
