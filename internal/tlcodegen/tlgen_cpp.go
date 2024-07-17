@@ -458,7 +458,11 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		if typeGroup == "" {
 			typeGroup = CommonGroup
 		}
-		t.fileName = filepath.Join(typeGroup, t.fileName)
+		if strct, isStruct := t.trw.(*TypeRWStruct); isStruct && strct.ResultType != nil {
+			t.fileName = filepath.Join(typeGroup, "functions", t.fileName)
+		} else {
+			t.fileName = filepath.Join(typeGroup, "types", t.fileName)
+		}
 		t.hppDetailsFileName = filepath.Join(t.groupName, "details", "headers", t.hppDetailsFileName)
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details", "namespace_details")
 	}
