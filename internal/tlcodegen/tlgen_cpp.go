@@ -146,11 +146,16 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		if createdHpps[specs[0].fileName] {
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
 		}
-		for _, n := range hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
+		includes := hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName })
+		for _, n := range includes {
 			if n == specs[0].fileName {
 				continue
 			}
-			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
+			if !createdHpps[n] {
+				continue
+			}
+			includePath := getCppDiff(filepathName, n+hppExt)
+			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", includePath))
 		}
 		hppDet.WriteString("\n")
 
@@ -217,13 +222,18 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		// it is a group
 		namespace := nf.Namespace
 		namespaceDetails := namespace
+		namespaceDeps := nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName })
+
 		namespaceFilePath := "details/namespaces/" + namespaceDetails + cppExt
-		buildFilePath := "build/" + namespaceDetails + ".o"
+		if !gen.options.SplitInternal {
+			namespaceFilePath = namespaceDeps[0] + cppExt
+		}
+		buildFilePath := "__build/" + namespaceDetails + ".o"
 
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
 
-		for _, n := range nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName }) {
+		for _, n := range namespaceDeps {
 			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(namespaceFilePath, n+cppExt)))
 			cppMake1UsedFiles.WriteString(fmt.Sprintf("%s", getCppDiff(MakefilePath, n+cppExt)))
 
@@ -248,8 +258,10 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o %s -c %s\n", buildFilePath, namespaceFilePath))
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
-		if err := gen.addCodeFile(namespaceFilePath, cppMake1Namespace.String()); err != nil {
-			return err
+		if gen.options.SplitInternal {
+			if err := gen.addCodeFile(namespaceFilePath, cppMake1Namespace.String()); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -273,7 +285,7 @@ main.o: main.cpp
 	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
 		return err
 	}
-	if err := gen.addCodeFile("build/info.txt", ".o files here!"); err != nil {
+	if err := gen.addCodeFile("__build/info.txt", ".o files here!"); err != nil {
 		return err
 	}
 	// if gen.options.Verbose {
@@ -328,7 +340,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	const CommonGroup = "__common"
 
 	for _, t := range allTypes {
-		t.cppDetailsFileName = t.fileName + "_details"
+		t.cppDetailsFileName = t.fileName
 		t.hppDetailsFileName = t.cppDetailsFileName
 		t.groupName = t.tlName.Namespace
 		if t.fileName != t.tlName.String() {
@@ -437,30 +449,25 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 	if !gen.options.SplitInternal {
 		for _, t := range allTypes {
-			t.cppDetailsFileName = t.groupName + "_group_details"
+			t.cppDetailsFileName = t.groupName
 		}
 	}
 
 	for _, t := range allTypes {
-		t.hppDetailsFileName = filepath.Join("details", "headers", t.hppDetailsFileName)
-		t.cppDetailsFileName = filepath.Join("details", "code", t.cppDetailsFileName)
+		typeGroup := t.tlName.Namespace
+		if typeGroup == "" {
+			typeGroup = CommonGroup
+		}
+		t.fileName = filepath.Join(typeGroup, t.fileName)
+		t.hppDetailsFileName = filepath.Join(t.groupName, "details", "headers", t.hppDetailsFileName)
+		t.cppDetailsFileName = filepath.Join(t.groupName, "details", "namespace_details")
 	}
 
-}
-
-func splitDirAndFile(fp string) (string, string) {
-	fullPath := strings.Split(fp, "/")
-	return strings.Join(fullPath[:len(fullPath)-1], "/"), fullPath[len(fullPath)-1]
 }
 
 func getCppDiff(base string, target string) string {
-	dir1, _ := splitDirAndFile(base)
-	dir2, file := splitDirAndFile(target)
+	dir1, _ := filepath.Split(base)
+	dir2, file := filepath.Split(target)
 	diff, _ := filepath.Rel(dir1, dir2)
-	if diff == "." {
-		diff = ""
-	} else {
-		diff += "/"
-	}
-	return diff + file
+	return filepath.Join(diff, file)
 }

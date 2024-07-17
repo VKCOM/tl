@@ -188,6 +188,9 @@ func (w *TypeRWWrapper) ActualTypeDependencies(evalType EvaluatedType) (res []*T
 	r := make(map[*TypeRWWrapper]bool)
 	w.actualTypeDependenciesRecur(evalType, &r)
 	for arg := range r {
+		if br, isBr := arg.trw.(*TypeRWBrackets); isBr && br.IsBuiltinVector() {
+			continue
+		}
 		res = append(res, arg)
 	}
 	slices.SortFunc(res, TypeComparator)
