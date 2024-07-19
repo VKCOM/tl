@@ -265,6 +265,9 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		}
 	}
 
+	_ = createMeta(gen)
+	_ = createFactory(gen)
+
 	cppMake.WriteString(`
 CC = g++
 CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
@@ -474,4 +477,149 @@ func getCppDiff(base string, target string) string {
 	dir2, file := filepath.Split(target)
 	diff, _ := filepath.Rel(dir1, dir2)
 	return filepath.Join(diff, file)
+}
+
+func createMeta(gen *Gen2) error {
+	meta := strings.Builder{}
+	filepathName := filepath.Join("__meta", "meta"+hppExt)
+
+	meta.WriteString("#pragma once\n")
+	meta.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+	meta.WriteString(fmt.Sprintf(`
+#include <functional>
+#include <map>
+
+namespace tl2 {
+namespace meta {
+    struct tl_object {
+        std::function<bool(::basictl::tl_istream & )> read;
+        std::function<bool(::basictl::tl_ostream & )> write;
+
+        std::function<bool(::basictl::tl_istream & )> read_boxed;
+        std::function<bool(::basictl::tl_ostream & )> write_boxed;
+    };
+
+    struct tl_item {
+        uint32_t tag{};
+        uint32_t annotations{};
+        std::string name;
+
+        std::function<tl2::meta::tl_object()> create_object;
+    };
+
+    namespace {
+        std::map<std::string, tl2::meta::tl_item> __objects;
+    }
+
+    tl_item get_tl_item_by_name(std::string&& name) {
+        if (__objects.count(name)) {
+            return __objects[name];
+        }
+        throw std::runtime_error("no such tl item in system");
+    }
+
+    void set_create_object_by_name(std::string&& name, std::function<tl_object()>&& generator) {
+        if (__objects.count(name)) {
+            __objects[name].create_object = generator;
+            return;
+        }
+        throw std::runtime_error("no such tl item in system");
+    }
+
+    void init_tl_objects() {`))
+
+	for _, wr := range gen.generatedTypesList {
+		if wr.tlTag == 0 || !wr.IsTopLevel() {
+			continue
+		}
+		if strct, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
+			if strct.ResultType == nil {
+
+				meta.WriteString(
+					fmt.Sprintf(`
+		__objects["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s"};`,
+						wr.tlName.String(),
+						fmt.Sprintf("0x%08x", wr.tlTag),
+						fmt.Sprintf("0x%x", wr.AnnotationsMask()),
+					),
+				)
+			}
+		}
+	}
+
+	meta.WriteString(fmt.Sprintf(`
+	}
+};
+};
+`))
+	if err := gen.addCodeFile(filepathName, gen.copyrightText+meta.String()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func createFactory(gen *Gen2) error {
+	factory := strings.Builder{}
+	filepathName := filepath.Join("__factory", "factory"+hppExt)
+
+	imports := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+
+	factory.WriteString(fmt.Sprintf(`
+
+namespace tl2 {
+namespace factory {
+    void init_tl_create_objects() {`))
+
+	for _, wr := range gen.generatedTypesList {
+		if wr.tlTag == 0 || !wr.IsTopLevel() {
+			continue
+		}
+		if strct, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
+			if strct.isTypeDef() {
+				continue
+			}
+			if strct.ResultType == nil {
+				hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+				myFullType := wr.trw.cppTypeStringInNamespace(wr.wantsBytesVersion && wr.trw.CPPHasBytesVersion(), &hppTmpInclude)
+				myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+
+				factory.WriteString(
+					fmt.Sprintf(`
+		tl2::meta::set_create_object_by_name("%[1]s",[]() -> tl2::meta::tl_object {
+        auto obj = std::make_shared<%[2]s>();
+        return tl2::meta::tl_object{
+                .read=[obj](auto &in) -> bool { return obj->read(in); },
+                .write=[obj](auto &out) -> bool { return obj->write(out); },
+                .read_boxed=[obj](auto &in) -> bool { return obj->read_boxed(in); },
+                .write_boxed=[obj](auto &out) -> bool { return obj->write_boxed(out); },
+        };
+    });`,
+						wr.tlName.String(),
+						myFullTypeNoPrefix,
+					),
+				)
+				imports.ns[wr] = CppIncludeInfo{componentId: wr.typeComponent, namespace: wr.groupName}
+			}
+		}
+	}
+
+	factory.WriteString(fmt.Sprintf(`
+	}
+};
+};
+`))
+	suffix := factory.String()
+	factory.Reset()
+
+	factory.WriteString("#pragma once\n")
+	factory.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathName, filepath.Join("__meta", "meta"+hppExt))))
+	for _, headerFile := range imports.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
+		factory.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+	}
+	factory.WriteString(suffix)
+
+	if err := gen.addCodeFile(filepathName, gen.copyrightText+factory.String()); err != nil {
+		return err
+	}
+	return nil
 }
