@@ -201,6 +201,11 @@ func (w *TypeRWWrapper) actualTypeDependenciesRecur(evalType EvaluatedType, used
 	if evalType.Index != TypeConstant {
 		return
 	}
+	if str, isStr := w.trw.(*TypeRWStruct); isStr && str.IsWrappingType() {
+		eval := str.wr.gen.typesInfo.FieldTypeReduction(evalType.Type, 0)
+		str.Fields[0].t.actualTypeDependenciesRecur(eval, used)
+		return
+	}
 	if !(*used)[w] {
 		(*used)[w] = true
 	}
