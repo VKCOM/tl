@@ -147,6 +147,14 @@ cpp:
 	$(MAKE) cpp_gen
 	$(MAKE) cpp_build
 
+.PHONY: cpp_gen
+cpp_cases_gen: build
+	@./target/bin/tlgen -language=cpp -v \
+		--outdir=./$(GEN_PATH)/cases_cpp \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		./$(TLS_PATH)/cases.tl
+
+
 # target should be as close as possible to github actions used to enable merge
 .PHONY: check
 check: build

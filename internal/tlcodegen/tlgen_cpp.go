@@ -272,8 +272,12 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 CC = g++
 CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
-	cppMake.WriteString(fmt.Sprintf("all: main.o %s\n", cppMakeO.String()))
-	cppMake.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o all main.o %s\n", cppMakeO.String()))
+	cppMake.WriteString(fmt.Sprintf("all: "))
+	cppMake.WriteString(fmt.Sprintf("main.o "))
+	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
+	cppMake.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o all "))
+	cppMake.WriteString(fmt.Sprintf("main.o "))
+	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
@@ -509,13 +513,16 @@ namespace meta {
 
     namespace {
         std::map<std::string, tl2::meta::tl_item> __objects;
+		std::function<tl_object()> missing_generator = []() -> tl_object {
+            throw std::runtime_error("no generator initialized");
+        };
     }
 
     tl_item get_tl_item_by_name(std::string&& name) {
         if (__objects.count(name)) {
             return __objects[name];
         }
-        throw std::runtime_error("no such tl item in system");
+        throw std::runtime_error("no such tl (\""  + name + "\") item in system");
     }
 
     void set_create_object_by_name(std::string&& name, std::function<tl_object()>&& generator) {
@@ -537,7 +544,7 @@ namespace meta {
 
 				meta.WriteString(
 					fmt.Sprintf(`
-		__objects["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s"};`,
+		__objects["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=missing_generator};`,
 						wr.tlName.String(),
 						fmt.Sprintf("0x%08x", wr.tlTag),
 						fmt.Sprintf("0x%x", wr.AnnotationsMask()),

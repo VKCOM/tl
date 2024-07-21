@@ -1,14 +1,12 @@
 package codegen_test
 
 import (
-	"bytes"
-	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"os"
-	"strings"
 	"testing"
+
+	"github.com/vkcom/tl/internal/utils"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
@@ -45,7 +43,7 @@ type writeTest struct {
 }
 
 func TestWriteArgs(t *testing.T) {
-	const PathToJsonData = "casetests/data/test-bytes.json"
+	const PathToJsonData = "data/test-functions-bytes.json"
 	data, readErr := os.ReadFile(PathToJsonData)
 
 	if readErr != nil {
@@ -60,7 +58,7 @@ func TestWriteArgs(t *testing.T) {
 		t.Run(test.TestName, func(t *testing.T) {
 			obj := factory.CreateObjectFromName(test.TLType)
 
-			bytes_ := parseHexToBytes(test.ExpectedOutput)
+			bytes_ := utils.ParseHexToBytes(test.ExpectedOutput)
 			_, _ = obj.ReadBoxed(bytes_)
 
 			objBytes, err := obj.WriteBoxedGeneral(nil)
@@ -68,7 +66,7 @@ func TestWriteArgs(t *testing.T) {
 				t.Fatalf("%s: error: %v\n", test.TestName, err)
 			}
 
-			require.Equal(t, test.ExpectedOutput, sprintHexDump(objBytes))
+			require.Equal(t, test.ExpectedOutput, utils.SprintHexDump(objBytes))
 		})
 	}
 }
@@ -81,7 +79,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 		return
 	}
 
-	_, jsonResult, jsonErr := fn.ReadResultWriteResultJSON(parseHexToBytes(resultBytesValue), nil)
+	_, jsonResult, jsonErr := fn.ReadResultWriteResultJSON(utils.ParseHexToBytes(resultBytesValue), nil)
 	if jsonErr != nil {
 		t.Fatalf("Write json error: %v\n", jsonErr)
 		return
@@ -94,8 +92,8 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 		t.Fatalf("Write bytes error: %v\n", jsonErr)
 		return
 	}
-	if !assert.Equal(t, resultBytesValue, sprintHexDump(bytesResult)) {
-		t.Fatalf("Write bytes failed, difference:v\n%s\n", cmp.Diff(resultBytesValue, sprintHexDump(bytesResult)))
+	if !assert.Equal(t, resultBytesValue, utils.SprintHexDump(bytesResult)) {
+		t.Fatalf("Write bytes failed, difference:v\n%s\n", cmp.Diff(resultBytesValue, utils.SprintHexDump(bytesResult)))
 	}
 }
 
@@ -116,34 +114,4 @@ func TestReadResult(t *testing.T) {
 			checkFunctionReadWrite(t, test.FunctionName, test.FunctionBody, test.ResultBytes, test.ResultJson)
 		})
 	}
-}
-
-func sprintHexDump(data []byte) string {
-	var buf bytes.Buffer
-	buf.Grow(len(data) + len(data)/4)
-	for i := 0; i < len(data); i += 4 {
-		// Печатаем октеты в обратном порядке, чтобы они совпадали
-		// с константами из `constant.go`.
-		_, _ = fmt.Fprintf(&buf, "%02x%02x%02x%02x ",
-			data[i+3],
-			data[i+2],
-			data[i+1],
-			data[i+0])
-	}
-	return strings.TrimSpace(buf.String())
-}
-
-func parseHexToBytes(data string) []byte {
-	var result []byte
-	for _, octet := range strings.Split(data, " ") {
-		b1, _ := hex.DecodeString(octet[6:8])
-		b2, _ := hex.DecodeString(octet[4:6])
-		b3, _ := hex.DecodeString(octet[2:4])
-		b4, _ := hex.DecodeString(octet[0:2])
-		result = append(result, b1...)
-		result = append(result, b2...)
-		result = append(result, b3...)
-		result = append(result, b4...)
-	}
-	return result
 }
