@@ -33,7 +33,7 @@ namespace meta {
         if (__objects.count(name)) {
             return __objects[name];
         }
-        throw std::runtime_error("no such tl (\""  + name + "\") item in system");
+        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
     }
 
     void set_create_object_by_name(std::string&& name, std::function<tl_object()>&& generator) {
