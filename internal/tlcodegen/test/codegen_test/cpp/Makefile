@@ -6,7 +6,7 @@ CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type 
 run-test: compile-test
 	./build/test-bytes
 
-compile-test: test-bytes.o
+compile-test: test-bytes.o build-schema
 	$(CC) $(CFLAGS) -o build/test-bytes build/test-bytes.o \
 		$(CPP_DIR)/__build/__common.o \
 		$(CPP_DIR)/__build/__independent_types.o \

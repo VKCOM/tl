@@ -522,7 +522,7 @@ namespace meta {
         if (__objects.count(name)) {
             return __objects[name];
         }
-        throw std::runtime_error("no such tl (\""  + name + "\") item in system");
+        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
     }
 
     void set_create_object_by_name(std::string&& name, std::function<tl_object()>&& generator) {
@@ -539,18 +539,17 @@ namespace meta {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
 			continue
 		}
-		if strct, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
-			if strct.ResultType == nil {
-
-				meta.WriteString(
-					fmt.Sprintf(`
+		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
+			//if strct.ResultType == nil {
+			meta.WriteString(
+				fmt.Sprintf(`
 		__objects["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=missing_generator};`,
-						wr.tlName.String(),
-						fmt.Sprintf("0x%08x", wr.tlTag),
-						fmt.Sprintf("0x%x", wr.AnnotationsMask()),
-					),
-				)
-			}
+					wr.tlName.String(),
+					fmt.Sprintf("0x%08x", wr.tlTag),
+					fmt.Sprintf("0x%x", wr.AnnotationsMask()),
+				),
+			)
+			//}
 		}
 	}
 
