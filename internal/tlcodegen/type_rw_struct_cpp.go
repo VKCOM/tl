@@ -229,6 +229,27 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 						trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 						trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
 				}
+				if trw.ResultType != nil {
+					hppIncByResult := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+
+					typeRed := ti.ResultTypeReduction(&typeReduction)
+					typeDeps := trw.ResultType.ActualTypeDependencies(typeRed)
+					for _, typeRw := range typeDeps {
+						if typeRw.trw.IsWrappingType() {
+							continue
+						}
+						hppIncByResult.ns[typeRw] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
+					}
+					for includeType, includeInfo := range hppIncByResult.ns {
+						hppInc.ns[includeType] = includeInfo
+					}
+					hpp.WriteString(fmt.Sprintf(`
+	bool read_result(::basictl::tl_istream & s, %[1]s & result);
+	bool write_result(::basictl::tl_ostream & s, %[1]s & result);
+`,
+						trw.ResultType.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed),
+					))
+				}
 			}
 			hpp.WriteString("};\n")
 		}
@@ -238,10 +259,9 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	myFullType := trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
 	myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
-
 	if hppDet != nil {
-		utils.AppendMap(hppTmpInclude.ns, &hppDetInc.ns)
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+
 		hppDet.WriteString(fmt.Sprintf(`
 void %[1]sReset(%[2]s& item);
 bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s);
@@ -256,7 +276,17 @@ bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 				myFullType,
 				formatNatArgsDeclCPP(trw.wr.NatParams)))
 		}
+
+		if trw.ResultType != nil {
+			resultType := trw.ResultType.trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
+			hppDet.WriteString(fmt.Sprintf(`
+bool %[1]sReadResult(::basictl::tl_istream & s, %[2]s& item, %[3]s& result);
+bool %[1]sWriteResult(::basictl::tl_ostream & s, %[2]s& item, %[3]s& result);
+		`, goGlobalName, myFullType, resultType))
+		}
+
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+		utils.AppendMap(hppTmpInclude.ns, &hppDetInc.ns)
 	}
 
 	if cppDet != nil {
@@ -340,6 +370,46 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				trw.wr.gen.DetailsCPPNamespace,
 				formatNatArgsCallCPP(trw.wr.NatParams),
 				trw.wr.tlTag,
+			))
+		}
+
+		if trw.ResultType != nil {
+			actualDep := trw.ResultType
+			for {
+				if strct, isStrct := actualDep.trw.(*TypeRWStruct); isStrct && strct.isUnwrapType() {
+					actualDep = strct.Fields[0].t
+				} else {
+					break
+				}
+			}
+			cppDetInc.ns[actualDep] = CppIncludeInfo{componentId: actualDep.typeComponent, namespace: actualDep.tlName.Namespace}
+			resultType := trw.ResultType.trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
+
+			cppDet.WriteString(fmt.Sprintf(`
+bool %[8]s::%[6]sReadResult(::basictl::tl_istream & s, %[2]s& item, %[1]s& result) {
+%[3]s
+	return true;
+}
+bool %[8]s::%[6]sWriteResult(::basictl::tl_ostream & s, %[2]s& item, %[1]s& result) {
+%[7]s
+	return true;
+}
+
+bool %[2]s::read_result(::basictl::tl_istream & s, %[1]s & result) {
+	return %[8]s::%[6]sReadResult(s, *this, result);
+}
+bool %[2]s::write_result(::basictl::tl_ostream & s, %[1]s & result) {
+	return %[8]s::%[6]sWriteResult(s, *this, result);
+}
+`,
+				resultType,
+				myFullTypeNoPrefix,
+				trw.ResultType.trw.CPPTypeReadingCode(bytesVersion, "result", false, formatNatArgsCPP(trw.Fields, trw.ResultNatArgs), false),
+				trw.ResultType.goGlobalName,
+				joinWithCommas(formatNatArgsCPP(trw.Fields, trw.ResultNatArgs)),
+				goGlobalName,
+				trw.ResultType.trw.CPPTypeWritingCode(bytesVersion, "result", false, formatNatArgsCPP(trw.Fields, trw.ResultNatArgs), false),
+				trw.wr.gen.DetailsCPPNamespace,
 			))
 		}
 	}
