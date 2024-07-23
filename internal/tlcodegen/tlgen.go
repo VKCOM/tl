@@ -1367,6 +1367,7 @@ type Constructor struct {
 	Id     uint
 	Name   ConstructorName
 	Fields []tlast.Field
+	Result *tlast.TypeRef
 }
 
 type TypeName = tlast.Name
@@ -1474,6 +1475,10 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 			Fields: comb.Fields,
 			Id:     uint(len(targetType.Constructors)),
 			Type:   targetType,
+			Result: &comb.FuncDecl,
+		}
+		if !comb.IsFunction {
+			constructor.Result = nil
 		}
 		targetType.Constructors = append(targetType.Constructors, &constructor)
 		existingConstructors[currentConstructor] = &constructor
@@ -1724,6 +1729,22 @@ func (ti *TypesInfo) FieldTypeReduction(tr *TypeReduction, fieldId int) Evaluate
 	defaultValues := calculateDefaultFields(constructor, tr.Arguments)
 	fillTypeReduction(fieldType, tr.Arguments, tr.ReferenceType(), &defaultValues)
 	return EvaluatedType{Index: TypeConstant, Type: fieldType}
+}
+
+func (ti *TypesInfo) ResultTypeReduction(tr *TypeReduction) EvaluatedType {
+	resultRef := tr.Constructor.Result
+	if resultRef == nil {
+		panic("not a function")
+	}
+	constructor := tr.Constructor
+	if tr.IsType {
+		constructor = tr.ReferenceType().Constructors[0]
+	}
+
+	resultType := toTypeReduction(*resultRef, &ti.Types, &ti.Constructors)
+	defaultValues := calculateDefaultFields(constructor, tr.Arguments)
+	fillTypeReduction(resultType, tr.Arguments, tr.ReferenceType(), &defaultValues)
+	return EvaluatedType{Index: TypeConstant, Type: resultType}
 }
 
 func (ti *TypesInfo) TypeNameToGenericTypeReduction(t TypeName) TypeReduction {

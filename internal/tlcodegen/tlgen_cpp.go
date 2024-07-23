@@ -61,7 +61,12 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	createdDetailsHpps := map[string]bool{}
 	createdDetailsCpps := map[string]bool{}
 
-	for header, typeDefs := range hpps {
+	headers := utils.Keys(hpps)
+	sort.Strings(headers)
+
+	for _, header := range headers {
+		typeDefs := hpps[header]
+
 		var hpp strings.Builder
 		hppInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 		hppIncFwd := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
@@ -201,6 +206,8 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			}
 			cppDetInc.ns[spec] = CppIncludeInfo{componentId: spec.typeComponent, namespace: spec.groupName}
 		}
+		keys := utils.Keys(cppDetInc.ns)
+		fmt.Sprintln(keys)
 		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.hppDetailsFileName }) {
 			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
 		}
