@@ -1,22 +1,53 @@
-CPP_DIR = ../../gen/cases_cpp
+CPP_DIR = ../../gen
+CASES_DIR = $(CPP_DIR)/cases_cpp
+SCHEMA_DIR = $(CPP_DIR)/schema_cpp
 
 CC = g++
 CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 
-run-test: compile-test
-	./build/test-bytes
+# run in project root "make cpp_gen_test_data"
+run-all-tests: run-objects-test build-functions-bytes
 
-compile-test: test-bytes.o build-schema
-	$(CC) $(CFLAGS) -o build/test-bytes build/test-bytes.o \
-		$(CPP_DIR)/__build/__common.o \
-		$(CPP_DIR)/__build/__independent_types.o \
-		$(CPP_DIR)/__build/benchmarks.o \
-		$(CPP_DIR)/__build/cases.o \
-		$(CPP_DIR)/__build/cases_bytes.o
+run-objects-test: build-objects-bytes
+	./build/test_objects_bytes
 
-build-schema:
-	@cd $(CPP_DIR)/ && make __build/__common.o __build/__independent_types.o __build/benchmarks.o __build/cases.o __build/cases_bytes.o
+run-functions-test: build-functions-bytes
+	./build/test_functions_bytes
+
+build-objects-bytes: build/test_objects_bytes.o compile-cases
+	$(CC) $(CFLAGS) -o build/test_objects_bytes build/test_objects_bytes.o \
+		$(CASES_DIR)/__build/__common.o \
+		$(CASES_DIR)/__build/__independent_types.o \
+		$(CASES_DIR)/__build/benchmarks.o \
+		$(CASES_DIR)/__build/cases.o \
+		$(CASES_DIR)/__build/cases_bytes.o
+
+build/test_objects_bytes.o: tests/test_objects_bytes.cpp
+	$(CC) $(CFLAGS) -c tests/test_objects_bytes.cpp -o build/test_objects_bytes.o
+
+compile-cases:
+	@cd $(CASES_DIR)/ && make __build/__common.o __build/__independent_types.o __build/benchmarks.o __build/cases.o __build/cases_bytes.o
 	@cd ../../codegen_test/cpp/
 
-test-bytes.o: test-bytes.cpp
-	$(CC) $(CFLAGS) -c test-bytes.cpp -o build/test-bytes.o
+build-functions-bytes: build/test_functions_bytes.o compile-schema
+	$(CC) $(CFLAGS) -o build/test_functions_bytes build/test_functions_bytes.o \
+        $(SCHEMA_DIR)/__build/__common.o \
+        $(SCHEMA_DIR)/__build/__independent_types.o \
+        $(SCHEMA_DIR)/__build/antispam.o \
+        $(SCHEMA_DIR)/__build/pkg2.o \
+        $(SCHEMA_DIR)/__build/service1.o \
+        $(SCHEMA_DIR)/__build/service2.o \
+        $(SCHEMA_DIR)/__build/service3.o \
+        $(SCHEMA_DIR)/__build/service4.o \
+        $(SCHEMA_DIR)/__build/service5.o \
+        $(SCHEMA_DIR)/__build/service6.o \
+        $(SCHEMA_DIR)/__build/tasks.o \
+        $(SCHEMA_DIR)/__build/tree_stats.o \
+        $(SCHEMA_DIR)/__build/unique.o
+
+build/test_functions_bytes.o: tests/test_functions_bytes.cpp
+	$(CC) $(CFLAGS) -c tests/test_functions_bytes.cpp -o build/test_functions_bytes.o
+
+compile-schema:
+	@cd $(SCHEMA_DIR)/ && make __build/__common.o __build/__independent_types.o __build/antispam.o __build/pkg2.o __build/service1.o __build/service2.o __build/service3.o __build/service4.o __build/service5.o __build/service6.o __build/tasks.o __build/tree_stats.o __build/unique.o
+	@cd ../../codegen_test/cpp/

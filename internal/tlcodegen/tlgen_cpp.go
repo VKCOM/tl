@@ -201,14 +201,14 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		cppDet.Reset()
 
 		for _, spec := range specs {
-			if !createdDetailsHpps[spec.hppDetailsFileName] {
-				continue
-			}
 			cppDetInc.ns[spec] = CppIncludeInfo{componentId: spec.typeComponent, namespace: spec.groupName}
 		}
 		keys := utils.Keys(cppDetInc.ns)
 		fmt.Sprintln(keys)
 		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.hppDetailsFileName }) {
+			if !createdDetailsHpps[n] {
+				continue
+			}
 			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
 		}
 		cppDet.WriteString("\n")
@@ -273,7 +273,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	}
 
 	_ = createMeta(gen)
-	_ = createFactory(gen)
+	_ = createFactory(gen, createdHpps)
 
 	cppMake.WriteString(`
 CC = g++
@@ -510,37 +510,56 @@ namespace meta {
         std::function<bool(::basictl::tl_ostream & )> write_boxed;
     };
 
+	struct tl_function {
+		tl_object object;
+		
+		std::function<bool(::basictl::tl_istream &, ::basictl::tl_ostream &)> read_write_result;
+	};
+
     struct tl_item {
         uint32_t tag{};
         uint32_t annotations{};
         std::string name;
 
         std::function<tl2::meta::tl_object()> create_object;
+		std::function<tl2::meta::tl_function()> create_function;
     };
 
     namespace {
-        std::map<std::string, tl2::meta::tl_item> __objects;
-		std::function<tl_object()> missing_generator = []() -> tl_object {
-            throw std::runtime_error("no generator initialized");
+        std::map<std::string, tl2::meta::tl_item> __items;
+
+		std::function<tl_object()> missing_object_generator = []() -> tl_object {
+            throw std::runtime_error("no generator for this type of object initialized");
+        };
+		std::function<tl_function()> missing_function_generator = []() -> tl_function {
+            throw std::runtime_error("no generator for this type of function initialized");
         };
     }
 
     tl_item get_tl_item_by_name(std::string&& name) {
-        if (__objects.count(name)) {
-            return __objects[name];
+        if (__items.count(name)) {
+            return __items[name];
         }
         throw std::runtime_error("no such tl (\"" + name + "\") item in system");
     }
 
     void set_create_object_by_name(std::string&& name, std::function<tl_object()>&& generator) {
-        if (__objects.count(name)) {
-            __objects[name].create_object = generator;
+        if (__items.count(name)) {
+            __items[name].create_object = generator;
             return;
         }
-        throw std::runtime_error("no such tl item in system");
+        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
     }
 
-    void init_tl_objects() {`))
+	void set_create_function_by_name(std::string&& name, std::function<tl_function()>&& generator) {
+        if (__items.count(name)) {
+            __items[name].create_function = generator;
+            return;
+        }
+        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
+    }
+
+    void init_tl_items() {`))
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -550,7 +569,7 @@ namespace meta {
 			//if strct.ResultType == nil {
 			meta.WriteString(
 				fmt.Sprintf(`
-		__objects["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=missing_generator};`,
+		__items["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=missing_object_generator,.create_function=missing_function_generator};`,
 					wr.tlName.String(),
 					fmt.Sprintf("0x%08x", wr.tlTag),
 					fmt.Sprintf("0x%x", wr.AnnotationsMask()),
@@ -571,7 +590,7 @@ namespace meta {
 	return nil
 }
 
-func createFactory(gen *Gen2) error {
+func createFactory(gen *Gen2, createdHpps map[string]bool) error {
 	factory := strings.Builder{}
 	filepathName := filepath.Join("__factory", "factory"+hppExt)
 
@@ -591,27 +610,60 @@ namespace factory {
 			if strct.isTypeDef() {
 				continue
 			}
-			if strct.ResultType == nil {
-				hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
-				myFullType := wr.trw.cppTypeStringInNamespace(wr.wantsBytesVersion && wr.trw.CPPHasBytesVersion(), &hppTmpInclude)
-				myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+			hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+			myFullType := wr.trw.cppTypeStringInNamespace(wr.wantsBytesVersion && wr.trw.CPPHasBytesVersion(), &hppTmpInclude)
+			myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+
+			factory.WriteString(
+				fmt.Sprintf(`
+		tl2::meta::set_create_object_by_name("%[1]s",[]() -> tl2::meta::tl_object {
+			auto obj = std::make_shared<%[2]s>();
+			return tl2::meta::tl_object{
+					.read=[obj](auto &in) -> bool { return obj->read(in); },
+					.write=[obj](auto &out) -> bool { return obj->write(out); },
+					.read_boxed=[obj](auto &in) -> bool { return obj->read_boxed(in); },
+					.write_boxed=[obj](auto &out) -> bool { return obj->write_boxed(out); },
+			};
+		});`,
+					wr.tlName.String(),
+					myFullTypeNoPrefix,
+				),
+			)
+			imports.ns[wr] = CppIncludeInfo{componentId: wr.typeComponent, namespace: wr.groupName}
+
+			if strct.ResultType != nil {
+				hppTmpInclude2 := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
+				resultType := strct.ResultType.trw.cppTypeStringInNamespace(wr.wantsBytesVersion && wr.trw.CPPHasBytesVersion(), &hppTmpInclude2)
+				resultTypeNoPrefix := strings.TrimPrefix(resultType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
 
 				factory.WriteString(
 					fmt.Sprintf(`
-		tl2::meta::set_create_object_by_name("%[1]s",[]() -> tl2::meta::tl_object {
-        auto obj = std::make_shared<%[2]s>();
-        return tl2::meta::tl_object{
-                .read=[obj](auto &in) -> bool { return obj->read(in); },
-                .write=[obj](auto &out) -> bool { return obj->write(out); },
-                .read_boxed=[obj](auto &in) -> bool { return obj->read_boxed(in); },
-                .write_boxed=[obj](auto &out) -> bool { return obj->write_boxed(out); },
-        };
-    });`,
+		tl2::meta::set_create_function_by_name("%[1]s",[]() -> tl2::meta::tl_function {
+			auto obj = std::make_shared<%[2]s>();
+			auto tl_obj = tl2::meta::tl_object{
+					.read=[obj](auto &in) -> bool { return obj->read(in); },
+					.write=[obj](auto &out) -> bool { return obj->write(out); },
+					.read_boxed=[obj](auto &in) -> bool { return obj->read_boxed(in); },
+					.write_boxed=[obj](auto &out) -> bool { return obj->write_boxed(out); },
+			};
+			return tl2::meta::tl_function{
+					.object=tl_obj,
+					.read_write_result=[obj](auto &in, auto &out) -> bool {
+						%[3]s result;
+						bool read_result = obj->read_result(in, result);
+						if (!read_result) {
+							return false;
+						}
+						return obj->write_result(out, result);
+					}
+			};
+		});`,
 						wr.tlName.String(),
 						myFullTypeNoPrefix,
+						resultTypeNoPrefix,
 					),
 				)
-				imports.ns[wr] = CppIncludeInfo{componentId: wr.typeComponent, namespace: wr.groupName}
+				imports.ns[strct.ResultType] = CppIncludeInfo{componentId: strct.ResultType.typeComponent, namespace: strct.ResultType.groupName}
 			}
 		}
 	}
@@ -627,6 +679,9 @@ namespace factory {
 	factory.WriteString("#pragma once\n")
 	factory.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathName, filepath.Join("__meta", "meta"+hppExt))))
 	for _, headerFile := range imports.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
+		if !createdHpps[headerFile] {
+			continue
+		}
 		factory.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
 	}
 	factory.WriteString(suffix)

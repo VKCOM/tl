@@ -390,313 +390,365 @@
   "TestReadFunction": [
     {
       "FunctionName": "getStats",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "e1b785f2 00000000",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "getStats",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "e1b785f2 00000001 fffffff1 000000ff",
       "ResultJson": "{\"fields_mask\":1,\"waiting_size\":1099511627761}"
     },
     {
       "FunctionName": "getStats",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "e1b785f2 00000002 fffffff2 000000ff",
       "ResultJson": "{\"fields_mask\":2,\"scheduled_size\":1099511627762}"
     },
     {
       "FunctionName": "getStats",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "e1b785f2 00000004 fffffff3 000000ff",
       "ResultJson": "{\"fields_mask\":4,\"in_progress_size\":1099511627763}"
     },
     {
       "FunctionName": "getStats",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "e1b785f2 00000008 00fffff4",
       "ResultJson": "{\"fields_mask\":8,\"num_queues\":16777204}"
     },
     {
       "FunctionName": "getStats",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "e1b785f2 0000000f fffffff1 000000ff fffffff2 000000ff fffffff3 000000ff 00fffff4",
       "ResultJson": "{\"fields_mask\":15,\"waiting_size\":1099511627761,\"scheduled_size\":1099511627762,\"in_progress_size\":1099511627763,\"num_queues\":16777204}"
     },
     {
       "FunctionName": "getMaybeIface",
-      "FunctionBody": "{\"x\":{\"type\":\"service1.not_found\"}}",
+      "FunctionBodyBytes": "1d670b96",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"service1.not_found\"}}",
       "ResultBytes": "27930a7b",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "getMaybeIface",
-      "FunctionBody": "{\"x\":{\"type\":\"service1.not_found\"}}",
+      "FunctionBodyBytes": "1d670b96",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"service1.not_found\"}}",
       "ResultBytes": "3f9c8ef8 082e0945 00000066 00000000 00000000",
       "ResultJson": "{\"ok\":true,\"value\":{\"type\":\"service1.longvalue\",\"value\":{\"value\":102}}}"
     },
     {
       "FunctionName": "getMaybeIface",
-      "FunctionBody": "{\"x\":{\"type\":\"service1.not_found\"}}",
+      "FunctionBodyBytes": "1d670b96",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"service1.not_found\"}}",
       "ResultBytes": "3f9c8ef8 5faa0c52 6c65680d 202c6f6c 6c726f77 00002164 00000000",
       "ResultJson": "{\"ok\":true,\"value\":{\"type\":\"service1.strvalue\",\"value\":{\"value\":\"hello, world!\"}}}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "00000000 00000000 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "1d942543",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{\"fields_mask\":1}",
+      "FunctionBodyBytes": "00000000 00000000 00000001",
+      "FunctionBodyJson": "{\"fields_mask\":1}",
       "ResultBytes": "1d942543 00000001",
       "ResultJson": "{\"waiting_size\":1}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{\"fields_mask\":2}",
+      "FunctionBodyBytes": "00000000 00000000 00000002",
+      "FunctionBodyJson": "{\"fields_mask\":2}",
       "ResultBytes": "1d942543 00000002",
       "ResultJson": "{\"scheduled_size\":2}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{\"fields_mask\":4}",
+      "FunctionBodyBytes": "00000000 00000000 00000004",
+      "FunctionBodyJson": "{\"fields_mask\":4}",
       "ResultBytes": "1d942543 00000003",
       "ResultJson": "{\"in_progress_size\":3}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{\"fields_mask\":5}",
+      "FunctionBodyBytes": "00000000 00000000 00000005",
+      "FunctionBodyJson": "{\"fields_mask\":5}",
       "ResultBytes": "1d942543 00000001 00000003",
       "ResultJson": "{\"waiting_size\":1,\"in_progress_size\":3}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{\"fields_mask\":7}",
+      "FunctionBodyBytes": "00000000 00000000 00000007",
+      "FunctionBodyJson": "{\"fields_mask\":7}",
       "ResultBytes": "1d942543 00000000 00000000 00000000",
       "ResultJson": "{\"waiting_size\":0,\"scheduled_size\":0,\"in_progress_size\":0}"
     },
     {
       "FunctionName": "tasks.getQueueSize",
-      "FunctionBody": "{\"fields_mask\":7}",
+      "FunctionBodyBytes": "00000000 00000000 00000007",
+      "FunctionBodyJson": "{\"fields_mask\":7}",
       "ResultBytes": "1d942543 00000001 00000002 00000003",
       "ResultJson": "{\"waiting_size\":1,\"scheduled_size\":2,\"in_progress_size\":3}"
     },
     {
       "FunctionName": "tasks.getAnyTask",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "27930a7b",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "tasks.getAnyTask",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "3f9c8ef8 00000000 00000000 00000000 00000000 00000000 00000000",
       "ResultJson": "{\"ok\":true,\"value\":{\"task\":{}}}"
     },
     {
       "FunctionName": "tasks.getAnyTask",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "3f9c8ef8 00000000 00000000 00000000 00000000 00000000 00000000",
       "ResultJson": "{\"ok\":true,\"value\":{\"task\":{}}}"
     },
     {
       "FunctionName": "tasks.getAnyTask",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "3f9c8ef8 00000000 00000000 00000000 00000000 00000000 00000000",
       "ResultJson": "{\"ok\":true,\"value\":{\"task\":{}}}"
     },
     {
       "FunctionName": "tasks.getAnyTask",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "3f9c8ef8 6d6f730e 79742065 6e206570 00656d61 00000000 00000000 00000001 00000003 00000000 00000000 00000000 6568740f 74616420 74732061 676e6972",
       "ResultJson": "{\"ok\":true,\"value\":{\"type_name\":\"some type name\",\"task\":{\"flags\":1,\"tag\":[0,0,0],\"data\":\"the data string\"}}}"
     },
     {
       "FunctionName": "getMyValue",
-      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "FunctionBodyBytes": "c12375b7 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
       "ResultBytes": "c12375b7 a8509bda 00000000",
       "ResultJson": "{\"type\":\"myInt\",\"value\":{}}"
     },
     {
       "FunctionName": "getMyValue",
-      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "FunctionBodyBytes": "c12375b7 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
       "ResultBytes": "c12375b7 a8509bda ffffffff",
       "ResultJson": "{\"type\":\"myInt\",\"value\":{\"val1\":-1}}"
     },
     {
       "FunctionName": "getMyValue",
-      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "FunctionBodyBytes": "c12375b7 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
       "ResultBytes": "c12375b7 a8509bda 0756ce93",
       "ResultJson": "{\"type\":\"myInt\",\"value\":{\"val1\":123129491}}"
     },
     {
       "FunctionName": "getMyValue",
-      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "FunctionBodyBytes": "c12375b7 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
       "ResultBytes": "c8bfa969 b5286e24 00000000",
       "ResultJson": "{\"type\":\"myString\",\"value\":{}}"
     },
     {
       "FunctionName": "getMyValue",
-      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "FunctionBodyBytes": "c12375b7 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
       "ResultBytes": "c8bfa969 b5286e24 33323103",
       "ResultJson": "{\"type\":\"myString\",\"value\":{\"val2\":\"123\"}}"
     },
     {
       "FunctionName": "getMyValue",
-      "FunctionBody": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
+      "FunctionBodyBytes": "c12375b7 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"type\":\"myInt\",\"value\":{}}}",
       "ResultBytes": "c8bfa969 b5286e24 00012cfe 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878 78787878",
       "ResultJson": "{\"type\":\"myString\",\"value\":{\"val2\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}}"
     },
     {
       "FunctionName": "getMyDictOfInt",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "b8019a3d 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "b8019a3d 00000000",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "getMyDictOfInt",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "b8019a3d 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "b8019a3d 00000000",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "getMyDictOfInt",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "b8019a3d 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "b8019a3d 00000001 00007801 00000001",
       "ResultJson": "{\"x\":1}"
     },
     {
       "FunctionName": "getMyDictOfInt",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "b8019a3d 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "b8019a3d 00000003 00003101 00000001 00003201 00000002 00003301 00000003",
       "ResultJson": "{\"1\":1,\"2\":2,\"3\":3}"
     },
     {
       "FunctionName": "boxedTupleSlice2",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "25d1a1be 00000000 9770768a",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "25d1a1be 00000000 9770768a",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "boxedTupleSlice2",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "25d1a1be 00000000 9770768a",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "25d1a1be 00000000 9770768a",
       "ResultJson": "{}"
     },
     {
       "FunctionName": "boxedTupleSlice2",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "25d1a1be 00000000 9770768a",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "25d1a1be 00000003 9770768a a8509bda 00000001 a8509bda 00000002 a8509bda 00000003",
       "ResultJson": "{\"n\":3,\"data\":[1,2,3]}"
     },
     {
       "FunctionName": "boxedTupleSlice2",
-      "FunctionBody": "{\"x\":{}}",
+      "FunctionBodyBytes": "25d1a1be 00000000 9770768a",
+      "FunctionBodyJson": "{\"x\":{}}",
       "ResultBytes": "25d1a1be 00000003 9770768a a8509bda 00000003 a8509bda 00000002 a8509bda 00000001",
       "ResultJson": "{\"n\":3,\"data\":[3,2,1]}"
     },
     {
       "FunctionName": "boxedTupleSlice3",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "00000000 9770768a",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "9770768a",
       "ResultJson": "[]"
     },
     {
       "FunctionName": "boxedTupleSlice3",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "00000000 9770768a",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "9770768a",
       "ResultJson": "[]"
     },
     {
       "FunctionName": "boxedTupleSlice3",
-      "FunctionBody": "{\"n\":1,\"x\":[1]}",
+      "FunctionBodyBytes": "00000001 9770768a 00000001",
+      "FunctionBodyJson": "{\"n\":1,\"x\":[1]}",
       "ResultBytes": "9770768a 00000001",
       "ResultJson": "[1]"
     },
     {
       "FunctionName": "boxedTupleSlice3",
-      "FunctionBody": "{\"n\":2,\"x\":[1,2]}",
+      "FunctionBodyBytes": "00000002 9770768a 00000001 00000002",
+      "FunctionBodyJson": "{\"n\":2,\"x\":[1,2]}",
       "ResultBytes": "9770768a 00000001 00000002",
       "ResultJson": "[1,2]"
     },
     {
       "FunctionName": "boxedArray",
-      "FunctionBody": "{\"x\":{\"data\":[0,0]}}",
+      "FunctionBodyBytes": "288f64f0 9770768a a8509bda 00000000 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"data\":[0,0]}}",
       "ResultBytes": "288f64f0 9770768a a8509bda 00000000 a8509bda 00000000",
       "ResultJson": "{\"data\":[0,0]}"
     },
     {
       "FunctionName": "boxedArray",
-      "FunctionBody": "{\"x\":{\"data\":[0,0]}}",
+      "FunctionBodyBytes": "288f64f0 9770768a a8509bda 00000000 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"data\":[0,0]}}",
       "ResultBytes": "288f64f0 9770768a a8509bda 00000001 a8509bda 00000002",
       "ResultJson": "{\"data\":[1,2]}"
     },
     {
       "FunctionName": "boxedArray",
-      "FunctionBody": "{\"x\":{\"data\":[0,0]}}",
+      "FunctionBodyBytes": "288f64f0 9770768a a8509bda 00000000 a8509bda 00000000",
+      "FunctionBodyJson": "{\"x\":{\"data\":[0,0]}}",
       "ResultBytes": "288f64f0 9770768a a8509bda 00000002 a8509bda 00000001",
       "ResultJson": "{\"data\":[2,1]}"
     },
     {
       "FunctionName": "getMyDouble",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "2210c154 00000000 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "90a6c726 2210c154 00000000 00000000",
       "ResultJson": "0"
     },
     {
       "FunctionName": "getMyDouble",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "2210c154 00000000 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "90a6c726 2210c154 00000000 3ff00000",
       "ResultJson": "1"
     },
     {
       "FunctionName": "getMyDouble",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "2210c154 00000000 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "90a6c726 2210c154 9999999a 3fb99999",
       "ResultJson": "0.1"
     },
     {
       "FunctionName": "getMyDouble",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "2210c154 00000000 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "90a6c726 2210c154 e147ae14 4090247a",
       "ResultJson": "1033.12"
     },
     {
       "FunctionName": "getMyDouble",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "2210c154 00000000 00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "90a6c726 2210c154 e147ae14 c090247a",
       "ResultJson": "-1033.12"
     },
     {
       "FunctionName": "getFloat",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "824dab22 00000000",
       "ResultJson": "0"
     },
     {
       "FunctionName": "getFloat",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "824dab22 43c4cccd",
       "ResultJson": "393.6"
     },
     {
       "FunctionName": "getFloat",
-      "FunctionBody": "{}",
+      "FunctionBodyBytes": "00000000",
+      "FunctionBodyJson": "{}",
       "ResultBytes": "824dab22 c9985c01",
       "ResultJson": "-1248128.1"
     },
     {
       "FunctionName": "service2.addOrIncrMany",
-      "FunctionBody": "{\"objectIdLength\":4,\"intCountersNum\":3,\"floatCountersNum\":2,\"objectsNum\":2,\"intCounters\":[100,200,300],\"floatCounters\":[5,8],\"deltas\":[{\"id\":{\"id\":[1,2,3,4]},\"counters\":{\"intCounters\":[500,600,700],\"floatCounters\":[-0.5,11.5]}},{\"id\":{\"id\":[5,6,7,8]},\"counters\":{\"intCounters\":[5000,6000,7000],\"floatCounters\":[-0.05,110.5]}}]}",
+      "FunctionBodyBytes": "00000004 00000003 00000002 00000002 00000064 000000c8 0000012c 00000005 00000008 00000001 00000002 00000003 00000004 000001f4 00000258 000002bc 00000000 bfe00000 00000000 40270000 00000005 00000006 00000007 00000008 00001388 00001770 00001b58 9999999a bfa99999 00000000 405ba000",
+      "FunctionBodyJson": "{\"objectIdLength\":4,\"intCountersNum\":3,\"floatCountersNum\":2,\"objectsNum\":2,\"intCounters\":[100,200,300],\"floatCounters\":[5,8],\"deltas\":[{\"id\":{\"id\":[1,2,3,4]},\"counters\":{\"intCounters\":[500,600,700],\"floatCounters\":[-0.5,11.5]}},{\"id\":{\"id\":[5,6,7,8]},\"counters\":{\"intCounters\":[5000,6000,7000],\"floatCounters\":[-0.05,110.5]}}]}",
       "ResultBytes": "9770768a 00000001 00000002 00000003 00000000 40160000 00000000 c05bd000 00000004 00000005 00000006 00000000 c0160000 00000000 3ff40000",
       "ResultJson": "[{\"intCounters\":[1,2,3],\"floatCounters\":[5.5,-111.25]},{\"intCounters\":[4,5,6],\"floatCounters\":[-5.5,1.25]}]"
     },
     {
       "FunctionName": "service2.addOrIncrMany",
-      "FunctionBody": "{\"floatCountersNum\":1,\"objectsNum\":1,\"floatCounters\":[8],\"deltas\":[{\"id\":{},\"counters\":{\"floatCounters\":[-0.05]}}]}",
+      "FunctionBodyBytes": "00000000 00000000 00000001 00000001 00000008 9999999a bfa99999",
+      "FunctionBodyJson": "{\"floatCountersNum\":1,\"objectsNum\":1,\"floatCounters\":[8],\"deltas\":[{\"id\":{},\"counters\":{\"floatCounters\":[-0.05]}}]}",
       "ResultBytes": "9770768a 9999999a 3fb99999",
       "ResultJson": "[{\"floatCounters\":[0.1]}]"
     }

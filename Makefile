@@ -135,24 +135,25 @@ qtpl:
 cpp_build:
 	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 
-.PHONY: cpp_gen
-cpp_gen: build
+cpp_template_gen: build
 	@./target/bin/tlgen -language=cpp -v \
-		--outdir=./$(GEN_PATH)/cpp \
+		--outdir=./$(GEN_PATH)/$(OUTPUT_PATH) \
 		--basicPkgPath=$(BASIC_TL_PATH) \
-		./$(TLS_PATH)/cpp.tl
+		./$(TLS_PATH)/$(TL_FILE); \
+
+.PHONY: cpp_gen
+cpp_gen:
+	$(MAKE) cpp_template_gen OUTPUT_PATH=cpp TL_FILE=cpp.tl
+
+.PHONY: cpp_gen
+cpp_gen_test_data:
+	$(MAKE) cpp_template_gen OUTPUT_PATH=cases_cpp TL_FILE=cases.tl
+	$(MAKE) cpp_template_gen OUTPUT_PATH=schema_cpp TL_FILE=schema.tl
 
 .PHONY: cpp
 cpp:
 	$(MAKE) cpp_gen
 	$(MAKE) cpp_build
-
-.PHONY: cpp_gen
-cpp_cases_gen: build
-	@./target/bin/tlgen -language=cpp -v \
-		--outdir=./$(GEN_PATH)/cases_cpp \
-		--basicPkgPath=$(BASIC_TL_PATH) \
-		./$(TLS_PATH)/cases.tl
 
 
 # target should be as close as possible to github actions used to enable merge
