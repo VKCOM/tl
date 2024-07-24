@@ -29,10 +29,11 @@ type allTests struct {
 }
 
 type readFunctionTest struct {
-	FunctionName string
-	FunctionBody string
-	ResultBytes  string
-	ResultJson   string
+	FunctionName      string
+	FunctionBodyBytes string
+	FunctionBodyJson  string
+	ResultBytes       string
+	ResultJson        string
 }
 
 type writeTest struct {
@@ -98,7 +99,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 }
 
 func TestReadResult(t *testing.T) {
-	const PathToJsonData = "casetests/data/test-bytes.json"
+	const PathToJsonData = "data/test-functions-bytes.json"
 	data, readErr := os.ReadFile(PathToJsonData)
 
 	if readErr != nil {
@@ -111,7 +112,7 @@ func TestReadResult(t *testing.T) {
 
 	for _, test := range newTests.TestReadFunction {
 		t.Run(test.FunctionName, func(t *testing.T) {
-			checkFunctionReadWrite(t, test.FunctionName, test.FunctionBody, test.ResultBytes, test.ResultJson)
+			checkFunctionReadWrite(t, test.FunctionName, test.FunctionBodyJson, test.ResultBytes, test.ResultJson)
 		})
 	}
 }

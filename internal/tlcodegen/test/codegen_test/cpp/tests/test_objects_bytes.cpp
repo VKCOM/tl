@@ -1,44 +1,18 @@
 #include <iostream>
 #include <fstream>
 #include <bitset>
-#include "dependencies/json.hpp"
+#include "../dependencies/json.hpp"
+#include "../utils/hex.h"
+#include "../../../gen/cases_cpp/a_tlgen_helpers_code.hpp"
 
-#include "../../gen/cases_cpp/a_tlgen_helpers_code.hpp"
-
-#include "../../gen/cases_cpp/__meta/meta.hpp"
-#include "../../gen/cases_cpp/__factory/factory.hpp"
+#include "../../../gen/cases_cpp/__meta/meta.hpp"
+#include "../../../gen/cases_cpp/__factory/factory.hpp"
 
 // for convenience
 using json = nlohmann::json;
 
-int get_digit(char& c1) {
-    int c = 0;
-    if ('0' <= c1 && c1 <= '9') {
-        c = c1 - '0';
-    } else {
-        c = (c1 - 'a') + 10;
-    }
-    return c;
-}
-
-std::string parse_hex_to_bytes(const std::string& s) {
-    std::string out;
-    std::string tmp;
-
-    auto ss = std::stringstream(s);
-
-    while (getline(ss, tmp, ' ')) {
-        out += (char)(16 * get_digit(tmp[6]) + get_digit(tmp[7]));
-        out += (char)(16 * get_digit(tmp[4]) + get_digit(tmp[5]));
-        out += (char)(16 * get_digit(tmp[2]) + get_digit(tmp[3]));
-        out += (char)(16 * get_digit(tmp[0]) + get_digit(tmp[1]));
-    }
-
-    return out;
-}
-
 int main() {
-    tl2::meta::init_tl_objects();
+    tl2::meta::init_tl_items();
     tl2::factory::init_tl_create_objects();
 
     std::ifstream f("../data/test-objects-bytes.json");
@@ -51,7 +25,7 @@ int main() {
             std::cout << "\tTestData [" << test_data_input.at("Bytes") << "]: ";
 
             auto test_object = tl2::meta::get_tl_item_by_name(test_data.at("TestingType")).create_object();
-            auto expected_output = parse_hex_to_bytes(test_data_input.at("Bytes"));
+            auto expected_output = hex::parse_hex_to_bytes(test_data_input.at("Bytes"));
 
             basictl::tl_istream_string input{expected_output};
             basictl::tl_ostream_string output{};
