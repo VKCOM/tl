@@ -499,7 +499,7 @@ func (trw *TypeRWStruct) CPPReadFields(bytesVersion bool, hppDetInc *DirectInclu
 				false) + "\n")
 		if field.fieldMask != nil {
 			// TODO - in case of recursive field, check for nil ptr
-			s.WriteString(fmt.Sprintf("\t} else {\n"))
+			s.WriteString("\t} else {\n")
 			if field.recursive {
 				s.WriteString(fmt.Sprintf("\t\tif (item.%s) {\n", field.cppName))
 				s.WriteString(fmt.Sprintf("\t\t%s\n", field.t.trw.CPPTypeResettingCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)))))
@@ -507,7 +507,7 @@ func (trw *TypeRWStruct) CPPReadFields(bytesVersion bool, hppDetInc *DirectInclu
 			} else {
 				s.WriteString(fmt.Sprintf("\t\t%s\n", field.t.trw.CPPTypeResettingCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)))))
 			}
-			s.WriteString(fmt.Sprintf("\t}\n"))
+			s.WriteString("\t}\n")
 		}
 	}
 	return s.String()

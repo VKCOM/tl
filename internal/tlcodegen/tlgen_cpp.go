@@ -279,11 +279,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 CC = g++
 CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
-	cppMake.WriteString(fmt.Sprintf("all: "))
-	cppMake.WriteString(fmt.Sprintf("main.o "))
+	cppMake.WriteString("all: ")
+	cppMake.WriteString("main.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
-	cppMake.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o all "))
-	cppMake.WriteString(fmt.Sprintf("main.o "))
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
+	cppMake.WriteString("main.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
 main.o: main.cpp
@@ -496,7 +496,7 @@ func createMeta(gen *Gen2) error {
 
 	meta.WriteString("#pragma once\n")
 	meta.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
-	meta.WriteString(fmt.Sprintf(`
+	meta.WriteString(`
 #include <functional>
 #include <map>
 
@@ -559,7 +559,7 @@ namespace meta {
         throw std::runtime_error("no such tl (\"" + name + "\") item in system");
     }
 
-    void init_tl_items() {`))
+    void init_tl_items() {`)
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -579,11 +579,11 @@ namespace meta {
 		}
 	}
 
-	meta.WriteString(fmt.Sprintf(`
+	meta.WriteString(`
 	}
 };
 };
-`))
+`)
 	if err := gen.addCodeFile(filepathName, gen.copyrightText+meta.String()); err != nil {
 		return err
 	}
@@ -596,11 +596,11 @@ func createFactory(gen *Gen2, createdHpps map[string]bool) error {
 
 	imports := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
-	factory.WriteString(fmt.Sprintf(`
+	factory.WriteString(`
 
 namespace tl2 {
 namespace factory {
-    void init_tl_create_objects() {`))
+    void init_tl_create_objects() {`)
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -668,11 +668,11 @@ namespace factory {
 		}
 	}
 
-	factory.WriteString(fmt.Sprintf(`
+	factory.WriteString(`
 	}
 };
 };
-`))
+`)
 	suffix := factory.String()
 	factory.Reset()
 
