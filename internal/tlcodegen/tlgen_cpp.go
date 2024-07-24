@@ -242,7 +242,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 		for _, n := range namespaceDeps {
 			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(namespaceFilePath, n+cppExt)))
-			cppMake1UsedFiles.WriteString(fmt.Sprintf("%s", getCppDiff(MakefilePath, n+cppExt)))
+			cppMake1UsedFiles.WriteString(getCppDiff(MakefilePath, n+cppExt))
 
 			usedTypes := detailsCpps[n]
 			usedTypes = utils.FilterSlice(usedTypes, func(w *TypeRWWrapper) bool {
