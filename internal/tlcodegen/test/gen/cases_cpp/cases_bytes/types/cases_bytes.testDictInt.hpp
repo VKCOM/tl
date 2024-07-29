@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../a_tlgen_helpers_code.hpp"
-#include "../../__common/types/dictionaryFieldAny.hpp"
+#include "../../__common_namespace/types/dictionaryFieldAny.hpp"
 
 
 namespace tl2 { namespace cases_bytes { 
