@@ -676,7 +676,6 @@ void tl2::factory::set_all_factories() {
 			factoryDetails.WriteString(fmt.Sprintf(`
 	struct %[3]s_%[1]s : public tl2::meta::%[1]s {
         %[2]s object;
-        explicit %[3]s_%[1]s(%[2]s o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -695,7 +694,7 @@ void tl2::factory::set_all_factories() {
 				imports.ns[strct.ResultType] = CppIncludeInfo{componentId: strct.ResultType.typeComponent, namespace: strct.ResultType.groupName}
 
 				factoryDetails.WriteString(fmt.Sprintf(`
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			%[1]s result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -711,7 +710,7 @@ void tl2::factory::set_all_factories() {
     };`)
 			factoryDetails.WriteString(fmt.Sprintf(`
 	tl2::meta::set_create_object_by_name("%[1]s", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<%[2]s_%[3]s>(%[4]s{});
+        return std::make_unique<%[2]s_%[3]s>();
 	});
 `,
 				wr.tlName.String(),
@@ -722,7 +721,7 @@ void tl2::factory::set_all_factories() {
 			if strct.ResultType != nil {
 				factoryDetails.WriteString(fmt.Sprintf(`
 	tl2::meta::set_create_function_by_name("%[1]s", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<%[2]s_%[3]s>(%[4]s{});
+        return std::make_unique<%[2]s_%[3]s>();
 	});
 `,
 					wr.tlName.String(),

@@ -151,7 +151,6 @@ void tl2::factory::set_all_factories() {
 
 	struct tl2_antispam_GetPattern_tl_function : public tl2::meta::tl_function {
         tl2::antispam::GetPattern object;
-        explicit tl2_antispam_GetPattern_tl_function(tl2::antispam::GetPattern o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -159,7 +158,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::antispam::PatternFull result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -170,16 +169,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("antispam.getPattern", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_antispam_GetPattern_tl_function>(tl2::antispam::GetPattern{});
+        return std::make_unique<tl2_antispam_GetPattern_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("antispam.getPattern", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_antispam_GetPattern_tl_function>(tl2::antispam::GetPattern{});
+        return std::make_unique<tl2_antispam_GetPattern_tl_function>();
 	});
 
 	struct tl2_antispam_PatternFound_tl_object : public tl2::meta::tl_object {
         tl2::antispam::PatternFound object;
-        explicit tl2_antispam_PatternFound_tl_object(tl2::antispam::PatternFound o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -189,12 +187,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("antispam.patternFound", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_antispam_PatternFound_tl_object>(tl2::antispam::PatternFound{});
+        return std::make_unique<tl2_antispam_PatternFound_tl_object>();
 	});
 
 	struct tl2_antispam_PatternNotFound_tl_object : public tl2::meta::tl_object {
         tl2::antispam::PatternNotFound object;
-        explicit tl2_antispam_PatternNotFound_tl_object(tl2::antispam::PatternNotFound o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -204,12 +201,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("antispam.patternNotFound", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_antispam_PatternNotFound_tl_object>(tl2::antispam::PatternNotFound{});
+        return std::make_unique<tl2_antispam_PatternNotFound_tl_object>();
 	});
 
 	struct tl2_BenchObject_tl_object : public tl2::meta::tl_object {
         tl2::BenchObject object;
-        explicit tl2_BenchObject_tl_object(tl2::BenchObject o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -219,12 +215,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("benchObject", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BenchObject_tl_object>(tl2::BenchObject{});
+        return std::make_unique<tl2_BenchObject_tl_object>();
 	});
 
 	struct tl2_BoolStat_tl_object : public tl2::meta::tl_object {
         tl2::BoolStat object;
-        explicit tl2_BoolStat_tl_object(tl2::BoolStat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -234,12 +229,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boolStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoolStat_tl_object>(tl2::BoolStat{});
+        return std::make_unique<tl2_BoolStat_tl_object>();
 	});
 
 	struct tl2_BoxedArray_tl_function : public tl2::meta::tl_function {
         tl2::BoxedArray object;
-        explicit tl2_BoxedArray_tl_function(tl2::BoxedArray o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -247,7 +241,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyBoxedArray result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -258,16 +252,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedArray", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedArray_tl_function>(tl2::BoxedArray{});
+        return std::make_unique<tl2_BoxedArray_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedArray", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedArray_tl_function>(tl2::BoxedArray{});
+        return std::make_unique<tl2_BoxedArray_tl_function>();
 	});
 
 	struct tl2_BoxedInt_tl_function : public tl2::meta::tl_function {
         tl2::BoxedInt object;
-        explicit tl2_BoxedInt_tl_function(tl2::BoxedInt o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -275,7 +268,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			int32_t result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -286,16 +279,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedInt", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedInt_tl_function>(tl2::BoxedInt{});
+        return std::make_unique<tl2_BoxedInt_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedInt", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedInt_tl_function>(tl2::BoxedInt{});
+        return std::make_unique<tl2_BoxedInt_tl_function>();
 	});
 
 	struct tl2_BoxedString_tl_function : public tl2::meta::tl_function {
         tl2::BoxedString object;
-        explicit tl2_BoxedString_tl_function(tl2::BoxedString o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -303,7 +295,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::string result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -314,16 +306,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedString", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedString_tl_function>(tl2::BoxedString{});
+        return std::make_unique<tl2_BoxedString_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedString", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedString_tl_function>(tl2::BoxedString{});
+        return std::make_unique<tl2_BoxedString_tl_function>();
 	});
 
 	struct tl2_BoxedTuple_tl_function : public tl2::meta::tl_function {
         tl2::BoxedTuple object;
-        explicit tl2_BoxedTuple_tl_function(tl2::BoxedTuple o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -331,7 +322,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::array<int32_t, 3> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -342,16 +333,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedTuple", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedTuple_tl_function>(tl2::BoxedTuple{});
+        return std::make_unique<tl2_BoxedTuple_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedTuple", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedTuple_tl_function>(tl2::BoxedTuple{});
+        return std::make_unique<tl2_BoxedTuple_tl_function>();
 	});
 
 	struct tl2_BoxedTupleSlice1_tl_function : public tl2::meta::tl_function {
         tl2::BoxedTupleSlice1 object;
-        explicit tl2_BoxedTupleSlice1_tl_function(tl2::BoxedTupleSlice1 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -359,7 +349,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -370,16 +360,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedTupleSlice1", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedTupleSlice1_tl_function>(tl2::BoxedTupleSlice1{});
+        return std::make_unique<tl2_BoxedTupleSlice1_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedTupleSlice1", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedTupleSlice1_tl_function>(tl2::BoxedTupleSlice1{});
+        return std::make_unique<tl2_BoxedTupleSlice1_tl_function>();
 	});
 
 	struct tl2_BoxedTupleSlice2_tl_function : public tl2::meta::tl_function {
         tl2::BoxedTupleSlice2 object;
-        explicit tl2_BoxedTupleSlice2_tl_function(tl2::BoxedTupleSlice2 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -387,7 +376,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyBoxedTupleSlice result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -398,16 +387,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedTupleSlice2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedTupleSlice2_tl_function>(tl2::BoxedTupleSlice2{});
+        return std::make_unique<tl2_BoxedTupleSlice2_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedTupleSlice2", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedTupleSlice2_tl_function>(tl2::BoxedTupleSlice2{});
+        return std::make_unique<tl2_BoxedTupleSlice2_tl_function>();
 	});
 
 	struct tl2_BoxedTupleSlice3_tl_function : public tl2::meta::tl_function {
         tl2::BoxedTupleSlice3 object;
-        explicit tl2_BoxedTupleSlice3_tl_function(tl2::BoxedTupleSlice3 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -415,7 +403,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -426,16 +414,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedTupleSlice3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedTupleSlice3_tl_function>(tl2::BoxedTupleSlice3{});
+        return std::make_unique<tl2_BoxedTupleSlice3_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedTupleSlice3", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedTupleSlice3_tl_function>(tl2::BoxedTupleSlice3{});
+        return std::make_unique<tl2_BoxedTupleSlice3_tl_function>();
 	});
 
 	struct tl2_BoxedVector32_tl_function : public tl2::meta::tl_function {
         tl2::BoxedVector32 object;
-        explicit tl2_BoxedVector32_tl_function(tl2::BoxedVector32 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -443,7 +430,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -454,16 +441,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedVector32", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedVector32_tl_function>(tl2::BoxedVector32{});
+        return std::make_unique<tl2_BoxedVector32_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedVector32", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedVector32_tl_function>(tl2::BoxedVector32{});
+        return std::make_unique<tl2_BoxedVector32_tl_function>();
 	});
 
 	struct tl2_BoxedVector32BoxedElem_tl_function : public tl2::meta::tl_function {
         tl2::BoxedVector32BoxedElem object;
-        explicit tl2_BoxedVector32BoxedElem_tl_function(tl2::BoxedVector32BoxedElem o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -471,7 +457,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -482,16 +468,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedVector32BoxedElem", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedVector32BoxedElem_tl_function>(tl2::BoxedVector32BoxedElem{});
+        return std::make_unique<tl2_BoxedVector32BoxedElem_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedVector32BoxedElem", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedVector32BoxedElem_tl_function>(tl2::BoxedVector32BoxedElem{});
+        return std::make_unique<tl2_BoxedVector32BoxedElem_tl_function>();
 	});
 
 	struct tl2_BoxedVector64_tl_function : public tl2::meta::tl_function {
         tl2::BoxedVector64 object;
-        explicit tl2_BoxedVector64_tl_function(tl2::BoxedVector64 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -499,7 +484,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int64_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -510,16 +495,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("boxedVector64", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_BoxedVector64_tl_function>(tl2::BoxedVector64{});
+        return std::make_unique<tl2_BoxedVector64_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("boxedVector64", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_BoxedVector64_tl_function>(tl2::BoxedVector64{});
+        return std::make_unique<tl2_BoxedVector64_tl_function>();
 	});
 
 	struct tl2_FieldConflict1_tl_object : public tl2::meta::tl_object {
         tl2::FieldConflict1 object;
-        explicit tl2_FieldConflict1_tl_object(tl2::FieldConflict1 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -529,12 +513,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict1", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_FieldConflict1_tl_object>(tl2::FieldConflict1{});
+        return std::make_unique<tl2_FieldConflict1_tl_object>();
 	});
 
 	struct tl2_FieldConflict2_tl_object : public tl2::meta::tl_object {
         tl2::FieldConflict2 object;
-        explicit tl2_FieldConflict2_tl_object(tl2::FieldConflict2 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -544,12 +527,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_FieldConflict2_tl_object>(tl2::FieldConflict2{});
+        return std::make_unique<tl2_FieldConflict2_tl_object>();
 	});
 
 	struct tl2_FieldConflict3_tl_object : public tl2::meta::tl_object {
         tl2::FieldConflict3 object;
-        explicit tl2_FieldConflict3_tl_object(tl2::FieldConflict3 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -559,12 +541,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_FieldConflict3_tl_object>(tl2::FieldConflict3{});
+        return std::make_unique<tl2_FieldConflict3_tl_object>();
 	});
 
 	struct tl2_FieldConflict4_tl_object : public tl2::meta::tl_object {
         tl2::FieldConflict4 object;
-        explicit tl2_FieldConflict4_tl_object(tl2::FieldConflict4 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -574,12 +555,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict4", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_FieldConflict4_tl_object>(tl2::FieldConflict4{});
+        return std::make_unique<tl2_FieldConflict4_tl_object>();
 	});
 
 	struct tl2_Get_arrays_tl_function : public tl2::meta::tl_function {
         tl2::Get_arrays object;
-        explicit tl2_Get_arrays_tl_function(tl2::Get_arrays o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -587,7 +567,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::array<int32_t, 5> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -598,16 +578,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("get_arrays", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Get_arrays_tl_function>(tl2::Get_arrays{});
+        return std::make_unique<tl2_Get_arrays_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("get_arrays", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_Get_arrays_tl_function>(tl2::Get_arrays{});
+        return std::make_unique<tl2_Get_arrays_tl_function>();
 	});
 
 	struct tl2_GetDouble_tl_function : public tl2::meta::tl_function {
         tl2::GetDouble object;
-        explicit tl2_GetDouble_tl_function(tl2::GetDouble o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -615,7 +594,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			double result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -626,16 +605,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getDouble", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetDouble_tl_function>(tl2::GetDouble{});
+        return std::make_unique<tl2_GetDouble_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getDouble", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetDouble_tl_function>(tl2::GetDouble{});
+        return std::make_unique<tl2_GetDouble_tl_function>();
 	});
 
 	struct tl2_GetFloat_tl_function : public tl2::meta::tl_function {
         tl2::GetFloat object;
-        explicit tl2_GetFloat_tl_function(tl2::GetFloat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -643,7 +621,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			float result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -654,16 +632,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getFloat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetFloat_tl_function>(tl2::GetFloat{});
+        return std::make_unique<tl2_GetFloat_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getFloat", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetFloat_tl_function>(tl2::GetFloat{});
+        return std::make_unique<tl2_GetFloat_tl_function>();
 	});
 
 	struct tl2_GetMaybeIface_tl_function : public tl2::meta::tl_function {
         tl2::GetMaybeIface object;
-        explicit tl2_GetMaybeIface_tl_function(tl2::GetMaybeIface o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -671,7 +648,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::service1::Value> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -682,16 +659,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getMaybeIface", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetMaybeIface_tl_function>(tl2::GetMaybeIface{});
+        return std::make_unique<tl2_GetMaybeIface_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getMaybeIface", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetMaybeIface_tl_function>(tl2::GetMaybeIface{});
+        return std::make_unique<tl2_GetMaybeIface_tl_function>();
 	});
 
 	struct tl2_GetMyDictOfInt_tl_function : public tl2::meta::tl_function {
         tl2::GetMyDictOfInt object;
-        explicit tl2_GetMyDictOfInt_tl_function(tl2::GetMyDictOfInt o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -699,7 +675,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyDictOfInt result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -710,16 +686,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getMyDictOfInt", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetMyDictOfInt_tl_function>(tl2::GetMyDictOfInt{});
+        return std::make_unique<tl2_GetMyDictOfInt_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getMyDictOfInt", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetMyDictOfInt_tl_function>(tl2::GetMyDictOfInt{});
+        return std::make_unique<tl2_GetMyDictOfInt_tl_function>();
 	});
 
 	struct tl2_GetMyDouble_tl_function : public tl2::meta::tl_function {
         tl2::GetMyDouble object;
-        explicit tl2_GetMyDouble_tl_function(tl2::GetMyDouble o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -727,7 +702,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyDouble result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -738,16 +713,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getMyDouble", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetMyDouble_tl_function>(tl2::GetMyDouble{});
+        return std::make_unique<tl2_GetMyDouble_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getMyDouble", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetMyDouble_tl_function>(tl2::GetMyDouble{});
+        return std::make_unique<tl2_GetMyDouble_tl_function>();
 	});
 
 	struct tl2_GetMyValue_tl_function : public tl2::meta::tl_function {
         tl2::GetMyValue object;
-        explicit tl2_GetMyValue_tl_function(tl2::GetMyValue o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -755,7 +729,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyValue result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -766,16 +740,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getMyValue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetMyValue_tl_function>(tl2::GetMyValue{});
+        return std::make_unique<tl2_GetMyValue_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getMyValue", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetMyValue_tl_function>(tl2::GetMyValue{});
+        return std::make_unique<tl2_GetMyValue_tl_function>();
 	});
 
 	struct tl2_GetNonOptNat_tl_function : public tl2::meta::tl_function {
         tl2::GetNonOptNat object;
-        explicit tl2_GetNonOptNat_tl_function(tl2::GetNonOptNat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -783,7 +756,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -794,16 +767,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getNonOptNat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetNonOptNat_tl_function>(tl2::GetNonOptNat{});
+        return std::make_unique<tl2_GetNonOptNat_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getNonOptNat", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetNonOptNat_tl_function>(tl2::GetNonOptNat{});
+        return std::make_unique<tl2_GetNonOptNat_tl_function>();
 	});
 
 	struct tl2_GetStats_tl_function : public tl2::meta::tl_function {
         tl2::GetStats object;
-        explicit tl2_GetStats_tl_function(tl2::GetStats o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -811,7 +783,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::tasks::QueueTypeStats result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -822,16 +794,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("getStats", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_GetStats_tl_function>(tl2::GetStats{});
+        return std::make_unique<tl2_GetStats_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("getStats", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_GetStats_tl_function>(tl2::GetStats{});
+        return std::make_unique<tl2_GetStats_tl_function>();
 	});
 
 	struct tl2_Integer_tl_object : public tl2::meta::tl_object {
         tl2::Integer object;
-        explicit tl2_Integer_tl_object(tl2::Integer o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -841,12 +812,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("integer", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Integer_tl_object>(tl2::Integer{});
+        return std::make_unique<tl2_Integer_tl_object>();
 	});
 
 	struct tl2_Issue3498_tl_object : public tl2::meta::tl_object {
         tl2::Issue3498 object;
-        explicit tl2_Issue3498_tl_object(tl2::Issue3498 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -856,12 +826,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("issue3498", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Issue3498_tl_object>(tl2::Issue3498{});
+        return std::make_unique<tl2_Issue3498_tl_object>();
 	});
 
 	struct tl2_MyBoxedArray_tl_object : public tl2::meta::tl_object {
         tl2::MyBoxedArray object;
-        explicit tl2_MyBoxedArray_tl_object(tl2::MyBoxedArray o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -871,12 +840,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myBoxedArray", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyBoxedArray_tl_object>(tl2::MyBoxedArray{});
+        return std::make_unique<tl2_MyBoxedArray_tl_object>();
 	});
 
 	struct tl2_MyBoxedTupleSlice_tl_object : public tl2::meta::tl_object {
         tl2::MyBoxedTupleSlice object;
-        explicit tl2_MyBoxedTupleSlice_tl_object(tl2::MyBoxedTupleSlice o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -886,12 +854,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myBoxedTupleSlice", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyBoxedTupleSlice_tl_object>(tl2::MyBoxedTupleSlice{});
+        return std::make_unique<tl2_MyBoxedTupleSlice_tl_object>();
 	});
 
 	struct tl2_MyBoxedVectorSlice_tl_object : public tl2::meta::tl_object {
         tl2::MyBoxedVectorSlice object;
-        explicit tl2_MyBoxedVectorSlice_tl_object(tl2::MyBoxedVectorSlice o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -901,12 +868,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myBoxedVectorSlice", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyBoxedVectorSlice_tl_object>(tl2::MyBoxedVectorSlice{});
+        return std::make_unique<tl2_MyBoxedVectorSlice_tl_object>();
 	});
 
 	struct tl2_MyInt_tl_object : public tl2::meta::tl_object {
         tl2::MyInt object;
-        explicit tl2_MyInt_tl_object(tl2::MyInt o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -916,12 +882,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myInt", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyInt_tl_object>(tl2::MyInt{});
+        return std::make_unique<tl2_MyInt_tl_object>();
 	});
 
 	struct tl2_MyMcValue_tl_object : public tl2::meta::tl_object {
         tl2::MyMcValue object;
-        explicit tl2_MyMcValue_tl_object(tl2::MyMcValue o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -931,12 +896,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myMcValue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyMcValue_tl_object>(tl2::MyMcValue{});
+        return std::make_unique<tl2_MyMcValue_tl_object>();
 	});
 
 	struct tl2_MyMcValueTuple_tl_object : public tl2::meta::tl_object {
         tl2::MyMcValueTuple object;
-        explicit tl2_MyMcValueTuple_tl_object(tl2::MyMcValueTuple o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -946,12 +910,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myMcValueTuple", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyMcValueTuple_tl_object>(tl2::MyMcValueTuple{});
+        return std::make_unique<tl2_MyMcValueTuple_tl_object>();
 	});
 
 	struct tl2_MyMcValueVector_tl_object : public tl2::meta::tl_object {
         tl2::MyMcValueVector object;
-        explicit tl2_MyMcValueVector_tl_object(tl2::MyMcValueVector o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -961,12 +924,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myMcValueVector", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyMcValueVector_tl_object>(tl2::MyMcValueVector{});
+        return std::make_unique<tl2_MyMcValueVector_tl_object>();
 	});
 
 	struct tl2_MyString_tl_object : public tl2::meta::tl_object {
         tl2::MyString object;
-        explicit tl2_MyString_tl_object(tl2::MyString o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -976,12 +938,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myString", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyString_tl_object>(tl2::MyString{});
+        return std::make_unique<tl2_MyString_tl_object>();
 	});
 
 	struct tl2_MyTwoDicts_tl_object : public tl2::meta::tl_object {
         tl2::MyTwoDicts object;
-        explicit tl2_MyTwoDicts_tl_object(tl2::MyTwoDicts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -991,12 +952,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("myTwoDicts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyTwoDicts_tl_object>(tl2::MyTwoDicts{});
+        return std::make_unique<tl2_MyTwoDicts_tl_object>();
 	});
 
 	struct tl2_NonOptNat_tl_object : public tl2::meta::tl_object {
         tl2::NonOptNat object;
-        explicit tl2_NonOptNat_tl_object(tl2::NonOptNat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1006,12 +966,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("nonOptNat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_NonOptNat_tl_object>(tl2::NonOptNat{});
+        return std::make_unique<tl2_NonOptNat_tl_object>();
 	});
 
 	struct tl2_pkg2_Foo_tl_object : public tl2::meta::tl_object {
         tl2::pkg2::Foo object;
-        explicit tl2_pkg2_Foo_tl_object(tl2::pkg2::Foo o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1021,12 +980,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("pkg2.foo", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_pkg2_Foo_tl_object>(tl2::pkg2::Foo{});
+        return std::make_unique<tl2_pkg2_Foo_tl_object>();
 	});
 
 	struct tl2_pkg2_T1_tl_object : public tl2::meta::tl_object {
         tl2::pkg2::T1 object;
-        explicit tl2_pkg2_T1_tl_object(tl2::pkg2::T1 o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1036,12 +994,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("pkg2.t1", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_pkg2_T1_tl_object>(tl2::pkg2::T1{});
+        return std::make_unique<tl2_pkg2_T1_tl_object>();
 	});
 
 	struct tl2_RpcInvokeReqExtra_tl_object : public tl2::meta::tl_object {
         tl2::RpcInvokeReqExtra object;
-        explicit tl2_RpcInvokeReqExtra_tl_object(tl2::RpcInvokeReqExtra o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1051,12 +1008,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("rpcInvokeReqExtra", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_RpcInvokeReqExtra_tl_object>(tl2::RpcInvokeReqExtra{});
+        return std::make_unique<tl2_RpcInvokeReqExtra_tl_object>();
 	});
 
 	struct tl2_service1_Add_tl_function : public tl2::meta::tl_function {
         tl2::service1::Add object;
-        explicit tl2_service1_Add_tl_function(tl2::service1::Add o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1064,7 +1020,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1075,16 +1031,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.add", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Add_tl_function>(tl2::service1::Add{});
+        return std::make_unique<tl2_service1_Add_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.add", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Add_tl_function>(tl2::service1::Add{});
+        return std::make_unique<tl2_service1_Add_tl_function>();
 	});
 
 	struct tl2_service1_AddOrGet_tl_function : public tl2::meta::tl_function {
         tl2::service1::AddOrGet object;
-        explicit tl2_service1_AddOrGet_tl_function(tl2::service1::AddOrGet o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1092,7 +1047,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1103,16 +1058,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.addOrGet", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_AddOrGet_tl_function>(tl2::service1::AddOrGet{});
+        return std::make_unique<tl2_service1_AddOrGet_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.addOrGet", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_AddOrGet_tl_function>(tl2::service1::AddOrGet{});
+        return std::make_unique<tl2_service1_AddOrGet_tl_function>();
 	});
 
 	struct tl2_service1_AddOrIncr_tl_function : public tl2::meta::tl_function {
         tl2::service1::AddOrIncr object;
-        explicit tl2_service1_AddOrIncr_tl_function(tl2::service1::AddOrIncr o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1120,7 +1074,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1131,16 +1085,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.addOrIncr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_AddOrIncr_tl_function>(tl2::service1::AddOrIncr{});
+        return std::make_unique<tl2_service1_AddOrIncr_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.addOrIncr", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_AddOrIncr_tl_function>(tl2::service1::AddOrIncr{});
+        return std::make_unique<tl2_service1_AddOrIncr_tl_function>();
 	});
 
 	struct tl2_service1_Append_tl_function : public tl2::meta::tl_function {
         tl2::service1::Append object;
-        explicit tl2_service1_Append_tl_function(tl2::service1::Append o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1148,7 +1101,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1159,16 +1112,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.append", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Append_tl_function>(tl2::service1::Append{});
+        return std::make_unique<tl2_service1_Append_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.append", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Append_tl_function>(tl2::service1::Append{});
+        return std::make_unique<tl2_service1_Append_tl_function>();
 	});
 
 	struct tl2_service1_Cas_tl_function : public tl2::meta::tl_function {
         tl2::service1::Cas object;
-        explicit tl2_service1_Cas_tl_function(tl2::service1::Cas o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1176,7 +1128,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1187,16 +1139,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.cas", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Cas_tl_function>(tl2::service1::Cas{});
+        return std::make_unique<tl2_service1_Cas_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.cas", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Cas_tl_function>(tl2::service1::Cas{});
+        return std::make_unique<tl2_service1_Cas_tl_function>();
 	});
 
 	struct tl2_service1_Decr_tl_function : public tl2::meta::tl_function {
         tl2::service1::Decr object;
-        explicit tl2_service1_Decr_tl_function(tl2::service1::Decr o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1204,7 +1155,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1215,16 +1166,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.decr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Decr_tl_function>(tl2::service1::Decr{});
+        return std::make_unique<tl2_service1_Decr_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.decr", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Decr_tl_function>(tl2::service1::Decr{});
+        return std::make_unique<tl2_service1_Decr_tl_function>();
 	});
 
 	struct tl2_service1_Delete_tl_function : public tl2::meta::tl_function {
         tl2::service1::Delete object;
-        explicit tl2_service1_Delete_tl_function(tl2::service1::Delete o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1232,7 +1182,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1243,16 +1193,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.delete", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Delete_tl_function>(tl2::service1::Delete{});
+        return std::make_unique<tl2_service1_Delete_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.delete", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Delete_tl_function>(tl2::service1::Delete{});
+        return std::make_unique<tl2_service1_Delete_tl_function>();
 	});
 
 	struct tl2_service1_DisableExpiration_tl_function : public tl2::meta::tl_function {
         tl2::service1::DisableExpiration object;
-        explicit tl2_service1_DisableExpiration_tl_function(tl2::service1::DisableExpiration o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1260,7 +1209,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1271,16 +1220,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.disableExpiration", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_DisableExpiration_tl_function>(tl2::service1::DisableExpiration{});
+        return std::make_unique<tl2_service1_DisableExpiration_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.disableExpiration", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_DisableExpiration_tl_function>(tl2::service1::DisableExpiration{});
+        return std::make_unique<tl2_service1_DisableExpiration_tl_function>();
 	});
 
 	struct tl2_service1_DisableKeysStat_tl_function : public tl2::meta::tl_function {
         tl2::service1::DisableKeysStat object;
-        explicit tl2_service1_DisableKeysStat_tl_function(tl2::service1::DisableKeysStat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1288,7 +1236,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1299,16 +1247,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.disableKeysStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_DisableKeysStat_tl_function>(tl2::service1::DisableKeysStat{});
+        return std::make_unique<tl2_service1_DisableKeysStat_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.disableKeysStat", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_DisableKeysStat_tl_function>(tl2::service1::DisableKeysStat{});
+        return std::make_unique<tl2_service1_DisableKeysStat_tl_function>();
 	});
 
 	struct tl2_service1_EnableExpiration_tl_function : public tl2::meta::tl_function {
         tl2::service1::EnableExpiration object;
-        explicit tl2_service1_EnableExpiration_tl_function(tl2::service1::EnableExpiration o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1316,7 +1263,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1327,16 +1274,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.enableExpiration", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_EnableExpiration_tl_function>(tl2::service1::EnableExpiration{});
+        return std::make_unique<tl2_service1_EnableExpiration_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.enableExpiration", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_EnableExpiration_tl_function>(tl2::service1::EnableExpiration{});
+        return std::make_unique<tl2_service1_EnableExpiration_tl_function>();
 	});
 
 	struct tl2_service1_EnableKeysStat_tl_function : public tl2::meta::tl_function {
         tl2::service1::EnableKeysStat object;
-        explicit tl2_service1_EnableKeysStat_tl_function(tl2::service1::EnableKeysStat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1344,7 +1290,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1355,16 +1301,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.enableKeysStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_EnableKeysStat_tl_function>(tl2::service1::EnableKeysStat{});
+        return std::make_unique<tl2_service1_EnableKeysStat_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.enableKeysStat", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_EnableKeysStat_tl_function>(tl2::service1::EnableKeysStat{});
+        return std::make_unique<tl2_service1_EnableKeysStat_tl_function>();
 	});
 
 	struct tl2_service1_Exists_tl_function : public tl2::meta::tl_function {
         tl2::service1::Exists object;
-        explicit tl2_service1_Exists_tl_function(tl2::service1::Exists o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1372,7 +1317,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1383,16 +1328,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.exists", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Exists_tl_function>(tl2::service1::Exists{});
+        return std::make_unique<tl2_service1_Exists_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.exists", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Exists_tl_function>(tl2::service1::Exists{});
+        return std::make_unique<tl2_service1_Exists_tl_function>();
 	});
 
 	struct tl2_service1_Get_tl_function : public tl2::meta::tl_function {
         tl2::service1::Get object;
-        explicit tl2_service1_Get_tl_function(tl2::service1::Get o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1400,7 +1344,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1411,16 +1355,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.get", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Get_tl_function>(tl2::service1::Get{});
+        return std::make_unique<tl2_service1_Get_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.get", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Get_tl_function>(tl2::service1::Get{});
+        return std::make_unique<tl2_service1_Get_tl_function>();
 	});
 
 	struct tl2_service1_GetExpireTime_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetExpireTime object;
-        explicit tl2_service1_GetExpireTime_tl_function(tl2::service1::GetExpireTime o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1428,7 +1371,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1439,16 +1382,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getExpireTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetExpireTime_tl_function>(tl2::service1::GetExpireTime{});
+        return std::make_unique<tl2_service1_GetExpireTime_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getExpireTime", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetExpireTime_tl_function>(tl2::service1::GetExpireTime{});
+        return std::make_unique<tl2_service1_GetExpireTime_tl_function>();
 	});
 
 	struct tl2_service1_GetKeysStat_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetKeysStat object;
-        explicit tl2_service1_GetKeysStat_tl_function(tl2::service1::GetKeysStat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1456,7 +1398,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::service1::KeysStat> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1467,16 +1409,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getKeysStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetKeysStat_tl_function>(tl2::service1::GetKeysStat{});
+        return std::make_unique<tl2_service1_GetKeysStat_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getKeysStat", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetKeysStat_tl_function>(tl2::service1::GetKeysStat{});
+        return std::make_unique<tl2_service1_GetKeysStat_tl_function>();
 	});
 
 	struct tl2_service1_GetKeysStatPeriods_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetKeysStatPeriods object;
-        explicit tl2_service1_GetKeysStatPeriods_tl_function(tl2::service1::GetKeysStatPeriods o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1484,7 +1425,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1495,16 +1436,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getKeysStatPeriods", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetKeysStatPeriods_tl_function>(tl2::service1::GetKeysStatPeriods{});
+        return std::make_unique<tl2_service1_GetKeysStatPeriods_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getKeysStatPeriods", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetKeysStatPeriods_tl_function>(tl2::service1::GetKeysStatPeriods{});
+        return std::make_unique<tl2_service1_GetKeysStatPeriods_tl_function>();
 	});
 
 	struct tl2_service1_GetWildcard_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetWildcard object;
-        explicit tl2_service1_GetWildcard_tl_function(tl2::service1::GetWildcard o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1512,7 +1452,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::Map<std::string, std::string>> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1523,16 +1463,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getWildcard", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetWildcard_tl_function>(tl2::service1::GetWildcard{});
+        return std::make_unique<tl2_service1_GetWildcard_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getWildcard", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetWildcard_tl_function>(tl2::service1::GetWildcard{});
+        return std::make_unique<tl2_service1_GetWildcard_tl_function>();
 	});
 
 	struct tl2_service1_GetWildcardDict_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetWildcardDict object;
-        explicit tl2_service1_GetWildcardDict_tl_function(tl2::service1::GetWildcardDict o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1540,7 +1479,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::Dictionary<std::string> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1551,16 +1490,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getWildcardDict", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetWildcardDict_tl_function>(tl2::service1::GetWildcardDict{});
+        return std::make_unique<tl2_service1_GetWildcardDict_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getWildcardDict", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetWildcardDict_tl_function>(tl2::service1::GetWildcardDict{});
+        return std::make_unique<tl2_service1_GetWildcardDict_tl_function>();
 	});
 
 	struct tl2_service1_GetWildcardList_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetWildcardList object;
-        explicit tl2_service1_GetWildcardList_tl_function(tl2::service1::GetWildcardList o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1568,7 +1506,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<std::string> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1579,16 +1517,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getWildcardList", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetWildcardList_tl_function>(tl2::service1::GetWildcardList{});
+        return std::make_unique<tl2_service1_GetWildcardList_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getWildcardList", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetWildcardList_tl_function>(tl2::service1::GetWildcardList{});
+        return std::make_unique<tl2_service1_GetWildcardList_tl_function>();
 	});
 
 	struct tl2_service1_GetWildcardWithFlags_tl_function : public tl2::meta::tl_function {
         tl2::service1::GetWildcardWithFlags object;
-        explicit tl2_service1_GetWildcardWithFlags_tl_function(tl2::service1::GetWildcardWithFlags o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1596,7 +1533,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::Dictionary<::tl2::service1::Value> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1607,16 +1544,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.getWildcardWithFlags", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_GetWildcardWithFlags_tl_function>(tl2::service1::GetWildcardWithFlags{});
+        return std::make_unique<tl2_service1_GetWildcardWithFlags_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.getWildcardWithFlags", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_GetWildcardWithFlags_tl_function>(tl2::service1::GetWildcardWithFlags{});
+        return std::make_unique<tl2_service1_GetWildcardWithFlags_tl_function>();
 	});
 
 	struct tl2_service1_Incr_tl_function : public tl2::meta::tl_function {
         tl2::service1::Incr object;
-        explicit tl2_service1_Incr_tl_function(tl2::service1::Incr o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1624,7 +1560,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1635,16 +1571,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.incr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Incr_tl_function>(tl2::service1::Incr{});
+        return std::make_unique<tl2_service1_Incr_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.incr", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Incr_tl_function>(tl2::service1::Incr{});
+        return std::make_unique<tl2_service1_Incr_tl_function>();
 	});
 
 	struct tl2_service1_KeysStat_tl_object : public tl2::meta::tl_object {
         tl2::service1::KeysStat object;
-        explicit tl2_service1_KeysStat_tl_object(tl2::service1::KeysStat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1654,12 +1589,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.keysStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_KeysStat_tl_object>(tl2::service1::KeysStat{});
+        return std::make_unique<tl2_service1_KeysStat_tl_object>();
 	});
 
 	struct tl2_service1_Longvalue_tl_object : public tl2::meta::tl_object {
         tl2::service1::Longvalue object;
-        explicit tl2_service1_Longvalue_tl_object(tl2::service1::Longvalue o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1669,12 +1603,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.longvalue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Longvalue_tl_object>(tl2::service1::Longvalue{});
+        return std::make_unique<tl2_service1_Longvalue_tl_object>();
 	});
 
 	struct tl2_service1_LongvalueWithTime_tl_object : public tl2::meta::tl_object {
         tl2::service1::LongvalueWithTime object;
-        explicit tl2_service1_LongvalueWithTime_tl_object(tl2::service1::LongvalueWithTime o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1684,12 +1617,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.longvalueWithTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_LongvalueWithTime_tl_object>(tl2::service1::LongvalueWithTime{});
+        return std::make_unique<tl2_service1_LongvalueWithTime_tl_object>();
 	});
 
 	struct tl2_service1_Not_found_tl_object : public tl2::meta::tl_object {
         tl2::service1::Not_found object;
-        explicit tl2_service1_Not_found_tl_object(tl2::service1::Not_found o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1699,12 +1631,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.not_found", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Not_found_tl_object>(tl2::service1::Not_found{});
+        return std::make_unique<tl2_service1_Not_found_tl_object>();
 	});
 
 	struct tl2_service1_Replace_tl_function : public tl2::meta::tl_function {
         tl2::service1::Replace object;
-        explicit tl2_service1_Replace_tl_function(tl2::service1::Replace o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1712,7 +1643,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1723,16 +1654,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.replace", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Replace_tl_function>(tl2::service1::Replace{});
+        return std::make_unique<tl2_service1_Replace_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.replace", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Replace_tl_function>(tl2::service1::Replace{});
+        return std::make_unique<tl2_service1_Replace_tl_function>();
 	});
 
 	struct tl2_service1_ReplaceOrIncr_tl_function : public tl2::meta::tl_function {
         tl2::service1::ReplaceOrIncr object;
-        explicit tl2_service1_ReplaceOrIncr_tl_function(tl2::service1::ReplaceOrIncr o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1740,7 +1670,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1751,16 +1681,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.replaceOrIncr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_ReplaceOrIncr_tl_function>(tl2::service1::ReplaceOrIncr{});
+        return std::make_unique<tl2_service1_ReplaceOrIncr_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.replaceOrIncr", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_ReplaceOrIncr_tl_function>(tl2::service1::ReplaceOrIncr{});
+        return std::make_unique<tl2_service1_ReplaceOrIncr_tl_function>();
 	});
 
 	struct tl2_service1_Set_tl_function : public tl2::meta::tl_function {
         tl2::service1::Set object;
-        explicit tl2_service1_Set_tl_function(tl2::service1::Set o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1768,7 +1697,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1779,16 +1708,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.set", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Set_tl_function>(tl2::service1::Set{});
+        return std::make_unique<tl2_service1_Set_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.set", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Set_tl_function>(tl2::service1::Set{});
+        return std::make_unique<tl2_service1_Set_tl_function>();
 	});
 
 	struct tl2_service1_SetOrIncr_tl_function : public tl2::meta::tl_function {
         tl2::service1::SetOrIncr object;
-        explicit tl2_service1_SetOrIncr_tl_function(tl2::service1::SetOrIncr o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1796,7 +1724,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1807,16 +1735,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.setOrIncr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_SetOrIncr_tl_function>(tl2::service1::SetOrIncr{});
+        return std::make_unique<tl2_service1_SetOrIncr_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.setOrIncr", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_SetOrIncr_tl_function>(tl2::service1::SetOrIncr{});
+        return std::make_unique<tl2_service1_SetOrIncr_tl_function>();
 	});
 
 	struct tl2_service1_Strvalue_tl_object : public tl2::meta::tl_object {
         tl2::service1::Strvalue object;
-        explicit tl2_service1_Strvalue_tl_object(tl2::service1::Strvalue o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1826,12 +1753,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.strvalue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Strvalue_tl_object>(tl2::service1::Strvalue{});
+        return std::make_unique<tl2_service1_Strvalue_tl_object>();
 	});
 
 	struct tl2_service1_StrvalueWithTime_tl_object : public tl2::meta::tl_object {
         tl2::service1::StrvalueWithTime object;
-        explicit tl2_service1_StrvalueWithTime_tl_object(tl2::service1::StrvalueWithTime o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1841,12 +1767,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.strvalueWithTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_StrvalueWithTime_tl_object>(tl2::service1::StrvalueWithTime{});
+        return std::make_unique<tl2_service1_StrvalueWithTime_tl_object>();
 	});
 
 	struct tl2_service1_Touch_tl_function : public tl2::meta::tl_function {
         tl2::service1::Touch object;
-        explicit tl2_service1_Touch_tl_function(tl2::service1::Touch o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1854,7 +1779,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1865,16 +1790,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service1.touch", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service1_Touch_tl_function>(tl2::service1::Touch{});
+        return std::make_unique<tl2_service1_Touch_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service1.touch", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service1_Touch_tl_function>(tl2::service1::Touch{});
+        return std::make_unique<tl2_service1_Touch_tl_function>();
 	});
 
 	struct tl2_service2_AddOrIncrMany_tl_function : public tl2::meta::tl_function {
         tl2::service2::AddOrIncrMany object;
-        explicit tl2_service2_AddOrIncrMany_tl_function(tl2::service2::AddOrIncrMany o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1882,7 +1806,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::service2::CounterSet> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1893,16 +1817,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service2.addOrIncrMany", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service2_AddOrIncrMany_tl_function>(tl2::service2::AddOrIncrMany{});
+        return std::make_unique<tl2_service2_AddOrIncrMany_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service2.addOrIncrMany", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service2_AddOrIncrMany_tl_function>(tl2::service2::AddOrIncrMany{});
+        return std::make_unique<tl2_service2_AddOrIncrMany_tl_function>();
 	});
 
 	struct tl2_service2_Set_tl_function : public tl2::meta::tl_function {
         tl2::service2::Set object;
-        explicit tl2_service2_Set_tl_function(tl2::service2::Set o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1910,7 +1833,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::True result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1921,16 +1844,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service2.set", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service2_Set_tl_function>(tl2::service2::Set{});
+        return std::make_unique<tl2_service2_Set_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service2.set", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service2_Set_tl_function>(tl2::service2::Set{});
+        return std::make_unique<tl2_service2_Set_tl_function>();
 	});
 
 	struct tl2_service2_SetObjectTtl_tl_function : public tl2::meta::tl_function {
         tl2::service2::SetObjectTtl object;
-        explicit tl2_service2_SetObjectTtl_tl_function(tl2::service2::SetObjectTtl o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1938,7 +1860,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::True result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1949,16 +1871,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service2.setObjectTtl", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service2_SetObjectTtl_tl_function>(tl2::service2::SetObjectTtl{});
+        return std::make_unique<tl2_service2_SetObjectTtl_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service2.setObjectTtl", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service2_SetObjectTtl_tl_function>(tl2::service2::SetObjectTtl{});
+        return std::make_unique<tl2_service2_SetObjectTtl_tl_function>();
 	});
 
 	struct tl2_service3_CreateProduct_tl_function : public tl2::meta::tl_function {
         tl2::service3::CreateProduct object;
-        explicit tl2_service3_CreateProduct_tl_function(tl2::service3::CreateProduct o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1966,7 +1887,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1977,16 +1898,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.createProduct", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_CreateProduct_tl_function>(tl2::service3::CreateProduct{});
+        return std::make_unique<tl2_service3_CreateProduct_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.createProduct", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_CreateProduct_tl_function>(tl2::service3::CreateProduct{});
+        return std::make_unique<tl2_service3_CreateProduct_tl_function>();
 	});
 
 	struct tl2_service3_DeleteAllProducts_tl_function : public tl2::meta::tl_function {
         tl2::service3::DeleteAllProducts object;
-        explicit tl2_service3_DeleteAllProducts_tl_function(tl2::service3::DeleteAllProducts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -1994,7 +1914,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2005,16 +1925,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.deleteAllProducts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_DeleteAllProducts_tl_function>(tl2::service3::DeleteAllProducts{});
+        return std::make_unique<tl2_service3_DeleteAllProducts_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.deleteAllProducts", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_DeleteAllProducts_tl_function>(tl2::service3::DeleteAllProducts{});
+        return std::make_unique<tl2_service3_DeleteAllProducts_tl_function>();
 	});
 
 	struct tl2_service3_DeleteGroupedProducts_tl_function : public tl2::meta::tl_function {
         tl2::service3::DeleteGroupedProducts object;
-        explicit tl2_service3_DeleteGroupedProducts_tl_function(tl2::service3::DeleteGroupedProducts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2022,7 +1941,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2033,16 +1952,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.deleteGroupedProducts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_DeleteGroupedProducts_tl_function>(tl2::service3::DeleteGroupedProducts{});
+        return std::make_unique<tl2_service3_DeleteGroupedProducts_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.deleteGroupedProducts", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_DeleteGroupedProducts_tl_function>(tl2::service3::DeleteGroupedProducts{});
+        return std::make_unique<tl2_service3_DeleteGroupedProducts_tl_function>();
 	});
 
 	struct tl2_service3_DeleteProduct_tl_function : public tl2::meta::tl_function {
         tl2::service3::DeleteProduct object;
-        explicit tl2_service3_DeleteProduct_tl_function(tl2::service3::DeleteProduct o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2050,7 +1968,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2061,16 +1979,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.deleteProduct", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_DeleteProduct_tl_function>(tl2::service3::DeleteProduct{});
+        return std::make_unique<tl2_service3_DeleteProduct_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.deleteProduct", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_DeleteProduct_tl_function>(tl2::service3::DeleteProduct{});
+        return std::make_unique<tl2_service3_DeleteProduct_tl_function>();
 	});
 
 	struct tl2_service3_GetLastVisitTimestamp_tl_function : public tl2::meta::tl_function {
         tl2::service3::GetLastVisitTimestamp object;
-        explicit tl2_service3_GetLastVisitTimestamp_tl_function(tl2::service3::GetLastVisitTimestamp o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2078,7 +1995,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2089,16 +2006,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.getLastVisitTimestamp", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GetLastVisitTimestamp_tl_function>(tl2::service3::GetLastVisitTimestamp{});
+        return std::make_unique<tl2_service3_GetLastVisitTimestamp_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.getLastVisitTimestamp", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_GetLastVisitTimestamp_tl_function>(tl2::service3::GetLastVisitTimestamp{});
+        return std::make_unique<tl2_service3_GetLastVisitTimestamp_tl_function>();
 	});
 
 	struct tl2_service3_GetLimits_tl_function : public tl2::meta::tl_function {
         tl2::service3::GetLimits object;
-        explicit tl2_service3_GetLimits_tl_function(tl2::service3::GetLimits o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2106,7 +2022,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service3::Limits result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2117,16 +2033,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.getLimits", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GetLimits_tl_function>(tl2::service3::GetLimits{});
+        return std::make_unique<tl2_service3_GetLimits_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.getLimits", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_GetLimits_tl_function>(tl2::service3::GetLimits{});
+        return std::make_unique<tl2_service3_GetLimits_tl_function>();
 	});
 
 	struct tl2_service3_GetProductStats_tl_function : public tl2::meta::tl_function {
         tl2::service3::GetProductStats object;
-        explicit tl2_service3_GetProductStats_tl_function(tl2::service3::GetProductStats o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2134,7 +2049,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<std::vector<::tl2::service3::ProductStatsOld>> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2145,16 +2060,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.getProductStats", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GetProductStats_tl_function>(tl2::service3::GetProductStats{});
+        return std::make_unique<tl2_service3_GetProductStats_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.getProductStats", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_GetProductStats_tl_function>(tl2::service3::GetProductStats{});
+        return std::make_unique<tl2_service3_GetProductStats_tl_function>();
 	});
 
 	struct tl2_service3_GetProducts_tl_function : public tl2::meta::tl_function {
         tl2::service3::GetProducts object;
-        explicit tl2_service3_GetProducts_tl_function(tl2::service3::GetProducts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2162,7 +2076,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<std::vector<::tl2::service3::Product>> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2173,16 +2087,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.getProducts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GetProducts_tl_function>(tl2::service3::GetProducts{});
+        return std::make_unique<tl2_service3_GetProducts_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.getProducts", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_GetProducts_tl_function>(tl2::service3::GetProducts{});
+        return std::make_unique<tl2_service3_GetProducts_tl_function>();
 	});
 
 	struct tl2_service3_GetScheduledProducts_tl_function : public tl2::meta::tl_function {
         tl2::service3::GetScheduledProducts object;
-        explicit tl2_service3_GetScheduledProducts_tl_function(tl2::service3::GetScheduledProducts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2190,7 +2103,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<std::vector<::tl2::service3::Productmode<0>>> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2201,16 +2114,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.getScheduledProducts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GetScheduledProducts_tl_function>(tl2::service3::GetScheduledProducts{});
+        return std::make_unique<tl2_service3_GetScheduledProducts_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.getScheduledProducts", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_GetScheduledProducts_tl_function>(tl2::service3::GetScheduledProducts{});
+        return std::make_unique<tl2_service3_GetScheduledProducts_tl_function>();
 	});
 
 	struct tl2_service3_GroupCountLimit_tl_object : public tl2::meta::tl_object {
         tl2::service3::GroupCountLimit object;
-        explicit tl2_service3_GroupCountLimit_tl_object(tl2::service3::GroupCountLimit o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2220,12 +2132,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.groupCountLimit", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GroupCountLimit_tl_object>(tl2::service3::GroupCountLimit{});
+        return std::make_unique<tl2_service3_GroupCountLimit_tl_object>();
 	});
 
 	struct tl2_service3_GroupSizeLimit_tl_object : public tl2::meta::tl_object {
         tl2::service3::GroupSizeLimit object;
-        explicit tl2_service3_GroupSizeLimit_tl_object(tl2::service3::GroupSizeLimit o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2235,12 +2146,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.groupSizeLimit", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_GroupSizeLimit_tl_object>(tl2::service3::GroupSizeLimit{});
+        return std::make_unique<tl2_service3_GroupSizeLimit_tl_object>();
 	});
 
 	struct tl2_service3_Limits_tl_object : public tl2::meta::tl_object {
         tl2::service3::Limits object;
-        explicit tl2_service3_Limits_tl_object(tl2::service3::Limits o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2250,12 +2160,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.limits", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_Limits_tl_object>(tl2::service3::Limits{});
+        return std::make_unique<tl2_service3_Limits_tl_object>();
 	});
 
 	struct tl2_service3_ProductStatsOld_tl_object : public tl2::meta::tl_object {
         tl2::service3::ProductStatsOld object;
-        explicit tl2_service3_ProductStatsOld_tl_object(tl2::service3::ProductStatsOld o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2265,12 +2174,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.productStatsOld", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_ProductStatsOld_tl_object>(tl2::service3::ProductStatsOld{});
+        return std::make_unique<tl2_service3_ProductStatsOld_tl_object>();
 	});
 
 	struct tl2_service3_RestoreAllProducts_tl_function : public tl2::meta::tl_function {
         tl2::service3::RestoreAllProducts object;
-        explicit tl2_service3_RestoreAllProducts_tl_function(tl2::service3::RestoreAllProducts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2278,7 +2186,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2289,16 +2197,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.restoreAllProducts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_RestoreAllProducts_tl_function>(tl2::service3::RestoreAllProducts{});
+        return std::make_unique<tl2_service3_RestoreAllProducts_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.restoreAllProducts", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_RestoreAllProducts_tl_function>(tl2::service3::RestoreAllProducts{});
+        return std::make_unique<tl2_service3_RestoreAllProducts_tl_function>();
 	});
 
 	struct tl2_service3_RestoreGroupedProducts_tl_function : public tl2::meta::tl_function {
         tl2::service3::RestoreGroupedProducts object;
-        explicit tl2_service3_RestoreGroupedProducts_tl_function(tl2::service3::RestoreGroupedProducts o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2306,7 +2213,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2317,16 +2224,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.restoreGroupedProducts", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_RestoreGroupedProducts_tl_function>(tl2::service3::RestoreGroupedProducts{});
+        return std::make_unique<tl2_service3_RestoreGroupedProducts_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.restoreGroupedProducts", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_RestoreGroupedProducts_tl_function>(tl2::service3::RestoreGroupedProducts{});
+        return std::make_unique<tl2_service3_RestoreGroupedProducts_tl_function>();
 	});
 
 	struct tl2_service3_RestoreProduct_tl_function : public tl2::meta::tl_function {
         tl2::service3::RestoreProduct object;
-        explicit tl2_service3_RestoreProduct_tl_function(tl2::service3::RestoreProduct o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2334,7 +2240,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2345,16 +2251,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.restoreProduct", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_RestoreProduct_tl_function>(tl2::service3::RestoreProduct{});
+        return std::make_unique<tl2_service3_RestoreProduct_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.restoreProduct", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_RestoreProduct_tl_function>(tl2::service3::RestoreProduct{});
+        return std::make_unique<tl2_service3_RestoreProduct_tl_function>();
 	});
 
 	struct tl2_service3_SetLastVisitTimestamp_tl_function : public tl2::meta::tl_function {
         tl2::service3::SetLastVisitTimestamp object;
-        explicit tl2_service3_SetLastVisitTimestamp_tl_function(tl2::service3::SetLastVisitTimestamp o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2362,7 +2267,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2373,16 +2278,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.setLastVisitTimestamp", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_SetLastVisitTimestamp_tl_function>(tl2::service3::SetLastVisitTimestamp{});
+        return std::make_unique<tl2_service3_SetLastVisitTimestamp_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.setLastVisitTimestamp", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_SetLastVisitTimestamp_tl_function>(tl2::service3::SetLastVisitTimestamp{});
+        return std::make_unique<tl2_service3_SetLastVisitTimestamp_tl_function>();
 	});
 
 	struct tl2_service3_SetLimits_tl_function : public tl2::meta::tl_function {
         tl2::service3::SetLimits object;
-        explicit tl2_service3_SetLimits_tl_function(tl2::service3::SetLimits o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2390,7 +2294,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::BoolStat result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2401,16 +2305,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service3.setLimits", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service3_SetLimits_tl_function>(tl2::service3::SetLimits{});
+        return std::make_unique<tl2_service3_SetLimits_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service3.setLimits", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service3_SetLimits_tl_function>(tl2::service3::SetLimits{});
+        return std::make_unique<tl2_service3_SetLimits_tl_function>();
 	});
 
 	struct tl2_service4_ModifiedNewsEntry_tl_object : public tl2::meta::tl_object {
         tl2::service4::ModifiedNewsEntry object;
-        explicit tl2_service4_ModifiedNewsEntry_tl_object(tl2::service4::ModifiedNewsEntry o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2420,12 +2323,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service4.modifiedNewsEntry", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service4_ModifiedNewsEntry_tl_object>(tl2::service4::ModifiedNewsEntry{});
+        return std::make_unique<tl2_service4_ModifiedNewsEntry_tl_object>();
 	});
 
 	struct tl2_service4_Object_tl_object : public tl2::meta::tl_object {
         tl2::service4::Object object;
-        explicit tl2_service4_Object_tl_object(tl2::service4::Object o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2435,12 +2337,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service4.object", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service4_Object_tl_object>(tl2::service4::Object{});
+        return std::make_unique<tl2_service4_Object_tl_object>();
 	});
 
 	struct tl2_service5_EmptyOutput_tl_object : public tl2::meta::tl_object {
         tl2::service5::EmptyOutput object;
-        explicit tl2_service5_EmptyOutput_tl_object(tl2::service5::EmptyOutput o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2450,12 +2351,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service5.emptyOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_EmptyOutput_tl_object>(tl2::service5::EmptyOutput{});
+        return std::make_unique<tl2_service5_EmptyOutput_tl_object>();
 	});
 
 	struct tl2_service5_Insert_tl_function : public tl2::meta::tl_function {
         tl2::service5::Insert object;
-        explicit tl2_service5_Insert_tl_function(tl2::service5::Insert o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2463,7 +2363,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service5::Output result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2474,16 +2374,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service5.insert", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_Insert_tl_function>(tl2::service5::Insert{});
+        return std::make_unique<tl2_service5_Insert_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service5.insert", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service5_Insert_tl_function>(tl2::service5::Insert{});
+        return std::make_unique<tl2_service5_Insert_tl_function>();
 	});
 
 	struct tl2_service5_Params_tl_object : public tl2::meta::tl_object {
         tl2::service5::Params object;
-        explicit tl2_service5_Params_tl_object(tl2::service5::Params o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2493,12 +2392,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service5.params", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_Params_tl_object>(tl2::service5::Params{});
+        return std::make_unique<tl2_service5_Params_tl_object>();
 	});
 
 	struct tl2_service5_PerformQuery_tl_function : public tl2::meta::tl_function {
         tl2::service5::PerformQuery object;
-        explicit tl2_service5_PerformQuery_tl_function(tl2::service5::PerformQuery o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2506,7 +2404,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service5::Output result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2517,16 +2415,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service5.performQuery", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_PerformQuery_tl_function>(tl2::service5::PerformQuery{});
+        return std::make_unique<tl2_service5_PerformQuery_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service5.performQuery", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service5_PerformQuery_tl_function>(tl2::service5::PerformQuery{});
+        return std::make_unique<tl2_service5_PerformQuery_tl_function>();
 	});
 
 	struct tl2_service5_Query_tl_function : public tl2::meta::tl_function {
         tl2::service5::Query object;
-        explicit tl2_service5_Query_tl_function(tl2::service5::Query o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2534,7 +2431,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service5::Output result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2545,16 +2442,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service5.query", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_Query_tl_function>(tl2::service5::Query{});
+        return std::make_unique<tl2_service5_Query_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service5.query", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service5_Query_tl_function>(tl2::service5::Query{});
+        return std::make_unique<tl2_service5_Query_tl_function>();
 	});
 
 	struct tl2_service5_StringOutput_tl_object : public tl2::meta::tl_object {
         tl2::service5::StringOutput object;
-        explicit tl2_service5_StringOutput_tl_object(tl2::service5::StringOutput o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2564,12 +2460,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service5.stringOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_StringOutput_tl_object>(tl2::service5::StringOutput{});
+        return std::make_unique<tl2_service5_StringOutput_tl_object>();
 	});
 
 	struct tl2_service6_Error_tl_object : public tl2::meta::tl_object {
         tl2::service6::Error object;
-        explicit tl2_service6_Error_tl_object(tl2::service6::Error o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2579,12 +2474,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service6.error", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service6_Error_tl_object>(tl2::service6::Error{});
+        return std::make_unique<tl2_service6_Error_tl_object>();
 	});
 
 	struct tl2_service6_FindResultRow_tl_object : public tl2::meta::tl_object {
         tl2::service6::FindResultRow object;
-        explicit tl2_service6_FindResultRow_tl_object(tl2::service6::FindResultRow o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2594,12 +2488,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service6.findResultRow", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service6_FindResultRow_tl_object>(tl2::service6::FindResultRow{});
+        return std::make_unique<tl2_service6_FindResultRow_tl_object>();
 	});
 
 	struct tl2_service6_FindWithBoundsResult_tl_object : public tl2::meta::tl_object {
         tl2::service6::FindWithBoundsResult object;
-        explicit tl2_service6_FindWithBoundsResult_tl_object(tl2::service6::FindWithBoundsResult o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2609,12 +2502,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service6.findWithBoundsResult", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service6_FindWithBoundsResult_tl_object>(tl2::service6::FindWithBoundsResult{});
+        return std::make_unique<tl2_service6_FindWithBoundsResult_tl_object>();
 	});
 
 	struct tl2_service6_MultiFind_tl_function : public tl2::meta::tl_function {
         tl2::service6::MultiFind object;
-        explicit tl2_service6_MultiFind_tl_function(tl2::service6::MultiFind o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2622,7 +2514,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2633,16 +2525,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service6.multiFind", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service6_MultiFind_tl_function>(tl2::service6::MultiFind{});
+        return std::make_unique<tl2_service6_MultiFind_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service6.multiFind", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service6_MultiFind_tl_function>(tl2::service6::MultiFind{});
+        return std::make_unique<tl2_service6_MultiFind_tl_function>();
 	});
 
 	struct tl2_service6_MultiFindWithBounds_tl_function : public tl2::meta::tl_function {
         tl2::service6::MultiFindWithBounds object;
-        explicit tl2_service6_MultiFindWithBounds_tl_function(tl2::service6::MultiFindWithBounds o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2650,7 +2541,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2661,16 +2552,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("service6.multiFindWithBounds", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service6_MultiFindWithBounds_tl_function>(tl2::service6::MultiFindWithBounds{});
+        return std::make_unique<tl2_service6_MultiFindWithBounds_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("service6.multiFindWithBounds", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_service6_MultiFindWithBounds_tl_function>(tl2::service6::MultiFindWithBounds{});
+        return std::make_unique<tl2_service6_MultiFindWithBounds_tl_function>();
 	});
 
 	struct tl2_StatOne_tl_object : public tl2::meta::tl_object {
         tl2::StatOne object;
-        explicit tl2_StatOne_tl_object(tl2::StatOne o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2680,12 +2570,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("statOne", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_StatOne_tl_object>(tl2::StatOne{});
+        return std::make_unique<tl2_StatOne_tl_object>();
 	});
 
 	struct tl2_tasks_AddTask_tl_function : public tl2::meta::tl_function {
         tl2::tasks::AddTask object;
-        explicit tl2_tasks_AddTask_tl_function(tl2::tasks::AddTask o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2693,7 +2582,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			int64_t result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2704,16 +2593,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.addTask", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_AddTask_tl_function>(tl2::tasks::AddTask{});
+        return std::make_unique<tl2_tasks_AddTask_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("tasks.addTask", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_tasks_AddTask_tl_function>(tl2::tasks::AddTask{});
+        return std::make_unique<tl2_tasks_AddTask_tl_function>();
 	});
 
 	struct tl2_tasks_CronTask_tl_object : public tl2::meta::tl_object {
         tl2::tasks::CronTask object;
-        explicit tl2_tasks_CronTask_tl_object(tl2::tasks::CronTask o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2723,12 +2611,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTask", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_CronTask_tl_object>(tl2::tasks::CronTask{});
+        return std::make_unique<tl2_tasks_CronTask_tl_object>();
 	});
 
 	struct tl2_tasks_CronTaskWithId_tl_object : public tl2::meta::tl_object {
         tl2::tasks::CronTaskWithId object;
-        explicit tl2_tasks_CronTaskWithId_tl_object(tl2::tasks::CronTaskWithId o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2738,12 +2625,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTaskWithId", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_CronTaskWithId_tl_object>(tl2::tasks::CronTaskWithId{});
+        return std::make_unique<tl2_tasks_CronTaskWithId_tl_object>();
 	});
 
 	struct tl2_tasks_CronTime_tl_object : public tl2::meta::tl_object {
         tl2::tasks::CronTime object;
-        explicit tl2_tasks_CronTime_tl_object(tl2::tasks::CronTime o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2753,12 +2639,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_CronTime_tl_object>(tl2::tasks::CronTime{});
+        return std::make_unique<tl2_tasks_CronTime_tl_object>();
 	});
 
 	struct tl2_tasks_GetAnyTask_tl_function : public tl2::meta::tl_function {
         tl2::tasks::GetAnyTask object;
-        explicit tl2_tasks_GetAnyTask_tl_function(tl2::tasks::GetAnyTask o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2766,7 +2651,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::tasks::TaskInfo> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2777,16 +2662,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.getAnyTask", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_GetAnyTask_tl_function>(tl2::tasks::GetAnyTask{});
+        return std::make_unique<tl2_tasks_GetAnyTask_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("tasks.getAnyTask", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_tasks_GetAnyTask_tl_function>(tl2::tasks::GetAnyTask{});
+        return std::make_unique<tl2_tasks_GetAnyTask_tl_function>();
 	});
 
 	struct tl2_tasks_GetQueueSize_tl_function : public tl2::meta::tl_function {
         tl2::tasks::GetQueueSize object;
-        explicit tl2_tasks_GetQueueSize_tl_function(tl2::tasks::GetQueueSize o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2794,7 +2678,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::tasks::QueueStats result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2805,16 +2689,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.getQueueSize", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_GetQueueSize_tl_function>(tl2::tasks::GetQueueSize{});
+        return std::make_unique<tl2_tasks_GetQueueSize_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("tasks.getQueueSize", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_tasks_GetQueueSize_tl_function>(tl2::tasks::GetQueueSize{});
+        return std::make_unique<tl2_tasks_GetQueueSize_tl_function>();
 	});
 
 	struct tl2_tasks_GetQueueTypes_tl_function : public tl2::meta::tl_function {
         tl2::tasks::GetQueueTypes object;
-        explicit tl2_tasks_GetQueueTypes_tl_function(tl2::tasks::GetQueueTypes o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2822,7 +2705,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::tasks::QueueTypeInfo> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2833,16 +2716,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.getQueueTypes", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_GetQueueTypes_tl_function>(tl2::tasks::GetQueueTypes{});
+        return std::make_unique<tl2_tasks_GetQueueTypes_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("tasks.getQueueTypes", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_tasks_GetQueueTypes_tl_function>(tl2::tasks::GetQueueTypes{});
+        return std::make_unique<tl2_tasks_GetQueueTypes_tl_function>();
 	});
 
 	struct tl2_tasks_GetTaskFromQueue_tl_function : public tl2::meta::tl_function {
         tl2::tasks::GetTaskFromQueue object;
-        explicit tl2_tasks_GetTaskFromQueue_tl_function(tl2::tasks::GetTaskFromQueue o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2850,7 +2732,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::tasks::TaskInfo> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -2861,16 +2743,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.getTaskFromQueue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_GetTaskFromQueue_tl_function>(tl2::tasks::GetTaskFromQueue{});
+        return std::make_unique<tl2_tasks_GetTaskFromQueue_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("tasks.getTaskFromQueue", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_tasks_GetTaskFromQueue_tl_function>(tl2::tasks::GetTaskFromQueue{});
+        return std::make_unique<tl2_tasks_GetTaskFromQueue_tl_function>();
 	});
 
 	struct tl2_tasks_QueueTypeInfo_tl_object : public tl2::meta::tl_object {
         tl2::tasks::QueueTypeInfo object;
-        explicit tl2_tasks_QueueTypeInfo_tl_object(tl2::tasks::QueueTypeInfo o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2880,12 +2761,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.queueTypeInfo", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_QueueTypeInfo_tl_object>(tl2::tasks::QueueTypeInfo{});
+        return std::make_unique<tl2_tasks_QueueTypeInfo_tl_object>();
 	});
 
 	struct tl2_tasks_QueueTypeSettings_tl_object : public tl2::meta::tl_object {
         tl2::tasks::QueueTypeSettings object;
-        explicit tl2_tasks_QueueTypeSettings_tl_object(tl2::tasks::QueueTypeSettings o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2895,12 +2775,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.queueTypeSettings", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_QueueTypeSettings_tl_object>(tl2::tasks::QueueTypeSettings{});
+        return std::make_unique<tl2_tasks_QueueTypeSettings_tl_object>();
 	});
 
 	struct tl2_tasks_QueueTypeStats_tl_object : public tl2::meta::tl_object {
         tl2::tasks::QueueTypeStats object;
-        explicit tl2_tasks_QueueTypeStats_tl_object(tl2::tasks::QueueTypeStats o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2910,12 +2789,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.queueTypeStats", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_QueueTypeStats_tl_object>(tl2::tasks::QueueTypeStats{});
+        return std::make_unique<tl2_tasks_QueueTypeStats_tl_object>();
 	});
 
 	struct tl2_tasks_Task_tl_object : public tl2::meta::tl_object {
         tl2::tasks::Task object;
-        explicit tl2_tasks_Task_tl_object(tl2::tasks::Task o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2925,12 +2803,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.task", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_Task_tl_object>(tl2::tasks::Task{});
+        return std::make_unique<tl2_tasks_Task_tl_object>();
 	});
 
 	struct tl2_tasks_TaskInfo_tl_object : public tl2::meta::tl_object {
         tl2::tasks::TaskInfo object;
-        explicit tl2_tasks_TaskInfo_tl_object(tl2::tasks::TaskInfo o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2940,12 +2817,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskInfo", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_TaskInfo_tl_object>(tl2::tasks::TaskInfo{});
+        return std::make_unique<tl2_tasks_TaskInfo_tl_object>();
 	});
 
 	struct tl2_tasks_TaskStatusInProgress_tl_object : public tl2::meta::tl_object {
         tl2::tasks::TaskStatusInProgress object;
-        explicit tl2_tasks_TaskStatusInProgress_tl_object(tl2::tasks::TaskStatusInProgress o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2955,12 +2831,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusInProgress", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_TaskStatusInProgress_tl_object>(tl2::tasks::TaskStatusInProgress{});
+        return std::make_unique<tl2_tasks_TaskStatusInProgress_tl_object>();
 	});
 
 	struct tl2_tasks_TaskStatusNotCurrentlyInEngine_tl_object : public tl2::meta::tl_object {
         tl2::tasks::TaskStatusNotCurrentlyInEngine object;
-        explicit tl2_tasks_TaskStatusNotCurrentlyInEngine_tl_object(tl2::tasks::TaskStatusNotCurrentlyInEngine o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2970,12 +2845,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusNotCurrentlyInEngine", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_TaskStatusNotCurrentlyInEngine_tl_object>(tl2::tasks::TaskStatusNotCurrentlyInEngine{});
+        return std::make_unique<tl2_tasks_TaskStatusNotCurrentlyInEngine_tl_object>();
 	});
 
 	struct tl2_tasks_TaskStatusScheduled_tl_object : public tl2::meta::tl_object {
         tl2::tasks::TaskStatusScheduled object;
-        explicit tl2_tasks_TaskStatusScheduled_tl_object(tl2::tasks::TaskStatusScheduled o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -2985,12 +2859,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusScheduled", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_TaskStatusScheduled_tl_object>(tl2::tasks::TaskStatusScheduled{});
+        return std::make_unique<tl2_tasks_TaskStatusScheduled_tl_object>();
 	});
 
 	struct tl2_tasks_TaskStatusWaiting_tl_object : public tl2::meta::tl_object {
         tl2::tasks::TaskStatusWaiting object;
-        explicit tl2_tasks_TaskStatusWaiting_tl_object(tl2::tasks::TaskStatusWaiting o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -3000,12 +2873,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusWaiting", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tasks_TaskStatusWaiting_tl_object>(tl2::tasks::TaskStatusWaiting{});
+        return std::make_unique<tl2_tasks_TaskStatusWaiting_tl_object>();
 	});
 
 	struct tl2_tree_stats_ObjectLimitValueLong_tl_object : public tl2::meta::tl_object {
         tl2::tree_stats::ObjectLimitValueLong object;
-        explicit tl2_tree_stats_ObjectLimitValueLong_tl_object(tl2::tree_stats::ObjectLimitValueLong o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -3015,12 +2887,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("tree_stats.objectLimitValueLong", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_tree_stats_ObjectLimitValueLong_tl_object>(tl2::tree_stats::ObjectLimitValueLong{});
+        return std::make_unique<tl2_tree_stats_ObjectLimitValueLong_tl_object>();
 	});
 
 	struct tl2_True_tl_object : public tl2::meta::tl_object {
         tl2::True object;
-        explicit tl2_True_tl_object(tl2::True o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -3030,12 +2901,11 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("true", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_True_tl_object>(tl2::True{});
+        return std::make_unique<tl2_True_tl_object>();
 	});
 
 	struct tl2_unique_Get_tl_function : public tl2::meta::tl_function {
         tl2::unique::Get object;
-        explicit tl2_unique_Get_tl_function(tl2::unique::Get o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -3043,7 +2913,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<int32_t> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -3054,16 +2924,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("unique.get", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_unique_Get_tl_function>(tl2::unique::Get{});
+        return std::make_unique<tl2_unique_Get_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("unique.get", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_unique_Get_tl_function>(tl2::unique::Get{});
+        return std::make_unique<tl2_unique_Get_tl_function>();
 	});
 
 	struct tl2_unique_StringToInt_tl_function : public tl2::meta::tl_function {
         tl2::unique::StringToInt object;
-        explicit tl2_unique_StringToInt_tl_function(tl2::unique::StringToInt o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -3071,7 +2940,7 @@ void tl2::factory::set_all_factories() {
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			int32_t result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -3082,16 +2951,15 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("unique.stringToInt", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_unique_StringToInt_tl_function>(tl2::unique::StringToInt{});
+        return std::make_unique<tl2_unique_StringToInt_tl_function>();
 	});
 
 	tl2::meta::set_create_function_by_name("unique.stringToInt", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_unique_StringToInt_tl_function>(tl2::unique::StringToInt{});
+        return std::make_unique<tl2_unique_StringToInt_tl_function>();
 	});
 
 	struct tl2_WithFloat_tl_object : public tl2::meta::tl_object {
         tl2::WithFloat object;
-        explicit tl2_WithFloat_tl_object(tl2::WithFloat o) : object(std::move(o)) {}
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
@@ -3101,7 +2969,7 @@ void tl2::factory::set_all_factories() {
 
     };
 	tl2::meta::set_create_object_by_name("withFloat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_WithFloat_tl_object>(tl2::WithFloat{});
+        return std::make_unique<tl2_WithFloat_tl_object>();
 	});
 
 }
