@@ -2,7 +2,7 @@
 
 #include "../../a_tlgen_helpers_code.hpp"
 #include "../types/service1.Value.hpp"
-#include "../../__common/types/dictionary.hpp"
+#include "../../__common_namespace/types/dictionary.hpp"
 
 
 namespace tl2 { namespace service1 { 

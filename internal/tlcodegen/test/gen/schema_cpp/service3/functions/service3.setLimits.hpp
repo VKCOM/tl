@@ -2,7 +2,7 @@
 
 #include "../../a_tlgen_helpers_code.hpp"
 #include "../types/service3.limits.hpp"
-#include "../../__common/types/boolStat.hpp"
+#include "../../__common_namespace/types/boolStat.hpp"
 
 
 namespace tl2 { namespace service3 { 

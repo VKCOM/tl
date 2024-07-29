@@ -356,9 +356,9 @@ main.o: main.cpp
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
-	const IndependentTypes = "__independent_types"
 	const NoNamespaceGroup = ""
-	const CommonGroup = "__common"
+	const CommonGroup = "__common_namespace"
+	const IndependentTypes = CommonGroup
 
 	for _, t := range allTypes {
 		t.cppDetailsFileName = t.fileName
@@ -484,8 +484,8 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		} else {
 			t.fileName = filepath.Join(typeGroup, "types", t.fileName)
 		}
-		t.hppDetailsFileName = filepath.Join(t.groupName, "details", "headers", t.hppDetailsFileName)
-		t.cppDetailsFileName = filepath.Join(t.groupName, "details", "namespace_details")
+		t.hppDetailsFileName = filepath.Join(t.groupName, "headers", t.hppDetailsFileName)
+		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
 }

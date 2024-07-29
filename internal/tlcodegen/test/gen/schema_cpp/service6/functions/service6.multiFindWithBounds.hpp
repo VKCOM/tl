@@ -2,7 +2,7 @@
 
 #include "../../a_tlgen_helpers_code.hpp"
 #include "../types/service6.findWithBoundsResult.hpp"
-#include "../../__common/types/Either.hpp"
+#include "../../__common_namespace/types/Either.hpp"
 
 
 namespace tl2 { namespace service6 { 

@@ -38,7 +38,7 @@
 #include "../benchmarks/types/benchmarks.vrutoytopLevelUnionEmpty.hpp"
 #include "../benchmarks/types/benchmarks.vrutoytopLevelUnionBig.hpp"
 #include "../benchmarks/types/benchmarks.vruposition.hpp"
-#include "../__common/types/true.hpp"
+#include "../__common_namespace/types/true.hpp"
 #include "../benchmarks/types/benchmarks.vruhash.hpp"
 
 void tl2::factory::set_all_factories() {
