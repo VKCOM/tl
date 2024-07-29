@@ -235,7 +235,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		if !gen.options.SplitInternal {
 			namespaceFilePath = namespaceDeps[0] + cppExt
 		}
-		buildFilePath := "__build/" + namespaceDetails + ".o"
+		buildFilePath := filepath.Join("__build", namespaceDetails+".o")
 
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
@@ -272,8 +272,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		}
 	}
 
-	_ = createMeta(gen)
-	_ = createFactory(gen, createdHpps)
+	metaMake := strings.Builder{}
+	factoryMake := strings.Builder{}
+
+	_ = createMeta(gen, &metaMake)
+	_ = createFactory(gen, createdHpps, &factoryMake)
 
 	cppMake.WriteString(`
 CC = g++
@@ -289,6 +292,10 @@ CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type 
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 `)
+	cppMake.WriteString(metaMake.String())
+	cppMake.WriteString(factoryMake.String())
+	cppMake.WriteString("\n")
+
 	cppMake.WriteString(cppMake1.String())
 	//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
 	//	return err
@@ -490,76 +497,102 @@ func getCppDiff(base string, target string) string {
 	return filepath.Join(diff, file)
 }
 
-func createMeta(gen *Gen2) error {
+func createMeta(gen *Gen2, make *strings.Builder) error {
 	meta := strings.Builder{}
-	filepathName := filepath.Join("__meta", "meta"+hppExt)
+	metaDetails := strings.Builder{}
 
-	meta.WriteString("#pragma once\n")
-	meta.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
-	meta.WriteString(`
+	filepathName := filepath.Join("__meta", "headers"+hppExt)
+	filepathDetailsName := filepath.Join("__meta", "details"+cppExt)
+
+	meta.WriteString(fmt.Sprintf(`
+#pragma once
+
+#include <string>
 #include <functional>
-#include <map>
+
+#include "%s"
 
 namespace tl2 {
-namespace meta {
-    struct tl_object {
-        std::function<bool(::basictl::tl_istream & )> read;
-        std::function<bool(::basictl::tl_ostream & )> write;
+    namespace meta {
+        struct tl_object {
+            virtual bool read(::basictl::tl_istream &s) = 0;
+            virtual bool write(::basictl::tl_ostream &s) = 0;
 
-        std::function<bool(::basictl::tl_istream & )> read_boxed;
-        std::function<bool(::basictl::tl_ostream & )> write_boxed;
-    };
+            virtual bool read_boxed(::basictl::tl_istream &s) = 0;
+            virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
 
-	struct tl_function {
-		tl_object object;
-		
-		std::function<bool(::basictl::tl_istream &, ::basictl::tl_ostream &)> read_write_result;
+            virtual ~tl_object() = default;
+        };
+
+        struct tl_function : public tl_object {
+            virtual bool read_write_result(::basictl::tl_istream &in, ::basictl::tl_ostream &out) = 0;
+
+            virtual ~tl_function() = default;
+        };
+
+        struct tl_item {
+            uint32_t tag{};
+            uint32_t annotations{};
+            std::string name;
+
+            std::function<std::unique_ptr<tl2::meta::tl_object>()> create_object;
+            std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
+        };
+
+		tl_item get_item_by_name(std::string &&s);
+
+		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
+		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
+        
+    }
+}`, getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "a_tlgen_helpers_code.hpp")))
+	metaDetails.WriteString(fmt.Sprintf(`
+#include <map>
+
+#include "%s"
+
+namespace {
+	struct tl_items {
+		public:
+			std::map<std::string, tl2::meta::tl_item> items;
+			tl_items();
 	};
-
-    struct tl_item {
-        uint32_t tag{};
-        uint32_t annotations{};
-        std::string name;
-
-        std::function<tl2::meta::tl_object()> create_object;
-		std::function<tl2::meta::tl_function()> create_function;
+    
+	tl_items items;
+    std::function<std::unique_ptr<tl2::meta::tl_object>()> no_object_generator = []() -> std::unique_ptr<tl2::meta::tl_object> {
+        throw std::runtime_error("no generation for this type of objects");
     };
+    std::function<std::unique_ptr<tl2::meta::tl_function>()> no_function_generator = []() -> std::unique_ptr<tl2::meta::tl_function> {
+        throw std::runtime_error("no generation for this type of functions");
+    };
+}
 
-    namespace {
-        std::map<std::string, tl2::meta::tl_item> __items;
-
-		std::function<tl_object()> missing_object_generator = []() -> tl_object {
-            throw std::runtime_error("no generator for this type of object initialized");
-        };
-		std::function<tl_function()> missing_function_generator = []() -> tl_function {
-            throw std::runtime_error("no generator for this type of function initialized");
-        };
+tl2::meta::tl_item tl2::meta::get_item_by_name(std::string &&s) {
+    if (items.items.count(s)) {
+        return items.items[s];
     }
+    throw std::runtime_error("no item with such name + \"" + s + "\"");
+}
 
-    tl_item get_tl_item_by_name(std::string&& name) {
-        if (__items.count(name)) {
-            return __items[name];
-        }
-        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
+void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {
+    if (items.items.count(s)) {
+        items.items[s].create_object = gen;
+		return;
     }
+    throw std::runtime_error("no item with such name + \"" + s + "\"");
+}
 
-    void set_create_object_by_name(std::string&& name, std::function<tl_object()>&& generator) {
-        if (__items.count(name)) {
-            __items[name].create_object = generator;
-            return;
-        }
-        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
+void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()>&& gen) {
+    if (items.items.count(s)) {
+        items.items[s].create_function = gen;
+		return;
     }
+    throw std::runtime_error("no item with such name + \"" + s + "\"");
+}
 
-	void set_create_function_by_name(std::string&& name, std::function<tl_function()>&& generator) {
-        if (__items.count(name)) {
-            __items[name].create_function = generator;
-            return;
-        }
-        throw std::runtime_error("no such tl (\"" + name + "\") item in system");
-    }
-
-    void init_tl_items() {`)
+tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -567,9 +600,9 @@ namespace meta {
 		}
 		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
 			//if strct.ResultType == nil {
-			meta.WriteString(
+			metaDetails.WriteString(
 				fmt.Sprintf(`
-		__items["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=missing_object_generator,.create_function=missing_function_generator};`,
+	(this->items)["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator};`,
 					wr.tlName.String(),
 					fmt.Sprintf("0x%08x", wr.tlTag),
 					fmt.Sprintf("0x%x", wr.AnnotationsMask()),
@@ -579,28 +612,46 @@ namespace meta {
 		}
 	}
 
-	meta.WriteString(`
-	}
-};
-};
+	metaDetails.WriteString(`
+}
 `)
 	if err := gen.addCodeFile(filepathName, gen.copyrightText+meta.String()); err != nil {
 		return err
 	}
+	if err := gen.addCodeFile(filepathDetailsName, gen.copyrightText+metaDetails.String()); err != nil {
+		return err
+	}
+
+	make.WriteString(fmt.Sprintf(`
+__build/__meta.o: %[1]s %[2]s
+	$(CC) $(CFLAGS) -o __build/__meta.o -c %[2]s
+`,
+		filepathName,
+		filepathDetailsName,
+	))
 	return nil
 }
 
-func createFactory(gen *Gen2, createdHpps map[string]bool) error {
+func createFactory(gen *Gen2, createdHpps map[string]bool, make *strings.Builder) error {
 	factory := strings.Builder{}
-	filepathName := filepath.Join("__factory", "factory"+hppExt)
+	factoryDetails := strings.Builder{}
+
+	filepathName := filepath.Join("__factory", "headers"+hppExt)
+	filepathNameDetails := filepath.Join("__factory", "details"+cppExt)
 
 	imports := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
 	factory.WriteString(`
-
+#pragma once
 namespace tl2 {
-namespace factory {
-    void init_tl_create_objects() {`)
+    namespace factory {    
+		void set_all_factories();
+	}
+}`)
+
+	factoryDetails.WriteString(`
+void tl2::factory::set_all_factories() {
+`)
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -613,81 +664,110 @@ namespace factory {
 			hppTmpInclude := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 			myFullType := wr.trw.cppTypeStringInNamespace(wr.wantsBytesVersion && wr.trw.CPPHasBytesVersion(), &hppTmpInclude)
 			myFullTypeNoPrefix := strings.TrimPrefix(myFullType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
+			myFullTypeWithUnderlines := strings.ReplaceAll(myFullTypeNoPrefix, "::", "_")
 
-			factory.WriteString(
-				fmt.Sprintf(`
-		tl2::meta::set_create_object_by_name("%[1]s",[]() -> tl2::meta::tl_object {
-			auto obj = std::make_shared<%[2]s>();
-			return tl2::meta::tl_object{
-					.read=[obj](auto &in) -> bool { return obj->read(in); },
-					.write=[obj](auto &out) -> bool { return obj->write(out); },
-					.read_boxed=[obj](auto &in) -> bool { return obj->read_boxed(in); },
-					.write_boxed=[obj](auto &out) -> bool { return obj->write_boxed(out); },
-			};
-		});`,
-					wr.tlName.String(),
-					myFullTypeNoPrefix,
-				),
-			)
 			imports.ns[wr] = CppIncludeInfo{componentId: wr.typeComponent, namespace: wr.groupName}
 
+			implementedInterface := "tl_object"
+			if strct.ResultType != nil {
+				implementedInterface = "tl_function"
+			}
+
+			factoryDetails.WriteString(fmt.Sprintf(`
+	struct %[3]s_%[1]s : public tl2::meta::%[1]s {
+        %[2]s object;
+        explicit %[3]s_%[1]s(%[2]s o) : object(std::move(o)) {}
+
+        bool read(basictl::tl_istream &s) override {return object.read(s);}
+        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+        
+		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
+        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+`,
+				implementedInterface,
+				myFullTypeNoPrefix,
+				myFullTypeWithUnderlines,
+			))
 			if strct.ResultType != nil {
 				hppTmpInclude2 := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 				resultType := strct.ResultType.trw.cppTypeStringInNamespace(wr.wantsBytesVersion && wr.trw.CPPHasBytesVersion(), &hppTmpInclude2)
 				resultTypeNoPrefix := strings.TrimPrefix(resultType, "::") // Stupid C++ has sometimes problems with name resolution of definitions
-
-				factory.WriteString(
-					fmt.Sprintf(`
-		tl2::meta::set_create_function_by_name("%[1]s",[]() -> tl2::meta::tl_function {
-			auto obj = std::make_shared<%[2]s>();
-			auto tl_obj = tl2::meta::tl_object{
-					.read=[obj](auto &in) -> bool { return obj->read(in); },
-					.write=[obj](auto &out) -> bool { return obj->write(out); },
-					.read_boxed=[obj](auto &in) -> bool { return obj->read_boxed(in); },
-					.write_boxed=[obj](auto &out) -> bool { return obj->write_boxed(out); },
-			};
-			return tl2::meta::tl_function{
-					.object=tl_obj,
-					.read_write_result=[obj](auto &in, auto &out) -> bool {
-						%[3]s result;
-						bool read_result = obj->read_result(in, result);
-						if (!read_result) {
-							return false;
-						}
-						return obj->write_result(out, result);
-					}
-			};
-		});`,
-						wr.tlName.String(),
-						myFullTypeNoPrefix,
-						resultTypeNoPrefix,
-					),
-				)
 				imports.ns[strct.ResultType] = CppIncludeInfo{componentId: strct.ResultType.typeComponent, namespace: strct.ResultType.groupName}
+
+				factoryDetails.WriteString(fmt.Sprintf(`
+		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) {
+			%[1]s result;
+			bool read_result = this->object.read_result(in, result);
+			if (!read_result) {
+				return false;
+			}
+			return this->object.write_result(out, result);
+		}
+`,
+					resultTypeNoPrefix,
+				))
+			}
+			factoryDetails.WriteString(`
+    };`)
+			factoryDetails.WriteString(fmt.Sprintf(`
+	tl2::meta::set_create_object_by_name("%[1]s", []() -> std::unique_ptr<tl2::meta::tl_object> {
+        return std::make_unique<%[2]s_%[3]s>(%[4]s{});
+	});
+`,
+				wr.tlName.String(),
+				myFullTypeWithUnderlines,
+				implementedInterface,
+				myFullTypeNoPrefix,
+			))
+			if strct.ResultType != nil {
+				factoryDetails.WriteString(fmt.Sprintf(`
+	tl2::meta::set_create_function_by_name("%[1]s", []() -> std::unique_ptr<tl2::meta::tl_function> {
+        return std::make_unique<%[2]s_%[3]s>(%[4]s{});
+	});
+`,
+					wr.tlName.String(),
+					myFullTypeWithUnderlines,
+					implementedInterface,
+					myFullTypeNoPrefix,
+				))
 			}
 		}
 	}
 
-	factory.WriteString(`
-	}
-};
-};
+	factoryDetails.WriteString(`
+}
 `)
-	suffix := factory.String()
-	factory.Reset()
+	suffix := factoryDetails.String()
+	factoryDetails.Reset()
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathNameDetails, filepath.Join("__meta", "headers"+hppExt))))
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathNameDetails, filepathName)))
 
-	factory.WriteString("#pragma once\n")
-	factory.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathName, filepath.Join("__meta", "meta"+hppExt))))
+	factoryFileDependencies := strings.Builder{}
+
 	for _, headerFile := range imports.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 		if !createdHpps[headerFile] {
 			continue
 		}
-		factory.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+		factoryFileDependencies.WriteString(" " + headerFile + hppExt)
 	}
-	factory.WriteString(suffix)
+	factoryDetails.WriteString(suffix)
 
 	if err := gen.addCodeFile(filepathName, gen.copyrightText+factory.String()); err != nil {
 		return err
 	}
+	if err := gen.addCodeFile(filepathNameDetails, gen.copyrightText+factoryDetails.String()); err != nil {
+		return err
+	}
+
+	make.WriteString(fmt.Sprintf(`
+__build/__factory.o: %[1]s %[2]s%[3]s
+	$(CC) $(CFLAGS) -o __build/__factory.o -c %[2]s
+`,
+		filepathName,
+		filepathNameDetails,
+		factoryFileDependencies.String(),
+	))
+
 	return nil
 }
