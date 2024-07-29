@@ -1,0 +1,26 @@
+#pragma once
+
+#include "../../a_tlgen_helpers_code.hpp"
+#include "../types/tasks.queueTypeInfo.hpp"
+
+
+namespace tl2 { namespace tasks { 
+struct GetQueueTypes {
+	uint32_t settings_mask = 0;
+	uint32_t stats_mask = 0;
+
+	std::string_view tl_name() const { return "tasks.getQueueTypes"; }
+	uint32_t tl_tag() const { return 0x5434457a; }
+
+	bool read(::basictl::tl_istream & s);
+	bool write(::basictl::tl_ostream & s)const;
+
+	bool read_boxed(::basictl::tl_istream & s);
+	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	bool read_result(::basictl::tl_istream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result);
+	bool write_result(::basictl::tl_ostream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result);
+};
+
+}} // namespace tl2::tasks
+
