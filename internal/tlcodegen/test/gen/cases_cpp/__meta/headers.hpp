@@ -33,7 +33,8 @@ namespace tl2 {
             std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
         };
 
-		tl_item get_item_by_name(std::string &&s);
+		tl2::meta::tl_item get_item_by_name(std::string &&s);
+		tl2::meta::tl_item get_item_by_tag(uint32_t &&tag);
 
 		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
