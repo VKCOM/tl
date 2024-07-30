@@ -539,7 +539,8 @@ namespace tl2 {
             std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
         };
 
-		tl_item get_item_by_name(std::string &&s);
+		tl2::meta::tl_item get_item_by_name(std::string &&s);
+		tl2::meta::tl_item get_item_by_tag(uint32_t &&tag);
 
 		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
@@ -556,7 +557,8 @@ namespace tl2 {
 namespace {
 	struct tl_items {
 		public:
-			std::map<std::string, tl2::meta::tl_item> items;
+			std::map<std::string, tl2::meta::tl_item*> items;
+			std::map<uint32_t, tl2::meta::tl_item*> items_by_tag;
 			tl_items();
 	};
     
@@ -572,15 +574,23 @@ namespace {
 tl2::meta::tl_item tl2::meta::get_item_by_name(std::string &&s) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
-        return item->second;
+        return *item->second;
     }
     throw std::runtime_error("no item with such name + \"" + s + "\"");
+}
+
+tl2::meta::tl_item tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
+    auto item = items.items_by_tag.find(tag);
+	if (item != items.items_by_tag.end()) {
+        return *item->second;
+    }
+    throw std::runtime_error("no item with such tag + \"" + std::to_string(tag) + "\"");
 }
 
 void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
-        item->second.create_object = gen;
+        item->second->create_object = gen;
 		return;	
     }
     throw std::runtime_error("no item with such name + \"" + s + "\"");
@@ -589,7 +599,7 @@ void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::un
 void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()>&& gen) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
-        item->second.create_function = gen;
+        item->second->create_function = gen;
 		return;	
     }
     throw std::runtime_error("no item with such name + \"" + s + "\"");
@@ -602,16 +612,17 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 			continue
 		}
 		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
-			//if strct.ResultType == nil {
 			metaDetails.WriteString(
 				fmt.Sprintf(`
-	(this->items)["%[1]s"] = tl2::meta::tl_item{.tag=%s,.annotations=%s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator};`,
+	auto item%[4]d = new tl2::meta::tl_item{.tag=%[2]s,.annotations=%[3]s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator};
+	(this->items)["%[1]s"] = item%[4]d;
+	(this->items_by_tag)[%[2]s] = item%[4]d;`,
 					wr.tlName.String(),
 					fmt.Sprintf("0x%08x", wr.tlTag),
 					fmt.Sprintf("0x%x", wr.AnnotationsMask()),
+					wr.tlTag,
 				),
 			)
-			//}
 		}
 	}
 
