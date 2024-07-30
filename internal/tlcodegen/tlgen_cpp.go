@@ -557,8 +557,8 @@ namespace tl2 {
 namespace {
 	struct tl_items {
 		public:
-			std::map<std::string, tl2::meta::tl_item*> items;
-			std::map<uint32_t, tl2::meta::tl_item*> items_by_tag;
+			std::map<std::string, std::shared_ptr<tl2::meta::tl_item>> items;
+			std::map<uint32_t, std::shared_ptr<tl2::meta::tl_item>> items_by_tag;
 			tl_items();
 	};
     
@@ -614,7 +614,7 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
 			metaDetails.WriteString(
 				fmt.Sprintf(`
-	auto item%[4]d = new tl2::meta::tl_item{.tag=%[2]s,.annotations=%[3]s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator};
+	auto item%[4]d = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=%[2]s,.annotations=%[3]s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["%[1]s"] = item%[4]d;
 	(this->items_by_tag)[%[2]s] = item%[4]d;`,
 					wr.tlName.String(),
