@@ -21,24 +21,27 @@ namespace {
 }
 
 tl2::meta::tl_item tl2::meta::get_item_by_name(std::string &&s) {
-    if (items.items.count(s)) {
-        return items.items[s];
+    auto item = items.items.find(s);
+	if (item != items.items.end()) {
+        return item->second;
     }
     throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
 
 void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {
-    if (items.items.count(s)) {
-        items.items[s].create_object = gen;
-		return;
+    auto item = items.items.find(s);
+	if (item != items.items.end()) {
+        item->second.create_object = gen;
+		return;	
     }
     throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
 
 void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()>&& gen) {
-    if (items.items.count(s)) {
-        items.items[s].create_function = gen;
-		return;
+    auto item = items.items.find(s);
+	if (item != items.items.end()) {
+        item->second.create_function = gen;
+		return;	
     }
     throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
