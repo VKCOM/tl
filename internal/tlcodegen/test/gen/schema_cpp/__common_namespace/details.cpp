@@ -100,11 +100,15 @@ void tl2::details::BenchObjectReset(::tl2::BenchObject& item) {
 
 bool tl2::details::BenchObjectWriteJSON(std::ostream& s, const ::tl2::BenchObject& item) {
 	s << "{";
-	s << "\"xs\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.xs)) { return false; }
-	s << ",";
-	s << "\"ys\":";
-	if (!::tl2::details::BuiltinVectorIntegerWriteJSON(s, item.ys)) { return false; }
+	if (item.xs.size() != 0) {
+		s << "\"xs\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.xs)) { return false; }
+	}
+	if (item.ys.size() != 0) {
+		s << ",";
+		s << "\"ys\":";
+		if (!::tl2::details::BuiltinVectorIntegerWriteJSON(s, item.ys)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -252,8 +256,10 @@ void tl2::details::BoxedIntReset(::tl2::BoxedInt& item) {
 
 bool tl2::details::BoxedIntWriteJSON(std::ostream& s, const ::tl2::BoxedInt& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
 	s << "}";
 	return true;
 }
@@ -329,8 +335,10 @@ void tl2::details::BoxedStringReset(::tl2::BoxedString& item) {
 
 bool tl2::details::BoxedStringWriteJSON(std::ostream& s, const ::tl2::BoxedString& item) {
 	s << "{";
-	s << "\"x\":";
-	s << "\"" << item.x << "\"";
+	if (item.x.size() != 0) {
+		s << "\"x\":";
+		s << "\"" << item.x << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -484,11 +492,15 @@ void tl2::details::BoxedTupleSlice1Reset(::tl2::BoxedTupleSlice1& item) {
 
 bool tl2::details::BoxedTupleSlice1WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice1& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"x\":";
-	if (!::tl2::details::BuiltinTupleIntBoxedWriteJSON(s, item.x, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.x.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"x\":";
+		if (!::tl2::details::BuiltinTupleIntBoxedWriteJSON(s, item.x, item.n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -640,11 +652,15 @@ void tl2::details::BoxedTupleSlice3Reset(::tl2::BoxedTupleSlice3& item) {
 
 bool tl2::details::BoxedTupleSlice3WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice3& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"x\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.x, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.x.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"x\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.x, item.n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -722,8 +738,10 @@ void tl2::details::BoxedVector32Reset(::tl2::BoxedVector32& item) {
 
 bool tl2::details::BoxedVector32WriteJSON(std::ostream& s, const ::tl2::BoxedVector32& item) {
 	s << "{";
-	s << "\"x\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.x)) { return false; }
+	if (item.x.size() != 0) {
+		s << "\"x\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.x)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -799,8 +817,10 @@ void tl2::details::BoxedVector32BoxedElemReset(::tl2::BoxedVector32BoxedElem& it
 
 bool tl2::details::BoxedVector32BoxedElemWriteJSON(std::ostream& s, const ::tl2::BoxedVector32BoxedElem& item) {
 	s << "{";
-	s << "\"x\":";
-	if (!::tl2::details::BuiltinVectorIntBoxedWriteJSON(s, item.x)) { return false; }
+	if (item.x.size() != 0) {
+		s << "\"x\":";
+		if (!::tl2::details::BuiltinVectorIntBoxedWriteJSON(s, item.x)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -876,8 +896,10 @@ void tl2::details::BoxedVector64Reset(::tl2::BoxedVector64& item) {
 
 bool tl2::details::BoxedVector64WriteJSON(std::ostream& s, const ::tl2::BoxedVector64& item) {
 	s << "{";
-	s << "\"x\":";
-	if (!::tl2::details::BuiltinVectorLongBoxedWriteJSON(s, item.x)) { return false; }
+	if (item.x.size() != 0) {
+		s << "\"x\":";
+		if (!::tl2::details::BuiltinVectorLongBoxedWriteJSON(s, item.x)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -1488,11 +1510,15 @@ void tl2::details::DictionaryFieldIntReset(::tl2::DictionaryField<int32_t>& item
 
 bool tl2::details::DictionaryFieldIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<int32_t>& item) {
 	s << "{";
-	s << "\"key\":";
-	s << "\"" << item.key << "\"";
-	s << ",";
-	s << "\"value\":";
-	s << item.value;
+	if (item.key.size() != 0) {
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << item.value;
+	}
 	s << "}";
 	return true;
 }
@@ -1587,7 +1613,7 @@ void tl2::details::EitherIntVectorService6FindWithBoundsResultReset(::tl2::Eithe
 bool tl2::details::EitherIntVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const ::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
 	s << "{";
 	s << "\"type\":";
-	s << EitherIntVectorService6FindWithBoundsResult_tbl_tl_tag[item.value.index()];
+	s << "\"" << EitherIntVectorService6FindWithBoundsResult_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 0:
 		s << ",\"value\":";
@@ -1642,7 +1668,7 @@ void tl2::details::EitherService6ErrorVectorService6FindResultRowReset(::tl2::Ei
 bool tl2::details::EitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream & s, const ::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
 	s << "{";
 	s << "\"type\":";
-	s << EitherService6ErrorVectorService6FindResultRow_tbl_tl_tag[item.value.index()];
+	s << "\"" << EitherService6ErrorVectorService6FindResultRow_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 0:
 		s << ",\"value\":";
@@ -1719,11 +1745,15 @@ void tl2::details::FieldConflict1Reset(::tl2::FieldConflict1& item) {
 
 bool tl2::details::FieldConflict1WriteJSON(std::ostream& s, const ::tl2::FieldConflict1& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
-	s << ",";
-	s << "\"set_x\":";
-	s << item.set_x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
+	if (item.set_x != 0) {
+		s << ",";
+		s << "\"set_x\":";
+		s << item.set_x;
+	}
 	s << "}";
 	return true;
 }
@@ -1782,11 +1812,15 @@ void tl2::details::FieldConflict2Reset(::tl2::FieldConflict2& item) {
 
 bool tl2::details::FieldConflict2WriteJSON(std::ostream& s, const ::tl2::FieldConflict2& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
-	s << ",";
-	s << "\"setX\":";
-	s << item.setX;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
+	if (item.setX != 0) {
+		s << ",";
+		s << "\"setX\":";
+		s << item.setX;
+	}
 	s << "}";
 	return true;
 }
@@ -1845,11 +1879,15 @@ void tl2::details::FieldConflict3Reset(::tl2::FieldConflict3& item) {
 
 bool tl2::details::FieldConflict3WriteJSON(std::ostream& s, const ::tl2::FieldConflict3& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
-	s << ",";
-	s << "\"SetX\":";
-	s << item.SetX;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
+	if (item.SetX != 0) {
+		s << ",";
+		s << "\"SetX\":";
+		s << item.SetX;
+	}
 	s << "}";
 	return true;
 }
@@ -1908,11 +1946,15 @@ void tl2::details::FieldConflict4Reset(::tl2::FieldConflict4& item) {
 
 bool tl2::details::FieldConflict4WriteJSON(std::ostream& s, const ::tl2::FieldConflict4& item) {
 	s << "{";
-	s << "\"X\":";
-	s << item.X;
-	s << ",";
-	s << "\"SetX\":";
-	s << item.SetX;
+	if (item.X != 0) {
+		s << "\"X\":";
+		s << item.X;
+	}
+	if (item.SetX != 0) {
+		s << ",";
+		s << "\"SetX\":";
+		s << item.SetX;
+	}
 	s << "}";
 	return true;
 }
@@ -2001,11 +2043,15 @@ void tl2::details::GetArraysReset(::tl2::Get_arrays& item) {
 
 bool tl2::details::GetArraysWriteJSON(std::ostream& s, const ::tl2::Get_arrays& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"a\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.a, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.a.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"a\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.a, item.n)) { return false; }
+	}
 	s << ",";
 	s << "\"b\":";
 	if (!::tl2::details::BuiltinTuple5IntWriteJSON(s, item.b)) { return false; }
@@ -2086,8 +2132,10 @@ void tl2::details::GetDoubleReset(::tl2::GetDouble& item) {
 
 bool tl2::details::GetDoubleWriteJSON(std::ostream& s, const ::tl2::GetDouble& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
 	s << "}";
 	return true;
 }
@@ -2163,8 +2211,10 @@ void tl2::details::GetFloatReset(::tl2::GetFloat& item) {
 
 bool tl2::details::GetFloatWriteJSON(std::ostream& s, const ::tl2::GetFloat& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
 	s << "}";
 	return true;
 }
@@ -2311,8 +2361,10 @@ void tl2::details::GetMyDictOfIntReset(::tl2::GetMyDictOfInt& item) {
 
 bool tl2::details::GetMyDictOfIntWriteJSON(std::ostream& s, const ::tl2::GetMyDictOfInt& item) {
 	s << "{";
-	s << "\"x\":";
-	if (!::tl2::details::MyDictOfIntWriteJSON(s, item.x)) { return false; }
+	if (item.x.size() != 0) {
+		s << "\"x\":";
+		if (!::tl2::details::MyDictOfIntWriteJSON(s, item.x)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -2384,8 +2436,10 @@ void tl2::details::GetMyDoubleReset(::tl2::GetMyDouble& item) {
 
 bool tl2::details::GetMyDoubleWriteJSON(std::ostream& s, const ::tl2::GetMyDouble& item) {
 	s << "{";
-	s << "\"x\":";
-	if (!::tl2::details::MyDoubleWriteJSON(s, item.x)) { return false; }
+	if (item.x != 0) {
+		s << "\"x\":";
+		if (!::tl2::details::MyDoubleWriteJSON(s, item.x)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -2531,11 +2585,15 @@ void tl2::details::GetNonOptNatReset(::tl2::GetNonOptNat& item) {
 
 bool tl2::details::GetNonOptNatWriteJSON(std::ostream& s, const ::tl2::GetNonOptNat& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"xs\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.xs, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.xs.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"xs\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.xs, item.n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -2747,8 +2805,10 @@ void tl2::details::IntegerReset(::tl2::Integer& item) {
 
 bool tl2::details::IntegerWriteJSON(std::ostream& s, const ::tl2::Integer& item) {
 	s << "{";
-	s << "\"value\":";
-	s << item.value;
+	if (item.value != 0) {
+		s << "\"value\":";
+		s << item.value;
+	}
 	s << "}";
 	return true;
 }
@@ -2804,8 +2864,10 @@ void tl2::details::Issue3498Reset(::tl2::Issue3498& item) {
 
 bool tl2::details::Issue3498WriteJSON(std::ostream& s, const ::tl2::Issue3498& item) {
 	s << "{";
-	s << "\"x\":";
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item.x)) { return false; }
+	if (item.x.size() != 0) {
+		s << "\"x\":";
+		if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item.x)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -2838,8 +2900,10 @@ void tl2::details::LeftIntVectorService6FindWithBoundsResultReset(::tl2::Left<in
 
 bool tl2::details::LeftIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
 	s << "{";
-	s << "\"value\":";
-	s << item.value;
+	if (item.value != 0) {
+		s << "\"value\":";
+		s << item.value;
+	}
 	s << "}";
 	return true;
 }
@@ -2932,11 +2996,15 @@ void tl2::details::MapStringStringReset(::tl2::Map<std::string, std::string>& it
 
 bool tl2::details::MapStringStringWriteJSON(std::ostream& s, const ::tl2::Map<std::string, std::string>& item) {
 	s << "{";
-	s << "\"key\":";
-	s << "\"" << item.key << "\"";
-	s << ",";
-	s << "\"value\":";
-	s << "\"" << item.value << "\"";
+	if (item.key.size() != 0) {
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value.size() != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << "\"" << item.value << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -3083,11 +3151,15 @@ void tl2::details::MyBoxedTupleSliceReset(::tl2::MyBoxedTupleSlice& item) {
 
 bool tl2::details::MyBoxedTupleSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedTupleSlice& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"data\":";
-	if (!::tl2::details::BuiltinTupleIntBoxedWriteJSON(s, item.data, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.data.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"data\":";
+		if (!::tl2::details::BuiltinTupleIntBoxedWriteJSON(s, item.data, item.n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3147,8 +3219,10 @@ void tl2::details::MyBoxedVectorSliceReset(::tl2::MyBoxedVectorSlice& item) {
 
 bool tl2::details::MyBoxedVectorSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedVectorSlice& item) {
 	s << "{";
-	s << "\"data\":";
-	if (!::tl2::details::BuiltinVectorIntBoxedWriteJSON(s, item.data)) { return false; }
+	if (item.data.size() != 0) {
+		s << "\"data\":";
+		if (!::tl2::details::BuiltinVectorIntBoxedWriteJSON(s, item.data)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3266,8 +3340,10 @@ void tl2::details::MyIntReset(::tl2::MyInt& item) {
 
 bool tl2::details::MyIntWriteJSON(std::ostream& s, const ::tl2::MyInt& item) {
 	s << "{";
-	s << "\"val1\":";
-	s << item.val1;
+	if (item.val1 != 0) {
+		s << "\"val1\":";
+		s << item.val1;
+	}
 	s << "}";
 	return true;
 }
@@ -3497,8 +3573,10 @@ void tl2::details::MyMcValueVectorReset(::tl2::MyMcValueVector& item) {
 
 bool tl2::details::MyMcValueVectorWriteJSON(std::ostream& s, const ::tl2::MyMcValueVector& item) {
 	s << "{";
-	s << "\"xs\":";
-	if (!::tl2::details::BuiltinVectorService1ValueWriteJSON(s, item.xs)) { return false; }
+	if (item.xs.size() != 0) {
+		s << "\"xs\":";
+		if (!::tl2::details::BuiltinVectorService1ValueWriteJSON(s, item.xs)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3554,8 +3632,10 @@ void tl2::details::MyStringReset(::tl2::MyString& item) {
 
 bool tl2::details::MyStringWriteJSON(std::ostream& s, const ::tl2::MyString& item) {
 	s << "{";
-	s << "\"val2\":";
-	s << "\"" << item.val2 << "\"";
+	if (item.val2.size() != 0) {
+		s << "\"val2\":";
+		s << "\"" << item.val2 << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -3677,11 +3757,15 @@ void tl2::details::MyTwoDictsReset(::tl2::MyTwoDicts& item) {
 
 bool tl2::details::MyTwoDictsWriteJSON(std::ostream& s, const ::tl2::MyTwoDicts& item) {
 	s << "{";
-	s << "\"a\":";
-	if (!::tl2::details::DictionaryIntWriteJSON(s, item.a)) { return false; }
-	s << ",";
-	s << "\"b\":";
-	if (!::tl2::details::DictionaryIntWriteJSON(s, item.b)) { return false; }
+	if (item.a.size() != 0) {
+		s << "\"a\":";
+		if (!::tl2::details::DictionaryIntWriteJSON(s, item.a)) { return false; }
+	}
+	if (item.b.size() != 0) {
+		s << ",";
+		s << "\"b\":";
+		if (!::tl2::details::DictionaryIntWriteJSON(s, item.b)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3738,7 +3822,7 @@ void tl2::details::MyValueReset(::tl2::MyValue& item) {
 bool tl2::details::MyValueWriteJSON(std::ostream & s, const ::tl2::MyValue& item) {
 	s << "{";
 	s << "\"type\":";
-	s << MyValue_tbl_tl_tag[item.value.index()];
+	s << "\"" << MyValue_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 0:
 		s << ",\"value\":";
@@ -3815,11 +3899,15 @@ void tl2::details::NonOptNatReset(::tl2::NonOptNat& item) {
 
 bool tl2::details::NonOptNatWriteJSON(std::ostream& s, const ::tl2::NonOptNat& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"xs\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.xs, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.xs.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"xs\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.xs, item.n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3854,8 +3942,10 @@ void tl2::details::RightIntVectorService6FindWithBoundsResultReset(::tl2::Right<
 
 bool tl2::details::RightIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
 	s << "{";
-	s << "\"value\":";
-	if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item.value)) { return false; }
+	if (item.value.size() != 0) {
+		s << "\"value\":";
+		if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item.value)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3886,8 +3976,10 @@ void tl2::details::RightService6ErrorVectorService6FindResultRowReset(::tl2::Rig
 
 bool tl2::details::RightService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
 	s << "{";
-	s << "\"value\":";
-	if (!::tl2::details::BuiltinVectorService6FindResultRowWriteJSON(s, item.value)) { return false; }
+	if (item.value.size() != 0) {
+		s << "\"value\":";
+		if (!::tl2::details::BuiltinVectorService6FindResultRowWriteJSON(s, item.value)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -3948,8 +4040,10 @@ void tl2::details::RpcInvokeReqExtraReset(::tl2::RpcInvokeReqExtra& item) {
 
 bool tl2::details::RpcInvokeReqExtraWriteJSON(std::ostream& s, const ::tl2::RpcInvokeReqExtra& item) {
 	s << "{";
-	s << "\"fields_mask\":";
-	s << item.fields_mask;
+	if (item.fields_mask != 0) {
+		s << "\"fields_mask\":";
+		s << item.fields_mask;
+	}
 	if ((item.fields_mask & (1<<0)) != 0) {
 		s << ",";
 		s << "\"query\":";
@@ -3966,14 +4060,18 @@ bool tl2::details::RpcInvokeReqExtraWriteJSON(std::ostream& s, const ::tl2::RpcI
 		if (!::tl2::details::TrueWriteJSON(s, item.sort_reverse)) { return false; }
 	}
 	if ((item.fields_mask & (1<<16)) != 0) {
-		s << ",";
-		s << "\"wait_binlog_pos\":";
-		s << item.wait_binlog_pos;
+		if (item.wait_binlog_pos != 0) {
+			s << ",";
+			s << "\"wait_binlog_pos\":";
+			s << item.wait_binlog_pos;
+		}
 	}
 	if ((item.fields_mask & (1<<18)) != 0) {
-		s << ",";
-		s << "\"string_forward_keys\":";
-		if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.string_forward_keys)) { return false; }
+		if (item.string_forward_keys.size() != 0) {
+			s << ",";
+			s << "\"string_forward_keys\":";
+			if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.string_forward_keys)) { return false; }
+		}
 	}
 	s << "}";
 	return true;
@@ -4071,11 +4169,15 @@ void tl2::details::StatOneReset(::tl2::StatOne& item) {
 
 bool tl2::details::StatOneWriteJSON(std::ostream& s, const ::tl2::StatOne& item) {
 	s << "{";
-	s << "\"key\":";
-	s << "\"" << item.key << "\"";
-	s << ",";
-	s << "\"value\":";
-	s << "\"" << item.value << "\"";
+	if (item.key.size() != 0) {
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value.size() != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << "\"" << item.value << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -4825,14 +4927,20 @@ void tl2::details::WithFloatReset(::tl2::WithFloat& item) {
 
 bool tl2::details::WithFloatWriteJSON(std::ostream& s, const ::tl2::WithFloat& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
-	s << ",";
-	s << "\"y\":";
-	s << item.y;
-	s << ",";
-	s << "\"z\":";
-	s << item.z;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
+	if (item.y != 0) {
+		s << ",";
+		s << "\"y\":";
+		s << item.y;
+	}
+	if (item.z != 0) {
+		s << ",";
+		s << "\"z\":";
+		s << item.z;
+	}
 	s << "}";
 	return true;
 }

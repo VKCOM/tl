@@ -112,8 +112,10 @@ void tl2::details::Service6ErrorReset(::tl2::service6::Error& item) {
 
 bool tl2::details::Service6ErrorWriteJSON(std::ostream& s, const ::tl2::service6::Error& item) {
 	s << "{";
-	s << "\"code\":";
-	s << item.code;
+	if (item.code != 0) {
+		s << "\"code\":";
+		s << item.code;
+	}
 	s << "}";
 	return true;
 }
@@ -169,8 +171,10 @@ void tl2::details::Service6FindResultRowReset(::tl2::service6::FindResultRow& it
 
 bool tl2::details::Service6FindResultRowWriteJSON(std::ostream& s, const ::tl2::service6::FindResultRow& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
 	s << "}";
 	return true;
 }
@@ -226,8 +230,10 @@ void tl2::details::Service6FindWithBoundsResultReset(::tl2::service6::FindWithBo
 
 bool tl2::details::Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::service6::FindWithBoundsResult& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
 	s << "}";
 	return true;
 }
@@ -285,14 +291,20 @@ void tl2::details::Service6MultiFindReset(::tl2::service6::MultiFind& item) {
 
 bool tl2::details::Service6MultiFindWriteJSON(std::ostream& s, const ::tl2::service6::MultiFind& item) {
 	s << "{";
-	s << "\"clusters\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
-	s << ",";
-	s << "\"limit\":";
-	s << item.limit;
-	s << ",";
-	s << "\"eq_threshold\":";
-	s << item.eq_threshold;
+	if (item.clusters.size() != 0) {
+		s << "\"clusters\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+	}
+	if (item.limit != 0) {
+		s << ",";
+		s << "\"limit\":";
+		s << item.limit;
+	}
+	if (item.eq_threshold != 0) {
+		s << ",";
+		s << "\"eq_threshold\":";
+		s << item.eq_threshold;
+	}
 	s << "}";
 	return true;
 }
@@ -370,8 +382,10 @@ void tl2::details::Service6MultiFindWithBoundsReset(::tl2::service6::MultiFindWi
 
 bool tl2::details::Service6MultiFindWithBoundsWriteJSON(std::ostream& s, const ::tl2::service6::MultiFindWithBounds& item) {
 	s << "{";
-	s << "\"clusters\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+	if (item.clusters.size() != 0) {
+		s << "\"clusters\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+	}
 	s << "}";
 	return true;
 }

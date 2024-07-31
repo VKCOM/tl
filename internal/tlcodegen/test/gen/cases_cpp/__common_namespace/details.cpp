@@ -187,11 +187,15 @@ void tl2::details::DictionaryFieldAnyDoubleIntReset(::tl2::DictionaryFieldAny<do
 
 bool tl2::details::DictionaryFieldAnyDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<double, int32_t>& item) {
 	s << "{";
-	s << "\"key\":";
-	s << item.key;
-	s << ",";
-	s << "\"value\":";
-	s << item.value;
+	if (item.key != 0) {
+		s << "\"key\":";
+		s << item.key;
+	}
+	if (item.value != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << item.value;
+	}
 	s << "}";
 	return true;
 }
@@ -225,11 +229,15 @@ void tl2::details::DictionaryFieldAnyIntIntReset(::tl2::DictionaryFieldAny<int32
 
 bool tl2::details::DictionaryFieldAnyIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) {
 	s << "{";
-	s << "\"key\":";
-	s << item.key;
-	s << ",";
-	s << "\"value\":";
-	s << item.value;
+	if (item.key != 0) {
+		s << "\"key\":";
+		s << item.key;
+	}
+	if (item.value != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << item.value;
+	}
 	s << "}";
 	return true;
 }
@@ -263,11 +271,15 @@ void tl2::details::DictionaryFieldIntReset(::tl2::DictionaryField<int32_t>& item
 
 bool tl2::details::DictionaryFieldIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<int32_t>& item) {
 	s << "{";
-	s << "\"key\":";
-	s << "\"" << item.key << "\"";
-	s << ",";
-	s << "\"value\":";
-	s << item.value;
+	if (item.key.size() != 0) {
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << item.value;
+	}
 	s << "}";
 	return true;
 }

@@ -12,6 +12,10 @@ import (
 	"strings"
 )
 
+func (trw *TypeRWUnion) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
+	return ""
+}
+
 func (trw *TypeRWUnion) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	for _, f := range trw.Fields {
 		if !f.recursive {
@@ -196,12 +200,7 @@ void %[7]s::%[1]sReset(%[2]s& item) {
 }
 
 bool %[7]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) {
-	s << "{";
-	s << "\"type\":";
-	s << %[1]s_tbl_tl_tag[item.value.index()];
-	switch (item.value.index()) {
-%[8]s	}
-	s << "}";
+%[8]s
 	return true;
 }
 bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
@@ -467,16 +466,28 @@ func (trw *TypeRWUnion) CPPWriteFields(bytesVersion bool) string {
 
 func (trw *TypeRWUnion) CPPWriteJSONFields(bytesVersion bool) string {
 	var s strings.Builder
-	for fieldIndex, field := range trw.Fields {
-		if !field.t.IsTrueType() {
-			s.WriteString(fmt.Sprintf("\tcase %d:\n", fieldIndex))
-			s.WriteString(`		s << ",\"value\":";
+	if trw.IsEnum {
+		s.WriteString(fmt.Sprintf(`	s << "\"" << %s_tbl_tl_name[item.value.index()] << "\"";`, trw.wr.goGlobalName))
+	} else {
+		s.WriteString(fmt.Sprintf(`	s << "{";
+	s << "\"type\":";
+	s << "\"" << %s_tbl_tl_name[item.value.index()] << "\"";
+	switch (item.value.index()) {
+`, trw.wr.goGlobalName))
+
+		for fieldIndex, field := range trw.Fields {
+			if !field.t.IsTrueType() {
+				s.WriteString(fmt.Sprintf("\tcase %d:\n", fieldIndex))
+				s.WriteString(`		s << ",\"value\":";
 `)
-			s.WriteString("\t" +
-				field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
-					true, formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
-			s.WriteString("\t\tbreak;\n")
+				s.WriteString("\t" +
+					field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
+						true, formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
+				s.WriteString("\t\tbreak;\n")
+			}
 		}
+		s.WriteString(`	}
+	s << "}";`)
 	}
 	return s.String()
 }

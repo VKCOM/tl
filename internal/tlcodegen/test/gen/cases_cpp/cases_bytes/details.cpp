@@ -199,11 +199,15 @@ void tl2::details::CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item)
 
 bool tl2::details::CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
-	s << ",";
-	s << "\"arr\":";
-	if (!::tl2::details::BuiltinTupleStringWriteJSON(s, item.arr, item.n)) { return false; }
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
+	if ((item.arr.size() != 0) || (item.n != 0)) {
+		s << ",";
+		s << "\"arr\":";
+		if (!::tl2::details::BuiltinTupleStringWriteJSON(s, item.arr, item.n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -261,8 +265,10 @@ void tl2::details::CasesBytesTestDictAnyReset(::tl2::cases_bytes::TestDictAny& i
 
 bool tl2::details::CasesBytesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictAny& item) {
 	s << "{";
-	s << "\"dict\":";
-	if (!::tl2::details::DictionaryAnyDoubleIntWriteJSON(s, item.dict)) { return false; }
+	if (item.dict.size() != 0) {
+		s << "\"dict\":";
+		if (!::tl2::details::DictionaryAnyDoubleIntWriteJSON(s, item.dict)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -318,8 +324,10 @@ void tl2::details::CasesBytesTestDictIntReset(::tl2::cases_bytes::TestDictInt& i
 
 bool tl2::details::CasesBytesTestDictIntWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictInt& item) {
 	s << "{";
-	s << "\"dict\":";
-	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(s, item.dict)) { return false; }
+	if (item.dict.size() != 0) {
+		s << "\"dict\":";
+		if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(s, item.dict)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -375,8 +383,10 @@ void tl2::details::CasesBytesTestDictStringReset(::tl2::cases_bytes::TestDictStr
 
 bool tl2::details::CasesBytesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictString& item) {
 	s << "{";
-	s << "\"dict\":";
-	if (!::tl2::details::DictionaryIntWriteJSON(s, item.dict)) { return false; }
+	if (item.dict.size() != 0) {
+		s << "\"dict\":";
+		if (!::tl2::details::DictionaryIntWriteJSON(s, item.dict)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -432,8 +442,10 @@ void tl2::details::CasesBytesTestDictStringStringReset(::tl2::cases_bytes::TestD
 
 bool tl2::details::CasesBytesTestDictStringStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictStringString& item) {
 	s << "{";
-	s << "\"dict\":";
-	if (!::tl2::details::DictionaryStringWriteJSON(s, item.dict)) { return false; }
+	if (item.dict.size() != 0) {
+		s << "\"dict\":";
+		if (!::tl2::details::DictionaryStringWriteJSON(s, item.dict)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -486,12 +498,7 @@ void tl2::details::CasesBytesTestEnumReset(::tl2::cases_bytes::TestEnum& item) {
 }
 
 bool tl2::details::CasesBytesTestEnumWriteJSON(std::ostream & s, const ::tl2::cases_bytes::TestEnum& item) {
-	s << "{";
-	s << "\"type\":";
-	s << CasesBytesTestEnum_tbl_tl_tag[item.value.index()];
-	switch (item.value.index()) {
-	}
-	s << "}";
+	s << "\"" << CasesBytesTestEnum_tbl_tl_name[item.value.index()] << "\"";
 	return true;
 }
 bool tl2::details::CasesBytesTestEnumReadBoxed(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum& item) {
@@ -821,8 +828,10 @@ void tl2::details::CasesBytesTestVectorReset(::tl2::cases_bytes::TestVector& ite
 
 bool tl2::details::CasesBytesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestVector& item) {
 	s << "{";
-	s << "\"arr\":";
-	if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.arr)) { return false; }
+	if (item.arr.size() != 0) {
+		s << "\"arr\":";
+		if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.arr)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -854,11 +863,15 @@ void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string
 
 bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) {
 	s << "{";
-	s << "\"key\":";
-	s << "\"" << item.key << "\"";
-	s << ",";
-	s << "\"value\":";
-	s << "\"" << item.value << "\"";
+	if (item.key.size() != 0) {
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value.size() != 0) {
+		s << ",";
+		s << "\"value\":";
+		s << "\"" << item.value << "\"";
+	}
 	s << "}";
 	return true;
 }

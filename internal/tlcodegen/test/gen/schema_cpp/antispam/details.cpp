@@ -35,8 +35,10 @@ void tl2::details::AntispamGetPatternReset(::tl2::antispam::GetPattern& item) {
 
 bool tl2::details::AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item) {
 	s << "{";
-	s << "\"id\":";
-	s << item.id;
+	if (item.id != 0) {
+		s << "\"id\":";
+		s << item.id;
+	}
 	s << "}";
 	return true;
 }
@@ -112,20 +114,30 @@ void tl2::details::AntispamPatternFoundReset(::tl2::antispam::PatternFound& item
 
 bool tl2::details::AntispamPatternFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternFound& item) {
 	s << "{";
-	s << "\"ip\":";
-	s << item.ip;
-	s << ",";
-	s << "\"uahash\":";
-	s << item.uahash;
-	s << ",";
-	s << "\"flags\":";
-	s << item.flags;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"text\":";
-	s << "\"" << item.text << "\"";
+	if (item.ip != 0) {
+		s << "\"ip\":";
+		s << item.ip;
+	}
+	if (item.uahash != 0) {
+		s << ",";
+		s << "\"uahash\":";
+		s << item.uahash;
+	}
+	if (item.flags != 0) {
+		s << ",";
+		s << "\"flags\":";
+		s << item.flags;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.text.size() != 0) {
+		s << ",";
+		s << "\"text\":";
+		s << "\"" << item.text << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -188,7 +200,7 @@ void tl2::details::AntispamPatternFullReset(::tl2::antispam::PatternFull& item) 
 bool tl2::details::AntispamPatternFullWriteJSON(std::ostream & s, const ::tl2::antispam::PatternFull& item) {
 	s << "{";
 	s << "\"type\":";
-	s << AntispamPatternFull_tbl_tl_tag[item.value.index()];
+	s << "\"" << AntispamPatternFull_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 0:
 		s << ",\"value\":";

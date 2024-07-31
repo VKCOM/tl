@@ -42,26 +42,36 @@ bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::t
 	s << "{";
 	s << "\"object\":";
 	if (!::tl2::details::Service4ObjectWriteJSON(s, item.object)) { return false; }
-	s << ",";
-	s << "\"creation_date\":";
-	s << item.creation_date;
-	s << ",";
-	s << "\"fields_mask\":";
-	s << item.fields_mask;
-	if ((item.fields_mask & (1<<0)) != 0) {
+	if (item.creation_date != 0) {
 		s << ",";
-		s << "\"restoration_date\":";
-		s << item.restoration_date;
+		s << "\"creation_date\":";
+		s << item.creation_date;
+	}
+	if (item.fields_mask != 0) {
+		s << ",";
+		s << "\"fields_mask\":";
+		s << item.fields_mask;
+	}
+	if ((item.fields_mask & (1<<0)) != 0) {
+		if (item.restoration_date != 0) {
+			s << ",";
+			s << "\"restoration_date\":";
+			s << item.restoration_date;
+		}
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		s << ",";
-		s << "\"deletion_date\":";
-		s << item.deletion_date;
+		if (item.deletion_date != 0) {
+			s << ",";
+			s << "\"deletion_date\":";
+			s << item.deletion_date;
+		}
 	}
 	if ((item.fields_mask & (1<<16)) != 0) {
-		s << ",";
-		s << "\"hidden_by_privacy\":";
-		if (!::tl2::details::BoolWriteJSON(s, item.hidden_by_privacy)) { return false; }
+		if (item.hidden_by_privacy) {
+			s << ",";
+			s << "\"hidden_by_privacy\":";
+			if (!::tl2::details::BoolWriteJSON(s, item.hidden_by_privacy)) { return false; }
+		}
 	}
 	s << "}";
 	return true;
@@ -148,14 +158,20 @@ void tl2::details::Service4ObjectReset(::tl2::service4::Object& item) {
 
 bool tl2::details::Service4ObjectWriteJSON(std::ostream& s, const ::tl2::service4::Object& item) {
 	s << "{";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"joint_id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.joint_id)) { return false; }
-	s << ",";
-	s << "\"object_id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.object_id)) { return false; }
+	if (item.type != 0) {
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.joint_id.size() != 0) {
+		s << ",";
+		s << "\"joint_id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.joint_id)) { return false; }
+	}
+	if (item.object_id.size() != 0) {
+		s << ",";
+		s << "\"object_id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.object_id)) { return false; }
+	}
 	s << "}";
 	return true;
 }

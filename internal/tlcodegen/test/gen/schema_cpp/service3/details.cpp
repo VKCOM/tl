@@ -56,14 +56,20 @@ void tl2::details::BoolStatReset(::tl2::BoolStat& item) {
 
 bool tl2::details::BoolStatWriteJSON(std::ostream& s, const ::tl2::BoolStat& item) {
 	s << "{";
-	s << "\"statTrue\":";
-	s << item.statTrue;
-	s << ",";
-	s << "\"statFalse\":";
-	s << item.statFalse;
-	s << ",";
-	s << "\"statUnknown\":";
-	s << item.statUnknown;
+	if (item.statTrue != 0) {
+		s << "\"statTrue\":";
+		s << item.statTrue;
+	}
+	if (item.statFalse != 0) {
+		s << ",";
+		s << "\"statFalse\":";
+		s << item.statFalse;
+	}
+	if (item.statUnknown != 0) {
+		s << ",";
+		s << "\"statUnknown\":";
+		s << item.statUnknown;
+	}
 	s << "}";
 	return true;
 }
@@ -313,23 +319,35 @@ void tl2::details::Service3CreateProductReset(::tl2::service3::CreateProduct& it
 
 bool tl2::details::Service3CreateProductWriteJSON(std::ostream& s, const ::tl2::service3::CreateProduct& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"info\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
-	s << ",";
-	s << "\"date\":";
-	s << item.date;
-	s << ",";
-	s << "\"expiration_date\":";
-	s << item.expiration_date;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
+		s << ",";
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.info.size() != 0) {
+		s << ",";
+		s << "\"info\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	}
+	if (item.date != 0) {
+		s << ",";
+		s << "\"date\":";
+		s << item.date;
+	}
+	if (item.expiration_date != 0) {
+		s << ",";
+		s << "\"expiration_date\":";
+		s << item.expiration_date;
+	}
 	s << "}";
 	return true;
 }
@@ -414,17 +432,25 @@ void tl2::details::Service3DeleteAllProductsReset(::tl2::service3::DeleteAllProd
 
 bool tl2::details::Service3DeleteAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteAllProducts& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"start_date\":";
-	s << item.start_date;
-	s << ",";
-	s << "\"end_date\":";
-	s << item.end_date;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.start_date != 0) {
+		s << ",";
+		s << "\"start_date\":";
+		s << item.start_date;
+	}
+	if (item.end_date != 0) {
+		s << ",";
+		s << "\"end_date\":";
+		s << item.end_date;
+	}
 	s << "}";
 	return true;
 }
@@ -506,20 +532,30 @@ void tl2::details::Service3DeleteGroupedProductsReset(::tl2::service3::DeleteGro
 
 bool tl2::details::Service3DeleteGroupedProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteGroupedProducts& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"start_date\":";
-	s << item.start_date;
-	s << ",";
-	s << "\"end_date\":";
-	s << item.end_date;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
+		s << ",";
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.start_date != 0) {
+		s << ",";
+		s << "\"start_date\":";
+		s << item.start_date;
+	}
+	if (item.end_date != 0) {
+		s << ",";
+		s << "\"end_date\":";
+		s << item.end_date;
+	}
 	s << "}";
 	return true;
 }
@@ -602,17 +638,25 @@ void tl2::details::Service3DeleteProductReset(::tl2::service3::DeleteProduct& it
 
 bool tl2::details::Service3DeleteProductWriteJSON(std::ostream& s, const ::tl2::service3::DeleteProduct& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"info\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
+		s << ",";
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.info.size() != 0) {
+		s << ",";
+		s << "\"info\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -690,8 +734,10 @@ void tl2::details::Service3GetLastVisitTimestampReset(::tl2::service3::GetLastVi
 
 bool tl2::details::Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::GetLastVisitTimestamp& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
 	s << "}";
 	return true;
 }
@@ -832,11 +878,15 @@ void tl2::details::Service3GetProductStatsReset(::tl2::service3::GetProductStats
 
 bool tl2::details::Service3GetProductStatsWriteJSON(std::ostream& s, const ::tl2::service3::GetProductStats& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"types\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.types.size() != 0) {
+		s << ",";
+		s << "\"types\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -917,29 +967,45 @@ void tl2::details::Service3GetProductsReset(::tl2::service3::GetProducts& item) 
 
 bool tl2::details::Service3GetProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetProducts& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"mode\":";
-	s << item.mode;
-	s << ",";
-	s << "\"types\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
-	s << ",";
-	s << "\"start_date\":";
-	s << item.start_date;
-	s << ",";
-	s << "\"end_date\":";
-	s << item.end_date;
-	s << ",";
-	s << "\"offset\":";
-	s << item.offset;
-	s << ",";
-	s << "\"limit\":";
-	s << item.limit;
-	s << ",";
-	s << "\"allowed_info0\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.allowed_info0)) { return false; }
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.mode != 0) {
+		s << ",";
+		s << "\"mode\":";
+		s << item.mode;
+	}
+	if (item.types.size() != 0) {
+		s << ",";
+		s << "\"types\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	}
+	if (item.start_date != 0) {
+		s << ",";
+		s << "\"start_date\":";
+		s << item.start_date;
+	}
+	if (item.end_date != 0) {
+		s << ",";
+		s << "\"end_date\":";
+		s << item.end_date;
+	}
+	if (item.offset != 0) {
+		s << ",";
+		s << "\"offset\":";
+		s << item.offset;
+	}
+	if (item.limit != 0) {
+		s << ",";
+		s << "\"limit\":";
+		s << item.limit;
+	}
+	if (item.allowed_info0.size() != 0) {
+		s << ",";
+		s << "\"allowed_info0\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.allowed_info0)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -1026,11 +1092,15 @@ void tl2::details::Service3GetScheduledProductsReset(::tl2::service3::GetSchedul
 
 bool tl2::details::Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetScheduledProducts& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"types\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.types.size() != 0) {
+		s << ",";
+		s << "\"types\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -1105,11 +1175,15 @@ void tl2::details::Service3GroupCountLimitReset(::tl2::service3::GroupCountLimit
 
 bool tl2::details::Service3GroupCountLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupCountLimit& item) {
 	s << "{";
-	s << "\"types\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
-	s << ",";
-	s << "\"limit\":";
-	s << item.limit;
+	if (item.types.size() != 0) {
+		s << "\"types\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	}
+	if (item.limit != 0) {
+		s << ",";
+		s << "\"limit\":";
+		s << item.limit;
+	}
 	s << "}";
 	return true;
 }
@@ -1168,11 +1242,15 @@ void tl2::details::Service3GroupSizeLimitReset(::tl2::service3::GroupSizeLimit& 
 
 bool tl2::details::Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupSizeLimit& item) {
 	s << "{";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"limit\":";
-	s << item.limit;
+	if (item.type != 0) {
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.limit != 0) {
+		s << ",";
+		s << "\"limit\":";
+		s << item.limit;
+	}
 	s << "}";
 	return true;
 }
@@ -1233,17 +1311,25 @@ void tl2::details::Service3LimitsReset(::tl2::service3::Limits& item) {
 
 bool tl2::details::Service3LimitsWriteJSON(std::ostream& s, const ::tl2::service3::Limits& item) {
 	s << "{";
-	s << "\"default_group_size_limit\":";
-	s << item.default_group_size_limit;
-	s << ",";
-	s << "\"custom_group_size_limits\":";
-	if (!::tl2::details::BuiltinVectorService3GroupSizeLimitWriteJSON(s, item.custom_group_size_limits)) { return false; }
-	s << ",";
-	s << "\"default_group_count_limit\":";
-	s << item.default_group_count_limit;
-	s << ",";
-	s << "\"custom_group_count_limits\":";
-	if (!::tl2::details::BuiltinVectorService3GroupCountLimitWriteJSON(s, item.custom_group_count_limits)) { return false; }
+	if (item.default_group_size_limit != 0) {
+		s << "\"default_group_size_limit\":";
+		s << item.default_group_size_limit;
+	}
+	if (item.custom_group_size_limits.size() != 0) {
+		s << ",";
+		s << "\"custom_group_size_limits\":";
+		if (!::tl2::details::BuiltinVectorService3GroupSizeLimitWriteJSON(s, item.custom_group_size_limits)) { return false; }
+	}
+	if (item.default_group_count_limit != 0) {
+		s << ",";
+		s << "\"default_group_count_limit\":";
+		s << item.default_group_count_limit;
+	}
+	if (item.custom_group_count_limits.size() != 0) {
+		s << ",";
+		s << "\"custom_group_count_limits\":";
+		if (!::tl2::details::BuiltinVectorService3GroupCountLimitWriteJSON(s, item.custom_group_count_limits)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -1310,24 +1396,36 @@ void tl2::details::Service3ProductReset(::tl2::service3::Product& item) {
 
 bool tl2::details::Service3ProductWriteJSON(std::ostream& s, const ::tl2::service3::Product& item, uint32_t nat_mode) {
 	s << "{";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"info\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
-	s << ",";
-	s << "\"date\":";
-	s << item.date;
-	s << ",";
-	s << "\"expiration_date\":";
-	s << item.expiration_date;
-	if ((nat_mode & (1<<0)) != 0) {
+	if (item.type != 0) {
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
 		s << ",";
-		s << "\"removed\":";
-		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.info.size() != 0) {
+		s << ",";
+		s << "\"info\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	}
+	if (item.date != 0) {
+		s << ",";
+		s << "\"date\":";
+		s << item.date;
+	}
+	if (item.expiration_date != 0) {
+		s << ",";
+		s << "\"expiration_date\":";
+		s << item.expiration_date;
+	}
+	if ((nat_mode & (1<<0)) != 0) {
+		if (item.removed) {
+			s << ",";
+			s << "\"removed\":";
+			if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
+		}
 	}
 	s << "}";
 	return true;
@@ -1380,24 +1478,36 @@ void tl2::details::Service3Product0Reset(::tl2::service3::Productmode<0>& item) 
 
 bool tl2::details::Service3Product0WriteJSON(std::ostream& s, const ::tl2::service3::Productmode<0>& item) {
 	s << "{";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"info\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
-	s << ",";
-	s << "\"date\":";
-	s << item.date;
-	s << ",";
-	s << "\"expiration_date\":";
-	s << item.expiration_date;
-	if ((0 & (1<<0)) != 0) {
+	if (item.type != 0) {
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
 		s << ",";
-		s << "\"removed\":";
-		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.info.size() != 0) {
+		s << ",";
+		s << "\"info\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	}
+	if (item.date != 0) {
+		s << ",";
+		s << "\"date\":";
+		s << item.date;
+	}
+	if (item.expiration_date != 0) {
+		s << ",";
+		s << "\"expiration_date\":";
+		s << item.expiration_date;
+	}
+	if ((0 & (1<<0)) != 0) {
+		if (item.removed) {
+			s << ",";
+			s << "\"removed\":";
+			if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
+		}
 	}
 	s << "}";
 	return true;
@@ -1474,20 +1584,30 @@ void tl2::details::Service3ProductStatsOldReset(::tl2::service3::ProductStatsOld
 
 bool tl2::details::Service3ProductStatsOldWriteJSON(std::ostream& s, const ::tl2::service3::ProductStatsOld& item) {
 	s << "{";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"count_new\":";
-	s << item.count_new;
-	s << ",";
-	s << "\"count_total\":";
-	s << item.count_total;
-	s << ",";
-	s << "\"count_scheduled\":";
-	s << item.count_scheduled;
-	s << ",";
-	s << "\"next_scheduled_at\":";
-	s << item.next_scheduled_at;
+	if (item.type != 0) {
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.count_new != 0) {
+		s << ",";
+		s << "\"count_new\":";
+		s << item.count_new;
+	}
+	if (item.count_total != 0) {
+		s << ",";
+		s << "\"count_total\":";
+		s << item.count_total;
+	}
+	if (item.count_scheduled != 0) {
+		s << ",";
+		s << "\"count_scheduled\":";
+		s << item.count_scheduled;
+	}
+	if (item.next_scheduled_at != 0) {
+		s << ",";
+		s << "\"next_scheduled_at\":";
+		s << item.next_scheduled_at;
+	}
 	s << "}";
 	return true;
 }
@@ -1554,17 +1674,25 @@ void tl2::details::Service3RestoreAllProductsReset(::tl2::service3::RestoreAllPr
 
 bool tl2::details::Service3RestoreAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreAllProducts& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"start_date\":";
-	s << item.start_date;
-	s << ",";
-	s << "\"end_date\":";
-	s << item.end_date;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.start_date != 0) {
+		s << ",";
+		s << "\"start_date\":";
+		s << item.start_date;
+	}
+	if (item.end_date != 0) {
+		s << ",";
+		s << "\"end_date\":";
+		s << item.end_date;
+	}
 	s << "}";
 	return true;
 }
@@ -1646,20 +1774,30 @@ void tl2::details::Service3RestoreGroupedProductsReset(::tl2::service3::RestoreG
 
 bool tl2::details::Service3RestoreGroupedProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreGroupedProducts& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"start_date\":";
-	s << item.start_date;
-	s << ",";
-	s << "\"end_date\":";
-	s << item.end_date;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
+		s << ",";
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.start_date != 0) {
+		s << ",";
+		s << "\"start_date\":";
+		s << item.start_date;
+	}
+	if (item.end_date != 0) {
+		s << ",";
+		s << "\"end_date\":";
+		s << item.end_date;
+	}
 	s << "}";
 	return true;
 }
@@ -1742,17 +1880,25 @@ void tl2::details::Service3RestoreProductReset(::tl2::service3::RestoreProduct& 
 
 bool tl2::details::Service3RestoreProductWriteJSON(std::ostream& s, const ::tl2::service3::RestoreProduct& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"type\":";
-	s << item.type;
-	s << ",";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
-	s << ",";
-	s << "\"info\":";
-	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.type != 0) {
+		s << ",";
+		s << "\"type\":";
+		s << item.type;
+	}
+	if (item.id.size() != 0) {
+		s << ",";
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	}
+	if (item.info.size() != 0) {
+		s << ",";
+		s << "\"info\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -1831,11 +1977,15 @@ void tl2::details::Service3SetLastVisitTimestampReset(::tl2::service3::SetLastVi
 
 bool tl2::details::Service3SetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::SetLastVisitTimestamp& item) {
 	s << "{";
-	s << "\"user_id\":";
-	s << item.user_id;
-	s << ",";
-	s << "\"timestamp\":";
-	s << item.timestamp;
+	if (item.user_id != 0) {
+		s << "\"user_id\":";
+		s << item.user_id;
+	}
+	if (item.timestamp != 0) {
+		s << ",";
+		s << "\"timestamp\":";
+		s << item.timestamp;
+	}
 	s << "}";
 	return true;
 }

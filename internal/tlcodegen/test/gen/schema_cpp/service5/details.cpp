@@ -91,11 +91,15 @@ void tl2::details::Service5InsertReset(::tl2::service5::Insert& item) {
 
 bool tl2::details::Service5InsertWriteJSON(std::ostream& s, const ::tl2::service5::Insert& item) {
 	s << "{";
-	s << "\"table\":";
-	s << "\"" << item.table << "\"";
-	s << ",";
-	s << "\"data\":";
-	s << "\"" << item.data << "\"";
+	if (item.table.size() != 0) {
+		s << "\"table\":";
+		s << "\"" << item.table << "\"";
+	}
+	if (item.data.size() != 0) {
+		s << ",";
+		s << "\"data\":";
+		s << "\"" << item.data << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -168,7 +172,7 @@ void tl2::details::Service5OutputReset(::tl2::service5::Output& item) {
 bool tl2::details::Service5OutputWriteJSON(std::ostream & s, const ::tl2::service5::Output& item) {
 	s << "{";
 	s << "\"type\":";
-	s << Service5Output_tbl_tl_tag[item.value.index()];
+	s << "\"" << Service5Output_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 1:
 		s << ",\"value\":";
@@ -238,17 +242,23 @@ void tl2::details::Service5ParamsReset(::tl2::service5::Params& item) {
 
 bool tl2::details::Service5ParamsWriteJSON(std::ostream& s, const ::tl2::service5::Params& item) {
 	s << "{";
-	s << "\"fields_mask\":";
-	s << item.fields_mask;
+	if (item.fields_mask != 0) {
+		s << "\"fields_mask\":";
+		s << item.fields_mask;
+	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		s << ",";
-		s << "\"max_execution_speed\":";
-		s << item.max_execution_speed;
+		if (item.max_execution_speed != 0) {
+			s << ",";
+			s << "\"max_execution_speed\":";
+			s << item.max_execution_speed;
+		}
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		s << ",";
-		s << "\"max_execution_speed_bytes\":";
-		s << item.max_execution_speed_bytes;
+		if (item.max_execution_speed_bytes != 0) {
+			s << ",";
+			s << "\"max_execution_speed_bytes\":";
+			s << item.max_execution_speed_bytes;
+		}
 	}
 	s << "}";
 	return true;
@@ -321,8 +331,10 @@ void tl2::details::Service5PerformQueryReset(::tl2::service5::PerformQuery& item
 
 bool tl2::details::Service5PerformQueryWriteJSON(std::ostream& s, const ::tl2::service5::PerformQuery& item) {
 	s << "{";
-	s << "\"query\":";
-	s << "\"" << item.query << "\"";
+	if (item.query.size() != 0) {
+		s << "\"query\":";
+		s << "\"" << item.query << "\"";
+	}
 	s << "}";
 	return true;
 }
@@ -395,8 +407,10 @@ void tl2::details::Service5QueryReset(::tl2::service5::Query& item) {
 
 bool tl2::details::Service5QueryWriteJSON(std::ostream& s, const ::tl2::service5::Query& item) {
 	s << "{";
-	s << "\"query\":";
-	s << "\"" << item.query << "\"";
+	if (item.query.size() != 0) {
+		s << "\"query\":";
+		s << "\"" << item.query << "\"";
+	}
 	s << ",";
 	s << "\"params\":";
 	if (!::tl2::details::Service5ParamsWriteJSON(s, item.params)) { return false; }
@@ -474,11 +488,15 @@ void tl2::details::Service5StringOutputReset(::tl2::service5::StringOutput& item
 
 bool tl2::details::Service5StringOutputWriteJSON(std::ostream& s, const ::tl2::service5::StringOutput& item) {
 	s << "{";
-	s << "\"http_code\":";
-	s << item.http_code;
-	s << ",";
-	s << "\"response\":";
-	s << "\"" << item.response << "\"";
+	if (item.http_code != 0) {
+		s << "\"http_code\":";
+		s << item.http_code;
+	}
+	if (item.response.size() != 0) {
+		s << ",";
+		s << "\"response\":";
+		s << "\"" << item.response << "\"";
+	}
 	s << "}";
 	return true;
 }

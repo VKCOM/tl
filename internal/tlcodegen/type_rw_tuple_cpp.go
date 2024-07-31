@@ -11,6 +11,16 @@ import (
 	"strings"
 )
 
+func (trw *TypeRWBrackets) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
+	if trw.dictLike || trw.vectorLike || trw.dynamicSize {
+		if trw.dynamicSize {
+			return fmt.Sprintf("(%s.size() != 0) || (%s != 0)", addAsterisk(ref, val), deps[0])
+		}
+		return fmt.Sprintf("%s.size() != 0", addAsterisk(ref, val))
+	}
+	return ""
+}
+
 func (trw *TypeRWBrackets) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	if trw.vectorLike || trw.dynamicSize {
 		return

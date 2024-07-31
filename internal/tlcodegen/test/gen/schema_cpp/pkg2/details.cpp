@@ -34,8 +34,10 @@ void tl2::details::Pkg2FooReset(::tl2::pkg2::Foo& item) {
 
 bool tl2::details::Pkg2FooWriteJSON(std::ostream& s, const ::tl2::pkg2::Foo& item) {
 	s << "{";
-	s << "\"x\":";
-	s << item.x;
+	if (item.x != 0) {
+		s << "\"x\":";
+		s << item.x;
+	}
 	s << "}";
 	return true;
 }

@@ -1,0 +1,372 @@
+{
+  "Tests": {
+    "TestDictionaryInt": {
+      "TestingType": "cases.testDictInt",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "00000002 00000001 00000001 00000002 00000002",
+          "DataAsJson": "{\"dict\":{\"1\":1,\"2\":2}}"
+        }
+      ]
+    },
+    "TestUnion": {
+      "TestingType": "cases.testUnionContainer",
+      "Successes": [
+        {
+          "DataAsBytes": "4b4f09b1 00000001",
+          "DataAsJson": "{\"value\":{\"type\":\"cases.testUnion1\",\"value\":{\"value\":1}}}"
+        },
+        {
+          "DataAsBytes": "464f96c4 00003201",
+          "DataAsJson": "{\"value\":{\"type\":\"cases.testUnion2\",\"value\":{\"value\":\"2\"}}}"
+        },
+        {
+          "DataAsBytes": "4b4f09b1 00000000",
+          "DataAsJson": "{\"value\":{\"type\":\"cases.testUnion1\",\"value\":{}}}"
+        }
+      ]
+    },
+    "TestEnum": {
+      "TestingType": "cases.testEnumContainer",
+      "Successes": [
+        {
+          "DataAsBytes": "6c6c55ac",
+          "DataAsJson": "{\"value\":\"cases.testEnum1\"}"
+        },
+        {
+          "DataAsBytes": "86ea88ce",
+          "DataAsJson": "{\"value\":\"cases.testEnum2\"}"
+        }
+      ]
+    },
+    "TestLocalFieldMaskRecursive": {
+      "TestingType": "cases.testRecursiveFieldMask",
+      "Successes": [
+        {
+          "DataAsBytes": "00000001 00000002 00000004",
+          "DataAsJson": "{\"f0\":1,\"f1\":2,\"f2\":4,\"t1\":true,\"t2\":true,\"t3\":true}"
+        },
+        {
+          "DataAsBytes": "00000001 00000002 00000000",
+          "DataAsJson": "{\"f0\":1,\"f1\":2,\"f2\":0,\"t1\":true,\"t2\":true}"
+        },
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "0000000f 00000000",
+          "DataAsJson": "{\"f0\":15,\"f1\":0,\"t1\":true}"
+        },
+        {
+          "DataAsBytes": "00000001 0000000f 00000000",
+          "DataAsJson": "{\"f0\":1,\"f1\":15,\"f2\":0,\"t1\":true,\"t2\":true}"
+        },
+        {
+          "DataAsBytes": "0000001f 00000002 0000000f",
+          "DataAsJson": "{\"f0\":31,\"f1\":2,\"f2\":15,\"t1\":true,\"t2\":true,\"t3\":true}"
+        },
+        {
+          "DataAsBytes": "00000001 0000001f 0000000f",
+          "DataAsJson": "{\"f0\":1,\"f1\":31,\"f2\":15,\"t1\":true,\"t2\":true,\"t3\":true}"
+        },
+        {
+          "DataAsBytes": "00000019 0000001f 0000000f",
+          "DataAsJson": "{\"f0\":25,\"f1\":31,\"f2\":15,\"t1\":true,\"t2\":true,\"t3\":true}"
+        }
+      ]
+    },
+    "TestOuterFieldMask": {
+      "TestingType": "cases.testOutFieldMaskContainer",
+      "Successes": [
+        {
+          "DataAsBytes": "00000001 00000001 00000001",
+          "DataAsJson": "{\"f\":1,\"inner\":{\"f1\":1,\"f3\":[1]}}"
+        },
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{\"inner\":{}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000000 00000001",
+          "DataAsJson": "{\"f\":1,\"inner\":{\"f1\":0,\"f3\":[1]}}"
+        }
+      ]
+    },
+    "TestRecursiveTypes": {
+      "TestingType": "cases.myCycle2",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "00000001 00000000",
+          "DataAsJson": "{\"fields_mask\":1,\"a\":{}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000001 00000000",
+          "DataAsJson": "{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{}}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000001 00000001 00000002",
+          "DataAsJson": "{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{\"fields_mask\":2}}}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000001 00000001 00000000",
+          "DataAsJson": "{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{\"fields_mask\":1,\"a\":{}}}}"
+        }
+      ]
+    },
+    "TestReadOrder": {
+      "TestingType": "cases.replace7",
+      "Successes": [
+        {
+          "DataAsBytes": "00000001 00000002 00000001 00000002",
+          "DataAsJson": "{\"n\":1,\"m\":2,\"a\":[[1,2]]}"
+        }
+      ]
+    },
+    "TestTuple": {
+      "TestingType": "cases.testTuple",
+      "Successes": [
+        {
+          "DataAsBytes": "00000001 00000002 00000003 00000004",
+          "DataAsJson": "{\"tpl\":[1,2,3,4]}"
+        }
+      ]
+    },
+    "TestDictionaryString": {
+      "TestingType": "cases.testDictString",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "00000002 00316b02 00000001 00326b02 00000002",
+          "DataAsJson": "{\"dict\":{\"k1\":1,\"k2\":2}}"
+        }
+      ]
+    },
+    "TestDictionaryAny": {
+      "TestingType": "cases.testDictAny",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "00000002 00000000 3ff00000 00000001 cccccccd 4000cccc 00000002",
+          "DataAsJson": "{\"dict\":[{\"key\":1,\"value\":1},{\"key\":2.1,\"value\":2}]}"
+        }
+      ]
+    },
+    "TestLocalFieldMask": {
+      "TestingType": "cases.testLocalFieldmask",
+      "Successes": [
+        {
+          "DataAsBytes": "00000003 00000002",
+          "DataAsJson": "{\"f1\":3,\"f2\":2,\"f3\":true,\"f4\":true}"
+        },
+        {
+          "DataAsBytes": "00000002",
+          "DataAsJson": "{\"f1\":2}"
+        },
+        {
+          "DataAsBytes": "00000001 00000002",
+          "DataAsJson": "{\"f1\":1,\"f2\":2,\"f3\":true,\"f4\":true}"
+        },
+        {
+          "DataAsBytes": "00000001 00000000",
+          "DataAsJson": "{\"f1\":1,\"f2\":0}"
+        }
+      ]
+    },
+    "TestBeforeReadBitValidation": {
+      "TestingType": "cases.testBeforeReadBitValidation",
+      "Successes": [
+        {
+          "DataAsBytes": "00000003 00000001 00000001 00000001 00000001 00000001 00000001",
+          "DataAsJson": "{\"n\":3,\"a\":[1,1,1],\"b\":[1,1,1]}"
+        }
+      ]
+    },
+    "TestArray": {
+      "TestingType": "cases.testArray",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "00000003 00000001 00000002 00000003",
+          "DataAsJson": "{\"n\":3,\"arr\":[1,2,3]}"
+        }
+      ]
+    },
+    "TestVector": {
+      "TestingType": "cases.testVector",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "00000003 00000001 00000002 00000003",
+          "DataAsJson": "{\"arr\":[1,2,3]}"
+        }
+      ]
+    },
+    "TestReadWithDifferentNatDependencies": {
+      "TestingType": "cases.testAllPossibleFieldConfigsContainer",
+      "Successes": [
+        {
+          "DataAsBytes": "00000000 00000000 000000ef",
+          "DataAsJson": "{\"value\":{\"f00\":239}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000001 00000000 00000001 00000000",
+          "DataAsJson": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":0}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000000 00000000 00000001 00000000",
+          "DataAsJson": "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":0}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000001 00000000 00000001 000000ef",
+          "DataAsJson": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":239}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000001 00000000 00000001 000000ef",
+          "DataAsJson": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":239}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000001 00000000 00000001 00000000",
+          "DataAsJson": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":0}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000002 00000000 00000002 00000002",
+          "DataAsJson": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000003 00000000 00000003 00000003 00000003 00000000",
+          "DataAsJson": "{\"value\":{\"local\":3,\"f02\":[3,3,3],\"f10\":0,\"f11\":true}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000001 00000000 00000001 00000000",
+          "DataAsJson": "{\"value\":{\"local\":1,\"f02\":[1],\"f10\":0}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000002 00000000 00000002 00000002",
+          "DataAsJson": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000004 00000000 00000004 00000004 00000004 00000004 00000004 00000004 00000004 00000004",
+          "DataAsJson": "{\"value\":{\"local\":4,\"f02\":[4,4,4,4],\"f12\":[4,4,4,4]}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000002 00000000 00000002 00000002",
+          "DataAsJson": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000008 00000000 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000001 00000001 00000000",
+          "DataAsJson": "{\"outer\":1,\"value\":{\"local\":8,\"f02\":[8,8,8,8,8,8,8,8],\"f03\":[1],\"f13\":[1],\"f20\":0}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000002 00000000 00000002 00000002",
+          "DataAsJson": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000000 00000000 00000001 000000ef",
+          "DataAsJson": "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":239}}"
+        },
+        {
+          "DataAsBytes": "00000001 00000000 00000000 00000001 00000000",
+          "DataAsJson": "{\"outer\":1,\"value\":{\"f03\":[1],\"f20\":0}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        },
+        {
+          "DataAsBytes": "00000004 00000002 00000000 00000002 00000002 00000004 00000004 00000004 00000004 00000002 00000002",
+          "DataAsJson": "{\"outer\":4,\"value\":{\"local\":2,\"f02\":[2,2],\"f03\":[4,4,4,4],\"f11\":true,\"f22\":[2,2]}}"
+        },
+        {
+          "DataAsBytes": "00000004 00000000 00000000 00000004 00000004 00000004 00000004",
+          "DataAsJson": "{\"outer\":4,\"value\":{\"f03\":[4,4,4,4],\"f22\":[]}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000002 00000000 00000002 00000002",
+          "DataAsJson": "{\"value\":{\"local\":2,\"f02\":[2,2],\"f11\":true}}"
+        },
+        {
+          "DataAsBytes": "00000008 00000000 00000000 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008 00000008",
+          "DataAsJson": "{\"outer\":8,\"value\":{\"f03\":[8,8,8,8,8,8,8,8],\"f23\":[8,8,8,8,8,8,8,8]}}"
+        },
+        {
+          "DataAsBytes": "00000000 00000000 00000000",
+          "DataAsJson": "{\"value\":{}}"
+        }
+      ]
+    },
+    "TestMaybe": {
+      "TestingType": "cases.testMaybe",
+      "Successes": [
+        {
+          "DataAsBytes": "27930a7b",
+          "DataAsJson": "{}"
+        },
+        {
+          "DataAsBytes": "3f9c8ef8 00000000",
+          "DataAsJson": "{\"value\":{\"ok\":true}}"
+        },
+        {
+          "DataAsBytes": "3f9c8ef8 00000001",
+          "DataAsJson": "{\"value\":{\"ok\":true,\"value\":1}}"
+        }
+      ]
+    }
+  }
+}

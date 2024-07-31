@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+func (trw *TypeRWBool) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
+	return addAsterisk(ref, val)
+}
+
 func (trw *TypeRWBool) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
