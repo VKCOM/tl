@@ -42,11 +42,15 @@ void tl2::details::BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item) {
 
 bool tl2::details::BenchmarksVruHashWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruhash& item) {
 	s << "{";
-	s << "\"low\":";
-	s << item.low;
-	s << ",";
-	s << "\"high\":";
-	s << item.high;
+	if (item.low != 0) {
+		s << "\"low\":";
+		s << item.low;
+	}
+	if (item.high != 0) {
+		s << ",";
+		s << "\"high\":";
+		s << item.high;
+	}
 	s << "}";
 	return true;
 }
@@ -114,8 +118,10 @@ void tl2::details::BenchmarksVruPositionReset(::tl2::benchmarks::Vruposition& it
 
 bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruposition& item) {
 	s << "{";
-	s << "\"fields_mask\":";
-	s << item.fields_mask;
+	if (item.fields_mask != 0) {
+		s << "\"fields_mask\":";
+		s << item.fields_mask;
+	}
 	if ((item.fields_mask & (1<<0)) != 0) {
 		s << ",";
 		s << "\"commit_bit\":";
@@ -141,22 +147,30 @@ bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::
 		s << "\"canonical_hash\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.canonical_hash)) { return false; }
 	}
-	s << ",";
-	s << "\"payload_offset\":";
-	s << item.payload_offset;
-	s << ",";
-	s << "\"block_time_nano\":";
-	s << item.block_time_nano;
+	if (item.payload_offset != 0) {
+		s << ",";
+		s << "\"payload_offset\":";
+		s << item.payload_offset;
+	}
+	if (item.block_time_nano != 0) {
+		s << ",";
+		s << "\"block_time_nano\":";
+		s << item.block_time_nano;
+	}
 	s << ",";
 	s << "\"hash\":";
 	if (!::tl2::details::BenchmarksVruHashWriteJSON(s, item.hash)) { return false; }
-	s << ",";
-	s << "\"file_offset\":";
-	s << item.file_offset;
-	if ((item.fields_mask & (1<<14)) != 0) {
+	if (item.file_offset != 0) {
 		s << ",";
-		s << "\"seq_number\":";
-		s << item.seq_number;
+		s << "\"file_offset\":";
+		s << item.file_offset;
+	}
+	if ((item.fields_mask & (1<<14)) != 0) {
+		if (item.seq_number != 0) {
+			s << ",";
+			s << "\"seq_number\":";
+			s << item.seq_number;
+		}
 	}
 	s << "}";
 	return true;
@@ -269,8 +283,10 @@ void tl2::details::BenchmarksVrutoyPositionsReset(::tl2::benchmarks::VrutoyPosit
 
 bool tl2::details::BenchmarksVrutoyPositionsWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) {
 	s << "{";
-	s << "\"next_positions\":";
-	if (!::tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(s, item.next_positions, nat_n)) { return false; }
+	if ((item.next_positions.size() != 0) || (nat_n != 0)) {
+		s << "\"next_positions\":";
+		if (!::tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(s, item.next_positions, nat_n)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -384,8 +400,10 @@ void tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReset(::tl2::b
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) {
 	s << "{";
-	s << "\"n\":";
-	s << item.n;
+	if (item.n != 0) {
+		s << "\"n\":";
+		s << item.n;
+	}
 	s << ",";
 	s << "\"value\":";
 	if (!::tl2::details::BenchmarksVrutoyPositionsWriteJSON(s, item.value, item.n)) { return false; }
@@ -445,7 +463,7 @@ void tl2::details::BenchmarksVrutoyTopLevelUnionReset(::tl2::benchmarks::VrutoyT
 bool tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, const ::tl2::benchmarks::VrutoyTopLevelUnion& item) {
 	s << "{";
 	s << "\"type\":";
-	s << BenchmarksVrutoyTopLevelUnion_tbl_tl_tag[item.value.index()];
+	s << "\"" << BenchmarksVrutoyTopLevelUnion_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 0:
 		s << ",\"value\":";
@@ -513,8 +531,10 @@ void tl2::details::BenchmarksVrutoytopLevelUnionBigReset(::tl2::benchmarks::Vrut
 
 bool tl2::details::BenchmarksVrutoytopLevelUnionBigWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
 	s << "{";
-	s << "\"next_positions\":";
-	if (!::tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(s, item.next_positions)) { return false; }
+	if (item.next_positions.size() != 0) {
+		s << "\"next_positions\":";
+		if (!::tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(s, item.next_positions)) { return false; }
+	}
 	s << "}";
 	return true;
 }

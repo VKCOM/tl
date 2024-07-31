@@ -167,26 +167,40 @@ void tl2::details::Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& it
 
 bool tl2::details::Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::service2::AddOrIncrMany& item) {
 	s << "{";
-	s << "\"objectIdLength\":";
-	s << item.objectIdLength;
-	s << ",";
-	s << "\"intCountersNum\":";
-	s << item.intCountersNum;
-	s << ",";
-	s << "\"floatCountersNum\":";
-	s << item.floatCountersNum;
-	s << ",";
-	s << "\"objectsNum\":";
-	s << item.objectsNum;
-	s << ",";
-	s << "\"intCounters\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, item.intCountersNum)) { return false; }
-	s << ",";
-	s << "\"floatCounters\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.floatCounters, item.floatCountersNum)) { return false; }
-	s << ",";
-	s << "\"deltas\":";
-	if (!::tl2::details::BuiltinTupleService2DeltaSetWriteJSON(s, item.deltas, item.objectsNum, item.objectIdLength, item.intCountersNum, item.floatCountersNum)) { return false; }
+	if (item.objectIdLength != 0) {
+		s << "\"objectIdLength\":";
+		s << item.objectIdLength;
+	}
+	if (item.intCountersNum != 0) {
+		s << ",";
+		s << "\"intCountersNum\":";
+		s << item.intCountersNum;
+	}
+	if (item.floatCountersNum != 0) {
+		s << ",";
+		s << "\"floatCountersNum\":";
+		s << item.floatCountersNum;
+	}
+	if (item.objectsNum != 0) {
+		s << ",";
+		s << "\"objectsNum\":";
+		s << item.objectsNum;
+	}
+	if ((item.intCounters.size() != 0) || (item.intCountersNum != 0)) {
+		s << ",";
+		s << "\"intCounters\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, item.intCountersNum)) { return false; }
+	}
+	if ((item.floatCounters.size() != 0) || (item.floatCountersNum != 0)) {
+		s << ",";
+		s << "\"floatCounters\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.floatCounters, item.floatCountersNum)) { return false; }
+	}
+	if ((item.deltas.size() != 0) || (item.objectIdLength != 0)) {
+		s << ",";
+		s << "\"deltas\":";
+		if (!::tl2::details::BuiltinTupleService2DeltaSetWriteJSON(s, item.deltas, item.objectsNum, item.objectIdLength, item.intCountersNum, item.floatCountersNum)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -273,11 +287,15 @@ void tl2::details::Service2CounterSetReset(::tl2::service2::CounterSet& item) {
 
 bool tl2::details::Service2CounterSetWriteJSON(std::ostream& s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
 	s << "{";
-	s << "\"intCounters\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, nat_intCountersNum)) { return false; }
-	s << ",";
-	s << "\"floatCounters\":";
-	if (!::tl2::details::BuiltinTupleDoubleWriteJSON(s, item.floatCounters, nat_floatCountersNum)) { return false; }
+	if ((item.intCounters.size() != 0) || (nat_intCountersNum != 0)) {
+		s << "\"intCounters\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, nat_intCountersNum)) { return false; }
+	}
+	if ((item.floatCounters.size() != 0) || (nat_floatCountersNum != 0)) {
+		s << ",";
+		s << "\"floatCounters\":";
+		if (!::tl2::details::BuiltinTupleDoubleWriteJSON(s, item.floatCounters, nat_floatCountersNum)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -398,8 +416,10 @@ void tl2::details::Service2ObjectIdReset(::tl2::service2::ObjectId& item) {
 
 bool tl2::details::Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) {
 	s << "{";
-	s << "\"id\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.id, nat_objectIdLength)) { return false; }
+	if ((item.id.size() != 0) || (nat_objectIdLength != 0)) {
+		s << "\"id\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.id, nat_objectIdLength)) { return false; }
+	}
 	s << "}";
 	return true;
 }
@@ -460,20 +480,30 @@ void tl2::details::Service2SetReset(::tl2::service2::Set& item) {
 
 bool tl2::details::Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::Set& item) {
 	s << "{";
-	s << "\"objectIdLength\":";
-	s << item.objectIdLength;
-	s << ",";
-	s << "\"intCountersNum\":";
-	s << item.intCountersNum;
-	s << ",";
-	s << "\"floatCountersNum\":";
-	s << item.floatCountersNum;
-	s << ",";
-	s << "\"intCounters\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, item.intCountersNum)) { return false; }
-	s << ",";
-	s << "\"floatCounters\":";
-	if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.floatCounters, item.floatCountersNum)) { return false; }
+	if (item.objectIdLength != 0) {
+		s << "\"objectIdLength\":";
+		s << item.objectIdLength;
+	}
+	if (item.intCountersNum != 0) {
+		s << ",";
+		s << "\"intCountersNum\":";
+		s << item.intCountersNum;
+	}
+	if (item.floatCountersNum != 0) {
+		s << ",";
+		s << "\"floatCountersNum\":";
+		s << item.floatCountersNum;
+	}
+	if ((item.intCounters.size() != 0) || (item.intCountersNum != 0)) {
+		s << ",";
+		s << "\"intCounters\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, item.intCountersNum)) { return false; }
+	}
+	if ((item.floatCounters.size() != 0) || (item.floatCountersNum != 0)) {
+		s << ",";
+		s << "\"floatCounters\":";
+		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.floatCounters, item.floatCountersNum)) { return false; }
+	}
 	s << ",";
 	s << "\"newValues\":";
 	if (!::tl2::details::Service2DeltaSetWriteJSON(s, item.newValues, item.objectIdLength, item.intCountersNum, item.floatCountersNum)) { return false; }
@@ -560,14 +590,18 @@ void tl2::details::Service2SetObjectTtlReset(::tl2::service2::SetObjectTtl& item
 
 bool tl2::details::Service2SetObjectTtlWriteJSON(std::ostream& s, const ::tl2::service2::SetObjectTtl& item) {
 	s << "{";
-	s << "\"objectIdLength\":";
-	s << item.objectIdLength;
+	if (item.objectIdLength != 0) {
+		s << "\"objectIdLength\":";
+		s << item.objectIdLength;
+	}
 	s << ",";
 	s << "\"objectId\":";
 	if (!::tl2::details::Service2ObjectIdWriteJSON(s, item.objectId, item.objectIdLength)) { return false; }
-	s << ",";
-	s << "\"ttl\":";
-	s << item.ttl;
+	if (item.ttl != 0) {
+		s << ",";
+		s << "\"ttl\":";
+		s << item.ttl;
+	}
 	s << "}";
 	return true;
 }

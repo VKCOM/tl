@@ -13,6 +13,13 @@ import (
 	"strings"
 )
 
+func (trw *TypeRWStruct) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
+	if trw.isTypeDef() {
+		return trw.Fields[0].t.trw.CPPTypeJSONEmptyCondition(bytesVersion, val, ref, deps)
+	}
+	return ""
+}
+
 func (trw *TypeRWStruct) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	for _, f := range trw.Fields {
 		if !f.recursive {
@@ -514,6 +521,11 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 			s.WriteString(fmt.Sprintf("\tif ((%s & (1<<%d)) != 0) {\n", formatNatArgCPP(trw.Fields, *field.fieldMask), field.BitNumber))
 			indent++
 		}
+		emptyCheck := field.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.cppName), field.recursive, formatNatArgsCPP(trw.Fields, field.natArgs))
+		if emptyCheck != "" {
+			s.WriteString(fmt.Sprintf("%sif (%s) {\n", strings.Repeat("\t", indent+1), emptyCheck))
+			indent++
+		}
 		if i != 0 {
 			// append
 			s.WriteString(fmt.Sprintf(`%ss << ",";
@@ -530,6 +542,9 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 		s.WriteString(
 			field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)),
 				field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
+		if emptyCheck != "" {
+			s.WriteString(fmt.Sprintf("%s}\n", strings.Repeat("\t", indent)))
+		}
 		if field.fieldMask != nil {
 			s.WriteString("\t}\n")
 		}

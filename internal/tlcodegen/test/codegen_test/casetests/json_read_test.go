@@ -9,7 +9,6 @@ package casetests
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
 	"math/rand"
 	"os"
 
@@ -212,39 +211,4 @@ func TestGeneralCases(t *testing.T) {
 			})
 		})
 	}
-}
-
-func TestJson(t *testing.T) {
-	const PathToJsonData = "../data/test-objects-json.json"
-	data, readErr := os.ReadFile(PathToJsonData)
-
-	if readErr != nil {
-		t.Fatalf("testing data is not provided")
-		return
-	}
-
-	tests := allTests{map[string]mappingTestSamples{}}
-	err := json.Unmarshal(data, &tests)
-
-	if err != nil {
-		t.Fatalf("can't unmarshall test data")
-		return
-	}
-
-	fmt.Println("{ \"Tests\": {")
-	for testName, testValues := range tests.Tests {
-		if testValues.UseBytes {
-			continue
-		}
-		fmt.Printf("\"%s\": {\"TestingType\": \"%s\", \"Succesess\":[", testName, testValues.TestingType)
-		for _, testValue := range testValues.Successes {
-			testObject := factory.CreateObjectFromName(testValues.TestingType)
-
-			_ = testObject.ReadJSON(true, &basictl.JsonLexer{Data: []byte(testValue.GoldenInput)})
-			bs, _ := testObject.WriteGeneral(nil)
-			fmt.Printf("{\"Bytes\": \"%s\"},\n", utils.SprintHexDump(bs))
-		}
-		fmt.Println("]},")
-	}
-	fmt.Println("}}")
 }

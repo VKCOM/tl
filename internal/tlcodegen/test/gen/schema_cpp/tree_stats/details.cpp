@@ -33,7 +33,7 @@ void tl2::details::TreeStatsObjectLimitValueReset(::tl2::tree_stats::ObjectLimit
 bool tl2::details::TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) {
 	s << "{";
 	s << "\"type\":";
-	s << TreeStatsObjectLimitValue_tbl_tl_tag[item.value.index()];
+	s << "\"" << TreeStatsObjectLimitValue_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
 	case 1:
 		s << ",\"value\":";

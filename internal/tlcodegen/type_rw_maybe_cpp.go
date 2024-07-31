@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+func (trw *TypeRWMaybe) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
+	return val + ".has_value()"
+}
+
 func (trw *TypeRWMaybe) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	trw.element.t.CPPFillRecursiveChildren(visitedNodes)
 }
