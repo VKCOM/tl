@@ -33,8 +33,10 @@ void tl2::details::Pkg2FooReset(::tl2::pkg2::Foo& item) {
 }
 
 bool tl2::details::Pkg2FooWriteJSON(std::ostream& s, const ::tl2::pkg2::Foo& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
@@ -92,7 +94,9 @@ void tl2::details::Pkg2T1Reset(::tl2::pkg2::T1& item) {
 }
 
 bool tl2::details::Pkg2T1WriteJSON(std::ostream& s, const ::tl2::pkg2::T1& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::Pkg2FooWriteJSON(s, item.x)) { return false; }
 	s << "}";

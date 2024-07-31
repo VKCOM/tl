@@ -477,12 +477,19 @@ func (trw *TypeRWUnion) CPPWriteJSONFields(bytesVersion bool) string {
 
 		for fieldIndex, field := range trw.Fields {
 			if !field.t.IsTrueType() {
+				emptyCondition := field.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex), field.recursive, nil)
+				if emptyCondition != "" {
+					s.WriteString(fmt.Sprintf("\tif (%s) {\n", emptyCondition))
+				}
 				s.WriteString(fmt.Sprintf("\tcase %d:\n", fieldIndex))
 				s.WriteString(`		s << ",\"value\":";
 `)
 				s.WriteString("\t" +
 					field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
 						true, formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
+				if emptyCondition != "" {
+					s.WriteString(fmt.Sprintf("\t}\n"))
+				}
 				s.WriteString("\t\tbreak;\n")
 			}
 		}

@@ -186,13 +186,18 @@ void tl2::details::DictionaryFieldAnyDoubleIntReset(::tl2::DictionaryFieldAny<do
 }
 
 bool tl2::details::DictionaryFieldAnyDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<double, int32_t>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << item.key;
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -228,13 +233,18 @@ void tl2::details::DictionaryFieldAnyIntIntReset(::tl2::DictionaryFieldAny<int32
 }
 
 bool tl2::details::DictionaryFieldAnyIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << item.key;
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -270,13 +280,18 @@ void tl2::details::DictionaryFieldIntReset(::tl2::DictionaryField<int32_t>& item
 }
 
 bool tl2::details::DictionaryFieldIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<int32_t>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -509,8 +524,7 @@ void tl2::details::TrueReset(::tl2::True& item) {
 }
 
 bool tl2::details::TrueWriteJSON(std::ostream& s, const ::tl2::True& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 

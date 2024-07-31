@@ -1,5 +1,5 @@
 {
-  "Tests": {
+  "TestsCpp": {
     "TestDictionaryInt": {
       "TestingType": "cases.testDictInt",
       "Successes": [
@@ -9,7 +9,7 @@
         },
         {
           "DataAsBytes": "00000002 00000001 00000001 00000002 00000002",
-          "DataAsJson": "{\"dict\":{\"1\":1,\"2\":2}}"
+          "DataAsJson": "{\"dict\":[{\"key\":1,\"value\":1},{\"key\":2,\"value\":2}]}"
         }
       ]
     },
@@ -149,7 +149,7 @@
         },
         {
           "DataAsBytes": "00000002 00316b02 00000001 00326b02 00000002",
-          "DataAsJson": "{\"dict\":{\"k1\":1,\"k2\":2}}"
+          "DataAsJson": "{\"dict\":[{\"key\":\"k1\",\"value\":1},{\"key\":\"k2\",\"value\":2}]}"
         }
       ]
     },

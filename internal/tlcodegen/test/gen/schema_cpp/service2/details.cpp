@@ -166,38 +166,58 @@ void tl2::details::Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& it
 }
 
 bool tl2::details::Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::service2::AddOrIncrMany& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.objectIdLength != 0) {
+		add_comma = true;
 		s << "\"objectIdLength\":";
 		s << item.objectIdLength;
 	}
 	if (item.intCountersNum != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"intCountersNum\":";
 		s << item.intCountersNum;
 	}
 	if (item.floatCountersNum != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"floatCountersNum\":";
 		s << item.floatCountersNum;
 	}
 	if (item.objectsNum != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"objectsNum\":";
 		s << item.objectsNum;
 	}
 	if ((item.intCounters.size() != 0) || (item.intCountersNum != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"intCounters\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, item.intCountersNum)) { return false; }
 	}
 	if ((item.floatCounters.size() != 0) || (item.floatCountersNum != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"floatCounters\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.floatCounters, item.floatCountersNum)) { return false; }
 	}
 	if ((item.deltas.size() != 0) || (item.objectIdLength != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"deltas\":";
 		if (!::tl2::details::BuiltinTupleService2DeltaSetWriteJSON(s, item.deltas, item.objectsNum, item.objectIdLength, item.intCountersNum, item.floatCountersNum)) { return false; }
 	}
@@ -286,13 +306,18 @@ void tl2::details::Service2CounterSetReset(::tl2::service2::CounterSet& item) {
 }
 
 bool tl2::details::Service2CounterSetWriteJSON(std::ostream& s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+	auto add_comma = false;
 	s << "{";
 	if ((item.intCounters.size() != 0) || (nat_intCountersNum != 0)) {
+		add_comma = true;
 		s << "\"intCounters\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, nat_intCountersNum)) { return false; }
 	}
 	if ((item.floatCounters.size() != 0) || (nat_floatCountersNum != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"floatCounters\":";
 		if (!::tl2::details::BuiltinTupleDoubleWriteJSON(s, item.floatCounters, nat_floatCountersNum)) { return false; }
 	}
@@ -353,10 +378,15 @@ void tl2::details::Service2DeltaSetReset(::tl2::service2::DeltaSet& item) {
 }
 
 bool tl2::details::Service2DeltaSetWriteJSON(std::ostream& s, const ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"id\":";
 	if (!::tl2::details::Service2ObjectIdWriteJSON(s, item.id, nat_objectIdLength)) { return false; }
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"counters\":";
 	if (!::tl2::details::Service2CounterSetWriteJSON(s, item.counters, nat_intCountersNum, nat_floatCountersNum)) { return false; }
 	s << "}";
@@ -415,8 +445,10 @@ void tl2::details::Service2ObjectIdReset(::tl2::service2::ObjectId& item) {
 }
 
 bool tl2::details::Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) {
+	auto add_comma = false;
 	s << "{";
 	if ((item.id.size() != 0) || (nat_objectIdLength != 0)) {
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.id, nat_objectIdLength)) { return false; }
 	}
@@ -479,32 +511,49 @@ void tl2::details::Service2SetReset(::tl2::service2::Set& item) {
 }
 
 bool tl2::details::Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::Set& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.objectIdLength != 0) {
+		add_comma = true;
 		s << "\"objectIdLength\":";
 		s << item.objectIdLength;
 	}
 	if (item.intCountersNum != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"intCountersNum\":";
 		s << item.intCountersNum;
 	}
 	if (item.floatCountersNum != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"floatCountersNum\":";
 		s << item.floatCountersNum;
 	}
 	if ((item.intCounters.size() != 0) || (item.intCountersNum != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"intCounters\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.intCounters, item.intCountersNum)) { return false; }
 	}
 	if ((item.floatCounters.size() != 0) || (item.floatCountersNum != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"floatCounters\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.floatCounters, item.floatCountersNum)) { return false; }
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"newValues\":";
 	if (!::tl2::details::Service2DeltaSetWriteJSON(s, item.newValues, item.objectIdLength, item.intCountersNum, item.floatCountersNum)) { return false; }
 	s << "}";
@@ -589,16 +638,24 @@ void tl2::details::Service2SetObjectTtlReset(::tl2::service2::SetObjectTtl& item
 }
 
 bool tl2::details::Service2SetObjectTtlWriteJSON(std::ostream& s, const ::tl2::service2::SetObjectTtl& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.objectIdLength != 0) {
+		add_comma = true;
 		s << "\"objectIdLength\":";
 		s << item.objectIdLength;
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"objectId\":";
 	if (!::tl2::details::Service2ObjectIdWriteJSON(s, item.objectId, item.objectIdLength)) { return false; }
 	if (item.ttl != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"ttl\":";
 		s << item.ttl;
 	}

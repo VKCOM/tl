@@ -36,8 +36,7 @@ void tl2::details::Service5EmptyOutputReset(::tl2::service5::EmptyOutput& item) 
 }
 
 bool tl2::details::Service5EmptyOutputWriteJSON(std::ostream& s, const ::tl2::service5::EmptyOutput& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -90,13 +89,18 @@ void tl2::details::Service5InsertReset(::tl2::service5::Insert& item) {
 }
 
 bool tl2::details::Service5InsertWriteJSON(std::ostream& s, const ::tl2::service5::Insert& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.table.size() != 0) {
+		add_comma = true;
 		s << "\"table\":";
 		s << "\"" << item.table << "\"";
 	}
 	if (item.data.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"data\":";
 		s << "\"" << item.data << "\"";
 	}
@@ -241,24 +245,28 @@ void tl2::details::Service5ParamsReset(::tl2::service5::Params& item) {
 }
 
 bool tl2::details::Service5ParamsWriteJSON(std::ostream& s, const ::tl2::service5::Params& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (item.max_execution_speed != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"max_execution_speed\":";
-			s << item.max_execution_speed;
 		}
+		add_comma = true;
+		s << "\"max_execution_speed\":";
+		s << item.max_execution_speed;
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (item.max_execution_speed_bytes != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"max_execution_speed_bytes\":";
-			s << item.max_execution_speed_bytes;
 		}
+		add_comma = true;
+		s << "\"max_execution_speed_bytes\":";
+		s << item.max_execution_speed_bytes;
 	}
 	s << "}";
 	return true;
@@ -330,8 +338,10 @@ void tl2::details::Service5PerformQueryReset(::tl2::service5::PerformQuery& item
 }
 
 bool tl2::details::Service5PerformQueryWriteJSON(std::ostream& s, const ::tl2::service5::PerformQuery& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.query.size() != 0) {
+		add_comma = true;
 		s << "\"query\":";
 		s << "\"" << item.query << "\"";
 	}
@@ -406,12 +416,17 @@ void tl2::details::Service5QueryReset(::tl2::service5::Query& item) {
 }
 
 bool tl2::details::Service5QueryWriteJSON(std::ostream& s, const ::tl2::service5::Query& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.query.size() != 0) {
+		add_comma = true;
 		s << "\"query\":";
 		s << "\"" << item.query << "\"";
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"params\":";
 	if (!::tl2::details::Service5ParamsWriteJSON(s, item.params)) { return false; }
 	s << "}";
@@ -487,13 +502,18 @@ void tl2::details::Service5StringOutputReset(::tl2::service5::StringOutput& item
 }
 
 bool tl2::details::Service5StringOutputWriteJSON(std::ostream& s, const ::tl2::service5::StringOutput& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.http_code != 0) {
+		add_comma = true;
 		s << "\"http_code\":";
 		s << item.http_code;
 	}
 	if (item.response.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"response\":";
 		s << "\"" << item.response << "\"";
 	}

@@ -99,13 +99,18 @@ void tl2::details::BenchObjectReset(::tl2::BenchObject& item) {
 }
 
 bool tl2::details::BenchObjectWriteJSON(std::ostream& s, const ::tl2::BenchObject& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.xs.size() != 0) {
+		add_comma = true;
 		s << "\"xs\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.xs)) { return false; }
 	}
 	if (item.ys.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"ys\":";
 		if (!::tl2::details::BuiltinVectorIntegerWriteJSON(s, item.ys)) { return false; }
 	}
@@ -182,7 +187,9 @@ void tl2::details::BoxedArrayReset(::tl2::BoxedArray& item) {
 }
 
 bool tl2::details::BoxedArrayWriteJSON(std::ostream& s, const ::tl2::BoxedArray& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::MyBoxedArrayWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -255,8 +262,10 @@ void tl2::details::BoxedIntReset(::tl2::BoxedInt& item) {
 }
 
 bool tl2::details::BoxedIntWriteJSON(std::ostream& s, const ::tl2::BoxedInt& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
@@ -334,8 +343,10 @@ void tl2::details::BoxedStringReset(::tl2::BoxedString& item) {
 }
 
 bool tl2::details::BoxedStringWriteJSON(std::ostream& s, const ::tl2::BoxedString& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x.size() != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << "\"" << item.x << "\"";
 	}
@@ -413,7 +424,9 @@ void tl2::details::BoxedTupleReset(::tl2::BoxedTuple& item) {
 }
 
 bool tl2::details::BoxedTupleWriteJSON(std::ostream& s, const ::tl2::BoxedTuple& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::BuiltinTuple3IntWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -491,13 +504,18 @@ void tl2::details::BoxedTupleSlice1Reset(::tl2::BoxedTupleSlice1& item) {
 }
 
 bool tl2::details::BoxedTupleSlice1WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice1& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.x.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::BuiltinTupleIntBoxedWriteJSON(s, item.x, item.n)) { return false; }
 	}
@@ -577,7 +595,9 @@ void tl2::details::BoxedTupleSlice2Reset(::tl2::BoxedTupleSlice2& item) {
 }
 
 bool tl2::details::BoxedTupleSlice2WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice2& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::MyBoxedTupleSliceWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -651,13 +671,18 @@ void tl2::details::BoxedTupleSlice3Reset(::tl2::BoxedTupleSlice3& item) {
 }
 
 bool tl2::details::BoxedTupleSlice3WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice3& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.x.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.x, item.n)) { return false; }
 	}
@@ -737,8 +762,10 @@ void tl2::details::BoxedVector32Reset(::tl2::BoxedVector32& item) {
 }
 
 bool tl2::details::BoxedVector32WriteJSON(std::ostream& s, const ::tl2::BoxedVector32& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x.size() != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.x)) { return false; }
 	}
@@ -816,8 +843,10 @@ void tl2::details::BoxedVector32BoxedElemReset(::tl2::BoxedVector32BoxedElem& it
 }
 
 bool tl2::details::BoxedVector32BoxedElemWriteJSON(std::ostream& s, const ::tl2::BoxedVector32BoxedElem& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x.size() != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::BuiltinVectorIntBoxedWriteJSON(s, item.x)) { return false; }
 	}
@@ -895,8 +924,10 @@ void tl2::details::BoxedVector64Reset(::tl2::BoxedVector64& item) {
 }
 
 bool tl2::details::BoxedVector64WriteJSON(std::ostream& s, const ::tl2::BoxedVector64& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x.size() != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::BuiltinVectorLongBoxedWriteJSON(s, item.x)) { return false; }
 	}
@@ -1509,13 +1540,18 @@ void tl2::details::DictionaryFieldIntReset(::tl2::DictionaryField<int32_t>& item
 }
 
 bool tl2::details::DictionaryFieldIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<int32_t>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -1744,13 +1780,18 @@ void tl2::details::FieldConflict1Reset(::tl2::FieldConflict1& item) {
 }
 
 bool tl2::details::FieldConflict1WriteJSON(std::ostream& s, const ::tl2::FieldConflict1& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
 	if (item.set_x != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"set_x\":";
 		s << item.set_x;
 	}
@@ -1811,13 +1852,18 @@ void tl2::details::FieldConflict2Reset(::tl2::FieldConflict2& item) {
 }
 
 bool tl2::details::FieldConflict2WriteJSON(std::ostream& s, const ::tl2::FieldConflict2& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
 	if (item.setX != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"setX\":";
 		s << item.setX;
 	}
@@ -1878,13 +1924,18 @@ void tl2::details::FieldConflict3Reset(::tl2::FieldConflict3& item) {
 }
 
 bool tl2::details::FieldConflict3WriteJSON(std::ostream& s, const ::tl2::FieldConflict3& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
 	if (item.SetX != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"SetX\":";
 		s << item.SetX;
 	}
@@ -1945,13 +1996,18 @@ void tl2::details::FieldConflict4Reset(::tl2::FieldConflict4& item) {
 }
 
 bool tl2::details::FieldConflict4WriteJSON(std::ostream& s, const ::tl2::FieldConflict4& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.X != 0) {
+		add_comma = true;
 		s << "\"X\":";
 		s << item.X;
 	}
 	if (item.SetX != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"SetX\":";
 		s << item.SetX;
 	}
@@ -2042,17 +2098,25 @@ void tl2::details::GetArraysReset(::tl2::Get_arrays& item) {
 }
 
 bool tl2::details::GetArraysWriteJSON(std::ostream& s, const ::tl2::Get_arrays& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.a.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"a\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.a, item.n)) { return false; }
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"b\":";
 	if (!::tl2::details::BuiltinTuple5IntWriteJSON(s, item.b)) { return false; }
 	s << "}";
@@ -2131,8 +2195,10 @@ void tl2::details::GetDoubleReset(::tl2::GetDouble& item) {
 }
 
 bool tl2::details::GetDoubleWriteJSON(std::ostream& s, const ::tl2::GetDouble& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
@@ -2210,8 +2276,10 @@ void tl2::details::GetFloatReset(::tl2::GetFloat& item) {
 }
 
 bool tl2::details::GetFloatWriteJSON(std::ostream& s, const ::tl2::GetFloat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
@@ -2287,7 +2355,9 @@ void tl2::details::GetMaybeIfaceReset(::tl2::GetMaybeIface& item) {
 }
 
 bool tl2::details::GetMaybeIfaceWriteJSON(std::ostream& s, const ::tl2::GetMaybeIface& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::Service1ValueWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -2360,8 +2430,10 @@ void tl2::details::GetMyDictOfIntReset(::tl2::GetMyDictOfInt& item) {
 }
 
 bool tl2::details::GetMyDictOfIntWriteJSON(std::ostream& s, const ::tl2::GetMyDictOfInt& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x.size() != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::MyDictOfIntWriteJSON(s, item.x)) { return false; }
 	}
@@ -2435,8 +2507,10 @@ void tl2::details::GetMyDoubleReset(::tl2::GetMyDouble& item) {
 }
 
 bool tl2::details::GetMyDoubleWriteJSON(std::ostream& s, const ::tl2::GetMyDouble& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::MyDoubleWriteJSON(s, item.x)) { return false; }
 	}
@@ -2510,7 +2584,9 @@ void tl2::details::GetMyValueReset(::tl2::GetMyValue& item) {
 }
 
 bool tl2::details::GetMyValueWriteJSON(std::ostream& s, const ::tl2::GetMyValue& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::MyValueWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -2584,13 +2660,18 @@ void tl2::details::GetNonOptNatReset(::tl2::GetNonOptNat& item) {
 }
 
 bool tl2::details::GetNonOptNatWriteJSON(std::ostream& s, const ::tl2::GetNonOptNat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.xs.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"xs\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.xs, item.n)) { return false; }
 	}
@@ -2670,7 +2751,9 @@ void tl2::details::GetStatsReset(::tl2::GetStats& item) {
 }
 
 bool tl2::details::GetStatsWriteJSON(std::ostream& s, const ::tl2::GetStats& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::TasksQueueTypeStatsWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -2745,9 +2828,11 @@ bool tl2::details::IntWriteBoxed(::basictl::tl_ostream & s, const int32_t& item)
 bool tl2::details::IntMaybeWriteJSON(std::ostream & s, const std::optional<int32_t>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
-		s << *item;
+		s << "\"ok\":true";
+		if(*item != 0) {
+			s << ",\"value\":";
+			s << *item;
+		}
 	}
 	s << "}";
 	return true;
@@ -2804,8 +2889,10 @@ void tl2::details::IntegerReset(::tl2::Integer& item) {
 }
 
 bool tl2::details::IntegerWriteJSON(std::ostream& s, const ::tl2::Integer& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -2863,8 +2950,10 @@ void tl2::details::Issue3498Reset(::tl2::Issue3498& item) {
 }
 
 bool tl2::details::Issue3498WriteJSON(std::ostream& s, const ::tl2::Issue3498& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x.size() != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item.x)) { return false; }
 	}
@@ -2899,8 +2988,10 @@ void tl2::details::LeftIntVectorService6FindWithBoundsResultReset(::tl2::Left<in
 }
 
 bool tl2::details::LeftIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -2933,7 +3024,9 @@ void tl2::details::LeftService6ErrorVectorService6FindResultRowReset(::tl2::Left
 }
 
 bool tl2::details::LeftService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::Service6ErrorWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -2995,13 +3088,18 @@ void tl2::details::MapStringStringReset(::tl2::Map<std::string, std::string>& it
 }
 
 bool tl2::details::MapStringStringWriteJSON(std::ostream& s, const ::tl2::Map<std::string, std::string>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -3090,7 +3188,9 @@ void tl2::details::MyBoxedArrayReset(::tl2::MyBoxedArray& item) {
 }
 
 bool tl2::details::MyBoxedArrayWriteJSON(std::ostream& s, const ::tl2::MyBoxedArray& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"data\":";
 	if (!::tl2::details::BuiltinTuple2IntBoxedWriteJSON(s, item.data)) { return false; }
 	s << "}";
@@ -3150,13 +3250,18 @@ void tl2::details::MyBoxedTupleSliceReset(::tl2::MyBoxedTupleSlice& item) {
 }
 
 bool tl2::details::MyBoxedTupleSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedTupleSlice& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.data.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"data\":";
 		if (!::tl2::details::BuiltinTupleIntBoxedWriteJSON(s, item.data, item.n)) { return false; }
 	}
@@ -3218,8 +3323,10 @@ void tl2::details::MyBoxedVectorSliceReset(::tl2::MyBoxedVectorSlice& item) {
 }
 
 bool tl2::details::MyBoxedVectorSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedVectorSlice& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.data.size() != 0) {
+		add_comma = true;
 		s << "\"data\":";
 		if (!::tl2::details::BuiltinVectorIntBoxedWriteJSON(s, item.data)) { return false; }
 	}
@@ -3339,8 +3446,10 @@ void tl2::details::MyIntReset(::tl2::MyInt& item) {
 }
 
 bool tl2::details::MyIntWriteJSON(std::ostream& s, const ::tl2::MyInt& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.val1 != 0) {
+		add_comma = true;
 		s << "\"val1\":";
 		s << item.val1;
 	}
@@ -3458,7 +3567,9 @@ void tl2::details::MyMcValueReset(::tl2::MyMcValue& item) {
 }
 
 bool tl2::details::MyMcValueWriteJSON(std::ostream& s, const ::tl2::MyMcValue& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"x\":";
 	if (!::tl2::details::Service1ValueWriteJSON(s, item.x)) { return false; }
 	s << "}";
@@ -3515,7 +3626,9 @@ void tl2::details::MyMcValueTupleReset(::tl2::MyMcValueTuple& item) {
 }
 
 bool tl2::details::MyMcValueTupleWriteJSON(std::ostream& s, const ::tl2::MyMcValueTuple& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"xs\":";
 	if (!::tl2::details::BuiltinTuple3Service1ValueWriteJSON(s, item.xs)) { return false; }
 	s << "}";
@@ -3572,8 +3685,10 @@ void tl2::details::MyMcValueVectorReset(::tl2::MyMcValueVector& item) {
 }
 
 bool tl2::details::MyMcValueVectorWriteJSON(std::ostream& s, const ::tl2::MyMcValueVector& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.xs.size() != 0) {
+		add_comma = true;
 		s << "\"xs\":";
 		if (!::tl2::details::BuiltinVectorService1ValueWriteJSON(s, item.xs)) { return false; }
 	}
@@ -3631,8 +3746,10 @@ void tl2::details::MyStringReset(::tl2::MyString& item) {
 }
 
 bool tl2::details::MyStringWriteJSON(std::ostream& s, const ::tl2::MyString& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.val2.size() != 0) {
+		add_comma = true;
 		s << "\"val2\":";
 		s << "\"" << item.val2 << "\"";
 	}
@@ -3696,8 +3813,8 @@ bool tl2::details::MyTuple10WriteBoxed(::basictl::tl_ostream & s, const ::tl2::M
 bool tl2::details::MyTuple10MaybeWriteJSON(std::ostream & s, const std::optional<::tl2::MyTuplen<10>>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
+		s << "\"ok\":true";
+		s << ",\"value\":";
 		if (!::tl2::details::MyTuple10WriteJSON(s, *item)) { return false; }
 	}
 	s << "}";
@@ -3756,13 +3873,18 @@ void tl2::details::MyTwoDictsReset(::tl2::MyTwoDicts& item) {
 }
 
 bool tl2::details::MyTwoDictsWriteJSON(std::ostream& s, const ::tl2::MyTwoDicts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.a.size() != 0) {
+		add_comma = true;
 		s << "\"a\":";
 		if (!::tl2::details::DictionaryIntWriteJSON(s, item.a)) { return false; }
 	}
 	if (item.b.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"b\":";
 		if (!::tl2::details::DictionaryIntWriteJSON(s, item.b)) { return false; }
 	}
@@ -3898,13 +4020,18 @@ void tl2::details::NonOptNatReset(::tl2::NonOptNat& item) {
 }
 
 bool tl2::details::NonOptNatWriteJSON(std::ostream& s, const ::tl2::NonOptNat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.xs.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"xs\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.xs, item.n)) { return false; }
 	}
@@ -3941,8 +4068,10 @@ void tl2::details::RightIntVectorService6FindWithBoundsResultReset(::tl2::Right<
 }
 
 bool tl2::details::RightIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item.value)) { return false; }
 	}
@@ -3975,8 +4104,10 @@ void tl2::details::RightService6ErrorVectorService6FindResultRowReset(::tl2::Rig
 }
 
 bool tl2::details::RightService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		if (!::tl2::details::BuiltinVectorService6FindResultRowWriteJSON(s, item.value)) { return false; }
 	}
@@ -4039,39 +4170,52 @@ void tl2::details::RpcInvokeReqExtraReset(::tl2::RpcInvokeReqExtra& item) {
 }
 
 bool tl2::details::RpcInvokeReqExtraWriteJSON(std::ostream& s, const ::tl2::RpcInvokeReqExtra& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"query\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.query)) { return false; }
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"sort\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.sort)) { return false; }
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"sort_reverse\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.sort_reverse)) { return false; }
 	}
 	if ((item.fields_mask & (1<<16)) != 0) {
-		if (item.wait_binlog_pos != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"wait_binlog_pos\":";
-			s << item.wait_binlog_pos;
 		}
+		add_comma = true;
+		s << "\"wait_binlog_pos\":";
+		s << item.wait_binlog_pos;
 	}
 	if ((item.fields_mask & (1<<18)) != 0) {
-		if (item.string_forward_keys.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"string_forward_keys\":";
-			if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.string_forward_keys)) { return false; }
 		}
+		add_comma = true;
+		s << "\"string_forward_keys\":";
+		if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.string_forward_keys)) { return false; }
 	}
 	s << "}";
 	return true;
@@ -4168,13 +4312,18 @@ void tl2::details::StatOneReset(::tl2::StatOne& item) {
 }
 
 bool tl2::details::StatOneWriteJSON(std::ostream& s, const ::tl2::StatOne& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -4262,8 +4411,7 @@ void tl2::details::TrueReset(::tl2::True& item) {
 }
 
 bool tl2::details::TrueWriteJSON(std::ostream& s, const ::tl2::True& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -4926,18 +5074,26 @@ void tl2::details::WithFloatReset(::tl2::WithFloat& item) {
 }
 
 bool tl2::details::WithFloatWriteJSON(std::ostream& s, const ::tl2::WithFloat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
+		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
 	if (item.y != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"y\":";
 		s << item.y;
 	}
 	if (item.z != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"z\":";
 		s << item.z;
 	}

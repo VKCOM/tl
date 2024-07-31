@@ -198,13 +198,18 @@ void tl2::details::CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item)
 }
 
 bool tl2::details::CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
 	if ((item.arr.size() != 0) || (item.n != 0)) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"arr\":";
 		if (!::tl2::details::BuiltinTupleStringWriteJSON(s, item.arr, item.n)) { return false; }
 	}
@@ -264,8 +269,10 @@ void tl2::details::CasesBytesTestDictAnyReset(::tl2::cases_bytes::TestDictAny& i
 }
 
 bool tl2::details::CasesBytesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictAny& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
+		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::DictionaryAnyDoubleIntWriteJSON(s, item.dict)) { return false; }
 	}
@@ -323,8 +330,10 @@ void tl2::details::CasesBytesTestDictIntReset(::tl2::cases_bytes::TestDictInt& i
 }
 
 bool tl2::details::CasesBytesTestDictIntWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictInt& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
+		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(s, item.dict)) { return false; }
 	}
@@ -382,8 +391,10 @@ void tl2::details::CasesBytesTestDictStringReset(::tl2::cases_bytes::TestDictStr
 }
 
 bool tl2::details::CasesBytesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictString& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
+		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::DictionaryIntWriteJSON(s, item.dict)) { return false; }
 	}
@@ -441,8 +452,10 @@ void tl2::details::CasesBytesTestDictStringStringReset(::tl2::cases_bytes::TestD
 }
 
 bool tl2::details::CasesBytesTestDictStringStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictStringString& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
+		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::DictionaryStringWriteJSON(s, item.dict)) { return false; }
 	}
@@ -556,8 +569,7 @@ void tl2::details::CasesBytesTestEnum1Reset(::tl2::cases_bytes::TestEnum1& item)
 }
 
 bool tl2::details::CasesBytesTestEnum1WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum1& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -608,8 +620,7 @@ void tl2::details::CasesBytesTestEnum2Reset(::tl2::cases_bytes::TestEnum2& item)
 }
 
 bool tl2::details::CasesBytesTestEnum2WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum2& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -660,8 +671,7 @@ void tl2::details::CasesBytesTestEnum3Reset(::tl2::cases_bytes::TestEnum3& item)
 }
 
 bool tl2::details::CasesBytesTestEnum3WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum3& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -713,7 +723,9 @@ void tl2::details::CasesBytesTestEnumContainerReset(::tl2::cases_bytes::TestEnum
 }
 
 bool tl2::details::CasesBytesTestEnumContainerWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnumContainer& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::CasesTestEnumWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -770,7 +782,9 @@ void tl2::details::CasesBytesTestTupleReset(::tl2::cases_bytes::TestTuple& item)
 }
 
 bool tl2::details::CasesBytesTestTupleWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestTuple& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"tpl\":";
 	if (!::tl2::details::BuiltinTuple4StringWriteJSON(s, item.tpl)) { return false; }
 	s << "}";
@@ -827,8 +841,10 @@ void tl2::details::CasesBytesTestVectorReset(::tl2::cases_bytes::TestVector& ite
 }
 
 bool tl2::details::CasesBytesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestVector& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.arr.size() != 0) {
+		add_comma = true;
 		s << "\"arr\":";
 		if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.arr)) { return false; }
 	}
@@ -862,13 +878,18 @@ void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string
 }
 
 bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}

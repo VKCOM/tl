@@ -17,7 +17,7 @@ int main() {
     std::ifstream f("../data/test-objects-json-and-bytes.json");
     json data = json::parse(f);
 
-    auto tests = data["Tests"];
+    auto tests = data["TestsCpp"];
     for (auto& [test_name, test_data]: tests.items()) {
         std::cout << "Run [" << test_name << "]:" << std::endl;
         for (auto& test_data_input: test_data["Successes"]) {
@@ -46,8 +46,6 @@ int main() {
                 std::cout << "\t\tActual json result  : " << output.str() << std::endl;
                 return 1;
             }
-            test_object->write_json(std::cout);
-            std::cout << std::endl;
         }
     }
 

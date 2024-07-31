@@ -258,13 +258,18 @@ void tl2::details::DictionaryFieldDictionaryIntReset(::tl2::DictionaryField<::tl
 }
 
 bool tl2::details::DictionaryFieldDictionaryIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<::tl2::Dictionary<int32_t>>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		if (!::tl2::details::DictionaryIntWriteJSON(s, item.value)) { return false; }
 	}
@@ -300,12 +305,17 @@ void tl2::details::DictionaryFieldService1ValueReset(::tl2::DictionaryField<::tl
 }
 
 bool tl2::details::DictionaryFieldService1ValueWriteJSON(std::ostream& s, const ::tl2::DictionaryField<::tl2::service1::Value>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::Service1ValueWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -340,13 +350,18 @@ void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string
 }
 
 bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -467,23 +482,34 @@ void tl2::details::Service1AddReset(::tl2::service1::Add& item) {
 }
 
 bool tl2::details::Service1AddWriteJSON(std::ostream& s, const ::tl2::service1::Add& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -566,23 +592,34 @@ void tl2::details::Service1AddOrGetReset(::tl2::service1::AddOrGet& item) {
 }
 
 bool tl2::details::Service1AddOrGetWriteJSON(std::ostream& s, const ::tl2::service1::AddOrGet& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -665,23 +702,34 @@ void tl2::details::Service1AddOrIncrReset(::tl2::service1::AddOrIncr& item) {
 }
 
 bool tl2::details::Service1AddOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::AddOrIncr& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -764,23 +812,34 @@ void tl2::details::Service1AppendReset(::tl2::service1::Append& item) {
 }
 
 bool tl2::details::Service1AppendWriteJSON(std::ostream& s, const ::tl2::service1::Append& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.suffix.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"suffix\":";
 		s << "\"" << item.suffix << "\"";
 	}
@@ -864,28 +923,42 @@ void tl2::details::Service1CasReset(::tl2::service1::Cas& item) {
 }
 
 bool tl2::details::Service1CasWriteJSON(std::ostream& s, const ::tl2::service1::Cas& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.casToken.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"casToken\":";
 		s << "\"" << item.casToken << "\"";
 	}
 	if (item.newValue.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"newValue\":";
 		s << "\"" << item.newValue << "\"";
 	}
@@ -968,13 +1041,18 @@ void tl2::details::Service1DecrReset(::tl2::service1::Decr& item) {
 }
 
 bool tl2::details::Service1DecrWriteJSON(std::ostream& s, const ::tl2::service1::Decr& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -1050,8 +1128,10 @@ void tl2::details::Service1DeleteReset(::tl2::service1::Delete& item) {
 }
 
 bool tl2::details::Service1DeleteWriteJSON(std::ostream& s, const ::tl2::service1::Delete& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1125,8 +1205,10 @@ void tl2::details::Service1DisableExpirationReset(::tl2::service1::DisableExpira
 }
 
 bool tl2::details::Service1DisableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::DisableExpiration& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
+		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1200,8 +1282,10 @@ void tl2::details::Service1DisableKeysStatReset(::tl2::service1::DisableKeysStat
 }
 
 bool tl2::details::Service1DisableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::DisableKeysStat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.period != 0) {
+		add_comma = true;
 		s << "\"period\":";
 		s << item.period;
 	}
@@ -1275,8 +1359,10 @@ void tl2::details::Service1EnableExpirationReset(::tl2::service1::EnableExpirati
 }
 
 bool tl2::details::Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
+		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1350,8 +1436,10 @@ void tl2::details::Service1EnableKeysStatReset(::tl2::service1::EnableKeysStat& 
 }
 
 bool tl2::details::Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::EnableKeysStat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.period != 0) {
+		add_comma = true;
 		s << "\"period\":";
 		s << item.period;
 	}
@@ -1425,8 +1513,10 @@ void tl2::details::Service1ExistsReset(::tl2::service1::Exists& item) {
 }
 
 bool tl2::details::Service1ExistsWriteJSON(std::ostream& s, const ::tl2::service1::Exists& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1500,8 +1590,10 @@ void tl2::details::Service1GetReset(::tl2::service1::Get& item) {
 }
 
 bool tl2::details::Service1GetWriteJSON(std::ostream& s, const ::tl2::service1::Get& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1575,8 +1667,10 @@ void tl2::details::Service1GetExpireTimeReset(::tl2::service1::GetExpireTime& it
 }
 
 bool tl2::details::Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tl2::service1::GetExpireTime& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1650,8 +1744,10 @@ void tl2::details::Service1GetKeysStatReset(::tl2::service1::GetKeysStat& item) 
 }
 
 bool tl2::details::Service1GetKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.period != 0) {
+		add_comma = true;
 		s << "\"period\":";
 		s << item.period;
 	}
@@ -1724,8 +1820,7 @@ void tl2::details::Service1GetKeysStatPeriodsReset(::tl2::service1::GetKeysStatP
 }
 
 bool tl2::details::Service1GetKeysStatPeriodsWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStatPeriods& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -1795,8 +1890,10 @@ void tl2::details::Service1GetWildcardReset(::tl2::service1::GetWildcard& item) 
 }
 
 bool tl2::details::Service1GetWildcardWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcard& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
+		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1872,8 +1969,10 @@ void tl2::details::Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict
 }
 
 bool tl2::details::Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
+		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1947,8 +2046,10 @@ void tl2::details::Service1GetWildcardListReset(::tl2::service1::GetWildcardList
 }
 
 bool tl2::details::Service1GetWildcardListWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardList& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
+		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -2024,8 +2125,10 @@ void tl2::details::Service1GetWildcardWithFlagsReset(::tl2::service1::GetWildcar
 }
 
 bool tl2::details::Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardWithFlags& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
+		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -2100,13 +2203,18 @@ void tl2::details::Service1IncrReset(::tl2::service1::Incr& item) {
 }
 
 bool tl2::details::Service1IncrWriteJSON(std::ostream& s, const ::tl2::service1::Incr& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -2183,13 +2291,18 @@ void tl2::details::Service1KeysStatReset(::tl2::service1::KeysStat& item) {
 }
 
 bool tl2::details::Service1KeysStatWriteJSON(std::ostream& s, const ::tl2::service1::KeysStat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.start_time != 0) {
+		add_comma = true;
 		s << "\"start_time\":";
 		s << item.start_time;
 	}
 	if (item.keys_tops.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"keys_tops\":";
 		if (!::tl2::details::DictionaryDictionaryIntWriteJSON(s, item.keys_tops)) { return false; }
 	}
@@ -2222,8 +2335,8 @@ bool tl2::details::Service1KeysStatWriteBoxed(::basictl::tl_ostream & s, const :
 bool tl2::details::Service1KeysStatMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::service1::KeysStat>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
+		s << "\"ok\":true";
+		s << ",\"value\":";
 		if (!::tl2::details::Service1KeysStatWriteJSON(s, *item)) { return false; }
 	}
 	s << "}";
@@ -2282,13 +2395,18 @@ void tl2::details::Service1LongvalueReset(::tl2::service1::Longvalue& item) {
 }
 
 bool tl2::details::Service1LongvalueWriteJSON(std::ostream& s, const ::tl2::service1::Longvalue& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
@@ -2350,18 +2468,26 @@ void tl2::details::Service1LongvalueWithTimeReset(::tl2::service1::LongvalueWith
 }
 
 bool tl2::details::Service1LongvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::LongvalueWithTime& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.modificationTime != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"modificationTime\":";
 		s << item.modificationTime;
 	}
@@ -2422,8 +2548,7 @@ void tl2::details::Service1NotFoundReset(::tl2::service1::Not_found& item) {
 }
 
 bool tl2::details::Service1NotFoundWriteJSON(std::ostream& s, const ::tl2::service1::Not_found& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -2478,23 +2603,34 @@ void tl2::details::Service1ReplaceReset(::tl2::service1::Replace& item) {
 }
 
 bool tl2::details::Service1ReplaceWriteJSON(std::ostream& s, const ::tl2::service1::Replace& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -2577,23 +2713,34 @@ void tl2::details::Service1ReplaceOrIncrReset(::tl2::service1::ReplaceOrIncr& it
 }
 
 bool tl2::details::Service1ReplaceOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::ReplaceOrIncr& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -2676,23 +2823,34 @@ void tl2::details::Service1SetReset(::tl2::service1::Set& item) {
 }
 
 bool tl2::details::Service1SetWriteJSON(std::ostream& s, const ::tl2::service1::Set& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -2775,23 +2933,34 @@ void tl2::details::Service1SetOrIncrReset(::tl2::service1::SetOrIncr& item) {
 }
 
 bool tl2::details::Service1SetOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::SetOrIncr& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
 	if (item.value != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -2872,13 +3041,18 @@ void tl2::details::Service1StrvalueReset(::tl2::service1::Strvalue& item) {
 }
 
 bool tl2::details::Service1StrvalueWriteJSON(std::ostream& s, const ::tl2::service1::Strvalue& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
@@ -2940,18 +3114,26 @@ void tl2::details::Service1StrvalueWithTimeReset(::tl2::service1::StrvalueWithTi
 }
 
 bool tl2::details::Service1StrvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::StrvalueWithTime& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
+		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.modificationTime != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"modificationTime\":";
 		s << item.modificationTime;
 	}
@@ -3014,13 +3196,18 @@ void tl2::details::Service1TouchReset(::tl2::service1::Touch& item) {
 }
 
 bool tl2::details::Service1TouchWriteJSON(std::ostream& s, const ::tl2::service1::Touch& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
+		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
 	if (item.delay != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"delay\":";
 		s << item.delay;
 	}
@@ -3169,8 +3356,8 @@ bool tl2::details::Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl
 bool tl2::details::Service1ValueBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::service1::Value>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
+		s << "\"ok\":true";
+		s << ",\"value\":";
 		if (!::tl2::details::Service1ValueWriteJSON(s, *item)) { return false; }
 	}
 	s << "}";
