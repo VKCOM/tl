@@ -18,6 +18,8 @@ struct AddOrIncrMany {
 	std::string_view tl_name() const { return "service2.addOrIncrMany"; }
 	uint32_t tl_tag() const { return 0x5aa52489; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 
@@ -26,6 +28,11 @@ struct AddOrIncrMany {
 
 	bool read_result(::basictl::tl_istream & s, std::vector<::tl2::service2::CounterSet> & result);
 	bool write_result(::basictl::tl_ostream & s, std::vector<::tl2::service2::CounterSet> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const AddOrIncrMany& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service2

@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service1AddOrGetReset(::tl2::service1::AddOrGet& item);
+
+bool Service1AddOrGetWriteJSON(std::ostream& s, const ::tl2::service1::AddOrGet& item);
 bool Service1AddOrGetRead(::basictl::tl_istream & s, ::tl2::service1::AddOrGet& item);
 bool Service1AddOrGetWrite(::basictl::tl_ostream & s, const ::tl2::service1::AddOrGet& item);
 bool Service1AddOrGetReadBoxed(::basictl::tl_istream & s, ::tl2::service1::AddOrGet& item);

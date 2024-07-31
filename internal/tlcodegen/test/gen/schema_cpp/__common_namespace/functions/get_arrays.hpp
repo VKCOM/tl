@@ -12,6 +12,8 @@ struct Get_arrays {
 	std::string_view tl_name() const { return "get_arrays"; }
 	uint32_t tl_tag() const { return 0x90658cdb; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 
@@ -20,6 +22,11 @@ struct Get_arrays {
 
 	bool read_result(::basictl::tl_istream & s, std::array<int32_t, 5> & result);
 	bool write_result(::basictl::tl_ostream & s, std::array<int32_t, 5> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const Get_arrays& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 } // namespace tl2

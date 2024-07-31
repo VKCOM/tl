@@ -4,6 +4,11 @@
 #include "../__common_namespace/headers/Bool.hpp"
 
 
+bool tl2::service4::ModifiedNewsEntry::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service4ModifiedNewsEntryWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service4::ModifiedNewsEntry::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service4ModifiedNewsEntryRead(s, *this)) { return false; }
 	return true;
@@ -31,6 +36,35 @@ void tl2::details::Service4ModifiedNewsEntryReset(::tl2::service4::ModifiedNewsE
 	item.restoration_date = 0;
 	item.deletion_date = 0;
 	item.hidden_by_privacy = false;
+}
+
+bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::tl2::service4::ModifiedNewsEntry& item) {
+	s << "{";
+	s << "\"object\":";
+	if (!::tl2::details::Service4ObjectWriteJSON(s, item.object)) { return false; }
+	s << ",";
+	s << "\"creation_date\":";
+	s << item.creation_date;
+	s << ",";
+	s << "\"fields_mask\":";
+	s << item.fields_mask;
+	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
+		s << "\"restoration_date\":";
+		s << item.restoration_date;
+	}
+	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
+		s << "\"deletion_date\":";
+		s << item.deletion_date;
+	}
+	if ((item.fields_mask & (1<<16)) != 0) {
+		s << ",";
+		s << "\"hidden_by_privacy\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.hidden_by_privacy)) { return false; }
+	}
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service4ModifiedNewsEntryRead(::basictl::tl_istream & s, ::tl2::service4::ModifiedNewsEntry& item) {
@@ -81,6 +115,11 @@ bool tl2::details::Service4ModifiedNewsEntryWriteBoxed(::basictl::tl_ostream & s
 	return tl2::details::Service4ModifiedNewsEntryWrite(s, item);
 }
 
+bool tl2::service4::Object::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service4ObjectWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service4::Object::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service4ObjectRead(s, *this)) { return false; }
 	return true;
@@ -105,6 +144,20 @@ void tl2::details::Service4ObjectReset(::tl2::service4::Object& item) {
 	item.type = 0;
 	item.joint_id.clear();
 	item.object_id.clear();
+}
+
+bool tl2::details::Service4ObjectWriteJSON(std::ostream& s, const ::tl2::service4::Object& item) {
+	s << "{";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"joint_id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.joint_id)) { return false; }
+	s << ",";
+	s << "\"object_id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.object_id)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service4ObjectRead(::basictl::tl_istream & s, ::tl2::service4::Object& item) {

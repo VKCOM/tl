@@ -6,6 +6,8 @@
 namespace tl2 { namespace details { 
 
 void MyMcValueReset(::tl2::MyMcValue& item);
+
+bool MyMcValueWriteJSON(std::ostream& s, const ::tl2::MyMcValue& item);
 bool MyMcValueRead(::basictl::tl_istream & s, ::tl2::MyMcValue& item);
 bool MyMcValueWrite(::basictl::tl_ostream & s, const ::tl2::MyMcValue& item);
 bool MyMcValueReadBoxed(::basictl::tl_istream & s, ::tl2::MyMcValue& item);

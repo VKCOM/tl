@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void GetMaybeIfaceReset(::tl2::GetMaybeIface& item);
+
+bool GetMaybeIfaceWriteJSON(std::ostream& s, const ::tl2::GetMaybeIface& item);
 bool GetMaybeIfaceRead(::basictl::tl_istream & s, ::tl2::GetMaybeIface& item);
 bool GetMaybeIfaceWrite(::basictl::tl_ostream & s, const ::tl2::GetMaybeIface& item);
 bool GetMaybeIfaceReadBoxed(::basictl::tl_istream & s, ::tl2::GetMaybeIface& item);

@@ -507,6 +507,7 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 	meta.WriteString(fmt.Sprintf(`
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <functional>
 
@@ -520,6 +521,8 @@ namespace tl2 {
 
             virtual bool read_boxed(::basictl::tl_istream &s) = 0;
             virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+			
+			virtual bool write_json(std::ostream &s) = 0;
 
             virtual ~tl_object() = default;
         };
@@ -611,7 +614,7 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
 			continue
 		}
-		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct && len(wr.NatParams) == 0 {
+		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct {
 			metaDetails.WriteString(
 				fmt.Sprintf(`
 	auto item%[4]d = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=%[2]s,.annotations=%[3]s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator});
@@ -696,6 +699,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 `,
 				implementedInterface,
 				myFullTypeNoPrefix,

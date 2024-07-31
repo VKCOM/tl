@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service5QueryReset(::tl2::service5::Query& item);
+
+bool Service5QueryWriteJSON(std::ostream& s, const ::tl2::service5::Query& item);
 bool Service5QueryRead(::basictl::tl_istream & s, ::tl2::service5::Query& item);
 bool Service5QueryWrite(::basictl::tl_ostream & s, const ::tl2::service5::Query& item);
 bool Service5QueryReadBoxed(::basictl::tl_istream & s, ::tl2::service5::Query& item);

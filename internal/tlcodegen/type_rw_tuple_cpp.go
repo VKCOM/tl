@@ -94,6 +94,11 @@ func (trw *TypeRWBrackets) CPPTypeWritingCode(bytesVersion bool, val string, bar
 	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
+func (trw *TypeRWBrackets) CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\tif (!::%s::%sWriteJSON(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, val, joinWithCommas(natArgs))
+}
+
 func (trw *TypeRWBrackets) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
@@ -107,6 +112,8 @@ func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectI
 
 	hppDetCode := `
 void %[1]sReset(std::array<%[2]s, %[3]d>& item);
+
+bool %[1]sWriteJSON(std::ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
 bool %[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s);
 bool %[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
 `
@@ -115,6 +122,20 @@ void %[8]s::%[1]sReset(std::array<%[2]s, %[3]d>& item) {
 	for(auto && el : item) {
 	%[7]s
 	}
+}
+
+bool %[8]s::%[1]sWriteJSON(std::ostream &s, const std::array<%[2]s, %[3]d>& item%[4]s) {
+	s << "[";
+	size_t index = 0;
+	for(auto && el : item) {
+	%[9]s
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s) {
@@ -187,12 +208,28 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 	case trw.vectorLike:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
+
+bool %[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s);
 bool %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
 bool %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
 `
 		cppCode = `
 void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
 	item.resize(0); // TODO - unwrap
+}
+
+bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+	%[9]s
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
@@ -217,12 +254,32 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 	case trw.dynamicSize:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
+
+bool %[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s);
 bool %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
 bool %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
 `
 		cppCode = `
 void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
 	item.resize(0);
+}
+
+bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s) {
+	if (item.size() != nat_n) {
+		// TODO add exception
+		return false;
+	}
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+	%[9]s
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
@@ -320,6 +377,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 			tw,
 			trw.element.t.trw.CPPTypeResettingCode(bytesVersion, "el"),
 			trw.wr.gen.DetailsCPPNamespace,
+			trw.element.t.trw.CPPTypeWritingJsonCode(bytesVersion, "el", false, formatNatArgsCPP(nil, trw.element.natArgs), false),
 		))
 	}
 }

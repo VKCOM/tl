@@ -6,6 +6,10 @@
 static const std::string_view TreeStatsObjectLimitValue_tbl_tl_name[]{"tree_stats.objectLimitValueLong", "tree_stats.objectLimitValueDouble"};
 static const uint32_t TreeStatsObjectLimitValue_tbl_tl_tag[]{0x73111993, 0x5dfb8816};
 
+bool tl2::tree_stats::ObjectLimitValue::write_json(std::ostream & s)const {
+	if (!::tl2::details::TreeStatsObjectLimitValueWriteJSON(s, *this)) { return false; }
+	return true;
+}
 bool tl2::tree_stats::ObjectLimitValue::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::TreeStatsObjectLimitValueReadBoxed(s, *this)) { return false; }
 	return true;
@@ -26,6 +30,19 @@ void tl2::details::TreeStatsObjectLimitValueReset(::tl2::tree_stats::ObjectLimit
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
+bool tl2::details::TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) {
+	s << "{";
+	s << "\"type\":";
+	s << TreeStatsObjectLimitValue_tbl_tl_tag[item.value.index()];
+	switch (item.value.index()) {
+	case 1:
+		s << ",\"value\":";
+		if (!::tl2::details::TreeStatsObjectLimitValueDoubleWriteJSON(s, std::get<1>(item.value))) { return false; }
+		break;
+	}
+	s << "}";
+	return true;
+}
 bool tl2::details::TreeStatsObjectLimitValueReadBoxed(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValue& item) {
 	uint32_t nat;
 	s.nat_read(nat);
@@ -57,6 +74,11 @@ void tl2::details::TreeStatsObjectLimitValueDoubleReset(::tl2::tree_stats::Objec
 	item = 0;
 }
 
+bool tl2::details::TreeStatsObjectLimitValueDoubleWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) {
+	s << item;
+	return true;
+}
+
 bool tl2::details::TreeStatsObjectLimitValueDoubleRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueDouble& item) {
 	if (!s.double_read(item)) { return false; }
 	return true;
@@ -75,6 +97,11 @@ bool tl2::details::TreeStatsObjectLimitValueDoubleReadBoxed(::basictl::tl_istrea
 bool tl2::details::TreeStatsObjectLimitValueDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) {
 	if (!s.nat_write(0x5dfb8816)) { return false; }
 	return tl2::details::TreeStatsObjectLimitValueDoubleWrite(s, item);
+}
+
+bool tl2::tree_stats::ObjectLimitValueLong::write_json(std::ostream& s)const {
+	if (!::tl2::details::TreeStatsObjectLimitValueLongWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::tree_stats::ObjectLimitValueLong::read(::basictl::tl_istream & s) {
@@ -98,6 +125,12 @@ bool tl2::tree_stats::ObjectLimitValueLong::write_boxed(::basictl::tl_ostream & 
 }
 
 void tl2::details::TreeStatsObjectLimitValueLongReset(::tl2::tree_stats::ObjectLimitValueLong& item) {
+}
+
+bool tl2::details::TreeStatsObjectLimitValueLongWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueLong& item) {
+	s << "{";
+	s << "}";
+	return true;
 }
 
 bool tl2::details::TreeStatsObjectLimitValueLongRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueLong& item) {

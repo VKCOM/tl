@@ -42,6 +42,13 @@ func (trw *TypeRWPrimitive) CPPTypeWritingCode(bytesVersion bool, val string, ba
 	return fmt.Sprintf("\tif (!s.%s_write(%s)) { return false;}", trw.cppFunctionSuffix, val)
 }
 
+func (trw *TypeRWPrimitive) CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
+	if trw.tlType == "string" {
+		return fmt.Sprintf("\ts << \"\\\"\" << %s << \"\\\"\";", val)
+	}
+	return fmt.Sprintf("\ts << %s;", val)
+}
+
 func (trw *TypeRWPrimitive) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	return fmt.Sprintf("\tif (!s.%s_read(%s)) { return false; }", trw.cppFunctionSuffix, val)
 }

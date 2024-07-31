@@ -13,6 +13,8 @@ struct DeltaSet {
 	std::string_view tl_name() const { return "service2.deltaSet"; }
 	uint32_t tl_tag() const { return 0xbf49abc2; }
 
+	bool write_json(std::ostream& s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const;
+
 	bool read(::basictl::tl_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum);
 	bool write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const;
 

@@ -47,6 +47,12 @@ func (trw *TypeRWMaybe) CPPTypeWritingCode(bytesVersion bool, val string, bare b
 	//return wrapLast(last, fmt.Sprintf("\t%s.Write%s( w %s)", val, addBare(bare), formatNatArgsCallCPP(natArgs)))
 }
 
+func (trw *TypeRWMaybe) CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\tif (!::%s::%sWriteJSON(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, val, joinWithCommas(natArgs))
+	//return wrapLast(last, fmt.Sprintf("\t%s.Write%s( w %s)", val, addBare(bare), formatNatArgsCallCPP(natArgs)))
+}
+
 func (trw *TypeRWMaybe) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
@@ -70,6 +76,8 @@ func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 		hppDet.WriteString(fmt.Sprintf(`
+bool %[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s);
+
 bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 
@@ -88,6 +96,16 @@ bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 		}
 
 		cppDet.WriteString(fmt.Sprintf(`
+bool %[6]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) {
+	s << "{";
+	if (item) {
+		s << "\"ok\":true,";
+		s << "\"value\":";
+	%[9]s
+	}
+	s << "}";
+	return true;
+}
 bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	bool has_item = false;
 	if (!s.bool_read(has_item, 0x%[4]x, 0x%[5]x)) { return false; }
@@ -118,6 +136,7 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.wr.gen.DetailsCPPNamespace,
 			trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
 			trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
+			trw.element.t.trw.CPPTypeWritingJsonCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
 		))
 	}
 	/*

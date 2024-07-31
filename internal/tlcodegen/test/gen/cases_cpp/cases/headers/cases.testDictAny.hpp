@@ -6,6 +6,8 @@
 namespace tl2 { namespace details { 
 
 void CasesTestDictAnyReset(::tl2::cases::TestDictAny& item);
+
+bool CasesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases::TestDictAny& item);
 bool CasesTestDictAnyRead(::basictl::tl_istream & s, ::tl2::cases::TestDictAny& item);
 bool CasesTestDictAnyWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestDictAny& item);
 bool CasesTestDictAnyReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestDictAny& item);

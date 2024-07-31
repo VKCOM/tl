@@ -9,6 +9,7 @@ package tlcodegen
 const basicCPPTLCodeHeader = `%s
 #pragma once
 
+#include <ostream>
 #include <stddef.h>
 #include <cstring>
 #include <stdexcept>

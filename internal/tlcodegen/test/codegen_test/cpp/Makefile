@@ -10,6 +10,10 @@ run-all-tests:
 	make run-objects-test
 	make run-functions-test
 
+clean-build:
+	rm -rf build
+	mkdir build
+
 run-objects-test: build-objects-bytes
 	./build/test_objects_bytes
 

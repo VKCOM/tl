@@ -10,6 +10,11 @@
 #include "headers/benchmarks.vruhash.hpp"
 
 
+bool tl2::benchmarks::Vruhash::write_json(std::ostream& s)const {
+	if (!::tl2::details::BenchmarksVruHashWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::benchmarks::Vruhash::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BenchmarksVruHashRead(s, *this)) { return false; }
 	return true;
@@ -35,6 +40,17 @@ void tl2::details::BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item) {
 	item.high = 0;
 }
 
+bool tl2::details::BenchmarksVruHashWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruhash& item) {
+	s << "{";
+	s << "\"low\":";
+	s << item.low;
+	s << ",";
+	s << "\"high\":";
+	s << item.high;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::BenchmarksVruHashRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruhash& item) {
 	if (!s.long_read(item.low)) { return false; }
 	if (!s.long_read(item.high)) { return false; }
@@ -55,6 +71,11 @@ bool tl2::details::BenchmarksVruHashReadBoxed(::basictl::tl_istream & s, ::tl2::
 bool tl2::details::BenchmarksVruHashWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruhash& item) {
 	if (!s.nat_write(0xd31bd0fd)) { return false; }
 	return tl2::details::BenchmarksVruHashWrite(s, item);
+}
+
+bool tl2::benchmarks::Vruposition::write_json(std::ostream& s)const {
+	if (!::tl2::details::BenchmarksVruPositionWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::benchmarks::Vruposition::read(::basictl::tl_istream & s) {
@@ -89,6 +110,56 @@ void tl2::details::BenchmarksVruPositionReset(::tl2::benchmarks::Vruposition& it
 	::tl2::details::BenchmarksVruHashReset(item.hash);
 	item.file_offset = 0;
 	item.seq_number = 0;
+}
+
+bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruposition& item) {
+	s << "{";
+	s << "\"fields_mask\":";
+	s << item.fields_mask;
+	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
+		s << "\"commit_bit\":";
+		if (!::tl2::details::TrueWriteJSON(s, item.commit_bit)) { return false; }
+	}
+	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
+		s << "\"meta_block\":";
+		if (!::tl2::details::TrueWriteJSON(s, item.meta_block)) { return false; }
+	}
+	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
+		s << "\"split_payload\":";
+		if (!::tl2::details::TrueWriteJSON(s, item.split_payload)) { return false; }
+	}
+	if ((item.fields_mask & (1<<5)) != 0) {
+		s << ",";
+		s << "\"rotation_block\":";
+		if (!::tl2::details::TrueWriteJSON(s, item.rotation_block)) { return false; }
+	}
+	if ((item.fields_mask & (1<<15)) != 0) {
+		s << ",";
+		s << "\"canonical_hash\":";
+		if (!::tl2::details::TrueWriteJSON(s, item.canonical_hash)) { return false; }
+	}
+	s << ",";
+	s << "\"payload_offset\":";
+	s << item.payload_offset;
+	s << ",";
+	s << "\"block_time_nano\":";
+	s << item.block_time_nano;
+	s << ",";
+	s << "\"hash\":";
+	if (!::tl2::details::BenchmarksVruHashWriteJSON(s, item.hash)) { return false; }
+	s << ",";
+	s << "\"file_offset\":";
+	s << item.file_offset;
+	if ((item.fields_mask & (1<<14)) != 0) {
+		s << ",";
+		s << "\"seq_number\":";
+		s << item.seq_number;
+	}
+	s << "}";
+	return true;
 }
 
 bool tl2::details::BenchmarksVruPositionRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruposition& item) {
@@ -167,6 +238,11 @@ bool tl2::details::BenchmarksVruPositionWriteBoxed(::basictl::tl_ostream & s, co
 	return tl2::details::BenchmarksVruPositionWrite(s, item);
 }
 
+bool tl2::benchmarks::VrutoyPositions::write_json(std::ostream& s, uint32_t nat_n)const {
+	if (!::tl2::details::BenchmarksVrutoyPositionsWriteJSON(s, *this, nat_n)) { return false; }
+	return true;
+}
+
 bool tl2::benchmarks::VrutoyPositions::read(::basictl::tl_istream & s, uint32_t nat_n) {
 	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, *this, nat_n)) { return false; }
 	return true;
@@ -191,6 +267,14 @@ void tl2::details::BenchmarksVrutoyPositionsReset(::tl2::benchmarks::VrutoyPosit
 	item.next_positions.clear();
 }
 
+bool tl2::details::BenchmarksVrutoyPositionsWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) {
+	s << "{";
+	s << "\"next_positions\":";
+	if (!::tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(s, item.next_positions, nat_n)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::BenchmarksVrutoyPositionsRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) {
 	if (!::tl2::details::BuiltinTupleBenchmarksVruPositionRead(s, item.next_positions, nat_n)) { return false; }
 	return true;
@@ -209,6 +293,11 @@ bool tl2::details::BenchmarksVrutoyPositionsReadBoxed(::basictl::tl_istream & s,
 bool tl2::details::BenchmarksVrutoyPositionsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) {
 	if (!s.nat_write(0xb6003de0)) { return false; }
 	return tl2::details::BenchmarksVrutoyPositionsWrite(s, item, nat_n);
+}
+
+bool tl2::benchmarks::VrutoyTopLevelContainer::write_json(std::ostream& s)const {
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainer::read(::basictl::tl_istream & s) {
@@ -235,6 +324,14 @@ void tl2::details::BenchmarksVrutoyTopLevelContainerReset(::tl2::benchmarks::Vru
 	::tl2::details::BenchmarksVrutoyTopLevelUnionReset(item.value);
 }
 
+bool tl2::details::BenchmarksVrutoyTopLevelContainerWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainer& item) {
+	s << "{";
+	s << "\"value\":";
+	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(s, item.value)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::BenchmarksVrutoyTopLevelContainerRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelContainer& item) {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(s, item.value)) { return false; }
 	return true;
@@ -253,6 +350,11 @@ bool tl2::details::BenchmarksVrutoyTopLevelContainerReadBoxed(::basictl::tl_istr
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelContainer& item) {
 	if (!s.nat_write(0xfb442ca5)) { return false; }
 	return tl2::details::BenchmarksVrutoyTopLevelContainerWrite(s, item);
+}
+
+bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_json(std::ostream& s)const {
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read(::basictl::tl_istream & s) {
@@ -280,6 +382,17 @@ void tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReset(::tl2::b
 	::tl2::details::BenchmarksVrutoyPositionsReset(item.value);
 }
 
+bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) {
+	s << "{";
+	s << "\"n\":";
+	s << item.n;
+	s << ",";
+	s << "\"value\":";
+	if (!::tl2::details::BenchmarksVrutoyPositionsWriteJSON(s, item.value, item.n)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) {
 	if (!s.nat_read(item.n)) { return false; }
 	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, item.value, item.n)) { return false; }
@@ -305,6 +418,10 @@ bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(::b
 static const std::string_view BenchmarksVrutoyTopLevelUnion_tbl_tl_name[]{"benchmarks.vrutoytopLevelUnionBig", "benchmarks.vrutoytopLevelUnionEmpty"};
 static const uint32_t BenchmarksVrutoyTopLevelUnion_tbl_tl_tag[]{0xef556bee, 0xce27c770};
 
+bool tl2::benchmarks::VrutoyTopLevelUnion::write_json(std::ostream & s)const {
+	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(s, *this)) { return false; }
+	return true;
+}
 bool tl2::benchmarks::VrutoyTopLevelUnion::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(s, *this)) { return false; }
 	return true;
@@ -325,6 +442,19 @@ void tl2::details::BenchmarksVrutoyTopLevelUnionReset(::tl2::benchmarks::VrutoyT
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
+bool tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, const ::tl2::benchmarks::VrutoyTopLevelUnion& item) {
+	s << "{";
+	s << "\"type\":";
+	s << BenchmarksVrutoyTopLevelUnion_tbl_tl_tag[item.value.index()];
+	switch (item.value.index()) {
+	case 0:
+		s << ",\"value\":";
+		if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWriteJSON(s, std::get<0>(item.value))) { return false; }
+		break;
+	}
+	s << "}";
+	return true;
+}
 bool tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelUnion& item) {
 	uint32_t nat;
 	s.nat_read(nat);
@@ -352,6 +482,11 @@ bool tl2::details::BenchmarksVrutoyTopLevelUnionWriteBoxed(::basictl::tl_ostream
 	return true;
 }
 
+bool tl2::benchmarks::VrutoytopLevelUnionBig::write_json(std::ostream& s)const {
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::benchmarks::VrutoytopLevelUnionBig::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigRead(s, *this)) { return false; }
 	return true;
@@ -376,6 +511,14 @@ void tl2::details::BenchmarksVrutoytopLevelUnionBigReset(::tl2::benchmarks::Vrut
 	item.next_positions.clear();
 }
 
+bool tl2::details::BenchmarksVrutoytopLevelUnionBigWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
+	s << "{";
+	s << "\"next_positions\":";
+	if (!::tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(s, item.next_positions)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::BenchmarksVrutoytopLevelUnionBigRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
 	if (!::tl2::details::BuiltinVectorBenchmarksVruPositionRead(s, item.next_positions)) { return false; }
 	return true;
@@ -394,6 +537,11 @@ bool tl2::details::BenchmarksVrutoytopLevelUnionBigReadBoxed(::basictl::tl_istre
 bool tl2::details::BenchmarksVrutoytopLevelUnionBigWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
 	if (!s.nat_write(0xef556bee)) { return false; }
 	return tl2::details::BenchmarksVrutoytopLevelUnionBigWrite(s, item);
+}
+
+bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_json(std::ostream& s)const {
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read(::basictl::tl_istream & s) {
@@ -419,6 +567,12 @@ bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::basictl::tl_ostrea
 void tl2::details::BenchmarksVrutoytopLevelUnionEmptyReset(::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) {
 }
 
+bool tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) {
+	s << "{";
+	s << "}";
+	return true;
+}
+
 bool tl2::details::BenchmarksVrutoytopLevelUnionEmptyRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) {
 	return true;
 }
@@ -439,6 +593,24 @@ bool tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(::basictl::tl_os
 
 void tl2::details::BuiltinTupleBenchmarksVruPositionReset(std::vector<::tl2::benchmarks::Vruposition>& item) {
 	item.resize(0);
+}
+
+bool tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(std::ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item, uint32_t nat_n) {
+	if (item.size() != nat_n) {
+		// TODO add exception
+		return false;
+	}
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::BenchmarksVruPositionWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool tl2::details::BuiltinTupleBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item, uint32_t nat_n) {
@@ -463,6 +635,20 @@ void tl2::details::BuiltinVectorBenchmarksVruPositionReset(std::vector<::tl2::be
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(std::ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::BenchmarksVruPositionWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -484,6 +670,11 @@ bool tl2::details::BuiltinVectorBenchmarksVruPositionWrite(::basictl::tl_ostream
 
 void tl2::details::VectorBenchmarksVruPositionReset(std::vector<::tl2::benchmarks::Vruposition>& item) {
 	item.clear();
+}
+
+bool tl2::details::VectorBenchmarksVruPositionWriteJSON(std::ostream& s, const std::vector<::tl2::benchmarks::Vruposition>& item) {
+	if (!::tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::VectorBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item) {

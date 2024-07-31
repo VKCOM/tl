@@ -13,6 +13,8 @@ struct GetQueueSize {
 	std::string_view tl_name() const { return "tasks.getQueueSize"; }
 	uint32_t tl_tag() const { return 0xd8fcda03; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 
@@ -21,6 +23,11 @@ struct GetQueueSize {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::tasks::QueueStats & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::tasks::QueueStats & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetQueueSize& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks

@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <functional>
 
@@ -14,6 +15,8 @@ namespace tl2 {
 
             virtual bool read_boxed(::basictl::tl_istream &s) = 0;
             virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+			
+			virtual bool write_json(std::ostream &s) = 0;
 
             virtual ~tl_object() = default;
         };

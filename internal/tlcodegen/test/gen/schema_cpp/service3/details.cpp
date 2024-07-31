@@ -23,6 +23,11 @@
 #include "../__common_namespace/headers/Bool.hpp"
 
 
+bool tl2::BoolStat::write_json(std::ostream& s)const {
+	if (!::tl2::details::BoolStatWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::BoolStat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoolStatRead(s, *this)) { return false; }
 	return true;
@@ -47,6 +52,20 @@ void tl2::details::BoolStatReset(::tl2::BoolStat& item) {
 	item.statTrue = 0;
 	item.statFalse = 0;
 	item.statUnknown = 0;
+}
+
+bool tl2::details::BoolStatWriteJSON(std::ostream& s, const ::tl2::BoolStat& item) {
+	s << "{";
+	s << "\"statTrue\":";
+	s << item.statTrue;
+	s << ",";
+	s << "\"statFalse\":";
+	s << item.statFalse;
+	s << ",";
+	s << "\"statUnknown\":";
+	s << item.statUnknown;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::BoolStatRead(::basictl::tl_istream & s, ::tl2::BoolStat& item) {
@@ -77,6 +96,20 @@ void tl2::details::BuiltinVectorService3GroupCountLimitReset(std::vector<::tl2::
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorService3GroupCountLimitWriteJSON(std::ostream & s, const std::vector<::tl2::service3::GroupCountLimit>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service3GroupCountLimitWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorService3GroupCountLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupCountLimit>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -98,6 +131,20 @@ bool tl2::details::BuiltinVectorService3GroupCountLimitWrite(::basictl::tl_ostre
 
 void tl2::details::BuiltinVectorService3GroupSizeLimitReset(std::vector<::tl2::service3::GroupSizeLimit>& item) {
 	item.resize(0); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorService3GroupSizeLimitWriteJSON(std::ostream & s, const std::vector<::tl2::service3::GroupSizeLimit>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service3GroupSizeLimitWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool tl2::details::BuiltinVectorService3GroupSizeLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupSizeLimit>& item) {
@@ -123,6 +170,20 @@ void tl2::details::BuiltinVectorService3ProductReset(std::vector<::tl2::service3
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorService3ProductWriteJSON(std::ostream & s, const std::vector<::tl2::service3::Product>& item, uint32_t nat_t) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service3ProductWriteJSON(s, el, nat_t)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorService3ProductRead(::basictl::tl_istream & s, std::vector<::tl2::service3::Product>& item, uint32_t nat_t) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -144,6 +205,20 @@ bool tl2::details::BuiltinVectorService3ProductWrite(::basictl::tl_ostream & s, 
 
 void tl2::details::BuiltinVectorService3Product0Reset(std::vector<::tl2::service3::Productmode<0>>& item) {
 	item.resize(0); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorService3Product0WriteJSON(std::ostream & s, const std::vector<::tl2::service3::Productmode<0>>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service3Product0WriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool tl2::details::BuiltinVectorService3Product0Read(::basictl::tl_istream & s, std::vector<::tl2::service3::Productmode<0>>& item) {
@@ -169,6 +244,20 @@ void tl2::details::BuiltinVectorService3ProductStatsOldReset(std::vector<::tl2::
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorService3ProductStatsOldWriteJSON(std::ostream & s, const std::vector<::tl2::service3::ProductStatsOld>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service3ProductStatsOldWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorService3ProductStatsOldRead(::basictl::tl_istream & s, std::vector<::tl2::service3::ProductStatsOld>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -185,6 +274,11 @@ bool tl2::details::BuiltinVectorService3ProductStatsOldWrite(::basictl::tl_ostre
 	for(const auto & el : item) {
 		if (!::tl2::details::Service3ProductStatsOldWrite(s, el)) { return false; }
 	}
+	return true;
+}
+
+bool tl2::service3::CreateProduct::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3CreateProductWriteJSON(s, *this)) { return false; }
 	return true;
 }
 
@@ -215,6 +309,29 @@ void tl2::details::Service3CreateProductReset(::tl2::service3::CreateProduct& it
 	item.info.clear();
 	item.date = 0;
 	item.expiration_date = 0;
+}
+
+bool tl2::details::Service3CreateProductWriteJSON(std::ostream& s, const ::tl2::service3::CreateProduct& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"info\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	s << ",";
+	s << "\"date\":";
+	s << item.date;
+	s << ",";
+	s << "\"expiration_date\":";
+	s << item.expiration_date;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3CreateProductRead(::basictl::tl_istream & s, ::tl2::service3::CreateProduct& item) {
@@ -263,6 +380,11 @@ bool tl2::service3::CreateProduct::write_result(::basictl::tl_ostream & s, bool 
 	return tl2::details::Service3CreateProductWriteResult(s, *this, result);
 }
 
+bool tl2::service3::DeleteAllProducts::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3DeleteAllProductsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::DeleteAllProducts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3DeleteAllProductsRead(s, *this)) { return false; }
 	return true;
@@ -288,6 +410,23 @@ void tl2::details::Service3DeleteAllProductsReset(::tl2::service3::DeleteAllProd
 	item.type = 0;
 	item.start_date = 0;
 	item.end_date = 0;
+}
+
+bool tl2::details::Service3DeleteAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteAllProducts& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"start_date\":";
+	s << item.start_date;
+	s << ",";
+	s << "\"end_date\":";
+	s << item.end_date;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3DeleteAllProductsRead(::basictl::tl_istream & s, ::tl2::service3::DeleteAllProducts& item) {
@@ -332,6 +471,11 @@ bool tl2::service3::DeleteAllProducts::write_result(::basictl::tl_ostream & s, b
 	return tl2::details::Service3DeleteAllProductsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::DeleteGroupedProducts::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3DeleteGroupedProductsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::DeleteGroupedProducts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3DeleteGroupedProductsRead(s, *this)) { return false; }
 	return true;
@@ -358,6 +502,26 @@ void tl2::details::Service3DeleteGroupedProductsReset(::tl2::service3::DeleteGro
 	item.id.clear();
 	item.start_date = 0;
 	item.end_date = 0;
+}
+
+bool tl2::details::Service3DeleteGroupedProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteGroupedProducts& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"start_date\":";
+	s << item.start_date;
+	s << ",";
+	s << "\"end_date\":";
+	s << item.end_date;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3DeleteGroupedProductsRead(::basictl::tl_istream & s, ::tl2::service3::DeleteGroupedProducts& item) {
@@ -404,6 +568,11 @@ bool tl2::service3::DeleteGroupedProducts::write_result(::basictl::tl_ostream & 
 	return tl2::details::Service3DeleteGroupedProductsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::DeleteProduct::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3DeleteProductWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::DeleteProduct::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3DeleteProductRead(s, *this)) { return false; }
 	return true;
@@ -429,6 +598,23 @@ void tl2::details::Service3DeleteProductReset(::tl2::service3::DeleteProduct& it
 	item.type = 0;
 	item.id.clear();
 	item.info.clear();
+}
+
+bool tl2::details::Service3DeleteProductWriteJSON(std::ostream& s, const ::tl2::service3::DeleteProduct& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"info\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3DeleteProductRead(::basictl::tl_istream & s, ::tl2::service3::DeleteProduct& item) {
@@ -473,6 +659,11 @@ bool tl2::service3::DeleteProduct::write_result(::basictl::tl_ostream & s, bool 
 	return tl2::details::Service3DeleteProductWriteResult(s, *this, result);
 }
 
+bool tl2::service3::GetLastVisitTimestamp::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GetLastVisitTimestampWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::GetLastVisitTimestamp::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3GetLastVisitTimestampRead(s, *this)) { return false; }
 	return true;
@@ -495,6 +686,14 @@ bool tl2::service3::GetLastVisitTimestamp::write_boxed(::basictl::tl_ostream & s
 
 void tl2::details::Service3GetLastVisitTimestampReset(::tl2::service3::GetLastVisitTimestamp& item) {
 	item.user_id = 0;
+}
+
+bool tl2::details::Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::GetLastVisitTimestamp& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3GetLastVisitTimestampRead(::basictl::tl_istream & s, ::tl2::service3::GetLastVisitTimestamp& item) {
@@ -533,6 +732,11 @@ bool tl2::service3::GetLastVisitTimestamp::write_result(::basictl::tl_ostream & 
 	return tl2::details::Service3GetLastVisitTimestampWriteResult(s, *this, result);
 }
 
+bool tl2::service3::GetLimits::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GetLimitsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::GetLimits::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3GetLimitsRead(s, *this)) { return false; }
 	return true;
@@ -554,6 +758,12 @@ bool tl2::service3::GetLimits::write_boxed(::basictl::tl_ostream & s)const {
 }
 
 void tl2::details::Service3GetLimitsReset(::tl2::service3::GetLimits& item) {
+}
+
+bool tl2::details::Service3GetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::GetLimits& item) {
+	s << "{";
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3GetLimitsRead(::basictl::tl_istream & s, ::tl2::service3::GetLimits& item) {
@@ -590,6 +800,11 @@ bool tl2::service3::GetLimits::write_result(::basictl::tl_ostream & s, ::tl2::se
 	return tl2::details::Service3GetLimitsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::GetProductStats::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GetProductStatsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::GetProductStats::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3GetProductStatsRead(s, *this)) { return false; }
 	return true;
@@ -613,6 +828,17 @@ bool tl2::service3::GetProductStats::write_boxed(::basictl::tl_ostream & s)const
 void tl2::details::Service3GetProductStatsReset(::tl2::service3::GetProductStats& item) {
 	item.user_id = 0;
 	item.types.clear();
+}
+
+bool tl2::details::Service3GetProductStatsWriteJSON(std::ostream& s, const ::tl2::service3::GetProductStats& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"types\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3GetProductStatsRead(::basictl::tl_istream & s, ::tl2::service3::GetProductStats& item) {
@@ -653,6 +879,11 @@ bool tl2::service3::GetProductStats::write_result(::basictl::tl_ostream & s, std
 	return tl2::details::Service3GetProductStatsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::GetProducts::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GetProductsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::GetProducts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3GetProductsRead(s, *this)) { return false; }
 	return true;
@@ -682,6 +913,35 @@ void tl2::details::Service3GetProductsReset(::tl2::service3::GetProducts& item) 
 	item.offset = 0;
 	item.limit = 0;
 	item.allowed_info0.clear();
+}
+
+bool tl2::details::Service3GetProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetProducts& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"mode\":";
+	s << item.mode;
+	s << ",";
+	s << "\"types\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	s << ",";
+	s << "\"start_date\":";
+	s << item.start_date;
+	s << ",";
+	s << "\"end_date\":";
+	s << item.end_date;
+	s << ",";
+	s << "\"offset\":";
+	s << item.offset;
+	s << ",";
+	s << "\"limit\":";
+	s << item.limit;
+	s << ",";
+	s << "\"allowed_info0\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.allowed_info0)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3GetProductsRead(::basictl::tl_istream & s, ::tl2::service3::GetProducts& item) {
@@ -734,6 +994,11 @@ bool tl2::service3::GetProducts::write_result(::basictl::tl_ostream & s, std::op
 	return tl2::details::Service3GetProductsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::GetScheduledProducts::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GetScheduledProductsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::GetScheduledProducts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3GetScheduledProductsRead(s, *this)) { return false; }
 	return true;
@@ -757,6 +1022,17 @@ bool tl2::service3::GetScheduledProducts::write_boxed(::basictl::tl_ostream & s)
 void tl2::details::Service3GetScheduledProductsReset(::tl2::service3::GetScheduledProducts& item) {
 	item.user_id = 0;
 	item.types.clear();
+}
+
+bool tl2::details::Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetScheduledProducts& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"types\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3GetScheduledProductsRead(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item) {
@@ -797,6 +1073,11 @@ bool tl2::service3::GetScheduledProducts::write_result(::basictl::tl_ostream & s
 	return tl2::details::Service3GetScheduledProductsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::GroupCountLimit::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GroupCountLimitWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::GroupCountLimit::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3GroupCountLimitRead(s, *this)) { return false; }
 	return true;
@@ -822,6 +1103,17 @@ void tl2::details::Service3GroupCountLimitReset(::tl2::service3::GroupCountLimit
 	item.limit = 0;
 }
 
+bool tl2::details::Service3GroupCountLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupCountLimit& item) {
+	s << "{";
+	s << "\"types\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
+	s << ",";
+	s << "\"limit\":";
+	s << item.limit;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service3GroupCountLimitRead(::basictl::tl_istream & s, ::tl2::service3::GroupCountLimit& item) {
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.types)) { return false; }
 	if (!s.int_read(item.limit)) { return false; }
@@ -842,6 +1134,11 @@ bool tl2::details::Service3GroupCountLimitReadBoxed(::basictl::tl_istream & s, :
 bool tl2::details::Service3GroupCountLimitWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GroupCountLimit& item) {
 	if (!s.nat_write(0x8c04ea7f)) { return false; }
 	return tl2::details::Service3GroupCountLimitWrite(s, item);
+}
+
+bool tl2::service3::GroupSizeLimit::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3GroupSizeLimitWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::service3::GroupSizeLimit::read(::basictl::tl_istream & s) {
@@ -869,6 +1166,17 @@ void tl2::details::Service3GroupSizeLimitReset(::tl2::service3::GroupSizeLimit& 
 	item.limit = 0;
 }
 
+bool tl2::details::Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupSizeLimit& item) {
+	s << "{";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"limit\":";
+	s << item.limit;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service3GroupSizeLimitRead(::basictl::tl_istream & s, ::tl2::service3::GroupSizeLimit& item) {
 	if (!s.int_read(item.type)) { return false; }
 	if (!s.int_read(item.limit)) { return false; }
@@ -889,6 +1197,11 @@ bool tl2::details::Service3GroupSizeLimitReadBoxed(::basictl::tl_istream & s, ::
 bool tl2::details::Service3GroupSizeLimitWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GroupSizeLimit& item) {
 	if (!s.nat_write(0x90e59396)) { return false; }
 	return tl2::details::Service3GroupSizeLimitWrite(s, item);
+}
+
+bool tl2::service3::Limits::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3LimitsWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::service3::Limits::read(::basictl::tl_istream & s) {
@@ -918,6 +1231,23 @@ void tl2::details::Service3LimitsReset(::tl2::service3::Limits& item) {
 	item.custom_group_count_limits.clear();
 }
 
+bool tl2::details::Service3LimitsWriteJSON(std::ostream& s, const ::tl2::service3::Limits& item) {
+	s << "{";
+	s << "\"default_group_size_limit\":";
+	s << item.default_group_size_limit;
+	s << ",";
+	s << "\"custom_group_size_limits\":";
+	if (!::tl2::details::BuiltinVectorService3GroupSizeLimitWriteJSON(s, item.custom_group_size_limits)) { return false; }
+	s << ",";
+	s << "\"default_group_count_limit\":";
+	s << item.default_group_count_limit;
+	s << ",";
+	s << "\"custom_group_count_limits\":";
+	if (!::tl2::details::BuiltinVectorService3GroupCountLimitWriteJSON(s, item.custom_group_count_limits)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service3LimitsRead(::basictl::tl_istream & s, ::tl2::service3::Limits& item) {
 	if (!s.int_read(item.default_group_size_limit)) { return false; }
 	if (!::tl2::details::BuiltinVectorService3GroupSizeLimitRead(s, item.custom_group_size_limits)) { return false; }
@@ -942,6 +1272,11 @@ bool tl2::details::Service3LimitsReadBoxed(::basictl::tl_istream & s, ::tl2::ser
 bool tl2::details::Service3LimitsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::Limits& item) {
 	if (!s.nat_write(0x80ee61ca)) { return false; }
 	return tl2::details::Service3LimitsWrite(s, item);
+}
+
+bool tl2::service3::Product::write_json(std::ostream& s, uint32_t nat_mode)const {
+	if (!::tl2::details::Service3ProductWriteJSON(s, *this, nat_mode)) { return false; }
+	return true;
 }
 
 bool tl2::service3::Product::read(::basictl::tl_istream & s, uint32_t nat_mode) {
@@ -971,6 +1306,31 @@ void tl2::details::Service3ProductReset(::tl2::service3::Product& item) {
 	item.date = 0;
 	item.expiration_date = 0;
 	item.removed = false;
+}
+
+bool tl2::details::Service3ProductWriteJSON(std::ostream& s, const ::tl2::service3::Product& item, uint32_t nat_mode) {
+	s << "{";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"info\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	s << ",";
+	s << "\"date\":";
+	s << item.date;
+	s << ",";
+	s << "\"expiration_date\":";
+	s << item.expiration_date;
+	if ((nat_mode & (1<<0)) != 0) {
+		s << ",";
+		s << "\"removed\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
+	}
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3ProductRead(::basictl::tl_istream & s, ::tl2::service3::Product& item, uint32_t nat_mode) {
@@ -1018,6 +1378,31 @@ void tl2::details::Service3Product0Reset(::tl2::service3::Productmode<0>& item) 
 	item.removed = false;
 }
 
+bool tl2::details::Service3Product0WriteJSON(std::ostream& s, const ::tl2::service3::Productmode<0>& item) {
+	s << "{";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"info\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	s << ",";
+	s << "\"date\":";
+	s << item.date;
+	s << ",";
+	s << "\"expiration_date\":";
+	s << item.expiration_date;
+	if ((0 & (1<<0)) != 0) {
+		s << ",";
+		s << "\"removed\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
+	}
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service3Product0Read(::basictl::tl_istream & s, ::tl2::service3::Productmode<0>& item) {
 	if (!s.int_read(item.type)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.id)) { return false; }
@@ -1054,6 +1439,11 @@ bool tl2::details::Service3Product0WriteBoxed(::basictl::tl_ostream & s, const :
 	return tl2::details::Service3Product0Write(s, item);
 }
 
+bool tl2::service3::ProductStatsOld::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3ProductStatsOldWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::ProductStatsOld::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3ProductStatsOldRead(s, *this)) { return false; }
 	return true;
@@ -1080,6 +1470,26 @@ void tl2::details::Service3ProductStatsOldReset(::tl2::service3::ProductStatsOld
 	item.count_total = 0;
 	item.count_scheduled = 0;
 	item.next_scheduled_at = 0;
+}
+
+bool tl2::details::Service3ProductStatsOldWriteJSON(std::ostream& s, const ::tl2::service3::ProductStatsOld& item) {
+	s << "{";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"count_new\":";
+	s << item.count_new;
+	s << ",";
+	s << "\"count_total\":";
+	s << item.count_total;
+	s << ",";
+	s << "\"count_scheduled\":";
+	s << item.count_scheduled;
+	s << ",";
+	s << "\"next_scheduled_at\":";
+	s << item.next_scheduled_at;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3ProductStatsOldRead(::basictl::tl_istream & s, ::tl2::service3::ProductStatsOld& item) {
@@ -1110,6 +1520,11 @@ bool tl2::details::Service3ProductStatsOldWriteBoxed(::basictl::tl_ostream & s, 
 	return tl2::details::Service3ProductStatsOldWrite(s, item);
 }
 
+bool tl2::service3::RestoreAllProducts::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3RestoreAllProductsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::RestoreAllProducts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3RestoreAllProductsRead(s, *this)) { return false; }
 	return true;
@@ -1135,6 +1550,23 @@ void tl2::details::Service3RestoreAllProductsReset(::tl2::service3::RestoreAllPr
 	item.type = 0;
 	item.start_date = 0;
 	item.end_date = 0;
+}
+
+bool tl2::details::Service3RestoreAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreAllProducts& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"start_date\":";
+	s << item.start_date;
+	s << ",";
+	s << "\"end_date\":";
+	s << item.end_date;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3RestoreAllProductsRead(::basictl::tl_istream & s, ::tl2::service3::RestoreAllProducts& item) {
@@ -1179,6 +1611,11 @@ bool tl2::service3::RestoreAllProducts::write_result(::basictl::tl_ostream & s, 
 	return tl2::details::Service3RestoreAllProductsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::RestoreGroupedProducts::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3RestoreGroupedProductsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::RestoreGroupedProducts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3RestoreGroupedProductsRead(s, *this)) { return false; }
 	return true;
@@ -1205,6 +1642,26 @@ void tl2::details::Service3RestoreGroupedProductsReset(::tl2::service3::RestoreG
 	item.id.clear();
 	item.start_date = 0;
 	item.end_date = 0;
+}
+
+bool tl2::details::Service3RestoreGroupedProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreGroupedProducts& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"start_date\":";
+	s << item.start_date;
+	s << ",";
+	s << "\"end_date\":";
+	s << item.end_date;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3RestoreGroupedProductsRead(::basictl::tl_istream & s, ::tl2::service3::RestoreGroupedProducts& item) {
@@ -1251,6 +1708,11 @@ bool tl2::service3::RestoreGroupedProducts::write_result(::basictl::tl_ostream &
 	return tl2::details::Service3RestoreGroupedProductsWriteResult(s, *this, result);
 }
 
+bool tl2::service3::RestoreProduct::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3RestoreProductWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::RestoreProduct::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3RestoreProductRead(s, *this)) { return false; }
 	return true;
@@ -1276,6 +1738,23 @@ void tl2::details::Service3RestoreProductReset(::tl2::service3::RestoreProduct& 
 	item.type = 0;
 	item.id.clear();
 	item.info.clear();
+}
+
+bool tl2::details::Service3RestoreProductWriteJSON(std::ostream& s, const ::tl2::service3::RestoreProduct& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"type\":";
+	s << item.type;
+	s << ",";
+	s << "\"id\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
+	s << ",";
+	s << "\"info\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3RestoreProductRead(::basictl::tl_istream & s, ::tl2::service3::RestoreProduct& item) {
@@ -1320,6 +1799,11 @@ bool tl2::service3::RestoreProduct::write_result(::basictl::tl_ostream & s, bool
 	return tl2::details::Service3RestoreProductWriteResult(s, *this, result);
 }
 
+bool tl2::service3::SetLastVisitTimestamp::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3SetLastVisitTimestampWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::SetLastVisitTimestamp::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3SetLastVisitTimestampRead(s, *this)) { return false; }
 	return true;
@@ -1343,6 +1827,17 @@ bool tl2::service3::SetLastVisitTimestamp::write_boxed(::basictl::tl_ostream & s
 void tl2::details::Service3SetLastVisitTimestampReset(::tl2::service3::SetLastVisitTimestamp& item) {
 	item.user_id = 0;
 	item.timestamp = 0;
+}
+
+bool tl2::details::Service3SetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::SetLastVisitTimestamp& item) {
+	s << "{";
+	s << "\"user_id\":";
+	s << item.user_id;
+	s << ",";
+	s << "\"timestamp\":";
+	s << item.timestamp;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3SetLastVisitTimestampRead(::basictl::tl_istream & s, ::tl2::service3::SetLastVisitTimestamp& item) {
@@ -1383,6 +1878,11 @@ bool tl2::service3::SetLastVisitTimestamp::write_result(::basictl::tl_ostream & 
 	return tl2::details::Service3SetLastVisitTimestampWriteResult(s, *this, result);
 }
 
+bool tl2::service3::SetLimits::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service3SetLimitsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service3::SetLimits::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service3SetLimitsRead(s, *this)) { return false; }
 	return true;
@@ -1405,6 +1905,14 @@ bool tl2::service3::SetLimits::write_boxed(::basictl::tl_ostream & s)const {
 
 void tl2::details::Service3SetLimitsReset(::tl2::service3::SetLimits& item) {
 	::tl2::details::Service3LimitsReset(item.limits);
+}
+
+bool tl2::details::Service3SetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::SetLimits& item) {
+	s << "{";
+	s << "\"limits\":";
+	if (!::tl2::details::Service3LimitsWriteJSON(s, item.limits)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service3SetLimitsRead(::basictl::tl_istream & s, ::tl2::service3::SetLimits& item) {
@@ -1447,6 +1955,11 @@ void tl2::details::VectorService3GroupCountLimitReset(std::vector<::tl2::service
 	item.clear();
 }
 
+bool tl2::details::VectorService3GroupCountLimitWriteJSON(std::ostream& s, const std::vector<::tl2::service3::GroupCountLimit>& item) {
+	if (!::tl2::details::BuiltinVectorService3GroupCountLimitWriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::VectorService3GroupCountLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupCountLimit>& item) {
 	if (!::tl2::details::BuiltinVectorService3GroupCountLimitRead(s, item)) { return false; }
 	return true;
@@ -1469,6 +1982,11 @@ bool tl2::details::VectorService3GroupCountLimitWriteBoxed(::basictl::tl_ostream
 
 void tl2::details::VectorService3GroupSizeLimitReset(std::vector<::tl2::service3::GroupSizeLimit>& item) {
 	item.clear();
+}
+
+bool tl2::details::VectorService3GroupSizeLimitWriteJSON(std::ostream& s, const std::vector<::tl2::service3::GroupSizeLimit>& item) {
+	if (!::tl2::details::BuiltinVectorService3GroupSizeLimitWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::VectorService3GroupSizeLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupSizeLimit>& item) {
@@ -1495,6 +2013,11 @@ void tl2::details::VectorService3ProductReset(std::vector<::tl2::service3::Produ
 	item.clear();
 }
 
+bool tl2::details::VectorService3ProductWriteJSON(std::ostream& s, const std::vector<::tl2::service3::Product>& item, uint32_t nat_t) {
+	if (!::tl2::details::BuiltinVectorService3ProductWriteJSON(s, item, nat_t)) { return false; }
+	return true;
+}
+
 bool tl2::details::VectorService3ProductRead(::basictl::tl_istream & s, std::vector<::tl2::service3::Product>& item, uint32_t nat_t) {
 	if (!::tl2::details::BuiltinVectorService3ProductRead(s, item, nat_t)) { return false; }
 	return true;
@@ -1519,6 +2042,11 @@ void tl2::details::VectorService3Product0Reset(std::vector<::tl2::service3::Prod
 	item.clear();
 }
 
+bool tl2::details::VectorService3Product0WriteJSON(std::ostream& s, const std::vector<::tl2::service3::Productmode<0>>& item) {
+	if (!::tl2::details::BuiltinVectorService3Product0WriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::VectorService3Product0Read(::basictl::tl_istream & s, std::vector<::tl2::service3::Productmode<0>>& item) {
 	if (!::tl2::details::BuiltinVectorService3Product0Read(s, item)) { return false; }
 	return true;
@@ -1539,6 +2067,16 @@ bool tl2::details::VectorService3Product0WriteBoxed(::basictl::tl_ostream & s, c
 	return tl2::details::VectorService3Product0Write(s, item);
 }
 
+bool tl2::details::VectorService3Product0MaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::Productmode<0>>>& item) {
+	s << "{";
+	if (item) {
+		s << "\"ok\":true,";
+		s << "\"value\":";
+		if (!::tl2::details::BuiltinVectorService3Product0WriteJSON(s, *item)) { return false; }
+	}
+	s << "}";
+	return true;
+}
 bool tl2::details::VectorService3Product0MaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Productmode<0>>>& item) {
 	bool has_item = false;
 	if (!s.bool_read(has_item, 0x27930a7b, 0x3f9c8ef8)) { return false; }
@@ -1561,6 +2099,16 @@ bool tl2::details::VectorService3Product0MaybeWriteBoxed(::basictl::tl_ostream &
 	return true;
 }
 
+bool tl2::details::VectorService3ProductMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::Product>>& item, uint32_t nat_t) {
+	s << "{";
+	if (item) {
+		s << "\"ok\":true,";
+		s << "\"value\":";
+		if (!::tl2::details::BuiltinVectorService3ProductWriteJSON(s, *item, nat_t)) { return false; }
+	}
+	s << "}";
+	return true;
+}
 bool tl2::details::VectorService3ProductMaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Product>>& item, uint32_t nat_t) {
 	bool has_item = false;
 	if (!s.bool_read(has_item, 0x27930a7b, 0x3f9c8ef8)) { return false; }
@@ -1587,6 +2135,11 @@ void tl2::details::VectorService3ProductStatsOldReset(std::vector<::tl2::service
 	item.clear();
 }
 
+bool tl2::details::VectorService3ProductStatsOldWriteJSON(std::ostream& s, const std::vector<::tl2::service3::ProductStatsOld>& item) {
+	if (!::tl2::details::BuiltinVectorService3ProductStatsOldWriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::VectorService3ProductStatsOldRead(::basictl::tl_istream & s, std::vector<::tl2::service3::ProductStatsOld>& item) {
 	if (!::tl2::details::BuiltinVectorService3ProductStatsOldRead(s, item)) { return false; }
 	return true;
@@ -1607,6 +2160,16 @@ bool tl2::details::VectorService3ProductStatsOldWriteBoxed(::basictl::tl_ostream
 	return tl2::details::VectorService3ProductStatsOldWrite(s, item);
 }
 
+bool tl2::details::VectorService3ProductStatsOldMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::ProductStatsOld>>& item) {
+	s << "{";
+	if (item) {
+		s << "\"ok\":true,";
+		s << "\"value\":";
+		if (!::tl2::details::BuiltinVectorService3ProductStatsOldWriteJSON(s, *item)) { return false; }
+	}
+	s << "}";
+	return true;
+}
 bool tl2::details::VectorService3ProductStatsOldMaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::ProductStatsOld>>& item) {
 	bool has_item = false;
 	if (!s.bool_read(has_item, 0x27930a7b, 0x3f9c8ef8)) { return false; }

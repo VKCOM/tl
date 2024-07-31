@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service3GetLimitsReset(::tl2::service3::GetLimits& item);
+
+bool Service3GetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::GetLimits& item);
 bool Service3GetLimitsRead(::basictl::tl_istream & s, ::tl2::service3::GetLimits& item);
 bool Service3GetLimitsWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetLimits& item);
 bool Service3GetLimitsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GetLimits& item);
