@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service3GetLastVisitTimestampReset(::tl2::service3::GetLastVisitTimestamp& item);
+
+bool Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::GetLastVisitTimestamp& item);
 bool Service3GetLastVisitTimestampRead(::basictl::tl_istream & s, ::tl2::service3::GetLastVisitTimestamp& item);
 bool Service3GetLastVisitTimestampWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetLastVisitTimestamp& item);
 bool Service3GetLastVisitTimestampReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GetLastVisitTimestamp& item);

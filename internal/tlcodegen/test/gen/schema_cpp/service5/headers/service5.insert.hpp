@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service5InsertReset(::tl2::service5::Insert& item);
+
+bool Service5InsertWriteJSON(std::ostream& s, const ::tl2::service5::Insert& item);
 bool Service5InsertRead(::basictl::tl_istream & s, ::tl2::service5::Insert& item);
 bool Service5InsertWrite(::basictl::tl_ostream & s, const ::tl2::service5::Insert& item);
 bool Service5InsertReadBoxed(::basictl::tl_istream & s, ::tl2::service5::Insert& item);

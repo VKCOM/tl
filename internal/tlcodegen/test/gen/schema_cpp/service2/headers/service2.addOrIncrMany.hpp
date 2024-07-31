@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& item);
+
+bool Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::service2::AddOrIncrMany& item);
 bool Service2AddOrIncrManyRead(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item);
 bool Service2AddOrIncrManyWrite(::basictl::tl_ostream & s, const ::tl2::service2::AddOrIncrMany& item);
 bool Service2AddOrIncrManyReadBoxed(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item);

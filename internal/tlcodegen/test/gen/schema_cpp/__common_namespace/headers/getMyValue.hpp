@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void GetMyValueReset(::tl2::GetMyValue& item);
+
+bool GetMyValueWriteJSON(std::ostream& s, const ::tl2::GetMyValue& item);
 bool GetMyValueRead(::basictl::tl_istream & s, ::tl2::GetMyValue& item);
 bool GetMyValueWrite(::basictl::tl_ostream & s, const ::tl2::GetMyValue& item);
 bool GetMyValueReadBoxed(::basictl::tl_istream & s, ::tl2::GetMyValue& item);

@@ -15,6 +15,8 @@ struct Product {
 	std::string_view tl_name() const { return "service3.product"; }
 	uint32_t tl_tag() const { return 0x461f4ce2; }
 
+	bool write_json(std::ostream& s, uint32_t nat_mode)const;
+
 	bool read(::basictl::tl_istream & s, uint32_t nat_mode);
 	bool write(::basictl::tl_ostream & s, uint32_t nat_mode)const;
 

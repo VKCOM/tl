@@ -14,6 +14,8 @@ struct AddOrGet {
 	std::string_view tl_name() const { return "service1.addOrGet"; }
 	uint32_t tl_tag() const { return 0x6a42faad; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

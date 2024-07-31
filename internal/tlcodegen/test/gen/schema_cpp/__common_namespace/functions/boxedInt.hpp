@@ -10,6 +10,8 @@ struct BoxedInt {
 	std::string_view tl_name() const { return "boxedInt"; }
 	uint32_t tl_tag() const { return 0x5688ebaf; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

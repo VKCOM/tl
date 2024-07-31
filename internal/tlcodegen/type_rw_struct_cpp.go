@@ -65,6 +65,14 @@ func (trw *TypeRWStruct) CPPTypeResettingCode(bytesVersion bool, val string) str
 	return fmt.Sprintf("\t::%s::%sReset(%s);", trw.wr.gen.DetailsCPPNamespace, goGlobalName, val)
 }
 
+func (trw *TypeRWStruct) CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.trw.CPPTypeWritingJsonCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
+	}
+	return fmt.Sprintf("\tif (!::%s::%sWriteJSON(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, val, joinWithCommas(natArgs))
+}
+
 func (trw *TypeRWStruct) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	if trw.isUnwrapType() {
@@ -212,6 +220,8 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 			if len(myArgsDecl) == 0 {
 				// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 				hpp.WriteString(fmt.Sprintf(`
+	bool write_json(std::ostream& s%[1]s)const;
+
 	bool read(::basictl::tl_istream & s%[1]s);
 	bool write(::basictl::tl_ostream & s%[1]s)const;
 `,
@@ -264,6 +274,8 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 
 		hppDet.WriteString(fmt.Sprintf(`
 void %[1]sReset(%[2]s& item);
+
+bool %[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s);
 bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s);
 bool %[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 `, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
@@ -293,6 +305,11 @@ bool %[1]sWriteResult(::basictl::tl_ostream & s, %[2]s& item, %[3]s& result);
 		if !trw.isTypeDef() {
 			if len(myArgsDecl) == 0 {
 				cppDet.WriteString(fmt.Sprintf(`
+bool %[5]s::write_json(std::ostream& s%[1]s)const {
+%[6]s
+	return true;
+}
+
 bool %[5]s::read(::basictl::tl_istream & s%[1]s) {
 %[3]s
 	return true;
@@ -307,7 +324,9 @@ bool %[5]s::write(::basictl::tl_ostream & s%[1]s)const {
 					trw.CPPTypeResettingCode(bytesVersion, "*this"),
 					trw.CPPTypeReadingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
 					trw.CPPTypeWritingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
-					myFullTypeNoPrefix))
+					myFullTypeNoPrefix,
+					trw.CPPTypeWritingJsonCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
+				))
 				if trw.wr.tlTag != 0 {
 					cppDet.WriteString(fmt.Sprintf(`
 bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
@@ -332,6 +351,10 @@ bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const {
 void %[7]s::%[1]sReset(%[2]s& item) {
 %[4]s}
 
+bool %[7]s::%[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s) {
+%[8]s	return true;
+}
+
 bool %[7]s::%[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 %[5]s	return true;
 }
@@ -347,6 +370,7 @@ bool %[7]s::%[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.CPPReadFields(bytesVersion, hppDetInc, cppDetInc),
 			trw.CPPWriteFields(bytesVersion),
 			trw.wr.gen.DetailsCPPNamespace,
+			trw.CPPWriteJsonFields(bytesVersion),
 		))
 
 		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
@@ -460,6 +484,47 @@ func (trw *TypeRWStruct) CPPWriteFields(bytesVersion bool) string {
 			s.WriteString("\t}\n")
 		}
 	}
+	return s.String()
+}
+
+func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
+	var s strings.Builder
+	if trw.isTypeDef() {
+		field := trw.Fields[0]
+		s.WriteString(
+			field.t.trw.CPPTypeWritingJsonCode(bytesVersion, "item",
+				field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
+		return s.String()
+	}
+	s.WriteString(`	s << "{";
+`)
+	for i, field := range trw.Fields {
+		indent := 0
+		if field.fieldMask != nil {
+			s.WriteString(fmt.Sprintf("\tif ((%s & (1<<%d)) != 0) {\n", formatNatArgCPP(trw.Fields, *field.fieldMask), field.BitNumber))
+			indent++
+		}
+		s.WriteString(fmt.Sprintf(`%ss << "\"%s\":";
+`,
+			strings.Repeat("\t", indent+1),
+			field.originalName,
+		))
+		s.WriteString(strings.Repeat("\t", indent))
+		s.WriteString(
+			field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)),
+				field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
+		if i != len(trw.Fields)-1 {
+			s.WriteString(fmt.Sprintf(`%ss << ",";
+`,
+				strings.Repeat("\t", indent+1),
+			))
+		}
+		if field.fieldMask != nil {
+			s.WriteString("\t}\n")
+		}
+	}
+	s.WriteString(`	s << "}";
+`)
 	return s.String()
 }
 

@@ -25,6 +25,20 @@ void tl2::details::BuiltinTuple4StringReset(std::array<std::string, 4>& item) {
 	}
 }
 
+bool tl2::details::BuiltinTuple4StringWriteJSON(std::ostream &s, const std::array<std::string, 4>& item) {
+	s << "[";
+	size_t index = 0;
+	for(auto && el : item) {
+		s << "\"" << el << "\"";
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinTuple4StringRead(::basictl::tl_istream & s, std::array<std::string, 4>& item) {
 	for(auto && el : item) {
 		if (!s.string_read(el)) { return false; }
@@ -41,6 +55,24 @@ bool tl2::details::BuiltinTuple4StringWrite(::basictl::tl_ostream & s, const std
 
 void tl2::details::BuiltinTupleStringReset(std::vector<std::string>& item) {
 	item.resize(0);
+}
+
+bool tl2::details::BuiltinTupleStringWriteJSON(std::ostream & s, const std::vector<std::string>& item, uint32_t nat_n) {
+	if (item.size() != nat_n) {
+		// TODO add exception
+		return false;
+	}
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		s << "\"" << el << "\"";
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool tl2::details::BuiltinTupleStringRead(::basictl::tl_istream & s, std::vector<std::string>& item, uint32_t nat_n) {
@@ -63,6 +95,20 @@ bool tl2::details::BuiltinTupleStringWrite(::basictl::tl_ostream & s, const std:
 
 void tl2::details::BuiltinVectorDictionaryFieldStringReset(std::vector<::tl2::DictionaryField<std::string>>& item) {
 	item.resize(0); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldStringWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryField<std::string>>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::DictionaryFieldStringWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool tl2::details::BuiltinVectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<std::string>>& item) {
@@ -88,6 +134,20 @@ void tl2::details::BuiltinVectorStringReset(std::vector<std::string>& item) {
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorStringWriteJSON(std::ostream & s, const std::vector<std::string>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		s << "\"" << el << "\"";
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -104,6 +164,11 @@ bool tl2::details::BuiltinVectorStringWrite(::basictl::tl_ostream & s, const std
 	for(const auto & el : item) {
 		if (!s.string_write(el)) { return false;}
 	}
+	return true;
+}
+
+bool tl2::cases_bytes::TestArray::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestArrayWriteJSON(s, *this)) { return false; }
 	return true;
 }
 
@@ -132,6 +197,17 @@ void tl2::details::CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item)
 	item.arr.clear();
 }
 
+bool tl2::details::CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) {
+	s << "{";
+	s << "\"n\":";
+	s << item.n;
+	s << ",";
+	s << "\"arr\":";
+	if (!::tl2::details::BuiltinTupleStringWriteJSON(s, item.arr, item.n)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestArrayRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item) {
 	if (!s.nat_read(item.n)) { return false; }
 	if (!::tl2::details::BuiltinTupleStringRead(s, item.arr, item.n)) { return false; }
@@ -152,6 +228,11 @@ bool tl2::details::CasesBytesTestArrayReadBoxed(::basictl::tl_istream & s, ::tl2
 bool tl2::details::CasesBytesTestArrayWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item) {
 	if (!s.nat_write(0x3762fb81)) { return false; }
 	return tl2::details::CasesBytesTestArrayWrite(s, item);
+}
+
+bool tl2::cases_bytes::TestDictAny::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestDictAnyWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestDictAny::read(::basictl::tl_istream & s) {
@@ -178,6 +259,14 @@ void tl2::details::CasesBytesTestDictAnyReset(::tl2::cases_bytes::TestDictAny& i
 	::tl2::details::DictionaryAnyDoubleIntReset(item.dict);
 }
 
+bool tl2::details::CasesBytesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictAny& item) {
+	s << "{";
+	s << "\"dict\":";
+	if (!::tl2::details::DictionaryAnyDoubleIntWriteJSON(s, item.dict)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestDictAnyRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictAny& item) {
 	if (!::tl2::details::DictionaryAnyDoubleIntRead(s, item.dict)) { return false; }
 	return true;
@@ -196,6 +285,11 @@ bool tl2::details::CasesBytesTestDictAnyReadBoxed(::basictl::tl_istream & s, ::t
 bool tl2::details::CasesBytesTestDictAnyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictAny& item) {
 	if (!s.nat_write(0x5a5fce57)) { return false; }
 	return tl2::details::CasesBytesTestDictAnyWrite(s, item);
+}
+
+bool tl2::cases_bytes::TestDictInt::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestDictIntWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestDictInt::read(::basictl::tl_istream & s) {
@@ -222,6 +316,14 @@ void tl2::details::CasesBytesTestDictIntReset(::tl2::cases_bytes::TestDictInt& i
 	item.dict.clear();
 }
 
+bool tl2::details::CasesBytesTestDictIntWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictInt& item) {
+	s << "{";
+	s << "\"dict\":";
+	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(s, item.dict)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestDictIntRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictInt& item) {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntRead(s, item.dict)) { return false; }
 	return true;
@@ -240,6 +342,11 @@ bool tl2::details::CasesBytesTestDictIntReadBoxed(::basictl::tl_istream & s, ::t
 bool tl2::details::CasesBytesTestDictIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictInt& item) {
 	if (!s.nat_write(0x453ace07)) { return false; }
 	return tl2::details::CasesBytesTestDictIntWrite(s, item);
+}
+
+bool tl2::cases_bytes::TestDictString::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestDictStringWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestDictString::read(::basictl::tl_istream & s) {
@@ -266,6 +373,14 @@ void tl2::details::CasesBytesTestDictStringReset(::tl2::cases_bytes::TestDictStr
 	::tl2::details::DictionaryIntReset(item.dict);
 }
 
+bool tl2::details::CasesBytesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictString& item) {
+	s << "{";
+	s << "\"dict\":";
+	if (!::tl2::details::DictionaryIntWriteJSON(s, item.dict)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestDictStringRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictString& item) {
 	if (!::tl2::details::DictionaryIntRead(s, item.dict)) { return false; }
 	return true;
@@ -284,6 +399,11 @@ bool tl2::details::CasesBytesTestDictStringReadBoxed(::basictl::tl_istream & s, 
 bool tl2::details::CasesBytesTestDictStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictString& item) {
 	if (!s.nat_write(0x6c04d6ce)) { return false; }
 	return tl2::details::CasesBytesTestDictStringWrite(s, item);
+}
+
+bool tl2::cases_bytes::TestDictStringString::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestDictStringStringWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestDictStringString::read(::basictl::tl_istream & s) {
@@ -310,6 +430,14 @@ void tl2::details::CasesBytesTestDictStringStringReset(::tl2::cases_bytes::TestD
 	::tl2::details::DictionaryStringReset(item.dict);
 }
 
+bool tl2::details::CasesBytesTestDictStringStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictStringString& item) {
+	s << "{";
+	s << "\"dict\":";
+	if (!::tl2::details::DictionaryStringWriteJSON(s, item.dict)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestDictStringStringRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictStringString& item) {
 	if (!::tl2::details::DictionaryStringRead(s, item.dict)) { return false; }
 	return true;
@@ -333,6 +461,10 @@ bool tl2::details::CasesBytesTestDictStringStringWriteBoxed(::basictl::tl_ostrea
 static const std::string_view CasesBytesTestEnum_tbl_tl_name[]{"cases_bytes.testEnum1", "cases_bytes.testEnum2", "cases_bytes.testEnum3"};
 static const uint32_t CasesBytesTestEnum_tbl_tl_tag[]{0x58aad3f5, 0x00b47add, 0x81911ffa};
 
+bool tl2::cases_bytes::TestEnum::write_json(std::ostream & s)const {
+	if (!::tl2::details::CasesBytesTestEnumWriteJSON(s, *this)) { return false; }
+	return true;
+}
 bool tl2::cases_bytes::TestEnum::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::CasesBytesTestEnumReadBoxed(s, *this)) { return false; }
 	return true;
@@ -353,6 +485,15 @@ void tl2::details::CasesBytesTestEnumReset(::tl2::cases_bytes::TestEnum& item) {
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
+bool tl2::details::CasesBytesTestEnumWriteJSON(std::ostream & s, const ::tl2::cases_bytes::TestEnum& item) {
+	s << "{";
+	s << "\"type\":";
+	s << CasesBytesTestEnum_tbl_tl_tag[item.value.index()];
+	switch (item.value.index()) {
+	}
+	s << "}";
+	return true;
+}
 bool tl2::details::CasesBytesTestEnumReadBoxed(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum& item) {
 	uint32_t nat;
 	s.nat_read(nat);
@@ -379,6 +520,11 @@ bool tl2::details::CasesBytesTestEnumWriteBoxed(::basictl::tl_ostream & s, const
 	return true;
 }
 
+bool tl2::cases_bytes::TestEnum1::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestEnum1WriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::cases_bytes::TestEnum1::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::CasesBytesTestEnum1Read(s, *this)) { return false; }
 	return true;
@@ -402,6 +548,12 @@ bool tl2::cases_bytes::TestEnum1::write_boxed(::basictl::tl_ostream & s)const {
 void tl2::details::CasesBytesTestEnum1Reset(::tl2::cases_bytes::TestEnum1& item) {
 }
 
+bool tl2::details::CasesBytesTestEnum1WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum1& item) {
+	s << "{";
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestEnum1Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum1& item) {
 	return true;
 }
@@ -418,6 +570,11 @@ bool tl2::details::CasesBytesTestEnum1ReadBoxed(::basictl::tl_istream & s, ::tl2
 bool tl2::details::CasesBytesTestEnum1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum1& item) {
 	if (!s.nat_write(0x58aad3f5)) { return false; }
 	return tl2::details::CasesBytesTestEnum1Write(s, item);
+}
+
+bool tl2::cases_bytes::TestEnum2::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestEnum2WriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestEnum2::read(::basictl::tl_istream & s) {
@@ -443,6 +600,12 @@ bool tl2::cases_bytes::TestEnum2::write_boxed(::basictl::tl_ostream & s)const {
 void tl2::details::CasesBytesTestEnum2Reset(::tl2::cases_bytes::TestEnum2& item) {
 }
 
+bool tl2::details::CasesBytesTestEnum2WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum2& item) {
+	s << "{";
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestEnum2Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum2& item) {
 	return true;
 }
@@ -459,6 +622,11 @@ bool tl2::details::CasesBytesTestEnum2ReadBoxed(::basictl::tl_istream & s, ::tl2
 bool tl2::details::CasesBytesTestEnum2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum2& item) {
 	if (!s.nat_write(0x00b47add)) { return false; }
 	return tl2::details::CasesBytesTestEnum2Write(s, item);
+}
+
+bool tl2::cases_bytes::TestEnum3::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestEnum3WriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestEnum3::read(::basictl::tl_istream & s) {
@@ -484,6 +652,12 @@ bool tl2::cases_bytes::TestEnum3::write_boxed(::basictl::tl_ostream & s)const {
 void tl2::details::CasesBytesTestEnum3Reset(::tl2::cases_bytes::TestEnum3& item) {
 }
 
+bool tl2::details::CasesBytesTestEnum3WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum3& item) {
+	s << "{";
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestEnum3Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum3& item) {
 	return true;
 }
@@ -500,6 +674,11 @@ bool tl2::details::CasesBytesTestEnum3ReadBoxed(::basictl::tl_istream & s, ::tl2
 bool tl2::details::CasesBytesTestEnum3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum3& item) {
 	if (!s.nat_write(0x81911ffa)) { return false; }
 	return tl2::details::CasesBytesTestEnum3Write(s, item);
+}
+
+bool tl2::cases_bytes::TestEnumContainer::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestEnumContainerWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestEnumContainer::read(::basictl::tl_istream & s) {
@@ -526,6 +705,14 @@ void tl2::details::CasesBytesTestEnumContainerReset(::tl2::cases_bytes::TestEnum
 	::tl2::details::CasesTestEnumReset(item.value);
 }
 
+bool tl2::details::CasesBytesTestEnumContainerWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnumContainer& item) {
+	s << "{";
+	s << "\"value\":";
+	if (!::tl2::details::CasesTestEnumWriteJSON(s, item.value)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestEnumContainerRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnumContainer& item) {
 	if (!::tl2::details::CasesTestEnumReadBoxed(s, item.value)) { return false; }
 	return true;
@@ -544,6 +731,11 @@ bool tl2::details::CasesBytesTestEnumContainerReadBoxed(::basictl::tl_istream & 
 bool tl2::details::CasesBytesTestEnumContainerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnumContainer& item) {
 	if (!s.nat_write(0x32b92037)) { return false; }
 	return tl2::details::CasesBytesTestEnumContainerWrite(s, item);
+}
+
+bool tl2::cases_bytes::TestTuple::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestTupleWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestTuple::read(::basictl::tl_istream & s) {
@@ -570,6 +762,14 @@ void tl2::details::CasesBytesTestTupleReset(::tl2::cases_bytes::TestTuple& item)
 	::tl2::details::BuiltinTuple4StringReset(item.tpl);
 }
 
+bool tl2::details::CasesBytesTestTupleWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestTuple& item) {
+	s << "{";
+	s << "\"tpl\":";
+	if (!::tl2::details::BuiltinTuple4StringWriteJSON(s, item.tpl)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestTupleRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestTuple& item) {
 	if (!::tl2::details::BuiltinTuple4StringRead(s, item.tpl)) { return false; }
 	return true;
@@ -588,6 +788,11 @@ bool tl2::details::CasesBytesTestTupleReadBoxed(::basictl::tl_istream & s, ::tl2
 bool tl2::details::CasesBytesTestTupleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestTuple& item) {
 	if (!s.nat_write(0x2dd3bacf)) { return false; }
 	return tl2::details::CasesBytesTestTupleWrite(s, item);
+}
+
+bool tl2::cases_bytes::TestVector::write_json(std::ostream& s)const {
+	if (!::tl2::details::CasesBytesTestVectorWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::cases_bytes::TestVector::read(::basictl::tl_istream & s) {
@@ -614,6 +819,14 @@ void tl2::details::CasesBytesTestVectorReset(::tl2::cases_bytes::TestVector& ite
 	item.arr.clear();
 }
 
+bool tl2::details::CasesBytesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestVector& item) {
+	s << "{";
+	s << "\"arr\":";
+	if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.arr)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::CasesBytesTestVectorRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestVector& item) {
 	if (!::tl2::details::BuiltinVectorStringRead(s, item.arr)) { return false; }
 	return true;
@@ -637,6 +850,17 @@ bool tl2::details::CasesBytesTestVectorWriteBoxed(::basictl::tl_ostream & s, con
 void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) {
 	item.key.clear();
 	item.value.clear();
+}
+
+bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) {
+	s << "{";
+	s << "\"key\":";
+	s << "\"" << item.key << "\"";
+	s << ",";
+	s << "\"value\":";
+	s << "\"" << item.value << "\"";
+	s << "}";
+	return true;
 }
 
 bool tl2::details::DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) {
@@ -665,6 +889,11 @@ void tl2::details::DictionaryStringReset(::tl2::Dictionary<std::string>& item) {
 	item.clear();
 }
 
+bool tl2::details::DictionaryStringWriteJSON(std::ostream& s, const ::tl2::Dictionary<std::string>& item) {
+	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::DictionaryStringRead(::basictl::tl_istream & s, ::tl2::Dictionary<std::string>& item) {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringRead(s, item)) { return false; }
 	return true;
@@ -687,6 +916,11 @@ bool tl2::details::DictionaryStringWriteBoxed(::basictl::tl_ostream & s, const :
 
 void tl2::details::TupleString4Reset(std::array<std::string, 4>& item) {
 	::tl2::details::BuiltinTuple4StringReset(item);
+}
+
+bool tl2::details::TupleString4WriteJSON(std::ostream& s, const std::array<std::string, 4>& item) {
+	if (!::tl2::details::BuiltinTuple4StringWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::TupleString4Read(::basictl::tl_istream & s, std::array<std::string, 4>& item) {
@@ -713,6 +947,11 @@ void tl2::details::VectorDictionaryFieldStringReset(std::vector<::tl2::Dictionar
 	item.clear();
 }
 
+bool tl2::details::VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryField<std::string>>& item) {
+	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<std::string>>& item) {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringRead(s, item)) { return false; }
 	return true;
@@ -735,6 +974,11 @@ bool tl2::details::VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream &
 
 void tl2::details::VectorStringReset(std::vector<std::string>& item) {
 	item.clear();
+}
+
+bool tl2::details::VectorStringWriteJSON(std::ostream& s, const std::vector<std::string>& item) {
+	if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::VectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item) {

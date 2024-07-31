@@ -23,6 +23,8 @@ struct TestAllPossibleFieldConfigs {
 	std::string_view tl_name() const { return "cases.testAllPossibleFieldConfigs"; }
 	uint32_t tl_tag() const { return 0xfb6836d3; }
 
+	bool write_json(std::ostream& s, uint32_t nat_outer)const;
+
 	bool read(::basictl::tl_istream & s, uint32_t nat_outer);
 	bool write(::basictl::tl_ostream & s, uint32_t nat_outer)const;
 

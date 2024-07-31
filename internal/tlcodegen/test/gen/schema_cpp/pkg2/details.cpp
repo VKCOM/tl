@@ -3,6 +3,11 @@
 #include "headers/pkg2.foo.hpp"
 
 
+bool tl2::pkg2::Foo::write_json(std::ostream& s)const {
+	if (!::tl2::details::Pkg2FooWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::pkg2::Foo::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Pkg2FooRead(s, *this)) { return false; }
 	return true;
@@ -27,6 +32,14 @@ void tl2::details::Pkg2FooReset(::tl2::pkg2::Foo& item) {
 	item.x = 0;
 }
 
+bool tl2::details::Pkg2FooWriteJSON(std::ostream& s, const ::tl2::pkg2::Foo& item) {
+	s << "{";
+	s << "\"x\":";
+	s << item.x;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Pkg2FooRead(::basictl::tl_istream & s, ::tl2::pkg2::Foo& item) {
 	if (!s.int_read(item.x)) { return false; }
 	return true;
@@ -45,6 +58,11 @@ bool tl2::details::Pkg2FooReadBoxed(::basictl::tl_istream & s, ::tl2::pkg2::Foo&
 bool tl2::details::Pkg2FooWriteBoxed(::basictl::tl_ostream & s, const ::tl2::pkg2::Foo& item) {
 	if (!s.nat_write(0xe144703d)) { return false; }
 	return tl2::details::Pkg2FooWrite(s, item);
+}
+
+bool tl2::pkg2::T1::write_json(std::ostream& s)const {
+	if (!::tl2::details::Pkg2T1WriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::pkg2::T1::read(::basictl::tl_istream & s) {
@@ -71,6 +89,14 @@ void tl2::details::Pkg2T1Reset(::tl2::pkg2::T1& item) {
 	::tl2::details::Pkg2FooReset(item.x);
 }
 
+bool tl2::details::Pkg2T1WriteJSON(std::ostream& s, const ::tl2::pkg2::T1& item) {
+	s << "{";
+	s << "\"x\":";
+	if (!::tl2::details::Pkg2FooWriteJSON(s, item.x)) { return false; }
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Pkg2T1Read(::basictl::tl_istream & s, ::tl2::pkg2::T1& item) {
 	if (!::tl2::details::Pkg2FooReadBoxed(s, item.x)) { return false; }
 	return true;
@@ -93,6 +119,11 @@ bool tl2::details::Pkg2T1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::pkg2
 
 void tl2::details::Pkg2T2Reset(::tl2::pkg2::T2& item) {
 	::tl2::details::Pkg2FooReset(item);
+}
+
+bool tl2::details::Pkg2T2WriteJSON(std::ostream& s, const ::tl2::pkg2::T2& item) {
+	if (!::tl2::details::Pkg2FooWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::Pkg2T2Read(::basictl::tl_istream & s, ::tl2::pkg2::T2& item) {

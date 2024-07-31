@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service1DisableKeysStatReset(::tl2::service1::DisableKeysStat& item);
+
+bool Service1DisableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::DisableKeysStat& item);
 bool Service1DisableKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::DisableKeysStat& item);
 bool Service1DisableKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::DisableKeysStat& item);
 bool Service1DisableKeysStatReadBoxed(::basictl::tl_istream & s, ::tl2::service1::DisableKeysStat& item);

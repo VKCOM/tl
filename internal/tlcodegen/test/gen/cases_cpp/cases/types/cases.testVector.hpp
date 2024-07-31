@@ -10,6 +10,8 @@ struct TestVector {
 	std::string_view tl_name() const { return "cases.testVector"; }
 	uint32_t tl_tag() const { return 0x4975695c; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

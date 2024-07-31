@@ -17,6 +17,8 @@ struct Output {
 	std::string_view tl_name() const;
 	uint32_t tl_tag() const;
 
+	bool write_json(std::ostream& s)const;
+
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
 };

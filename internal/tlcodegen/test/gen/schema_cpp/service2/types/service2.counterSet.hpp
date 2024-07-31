@@ -11,6 +11,8 @@ struct CounterSet {
 	std::string_view tl_name() const { return "service2.counterSet"; }
 	uint32_t tl_tag() const { return 0xf5403fd9; }
 
+	bool write_json(std::ostream& s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const;
+
 	bool read(::basictl::tl_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum);
 	bool write(::basictl::tl_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const;
 

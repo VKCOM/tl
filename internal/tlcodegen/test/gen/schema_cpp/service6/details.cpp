@@ -11,6 +11,20 @@ void tl2::details::BuiltinVectorService6FindResultRowReset(std::vector<::tl2::se
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorService6FindResultRowWriteJSON(std::ostream & s, const std::vector<::tl2::service6::FindResultRow>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service6FindResultRowWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindResultRow>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -34,6 +48,20 @@ void tl2::details::BuiltinVectorService6FindWithBoundsResultReset(std::vector<::
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::Service6FindWithBoundsResultWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -50,6 +78,11 @@ bool tl2::details::BuiltinVectorService6FindWithBoundsResultWrite(::basictl::tl_
 	for(const auto & el : item) {
 		if (!::tl2::details::Service6FindWithBoundsResultWrite(s, el)) { return false; }
 	}
+	return true;
+}
+
+bool tl2::service6::Error::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service6ErrorWriteJSON(s, *this)) { return false; }
 	return true;
 }
 
@@ -77,6 +110,14 @@ void tl2::details::Service6ErrorReset(::tl2::service6::Error& item) {
 	item.code = 0;
 }
 
+bool tl2::details::Service6ErrorWriteJSON(std::ostream& s, const ::tl2::service6::Error& item) {
+	s << "{";
+	s << "\"code\":";
+	s << item.code;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service6ErrorRead(::basictl::tl_istream & s, ::tl2::service6::Error& item) {
 	if (!s.int_read(item.code)) { return false; }
 	return true;
@@ -95,6 +136,11 @@ bool tl2::details::Service6ErrorReadBoxed(::basictl::tl_istream & s, ::tl2::serv
 bool tl2::details::Service6ErrorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::Error& item) {
 	if (!s.nat_write(0x738553ef)) { return false; }
 	return tl2::details::Service6ErrorWrite(s, item);
+}
+
+bool tl2::service6::FindResultRow::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service6FindResultRowWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::service6::FindResultRow::read(::basictl::tl_istream & s) {
@@ -121,6 +167,14 @@ void tl2::details::Service6FindResultRowReset(::tl2::service6::FindResultRow& it
 	item.x = 0;
 }
 
+bool tl2::details::Service6FindResultRowWriteJSON(std::ostream& s, const ::tl2::service6::FindResultRow& item) {
+	s << "{";
+	s << "\"x\":";
+	s << item.x;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service6FindResultRowRead(::basictl::tl_istream & s, ::tl2::service6::FindResultRow& item) {
 	if (!s.int_read(item.x)) { return false; }
 	return true;
@@ -139,6 +193,11 @@ bool tl2::details::Service6FindResultRowReadBoxed(::basictl::tl_istream & s, ::t
 bool tl2::details::Service6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::FindResultRow& item) {
 	if (!s.nat_write(0xbd3946e3)) { return false; }
 	return tl2::details::Service6FindResultRowWrite(s, item);
+}
+
+bool tl2::service6::FindWithBoundsResult::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service6FindWithBoundsResultWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::service6::FindWithBoundsResult::read(::basictl::tl_istream & s) {
@@ -165,6 +224,14 @@ void tl2::details::Service6FindWithBoundsResultReset(::tl2::service6::FindWithBo
 	item.x = 0;
 }
 
+bool tl2::details::Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::service6::FindWithBoundsResult& item) {
+	s << "{";
+	s << "\"x\":";
+	s << item.x;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::Service6FindWithBoundsResultRead(::basictl::tl_istream & s, ::tl2::service6::FindWithBoundsResult& item) {
 	if (!s.int_read(item.x)) { return false; }
 	return true;
@@ -183,6 +250,11 @@ bool tl2::details::Service6FindWithBoundsResultReadBoxed(::basictl::tl_istream &
 bool tl2::details::Service6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::FindWithBoundsResult& item) {
 	if (!s.nat_write(0x3ded850a)) { return false; }
 	return tl2::details::Service6FindWithBoundsResultWrite(s, item);
+}
+
+bool tl2::service6::MultiFind::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service6MultiFindWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::service6::MultiFind::read(::basictl::tl_istream & s) {
@@ -209,6 +281,20 @@ void tl2::details::Service6MultiFindReset(::tl2::service6::MultiFind& item) {
 	item.clusters.clear();
 	item.limit = 0;
 	item.eq_threshold = 0;
+}
+
+bool tl2::details::Service6MultiFindWriteJSON(std::ostream& s, const ::tl2::service6::MultiFind& item) {
+	s << "{";
+	s << "\"clusters\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+	s << ",";
+	s << "\"limit\":";
+	s << item.limit;
+	s << ",";
+	s << "\"eq_threshold\":";
+	s << item.eq_threshold;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service6MultiFindRead(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item) {
@@ -253,6 +339,11 @@ bool tl2::service6::MultiFind::write_result(::basictl::tl_ostream & s, std::vect
 	return tl2::details::Service6MultiFindWriteResult(s, *this, result);
 }
 
+bool tl2::service6::MultiFindWithBounds::write_json(std::ostream& s)const {
+	if (!::tl2::details::Service6MultiFindWithBoundsWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::service6::MultiFindWithBounds::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service6MultiFindWithBoundsRead(s, *this)) { return false; }
 	return true;
@@ -275,6 +366,14 @@ bool tl2::service6::MultiFindWithBounds::write_boxed(::basictl::tl_ostream & s)c
 
 void tl2::details::Service6MultiFindWithBoundsReset(::tl2::service6::MultiFindWithBounds& item) {
 	item.clusters.clear();
+}
+
+bool tl2::details::Service6MultiFindWithBoundsWriteJSON(std::ostream& s, const ::tl2::service6::MultiFindWithBounds& item) {
+	s << "{";
+	s << "\"clusters\":";
+	if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+	s << "}";
+	return true;
 }
 
 bool tl2::details::Service6MultiFindWithBoundsRead(::basictl::tl_istream & s, ::tl2::service6::MultiFindWithBounds& item) {

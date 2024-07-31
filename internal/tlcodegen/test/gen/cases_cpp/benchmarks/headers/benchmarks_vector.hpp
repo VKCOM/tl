@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void VectorBenchmarksVruPositionReset(std::vector<::tl2::benchmarks::Vruposition>& item);
+
+bool VectorBenchmarksVruPositionWriteJSON(std::ostream& s, const std::vector<::tl2::benchmarks::Vruposition>& item);
 bool VectorBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item);
 bool VectorBenchmarksVruPositionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item);
 bool VectorBenchmarksVruPositionReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item);

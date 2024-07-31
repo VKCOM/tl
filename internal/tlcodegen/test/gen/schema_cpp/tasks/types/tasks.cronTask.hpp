@@ -15,6 +15,8 @@ struct CronTask {
 	std::string_view tl_name() const { return "tasks.cronTask"; }
 	uint32_t tl_tag() const { return 0xc90cf28a; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

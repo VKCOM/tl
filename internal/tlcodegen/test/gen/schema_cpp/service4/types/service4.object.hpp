@@ -12,6 +12,8 @@ struct Object {
 	std::string_view tl_name() const { return "service4.object"; }
 	uint32_t tl_tag() const { return 0xa6eeca4f; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

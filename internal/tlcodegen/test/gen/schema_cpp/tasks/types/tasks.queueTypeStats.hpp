@@ -14,6 +14,8 @@ struct QueueTypeStats {
 	std::string_view tl_name() const { return "tasks.queueTypeStats"; }
 	uint32_t tl_tag() const { return 0xe1b785f2; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

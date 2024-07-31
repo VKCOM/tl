@@ -13,6 +13,8 @@ struct RestoreProduct {
 	std::string_view tl_name() const { return "service3.restoreProduct"; }
 	uint32_t tl_tag() const { return 0x6170d515; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

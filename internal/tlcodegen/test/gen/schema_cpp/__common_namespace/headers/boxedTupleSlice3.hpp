@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void BoxedTupleSlice3Reset(::tl2::BoxedTupleSlice3& item);
+
+bool BoxedTupleSlice3WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice3& item);
 bool BoxedTupleSlice3Read(::basictl::tl_istream & s, ::tl2::BoxedTupleSlice3& item);
 bool BoxedTupleSlice3Write(::basictl::tl_ostream & s, const ::tl2::BoxedTupleSlice3& item);
 bool BoxedTupleSlice3ReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedTupleSlice3& item);

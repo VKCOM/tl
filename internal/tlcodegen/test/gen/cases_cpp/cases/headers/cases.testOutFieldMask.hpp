@@ -6,6 +6,8 @@
 namespace tl2 { namespace details { 
 
 void CasesTestOutFieldMaskReset(::tl2::cases::TestOutFieldMask& item);
+
+bool CasesTestOutFieldMaskWriteJSON(std::ostream& s, const ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f);
 bool CasesTestOutFieldMaskRead(::basictl::tl_istream & s, ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f);
 bool CasesTestOutFieldMaskWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f);
 bool CasesTestOutFieldMaskReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f);

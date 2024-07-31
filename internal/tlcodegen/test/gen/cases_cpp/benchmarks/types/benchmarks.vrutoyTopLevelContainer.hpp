@@ -11,6 +11,8 @@ struct VrutoyTopLevelContainer {
 	std::string_view tl_name() const { return "benchmarks.vrutoyTopLevelContainer"; }
 	uint32_t tl_tag() const { return 0xfb442ca5; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

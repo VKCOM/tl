@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void GetNonOptNatReset(::tl2::GetNonOptNat& item);
+
+bool GetNonOptNatWriteJSON(std::ostream& s, const ::tl2::GetNonOptNat& item);
 bool GetNonOptNatRead(::basictl::tl_istream & s, ::tl2::GetNonOptNat& item);
 bool GetNonOptNatWrite(::basictl::tl_ostream & s, const ::tl2::GetNonOptNat& item);
 bool GetNonOptNatReadBoxed(::basictl::tl_istream & s, ::tl2::GetNonOptNat& item);

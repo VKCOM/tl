@@ -15,6 +15,8 @@ struct MultiFind {
 	std::string_view tl_name() const { return "service6.multiFind"; }
 	uint32_t tl_tag() const { return 0xe62178d8; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

@@ -737,6 +737,7 @@ type TypeRW interface {
 	cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string
 	CPPHasBytesVersion() bool
 	CPPTypeResettingCode(bytesVersion bool, val string) string
+	CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
 	CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
 	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
 	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)

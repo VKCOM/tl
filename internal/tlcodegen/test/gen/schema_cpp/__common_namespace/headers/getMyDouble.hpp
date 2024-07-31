@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void GetMyDoubleReset(::tl2::GetMyDouble& item);
+
+bool GetMyDoubleWriteJSON(std::ostream& s, const ::tl2::GetMyDouble& item);
 bool GetMyDoubleRead(::basictl::tl_istream & s, ::tl2::GetMyDouble& item);
 bool GetMyDoubleWrite(::basictl::tl_ostream & s, const ::tl2::GetMyDouble& item);
 bool GetMyDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::GetMyDouble& item);

@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void UniqueGetReset(::tl2::unique::Get& item);
+
+bool UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item);
 bool UniqueGetRead(::basictl::tl_istream & s, ::tl2::unique::Get& item);
 bool UniqueGetWrite(::basictl::tl_ostream & s, const ::tl2::unique::Get& item);
 bool UniqueGetReadBoxed(::basictl::tl_istream & s, ::tl2::unique::Get& item);

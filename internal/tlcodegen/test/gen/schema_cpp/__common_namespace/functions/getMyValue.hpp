@@ -11,6 +11,8 @@ struct GetMyValue {
 	std::string_view tl_name() const { return "getMyValue"; }
 	uint32_t tl_tag() const { return 0xb3df27fe; }
 
+	bool write_json(std::ostream& s)const;
+
 	bool read(::basictl::tl_istream & s);
 	bool write(::basictl::tl_ostream & s)const;
 

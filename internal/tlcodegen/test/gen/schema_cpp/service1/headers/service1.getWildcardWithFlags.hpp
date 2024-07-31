@@ -8,6 +8,8 @@
 namespace tl2 { namespace details { 
 
 void Service1GetWildcardWithFlagsReset(::tl2::service1::GetWildcardWithFlags& item);
+
+bool Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardWithFlags& item);
 bool Service1GetWildcardWithFlagsRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item);
 bool Service1GetWildcardWithFlagsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardWithFlags& item);
 bool Service1GetWildcardWithFlagsReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item);
