@@ -17,6 +17,11 @@ struct TestTuple {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TestTuple& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::cases_bytes

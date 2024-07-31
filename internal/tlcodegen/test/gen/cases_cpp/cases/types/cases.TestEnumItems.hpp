@@ -16,6 +16,11 @@ struct TestEnum1 {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TestEnum1& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::cases
@@ -33,6 +38,11 @@ struct TestEnum2 {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TestEnum2& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::cases
@@ -50,6 +60,11 @@ struct TestEnum3 {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TestEnum3& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::cases

@@ -21,6 +21,11 @@ struct GetKeysStat {
 
 	bool read_result(::basictl::tl_istream & s, std::optional<::tl2::service1::KeysStat> & result);
 	bool write_result(::basictl::tl_ostream & s, std::optional<::tl2::service1::KeysStat> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetKeysStat& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service1

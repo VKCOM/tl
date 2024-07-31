@@ -24,6 +24,11 @@ struct SetObjectTtl {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::True & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::True & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const SetObjectTtl& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service2

@@ -228,7 +228,8 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 					formatNatArgsDeclCPP(trw.wr.NatParams),
 					trw.CPPTypeResettingCode(bytesVersion, "*this"),
 					trw.CPPTypeReadingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
-					trw.CPPTypeWritingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true)))
+					trw.CPPTypeWritingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
+					trw.wr.cppLocalName))
 				if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
 					hpp.WriteString(fmt.Sprintf(`
 	bool read_boxed(::basictl::tl_istream & s%[1]s);
@@ -259,6 +260,15 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 `,
 						trw.ResultType.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed),
 					))
+				}
+				if len(trw.wr.NatParams) == 0 {
+					hpp.WriteString(fmt.Sprintf(`
+	friend std::ostream& operator<<(std::ostream& s, const %[1]s& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
+`,
+						trw.wr.cppLocalName))
 				}
 			}
 			hpp.WriteString("};\n")

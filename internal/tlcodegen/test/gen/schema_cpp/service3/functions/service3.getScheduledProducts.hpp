@@ -22,6 +22,11 @@ struct GetScheduledProducts {
 
 	bool read_result(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Productmode<0>>> & result);
 	bool write_result(::basictl::tl_ostream & s, std::optional<std::vector<::tl2::service3::Productmode<0>>> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetScheduledProducts& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service3

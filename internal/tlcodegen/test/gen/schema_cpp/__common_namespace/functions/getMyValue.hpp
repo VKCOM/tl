@@ -21,6 +21,11 @@ struct GetMyValue {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::MyValue & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::MyValue & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetMyValue& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 } // namespace tl2

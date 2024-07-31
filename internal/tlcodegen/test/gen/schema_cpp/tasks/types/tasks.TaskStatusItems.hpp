@@ -16,6 +16,11 @@ struct TaskStatusInProgress {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TaskStatusInProgress& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks
@@ -33,6 +38,11 @@ struct TaskStatusNotCurrentlyInEngine {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TaskStatusNotCurrentlyInEngine& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks
@@ -50,6 +60,11 @@ struct TaskStatusScheduled {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TaskStatusScheduled& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks
@@ -67,6 +82,11 @@ struct TaskStatusWaiting {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const TaskStatusWaiting& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks

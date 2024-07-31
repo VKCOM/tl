@@ -24,6 +24,11 @@ struct ReplaceOrIncr {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const ReplaceOrIncr& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service1

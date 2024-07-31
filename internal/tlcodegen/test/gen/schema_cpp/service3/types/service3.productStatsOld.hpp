@@ -21,6 +21,11 @@ struct ProductStatsOld {
 
 	bool read_boxed(::basictl::tl_istream & s);
 	bool write_boxed(::basictl::tl_ostream & s)const;
+
+	friend std::ostream& operator<<(std::ostream& s, const ProductStatsOld& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service3

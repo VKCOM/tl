@@ -20,6 +20,11 @@ struct GetAnyTask {
 
 	bool read_result(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo> & result);
 	bool write_result(::basictl::tl_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetAnyTask& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks

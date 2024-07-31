@@ -25,6 +25,11 @@ struct MultiFind {
 
 	bool read_result(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result);
 	bool write_result(::basictl::tl_ostream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const MultiFind& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service6

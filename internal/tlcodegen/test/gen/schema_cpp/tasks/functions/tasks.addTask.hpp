@@ -23,6 +23,11 @@ struct AddTask {
 
 	bool read_result(::basictl::tl_istream & s, int64_t & result);
 	bool write_result(::basictl::tl_ostream & s, int64_t & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const AddTask& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks

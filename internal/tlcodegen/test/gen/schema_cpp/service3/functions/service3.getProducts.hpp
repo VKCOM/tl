@@ -28,6 +28,11 @@ struct GetProducts {
 
 	bool read_result(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Product>> & result);
 	bool write_result(::basictl::tl_ostream & s, std::optional<std::vector<::tl2::service3::Product>> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetProducts& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service3

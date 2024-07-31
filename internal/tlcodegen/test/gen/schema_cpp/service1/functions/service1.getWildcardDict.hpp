@@ -21,6 +21,11 @@ struct GetWildcardDict {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::Dictionary<std::string> & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::Dictionary<std::string> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetWildcardDict& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service1

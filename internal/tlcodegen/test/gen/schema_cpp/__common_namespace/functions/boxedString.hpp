@@ -20,6 +20,11 @@ struct BoxedString {
 
 	bool read_result(::basictl::tl_istream & s, std::string & result);
 	bool write_result(::basictl::tl_ostream & s, std::string & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const BoxedString& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 } // namespace tl2

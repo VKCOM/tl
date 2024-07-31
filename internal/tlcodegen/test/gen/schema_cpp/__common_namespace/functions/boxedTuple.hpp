@@ -20,6 +20,11 @@ struct BoxedTuple {
 
 	bool read_result(::basictl::tl_istream & s, std::array<int32_t, 3> & result);
 	bool write_result(::basictl::tl_ostream & s, std::array<int32_t, 3> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const BoxedTuple& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 } // namespace tl2

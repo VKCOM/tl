@@ -23,6 +23,11 @@ struct GetQueueSize {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::tasks::QueueStats & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::tasks::QueueStats & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetQueueSize& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::tasks

@@ -21,6 +21,11 @@ struct GetMaybeIface {
 
 	bool read_result(::basictl::tl_istream & s, std::optional<::tl2::service1::Value> & result);
 	bool write_result(::basictl::tl_ostream & s, std::optional<::tl2::service1::Value> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetMaybeIface& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 } // namespace tl2

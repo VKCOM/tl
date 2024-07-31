@@ -22,6 +22,11 @@ struct Get_arrays {
 
 	bool read_result(::basictl::tl_istream & s, std::array<int32_t, 5> & result);
 	bool write_result(::basictl::tl_ostream & s, std::array<int32_t, 5> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const Get_arrays& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 } // namespace tl2

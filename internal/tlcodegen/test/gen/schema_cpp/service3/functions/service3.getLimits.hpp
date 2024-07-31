@@ -20,6 +20,11 @@ struct GetLimits {
 
 	bool read_result(::basictl::tl_istream & s, ::tl2::service3::Limits & result);
 	bool write_result(::basictl::tl_ostream & s, ::tl2::service3::Limits & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetLimits& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service3

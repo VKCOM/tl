@@ -22,6 +22,11 @@ struct GetProductStats {
 
 	bool read_result(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::ProductStatsOld>> & result);
 	bool write_result(::basictl::tl_ostream & s, std::optional<std::vector<::tl2::service3::ProductStatsOld>> & result);
+
+	friend std::ostream& operator<<(std::ostream& s, const GetProductStats& rhs) {
+		rhs.write_json(s);
+		return s;
+	}
 };
 
 }} // namespace tl2::service3
