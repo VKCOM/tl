@@ -515,6 +515,7 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 			indent++
 		}
 		if i != 0 {
+			// append
 			s.WriteString(fmt.Sprintf(`%ss << ",";
 `,
 				strings.Repeat("\t", indent+1),
