@@ -39,39 +39,50 @@ void tl2::details::Service4ModifiedNewsEntryReset(::tl2::service4::ModifiedNewsE
 }
 
 bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::tl2::service4::ModifiedNewsEntry& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"object\":";
 	if (!::tl2::details::Service4ObjectWriteJSON(s, item.object)) { return false; }
 	if (item.creation_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"creation_date\":";
 		s << item.creation_date;
 	}
 	if (item.fields_mask != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (item.restoration_date != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"restoration_date\":";
-			s << item.restoration_date;
 		}
+		add_comma = true;
+		s << "\"restoration_date\":";
+		s << item.restoration_date;
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (item.deletion_date != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"deletion_date\":";
-			s << item.deletion_date;
 		}
+		add_comma = true;
+		s << "\"deletion_date\":";
+		s << item.deletion_date;
 	}
 	if ((item.fields_mask & (1<<16)) != 0) {
-		if (item.hidden_by_privacy) {
+		if (add_comma) {
 			s << ",";
-			s << "\"hidden_by_privacy\":";
-			if (!::tl2::details::BoolWriteJSON(s, item.hidden_by_privacy)) { return false; }
 		}
+		add_comma = true;
+		s << "\"hidden_by_privacy\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.hidden_by_privacy)) { return false; }
 	}
 	s << "}";
 	return true;
@@ -157,18 +168,26 @@ void tl2::details::Service4ObjectReset(::tl2::service4::Object& item) {
 }
 
 bool tl2::details::Service4ObjectWriteJSON(std::ostream& s, const ::tl2::service4::Object& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type != 0) {
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.joint_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"joint_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.joint_id)) { return false; }
 	}
 	if (item.object_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"object_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.object_id)) { return false; }
 	}

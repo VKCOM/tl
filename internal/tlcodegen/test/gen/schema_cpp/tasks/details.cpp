@@ -88,17 +88,25 @@ void tl2::details::TasksAddTaskReset(::tl2::tasks::AddTask& item) {
 }
 
 bool tl2::details::TasksAddTaskWriteJSON(std::ostream& s, const ::tl2::tasks::AddTask& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
+		add_comma = true;
 		s << "\"type_name\":";
 		s << "\"" << item.type_name << "\"";
 	}
 	if (item.queue_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"queue_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.queue_id)) { return false; }
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"task\":";
 	if (!::tl2::details::TasksTaskWriteJSON(s, item.task)) { return false; }
 	s << "}";
@@ -180,20 +188,31 @@ void tl2::details::TasksCronTaskReset(::tl2::tasks::CronTask& item) {
 }
 
 bool tl2::details::TasksCronTaskWriteJSON(std::ostream& s, const ::tl2::tasks::CronTask& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
+		add_comma = true;
 		s << "\"type_name\":";
 		s << "\"" << item.type_name << "\"";
 	}
 	if (item.queue_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"queue_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.queue_id)) { return false; }
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"task\":";
 	if (!::tl2::details::TasksTaskWriteJSON(s, item.task)) { return false; }
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"time\":";
 	if (!::tl2::details::TasksCronTimeWriteJSON(s, item.time)) { return false; }
 	s << "}";
@@ -258,17 +277,25 @@ void tl2::details::TasksCronTaskWithIdReset(::tl2::tasks::CronTaskWithId& item) 
 }
 
 bool tl2::details::TasksCronTaskWithIdWriteJSON(std::ostream& s, const ::tl2::tasks::CronTaskWithId& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.id != 0) {
+		add_comma = true;
 		s << "\"id\":";
 		s << item.id;
 	}
 	if (item.next_time != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"next_time\":";
 		s << item.next_time;
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"task\":";
 	if (!::tl2::details::TasksCronTaskWriteJSON(s, item.task)) { return false; }
 	s << "}";
@@ -335,52 +362,60 @@ void tl2::details::TasksCronTimeReset(::tl2::tasks::CronTime& item) {
 }
 
 bool tl2::details::TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::CronTime& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (item.seconds.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"seconds\":";
-			if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.seconds)) { return false; }
 		}
+		add_comma = true;
+		s << "\"seconds\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.seconds)) { return false; }
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (item.minutes.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"minutes\":";
-			if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.minutes)) { return false; }
 		}
+		add_comma = true;
+		s << "\"minutes\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.minutes)) { return false; }
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
-		if (item.hours.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"hours\":";
-			if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.hours)) { return false; }
 		}
+		add_comma = true;
+		s << "\"hours\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.hours)) { return false; }
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		if (item.days_of_week.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"days_of_week\":";
-			if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.days_of_week)) { return false; }
 		}
+		add_comma = true;
+		s << "\"days_of_week\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.days_of_week)) { return false; }
 	}
 	if ((item.fields_mask & (1<<4)) != 0) {
-		if (item.days.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"days\":";
-			if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.days)) { return false; }
 		}
+		add_comma = true;
+		s << "\"days\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.days)) { return false; }
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
-		if (item.months.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"months\":";
-			if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.months)) { return false; }
 		}
+		add_comma = true;
+		s << "\"months\":";
+		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.months)) { return false; }
 	}
 	s << "}";
 	return true;
@@ -483,8 +518,7 @@ void tl2::details::TasksGetAnyTaskReset(::tl2::tasks::GetAnyTask& item) {
 }
 
 bool tl2::details::TasksGetAnyTaskWriteJSON(std::ostream& s, const ::tl2::tasks::GetAnyTask& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -554,18 +588,26 @@ void tl2::details::TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) {
 }
 
 bool tl2::details::TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
+		add_comma = true;
 		s << "\"type_name\":";
 		s << "\"" << item.type_name << "\"";
 	}
 	if (item.queue_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"queue_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.queue_id)) { return false; }
 	}
 	if (item.fields_mask != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
@@ -644,13 +686,18 @@ void tl2::details::TasksGetQueueTypesReset(::tl2::tasks::GetQueueTypes& item) {
 }
 
 bool tl2::details::TasksGetQueueTypesWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueTypes& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.settings_mask != 0) {
+		add_comma = true;
 		s << "\"settings_mask\":";
 		s << item.settings_mask;
 	}
 	if (item.stats_mask != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"stats_mask\":";
 		s << item.stats_mask;
 	}
@@ -729,13 +776,18 @@ void tl2::details::TasksGetTaskFromQueueReset(::tl2::tasks::GetTaskFromQueue& it
 }
 
 bool tl2::details::TasksGetTaskFromQueueWriteJSON(std::ostream& s, const ::tl2::tasks::GetTaskFromQueue& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
+		add_comma = true;
 		s << "\"type_name\":";
 		s << "\"" << item.type_name << "\"";
 	}
 	if (item.queue_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"queue_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.queue_id)) { return false; }
 	}
@@ -813,26 +865,28 @@ void tl2::details::TasksQueueStatsReset(::tl2::tasks::QueueStats& item) {
 }
 
 bool tl2::details::TasksQueueStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) {
+	auto add_comma = false;
 	s << "{";
 	if ((nat_fields_mask & (1<<0)) != 0) {
-		if (item.waiting_size != 0) {
-			s << "\"waiting_size\":";
-			s << item.waiting_size;
-		}
+		add_comma = true;
+		s << "\"waiting_size\":";
+		s << item.waiting_size;
 	}
 	if ((nat_fields_mask & (1<<1)) != 0) {
-		if (item.scheduled_size != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"scheduled_size\":";
-			s << item.scheduled_size;
 		}
+		add_comma = true;
+		s << "\"scheduled_size\":";
+		s << item.scheduled_size;
 	}
 	if ((nat_fields_mask & (1<<2)) != 0) {
-		if (item.in_progress_size != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"in_progress_size\":";
-			s << item.in_progress_size;
 		}
+		add_comma = true;
+		s << "\"in_progress_size\":";
+		s << item.in_progress_size;
 	}
 	s << "}";
 	return true;
@@ -912,15 +966,23 @@ void tl2::details::TasksQueueTypeInfoReset(::tl2::tasks::QueueTypeInfo& item) {
 }
 
 bool tl2::details::TasksQueueTypeInfoWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeInfo& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
+		add_comma = true;
 		s << "\"type_name\":";
 		s << "\"" << item.type_name << "\"";
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"settings\":";
 	if (!::tl2::details::TasksQueueTypeSettingsWriteJSON(s, item.settings)) { return false; }
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"stats\":";
 	if (!::tl2::details::TasksQueueTypeStatsWriteJSON(s, item.stats)) { return false; }
 	s << "}";
@@ -990,73 +1052,84 @@ void tl2::details::TasksQueueTypeSettingsReset(::tl2::tasks::QueueTypeSettings& 
 }
 
 bool tl2::details::TasksQueueTypeSettingsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeSettings& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (item.is_enabled) {
+		if (add_comma) {
 			s << ",";
-			s << "\"is_enabled\":";
-			if (!::tl2::details::BoolWriteJSON(s, item.is_enabled)) { return false; }
 		}
+		add_comma = true;
+		s << "\"is_enabled\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.is_enabled)) { return false; }
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (item.is_persistent) {
+		if (add_comma) {
 			s << ",";
-			s << "\"is_persistent\":";
-			if (!::tl2::details::BoolWriteJSON(s, item.is_persistent)) { return false; }
 		}
+		add_comma = true;
+		s << "\"is_persistent\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.is_persistent)) { return false; }
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
-		if (item.priority != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"priority\":";
-			s << item.priority;
 		}
+		add_comma = true;
+		s << "\"priority\":";
+		s << item.priority;
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		if (item.default_retry_time != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"default_retry_time\":";
-			s << item.default_retry_time;
 		}
+		add_comma = true;
+		s << "\"default_retry_time\":";
+		s << item.default_retry_time;
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		if (item.default_retry_num != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"default_retry_num\":";
-			s << item.default_retry_num;
 		}
+		add_comma = true;
+		s << "\"default_retry_num\":";
+		s << item.default_retry_num;
 	}
 	if ((item.fields_mask & (1<<4)) != 0) {
-		if (item.move_to_queue_type_on_error.size() != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"move_to_queue_type_on_error\":";
-			s << "\"" << item.move_to_queue_type_on_error << "\"";
 		}
+		add_comma = true;
+		s << "\"move_to_queue_type_on_error\":";
+		s << "\"" << item.move_to_queue_type_on_error << "\"";
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
-		if (item.is_blocking) {
+		if (add_comma) {
 			s << ",";
-			s << "\"is_blocking\":";
-			if (!::tl2::details::BoolWriteJSON(s, item.is_blocking)) { return false; }
 		}
+		add_comma = true;
+		s << "\"is_blocking\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.is_blocking)) { return false; }
 	}
 	if ((item.fields_mask & (1<<6)) != 0) {
-		if (item.timelimit != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"timelimit\":";
-			s << item.timelimit;
 		}
+		add_comma = true;
+		s << "\"timelimit\":";
+		s << item.timelimit;
 	}
 	if ((item.fields_mask & (1<<7)) != 0) {
-		if (item.max_queue_size != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"max_queue_size\":";
-			s << item.max_queue_size;
 		}
+		add_comma = true;
+		s << "\"max_queue_size\":";
+		s << item.max_queue_size;
 	}
 	s << "}";
 	return true;
@@ -1188,38 +1261,44 @@ void tl2::details::TasksQueueTypeStatsReset(::tl2::tasks::QueueTypeStats& item) 
 }
 
 bool tl2::details::TasksQueueTypeStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeStats& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (item.waiting_size != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"waiting_size\":";
-			s << item.waiting_size;
 		}
+		add_comma = true;
+		s << "\"waiting_size\":";
+		s << item.waiting_size;
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (item.scheduled_size != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"scheduled_size\":";
-			s << item.scheduled_size;
 		}
+		add_comma = true;
+		s << "\"scheduled_size\":";
+		s << item.scheduled_size;
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
-		if (item.in_progress_size != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"in_progress_size\":";
-			s << item.in_progress_size;
 		}
+		add_comma = true;
+		s << "\"in_progress_size\":";
+		s << item.in_progress_size;
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		if (item.num_queues != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"num_queues\":";
-			s << item.num_queues;
 		}
+		add_comma = true;
+		s << "\"num_queues\":";
+		s << item.num_queues;
 	}
 	s << "}";
 	return true;
@@ -1314,53 +1393,68 @@ void tl2::details::TasksTaskReset(::tl2::tasks::Task& item) {
 }
 
 bool tl2::details::TasksTaskWriteJSON(std::ostream& s, const ::tl2::tasks::Task& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.tag.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"tag\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.tag)) { return false; }
 	}
 	if (item.data.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"data\":";
 		s << "\"" << item.data << "\"";
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (item.id != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"id\":";
-			s << item.id;
 		}
+		add_comma = true;
+		s << "\"id\":";
+		s << item.id;
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (item.retries != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"retries\":";
-			s << item.retries;
 		}
+		add_comma = true;
+		s << "\"retries\":";
+		s << item.retries;
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
-		if (item.scheduled_time != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"scheduled_time\":";
-			s << item.scheduled_time;
 		}
+		add_comma = true;
+		s << "\"scheduled_time\":";
+		s << item.scheduled_time;
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		if (item.deadline != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"deadline\":";
-			s << item.deadline;
 		}
+		add_comma = true;
+		s << "\"deadline\":";
+		s << item.deadline;
 	}
 	s << "}";
 	return true;
@@ -1456,17 +1550,25 @@ void tl2::details::TasksTaskInfoReset(::tl2::tasks::TaskInfo& item) {
 }
 
 bool tl2::details::TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::TaskInfo& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
+		add_comma = true;
 		s << "\"type_name\":";
 		s << "\"" << item.type_name << "\"";
 	}
 	if (item.queue_id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"queue_id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.queue_id)) { return false; }
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"task\":";
 	if (!::tl2::details::TasksTaskWriteJSON(s, item.task)) { return false; }
 	s << "}";
@@ -1500,8 +1602,8 @@ bool tl2::details::TasksTaskInfoWriteBoxed(::basictl::tl_ostream & s, const ::tl
 bool tl2::details::TasksTaskInfoMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::tasks::TaskInfo>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
+		s << "\"ok\":true";
+		s << ",\"value\":";
 		if (!::tl2::details::TasksTaskInfoWriteJSON(s, *item)) { return false; }
 	}
 	s << "}";
@@ -1618,8 +1720,7 @@ void tl2::details::TasksTaskStatusInProgressReset(::tl2::tasks::TaskStatusInProg
 }
 
 bool tl2::details::TasksTaskStatusInProgressWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusInProgress& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -1670,8 +1771,7 @@ void tl2::details::TasksTaskStatusNotCurrentlyInEngineReset(::tl2::tasks::TaskSt
 }
 
 bool tl2::details::TasksTaskStatusNotCurrentlyInEngineWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -1722,8 +1822,7 @@ void tl2::details::TasksTaskStatusScheduledReset(::tl2::tasks::TaskStatusSchedul
 }
 
 bool tl2::details::TasksTaskStatusScheduledWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusScheduled& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -1774,8 +1873,7 @@ void tl2::details::TasksTaskStatusWaitingReset(::tl2::tasks::TaskStatusWaiting& 
 }
 
 bool tl2::details::TasksTaskStatusWaitingWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusWaiting& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 

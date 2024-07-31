@@ -34,8 +34,10 @@ void tl2::details::AntispamGetPatternReset(::tl2::antispam::GetPattern& item) {
 }
 
 bool tl2::details::AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.id != 0) {
+		add_comma = true;
 		s << "\"id\":";
 		s << item.id;
 	}
@@ -113,28 +115,42 @@ void tl2::details::AntispamPatternFoundReset(::tl2::antispam::PatternFound& item
 }
 
 bool tl2::details::AntispamPatternFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternFound& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.ip != 0) {
+		add_comma = true;
 		s << "\"ip\":";
 		s << item.ip;
 	}
 	if (item.uahash != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"uahash\":";
 		s << item.uahash;
 	}
 	if (item.flags != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"flags\":";
 		s << item.flags;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.text.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"text\":";
 		s << "\"" << item.text << "\"";
 	}
@@ -266,8 +282,7 @@ void tl2::details::AntispamPatternNotFoundReset(::tl2::antispam::PatternNotFound
 }
 
 bool tl2::details::AntispamPatternNotFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternNotFound& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 

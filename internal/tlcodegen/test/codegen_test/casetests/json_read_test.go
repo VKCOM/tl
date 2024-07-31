@@ -9,13 +9,12 @@ package casetests
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
-	"os"
-
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory_bytes"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
 	"github.com/vkcom/tl/pkg/basictl"
+	"math/rand"
+	"os"
 
 	"github.com/stretchr/testify/assert"
 	"testing"

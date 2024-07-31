@@ -103,8 +103,7 @@ bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 bool %[6]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
+		s << "\"ok\":true";
 	%[9]s
 	}
 	s << "}";
@@ -140,7 +139,22 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.wr.gen.DetailsCPPNamespace,
 			trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
 			trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
-			trw.element.t.trw.CPPTypeWritingJsonCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true),
+			func() string {
+				indent := 1
+				s := ""
+				emptyCondition := trw.element.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, "*item", false, nil)
+				if emptyCondition != "" {
+					s += fmt.Sprintf("\tif(%s) {\n\t", emptyCondition)
+					indent = 2
+				}
+				s += fmt.Sprintf(`%ss << ",\"value\":";
+`, strings.Repeat("\t", indent))
+				s += strings.Repeat("\t", indent) + trw.element.t.trw.CPPTypeWritingJsonCode(bytesVersion, "*item", trw.element.Bare(), formatNatArgs(nil, trw.element.natArgs), true)
+				if emptyCondition != "" {
+					s += "\n\t\t}"
+				}
+				return s
+			}(),
 		))
 	}
 	/*

@@ -55,18 +55,26 @@ void tl2::details::BoolStatReset(::tl2::BoolStat& item) {
 }
 
 bool tl2::details::BoolStatWriteJSON(std::ostream& s, const ::tl2::BoolStat& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.statTrue != 0) {
+		add_comma = true;
 		s << "\"statTrue\":";
 		s << item.statTrue;
 	}
 	if (item.statFalse != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"statFalse\":";
 		s << item.statFalse;
 	}
 	if (item.statUnknown != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"statUnknown\":";
 		s << item.statUnknown;
 	}
@@ -318,33 +326,50 @@ void tl2::details::Service3CreateProductReset(::tl2::service3::CreateProduct& it
 }
 
 bool tl2::details::Service3CreateProductWriteJSON(std::ostream& s, const ::tl2::service3::CreateProduct& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.info.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"info\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
 	}
 	if (item.date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"date\":";
 		s << item.date;
 	}
 	if (item.expiration_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"expiration_date\":";
 		s << item.expiration_date;
 	}
@@ -431,23 +456,34 @@ void tl2::details::Service3DeleteAllProductsReset(::tl2::service3::DeleteAllProd
 }
 
 bool tl2::details::Service3DeleteAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteAllProducts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.start_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"start_date\":";
 		s << item.start_date;
 	}
 	if (item.end_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"end_date\":";
 		s << item.end_date;
 	}
@@ -531,28 +567,42 @@ void tl2::details::Service3DeleteGroupedProductsReset(::tl2::service3::DeleteGro
 }
 
 bool tl2::details::Service3DeleteGroupedProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteGroupedProducts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.start_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"start_date\":";
 		s << item.start_date;
 	}
 	if (item.end_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"end_date\":";
 		s << item.end_date;
 	}
@@ -637,23 +687,34 @@ void tl2::details::Service3DeleteProductReset(::tl2::service3::DeleteProduct& it
 }
 
 bool tl2::details::Service3DeleteProductWriteJSON(std::ostream& s, const ::tl2::service3::DeleteProduct& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.info.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"info\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
 	}
@@ -733,8 +794,10 @@ void tl2::details::Service3GetLastVisitTimestampReset(::tl2::service3::GetLastVi
 }
 
 bool tl2::details::Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::GetLastVisitTimestamp& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
@@ -807,8 +870,7 @@ void tl2::details::Service3GetLimitsReset(::tl2::service3::GetLimits& item) {
 }
 
 bool tl2::details::Service3GetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::GetLimits& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
@@ -877,13 +939,18 @@ void tl2::details::Service3GetProductStatsReset(::tl2::service3::GetProductStats
 }
 
 bool tl2::details::Service3GetProductStatsWriteJSON(std::ostream& s, const ::tl2::service3::GetProductStats& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.types.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"types\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
 	}
@@ -966,43 +1033,66 @@ void tl2::details::Service3GetProductsReset(::tl2::service3::GetProducts& item) 
 }
 
 bool tl2::details::Service3GetProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetProducts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.mode != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"mode\":";
 		s << item.mode;
 	}
 	if (item.types.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"types\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
 	}
 	if (item.start_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"start_date\":";
 		s << item.start_date;
 	}
 	if (item.end_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"end_date\":";
 		s << item.end_date;
 	}
 	if (item.offset != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"offset\":";
 		s << item.offset;
 	}
 	if (item.limit != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"limit\":";
 		s << item.limit;
 	}
 	if (item.allowed_info0.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"allowed_info0\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.allowed_info0)) { return false; }
 	}
@@ -1091,13 +1181,18 @@ void tl2::details::Service3GetScheduledProductsReset(::tl2::service3::GetSchedul
 }
 
 bool tl2::details::Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetScheduledProducts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.types.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"types\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
 	}
@@ -1174,13 +1269,18 @@ void tl2::details::Service3GroupCountLimitReset(::tl2::service3::GroupCountLimit
 }
 
 bool tl2::details::Service3GroupCountLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupCountLimit& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.types.size() != 0) {
+		add_comma = true;
 		s << "\"types\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.types)) { return false; }
 	}
 	if (item.limit != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"limit\":";
 		s << item.limit;
 	}
@@ -1241,13 +1341,18 @@ void tl2::details::Service3GroupSizeLimitReset(::tl2::service3::GroupSizeLimit& 
 }
 
 bool tl2::details::Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupSizeLimit& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type != 0) {
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.limit != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"limit\":";
 		s << item.limit;
 	}
@@ -1310,23 +1415,34 @@ void tl2::details::Service3LimitsReset(::tl2::service3::Limits& item) {
 }
 
 bool tl2::details::Service3LimitsWriteJSON(std::ostream& s, const ::tl2::service3::Limits& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.default_group_size_limit != 0) {
+		add_comma = true;
 		s << "\"default_group_size_limit\":";
 		s << item.default_group_size_limit;
 	}
 	if (item.custom_group_size_limits.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"custom_group_size_limits\":";
 		if (!::tl2::details::BuiltinVectorService3GroupSizeLimitWriteJSON(s, item.custom_group_size_limits)) { return false; }
 	}
 	if (item.default_group_count_limit != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"default_group_count_limit\":";
 		s << item.default_group_count_limit;
 	}
 	if (item.custom_group_count_limits.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"custom_group_count_limits\":";
 		if (!::tl2::details::BuiltinVectorService3GroupCountLimitWriteJSON(s, item.custom_group_count_limits)) { return false; }
 	}
@@ -1395,37 +1511,52 @@ void tl2::details::Service3ProductReset(::tl2::service3::Product& item) {
 }
 
 bool tl2::details::Service3ProductWriteJSON(std::ostream& s, const ::tl2::service3::Product& item, uint32_t nat_mode) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type != 0) {
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.info.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"info\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
 	}
 	if (item.date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"date\":";
 		s << item.date;
 	}
 	if (item.expiration_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"expiration_date\":";
 		s << item.expiration_date;
 	}
 	if ((nat_mode & (1<<0)) != 0) {
-		if (item.removed) {
+		if (add_comma) {
 			s << ",";
-			s << "\"removed\":";
-			if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
 		}
+		add_comma = true;
+		s << "\"removed\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
 	}
 	s << "}";
 	return true;
@@ -1477,37 +1608,52 @@ void tl2::details::Service3Product0Reset(::tl2::service3::Productmode<0>& item) 
 }
 
 bool tl2::details::Service3Product0WriteJSON(std::ostream& s, const ::tl2::service3::Productmode<0>& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type != 0) {
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.info.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"info\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
 	}
 	if (item.date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"date\":";
 		s << item.date;
 	}
 	if (item.expiration_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"expiration_date\":";
 		s << item.expiration_date;
 	}
 	if ((0 & (1<<0)) != 0) {
-		if (item.removed) {
+		if (add_comma) {
 			s << ",";
-			s << "\"removed\":";
-			if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
 		}
+		add_comma = true;
+		s << "\"removed\":";
+		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
 	}
 	s << "}";
 	return true;
@@ -1583,28 +1729,42 @@ void tl2::details::Service3ProductStatsOldReset(::tl2::service3::ProductStatsOld
 }
 
 bool tl2::details::Service3ProductStatsOldWriteJSON(std::ostream& s, const ::tl2::service3::ProductStatsOld& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.type != 0) {
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.count_new != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"count_new\":";
 		s << item.count_new;
 	}
 	if (item.count_total != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"count_total\":";
 		s << item.count_total;
 	}
 	if (item.count_scheduled != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"count_scheduled\":";
 		s << item.count_scheduled;
 	}
 	if (item.next_scheduled_at != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"next_scheduled_at\":";
 		s << item.next_scheduled_at;
 	}
@@ -1673,23 +1833,34 @@ void tl2::details::Service3RestoreAllProductsReset(::tl2::service3::RestoreAllPr
 }
 
 bool tl2::details::Service3RestoreAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreAllProducts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.start_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"start_date\":";
 		s << item.start_date;
 	}
 	if (item.end_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"end_date\":";
 		s << item.end_date;
 	}
@@ -1773,28 +1944,42 @@ void tl2::details::Service3RestoreGroupedProductsReset(::tl2::service3::RestoreG
 }
 
 bool tl2::details::Service3RestoreGroupedProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreGroupedProducts& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.start_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"start_date\":";
 		s << item.start_date;
 	}
 	if (item.end_date != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"end_date\":";
 		s << item.end_date;
 	}
@@ -1879,23 +2064,34 @@ void tl2::details::Service3RestoreProductReset(::tl2::service3::RestoreProduct& 
 }
 
 bool tl2::details::Service3RestoreProductWriteJSON(std::ostream& s, const ::tl2::service3::RestoreProduct& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.type != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"type\":";
 		s << item.type;
 	}
 	if (item.id.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.id)) { return false; }
 	}
 	if (item.info.size() != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"info\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.info)) { return false; }
 	}
@@ -1976,13 +2172,18 @@ void tl2::details::Service3SetLastVisitTimestampReset(::tl2::service3::SetLastVi
 }
 
 bool tl2::details::Service3SetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::SetLastVisitTimestamp& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
+		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
 	if (item.timestamp != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"timestamp\":";
 		s << item.timestamp;
 	}
@@ -2058,7 +2259,9 @@ void tl2::details::Service3SetLimitsReset(::tl2::service3::SetLimits& item) {
 }
 
 bool tl2::details::Service3SetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::SetLimits& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"limits\":";
 	if (!::tl2::details::Service3LimitsWriteJSON(s, item.limits)) { return false; }
 	s << "}";
@@ -2220,9 +2423,11 @@ bool tl2::details::VectorService3Product0WriteBoxed(::basictl::tl_ostream & s, c
 bool tl2::details::VectorService3Product0MaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::Productmode<0>>>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
-		if (!::tl2::details::BuiltinVectorService3Product0WriteJSON(s, *item)) { return false; }
+		s << "\"ok\":true";
+		if(*item.size() != 0) {
+			s << ",\"value\":";
+			if (!::tl2::details::BuiltinVectorService3Product0WriteJSON(s, *item)) { return false; }
+		}
 	}
 	s << "}";
 	return true;
@@ -2252,9 +2457,11 @@ bool tl2::details::VectorService3Product0MaybeWriteBoxed(::basictl::tl_ostream &
 bool tl2::details::VectorService3ProductMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::Product>>& item, uint32_t nat_t) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
-		if (!::tl2::details::BuiltinVectorService3ProductWriteJSON(s, *item, nat_t)) { return false; }
+		s << "\"ok\":true";
+		if(*item.size() != 0) {
+			s << ",\"value\":";
+			if (!::tl2::details::BuiltinVectorService3ProductWriteJSON(s, *item, nat_t)) { return false; }
+		}
 	}
 	s << "}";
 	return true;
@@ -2313,9 +2520,11 @@ bool tl2::details::VectorService3ProductStatsOldWriteBoxed(::basictl::tl_ostream
 bool tl2::details::VectorService3ProductStatsOldMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::ProductStatsOld>>& item) {
 	s << "{";
 	if (item) {
-		s << "\"ok\":true,";
-		s << "\"value\":";
-		if (!::tl2::details::BuiltinVectorService3ProductStatsOldWriteJSON(s, *item)) { return false; }
+		s << "\"ok\":true";
+		if(*item.size() != 0) {
+			s << ",\"value\":";
+			if (!::tl2::details::BuiltinVectorService3ProductStatsOldWriteJSON(s, *item)) { return false; }
+		}
 	}
 	s << "}";
 	return true;

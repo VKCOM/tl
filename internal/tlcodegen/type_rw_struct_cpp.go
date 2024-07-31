@@ -513,26 +513,40 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 				field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
 		return s.String()
 	}
-	s.WriteString(`	s << "{";
+	if trw.wr.IsTrueType() {
+		return "	s << \"true\";\n"
+	}
+
+	s.WriteString(`	auto add_comma = false;
+	s << "{";
 `)
 	for i, field := range trw.Fields {
+		if field.t.IsTrueType() {
+			if field.fieldMask == nil || !(field.fieldMask.isField || field.fieldMask.isArith) {
+				continue
+			}
+		}
 		indent := 0
 		if field.fieldMask != nil {
 			s.WriteString(fmt.Sprintf("\tif ((%s & (1<<%d)) != 0) {\n", formatNatArgCPP(trw.Fields, *field.fieldMask), field.BitNumber))
 			indent++
 		}
 		emptyCheck := field.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("item.%s", field.cppName), field.recursive, formatNatArgsCPP(trw.Fields, field.natArgs))
-		if emptyCheck != "" {
+		if field.fieldMask == nil && emptyCheck != "" {
 			s.WriteString(fmt.Sprintf("%sif (%s) {\n", strings.Repeat("\t", indent+1), emptyCheck))
 			indent++
 		}
 		if i != 0 {
 			// append
-			s.WriteString(fmt.Sprintf(`%ss << ",";
+			s.WriteString(fmt.Sprintf(`%[1]sif (add_comma) {
+	%[1]ss << ",";
+%[1]s}
 `,
 				strings.Repeat("\t", indent+1),
 			))
 		}
+		s.WriteString(strings.Repeat("\t", indent+1))
+		s.WriteString("add_comma = true;\n")
 		s.WriteString(fmt.Sprintf(`%ss << "\"%s\":";
 `,
 			strings.Repeat("\t", indent+1),
@@ -542,7 +556,7 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 		s.WriteString(
 			field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)),
 				field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
-		if emptyCheck != "" {
+		if field.fieldMask == nil && emptyCheck != "" {
 			s.WriteString(fmt.Sprintf("%s}\n", strings.Repeat("\t", indent)))
 		}
 		if field.fieldMask != nil {

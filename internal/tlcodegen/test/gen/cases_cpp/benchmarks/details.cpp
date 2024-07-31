@@ -41,13 +41,18 @@ void tl2::details::BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item) {
 }
 
 bool tl2::details::BenchmarksVruHashWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruhash& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.low != 0) {
+		add_comma = true;
 		s << "\"low\":";
 		s << item.low;
 	}
 	if (item.high != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"high\":";
 		s << item.high;
 	}
@@ -117,60 +122,90 @@ void tl2::details::BenchmarksVruPositionReset(::tl2::benchmarks::Vruposition& it
 }
 
 bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruposition& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
+		add_comma = true;
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
 	if ((item.fields_mask & (1<<0)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"commit_bit\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.commit_bit)) { return false; }
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"meta_block\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.meta_block)) { return false; }
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"split_payload\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.split_payload)) { return false; }
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"rotation_block\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.rotation_block)) { return false; }
 	}
 	if ((item.fields_mask & (1<<15)) != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"canonical_hash\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.canonical_hash)) { return false; }
 	}
 	if (item.payload_offset != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"payload_offset\":";
 		s << item.payload_offset;
 	}
 	if (item.block_time_nano != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"block_time_nano\":";
 		s << item.block_time_nano;
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"hash\":";
 	if (!::tl2::details::BenchmarksVruHashWriteJSON(s, item.hash)) { return false; }
 	if (item.file_offset != 0) {
-		s << ",";
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
 		s << "\"file_offset\":";
 		s << item.file_offset;
 	}
 	if ((item.fields_mask & (1<<14)) != 0) {
-		if (item.seq_number != 0) {
+		if (add_comma) {
 			s << ",";
-			s << "\"seq_number\":";
-			s << item.seq_number;
 		}
+		add_comma = true;
+		s << "\"seq_number\":";
+		s << item.seq_number;
 	}
 	s << "}";
 	return true;
@@ -282,8 +317,10 @@ void tl2::details::BenchmarksVrutoyPositionsReset(::tl2::benchmarks::VrutoyPosit
 }
 
 bool tl2::details::BenchmarksVrutoyPositionsWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) {
+	auto add_comma = false;
 	s << "{";
 	if ((item.next_positions.size() != 0) || (nat_n != 0)) {
+		add_comma = true;
 		s << "\"next_positions\":";
 		if (!::tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(s, item.next_positions, nat_n)) { return false; }
 	}
@@ -341,7 +378,9 @@ void tl2::details::BenchmarksVrutoyTopLevelContainerReset(::tl2::benchmarks::Vru
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainer& item) {
+	auto add_comma = false;
 	s << "{";
+	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -399,12 +438,17 @@ void tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReset(::tl2::b
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
+		add_comma = true;
 		s << "\"n\":";
 		s << item.n;
 	}
-	s << ",";
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::BenchmarksVrutoyPositionsWriteJSON(s, item.value, item.n)) { return false; }
 	s << "}";
@@ -530,8 +574,10 @@ void tl2::details::BenchmarksVrutoytopLevelUnionBigReset(::tl2::benchmarks::Vrut
 }
 
 bool tl2::details::BenchmarksVrutoytopLevelUnionBigWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
+	auto add_comma = false;
 	s << "{";
 	if (item.next_positions.size() != 0) {
+		add_comma = true;
 		s << "\"next_positions\":";
 		if (!::tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(s, item.next_positions)) { return false; }
 	}
@@ -588,8 +634,7 @@ void tl2::details::BenchmarksVrutoytopLevelUnionEmptyReset(::tl2::benchmarks::Vr
 }
 
 bool tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) {
-	s << "{";
-	s << "}";
+	s << "true";
 	return true;
 }
 
