@@ -1324,8 +1324,8 @@ bool tl2::details::Service3ProductWriteJSON(std::ostream& s, const ::tl2::servic
 	s << ",";
 	s << "\"expiration_date\":";
 	s << item.expiration_date;
-	s << ",";
 	if ((nat_mode & (1<<0)) != 0) {
+		s << ",";
 		s << "\"removed\":";
 		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
 	}
@@ -1394,8 +1394,8 @@ bool tl2::details::Service3Product0WriteJSON(std::ostream& s, const ::tl2::servi
 	s << ",";
 	s << "\"expiration_date\":";
 	s << item.expiration_date;
-	s << ",";
 	if ((0 & (1<<0)) != 0) {
+		s << ",";
 		s << "\"removed\":";
 		if (!::tl2::details::BoolWriteJSON(s, item.removed)) { return false; }
 	}

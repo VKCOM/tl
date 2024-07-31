@@ -514,6 +514,12 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 			s.WriteString(fmt.Sprintf("\tif ((%s & (1<<%d)) != 0) {\n", formatNatArgCPP(trw.Fields, *field.fieldMask), field.BitNumber))
 			indent++
 		}
+		if i != 0 {
+			s.WriteString(fmt.Sprintf(`%ss << ",";
+`,
+				strings.Repeat("\t", indent+1),
+			))
+		}
 		s.WriteString(fmt.Sprintf(`%ss << "\"%s\":";
 `,
 			strings.Repeat("\t", indent+1),
@@ -523,12 +529,6 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 		s.WriteString(
 			field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("item.%s", field.cppName)),
 				field.Bare(), formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
-		if i != len(trw.Fields)-1 {
-			s.WriteString(fmt.Sprintf(`%ss << ",";
-`,
-				strings.Repeat("\t", indent+1),
-			))
-		}
 		if field.fieldMask != nil {
 			s.WriteString("\t}\n")
 		}

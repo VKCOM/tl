@@ -116,32 +116,32 @@ bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::
 	s << "{";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"commit_bit\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.commit_bit)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"meta_block\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.meta_block)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
 		s << "\"split_payload\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.split_payload)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
+		s << ",";
 		s << "\"rotation_block\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.rotation_block)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<15)) != 0) {
+		s << ",";
 		s << "\"canonical_hash\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.canonical_hash)) { return false; }
-		s << ",";
 	}
+	s << ",";
 	s << "\"payload_offset\":";
 	s << item.payload_offset;
 	s << ",";
@@ -153,8 +153,8 @@ bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::
 	s << ",";
 	s << "\"file_offset\":";
 	s << item.file_offset;
-	s << ",";
 	if ((item.fields_mask & (1<<14)) != 0) {
+		s << ",";
 		s << "\"seq_number\":";
 		s << item.seq_number;
 	}

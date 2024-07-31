@@ -326,33 +326,33 @@ bool tl2::details::TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::C
 	s << "{";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"seconds\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.seconds)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"minutes\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.minutes)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
+		s << ",";
 		s << "\"hours\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.hours)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
 		s << "\"days_of_week\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.days_of_week)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<4)) != 0) {
+		s << ",";
 		s << "\"days\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.days)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
+		s << ",";
 		s << "\"months\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.months)) { return false; }
 	}
@@ -777,14 +777,14 @@ bool tl2::details::TasksQueueStatsWriteJSON(std::ostream& s, const ::tl2::tasks:
 	if ((nat_fields_mask & (1<<0)) != 0) {
 		s << "\"waiting_size\":";
 		s << item.waiting_size;
-		s << ",";
 	}
 	if ((nat_fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"scheduled_size\":";
 		s << item.scheduled_size;
-		s << ",";
 	}
 	if ((nat_fields_mask & (1<<2)) != 0) {
+		s << ",";
 		s << "\"in_progress_size\":";
 		s << item.in_progress_size;
 	}
@@ -945,48 +945,48 @@ bool tl2::details::TasksQueueTypeSettingsWriteJSON(std::ostream& s, const ::tl2:
 	s << "{";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"is_enabled\":";
 		if (!::tl2::details::BoolWriteJSON(s, item.is_enabled)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"is_persistent\":";
 		if (!::tl2::details::BoolWriteJSON(s, item.is_persistent)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
+		s << ",";
 		s << "\"priority\":";
 		s << item.priority;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
 		s << "\"default_retry_time\":";
 		s << item.default_retry_time;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
 		s << "\"default_retry_num\":";
 		s << item.default_retry_num;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<4)) != 0) {
+		s << ",";
 		s << "\"move_to_queue_type_on_error\":";
 		s << "\"" << item.move_to_queue_type_on_error << "\"";
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
+		s << ",";
 		s << "\"is_blocking\":";
 		if (!::tl2::details::BoolWriteJSON(s, item.is_blocking)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<6)) != 0) {
+		s << ",";
 		s << "\"timelimit\":";
 		s << item.timelimit;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<7)) != 0) {
+		s << ",";
 		s << "\"max_queue_size\":";
 		s << item.max_queue_size;
 	}
@@ -1123,23 +1123,23 @@ bool tl2::details::TasksQueueTypeStatsWriteJSON(std::ostream& s, const ::tl2::ta
 	s << "{";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"waiting_size\":";
 		s << item.waiting_size;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"scheduled_size\":";
 		s << item.scheduled_size;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
+		s << ",";
 		s << "\"in_progress_size\":";
 		s << item.in_progress_size;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
 		s << "\"num_queues\":";
 		s << item.num_queues;
 	}
@@ -1248,23 +1248,23 @@ bool tl2::details::TasksTaskWriteJSON(std::ostream& s, const ::tl2::tasks::Task&
 	s << ",";
 	s << "\"data\":";
 	s << "\"" << item.data << "\"";
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"id\":";
 		s << item.id;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"retries\":";
 		s << item.retries;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
+		s << ",";
 		s << "\"scheduled_time\":";
 		s << item.scheduled_time;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
+		s << ",";
 		s << "\"deadline\":";
 		s << item.deadline;
 	}

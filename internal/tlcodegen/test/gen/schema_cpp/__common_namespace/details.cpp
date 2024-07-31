@@ -3950,28 +3950,28 @@ bool tl2::details::RpcInvokeReqExtraWriteJSON(std::ostream& s, const ::tl2::RpcI
 	s << "{";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"query\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.query)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"sort\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.sort)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<2)) != 0) {
+		s << ",";
 		s << "\"sort_reverse\":";
 		if (!::tl2::details::TrueWriteJSON(s, item.sort_reverse)) { return false; }
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<16)) != 0) {
+		s << ",";
 		s << "\"wait_binlog_pos\":";
 		s << item.wait_binlog_pos;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<18)) != 0) {
+		s << ",";
 		s << "\"string_forward_keys\":";
 		if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item.string_forward_keys)) { return false; }
 	}

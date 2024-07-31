@@ -240,13 +240,13 @@ bool tl2::details::Service5ParamsWriteJSON(std::ostream& s, const ::tl2::service
 	s << "{";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"max_execution_speed\":";
 		s << item.max_execution_speed;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"max_execution_speed_bytes\":";
 		s << item.max_execution_speed_bytes;
 	}

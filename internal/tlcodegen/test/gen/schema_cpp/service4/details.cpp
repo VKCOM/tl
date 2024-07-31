@@ -48,18 +48,18 @@ bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::t
 	s << ",";
 	s << "\"fields_mask\":";
 	s << item.fields_mask;
-	s << ",";
 	if ((item.fields_mask & (1<<0)) != 0) {
+		s << ",";
 		s << "\"restoration_date\":";
 		s << item.restoration_date;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
+		s << ",";
 		s << "\"deletion_date\":";
 		s << item.deletion_date;
-		s << ",";
 	}
 	if ((item.fields_mask & (1<<16)) != 0) {
+		s << ",";
 		s << "\"hidden_by_privacy\":";
 		if (!::tl2::details::BoolWriteJSON(s, item.hidden_by_privacy)) { return false; }
 	}
