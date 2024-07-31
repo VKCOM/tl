@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void GetArraysReset(::tl2::Get_arrays& item);
+
+bool GetArraysWriteJSON(std::ostream& s, const ::tl2::Get_arrays& item);
 bool GetArraysRead(::basictl::tl_istream & s, ::tl2::Get_arrays& item);
 bool GetArraysWrite(::basictl::tl_ostream & s, const ::tl2::Get_arrays& item);
 bool GetArraysReadBoxed(::basictl::tl_istream & s, ::tl2::Get_arrays& item);

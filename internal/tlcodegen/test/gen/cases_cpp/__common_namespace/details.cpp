@@ -15,6 +15,20 @@ void tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntReset(std::vector<::t
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::DictionaryFieldAnyDoubleIntWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -36,6 +50,20 @@ bool tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntWrite(::basictl::tl_o
 
 void tl2::details::BuiltinVectorDictionaryFieldAnyIntIntReset(std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) {
 	item.resize(0); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::DictionaryFieldAnyIntIntWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
 }
 
 bool tl2::details::BuiltinVectorDictionaryFieldAnyIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) {
@@ -61,6 +89,20 @@ void tl2::details::BuiltinVectorDictionaryFieldIntReset(std::vector<::tl2::Dicti
 	item.resize(0); // TODO - unwrap
 }
 
+bool tl2::details::BuiltinVectorDictionaryFieldIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryField<int32_t>>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::DictionaryFieldIntWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
 bool tl2::details::BuiltinVectorDictionaryFieldIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<int32_t>>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
@@ -82,6 +124,11 @@ bool tl2::details::BuiltinVectorDictionaryFieldIntWrite(::basictl::tl_ostream & 
 
 void tl2::details::DictionaryAnyDoubleIntReset(::tl2::DictionaryAny<double, int32_t>& item) {
 	item.clear();
+}
+
+bool tl2::details::DictionaryAnyDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryAny<double, int32_t>& item) {
+	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::DictionaryAnyDoubleIntRead(::basictl::tl_istream & s, ::tl2::DictionaryAny<double, int32_t>& item) {
@@ -108,6 +155,11 @@ void tl2::details::DictionaryAnyIntIntReset(std::vector<::tl2::DictionaryFieldAn
 	item.clear();
 }
 
+bool tl2::details::DictionaryAnyIntIntWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) {
+	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::DictionaryAnyIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntRead(s, item)) { return false; }
 	return true;
@@ -131,6 +183,17 @@ bool tl2::details::DictionaryAnyIntIntWriteBoxed(::basictl::tl_ostream & s, cons
 void tl2::details::DictionaryFieldAnyDoubleIntReset(::tl2::DictionaryFieldAny<double, int32_t>& item) {
 	item.key = 0;
 	item.value = 0;
+}
+
+bool tl2::details::DictionaryFieldAnyDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<double, int32_t>& item) {
+	s << "{";
+	s << "\"key\":";
+	s << item.key;
+	s << ",";
+	s << "\"value\":";
+	s << item.value;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::DictionaryFieldAnyDoubleIntRead(::basictl::tl_istream & s, ::tl2::DictionaryFieldAny<double, int32_t>& item) {
@@ -160,6 +223,17 @@ void tl2::details::DictionaryFieldAnyIntIntReset(::tl2::DictionaryFieldAny<int32
 	item.value = 0;
 }
 
+bool tl2::details::DictionaryFieldAnyIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) {
+	s << "{";
+	s << "\"key\":";
+	s << item.key;
+	s << ",";
+	s << "\"value\":";
+	s << item.value;
+	s << "}";
+	return true;
+}
+
 bool tl2::details::DictionaryFieldAnyIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) {
 	if (!s.int_read(item.key)) { return false; }
 	if (!s.int_read(item.value)) { return false; }
@@ -185,6 +259,17 @@ bool tl2::details::DictionaryFieldAnyIntIntWriteBoxed(::basictl::tl_ostream & s,
 void tl2::details::DictionaryFieldIntReset(::tl2::DictionaryField<int32_t>& item) {
 	item.key.clear();
 	item.value = 0;
+}
+
+bool tl2::details::DictionaryFieldIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<int32_t>& item) {
+	s << "{";
+	s << "\"key\":";
+	s << "\"" << item.key << "\"";
+	s << ",";
+	s << "\"value\":";
+	s << item.value;
+	s << "}";
+	return true;
 }
 
 bool tl2::details::DictionaryFieldIntRead(::basictl::tl_istream & s, ::tl2::DictionaryField<int32_t>& item) {
@@ -213,6 +298,11 @@ void tl2::details::DictionaryIntReset(::tl2::Dictionary<int32_t>& item) {
 	item.clear();
 }
 
+bool tl2::details::DictionaryIntWriteJSON(std::ostream& s, const ::tl2::Dictionary<int32_t>& item) {
+	if (!::tl2::details::BuiltinVectorDictionaryFieldIntWriteJSON(s, item)) { return false; }
+	return true;
+}
+
 bool tl2::details::DictionaryIntRead(::basictl::tl_istream & s, ::tl2::Dictionary<int32_t>& item) {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldIntRead(s, item)) { return false; }
 	return true;
@@ -235,6 +325,11 @@ bool tl2::details::DictionaryIntWriteBoxed(::basictl::tl_ostream & s, const ::tl
 
 void tl2::details::IntReset(int32_t& item) {
 	item = 0;
+}
+
+bool tl2::details::IntWriteJSON(std::ostream& s, const int32_t& item) {
+	s << item;
+	return true;
 }
 
 bool tl2::details::IntRead(::basictl::tl_istream & s, int32_t& item) {
@@ -261,6 +356,11 @@ void tl2::details::Int32Reset(::tl2::Int32& item) {
 	item = 0;
 }
 
+bool tl2::details::Int32WriteJSON(std::ostream& s, const ::tl2::Int32& item) {
+	s << item;
+	return true;
+}
+
 bool tl2::details::Int32Read(::basictl::tl_istream & s, ::tl2::Int32& item) {
 	if (!s.int_read(item)) { return false; }
 	return true;
@@ -283,6 +383,11 @@ bool tl2::details::Int32WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Int32
 
 void tl2::details::Int64Reset(::tl2::Int64& item) {
 	item = 0;
+}
+
+bool tl2::details::Int64WriteJSON(std::ostream& s, const ::tl2::Int64& item) {
+	s << item;
+	return true;
 }
 
 bool tl2::details::Int64Read(::basictl::tl_istream & s, ::tl2::Int64& item) {
@@ -309,6 +414,11 @@ void tl2::details::LongReset(int64_t& item) {
 	item = 0;
 }
 
+bool tl2::details::LongWriteJSON(std::ostream& s, const int64_t& item) {
+	s << item;
+	return true;
+}
+
 bool tl2::details::LongRead(::basictl::tl_istream & s, int64_t& item) {
 	if (!s.long_read(item)) { return false; }
 	return true;
@@ -333,6 +443,11 @@ void tl2::details::StringReset(std::string& item) {
 	item.clear();
 }
 
+bool tl2::details::StringWriteJSON(std::ostream& s, const std::string& item) {
+	s << "\"" << item << "\"";
+	return true;
+}
+
 bool tl2::details::StringRead(::basictl::tl_istream & s, std::string& item) {
 	if (!s.string_read(item)) { return false; }
 	return true;
@@ -351,6 +466,11 @@ bool tl2::details::StringReadBoxed(::basictl::tl_istream & s, std::string& item)
 bool tl2::details::StringWriteBoxed(::basictl::tl_ostream & s, const std::string& item) {
 	if (!s.nat_write(0xb5286e24)) { return false; }
 	return tl2::details::StringWrite(s, item);
+}
+
+bool tl2::True::write_json(std::ostream& s)const {
+	if (!::tl2::details::TrueWriteJSON(s, *this)) { return false; }
+	return true;
 }
 
 bool tl2::True::read(::basictl::tl_istream & s) {
@@ -376,6 +496,12 @@ bool tl2::True::write_boxed(::basictl::tl_ostream & s)const {
 void tl2::details::TrueReset(::tl2::True& item) {
 }
 
+bool tl2::details::TrueWriteJSON(std::ostream& s, const ::tl2::True& item) {
+	s << "{";
+	s << "}";
+	return true;
+}
+
 bool tl2::details::TrueRead(::basictl::tl_istream & s, ::tl2::True& item) {
 	return true;
 }
@@ -396,6 +522,11 @@ bool tl2::details::TrueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::True& 
 
 void tl2::details::VectorDictionaryFieldIntReset(std::vector<::tl2::DictionaryField<int32_t>>& item) {
 	item.clear();
+}
+
+bool tl2::details::VectorDictionaryFieldIntWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryField<int32_t>>& item) {
+	if (!::tl2::details::BuiltinVectorDictionaryFieldIntWriteJSON(s, item)) { return false; }
+	return true;
 }
 
 bool tl2::details::VectorDictionaryFieldIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<int32_t>>& item) {

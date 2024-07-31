@@ -52,6 +52,11 @@ func (trw *TypeRWUnion) CPPTypeWritingCode(bytesVersion bool, val string, bare b
 	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
+func (trw *TypeRWUnion) CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
+	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
+	return fmt.Sprintf("\tif (!::%s::%sWriteJSON(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, val, joinWithCommas(natArgs))
+}
+
 func (trw *TypeRWUnion) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
@@ -115,6 +120,8 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		if len(myArgsDecl) == 0 {
 			// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 			hpp.WriteString(fmt.Sprintf(`
+	bool write_json(std::ostream& s%[1]s)const;
+
 	bool read_boxed(::basictl::tl_istream & s%[1]s);
 	bool write_boxed(::basictl::tl_ostream & s%[1]s)const;
 `,
@@ -137,6 +144,8 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 		hppDet.WriteString(fmt.Sprintf(`
 void %[1]sReset(%[2]s& item);
+
+bool %[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s);
 bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
 bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
 `, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
@@ -153,6 +162,10 @@ static const uint32_t %[1]s_tbl_tl_tag[]{%[3]s};
 			trw.CPPAllTags(bytesVersion)))
 		if len(myArgsDecl) == 0 {
 			cppDet.WriteString(fmt.Sprintf(`
+bool %[5]s::write_json(std::ostream & s%[1]s)const {
+%[7]s
+	return true;
+}
 bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
 %[3]s
 	return true;
@@ -174,13 +187,23 @@ uint32_t %[5]s::tl_tag() const {
 				trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 				trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 				myFullTypeNoPrefix,
-				goGlobalName))
+				goGlobalName,
+				trw.CPPTypeWritingJsonCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
 		}
 		cppDet.WriteString(fmt.Sprintf(`
 void %[7]s::%[1]sReset(%[2]s& item) {
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
+bool %[7]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) {
+	s << "{";
+	s << "\"type\":";
+	s << %[1]s_tbl_tl_tag[item.value.index()];
+	switch (item.value.index()) {
+%[8]s	}
+	s << "}";
+	return true;
+}
 bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	uint32_t nat;
 	s.nat_read(nat);
@@ -205,6 +228,7 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			trw.CPPReadFields(bytesVersion, hppInc, cppDetInc),
 			trw.CPPWriteFields(bytesVersion),
 			trw.wr.gen.DetailsCPPNamespace,
+			trw.CPPWriteJSONFields(bytesVersion),
 		))
 	}
 	/*
@@ -434,6 +458,22 @@ func (trw *TypeRWUnion) CPPWriteFields(bytesVersion bool) string {
 			s.WriteString(fmt.Sprintf("\tcase %d:\n", fieldIndex))
 			s.WriteString("\t" +
 				field.t.trw.CPPTypeWritingCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
+					true, formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
+			s.WriteString("\t\tbreak;\n")
+		}
+	}
+	return s.String()
+}
+
+func (trw *TypeRWUnion) CPPWriteJSONFields(bytesVersion bool) string {
+	var s strings.Builder
+	for fieldIndex, field := range trw.Fields {
+		if !field.t.IsTrueType() {
+			s.WriteString(fmt.Sprintf("\tcase %d:\n", fieldIndex))
+			s.WriteString(`		s << ",\"value\":";
+`)
+			s.WriteString("\t" +
+				field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
 					true, formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
 			s.WriteString("\t\tbreak;\n")
 		}

@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service2SetObjectTtlReset(::tl2::service2::SetObjectTtl& item);
+
+bool Service2SetObjectTtlWriteJSON(std::ostream& s, const ::tl2::service2::SetObjectTtl& item);
 bool Service2SetObjectTtlRead(::basictl::tl_istream & s, ::tl2::service2::SetObjectTtl& item);
 bool Service2SetObjectTtlWrite(::basictl::tl_ostream & s, const ::tl2::service2::SetObjectTtl& item);
 bool Service2SetObjectTtlReadBoxed(::basictl::tl_istream & s, ::tl2::service2::SetObjectTtl& item);

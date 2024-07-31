@@ -157,6 +157,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::antispam::PatternFull result;
@@ -184,6 +186,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("antispam.patternFound", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -198,6 +202,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("antispam.patternNotFound", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -212,6 +218,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("benchObject", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -226,6 +234,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("boolStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -240,6 +250,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyBoxedArray result;
@@ -267,6 +279,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			int32_t result;
@@ -294,6 +308,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::string result;
@@ -321,6 +337,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::array<int32_t, 3> result;
@@ -348,6 +366,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
@@ -375,6 +395,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyBoxedTupleSlice result;
@@ -402,6 +424,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
@@ -429,6 +453,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
@@ -456,6 +482,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
@@ -483,6 +511,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int64_t> result;
@@ -510,6 +540,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict1", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -524,6 +556,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict2", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -538,6 +572,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict3", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -552,6 +588,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("fieldConflict4", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -566,6 +604,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::array<int32_t, 5> result;
@@ -593,6 +633,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			double result;
@@ -620,6 +662,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			float result;
@@ -647,6 +691,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::service1::Value> result;
@@ -674,6 +720,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyDictOfInt result;
@@ -701,6 +749,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyDouble result;
@@ -728,6 +778,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::MyValue result;
@@ -755,6 +807,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
@@ -782,6 +836,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::tasks::QueueTypeStats result;
@@ -809,6 +865,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("integer", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -823,6 +881,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("issue3498", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -837,6 +897,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myBoxedArray", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -851,6 +913,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myBoxedTupleSlice", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -865,6 +929,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myBoxedVectorSlice", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -879,6 +945,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myInt", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -893,6 +961,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myMcValue", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -907,6 +977,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myMcValueTuple", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -921,6 +993,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myMcValueVector", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -935,6 +1009,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myString", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -949,6 +1025,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("myTwoDicts", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -963,6 +1041,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("nonOptNat", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -977,6 +1057,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("pkg2.foo", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -991,6 +1073,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("pkg2.t1", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1005,6 +1089,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("rpcInvokeReqExtra", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1019,6 +1105,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1046,6 +1134,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1073,6 +1163,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1100,6 +1192,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1127,6 +1221,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1154,6 +1250,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1181,6 +1279,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1208,6 +1308,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1235,6 +1337,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1262,6 +1366,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1289,6 +1395,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1316,6 +1424,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1343,6 +1453,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1370,6 +1482,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<int32_t> result;
@@ -1397,6 +1511,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::service1::KeysStat> result;
@@ -1424,6 +1540,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<int32_t> result;
@@ -1451,6 +1569,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::Map<std::string, std::string>> result;
@@ -1478,6 +1598,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::Dictionary<std::string> result;
@@ -1505,6 +1627,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<std::string> result;
@@ -1532,6 +1656,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::Dictionary<::tl2::service1::Value> result;
@@ -1559,6 +1685,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1586,6 +1714,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service1.keysStat", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1600,6 +1730,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service1.longvalue", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1614,6 +1746,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service1.longvalueWithTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1628,6 +1762,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service1.not_found", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1642,6 +1778,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1669,6 +1807,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1696,6 +1836,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1723,6 +1865,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service1::Value result;
@@ -1750,6 +1894,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service1.strvalue", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1764,6 +1910,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service1.strvalueWithTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -1778,6 +1926,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1805,6 +1955,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::service2::CounterSet> result;
@@ -1832,6 +1984,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::True result;
@@ -1859,6 +2013,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::True result;
@@ -1886,6 +2042,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1913,6 +2071,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1940,6 +2100,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1967,6 +2129,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -1994,6 +2158,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<int32_t> result;
@@ -2021,6 +2187,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service3::Limits result;
@@ -2048,6 +2216,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<std::vector<::tl2::service3::ProductStatsOld>> result;
@@ -2075,6 +2245,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<std::vector<::tl2::service3::Product>> result;
@@ -2102,6 +2274,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<std::vector<::tl2::service3::Productmode<0>>> result;
@@ -2129,6 +2303,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service3.groupCountLimit", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2143,6 +2319,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service3.groupSizeLimit", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2157,6 +2335,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service3.limits", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2171,6 +2351,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service3.productStatsOld", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2185,6 +2367,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -2212,6 +2396,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -2239,6 +2425,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -2266,6 +2454,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			bool result;
@@ -2293,6 +2483,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::BoolStat result;
@@ -2320,6 +2512,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service4.modifiedNewsEntry", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2334,6 +2528,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service4.object", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2348,6 +2544,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service5.emptyOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2362,6 +2560,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service5::Output result;
@@ -2389,6 +2589,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service5.params", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2403,6 +2605,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service5::Output result;
@@ -2430,6 +2634,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::service5::Output result;
@@ -2457,6 +2663,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service5.stringOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2471,6 +2679,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service6.error", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2485,6 +2695,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service6.findResultRow", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2499,6 +2711,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("service6.findWithBoundsResult", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2513,6 +2727,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> result;
@@ -2540,6 +2756,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> result;
@@ -2567,6 +2785,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("statOne", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2581,6 +2801,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			int64_t result;
@@ -2608,6 +2830,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTask", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2622,6 +2846,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTaskWithId", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2636,6 +2862,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2650,6 +2878,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::tasks::TaskInfo> result;
@@ -2677,6 +2907,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			tl2::tasks::QueueStats result;
@@ -2704,6 +2936,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::vector<::tl2::tasks::QueueTypeInfo> result;
@@ -2731,6 +2965,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<::tl2::tasks::TaskInfo> result;
@@ -2758,6 +2994,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.queueTypeInfo", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2772,6 +3010,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.queueTypeSettings", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2786,6 +3026,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.queueTypeStats", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2800,6 +3042,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.task", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2814,6 +3058,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskInfo", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2828,6 +3074,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusInProgress", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2842,6 +3090,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusNotCurrentlyInEngine", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2856,6 +3106,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusScheduled", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2870,6 +3122,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tasks.taskStatusWaiting", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2884,6 +3138,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("tree_stats.objectLimitValueLong", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2898,6 +3154,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("true", []() -> std::unique_ptr<tl2::meta::tl_object> {
@@ -2912,6 +3170,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			std::optional<int32_t> result;
@@ -2939,6 +3199,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
 			int32_t result;
@@ -2966,6 +3228,8 @@ void tl2::factory::set_all_factories() {
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
     };
 	tl2::meta::set_create_object_by_name("withFloat", []() -> std::unique_ptr<tl2::meta::tl_object> {

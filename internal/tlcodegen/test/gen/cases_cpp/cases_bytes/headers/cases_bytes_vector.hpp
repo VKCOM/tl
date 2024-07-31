@@ -8,6 +8,8 @@
 namespace tl2 { namespace details { 
 
 void VectorDictionaryFieldStringReset(std::vector<::tl2::DictionaryField<std::string>>& item);
+
+bool VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryField<std::string>>& item);
 bool VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<std::string>>& item);
 bool VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryField<std::string>>& item);
 bool VectorDictionaryFieldStringReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<std::string>>& item);
@@ -18,6 +20,8 @@ bool VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const std:
 namespace tl2 { namespace details { 
 
 void VectorStringReset(std::vector<std::string>& item);
+
+bool VectorStringWriteJSON(std::ostream& s, const std::vector<std::string>& item);
 bool VectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item);
 bool VectorStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item);
 bool VectorStringReadBoxed(::basictl::tl_istream & s, std::vector<std::string>& item);

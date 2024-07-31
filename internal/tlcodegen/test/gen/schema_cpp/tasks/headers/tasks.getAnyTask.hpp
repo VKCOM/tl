@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void TasksGetAnyTaskReset(::tl2::tasks::GetAnyTask& item);
+
+bool TasksGetAnyTaskWriteJSON(std::ostream& s, const ::tl2::tasks::GetAnyTask& item);
 bool TasksGetAnyTaskRead(::basictl::tl_istream & s, ::tl2::tasks::GetAnyTask& item);
 bool TasksGetAnyTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetAnyTask& item);
 bool TasksGetAnyTaskReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::GetAnyTask& item);

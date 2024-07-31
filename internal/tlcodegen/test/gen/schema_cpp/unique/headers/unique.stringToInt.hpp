@@ -6,6 +6,8 @@
 namespace tl2 { namespace details { 
 
 void UniqueStringToIntReset(::tl2::unique::StringToInt& item);
+
+bool UniqueStringToIntWriteJSON(std::ostream& s, const ::tl2::unique::StringToInt& item);
 bool UniqueStringToIntRead(::basictl::tl_istream & s, ::tl2::unique::StringToInt& item);
 bool UniqueStringToIntWrite(::basictl::tl_ostream & s, const ::tl2::unique::StringToInt& item);
 bool UniqueStringToIntReadBoxed(::basictl::tl_istream & s, ::tl2::unique::StringToInt& item);

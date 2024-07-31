@@ -3,6 +3,11 @@
 #include "../__common_namespace/headers/int.hpp"
 
 
+bool tl2::unique::Get::write_json(std::ostream& s)const {
+	if (!::tl2::details::UniqueGetWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::unique::Get::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::UniqueGetRead(s, *this)) { return false; }
 	return true;
@@ -25,6 +30,14 @@ bool tl2::unique::Get::write_boxed(::basictl::tl_ostream & s)const {
 
 void tl2::details::UniqueGetReset(::tl2::unique::Get& item) {
 	item.key.clear();
+}
+
+bool tl2::details::UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item) {
+	s << "{";
+	s << "\"key\":";
+	s << "\"" << item.key << "\"";
+	s << "}";
+	return true;
 }
 
 bool tl2::details::UniqueGetRead(::basictl::tl_istream & s, ::tl2::unique::Get& item) {
@@ -63,6 +76,11 @@ bool tl2::unique::Get::write_result(::basictl::tl_ostream & s, std::optional<int
 	return tl2::details::UniqueGetWriteResult(s, *this, result);
 }
 
+bool tl2::unique::StringToInt::write_json(std::ostream& s)const {
+	if (!::tl2::details::UniqueStringToIntWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
 bool tl2::unique::StringToInt::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::UniqueStringToIntRead(s, *this)) { return false; }
 	return true;
@@ -85,6 +103,14 @@ bool tl2::unique::StringToInt::write_boxed(::basictl::tl_ostream & s)const {
 
 void tl2::details::UniqueStringToIntReset(::tl2::unique::StringToInt& item) {
 	item.key.clear();
+}
+
+bool tl2::details::UniqueStringToIntWriteJSON(std::ostream& s, const ::tl2::unique::StringToInt& item) {
+	s << "{";
+	s << "\"key\":";
+	s << "\"" << item.key << "\"";
+	s << "}";
+	return true;
 }
 
 bool tl2::details::UniqueStringToIntRead(::basictl::tl_istream & s, ::tl2::unique::StringToInt& item) {

@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void Service1DeleteReset(::tl2::service1::Delete& item);
+
+bool Service1DeleteWriteJSON(std::ostream& s, const ::tl2::service1::Delete& item);
 bool Service1DeleteRead(::basictl::tl_istream & s, ::tl2::service1::Delete& item);
 bool Service1DeleteWrite(::basictl::tl_ostream & s, const ::tl2::service1::Delete& item);
 bool Service1DeleteReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Delete& item);

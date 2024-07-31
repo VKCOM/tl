@@ -7,6 +7,8 @@
 namespace tl2 { namespace details { 
 
 void GetStatsReset(::tl2::GetStats& item);
+
+bool GetStatsWriteJSON(std::ostream& s, const ::tl2::GetStats& item);
 bool GetStatsRead(::basictl::tl_istream & s, ::tl2::GetStats& item);
 bool GetStatsWrite(::basictl::tl_ostream & s, const ::tl2::GetStats& item);
 bool GetStatsReadBoxed(::basictl::tl_istream & s, ::tl2::GetStats& item);
