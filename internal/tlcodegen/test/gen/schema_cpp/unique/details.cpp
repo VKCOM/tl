@@ -33,10 +33,8 @@ void tl2::details::UniqueGetReset(::tl2::unique::Get& item) {
 }
 
 bool tl2::details::UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
-		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -110,10 +108,8 @@ void tl2::details::UniqueStringToIntReset(::tl2::unique::StringToInt& item) {
 }
 
 bool tl2::details::UniqueStringToIntWriteJSON(std::ostream& s, const ::tl2::unique::StringToInt& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
-		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}

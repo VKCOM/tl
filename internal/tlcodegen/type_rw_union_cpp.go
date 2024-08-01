@@ -476,21 +476,25 @@ func (trw *TypeRWUnion) CPPWriteJSONFields(bytesVersion bool) string {
 `, trw.wr.goGlobalName))
 
 		for fieldIndex, field := range trw.Fields {
+			indent := 1
 			if !field.t.IsTrueType() {
+				s.WriteString(fmt.Sprintf("%scase %d:\n", strings.Repeat("\t", indent), fieldIndex))
+				indent++
 				emptyCondition := field.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex), field.recursive, nil)
 				if emptyCondition != "" {
-					s.WriteString(fmt.Sprintf("\tif (%s) {\n", emptyCondition))
+					s.WriteString(fmt.Sprintf("%sif (%s) {\n", strings.Repeat("\t", indent), emptyCondition))
+					indent++
 				}
-				s.WriteString(fmt.Sprintf("\tcase %d:\n", fieldIndex))
-				s.WriteString(`		s << ",\"value\":";
-`)
-				s.WriteString("\t" +
+				s.WriteString(fmt.Sprintf(`%ss << ",\"value\":";
+`, strings.Repeat("\t", indent)))
+				s.WriteString(strings.Repeat("\t", indent-1) +
 					field.t.trw.CPPTypeWritingJsonCode(bytesVersion, addAsterisk(field.recursive, fmt.Sprintf("std::get<%d>(item.value)", fieldIndex)),
 						true, formatNatArgsCPP(trw.Fields, field.natArgs), false) + "\n")
 				if emptyCondition != "" {
-					s.WriteString(fmt.Sprintf("\t}\n"))
+					indent--
+					s.WriteString(fmt.Sprintf("%s}\n", strings.Repeat("\t", indent)))
 				}
-				s.WriteString("\t\tbreak;\n")
+				s.WriteString(fmt.Sprintf("%sbreak;\n", strings.Repeat("\t", indent)))
 			}
 		}
 		s.WriteString(`	}

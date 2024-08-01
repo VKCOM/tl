@@ -338,10 +338,8 @@ void tl2::details::Service5PerformQueryReset(::tl2::service5::PerformQuery& item
 }
 
 bool tl2::details::Service5PerformQueryWriteJSON(std::ostream& s, const ::tl2::service5::PerformQuery& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.query.size() != 0) {
-		add_comma = true;
 		s << "\"query\":";
 		s << "\"" << item.query << "\"";
 	}
