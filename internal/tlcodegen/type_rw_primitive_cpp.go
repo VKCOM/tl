@@ -13,7 +13,7 @@ import (
 
 func (trw *TypeRWPrimitive) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
 	if trw.tlType == "string" {
-		return fmt.Sprintf("%s.size() != 0", addAsterisk(ref, val))
+		return fmt.Sprintf("%s.size() != 0", addAsteriskAndBrackets(ref, val))
 	}
 	return fmt.Sprintf("%s != 0", addAsterisk(ref, val))
 }

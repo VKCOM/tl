@@ -907,6 +907,10 @@ func addAsterisk(ref bool, val string) string {
 	return ifString(ref, "*"+val, val)
 }
 
+func addAsteriskAndBrackets(ref bool, val string) string {
+	return ifString(ref, "(*"+val+")", val)
+}
+
 func wrapLast(last bool, code string) string {
 	return ifString(last, "return "+code+"", "if err := "+code+"; err != nil { return err }")
 }

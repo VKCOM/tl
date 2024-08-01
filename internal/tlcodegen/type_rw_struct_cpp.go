@@ -504,6 +504,18 @@ func (trw *TypeRWStruct) CPPWriteFields(bytesVersion bool) string {
 	return s.String()
 }
 
+func countFields(fields []Field) (count int) {
+	for _, field := range fields {
+		if field.t.IsTrueType() {
+			if field.fieldMask == nil || !(field.fieldMask.isField || field.fieldMask.isArith) {
+				continue
+			}
+		}
+		count++
+	}
+	return
+}
+
 func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 	var s strings.Builder
 	if trw.isTypeDef() {
@@ -517,8 +529,12 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 		return "	s << \"true\";\n"
 	}
 
-	s.WriteString(`	auto add_comma = false;
-	s << "{";
+	fieldsCount := countFields(trw.Fields)
+	if fieldsCount > 1 {
+		s.WriteString(`	auto add_comma = false;
+`)
+	}
+	s.WriteString(`	s << "{";
 `)
 	for i, field := range trw.Fields {
 		if field.t.IsTrueType() {
@@ -545,8 +561,10 @@ func (trw *TypeRWStruct) CPPWriteJsonFields(bytesVersion bool) string {
 				strings.Repeat("\t", indent+1),
 			))
 		}
-		s.WriteString(strings.Repeat("\t", indent+1))
-		s.WriteString("add_comma = true;\n")
+		if fieldsCount > 1 {
+			s.WriteString(strings.Repeat("\t", indent+1))
+			s.WriteString("add_comma = true;\n")
+		}
 		s.WriteString(fmt.Sprintf(`%ss << "\"%s\":";
 `,
 			strings.Repeat("\t", indent+1),

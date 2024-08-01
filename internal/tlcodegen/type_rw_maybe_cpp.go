@@ -142,7 +142,7 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			func() string {
 				indent := 1
 				s := ""
-				emptyCondition := trw.element.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, "*item", false, nil)
+				emptyCondition := trw.element.t.trw.CPPTypeJSONEmptyCondition(bytesVersion, "(*item)", false, nil)
 				if emptyCondition != "" {
 					s += fmt.Sprintf("\tif(%s) {\n\t", emptyCondition)
 					indent = 2
