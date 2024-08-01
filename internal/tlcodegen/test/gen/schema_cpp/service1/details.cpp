@@ -1128,10 +1128,8 @@ void tl2::details::Service1DeleteReset(::tl2::service1::Delete& item) {
 }
 
 bool tl2::details::Service1DeleteWriteJSON(std::ostream& s, const ::tl2::service1::Delete& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
-		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1205,10 +1203,8 @@ void tl2::details::Service1DisableExpirationReset(::tl2::service1::DisableExpira
 }
 
 bool tl2::details::Service1DisableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::DisableExpiration& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
-		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1282,10 +1278,8 @@ void tl2::details::Service1DisableKeysStatReset(::tl2::service1::DisableKeysStat
 }
 
 bool tl2::details::Service1DisableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::DisableKeysStat& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.period != 0) {
-		add_comma = true;
 		s << "\"period\":";
 		s << item.period;
 	}
@@ -1359,10 +1353,8 @@ void tl2::details::Service1EnableExpirationReset(::tl2::service1::EnableExpirati
 }
 
 bool tl2::details::Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
-		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1436,10 +1428,8 @@ void tl2::details::Service1EnableKeysStatReset(::tl2::service1::EnableKeysStat& 
 }
 
 bool tl2::details::Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::EnableKeysStat& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.period != 0) {
-		add_comma = true;
 		s << "\"period\":";
 		s << item.period;
 	}
@@ -1513,10 +1503,8 @@ void tl2::details::Service1ExistsReset(::tl2::service1::Exists& item) {
 }
 
 bool tl2::details::Service1ExistsWriteJSON(std::ostream& s, const ::tl2::service1::Exists& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
-		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1590,10 +1578,8 @@ void tl2::details::Service1GetReset(::tl2::service1::Get& item) {
 }
 
 bool tl2::details::Service1GetWriteJSON(std::ostream& s, const ::tl2::service1::Get& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
-		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1667,10 +1653,8 @@ void tl2::details::Service1GetExpireTimeReset(::tl2::service1::GetExpireTime& it
 }
 
 bool tl2::details::Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tl2::service1::GetExpireTime& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
-		add_comma = true;
 		s << "\"key\":";
 		s << "\"" << item.key << "\"";
 	}
@@ -1744,10 +1728,8 @@ void tl2::details::Service1GetKeysStatReset(::tl2::service1::GetKeysStat& item) 
 }
 
 bool tl2::details::Service1GetKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStat& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.period != 0) {
-		add_comma = true;
 		s << "\"period\":";
 		s << item.period;
 	}
@@ -1890,10 +1872,8 @@ void tl2::details::Service1GetWildcardReset(::tl2::service1::GetWildcard& item) 
 }
 
 bool tl2::details::Service1GetWildcardWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcard& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
-		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -1969,10 +1949,8 @@ void tl2::details::Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict
 }
 
 bool tl2::details::Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
-		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -2046,10 +2024,8 @@ void tl2::details::Service1GetWildcardListReset(::tl2::service1::GetWildcardList
 }
 
 bool tl2::details::Service1GetWildcardListWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardList& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
-		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}
@@ -2125,10 +2101,8 @@ void tl2::details::Service1GetWildcardWithFlagsReset(::tl2::service1::GetWildcar
 }
 
 bool tl2::details::Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardWithFlags& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.prefix.size() != 0) {
-		add_comma = true;
 		s << "\"prefix\":";
 		s << "\"" << item.prefix << "\"";
 	}

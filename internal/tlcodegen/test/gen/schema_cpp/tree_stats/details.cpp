@@ -35,11 +35,11 @@ bool tl2::details::TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::
 	s << "\"type\":";
 	s << "\"" << TreeStatsObjectLimitValue_tbl_tl_name[item.value.index()] << "\"";
 	switch (item.value.index()) {
-	if (std::get<1>(item.value) != 0) {
 	case 1:
-		s << ",\"value\":";
-		if (!::tl2::details::TreeStatsObjectLimitValueDoubleWriteJSON(s, std::get<1>(item.value))) { return false; }
-	}
+		if (std::get<1>(item.value) != 0) {
+			s << ",\"value\":";
+			if (!::tl2::details::TreeStatsObjectLimitValueDoubleWriteJSON(s, std::get<1>(item.value))) { return false; }
+		}
 		break;
 	}
 	s << "}";

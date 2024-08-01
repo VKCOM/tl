@@ -317,10 +317,8 @@ void tl2::details::BenchmarksVrutoyPositionsReset(::tl2::benchmarks::VrutoyPosit
 }
 
 bool tl2::details::BenchmarksVrutoyPositionsWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) {
-	auto add_comma = false;
 	s << "{";
 	if ((item.next_positions.size() != 0) || (nat_n != 0)) {
-		add_comma = true;
 		s << "\"next_positions\":";
 		if (!::tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(s, item.next_positions, nat_n)) { return false; }
 	}
@@ -378,9 +376,7 @@ void tl2::details::BenchmarksVrutoyTopLevelContainerReset(::tl2::benchmarks::Vru
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainer& item) {
-	auto add_comma = false;
 	s << "{";
-	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -574,10 +570,8 @@ void tl2::details::BenchmarksVrutoytopLevelUnionBigReset(::tl2::benchmarks::Vrut
 }
 
 bool tl2::details::BenchmarksVrutoytopLevelUnionBigWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.next_positions.size() != 0) {
-		add_comma = true;
 		s << "\"next_positions\":";
 		if (!::tl2::details::BuiltinVectorBenchmarksVruPositionWriteJSON(s, item.next_positions)) { return false; }
 	}

@@ -794,10 +794,8 @@ void tl2::details::Service3GetLastVisitTimestampReset(::tl2::service3::GetLastVi
 }
 
 bool tl2::details::Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::GetLastVisitTimestamp& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.user_id != 0) {
-		add_comma = true;
 		s << "\"user_id\":";
 		s << item.user_id;
 	}
@@ -2259,9 +2257,7 @@ void tl2::details::Service3SetLimitsReset(::tl2::service3::SetLimits& item) {
 }
 
 bool tl2::details::Service3SetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::SetLimits& item) {
-	auto add_comma = false;
 	s << "{";
-	add_comma = true;
 	s << "\"limits\":";
 	if (!::tl2::details::Service3LimitsWriteJSON(s, item.limits)) { return false; }
 	s << "}";
@@ -2424,7 +2420,7 @@ bool tl2::details::VectorService3Product0MaybeWriteJSON(std::ostream & s, const 
 	s << "{";
 	if (item) {
 		s << "\"ok\":true";
-		if(*item.size() != 0) {
+		if((*item).size() != 0) {
 			s << ",\"value\":";
 			if (!::tl2::details::BuiltinVectorService3Product0WriteJSON(s, *item)) { return false; }
 		}
@@ -2458,7 +2454,7 @@ bool tl2::details::VectorService3ProductMaybeWriteJSON(std::ostream & s, const s
 	s << "{";
 	if (item) {
 		s << "\"ok\":true";
-		if(*item.size() != 0) {
+		if((*item).size() != 0) {
 			s << ",\"value\":";
 			if (!::tl2::details::BuiltinVectorService3ProductWriteJSON(s, *item, nat_t)) { return false; }
 		}
@@ -2521,7 +2517,7 @@ bool tl2::details::VectorService3ProductStatsOldMaybeWriteJSON(std::ostream & s,
 	s << "{";
 	if (item) {
 		s << "\"ok\":true";
-		if(*item.size() != 0) {
+		if((*item).size() != 0) {
 			s << ",\"value\":";
 			if (!::tl2::details::BuiltinVectorService3ProductStatsOldWriteJSON(s, *item)) { return false; }
 		}

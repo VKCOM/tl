@@ -445,10 +445,8 @@ void tl2::details::Service2ObjectIdReset(::tl2::service2::ObjectId& item) {
 }
 
 bool tl2::details::Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) {
-	auto add_comma = false;
 	s << "{";
 	if ((item.id.size() != 0) || (nat_objectIdLength != 0)) {
-		add_comma = true;
 		s << "\"id\":";
 		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.id, nat_objectIdLength)) { return false; }
 	}

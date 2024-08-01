@@ -111,10 +111,8 @@ void tl2::details::Service6ErrorReset(::tl2::service6::Error& item) {
 }
 
 bool tl2::details::Service6ErrorWriteJSON(std::ostream& s, const ::tl2::service6::Error& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.code != 0) {
-		add_comma = true;
 		s << "\"code\":";
 		s << item.code;
 	}
@@ -172,10 +170,8 @@ void tl2::details::Service6FindResultRowReset(::tl2::service6::FindResultRow& it
 }
 
 bool tl2::details::Service6FindResultRowWriteJSON(std::ostream& s, const ::tl2::service6::FindResultRow& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
-		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
@@ -233,10 +229,8 @@ void tl2::details::Service6FindWithBoundsResultReset(::tl2::service6::FindWithBo
 }
 
 bool tl2::details::Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::service6::FindWithBoundsResult& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.x != 0) {
-		add_comma = true;
 		s << "\"x\":";
 		s << item.x;
 	}
@@ -395,10 +389,8 @@ void tl2::details::Service6MultiFindWithBoundsReset(::tl2::service6::MultiFindWi
 }
 
 bool tl2::details::Service6MultiFindWithBoundsWriteJSON(std::ostream& s, const ::tl2::service6::MultiFindWithBounds& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.clusters.size() != 0) {
-		add_comma = true;
 		s << "\"clusters\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
 	}

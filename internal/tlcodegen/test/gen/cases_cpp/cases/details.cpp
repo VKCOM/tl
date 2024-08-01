@@ -1178,10 +1178,8 @@ void tl2::details::CasesTestDictAnyReset(::tl2::cases::TestDictAny& item) {
 }
 
 bool tl2::details::CasesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases::TestDictAny& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
-		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::DictionaryAnyDoubleIntWriteJSON(s, item.dict)) { return false; }
 	}
@@ -1239,10 +1237,8 @@ void tl2::details::CasesTestDictIntReset(::tl2::cases::TestDictInt& item) {
 }
 
 bool tl2::details::CasesTestDictIntWriteJSON(std::ostream& s, const ::tl2::cases::TestDictInt& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
-		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(s, item.dict)) { return false; }
 	}
@@ -1300,10 +1296,8 @@ void tl2::details::CasesTestDictStringReset(::tl2::cases::TestDictString& item) 
 }
 
 bool tl2::details::CasesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases::TestDictString& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.dict.size() != 0) {
-		add_comma = true;
 		s << "\"dict\":";
 		if (!::tl2::details::DictionaryIntWriteJSON(s, item.dict)) { return false; }
 	}
@@ -1571,9 +1565,7 @@ void tl2::details::CasesTestEnumContainerReset(::tl2::cases::TestEnumContainer& 
 }
 
 bool tl2::details::CasesTestEnumContainerWriteJSON(std::ostream& s, const ::tl2::cases::TestEnumContainer& item) {
-	auto add_comma = false;
 	s << "{";
-	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::CasesTestEnumWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -1742,10 +1734,8 @@ void tl2::details::CasesTestMaybeReset(::tl2::cases::TestMaybe& item) {
 }
 
 bool tl2::details::CasesTestMaybeWriteJSON(std::ostream& s, const ::tl2::cases::TestMaybe& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.value.has_value()) {
-		add_comma = true;
 		s << "\"value\":";
 		if (!::tl2::details::IntMaybeWriteJSON(s, item.value)) { return false; }
 	}
@@ -2106,9 +2096,7 @@ void tl2::details::CasesTestTupleReset(::tl2::cases::TestTuple& item) {
 }
 
 bool tl2::details::CasesTestTupleWriteJSON(std::ostream& s, const ::tl2::cases::TestTuple& item) {
-	auto add_comma = false;
 	s << "{";
-	add_comma = true;
 	s << "\"tpl\":";
 	if (!::tl2::details::BuiltinTuple4IntWriteJSON(s, item.tpl)) { return false; }
 	s << "}";
@@ -2240,10 +2228,8 @@ void tl2::details::CasesTestUnion1Reset(::tl2::cases::TestUnion1& item) {
 }
 
 bool tl2::details::CasesTestUnion1WriteJSON(std::ostream& s, const ::tl2::cases::TestUnion1& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
-		add_comma = true;
 		s << "\"value\":";
 		s << item.value;
 	}
@@ -2301,10 +2287,8 @@ void tl2::details::CasesTestUnion2Reset(::tl2::cases::TestUnion2& item) {
 }
 
 bool tl2::details::CasesTestUnion2WriteJSON(std::ostream& s, const ::tl2::cases::TestUnion2& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
-		add_comma = true;
 		s << "\"value\":";
 		s << "\"" << item.value << "\"";
 	}
@@ -2362,9 +2346,7 @@ void tl2::details::CasesTestUnionContainerReset(::tl2::cases::TestUnionContainer
 }
 
 bool tl2::details::CasesTestUnionContainerWriteJSON(std::ostream& s, const ::tl2::cases::TestUnionContainer& item) {
-	auto add_comma = false;
 	s << "{";
-	add_comma = true;
 	s << "\"value\":";
 	if (!::tl2::details::CasesTestUnionWriteJSON(s, item.value)) { return false; }
 	s << "}";
@@ -2421,10 +2403,8 @@ void tl2::details::CasesTestVectorReset(::tl2::cases::TestVector& item) {
 }
 
 bool tl2::details::CasesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases::TestVector& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.arr.size() != 0) {
-		add_comma = true;
 		s << "\"arr\":";
 		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.arr)) { return false; }
 	}
@@ -2456,7 +2436,7 @@ bool tl2::details::IntMaybeWriteJSON(std::ostream & s, const std::optional<int32
 	s << "{";
 	if (item) {
 		s << "\"ok\":true";
-		if(*item != 0) {
+		if((*item) != 0) {
 			s << ",\"value\":";
 			s << *item;
 		}

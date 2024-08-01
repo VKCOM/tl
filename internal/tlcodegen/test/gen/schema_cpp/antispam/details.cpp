@@ -34,10 +34,8 @@ void tl2::details::AntispamGetPatternReset(::tl2::antispam::GetPattern& item) {
 }
 
 bool tl2::details::AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item) {
-	auto add_comma = false;
 	s << "{";
 	if (item.id != 0) {
-		add_comma = true;
 		s << "\"id\":";
 		s << item.id;
 	}
