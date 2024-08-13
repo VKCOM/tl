@@ -120,12 +120,12 @@ public:
 protected:
 	const char * ptr{};
 	const char * end{};
-	virtual void grow_buffer(size_t size_hint) = 0; // after call buffer must contain at least single byte, otherwise error
+	virtual void grow_buffer() = 0; // after call buffer must contain at least single byte, otherwise error
 private:
 	bool ensure_byte() {
 		if (TLGEN2_UNLIKELY(ptr >= end)) {
 		    // assert(ptr <= end)
-			grow_buffer(1);
+			grow_buffer();
 		    // assert(ptr <= end)
 			if (TLGEN2_UNLIKELY(ptr == end)) {
 				return set_error_eof();
@@ -150,7 +150,7 @@ private:
 			data += end - ptr;
 			size -= end - ptr;
 			ptr = end;
-			grow_buffer(size);
+			grow_buffer();
 		    // assert(ptr <= end)
 			if (TLGEN2_UNLIKELY(ptr == end)) {
 				return set_error_eof();
@@ -166,7 +166,7 @@ private:
 			value.append(ptr, end - ptr);
 			size -= end - ptr;
 			ptr = end;
-			grow_buffer(size);
+			grow_buffer();
 		    // assert(ptr <= end)
 			if (TLGEN2_UNLIKELY(ptr == end)) {
 				return set_error_eof();
@@ -237,7 +237,7 @@ public:
 protected:
 	char * ptr{};
 	char * end{};
-	virtual void grow_buffer(size_t size) = 0; // after call buffer must contain at least single bytes, otherwise error
+	virtual void grow_buffer() = 0; // after call buffer must contain at least single bytes, otherwise error
 private:
 	bool store_data(const void * vdata, size_t size) {
     	const char * data = reinterpret_cast<const char *>(vdata);
@@ -247,7 +247,7 @@ private:
 			data += end - ptr;
 			size -= end - ptr;
 			ptr = end;
-			grow_buffer(size);
+			grow_buffer();
     		// assert(ptr <= end)
 			if (TLGEN2_UNLIKELY(ptr == end)) {
 				return set_error_eof();
@@ -263,7 +263,7 @@ private:
 			std::memset(ptr, 0, end - ptr);
 			size -= end - ptr;
 			ptr = end;
-			grow_buffer(size);
+			grow_buffer();
     		// assert(ptr <= end)
 			if (TLGEN2_UNLIKELY(ptr == end)) {
 				return set_error_eof();
@@ -286,7 +286,7 @@ public:
 		end = ptr + buf.size();
 	}
 protected:
-	void grow_buffer(size_t size) override {}
+	void grow_buffer() override {}
 };
 
 class tl_ostream_string : public tl_ostream { // TODO - custom copy/move
@@ -299,7 +299,7 @@ public:
 		return buf;
 	}
 protected:
-	void grow_buffer(size_t size) override {
+	void grow_buffer() override {
 		auto pos = ptr - buf.data();
 		resize(buf.size()*3/2 + INITIAL_SIZE + size); // some arbitrary strategy
 		ptr += pos;
