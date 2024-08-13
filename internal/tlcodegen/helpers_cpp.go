@@ -301,7 +301,7 @@ public:
 protected:
 	void grow_buffer() override {
 		auto pos = ptr - buf.data();
-		resize(buf.size()*3/2 + INITIAL_SIZE + size); // some arbitrary strategy
+		resize(buf.size()*3/2 + INITIAL_SIZE); // some arbitrary strategy
 		ptr += pos;
 	}
 private:
