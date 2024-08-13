@@ -6,6 +6,9 @@
 
 namespace tl2 { 
 struct GetStats {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xbaa6da35;
+
 	::tl2::tasks::QueueTypeStats x{};
 
 	std::string_view tl_name() const { return "getStats"; }

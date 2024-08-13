@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service1 { 
 struct Replace {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x7f2c447d;
+
 	std::string key;
 	int32_t flags = 0;
 	int32_t delay = 0;

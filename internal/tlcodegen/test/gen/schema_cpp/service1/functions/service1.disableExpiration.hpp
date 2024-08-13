@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service1 { 
 struct DisableExpiration {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xf1c39c2d;
+
 	std::string prefix;
 
 	std::string_view tl_name() const { return "service1.disableExpiration"; }

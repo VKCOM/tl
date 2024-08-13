@@ -6,6 +6,9 @@
 
 namespace tl2 { 
 struct GetMyDouble {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xb660ad10;
+
 	::tl2::MyDouble x{};
 
 	std::string_view tl_name() const { return "getMyDouble"; }

@@ -6,6 +6,9 @@
 
 namespace tl2 { 
 struct GetMaybeIface {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x6b055ae4;
+
 	::tl2::service1::Value x;
 
 	std::string_view tl_name() const { return "getMaybeIface"; }

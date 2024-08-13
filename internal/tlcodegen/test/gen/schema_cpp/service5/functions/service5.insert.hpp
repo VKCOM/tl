@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace service5 { 
 struct Insert {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xc911ee2c;
+
 	std::string table;
 	std::string data;
 

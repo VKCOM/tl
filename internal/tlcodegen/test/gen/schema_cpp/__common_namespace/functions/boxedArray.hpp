@@ -6,6 +6,9 @@
 
 namespace tl2 { 
 struct BoxedArray {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x95dcc8b7;
+
 	::tl2::MyBoxedArray x{};
 
 	std::string_view tl_name() const { return "boxedArray"; }

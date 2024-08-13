@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace service1 { 
 struct Incr {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x0f96b56e;
+
 	std::string key;
 	int64_t value = 0;
 

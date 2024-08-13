@@ -7,6 +7,9 @@
 
 namespace tl2 { namespace service2 { 
 struct SetObjectTtl {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x6f98f025;
+
 	uint32_t objectIdLength = 0;
 	::tl2::service2::ObjectId objectId{};
 	int32_t ttl = 0;

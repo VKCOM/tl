@@ -5,6 +5,9 @@
 
 namespace tl2 { 
 struct BoxedTupleSlice3 {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xa19b8106;
+
 	uint32_t n = 0;
 	std::vector<int32_t> x;
 

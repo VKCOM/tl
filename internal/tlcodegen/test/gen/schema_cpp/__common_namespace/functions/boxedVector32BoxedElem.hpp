@@ -5,6 +5,9 @@
 
 namespace tl2 { 
 struct BoxedVector32BoxedElem {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x591cecd4;
+
 	std::vector<int32_t> x;
 
 	std::string_view tl_name() const { return "boxedVector32BoxedElem"; }

@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace tasks { 
 struct GetAnyTask {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x4a9c7dbb;
+
 
 	std::string_view tl_name() const { return "tasks.getAnyTask"; }
 	uint32_t tl_tag() const { return 0x4a9c7dbb; }

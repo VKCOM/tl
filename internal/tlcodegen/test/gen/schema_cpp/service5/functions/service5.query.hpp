@@ -7,6 +7,9 @@
 
 namespace tl2 { namespace service5 { 
 struct Query {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xb3b62513;
+
 	std::string query;
 	::tl2::service5::Params params{};
 

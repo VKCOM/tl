@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace antispam { 
 struct GetPattern {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x3de14136;
+
 	int32_t id = 0;
 
 	std::string_view tl_name() const { return "antispam.getPattern"; }

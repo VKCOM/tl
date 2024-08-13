@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace tasks { 
 struct GetQueueSize {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xd8fcda03;
+
 	std::string type_name;
 	std::vector<int32_t> queue_id;
 	uint32_t fields_mask = 0;

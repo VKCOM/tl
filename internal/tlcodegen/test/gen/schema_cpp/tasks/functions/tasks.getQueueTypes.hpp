@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace tasks { 
 struct GetQueueTypes {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x5434457a;
+
 	uint32_t settings_mask = 0;
 	uint32_t stats_mask = 0;
 

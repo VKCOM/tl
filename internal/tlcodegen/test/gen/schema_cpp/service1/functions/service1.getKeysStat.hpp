@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace service1 { 
 struct GetKeysStat {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x06cecd58;
+
 	int32_t period = 0;
 
 	std::string_view tl_name() const { return "service1.getKeysStat"; }

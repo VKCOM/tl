@@ -7,6 +7,9 @@
 
 namespace tl2 { namespace service2 { 
 struct AddOrIncrMany {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x5aa52489;
+
 	uint32_t objectIdLength = 0;
 	uint32_t intCountersNum = 0;
 	uint32_t floatCountersNum = 0;

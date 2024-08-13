@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace unique { 
 struct StringToInt {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x0f766c35;
+
 	std::string key;
 
 	std::string_view tl_name() const { return "unique.stringToInt"; }

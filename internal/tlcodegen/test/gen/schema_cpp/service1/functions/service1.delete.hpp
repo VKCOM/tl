@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service1 { 
 struct Delete {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x83277767;
+
 	std::string key;
 
 	std::string_view tl_name() const { return "service1.delete"; }

@@ -5,6 +5,9 @@
 
 namespace tl2 { 
 struct GetFloat {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x25a7bc68;
+
 	float x = 0;
 
 	std::string_view tl_name() const { return "getFloat"; }

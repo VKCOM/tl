@@ -5,6 +5,9 @@
 
 namespace tl2 { 
 struct Get_arrays {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x90658cdb;
+
 	uint32_t n = 0;
 	std::vector<int32_t> a;
 	std::array<int32_t, 5> b{};

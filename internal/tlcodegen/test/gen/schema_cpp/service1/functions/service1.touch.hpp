@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service1 { 
 struct Touch {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xb737aa03;
+
 	std::string key;
 	int32_t delay = 0;
 

@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace tasks { 
 struct AddTask {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x2ca073d5;
+
 	std::string type_name;
 	std::vector<int32_t> queue_id;
 	::tl2::tasks::Task task{};

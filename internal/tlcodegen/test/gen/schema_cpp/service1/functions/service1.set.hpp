@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service1 { 
 struct Set {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x05ae5f66;
+
 	std::string key;
 	int32_t flags = 0;
 	int32_t delay = 0;

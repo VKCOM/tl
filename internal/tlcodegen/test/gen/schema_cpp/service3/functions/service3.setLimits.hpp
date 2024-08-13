@@ -7,6 +7,9 @@
 
 namespace tl2 { namespace service3 { 
 struct SetLimits {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x3ad5c19c;
+
 	::tl2::service3::Limits limits{};
 
 	std::string_view tl_name() const { return "service3.setLimits"; }

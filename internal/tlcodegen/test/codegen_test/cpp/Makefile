@@ -33,7 +33,9 @@ build/test_objects_bytes.o: tests/test_objects_bytes.cpp
 	$(CC) $(CFLAGS) -c tests/test_objects_bytes.cpp -o build/test_objects_bytes.o
 
 compile-cases:
-	@cd $(CASES_DIR)/ && make __build/__common_namespace.o __build/benchmarks.o __build/cases.o __build/cases_bytes.o __build/__meta.o __build/__factory.o
+	@cd $(CASES_DIR)/ &&\
+ 		mkdir -p __build &&\
+ 		make __build/__common_namespace.o __build/benchmarks.o __build/cases.o __build/cases_bytes.o __build/__meta.o __build/__factory.o
 	@cd ../../codegen_test/cpp/
 
 build-functions-bytes: build/test_functions_bytes.o compile-schema
@@ -57,5 +59,7 @@ build/test_functions_bytes.o: tests/test_functions_bytes.cpp
 	$(CC) $(CFLAGS) -c tests/test_functions_bytes.cpp -o build/test_functions_bytes.o
 
 compile-schema:
-	@cd $(SCHEMA_DIR)/ && make __build/__common_namespace.o __build/antispam.o __build/pkg2.o __build/service1.o __build/service2.o __build/service3.o __build/service4.o __build/service5.o __build/service6.o __build/tasks.o __build/tree_stats.o __build/unique.o __build/__meta.o __build/__factory.o
+	@cd $(SCHEMA_DIR)/ &&\
+		mkdir -p __build &&\
+		make __build/__common_namespace.o __build/antispam.o __build/pkg2.o __build/service1.o __build/service2.o __build/service3.o __build/service4.o __build/service5.o __build/service6.o __build/tasks.o __build/tree_stats.o __build/unique.o __build/__meta.o __build/__factory.o
 	@cd ../../codegen_test/cpp/

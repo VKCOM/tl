@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service1 { 
 struct Exists {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xe0284c9e;
+
 	std::string key;
 
 	std::string_view tl_name() const { return "service1.exists"; }

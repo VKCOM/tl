@@ -8,6 +8,9 @@
 
 namespace tl2 { namespace service6 { 
 struct MultiFind {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xe62178d8;
+
 	std::vector<int32_t> clusters;
 	int32_t limit = 0;
 	double eq_threshold = 0;

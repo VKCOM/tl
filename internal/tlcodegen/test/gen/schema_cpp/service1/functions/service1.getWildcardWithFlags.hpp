@@ -7,6 +7,9 @@
 
 namespace tl2 { namespace service1 { 
 struct GetWildcardWithFlags {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x5f6a1f78;
+
 	std::string prefix;
 
 	std::string_view tl_name() const { return "service1.getWildcardWithFlags"; }

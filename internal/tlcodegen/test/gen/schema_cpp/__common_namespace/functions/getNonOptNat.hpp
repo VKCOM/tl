@@ -5,6 +5,9 @@
 
 namespace tl2 { 
 struct GetNonOptNat {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x67665961;
+
 	uint32_t n = 0;
 	std::vector<int32_t> xs;
 

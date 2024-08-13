@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace service3 { 
 struct GetProducts {
+	// tl magic for function
+	static const uint32_t MAGIC = 0xeb306233;
+
 	int32_t user_id = 0;
 	uint32_t mode = 0;
 	std::vector<int32_t> types;

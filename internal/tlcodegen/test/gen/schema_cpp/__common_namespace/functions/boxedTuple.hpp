@@ -5,6 +5,9 @@
 
 namespace tl2 { 
 struct BoxedTuple {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x30c9d533;
+
 	std::array<int32_t, 3> x{};
 
 	std::string_view tl_name() const { return "boxedTuple"; }

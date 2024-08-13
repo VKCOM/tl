@@ -7,6 +7,9 @@
 
 namespace tl2 { namespace service6 { 
 struct MultiFindWithBounds {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x84b168cf;
+
 	std::vector<int32_t> clusters;
 
 	std::string_view tl_name() const { return "service6.multiFindWithBounds"; }

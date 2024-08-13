@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service3 { 
 struct SetLastVisitTimestamp {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x7909b020;
+
 	int32_t user_id = 0;
 	int32_t timestamp = 0;
 

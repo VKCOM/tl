@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service3 { 
 struct DeleteAllProducts {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x4494acc2;
+
 	int32_t user_id = 0;
 	int32_t type = 0;
 	int32_t start_date = 0;

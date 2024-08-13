@@ -6,6 +6,9 @@
 
 namespace tl2 { namespace service5 { 
 struct PerformQuery {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x019d80a5;
+
 	std::string query;
 
 	std::string_view tl_name() const { return "service5.performQuery"; }

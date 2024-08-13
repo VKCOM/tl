@@ -5,6 +5,9 @@
 
 namespace tl2 { namespace service3 { 
 struct GetLastVisitTimestamp {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x9a4c788d;
+
 	int32_t user_id = 0;
 
 	std::string_view tl_name() const { return "service3.getLastVisitTimestamp"; }

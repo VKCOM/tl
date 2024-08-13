@@ -6,6 +6,9 @@
 
 namespace tl2 { 
 struct GetMyDictOfInt {
+	// tl magic for function
+	static const uint32_t MAGIC = 0x166f962c;
+
 	::tl2::MyDictOfInt x{};
 
 	std::string_view tl_name() const { return "getMyDictOfInt"; }
