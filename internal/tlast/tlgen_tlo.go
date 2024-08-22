@@ -185,7 +185,6 @@ func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 			}
 		}
 		var mc paramScope
-		left := tls.CombinatorLeft{}
 		args := make([]tls.Arg, 0, len(c.TemplateArguments)+len(c.Fields))
 		for i, ta := range c.TemplateArguments {
 			var tag int32
@@ -224,7 +223,7 @@ func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 				mc.append(f.FieldName, f.FieldType.Type.String(), len(c.TemplateArguments)+i)
 			}
 		}
-		left = tls.CombinatorLeft0{
+		left := tls.CombinatorLeft0{
 			ArgsNum: uint32(len(args)),
 			Args:    args,
 		}.AsUnion()
