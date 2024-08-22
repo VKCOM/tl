@@ -70,7 +70,7 @@ type Client struct {
     Network string // should be either "tcp4" or "unix"
     Address string
     ActorID int64         // should be >0 for routing via rpc-proxy
-    Timeout time.Duration // used if not set in extra or ctx
+    Timeout time.Duration // set to extra.CustomTimeoutMs, if not already set
 }
 
 `)
@@ -245,9 +245,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     if extra != nil {
         req.Extra = *extra
     }
-    if _, ok := ctx.Deadline(); !ok {
-        rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
-    }
+    rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
     req.Body, err = args.WriteBoxedGeneral(req.Body)
     if err != nil {
         return internal.ErrorClientWrite("`)
