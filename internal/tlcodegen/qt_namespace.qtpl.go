@@ -245,9 +245,9 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     if extra != nil {
         req.Extra = *extra
     }
-	if _, ok := ctx.Deadline(); !ok {
-		rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
-	}
+    if _, ok := ctx.Deadline(); !ok {
+        rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+    }
     req.Body, err = args.WriteBoxedGeneral(req.Body)
     if err != nil {
         return internal.ErrorClientWrite("`)
