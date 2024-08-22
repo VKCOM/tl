@@ -69,8 +69,8 @@ type Client struct {
     Client  *rpc.Client
     Network string // should be either "tcp4" or "unix"
     Address string
-    ActorID int64     // should be >0 for routing via rpc-proxy
-    Timeout time.Time // used if not set in extra or ctx
+    ActorID int64         // should be >0 for routing via rpc-proxy
+    Timeout time.Duration // used if not set in extra or ctx
 }
 
 `)
