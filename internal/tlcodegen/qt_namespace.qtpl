@@ -10,6 +10,7 @@ package {%s= gen.GlobalPackageName + name %}
 import (
     {%- if gen.options.GenerateRPCCode && anyFunctions -%}
     "context"
+    "time"
 
     {%q= gen.options.BasicRPCPath %}
     {%q= gen.BasicPackageNameFull %}
@@ -34,7 +35,8 @@ type Client struct {
     Client  *rpc.Client
     Network string // should be either "tcp4" or "unix"
     Address string
-    ActorID int64 // should be non-zero when using rpc-proxy
+    ActorID int64     // should be >0 for routing via rpc-proxy
+    Timeout time.Time // used if not set in extra or ctx
 }
 
 {%= writeClientsCode(gen.GlobalPackageName, namespace.types, directImports, ourTypes) %}
@@ -122,6 +124,9 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
     if extra != nil {
         req.Extra = *extra
     }
+	if _, ok := ctx.Deadline(); !ok {
+		rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
+	}
     req.Body, err = args.WriteBoxedGeneral(req.Body)
     if err != nil {
         return internal.ErrorClientWrite("{%s= tlName %}", err)
