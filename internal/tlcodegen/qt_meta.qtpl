@@ -1,6 +1,6 @@
 {%- import "fmt" -%}
 
-{%- func (gen *Gen2) generateMeta() -%}
+{%- func (gen *Gen2) generateMeta(tlgenVersion string) -%}
 {%s= HeaderComment %}
 {%- code typeWrappers := gen.generatedTypesList-%}
 package {%s MetaGoPackageName %}
@@ -11,6 +11,11 @@ import (
     {%q= gen.BasicPackageNameFull %}
     "{%s= gen.options.TLPackageNameFull %}/internal"
 )
+
+func SchemaGenerator() string { return {%s= fmt.Sprintf("%#v", tlgenVersion) %} }
+func SchemaURL() string { return {%s= fmt.Sprintf("%#v", gen.options.SchemaURL) %} }
+func SchemaCommit() string { return {%s= fmt.Sprintf("%#v", gen.options.SchemaCommit) %} }
+func SchemaTimestamp() uint32 { return {%v gen.options.SchemaTimestamp %} }
 
 // We can create only types which have zero type arguments and zero nat arguments
 type Object interface {

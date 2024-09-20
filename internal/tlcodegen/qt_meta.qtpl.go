@@ -16,7 +16,7 @@ var (
 	_ = qt422016.AcquireByteBuffer
 )
 
-func (gen *Gen2) streamgenerateMeta(qw422016 *qt422016.Writer) {
+func (gen *Gen2) streamgenerateMeta(qw422016 *qt422016.Writer, tlgenVersion string) {
 	qw422016.N().S(HeaderComment)
 	qw422016.N().S(`
 `)
@@ -36,6 +36,19 @@ import (
 	qw422016.N().S(gen.options.TLPackageNameFull)
 	qw422016.N().S(`/internal"
 )
+
+func SchemaGenerator() string { return `)
+	qw422016.N().S(fmt.Sprintf("%#v", tlgenVersion))
+	qw422016.N().S(` }
+func SchemaURL() string { return `)
+	qw422016.N().S(fmt.Sprintf("%#v", gen.options.SchemaURL))
+	qw422016.N().S(` }
+func SchemaCommit() string { return `)
+	qw422016.N().S(fmt.Sprintf("%#v", gen.options.SchemaCommit))
+	qw422016.N().S(` }
+func SchemaTimestamp() uint32 { return `)
+	qw422016.E().V(gen.options.SchemaTimestamp)
+	qw422016.N().S(` }
 
 // We can create only types which have zero type arguments and zero nat arguments
 type Object interface {
@@ -399,15 +412,15 @@ func init() {
 `)
 }
 
-func (gen *Gen2) writegenerateMeta(qq422016 qtio422016.Writer) {
+func (gen *Gen2) writegenerateMeta(qq422016 qtio422016.Writer, tlgenVersion string) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	gen.streamgenerateMeta(qw422016)
+	gen.streamgenerateMeta(qw422016, tlgenVersion)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func (gen *Gen2) generateMeta() string {
+func (gen *Gen2) generateMeta(tlgenVersion string) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	gen.writegenerateMeta(qb422016)
+	gen.writegenerateMeta(qb422016, tlgenVersion)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

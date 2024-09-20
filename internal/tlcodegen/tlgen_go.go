@@ -238,7 +238,7 @@ var _ = basictl.NatWrite
 		if err := gen.addCodeFile(filepath.Join(FactoryGoPackageNameBytes, FactoryGoPackageNameBytes+goExt), gen.copyrightText+gen.generateFactoryBytes(sortedNames, directImports)); err != nil {
 			return err
 		}
-		if err := gen.addCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+goExt), gen.copyrightText+gen.generateMeta()); err != nil {
+		if err := gen.addCodeFile(filepath.Join(MetaGoPackageName, MetaGoPackageName+goExt), gen.copyrightText+gen.generateMeta(TLGenVersion())); err != nil {
 			return err
 		}
 		filepathName = filepath.Join("internal", "a_tlgen_helpers_code.go") // TODO decollision

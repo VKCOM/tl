@@ -14,6 +14,11 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
+func SchemaGenerator() string { return "(devel)" }
+func SchemaURL() string       { return "" }
+func SchemaCommit() string    { return "" }
+func SchemaTimestamp() uint32 { return 0 }
+
 // We can create only types which have zero type arguments and zero nat arguments
 type Object interface {
 	TLName() string // returns type's TL name. For union, returns constructor name depending on actual union value
