@@ -243,7 +243,8 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(tlName)
 	qw422016.N().S(`"
     if extra != nil {
-        req.Extra = *extra
+        req.Extra = extra.RequestExtra
+        req.FailIfNoConnection = extra.FailIfNoConnection
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
     req.Body, err = args.WriteBoxedGeneral(req.Body)
@@ -253,6 +254,9 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`", err)
     }
     resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+    if extra != nil && resp != nil {
+        extra.ResponseExtra = resp.Extra
+    }
     defer c.Client.PutResponse(resp)
     if err != nil {
         return internal.ErrorClientDo("`)

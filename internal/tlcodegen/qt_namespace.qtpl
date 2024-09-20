@@ -122,7 +122,8 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
     {%- endif -%}
     req.FunctionName = "{%s= tlName %}"
     if extra != nil {
-        req.Extra = *extra
+        req.Extra = extra.RequestExtra
+        req.FailIfNoConnection = extra.FailIfNoConnection
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
     req.Body, err = args.WriteBoxedGeneral(req.Body)
@@ -130,6 +131,9 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
         return internal.ErrorClientWrite("{%s= tlName %}", err)
     }
     resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+    if extra != nil && resp != nil {
+        extra.ResponseExtra = resp.Extra
+    }
     defer c.Client.PutResponse(resp)
     if err != nil {
         return internal.ErrorClientDo("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
