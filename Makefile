@@ -160,4 +160,4 @@ cpp:
 .PHONY: check
 check: build
 	@go test $(shell go list ./cmd/... ./internal/... ./pkg/... | grep -v /internal/tlcodegen/test/gen/)
-	@go run honnef.co/go/tools/cmd/staticcheck@v0.4.7 ./... # update version together with github actions
+	@go run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... # update version together with github actions
