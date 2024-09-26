@@ -74,7 +74,7 @@ func AppendMap[K comparable, V any](values map[K]V, to *map[K]V) {
 	}
 }
 
-func AppendMapWithResolving[K comparable, V any](values map[K]V, to *map[K]V, resolver func(key K, value1, value2 V) V) {
+func AppendMapWithResolving[K comparable, V any](values map[K]V, to *map[K]V, resolver func(key K, new, prev V) V) {
 	for k, v := range values {
 		if v2, ok := (*to)[k]; ok {
 			(*to)[k] = resolver(k, v, v2)

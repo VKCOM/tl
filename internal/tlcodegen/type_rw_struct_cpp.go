@@ -181,7 +181,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		} else {
 			hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
 			if trw.ResultType != nil {
-				hpp.WriteString(fmt.Sprintf("\t// tl magic for function\n\tstatic const uint32_t MAGIC = 0x%08x;\n\n", trw.wr.tlTag))
+				hpp.WriteString(fmt.Sprintf("\t// tl magic for function\n\tstatic constexpr uint32_t MAGIC() { return 0x%08x; }\n\n", trw.wr.tlTag))
 			}
 			for i, field := range trw.Fields {
 				hppIncByField := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
