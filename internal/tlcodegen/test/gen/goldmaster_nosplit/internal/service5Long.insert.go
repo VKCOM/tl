@@ -77,6 +77,10 @@ func (item *Service5LongInsert) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
+func (item *Service5LongInsert) ContainsUnionTypesInResult() bool {
+	return true
+}
+
 func (item *Service5LongInsert) ReadResult(w []byte, ret *Service5LongOutput) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
