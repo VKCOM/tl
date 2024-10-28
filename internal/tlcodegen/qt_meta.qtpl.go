@@ -81,8 +81,6 @@ type Object interface {
 type Function interface {
 	Object
 
-	ContainsUnionTypesInResult() bool
-
 	ReadResultWriteResultJSON(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 
@@ -188,6 +186,9 @@ type TLItem struct {
     tag                uint32
     annotations        uint32
     tlName             string
+
+    resultTypeContainsUnionTypes bool
+
     createFunction     func() Function
     createFunctionLong func() Function
     createObject       func() Object
@@ -202,6 +203,8 @@ func (item TLItem) TLName() string           { return item.tlName }
 func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
+
+func (item TLItem) HasResultTypeContainUnionTypes() bool { return item.resultTypeContainsUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
@@ -387,7 +390,11 @@ func init() {
 			continue
 		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 {
+			resultTypeContainsUnionTypes := false
+
 			if fun.ResultType != nil {
+				resultTypeContainsUnionTypes = fun.ResultType.trw.ContainsUnion()
+
 				qw422016.N().S(`fillFunction(`)
 			} else {
 				qw422016.N().S(`fillObject(`)
@@ -404,7 +411,9 @@ func init() {
 			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			qw422016.N().S(`, tlName: "`)
 			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`"})`)
+			qw422016.N().S(`", resultTypeContainsUnionTypes:`)
+			qw422016.N().V(resultTypeContainsUnionTypes)
+			qw422016.N().S(`})`)
 		}
 		qw422016.N().S(`
 `)
