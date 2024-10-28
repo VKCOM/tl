@@ -41,6 +41,8 @@ type Object interface {
 type Function interface {
 	Object
 
+	ContainsUnionTypesInResult() bool
+
 	ReadResultWriteResultJSON(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 

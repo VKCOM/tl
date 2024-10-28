@@ -63,6 +63,10 @@ func (item *Call9) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
+func (item *Call9) ContainsUnionTypesInResult() bool {
+	return false
+}
+
 func (item *Call9) ReadResult(w []byte, ret *tlTypeB.TypeB) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
