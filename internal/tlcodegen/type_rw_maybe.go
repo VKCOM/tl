@@ -56,7 +56,7 @@ func (trw *TypeRWMaybe) IsWrappingType() bool {
 }
 
 func (trw *TypeRWMaybe) ContainsUnion() bool {
-	return true
+	return false
 }
 
 func (trw *TypeRWMaybe) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
