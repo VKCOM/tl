@@ -185,6 +185,15 @@ func (trw *TypeRWStruct) IsWrappingType() bool {
 	return trw.isUnwrapType()
 }
 
+func (trw *TypeRWStruct) ContainsUnion() bool {
+	for _, f := range trw.Fields {
+		if f.t.trw.ContainsUnion() {
+			return true
+		}
+	}
+	return false
+}
+
 func (trw *TypeRWStruct) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	if visitedNodes[trw.wr] != 0 {
 		return
