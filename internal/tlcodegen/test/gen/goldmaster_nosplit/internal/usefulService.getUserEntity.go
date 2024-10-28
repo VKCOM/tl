@@ -95,7 +95,7 @@ func (item *UsefulServiceGetUserEntity) WriteBoxed(w []byte) []byte {
 }
 
 func (item *UsefulServiceGetUserEntity) ContainsUnionTypesInResult() bool {
-	return true
+	return false
 }
 
 func (item *UsefulServiceGetUserEntity) ReadResult(w []byte, ret *UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
