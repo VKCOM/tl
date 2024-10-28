@@ -54,6 +54,10 @@ func (trw *TypeRWBool) IsWrappingType() bool {
 	return true
 }
 
+func (trw *TypeRWBool) ContainsUnion() bool {
+	return false
+}
+
 func (trw *TypeRWBool) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 }
 

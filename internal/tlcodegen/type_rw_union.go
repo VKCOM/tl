@@ -87,6 +87,10 @@ func (trw *TypeRWUnion) IsWrappingType() bool {
 	return false
 }
 
+func (trw *TypeRWUnion) ContainsUnion() bool {
+	return true
+}
+
 func (trw *TypeRWUnion) BeforeCodeGenerationStep1() {
 }
 

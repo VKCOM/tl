@@ -709,6 +709,7 @@ type TypeRW interface {
 	AllPossibleRecursionProducers() []*TypeRWWrapper
 	AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper
 	IsWrappingType() bool
+	ContainsUnion() bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
 	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
