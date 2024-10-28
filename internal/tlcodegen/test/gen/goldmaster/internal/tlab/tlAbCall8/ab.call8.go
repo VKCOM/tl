@@ -63,6 +63,10 @@ func (item *AbCall8) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
+func (item *AbCall8) ContainsUnionTypesInResult() bool {
+	return false
+}
+
 func (item *AbCall8) ReadResult(w []byte, ret *tlCdTypeB.CdTypeB) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }

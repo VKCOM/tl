@@ -59,6 +59,10 @@ func (item *Call2) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
+func (item *Call2) ContainsUnionTypesInResult() bool {
+	return false
+}
+
 func (item *Call2) ReadResult(w []byte, ret *CdTypeB) (_ []byte, err error) {
 	return ret.ReadBoxed(w)
 }
