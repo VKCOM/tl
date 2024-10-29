@@ -68,6 +68,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlATop2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall10"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall11"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall4"
@@ -128,6 +129,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytes(0x944aaa97, func() meta.Object { var ret cycle_b62dd5050d0a18c7485fd980c087f32c.AbAlias; return &ret })
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x20c5fb2d, func() meta.Object { var ret tlAbCall1.AbCall1; return &ret }, func() meta.Function { var ret tlAbCall1.AbCall1; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x8db2a4f8, func() meta.Object { var ret tlAbCall10.AbCall10; return &ret }, func() meta.Function { var ret tlAbCall10.AbCall10; return &ret }, nil)
+	meta.SetGlobalFactoryCreateForFunctionBytes(0xecb2a36c, func() meta.Object { var ret tlAbCall11.AbCall11; return &ret }, func() meta.Function { var ret tlAbCall11.AbCall11; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x77d5f057, func() meta.Object { var ret tlAbCall2.AbCall2; return &ret }, func() meta.Function { var ret tlAbCall2.AbCall2; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x0a083445, func() meta.Object { var ret tlAbCall3.AbCall3; return &ret }, func() meta.Function { var ret tlAbCall3.AbCall3; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0xc1220a1e, func() meta.Object { var ret tlAbCall4.AbCall4; return &ret }, func() meta.Function { var ret tlAbCall4.AbCall4; return &ret }, nil)

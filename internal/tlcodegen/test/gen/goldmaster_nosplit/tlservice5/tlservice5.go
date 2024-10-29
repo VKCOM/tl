@@ -14,6 +14,7 @@ import (
 type (
 	EmptyOutput  = internal.Service5EmptyOutput
 	Insert       = internal.Service5Insert
+	InsertList   = internal.Service5InsertList
 	Output       = internal.Service5Output
 	StringOutput = internal.Service5StringOutput
 )

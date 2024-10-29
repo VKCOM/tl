@@ -14,6 +14,8 @@ import (
 type (
 	Alias                           = internal.AbAlias
 	Call1                           = internal.AbCall1
+	Call10                          = internal.AbCall10
+	Call11                          = internal.AbCall11
 	Call2                           = internal.AbCall2
 	Call3                           = internal.AbCall3
 	Call4                           = internal.AbCall4
