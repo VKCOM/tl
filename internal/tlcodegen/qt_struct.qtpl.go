@@ -1575,16 +1575,7 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	retArg := struct_.ResultType.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-	qw422016.N().S(`
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) ContainsUnionTypesInResult() bool {
-    return `)
-	qw422016.N().V(struct_.ResultType.trw.ContainsUnion())
-	qw422016.N().S(`
-}
-
-func (item *`)
+	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResult(w []byte, ret *`)
 	qw422016.N().S(retArg)

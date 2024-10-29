@@ -54,7 +54,7 @@ func (trw *TypeRWBool) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWBool) ContainsUnion() bool {
+func (trw *TypeRWBool) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return false
 }
 

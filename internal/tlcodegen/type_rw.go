@@ -165,6 +165,23 @@ func (w *TypeRWWrapper) AnnotationsMask() uint32 {
 	return mask
 }
 
+func (w *TypeRWWrapper) DoesReturnTypeContainUnionTypes() bool {
+	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
+		return w.ResultType.containsUnion(map[*TypeRWWrapper]bool{})
+	} else {
+		return false
+	}
+}
+
+func (w *TypeRWWrapper) containsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
+	if _, ok := visitedNodes[w]; !ok {
+		visitedNodes[w] = false
+		return w.trw.ContainsUnion(visitedNodes)
+	} else {
+		return false
+	}
+}
+
 // Assign structural names to external arguments
 func (w *TypeRWWrapper) NatArgs(result []ActualNatArg, prefix string) []ActualNatArg {
 	for i, a := range w.arguments {
@@ -709,7 +726,7 @@ type TypeRW interface {
 	AllPossibleRecursionProducers() []*TypeRWWrapper
 	AllTypeDependencies(generic, countFunctions bool) []*TypeRWWrapper
 	IsWrappingType() bool
-	ContainsUnion() bool
+	ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool
 
 	BeforeCodeGenerationStep1() // during first phase, some wr.trw are nil due to recursive types. So we delay some
 	BeforeCodeGenerationStep2() // during second phase, union fields recursive bit is set
