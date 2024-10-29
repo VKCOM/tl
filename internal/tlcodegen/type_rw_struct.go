@@ -185,9 +185,9 @@ func (trw *TypeRWStruct) IsWrappingType() bool {
 	return trw.isUnwrapType()
 }
 
-func (trw *TypeRWStruct) ContainsUnion() bool {
+func (trw *TypeRWStruct) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	for _, f := range trw.Fields {
-		if f.t.trw.ContainsUnion() {
+		if f.t.containsUnion(visitedNodes) {
 			return true
 		}
 	}

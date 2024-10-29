@@ -70,7 +70,7 @@ func (trw *TypeRWPrimitive) IsWrappingType() bool {
 	return true
 }
 
-func (trw *TypeRWPrimitive) ContainsUnion() bool {
+func (trw *TypeRWPrimitive) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
 	return false
 }
 
