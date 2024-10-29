@@ -124,6 +124,7 @@ service5Long.stringOutput#dc170ff5 http_code:long response:string = service5Long
 @read ab.call7#46ec10bf x:typeA = ab.TypeB //  ./internal/tlcodegen/test/tls/goldmaster.tl
 @read ab.call8#1b8652d9 x:typeA = cd.TypeB //  ./internal/tlcodegen/test/tls/goldmaster.tl
 @read ab.call9#75de906c x:typeA = TypeB //  ./internal/tlcodegen/test/tls/goldmaster.tl
+@read ab.call10#8db2a4f8 = a.Color //  ./internal/tlcodegen/test/tls/goldmaster.tl
 @read call1#a7302fbc x:ab.typeA = ab.TypeB //  ./internal/tlcodegen/test/tls/goldmaster2.tl
 @read call2#f02024c6 x:ab.typeA = cd.TypeB //  ./internal/tlcodegen/test/tls/goldmaster2.tl
 @read call3#6ace6718 x:ab.typeA = TypeB //  ./internal/tlcodegen/test/tls/goldmaster2.tl

@@ -8,6 +8,7 @@ import "github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 
 func TestFunctionHasUnion(t *testing.T) {
 	{
+		// test type which contains union in its recursive definition
 		fun := meta.FactoryItemByTLName("service5.insertList")
 		if assert.NotNil(t, fun) {
 			assert.True(t, fun.IsFunction())
@@ -15,10 +16,19 @@ func TestFunctionHasUnion(t *testing.T) {
 		}
 	}
 	{
+		// test type which doesn't contain union in its recursive definition
 		fun := meta.FactoryItemByTLName("usefulService.getUserEntity")
 		if assert.NotNil(t, fun) {
 			assert.True(t, fun.IsFunction())
 			assert.True(t, !fun.HasUnionTypesInResult())
+		}
+	}
+	{
+		// test type which contains enum in its recursive definition
+		fun := meta.FactoryItemByTLName("ab.call10")
+		if assert.NotNil(t, fun) {
+			assert.True(t, fun.IsFunction())
+			assert.True(t, fun.HasUnionTypesInResult())
 		}
 	}
 }
