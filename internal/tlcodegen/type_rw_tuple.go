@@ -108,8 +108,8 @@ func (trw *TypeRWBrackets) IsWrappingType() bool {
 	return false
 }
 
-func (trw *TypeRWBrackets) ContainsUnion() bool {
-	return false
+func (trw *TypeRWBrackets) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {
+	return trw.element.t.containsUnion(visitedNodes)
 }
 
 func (trw *TypeRWBrackets) BeforeCodeGenerationStep1() {

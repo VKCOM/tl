@@ -744,11 +744,6 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
         goName :=  addBytes(struct_.wr.goGlobalName, bytesVersion)
         retArg := struct_.ResultType.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
     -%}
-
-func (item *{%s= goName %}) ContainsUnionTypesInResult() bool {
-    return {%v= struct_.ResultType.trw.ContainsUnion() %}
-}
-
 func (item *{%s= goName %}) ReadResult(w []byte, ret *{%s= retArg %}) (_ []byte, err error) {
     {%s= struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true) %}
 }
