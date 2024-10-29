@@ -93,6 +93,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeD"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdUseCycle"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5Long/tlService5LongInsert"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceGetUserEntity"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
@@ -208,6 +209,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytes(0x95d598c5, func() meta.Object { var ret tlReplace9.Replace9; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xff8f7db8, func() meta.Object { var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5EmptyOutput; return &ret })
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x7cf362ba, func() meta.Object { var ret tlService5Insert.Service5Insert; return &ret }, func() meta.Function { var ret tlService5Insert.Service5Insert; return &ret }, func() meta.Function { var ret tlService5LongInsert.Service5LongInsert; return &ret })
+	meta.SetGlobalFactoryCreateForFunctionBytes(0x7cf362bc, func() meta.Object { var ret tlService5InsertList.Service5InsertList; return &ret }, func() meta.Function { var ret tlService5InsertList.Service5InsertList; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForObjectBytes(0xff8f7db9, func() meta.Object {
 		var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongEmptyOutput
 		return &ret

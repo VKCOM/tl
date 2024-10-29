@@ -10,11 +10,13 @@ package tlservice5
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5Insert"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlservice5/tlService5InsertList"
 )
 
 type (
 	EmptyOutput  = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5EmptyOutput
 	Insert       = tlService5Insert.Service5Insert
+	InsertList   = tlService5InsertList.Service5InsertList
 	Output       = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
 	StringOutput = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5StringOutput
 )

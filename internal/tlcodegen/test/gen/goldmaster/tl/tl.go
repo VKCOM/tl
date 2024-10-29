@@ -48,6 +48,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt64"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlIntMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlListService5Output"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlLong"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeTest1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMaybeWrapperInt3"
@@ -170,6 +171,7 @@ type (
 	Int64                                                        = tlInt64.Int64
 	IntBoxedMaybe                                                = tlIntBoxedMaybe.IntBoxedMaybe
 	IntMaybe                                                     = tlIntMaybe.IntMaybe
+	ListService5Output                                           = tlListService5Output.ListService5Output
 	Long                                                         = tlLong.Long
 	MaybeTest1                                                   = tlMaybeTest1.MaybeTest1
 	MaybeWrapperInt3                                             = tlMaybeWrapperInt3.MaybeWrapperInt3

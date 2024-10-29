@@ -147,7 +147,7 @@ func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
 
-func (item TLItem) HasResultTypeContainUnionTypes() bool { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInResult() bool { return item.resultTypeContainsUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
