@@ -188,6 +188,7 @@ type TLItem struct {
     tlName             string
 
     resultTypeContainsUnionTypes bool
+    argumentsTypesContainUnionTypes bool
 
     createFunction     func() Function
     createFunctionLong func() Function
@@ -205,6 +206,7 @@ func (item TLItem) IsFunction() bool         { return item.createFunction != nil
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
 
 func (item TLItem) HasUnionTypesInResult() bool { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
@@ -391,9 +393,11 @@ func init() {
 		}
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 {
 			resultTypeContainsUnionTypes := false
+			argumentsTypesContainUnionTypes := false
 
 			if fun.ResultType != nil {
 				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
+				argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
 
 				qw422016.N().S(`fillFunction(`)
 			} else {
@@ -413,6 +417,8 @@ func init() {
 			wr.tlName.StreamString(qw422016)
 			qw422016.N().S(`", resultTypeContainsUnionTypes:`)
 			qw422016.N().V(resultTypeContainsUnionTypes)
+			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
+			qw422016.N().V(argumentsTypesContainUnionTypes)
 			qw422016.N().S(`})`)
 		}
 		qw422016.N().S(`
