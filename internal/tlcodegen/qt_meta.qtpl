@@ -149,6 +149,7 @@ type TLItem struct {
     tlName             string
 
     resultTypeContainsUnionTypes bool
+    argumentsTypesContainUnionTypes bool
 
     createFunction     func() Function
     createFunctionLong func() Function
@@ -166,6 +167,7 @@ func (item TLItem) IsFunction() bool         { return item.createFunction != nil
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
 
 func (item TLItem) HasUnionTypesInResult() bool { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
@@ -340,16 +342,22 @@ func init() {
     {%- if wr.tlTag == 0 || !wr.IsTopLevel() -%} {%- continue -%} {%- endif -%}
 {%- stripspace -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 -%}
-        {%- code resultTypeContainsUnionTypes := false -%}
+        {%- code
+            resultTypeContainsUnionTypes := false
+            argumentsTypesContainUnionTypes := false
+        -%}
         {%- if fun.ResultType != nil -%}
-            {%- code resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes() -%}
+            {%- code
+                resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
+                argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
+            -%}
         fillFunction(
         {%- else -%}
         fillObject(
         {%- endif -%}
         "{%= wr.tlName.String() %}#{%s= fmt.Sprintf("%08x", wr.tlTag) %}",
         {%q= fmt.Sprintf("#%08x", wr.tlTag) %},
-        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", resultTypeContainsUnionTypes: {%v= resultTypeContainsUnionTypes %}})
+        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", resultTypeContainsUnionTypes: {%v= resultTypeContainsUnionTypes %}, argumentsTypesContainUnionTypes: {%v= argumentsTypesContainUnionTypes %}})
     {%- endif -%}
 {%- endstripspace -%}
 

@@ -165,6 +165,14 @@ func (w *TypeRWWrapper) AnnotationsMask() uint32 {
 	return mask
 }
 
+func (w *TypeRWWrapper) DoArgumentsContainUnionTypes() bool {
+	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
+		return w.wr.containsUnion(map[*TypeRWWrapper]bool{})
+	} else {
+		return false
+	}
+}
+
 func (w *TypeRWWrapper) DoesReturnTypeContainUnionTypes() bool {
 	if w, ok := w.trw.(*TypeRWStruct); ok && w.ResultType != nil {
 		return w.ResultType.containsUnion(map[*TypeRWWrapper]bool{})
