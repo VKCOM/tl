@@ -32,3 +32,22 @@ func TestFunctionHasUnion(t *testing.T) {
 		}
 	}
 }
+
+func TestFunctionHasUnionInArguments(t *testing.T) {
+	{
+		// test type which contains union in its recursive definition
+		fun := meta.FactoryItemByTLName("service5.insertList")
+		if assert.NotNil(t, fun) {
+			assert.True(t, fun.IsFunction())
+			assert.True(t, !fun.HasUnionTypesInArguments())
+		}
+	}
+	{
+		// test type which doesn't contain union in its recursive definition
+		fun := meta.FactoryItemByTLName("ab.call11")
+		if assert.NotNil(t, fun) {
+			assert.True(t, fun.IsFunction())
+			assert.True(t, fun.HasUnionTypesInArguments())
+		}
+	}
+}

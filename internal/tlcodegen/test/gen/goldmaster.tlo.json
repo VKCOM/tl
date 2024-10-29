@@ -1,7 +1,7 @@
 {
   "version": 301822800,
   "date": 301822800,
-  "types_num": 99,
+  "types_num": 100,
   "types": [
     {
       "name": 1885708031,
@@ -107,6 +107,12 @@
       "name": -178217504,
       "id": "Int64",
       "constructors_num": 1
+    },
+    {
+      "name": 47713501,
+      "id": "List",
+      "constructors_num": 1,
+      "arity": 1
     },
     {
       "name": 570911930,
@@ -555,7 +561,7 @@
       "params_type": 1
     }
   ],
-  "constructor_num": 114,
+  "constructor_num": 115,
   "constructors": [
     {
       "type": "tls.combinator_v4",
@@ -1904,6 +1910,99 @@
             "type": "tls.typeExpr",
             "value": {
               "name": -539147904
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": 47713501,
+        "id": "list",
+        "type_name": 47713501,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 4,
+            "args": [
+              {
+                "id": "X",
+                "flags": 131075,
+                "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 753727511
+                  }
+                }
+              },
+              {
+                "id": "flag",
+                "flags": 2,
+                "var_num": 1,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "head",
+                "flags": 4,
+                "exist_var_num": 1,
+                "exist_var_bit": 0,
+                "type": {
+                  "type": "tls.typeVar",
+                  "value": {}
+                }
+              },
+              {
+                "id": "tail",
+                "flags": 4,
+                "exist_var_num": 1,
+                "exist_var_bit": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 47713501,
+                    "flags": 1,
+                    "children_num": 1,
+                    "children": [
+                      {
+                        "type": "tls.exprType",
+                        "value": {
+                          "expr": {
+                            "type": "tls.typeVar",
+                            "value": {}
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": 47713501,
+              "children_num": 1,
+              "children": [
+                {
+                  "type": "tls.exprType",
+                  "value": {
+                    "expr": {
+                      "type": "tls.typeVar",
+                      "value": {}
+                    }
+                  }
+                }
+              ]
             }
           }
         }
@@ -9289,7 +9388,7 @@
       }
     }
   ],
-  "functions_num": 21,
+  "functions_num": 24,
   "functions": [
     {
       "type": "tls.combinator_v4",
@@ -9320,6 +9419,61 @@
             "type": "tls.typeExpr",
             "value": {
               "name": -13734568
+            }
+          }
+        },
+        "flags": 1
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": -1917672200,
+        "id": "ab.call10",
+        "type_name": -516647077,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {}
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": -516647077
+            }
+          }
+        },
+        "flags": 1
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": -323837076,
+        "id": "ab.call11",
+        "type_name": -516647077,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 1,
+            "args": [
+              {
+                "id": "x",
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": -516647077
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": -516647077
             }
           }
         },
@@ -9964,6 +10118,69 @@
             "type": "tls.typeExpr",
             "value": {
               "name": 597193292
+            }
+          }
+        },
+        "flags": 3
+      }
+    },
+    {
+      "type": "tls.combinator_v4",
+      "value": {
+        "name": 2096325308,
+        "id": "service5.insertList",
+        "type_name": 47713501,
+        "left": {
+          "type": "tls.combinatorLeft",
+          "value": {
+            "args_num": 2,
+            "args": [
+              {
+                "id": "flags",
+                "flags": 2,
+                "var_num": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1885708031
+                  }
+                }
+              },
+              {
+                "id": "persistent",
+                "flags": 4,
+                "exist_var_num": 0,
+                "exist_var_bit": 0,
+                "type": {
+                  "type": "tls.typeExpr",
+                  "value": {
+                    "name": 1072550713,
+                    "flags": 1
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "right": {
+          "value": {
+            "type": "tls.typeExpr",
+            "value": {
+              "name": 47713501,
+              "children_num": 1,
+              "children": [
+                {
+                  "type": "tls.exprType",
+                  "value": {
+                    "expr": {
+                      "type": "tls.typeExpr",
+                      "value": {
+                        "name": 597193292
+                      }
+                    }
+                  }
+                }
+              ]
             }
           }
         },

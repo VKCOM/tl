@@ -131,7 +131,8 @@ type TLItem struct {
 	annotations uint32
 	tlName      string
 
-	resultTypeContainsUnionTypes bool
+	resultTypeContainsUnionTypes    bool
+	argumentsTypesContainUnionTypes bool
 
 	createFunction          func() Function
 	createFunctionLong      func() Function
@@ -147,7 +148,8 @@ func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
 
-func (item TLItem) HasUnionTypesInResult() bool { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInResult() bool    { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
@@ -299,52 +301,52 @@ func fillFunction(n1 string, n2 string, item *TLItem) {
 }
 
 func init() {
-	fillObject("benchmarks.vruhash#d31bd0fd", "#d31bd0fd", &TLItem{tag: 0xd31bd0fd, annotations: 0x0, tlName: "benchmarks.vruhash", resultTypeContainsUnionTypes: false})
-	fillObject("benchmarks.vruposition#32792c04", "#32792c04", &TLItem{tag: 0x32792c04, annotations: 0x0, tlName: "benchmarks.vruposition", resultTypeContainsUnionTypes: false})
-	fillObject("benchmarks.vrutoyTopLevelContainer#fb442ca5", "#fb442ca5", &TLItem{tag: 0xfb442ca5, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainer", resultTypeContainsUnionTypes: false})
-	fillObject("benchmarks.vrutoyTopLevelContainerWithDependency#c176008e", "#c176008e", &TLItem{tag: 0xc176008e, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainerWithDependency", resultTypeContainsUnionTypes: false})
-	fillObject("benchmarks.vrutoytopLevelUnionBig#ef556bee", "#ef556bee", &TLItem{tag: 0xef556bee, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionBig", resultTypeContainsUnionTypes: false})
-	fillObject("benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "#ce27c770", &TLItem{tag: 0xce27c770, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionEmpty", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testArray#3762fb81", "#3762fb81", &TLItem{tag: 0x3762fb81, annotations: 0x0, tlName: "cases_bytes.testArray", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testDictAny#5a5fce57", "#5a5fce57", &TLItem{tag: 0x5a5fce57, annotations: 0x0, tlName: "cases_bytes.testDictAny", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testDictInt#453ace07", "#453ace07", &TLItem{tag: 0x453ace07, annotations: 0x0, tlName: "cases_bytes.testDictInt", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testDictString#6c04d6ce", "#6c04d6ce", &TLItem{tag: 0x6c04d6ce, annotations: 0x0, tlName: "cases_bytes.testDictString", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testDictStringString#ad69c772", "#ad69c772", &TLItem{tag: 0xad69c772, annotations: 0x0, tlName: "cases_bytes.testDictStringString", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testEnum1#58aad3f5", "#58aad3f5", &TLItem{tag: 0x58aad3f5, annotations: 0x0, tlName: "cases_bytes.testEnum1", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testEnum2#00b47add", "#00b47add", &TLItem{tag: 0x00b47add, annotations: 0x0, tlName: "cases_bytes.testEnum2", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testEnum3#81911ffa", "#81911ffa", &TLItem{tag: 0x81911ffa, annotations: 0x0, tlName: "cases_bytes.testEnum3", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testEnumContainer#32b92037", "#32b92037", &TLItem{tag: 0x32b92037, annotations: 0x0, tlName: "cases_bytes.testEnumContainer", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testTuple#2dd3bacf", "#2dd3bacf", &TLItem{tag: 0x2dd3bacf, annotations: 0x0, tlName: "cases_bytes.testTuple", resultTypeContainsUnionTypes: false})
-	fillObject("cases_bytes.testVector#3647c8ae", "#3647c8ae", &TLItem{tag: 0x3647c8ae, annotations: 0x0, tlName: "cases_bytes.testVector", resultTypeContainsUnionTypes: false})
-	fillObject("cases.myCycle1#d3ca919d", "#d3ca919d", &TLItem{tag: 0xd3ca919d, annotations: 0x0, tlName: "cases.myCycle1", resultTypeContainsUnionTypes: false})
-	fillObject("cases.myCycle2#5444c9a2", "#5444c9a2", &TLItem{tag: 0x5444c9a2, annotations: 0x0, tlName: "cases.myCycle2", resultTypeContainsUnionTypes: false})
-	fillObject("cases.myCycle3#7624f86b", "#7624f86b", &TLItem{tag: 0x7624f86b, annotations: 0x0, tlName: "cases.myCycle3", resultTypeContainsUnionTypes: false})
-	fillObject("cases.replace7#6ccce4be", "#6ccce4be", &TLItem{tag: 0x6ccce4be, annotations: 0x0, tlName: "cases.replace7", resultTypeContainsUnionTypes: false})
-	fillObject("cases.replace7plus#197858f5", "#197858f5", &TLItem{tag: 0x197858f5, annotations: 0x0, tlName: "cases.replace7plus", resultTypeContainsUnionTypes: false})
-	fillObject("cases.replace7plusplus#abc39b68", "#abc39b68", &TLItem{tag: 0xabc39b68, annotations: 0x0, tlName: "cases.replace7plusplus", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testAllPossibleFieldConfigsContainer#e3fae936", "#e3fae936", &TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testArray#a888030d", "#a888030d", &TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testBeforeReadBitValidation#9b2396db", "#9b2396db", &TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testDictAny#e29b8ae6", "#e29b8ae6", &TLItem{tag: 0xe29b8ae6, annotations: 0x0, tlName: "cases.testDictAny", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testDictInt#d3877643", "#d3877643", &TLItem{tag: 0xd3877643, annotations: 0x0, tlName: "cases.testDictInt", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testDictString#c463c79b", "#c463c79b", &TLItem{tag: 0xc463c79b, annotations: 0x0, tlName: "cases.testDictString", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testEnum1#6c6c55ac", "#6c6c55ac", &TLItem{tag: 0x6c6c55ac, annotations: 0x0, tlName: "cases.testEnum1", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testEnum2#86ea88ce", "#86ea88ce", &TLItem{tag: 0x86ea88ce, annotations: 0x0, tlName: "cases.testEnum2", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testEnum3#69b83e2f", "#69b83e2f", &TLItem{tag: 0x69b83e2f, annotations: 0x0, tlName: "cases.testEnum3", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testEnumContainer#cb684231", "#cb684231", &TLItem{tag: 0xcb684231, annotations: 0x0, tlName: "cases.testEnumContainer", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testLocalFieldmask#f68fd3f9", "#f68fd3f9", &TLItem{tag: 0xf68fd3f9, annotations: 0x0, tlName: "cases.testLocalFieldmask", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testMaybe#d6602613", "#d6602613", &TLItem{tag: 0xd6602613, annotations: 0x0, tlName: "cases.testMaybe", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testOutFieldMaskContainer#1850ffe4", "#1850ffe4", &TLItem{tag: 0x1850ffe4, annotations: 0x0, tlName: "cases.testOutFieldMaskContainer", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testRecursiveFieldMask#c58cf85e", "#c58cf85e", &TLItem{tag: 0xc58cf85e, annotations: 0x0, tlName: "cases.testRecursiveFieldMask", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testTuple#4b9caf8f", "#4b9caf8f", &TLItem{tag: 0x4b9caf8f, annotations: 0x0, tlName: "cases.testTuple", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testUnion1#4b4f09b1", "#4b4f09b1", &TLItem{tag: 0x4b4f09b1, annotations: 0x0, tlName: "cases.testUnion1", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testUnion2#464f96c4", "#464f96c4", &TLItem{tag: 0x464f96c4, annotations: 0x0, tlName: "cases.testUnion2", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testUnionContainer#4497a381", "#4497a381", &TLItem{tag: 0x4497a381, annotations: 0x0, tlName: "cases.testUnionContainer", resultTypeContainsUnionTypes: false})
-	fillObject("cases.testVector#4975695c", "#4975695c", &TLItem{tag: 0x4975695c, annotations: 0x0, tlName: "cases.testVector", resultTypeContainsUnionTypes: false})
-	fillObject("int#a8509bda", "#a8509bda", &TLItem{tag: 0xa8509bda, annotations: 0x0, tlName: "int", resultTypeContainsUnionTypes: false})
-	fillObject("int32#7934e71f", "#7934e71f", &TLItem{tag: 0x7934e71f, annotations: 0x0, tlName: "int32", resultTypeContainsUnionTypes: false})
-	fillObject("int64#f5609de0", "#f5609de0", &TLItem{tag: 0xf5609de0, annotations: 0x0, tlName: "int64", resultTypeContainsUnionTypes: false})
-	fillObject("long#22076cba", "#22076cba", &TLItem{tag: 0x22076cba, annotations: 0x0, tlName: "long", resultTypeContainsUnionTypes: false})
-	fillObject("string#b5286e24", "#b5286e24", &TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", resultTypeContainsUnionTypes: false})
-	fillObject("true#3fedd339", "#3fedd339", &TLItem{tag: 0x3fedd339, annotations: 0x0, tlName: "true", resultTypeContainsUnionTypes: false})
+	fillObject("benchmarks.vruhash#d31bd0fd", "#d31bd0fd", &TLItem{tag: 0xd31bd0fd, annotations: 0x0, tlName: "benchmarks.vruhash", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("benchmarks.vruposition#32792c04", "#32792c04", &TLItem{tag: 0x32792c04, annotations: 0x0, tlName: "benchmarks.vruposition", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("benchmarks.vrutoyTopLevelContainer#fb442ca5", "#fb442ca5", &TLItem{tag: 0xfb442ca5, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("benchmarks.vrutoyTopLevelContainerWithDependency#c176008e", "#c176008e", &TLItem{tag: 0xc176008e, annotations: 0x0, tlName: "benchmarks.vrutoyTopLevelContainerWithDependency", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("benchmarks.vrutoytopLevelUnionBig#ef556bee", "#ef556bee", &TLItem{tag: 0xef556bee, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionBig", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "#ce27c770", &TLItem{tag: 0xce27c770, annotations: 0x0, tlName: "benchmarks.vrutoytopLevelUnionEmpty", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testArray#3762fb81", "#3762fb81", &TLItem{tag: 0x3762fb81, annotations: 0x0, tlName: "cases_bytes.testArray", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testDictAny#5a5fce57", "#5a5fce57", &TLItem{tag: 0x5a5fce57, annotations: 0x0, tlName: "cases_bytes.testDictAny", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testDictInt#453ace07", "#453ace07", &TLItem{tag: 0x453ace07, annotations: 0x0, tlName: "cases_bytes.testDictInt", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testDictString#6c04d6ce", "#6c04d6ce", &TLItem{tag: 0x6c04d6ce, annotations: 0x0, tlName: "cases_bytes.testDictString", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testDictStringString#ad69c772", "#ad69c772", &TLItem{tag: 0xad69c772, annotations: 0x0, tlName: "cases_bytes.testDictStringString", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testEnum1#58aad3f5", "#58aad3f5", &TLItem{tag: 0x58aad3f5, annotations: 0x0, tlName: "cases_bytes.testEnum1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testEnum2#00b47add", "#00b47add", &TLItem{tag: 0x00b47add, annotations: 0x0, tlName: "cases_bytes.testEnum2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testEnum3#81911ffa", "#81911ffa", &TLItem{tag: 0x81911ffa, annotations: 0x0, tlName: "cases_bytes.testEnum3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testEnumContainer#32b92037", "#32b92037", &TLItem{tag: 0x32b92037, annotations: 0x0, tlName: "cases_bytes.testEnumContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testTuple#2dd3bacf", "#2dd3bacf", &TLItem{tag: 0x2dd3bacf, annotations: 0x0, tlName: "cases_bytes.testTuple", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases_bytes.testVector#3647c8ae", "#3647c8ae", &TLItem{tag: 0x3647c8ae, annotations: 0x0, tlName: "cases_bytes.testVector", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.myCycle1#d3ca919d", "#d3ca919d", &TLItem{tag: 0xd3ca919d, annotations: 0x0, tlName: "cases.myCycle1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.myCycle2#5444c9a2", "#5444c9a2", &TLItem{tag: 0x5444c9a2, annotations: 0x0, tlName: "cases.myCycle2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.myCycle3#7624f86b", "#7624f86b", &TLItem{tag: 0x7624f86b, annotations: 0x0, tlName: "cases.myCycle3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.replace7#6ccce4be", "#6ccce4be", &TLItem{tag: 0x6ccce4be, annotations: 0x0, tlName: "cases.replace7", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.replace7plus#197858f5", "#197858f5", &TLItem{tag: 0x197858f5, annotations: 0x0, tlName: "cases.replace7plus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.replace7plusplus#abc39b68", "#abc39b68", &TLItem{tag: 0xabc39b68, annotations: 0x0, tlName: "cases.replace7plusplus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testAllPossibleFieldConfigsContainer#e3fae936", "#e3fae936", &TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testArray#a888030d", "#a888030d", &TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testBeforeReadBitValidation#9b2396db", "#9b2396db", &TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testDictAny#e29b8ae6", "#e29b8ae6", &TLItem{tag: 0xe29b8ae6, annotations: 0x0, tlName: "cases.testDictAny", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testDictInt#d3877643", "#d3877643", &TLItem{tag: 0xd3877643, annotations: 0x0, tlName: "cases.testDictInt", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testDictString#c463c79b", "#c463c79b", &TLItem{tag: 0xc463c79b, annotations: 0x0, tlName: "cases.testDictString", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testEnum1#6c6c55ac", "#6c6c55ac", &TLItem{tag: 0x6c6c55ac, annotations: 0x0, tlName: "cases.testEnum1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testEnum2#86ea88ce", "#86ea88ce", &TLItem{tag: 0x86ea88ce, annotations: 0x0, tlName: "cases.testEnum2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testEnum3#69b83e2f", "#69b83e2f", &TLItem{tag: 0x69b83e2f, annotations: 0x0, tlName: "cases.testEnum3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testEnumContainer#cb684231", "#cb684231", &TLItem{tag: 0xcb684231, annotations: 0x0, tlName: "cases.testEnumContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testLocalFieldmask#f68fd3f9", "#f68fd3f9", &TLItem{tag: 0xf68fd3f9, annotations: 0x0, tlName: "cases.testLocalFieldmask", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testMaybe#d6602613", "#d6602613", &TLItem{tag: 0xd6602613, annotations: 0x0, tlName: "cases.testMaybe", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testOutFieldMaskContainer#1850ffe4", "#1850ffe4", &TLItem{tag: 0x1850ffe4, annotations: 0x0, tlName: "cases.testOutFieldMaskContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testRecursiveFieldMask#c58cf85e", "#c58cf85e", &TLItem{tag: 0xc58cf85e, annotations: 0x0, tlName: "cases.testRecursiveFieldMask", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testTuple#4b9caf8f", "#4b9caf8f", &TLItem{tag: 0x4b9caf8f, annotations: 0x0, tlName: "cases.testTuple", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testUnion1#4b4f09b1", "#4b4f09b1", &TLItem{tag: 0x4b4f09b1, annotations: 0x0, tlName: "cases.testUnion1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testUnion2#464f96c4", "#464f96c4", &TLItem{tag: 0x464f96c4, annotations: 0x0, tlName: "cases.testUnion2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testUnionContainer#4497a381", "#4497a381", &TLItem{tag: 0x4497a381, annotations: 0x0, tlName: "cases.testUnionContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testVector#4975695c", "#4975695c", &TLItem{tag: 0x4975695c, annotations: 0x0, tlName: "cases.testVector", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("int#a8509bda", "#a8509bda", &TLItem{tag: 0xa8509bda, annotations: 0x0, tlName: "int", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("int32#7934e71f", "#7934e71f", &TLItem{tag: 0x7934e71f, annotations: 0x0, tlName: "int32", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("int64#f5609de0", "#f5609de0", &TLItem{tag: 0xf5609de0, annotations: 0x0, tlName: "int64", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("long#22076cba", "#22076cba", &TLItem{tag: 0x22076cba, annotations: 0x0, tlName: "long", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("string#b5286e24", "#b5286e24", &TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("true#3fedd339", "#3fedd339", &TLItem{tag: 0x3fedd339, annotations: 0x0, tlName: "true", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 }
