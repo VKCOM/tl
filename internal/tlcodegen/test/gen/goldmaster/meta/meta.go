@@ -311,6 +311,7 @@ func init() {
 	fillObject("a.uNionA#a7662843", "#a7662843", &TLItem{tag: 0xa7662843, annotations: 0x0, tlName: "a.uNionA", resultTypeContainsUnionTypes: false})
 	fillObject("ab.alias#944aaa97", "#944aaa97", &TLItem{tag: 0x944aaa97, annotations: 0x0, tlName: "ab.alias", resultTypeContainsUnionTypes: false})
 	fillFunction("ab.call1#20c5fb2d", "#20c5fb2d", &TLItem{tag: 0x20c5fb2d, annotations: 0x1, tlName: "ab.call1", resultTypeContainsUnionTypes: false})
+	fillFunction("ab.call10#8db2a4f8", "#8db2a4f8", &TLItem{tag: 0x8db2a4f8, annotations: 0x1, tlName: "ab.call10", resultTypeContainsUnionTypes: true})
 	fillFunction("ab.call2#77d5f057", "#77d5f057", &TLItem{tag: 0x77d5f057, annotations: 0x1, tlName: "ab.call2", resultTypeContainsUnionTypes: false})
 	fillFunction("ab.call3#0a083445", "#0a083445", &TLItem{tag: 0x0a083445, annotations: 0x1, tlName: "ab.call3", resultTypeContainsUnionTypes: false})
 	fillFunction("ab.call4#c1220a1e", "#c1220a1e", &TLItem{tag: 0xc1220a1e, annotations: 0x1, tlName: "ab.call4", resultTypeContainsUnionTypes: false})
