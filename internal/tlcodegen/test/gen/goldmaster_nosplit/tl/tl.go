@@ -50,6 +50,7 @@ type (
 	Int64                                                        = internal.Int64
 	IntBoxedMaybe                                                = internal.IntBoxedMaybe
 	IntMaybe                                                     = internal.IntMaybe
+	ListService5Output                                           = internal.ListService5Output
 	Long                                                         = internal.Long
 	MaybeTest1                                                   = internal.MaybeTest1
 	MaybeWrapperInt3                                             = internal.MaybeWrapperInt3
