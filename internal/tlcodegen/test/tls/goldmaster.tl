@@ -50,6 +50,9 @@ dictionaryAny#1f4c6190 {k:Type} {v:Type} # [(dictionaryFieldAny k v)] = Dictiona
 true = True; // this can be used as void type and serialized to empty array in PHP
 useTrue#dfdd4180 fm:# a:fm.0?true b:fm.1?True c:true d:True e:fm.2?Bool = UseTrue; // we give warnings for many fields of this kind
 
+//---- test recursive struct without union as result
+list {X:Type} flag:# head:flag.0?X tail:flag.0?(list X) = List X;
+
 //---- test bytes version propagation
 noStr x:int = NoStr;
 useStr x:string = UseStr;
