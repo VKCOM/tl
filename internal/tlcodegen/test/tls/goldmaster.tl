@@ -264,5 +264,6 @@ service5Long.stringOutput#dc170ff5 http_code:long response:string = service5Long
 @read ab.call8 x:typeA => cd.TypeB;
 @read ab.call9 x:typeA => TypeB;
 @read ab.call10 => a.Color;
+@read ab.call11 x:a.Color => a.Color;
 
 // @write logs2.addIndex      type_id:int field:%String => Bool; // Test that %String is canonically resolved into primitive string
