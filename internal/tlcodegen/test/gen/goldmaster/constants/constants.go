@@ -21,6 +21,7 @@ const (
 	Aaa                                     = 0x05b0e500 // aaa
 	AbAlias                                 = 0x944aaa97 // ab.alias
 	AbCall1                                 = 0x20c5fb2d // ab.call1
+	AbCall10                                = 0x8db2a4f8 // ab.call10
 	AbCall2                                 = 0x77d5f057 // ab.call2
 	AbCall3                                 = 0x0a083445 // ab.call3
 	AbCall4                                 = 0xc1220a1e // ab.call4

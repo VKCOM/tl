@@ -13,6 +13,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAbMyTypeBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAbMyTypeMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall10"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall4"
@@ -36,6 +37,7 @@ import (
 type (
 	Alias                           = cycle_b62dd5050d0a18c7485fd980c087f32c.AbAlias
 	Call1                           = tlAbCall1.AbCall1
+	Call10                          = tlAbCall10.AbCall10
 	Call2                           = tlAbCall2.AbCall2
 	Call3                           = tlAbCall3.AbCall3
 	Call4                           = tlAbCall4.AbCall4
