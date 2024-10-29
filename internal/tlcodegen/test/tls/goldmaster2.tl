@@ -10,6 +10,8 @@
 @read call9 x:typeA = TypeB;
 
 @readwrite service5.insert#7cf362ba flags:# persistent:flags.0?%True = service5.Output;
+@readwrite service5.insertList#7cf362bc flags:# persistent:flags.0?%True = List<service5.Output>;
+
 @readwrite service5Long.insert#7cf362bb flags:# persistent:flags.0?%True = service5Long.Output;
 
 ---types---
