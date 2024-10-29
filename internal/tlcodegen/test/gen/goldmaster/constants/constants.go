@@ -82,6 +82,7 @@ const (
 	Int                                     = 0xa8509bda // int
 	Int32                                   = 0x7934e71f // int32
 	Int64                                   = 0xf5609de0 // int64
+	List                                    = 0x02d80cdd // list
 	Long                                    = 0x22076cba // long
 	MaybeTest1                              = 0xc457763c // maybeTest1
 	MaybeWrapper                            = 0x723390c4 // maybeWrapper
@@ -118,6 +119,7 @@ const (
 	ResultTrue                              = 0x3f9c8ef8 // resultTrue
 	Service5EmptyOutput                     = 0xff8f7db8 // service5.emptyOutput
 	Service5Insert                          = 0x7cf362ba // service5.insert
+	Service5InsertList                      = 0x7cf362bc // service5.insertList
 	Service5StringOutput                    = 0xdc170ff4 // service5.stringOutput
 	Service5LongEmptyOutput                 = 0xff8f7db9 // service5Long.emptyOutput
 	Service5LongInsert                      = 0x7cf362bb // service5Long.insert

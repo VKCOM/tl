@@ -149,7 +149,7 @@ func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
 
-func (item TLItem) HasResultTypeContainUnionTypes() bool { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInResult() bool { return item.resultTypeContainsUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
@@ -388,6 +388,7 @@ func init() {
 	fillObject("replace9#95d598c5", "#95d598c5", &TLItem{tag: 0x95d598c5, annotations: 0x0, tlName: "replace9", resultTypeContainsUnionTypes: false})
 	fillObject("service5.emptyOutput#ff8f7db8", "#ff8f7db8", &TLItem{tag: 0xff8f7db8, annotations: 0x0, tlName: "service5.emptyOutput", resultTypeContainsUnionTypes: false})
 	fillFunction("service5.insert#7cf362ba", "#7cf362ba", &TLItem{tag: 0x7cf362ba, annotations: 0x2, tlName: "service5.insert", resultTypeContainsUnionTypes: true})
+	fillFunction("service5.insertList#7cf362bc", "#7cf362bc", &TLItem{tag: 0x7cf362bc, annotations: 0x2, tlName: "service5.insertList", resultTypeContainsUnionTypes: true})
 	fillObject("service5Long.emptyOutput#ff8f7db9", "#ff8f7db9", &TLItem{tag: 0xff8f7db9, annotations: 0x0, tlName: "service5Long.emptyOutput", resultTypeContainsUnionTypes: false})
 	fillFunction("service5Long.insert#7cf362bb", "#7cf362bb", &TLItem{tag: 0x7cf362bb, annotations: 0x2, tlName: "service5Long.insert", resultTypeContainsUnionTypes: true})
 	fillObject("service5Long.stringOutput#dc170ff5", "#dc170ff5", &TLItem{tag: 0xdc170ff5, annotations: 0x0, tlName: "service5Long.stringOutput", resultTypeContainsUnionTypes: false})

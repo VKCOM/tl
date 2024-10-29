@@ -112,6 +112,11 @@
         → <code><a href="#Service5Output">service5.Output</a></code>
       </li>
       <li>
+        <a href="#Service5InsertList">
+        <code>service5.insertList</code></a>
+        → <code><a href="#ListService5Output">List&lt;service5.Output&gt;</a></code>
+      </li>
+      <li>
         <a href="#Service5LongInsert">
         <code>service5Long.insert</code></a>
         → <code><a href="#Service5LongOutput">service5Long.Output</a></code>
@@ -2399,6 +2404,47 @@ External # (nat) arguments: <b>X</b>
   </dd>
 </dl>
 
+<h2 id="ListService5Output">list&lt;service5.Output&gt;</h2>
+    <code style="color:DarkCyan">//---- test recursive struct without union as result</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"flag"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"head"</td><td>: <a href="#Service5Output">service5.Output</a>,</td>
+          <td>// flag bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"tail"</td><td>: <a href="#ListService5Output">list&lt;service5.Output&gt;</a></td>
+          <td>// flag bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>list#02d80cdd {X:Type} flag:# head:flag.0?X tail:flag.0?(list X) = List X;</code>
+  </dd>
+</dl>
+
 
 <h2 id="MaybeTest1">maybeTest1</h2>
 
@@ -4089,6 +4135,39 @@ External # (nat) arguments: <b>n</b>
   <dt>TL</dt>
   <dd>
     <code>readwrite service5.insert#7cf362ba flags:# persistent:flags.0?%True = service5.Output;</code>
+  </dd>
+</dl>
+
+<h2 id="Service5InsertList">service5.insertList</h2>
+
+<p></p>
+  Returns <code><a href="#ListService5Output">List&lt;service5.Output&gt;</a></code>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"flags"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"persistent"</td><td>: true</td>
+          <td>// flags bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>readwrite service5.insertList#7cf362bc flags:# persistent:flags.0?%True = (List service5.Output);</code>
   </dd>
 </dl>
 
