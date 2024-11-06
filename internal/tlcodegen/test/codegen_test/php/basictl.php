@@ -1,8 +1,4 @@
-package tlcodegen
-
-const basictlPHP = `
 <?php
-include "run.php";
 
 class tl_constants {
     const tinyStringLen    = 253;
@@ -222,4 +218,3 @@ class tl_output_stream {
     }
 }
 ?>
-`
