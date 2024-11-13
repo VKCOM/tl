@@ -1,0 +1,95 @@
+\import Arith.Nat
+\import Data.Bool
+\import Data.List
+\import Data.Maybe
+\import Data.Or
+\import Logic
+\import Order.StrictOrder
+\import Paths.Meta
+
+\data TypeArgument
+  | ^Type
+  | #
+  \where {
+    \func isNat (td : TypeArgument) : Bool \elim td
+      | ^Type => false
+      | # => true
+  }
+
+\data TypeData
+  | tl-nat
+  | tl-builtin-array
+  | tl-new-type (typeNo : Nat) (args : List TypeArgument)
+  \where {
+    \func args (t : TypeData) : List TypeArgument \elim t
+      | tl-nat => nil
+      | tl-builtin-array => # :: ^Type :: nil
+      | tl-new-type typeNo args => args
+  }
+
+\record TLGenericRef
+  | deps : List TypeArgument
+  | i : Fin (length deps)
+  | isGeneric : deps !! i = ^Type
+
+\data TLNatRef (deps : List TypeArgument) (prevNats : List Bool)
+  | fromDep (i : Fin (length deps)) (isNat : deps !! i = #)
+  | fromPrevField (i : Fin (length prevNats)) (isNat : So (prevNats !! i))
+
+\data TLTypeArguments (args : List TypeArgument) (prevNats : List Bool) (restArgs : List TypeArgument) \elim restArgs
+  | nil => end-args
+  | # :: restArgs => applyConst (n : Nat) (TLTypeArguments args prevNats restArgs)
+  | # :: restArgs => applyNatRef (ref : TLNatRef args prevNats) (TLTypeArguments args prevNats restArgs)
+  | ^Type :: restArgs => applyGeneric (gen : TLGenericRef args) (TLTypeArguments args prevNats restArgs)
+  | ^Type :: restArgs => applyType (t : TypeData) (tArgs : TLTypeArguments args prevNats (TypeData.args t)) (TLTypeArguments args prevNats restArgs)
+
+\record TLFieldMask (deps : List TypeArgument) (prevNats : List Bool) (v : TLNatRef deps prevNats) (bit : Fin 32)
+
+\record TLFieldDefinition
+  | args : List TypeArgument
+  | prevNats : List Bool
+  | fieldNo : Nat
+  | fieldProp : fieldNo = length prevNats
+  | fieldMask : Maybe (TLFieldMask args prevNats)
+  | fieldType : TLFieldType args prevNats
+
+\data TLFieldType (deps : List TypeArgument) (prevNats : List Bool)
+  | field-generic (TLGenericRef deps)
+  | field-application (t : TypeData) (tArgs : TLTypeArguments deps prevNats (TypeData.args t))
+
+\record TLConstructor
+  | type-header : TypeData
+  | type-constructor-count : Nat
+  | constructor-id : Fin type-constructor-count
+  | fields-count : Nat
+  | fields :
+  EnumarateArrayWithAccum
+      fields-count
+      {List Bool}
+      (\lam fi nats => TLFieldDefinition (TypeData.args type-header) nats fi)
+      nil
+      (\lam _ acc cur => \case cur \with {
+        | (p,m, field-application tl-nat end-args) => true :: acc
+        | _ => false :: acc
+      })
+
+\data IsNewType (t : TypeData) \elim t
+  | tl-new-type typeNo args => is-new-type
+
+\record TLType
+  | typeHeader : TypeData
+  | constructorsCount : Nat
+  | constructors : EnumarateArray constructorsCount (\lam fi => TLConstructor typeHeader constructorsCount fi)
+  | newType : IsNewType typeHeader
+  | nonEmpty : constructorsCount /= 0
+
+\data EnumarateArrayWithAccum
+  (n : Nat)
+  {C : \Type}
+  (A : \Pi (fi : Fin n) -> C -> \Type)
+  (cur : C)
+  (next : \Pi (fi : Fin n) (acc : C) (cur : A fi acc) -> C) \elim n
+  | 0 => eac-nil
+  | (suc n) => \infixr 5 eac-:: (a : A 0 cur) (EnumarateArrayWithAccum n {C} (\lam f c => A (suc f) c) (next 0 cur a) (\lam f acc cur => next (suc f) acc cur))
+
+\func EnumarateArray (n : Nat) (A : \Pi (fi : Fin n) -> \Type) => EnumarateArrayWithAccum n {Nat} (\lam fi _ => A fi) 0 (\lam _ _ _ => 0)
