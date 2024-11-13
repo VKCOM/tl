@@ -1,0 +1,131 @@
+\import Data.List
+\import Data.Maybe
+\import Logic.Meta
+\import Model
+
+\func TLInt : TLType => \new TLType {
+  | typeHeader => tl-new-type 0 nil
+  | constructorsCount => 1
+  | constructors => (\new TLConstructor {
+    | fields-count => 0
+    | fields => eac-nil
+  }) eac-:: eac-nil
+  | nonEmpty => contradiction
+  | newType => is-new-type
+}
+
+\func TLPair : TLType => \new TLType {
+  | typeHeader => tl-new-type 1 (^Type :: (^Type :: nil))
+  | constructorsCount => 1
+  | constructors => (\new TLConstructor {
+    | fields-count => 2
+    | fields =>
+      (\new TLFieldDefinition {
+        | fieldProp => idp
+        | fieldMask => nothing
+        | fieldType => field-generic (\new TLGenericRef {
+          | i => 0
+          | isGeneric => idp
+        })
+      }) eac-::
+      (\new TLFieldDefinition {
+        | fieldProp => idp
+        | fieldMask => nothing
+        | fieldType => field-generic (\new TLGenericRef {
+          | i => 1
+          | isGeneric => idp
+        })
+      }) eac-::
+      eac-nil
+  }) eac-:: eac-nil
+  | newType => is-new-type
+  | nonEmpty => contradiction
+}
+
+\func TLVector : TLType => \new TLType {
+  | typeHeader => tl-new-type 2 (^Type :: nil)
+  | constructorsCount => 1
+  | constructors => (\new TLConstructor {
+    | fields-count => 2
+    | fields =>
+      (\new TLFieldDefinition {
+        | fieldProp => idp
+        | fieldMask => nothing
+        | fieldType => field-application tl-nat end-args
+      }) eac-::
+      (\new TLFieldDefinition {
+        | fieldProp => idp
+        | fieldMask => nothing
+        | fieldType => field-application tl-builtin-array (applyNatRef (fromPrevField 0 ()) (applyGeneric (\new TLGenericRef {
+          | i => 0
+          | isGeneric => idp
+        }) end-args))
+      }) eac-::
+      eac-nil
+  }) eac-:: eac-nil
+  | newType => is-new-type
+  | nonEmpty => contradiction
+}
+-- struct f1:# f2:f1.0?# f3:f2.31?# = Struct;
+\func TlNikitaStruct : TLType => \new TLType {
+  | typeHeader => tl-new-type 4 nil
+  | constructorsCount => 1
+  | constructors =>
+    (\new TLConstructor {
+      | fields-count => 3
+      | fields =>
+        (\new TLFieldDefinition {
+          | fieldProp => idp
+          | fieldMask => nothing
+          | fieldType => field-application tl-nat end-args
+        }) eac-::
+        (\new TLFieldDefinition {
+          | fieldProp => idp
+          | fieldMask => just (\new TLFieldMask {
+            | v => fromPrevField 0 ()
+            | bit => 0
+          })
+          | fieldType => field-application tl-nat end-args
+        }) eac-::
+        (\new TLFieldDefinition {
+          | fieldProp => idp
+          | fieldMask => just (\new TLFieldMask {
+            | v => fromPrevField 1 ()
+            | bit => 31
+          })
+          | fieldType => field-application tl-nat end-args
+        }) eac-::
+        eac-nil
+    })
+      eac-:: eac-nil
+  | newType => is-new-type
+  | nonEmpty => contradiction
+}
+
+-- struct f1:int f2:f1.0?# = Struct;
+\func NonTLStruct : TLType => \new TLType {
+  | typeHeader => tl-new-type 1488 nil
+  | constructorsCount => 1
+  | constructors =>
+    (\new TLConstructor {
+      | fields-count => 2
+      | fields =>
+        (\new TLFieldDefinition {
+          | fieldProp => idp
+          | fieldMask => nothing
+          | fieldType => field-application TLInt.typeHeader end-args
+        }) eac-::
+        (\new TLFieldDefinition {
+          | fieldProp => idp
+          | fieldMask => just (\new TLFieldMask {
+            | v => fromPrevField 0 {?}
+            | bit => 0
+          })
+          | fieldType => field-application tl-nat end-args
+        }) eac-::
+        eac-nil
+    }) eac-::
+    eac-nil
+  | newType => is-new-type
+  | nonEmpty => contradiction
+}
