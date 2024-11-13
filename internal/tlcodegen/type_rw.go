@@ -85,6 +85,8 @@ type TypeRWWrapper struct {
 	cppDetailsFileName string
 	groupName          string
 
+	phpInfo PhpClassMeta
+
 	tlTag  uint32     // TODO - turn into function
 	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation
 	origTL []*tlast.Combinator
@@ -486,6 +488,10 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 		return false
 	}
 	return len(structElement.Fields) == 0
+}
+
+func (w *TypeRWWrapper) PHPGenerateCode(code *strings.Builder, bytes bool) {
+
 }
 
 func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
