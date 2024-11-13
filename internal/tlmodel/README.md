@@ -4,7 +4,7 @@
 * В данной модели нет _Boxed_ на момент написания этого файла (13.11.24)
 * Для описания типа создайте объект типа `TLType` (разница между union-type и обычными типа лишь в количестве конструкторов)
 
-Пример для `pair {X: Type} {Y: Type} left:X property:Y = Pair;`:
+Пример для `pair {X: Type} {Y: Type} left:X right:Y = Pair;`:
 ```haskell
 \func TLPair : TLType => \new TLType {
   | typeHeader => tl-new-type 1 (^Type :: (^Type :: nil))
