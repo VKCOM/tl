@@ -1388,6 +1388,15 @@ func sortComponents(target int, visited *map[int]bool, deps *map[int][]int, orde
 	*order = append(*order, target)
 }
 
+type LanguageTypeSystemInfo struct {
+	AllowedTypeGenerics                bool
+	AllowedCompileTimeConstantGenerics bool
+}
+
+func (lti LanguageTypeSystemInfo) OnlyFullyResolvedTypes() bool {
+	return !(lti.AllowedCompileTimeConstantGenerics && lti.AllowedTypeGenerics)
+}
+
 type ConstructorName = tlast.Name
 type Constructor struct {
 	Type   *TypeDefinition
@@ -1435,6 +1444,85 @@ type TypeReduction struct {
 	Arguments []EvaluatedType
 }
 
+func (tr *TypeReduction) EraseTypes() TypeReduction {
+	erasedReduction := *tr
+	erasedReduction.Arguments = make([]EvaluatedType, 0)
+
+	var typeIndex int
+
+	for _, arg := range tr.Arguments {
+		switch arg.Index {
+		case TypeConstant:
+			erasedReduction.Arguments = append(
+				erasedReduction.Arguments,
+				EvaluatedType{Index: TypeVariable, TypeVariable: fmt.Sprintf("X%d", typeIndex)},
+			)
+			typeIndex++
+		default:
+			erasedReduction.Arguments = append(erasedReduction.Arguments, arg)
+		}
+	}
+	return erasedReduction
+}
+
+func (tr *TypeReduction) EraseConstants() TypeReduction {
+	erasedReduction := *tr
+	erasedReduction.Arguments = make([]EvaluatedType, 0)
+
+	var conIndex int
+
+	for _, arg := range tr.Arguments {
+		switch arg.Index {
+		case NumberConstant:
+			erasedReduction.Arguments = append(
+				erasedReduction.Arguments,
+				EvaluatedType{Index: NumberVariable, Variable: fmt.Sprintf("n%d", conIndex), VariableActsAsConstant: true},
+			)
+			conIndex++
+		default:
+			erasedReduction.Arguments = append(erasedReduction.Arguments, arg)
+		}
+	}
+	return erasedReduction
+}
+
+func (tr *TypeReduction) EraseConstantsAndTypes() TypeReduction {
+	erasedReduction := (*tr).EraseTypes()
+	erasedReduction = erasedReduction.EraseConstants()
+	return erasedReduction
+}
+
+func (tr *TypeReduction) AncestorTemplateInTypeSystem(info LanguageTypeSystemInfo) TypeReduction {
+	ancestor := *tr
+	if info.AllowedTypeGenerics {
+		ancestor = ancestor.EraseTypes()
+	}
+	if info.AllowedCompileTimeConstantGenerics {
+		ancestor = ancestor.EraseConstants()
+	}
+	return ancestor
+}
+
+func (tr *TypeReduction) IsFullyResolved() bool {
+	for _, arg := range tr.Arguments {
+		switch arg.Index {
+		case NumberConstant:
+			continue
+		case NumberVariable:
+			continue
+		case TypeConstant:
+			if !arg.Type.IsFullyResolved() {
+				return false
+			}
+		case TypeVariable:
+			return false
+		default:
+			panic("not all variants of reduction considered")
+		}
+	}
+	return true
+}
+
 func (tr *TypeReduction) ReferenceName() (name tlast.Name) {
 	if tr.IsType {
 		name = tr.Type.Name
@@ -1462,7 +1550,11 @@ func (tr *TypeReduction) String() string {
 				case 0:
 					s += "Con" + strconv.FormatInt(int64(arg.Constant), 10)
 				case 1:
-					s += "Var"
+					if arg.VariableActsAsConstant {
+						s += "ConstVar"
+					} else {
+						s += "Var"
+					}
 				case 2:
 					s += arg.Type.String()
 				case 3:
@@ -1511,7 +1603,8 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 		existingConstructors[currentConstructor] = &constructor
 	}
 
-	typeReductions := make(map[*TypeDefinition]*map[string]*TypeReduction)
+	typeReductions := make(map[string]*TypeReduction)
+	visitedTypes := make(map[TypeName]bool)
 
 	for _, comb := range existingTypes {
 		if len(comb.TypeArguments) != 0 {
@@ -1525,6 +1618,7 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 			&typeReductions,
 			&existingTypes,
 			&existingConstructors,
+			&visitedTypes,
 		)
 	}
 
@@ -1537,13 +1631,14 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 
 func reduce(
 	targetTypeReduction TypeReduction,
-	visitedReductions *map[*TypeDefinition]*map[string]*TypeReduction,
+	visitedReductions *map[string]*TypeReduction,
 	types *map[TypeName]*TypeDefinition,
 	constructors *map[ConstructorName]*Constructor,
+	visitedTypes *map[TypeName]bool,
 ) {
 	for _, arg := range targetTypeReduction.Arguments {
 		if arg.Index == TypeConstant {
-			reduce(*arg.Type, visitedReductions, types, constructors)
+			reduce(*arg.Type, visitedReductions, types, constructors, visitedTypes)
 		}
 	}
 
@@ -1562,6 +1657,7 @@ func reduce(
 			visitedReductions,
 			types,
 			constructors,
+			visitedTypes,
 		)
 	}
 }
@@ -1569,26 +1665,28 @@ func reduce(
 func reduceConstructor(
 	constructor *Constructor,
 	args []EvaluatedType,
-	visitedReductions *map[*TypeDefinition]*map[string]*TypeReduction,
+	visitedReductions *map[string]*TypeReduction,
 	types *map[TypeName]*TypeDefinition,
 	constructors *map[ConstructorName]*Constructor,
+	visitedTypes *map[TypeName]bool,
 ) {
 	if constructor == nil || constructor.Type.IsBasic {
 		return
 	}
 
-	trs, ok := (*visitedReductions)[constructor.Type]
-	if !ok {
-		tmp := make(map[string]*TypeReduction)
-		(*visitedReductions)[constructor.Type] = &tmp
-		trs = &tmp
+	if (*visitedTypes)[constructor.Name] {
+		return
+	} else {
+		(*visitedTypes)[constructor.Name] = true
+		defer func() {
+			(*visitedTypes)[constructor.Name] = false
+		}()
 	}
 
 	constructorReduction := TypeReduction{IsType: false, Constructor: constructor, Arguments: args}
 
-	_, ok = (*trs)[constructorReduction.String()]
-	if !ok {
-		(*trs)[constructorReduction.String()] = &constructorReduction
+	if _, ok := (*visitedReductions)[constructorReduction.String()]; !ok {
+		(*visitedReductions)[constructorReduction.String()] = &constructorReduction
 	} else {
 		return
 	}
@@ -1599,7 +1697,7 @@ func reduceConstructor(
 		fieldType := toTypeReduction(field.FieldType, types, constructors)
 		if fieldType != nil {
 			fillTypeReduction(fieldType, args, constructor.Type, &defaultFields)
-			reduce(*fieldType, visitedReductions, types, constructors)
+			reduce(*fieldType, visitedReductions, types, constructors, visitedTypes)
 		}
 	}
 }
@@ -1734,7 +1832,7 @@ func toTypeReduction(
 type TypesInfo struct {
 	Types          map[TypeName]*TypeDefinition
 	Constructors   map[ConstructorName]*Constructor
-	TypeReductions map[*TypeDefinition]*map[string]*TypeReduction
+	TypeReductions map[string]*TypeReduction
 }
 
 // works for given constructor or for 1-st
