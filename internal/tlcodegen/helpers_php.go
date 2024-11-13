@@ -1,6 +1,7 @@
 package tlcodegen
 
-const basictlPHP = `
+const BasicTlPathPhp = "basictl.php"
+const BasicTLCodePHP = `
 <?php
 include "run.php";
 
