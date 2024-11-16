@@ -67,7 +67,7 @@
   | nonEmpty => contradiction
 }
 -- struct f1:# f2:f1.0?# f3:f2.31?# = Struct;
-\func TlNikitaStruct : TLType => \new TLType {
+\func TLStructWithDependentFields : TLType => \new TLType {
   | typeHeader => tl-new-type 4 nil
   | constructorsCount => 1
   | constructors =>
@@ -104,7 +104,7 @@
 
 -- struct f1:int f2:f1.0?# = Struct;
 \func NonTLStruct : TLType => \new TLType {
-  | typeHeader => tl-new-type 1488 nil
+  | typeHeader => tl-new-type 5 nil
   | constructorsCount => 1
   | constructors =>
     (\new TLConstructor {
