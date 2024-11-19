@@ -44,7 +44,7 @@ const EnableWarningsSimpleTypeName = true
 const (
 	goExt  = ".go"
 	cppExt = ".cpp"
-	hppExt = ".hpp"
+	hppExt = ".h"
 )
 
 const TlJSONHTML = "tljson.html"
@@ -1626,8 +1626,8 @@ func fillTypeReduction(
 			j := findArgByName(arg.Variable, originalType.TypeArguments)
 			if j != -1 && args[j].Index == NumberConstant {
 				typeReduction.Arguments[argI] = args[j]
-			} else if j != -1 && args[j].Index == NumberVariable && args[j].VariableActsAsConstant {
-				typeReduction.Arguments[argI].VariableActsAsConstant = true
+			} else if j != -1 && args[j].Index == NumberVariable {
+				typeReduction.Arguments[argI] = args[j]
 			} else if _, ok := (*defaultFields)[arg.Variable]; ok {
 				typeReduction.Arguments[argI] = EvaluatedType{Index: NumberConstant, Constant: 0}
 			}
