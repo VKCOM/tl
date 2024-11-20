@@ -11,21 +11,25 @@ bool tl2::antispam::GetPattern::write_json(std::ostream& s)const {
 
 bool tl2::antispam::GetPattern::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::AntispamGetPatternRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::GetPattern::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::AntispamGetPatternWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::GetPattern::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::AntispamGetPatternReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::GetPattern::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::AntispamGetPatternWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -73,10 +77,18 @@ bool tl2::details::AntispamGetPatternWriteResult(::basictl::tl_ostream & s, tl2:
 }
 
 bool tl2::antispam::GetPattern::read_result(::basictl::tl_istream & s, ::tl2::antispam::PatternFull & result) {
-	return tl2::details::AntispamGetPatternReadResult(s, *this, result);
+	auto read_result = tl2::details::AntispamGetPatternReadResult(s, *this, result);
+	if (read_result) {
+		s.last_release();
+	}
+	return read_result;
 }
 bool tl2::antispam::GetPattern::write_result(::basictl::tl_ostream & s, ::tl2::antispam::PatternFull & result) {
-	return tl2::details::AntispamGetPatternWriteResult(s, *this, result);
+	auto write_result = tl2::details::AntispamGetPatternWriteResult(s, *this, result);
+	if (write_result) {
+		s.last_release();
+	}
+	return write_result;
 }
 
 bool tl2::antispam::PatternFound::write_json(std::ostream& s)const {
@@ -86,21 +98,25 @@ bool tl2::antispam::PatternFound::write_json(std::ostream& s)const {
 
 bool tl2::antispam::PatternFound::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::AntispamPatternFoundRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternFound::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::AntispamPatternFoundWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternFound::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::AntispamPatternFoundReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternFound::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::AntispamPatternFoundWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -258,21 +274,25 @@ bool tl2::antispam::PatternNotFound::write_json(std::ostream& s)const {
 
 bool tl2::antispam::PatternNotFound::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::AntispamPatternNotFoundRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternNotFound::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::AntispamPatternNotFoundWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternNotFound::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::AntispamPatternNotFoundReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternNotFound::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::AntispamPatternNotFoundWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 

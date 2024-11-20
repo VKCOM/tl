@@ -44,8 +44,6 @@ int main() {
         std::string used_output;
         if (read_result) {
             test_result = test_function->read_write_result(input2, output);
-
-            output.last_release();
             used_output = {reinterpret_cast<char*>(output_str.used_buffer().data()), output_str.used_buffer().size()};
             if (test_result) {
                 test_result = used_output == expected_result_output;

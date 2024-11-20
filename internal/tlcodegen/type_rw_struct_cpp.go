@@ -332,11 +332,13 @@ bool %[5]s::write_json(std::ostream& s%[1]s)const {
 
 bool %[5]s::read(::basictl::tl_istream & s%[1]s) {
 %[3]s
+	s.last_release();
 	return true;
 }
 
 bool %[5]s::write(::basictl::tl_ostream & s%[1]s)const {
 %[4]s
+	s.last_release();
 	return true;
 }
 `,
@@ -351,11 +353,13 @@ bool %[5]s::write(::basictl::tl_ostream & s%[1]s)const {
 					cppDet.WriteString(fmt.Sprintf(`
 bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
 %[3]s
+	s.last_release();
 	return true;
 }
 
 bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const {
 %[4]s
+	s.last_release();
 	return true;
 }
 `,
@@ -440,10 +444,18 @@ bool %[8]s::%[6]sWriteResult(::basictl::tl_ostream & s, %[2]s& item, %[1]s& resu
 }
 
 bool %[2]s::read_result(::basictl::tl_istream & s, %[1]s & result) {
-	return %[8]s::%[6]sReadResult(s, *this, result);
+	auto read_result = %[8]s::%[6]sReadResult(s, *this, result);
+	if (read_result) {
+		s.last_release();
+	}
+	return read_result;
 }
 bool %[2]s::write_result(::basictl::tl_ostream & s, %[1]s & result) {
-	return %[8]s::%[6]sWriteResult(s, *this, result);
+	auto write_result = %[8]s::%[6]sWriteResult(s, *this, result);
+	if (write_result) {
+		s.last_release();
+	}
+	return write_result;
 }
 `,
 				resultType,

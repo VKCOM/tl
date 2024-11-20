@@ -13,6 +13,7 @@ run-all-tests:
 	mkdir -p build
 	make run-objects-test
 	make run-functions-test
+	echo "\n\033[0;32mAll tests passed!\033[0m\n"
 
 clean-build:
 	rm -rf build

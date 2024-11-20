@@ -108,21 +108,25 @@ bool tl2::tree_stats::ObjectLimitValueLong::write_json(std::ostream& s)const {
 
 bool tl2::tree_stats::ObjectLimitValueLong::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::tree_stats::ObjectLimitValueLong::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::tree_stats::ObjectLimitValueLong::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::tree_stats::ObjectLimitValueLong::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 

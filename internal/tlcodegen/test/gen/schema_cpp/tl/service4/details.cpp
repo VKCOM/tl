@@ -11,21 +11,25 @@ bool tl2::service4::ModifiedNewsEntry::write_json(std::ostream& s)const {
 
 bool tl2::service4::ModifiedNewsEntry::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service4ModifiedNewsEntryRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service4::ModifiedNewsEntry::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service4ModifiedNewsEntryWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service4::ModifiedNewsEntry::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service4ModifiedNewsEntryReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service4::ModifiedNewsEntry::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service4ModifiedNewsEntryWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -143,21 +147,25 @@ bool tl2::service4::Object::write_json(std::ostream& s)const {
 
 bool tl2::service4::Object::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service4ObjectRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service4::Object::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service4ObjectWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service4::Object::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service4ObjectReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service4::Object::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service4ObjectWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 

@@ -37,7 +37,6 @@ int main() {
             bool read_result = test_object->read(input);
             bool write_result = test_object->write(output);
 
-            output.last_release();
             std::string used_output{reinterpret_cast<char*>(output_str.used_buffer().data()), output_str.used_buffer().size()};
             bool test_result = write_result && read_result;
             if (test_result) {

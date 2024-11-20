@@ -502,21 +502,25 @@ bool tl2::True::write_json(std::ostream& s)const {
 
 bool tl2::True::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::TrueRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::True::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::TrueWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::True::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::TrueReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::True::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::TrueWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
