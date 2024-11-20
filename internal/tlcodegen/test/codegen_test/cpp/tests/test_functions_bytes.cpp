@@ -5,9 +5,11 @@
 #include "../utils/hex.h"
 #include "../dependencies/json.hpp"
 
-#include "../../../gen/schema_cpp/a_tlgen_helpers_code.hpp"
-#include "../../../gen/schema_cpp/__meta/headers.hpp"
-#include "../../../gen/schema_cpp/__factory/headers.hpp"
+#include "../../../gen/schema_cpp/basics/basictl.h"
+#include "../../../gen/schema_cpp/meta/headers.h"
+#include "../../../gen/schema_cpp/factory/headers.h"
+#include "../../../gen/schema_cpp/basics/string_io.h"
+
 
 // for convenience
 using json = nlohmann::json;
@@ -26,17 +28,25 @@ int main() {
         auto function_body_input = hex::parse_hex_to_bytes(test_data.at("FunctionBodyBytes"));
         auto expected_result_output = hex::parse_hex_to_bytes(test_data.at("ResultBytes"));
 
-        basictl::tl_istream_string input1{function_body_input};
-        basictl::tl_istream_string input2{expected_result_output};
-        basictl::tl_ostream_string output{};
+        basictl::tl_istream_string input1_str{function_body_input};
+        basictl::tl_istream_string input2_str{expected_result_output};
+
+        basictl::tl_istream input1{&input1_str};
+        basictl::tl_istream input2{&input2_str};
+
+        std::string output_string = "";
+        basictl::tl_ostream_string output_str{output_string};
+        basictl::tl_ostream output{&output_str};
 
         bool read_result = test_function->read(input1);
         bool test_result = read_result;
 
+        std::string used_output;
         if (read_result) {
             test_result = test_function->read_write_result(input2, output);
+            used_output = {reinterpret_cast<char*>(output_str.used_buffer().data()), output_str.used_buffer().size()};
             if (test_result) {
-                test_result = output.get_buffer() == expected_result_output;
+                test_result = used_output == expected_result_output;
             }
         }
 
@@ -45,7 +55,7 @@ int main() {
         } else {
             std::cout << "FAILED" << std::endl;
             std::cout << "\t\tExpected output:" << test_data.at("ResultBytes") << std::endl;
-            std::cout << "\t\tActual result  :" << output.get_buffer() << std::endl;
+            std::cout << "\t\tActual result  :" << used_output << std::endl;
             return 1;
         }
     }

@@ -4,9 +4,10 @@
 #include "../dependencies/json.hpp"
 #include "../utils/hex.h"
 
-#include "../../../gen/cases_cpp/a_tlgen_helpers_code.hpp"
-#include "../../../gen/cases_cpp/__meta/headers.hpp"
-#include "../../../gen/cases_cpp/__factory/headers.hpp"
+#include "../../../gen/cases_cpp/basics/basictl.h"
+#include "../../../gen/cases_cpp/meta/headers.h"
+#include "../../../gen/cases_cpp/factory/headers.h"
+#include "../../../gen/cases_cpp/basics/string_io.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -26,15 +27,20 @@ int main() {
             auto test_object = tl2::meta::get_item_by_name(test_data.at("TestingType")).create_object();
             auto expected_output = hex::parse_hex_to_bytes(test_data_input.at("Bytes"));
 
-            basictl::tl_istream_string input{expected_output};
-            basictl::tl_ostream_string output{};
+            basictl::tl_istream_string input_str{expected_output};
+            basictl::tl_istream input{&input_str};
+
+            std::string output_string;
+            basictl::tl_ostream_string output_str{output_string};
+            basictl::tl_ostream output{&output_str};
 
             bool read_result = test_object->read(input);
             bool write_result = test_object->write(output);
 
+            std::string used_output{reinterpret_cast<char*>(output_str.used_buffer().data()), output_str.used_buffer().size()};
             bool test_result = write_result && read_result;
             if (test_result) {
-                test_result = output.get_buffer() == expected_output;
+                test_result = used_output == expected_output;
             }
             if (test_result) {
                 std::cout << "SUCCESS" << std::endl;
@@ -42,7 +48,7 @@ int main() {
                 std::cout << "FAILED" << std::endl;
                 std::cout << "\t\tWrite result   :" << write_result << std::endl;
                 std::cout << "\t\tExpected output:" << expected_output << std::endl;
-                std::cout << "\t\tActual result  :" << output.get_buffer() << std::endl;
+                std::cout << "\t\tActual result  :" << used_output << std::endl;
                 return 1;
             }
         }

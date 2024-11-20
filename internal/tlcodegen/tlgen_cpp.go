@@ -15,6 +15,13 @@ import (
 	"strings"
 )
 
+const basicTLFilepathName = "basics/basictl"
+const basicTLStringsImplFilepathName = "basics/string_io"
+const basicTLFilepathNameHPP = basicTLFilepathName + hppExt
+const basicTLFilepathNameCPP = basicTLFilepathName + cppExt
+const basicTLStringsImplFilepathNameHPP = basicTLStringsImplFilepathName + hppExt
+const basicTLStringsImplFilepathNameCPP = basicTLStringsImplFilepathName + cppExt
+
 func cppStartNamespace(s *strings.Builder, ns []string) {
 	for _, n := range ns {
 		s.WriteString(fmt.Sprintf("namespace %s { ", n))
@@ -27,8 +34,6 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 }
 
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
-	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
-
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
 
@@ -102,7 +107,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
 		{
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathNameHPP)))
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
@@ -147,7 +152,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hppDet.Reset()
 
 		hppDet.WriteString("#pragma once\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathNameHPP)))
 		if createdHpps[specs[0].fileName] {
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
 		}
@@ -235,7 +240,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		if !gen.options.SplitInternal {
 			namespaceFilePath = namespaceDeps[0] + cppExt
 		}
-		buildFilePath := filepath.Join("__build", namespaceDetails+".o")
+		buildFilePath := filepath.Join("build", "tl", namespaceDetails+".o")
 
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
@@ -280,20 +285,31 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 	cppMake.WriteString(`
 CC = g++
-CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
 	cppMake.WriteString("all: ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("build/tl main.o build/basictl.o")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("main.o build/basictl.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
+build/tl:
+	mkdir -p build/tl
+
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 `)
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
+	cppMake.WriteString(`
+build/basictl.o: basics/basictl.cpp basics/basictl.h
+	$(CC) $(CFLAGS) -o build/basictl.o -c basics/basictl.cpp
+`)
+	cppMake.WriteString(`
+build/string_io.o: basics/string_io.cpp basics/string_io.h
+	$(CC) $(CFLAGS) -o build/string_io.o -c basics/string_io.cpp
+`)
 	cppMake.WriteString("\n")
 
 	cppMake.WriteString(cppMake1.String())
@@ -306,7 +322,7 @@ main.o: main.cpp
 	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
 		return err
 	}
-	if err := gen.addCodeFile("__build/info.txt", ".o files here!"); err != nil {
+	if err := gen.addCodeFile("build/info.txt", ".o files here!"); err != nil {
 		return err
 	}
 	// if gen.options.Verbose {
@@ -330,13 +346,28 @@ main.o: main.cpp
 	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
 	// }
 	{
-		//	filepathName := filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		//	gen.Code[filepathName] = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
-		//	filepathName = "factory.go"
-		//	gen.Code[filepathName] = gen.GenerateFactory()
-		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
+		code := fmt.Sprintf(basicHPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName) + basicHPPTLCodeBody +
+			fmt.Sprintf(basicHPPTLCodeFooter, BasicTLCPPNamespaceName)
+		if err := gen.addCodeFile(basicTLFilepathNameHPP, code); err != nil {
+			return err
+		}
+	}
+	{
+		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName, hppExt, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
 			fmt.Sprintf(basicCPPTLCodeFooter, BasicTLCPPNamespaceName)
-		if err := gen.addCodeFile(basicTLFilepathName, code); err != nil {
+		if err := gen.addCodeFile(basicTLFilepathNameCPP, code); err != nil {
+			return err
+		}
+	}
+	{
+		code := fmt.Sprintf(basicTLStringsImplHPP, HeaderComment, BasicTLCPPNamespaceName, hppExt)
+		if err := gen.addCodeFile(basicTLStringsImplFilepathNameHPP, code); err != nil {
+			return err
+		}
+	}
+	{
+		code := fmt.Sprintf(basicTLStringsImplCPP, HeaderComment, BasicTLCPPNamespaceName, hppExt)
+		if err := gen.addCodeFile(basicTLStringsImplFilepathNameCPP, code); err != nil {
 			return err
 		}
 	}
@@ -359,6 +390,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	const NoNamespaceGroup = ""
 	const CommonGroup = "__common_namespace"
 	const IndependentTypes = CommonGroup
+	const TLPackagePrefix = "tl"
 
 	for _, t := range allTypes {
 		t.cppDetailsFileName = t.fileName
@@ -480,12 +512,12 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			typeGroup = CommonGroup
 		}
 		if strct, isStruct := t.trw.(*TypeRWStruct); isStruct && strct.ResultType != nil {
-			t.fileName = filepath.Join(typeGroup, "functions", t.fileName)
+			t.fileName = filepath.Join(TLPackagePrefix, typeGroup, "functions", t.fileName)
 		} else {
-			t.fileName = filepath.Join(typeGroup, "types", t.fileName)
+			t.fileName = filepath.Join(TLPackagePrefix, typeGroup, "types", t.fileName)
 		}
-		t.hppDetailsFileName = filepath.Join(t.groupName, "headers", t.hppDetailsFileName)
-		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
+		t.hppDetailsFileName = filepath.Join(TLPackagePrefix, t.groupName, "headers", t.hppDetailsFileName)
+		t.cppDetailsFileName = filepath.Join(TLPackagePrefix, t.groupName, "details")
 	}
 
 }
@@ -501,8 +533,8 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 	meta := strings.Builder{}
 	metaDetails := strings.Builder{}
 
-	filepathName := filepath.Join("__meta", "headers"+hppExt)
-	filepathDetailsName := filepath.Join("__meta", "details"+cppExt)
+	filepathName := filepath.Join("meta", "headers"+hppExt)
+	filepathDetailsName := filepath.Join("meta", "details"+cppExt)
 
 	meta.WriteString(fmt.Sprintf(`
 #pragma once
@@ -549,9 +581,9 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+}`, getCppDiff(filepathName, basicTLFilepathNameHPP)))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "a_tlgen_helpers_code.hpp")))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, basicTLFilepathNameHPP)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -640,8 +672,8 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 	}
 
 	make.WriteString(fmt.Sprintf(`
-__build/__meta.o: %[1]s %[2]s
-	$(CC) $(CFLAGS) -o __build/__meta.o -c %[2]s
+build/meta.o: %[1]s %[2]s
+	$(CC) $(CFLAGS) -o build/meta.o -c %[2]s
 `,
 		filepathName,
 		filepathDetailsName,
@@ -653,8 +685,8 @@ func createFactory(gen *Gen2, createdHpps map[string]bool, make *strings.Builder
 	factory := strings.Builder{}
 	factoryDetails := strings.Builder{}
 
-	filepathName := filepath.Join("__factory", "headers"+hppExt)
-	filepathNameDetails := filepath.Join("__factory", "details"+cppExt)
+	filepathName := filepath.Join("factory", "headers"+hppExt)
+	filepathNameDetails := filepath.Join("factory", "details"+cppExt)
 
 	imports := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
@@ -757,7 +789,7 @@ void tl2::factory::set_all_factories() {
 `)
 	suffix := factoryDetails.String()
 	factoryDetails.Reset()
-	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathNameDetails, filepath.Join("__meta", "headers"+hppExt))))
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathNameDetails, filepath.Join("meta", "headers"+hppExt))))
 	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathNameDetails, filepathName)))
 
 	factoryFileDependencies := strings.Builder{}
@@ -779,8 +811,8 @@ void tl2::factory::set_all_factories() {
 	}
 
 	make.WriteString(fmt.Sprintf(`
-__build/__factory.o: %[1]s %[2]s%[3]s
-	$(CC) $(CFLAGS) -o __build/__factory.o -c %[2]s
+build/factory.o: %[1]s %[2]s%[3]s
+	$(CC) $(CFLAGS) -o build/factory.o -c %[2]s
 `,
 		filepathName,
 		filepathNameDetails,
