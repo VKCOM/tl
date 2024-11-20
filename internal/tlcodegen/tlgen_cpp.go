@@ -15,6 +15,13 @@ import (
 	"strings"
 )
 
+const basicTLFilepathName = "basics/basictl"
+const basicTLStringsImplFilepathName = "basics/string_io"
+const basicTLFilepathNameHPP = basicTLFilepathName + hppExt
+const basicTLFilepathNameCPP = basicTLFilepathName + cppExt
+const basicTLStringsImplFilepathNameHPP = basicTLStringsImplFilepathName + hppExt
+const basicTLStringsImplFilepathNameCPP = basicTLStringsImplFilepathName + cppExt
+
 func cppStartNamespace(s *strings.Builder, ns []string) {
 	for _, n := range ns {
 		s.WriteString(fmt.Sprintf("namespace %s { ", n))
@@ -27,9 +34,6 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 }
 
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
-	const basicTLFilepathNameHPP = "basics/basictl" + hppExt
-	const basicTLFilepathNameCPP = "basics/basictl" + cppExt
-
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
 
@@ -284,13 +288,13 @@ CC = g++
 CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
 	cppMake.WriteString("all: ")
-	cppMake.WriteString("build/tl main.o build/basictl.o ")
+	cppMake.WriteString("build/tl main.o build/basictl.o")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
 	cppMake.WriteString("main.o build/basictl.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
-build/tl: build/tl
+build/tl:
 	mkdir -p build/tl
 
 main.o: main.cpp
@@ -301,6 +305,10 @@ main.o: main.cpp
 	cppMake.WriteString(`
 build/basictl.o: basics/basictl.cpp basics/basictl.h
 	$(CC) $(CFLAGS) -o build/basictl.o -c basics/basictl.cpp
+`)
+	cppMake.WriteString(`
+build/string_io.o: basics/string_io.cpp basics/string_io.h
+	$(CC) $(CFLAGS) -o build/string_io.o -c basics/string_io.cpp
 `)
 	cppMake.WriteString("\n")
 
@@ -348,6 +356,18 @@ build/basictl.o: basics/basictl.cpp basics/basictl.h
 		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName, hppExt, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
 			fmt.Sprintf(basicCPPTLCodeFooter, BasicTLCPPNamespaceName)
 		if err := gen.addCodeFile(basicTLFilepathNameCPP, code); err != nil {
+			return err
+		}
+	}
+	{
+		code := fmt.Sprintf(basicTLStringsImplHPP, HeaderComment, BasicTLCPPNamespaceName, hppExt)
+		if err := gen.addCodeFile(basicTLStringsImplFilepathNameHPP, code); err != nil {
+			return err
+		}
+	}
+	{
+		code := fmt.Sprintf(basicTLStringsImplCPP, HeaderComment, BasicTLCPPNamespaceName, hppExt)
+		if err := gen.addCodeFile(basicTLStringsImplFilepathNameCPP, code); err != nil {
 			return err
 		}
 	}
@@ -561,9 +581,9 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+}`, getCppDiff(filepathName, basicTLFilepathNameHPP)))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "a_tlgen_helpers_code.hpp")))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, basicTLFilepathNameHPP)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 

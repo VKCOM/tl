@@ -22,19 +22,12 @@ const basicHPPTLCodeHeader = `%s
 #include <vector>
 #include <span>
 
-#define TLGEN2_UNLIKELY(x)                                                                         \
-  (x)                   // __builtin_expect((x), 0) // could improve performance on your platform
-#define TLGEN2_NOINLINE // __attribute__ ((noinline)) // could improve performance on your platform
-
 namespace %s {
 `
 
 const basicHPPTLCodeFooter = `
 } // namespace %s
 
-
-#undef TLGEN2_NOINLINE
-#undef TLGEN2_UNLIKELY
 `
 
 const basicHPPTLCodeBody = `
@@ -484,3 +477,68 @@ const basicCPPTLCodeFooter = `
 #undef TLGEN2_NOINLINE
 #undef TLGEN2_UNLIKELY
 `
+
+const basicTLStringsImplHPP = `%[1]s
+#pragma once
+#include "%[2]s%[3]s"
+
+namespace %[2]s {
+    class tl_istream_string : public tl_istream_interface {
+    public:
+        explicit tl_istream_string(const std::string & buffer) : buffer(buffer) {}
+
+        std::span<const std::byte> get_buffer() override;
+        void release_buffer(size_t size) override;
+        
+        std::span<const std::byte> used_buffer();
+    private:
+        const std::string & buffer;
+        size_t used_size = 0;
+    };
+
+    class tl_ostream_string : public tl_ostream_interface {
+    public:
+        explicit tl_ostream_string(std::string & buffer) : buffer(buffer) {}
+
+        std::span<std::byte> get_buffer() override;
+        void release_buffer(size_t size) override;
+
+        std::span<std::byte> used_buffer();
+    private:
+        std::string & buffer;
+        size_t used_size = 0;
+    };
+};`
+
+const basicTLStringsImplCPP = `%[1]s
+#include "%[2]s%[3]s"
+#include "string_io%[3]s"
+
+namespace %[2]s {
+    std::span<const std::byte> tl_istream_string::get_buffer() {
+        return {reinterpret_cast<const std::byte*>(buffer.data()) + used_size, buffer.size() - used_size};
+    }
+
+    void tl_istream_string::release_buffer(size_t size) {
+        used_size += size;
+    }
+
+    std::span<const std::byte> tl_istream_string::used_buffer() {
+        return {reinterpret_cast<const std::byte*>(buffer.data()), used_size};
+    }
+
+    std::span<std::byte> tl_ostream_string::get_buffer() {
+        return {reinterpret_cast<std::byte*>(buffer.data()) + used_size, buffer.size() - used_size};
+    }
+
+    void tl_ostream_string::release_buffer(size_t size) {
+        used_size += size;
+        if (used_size == buffer.size()) {
+            buffer.resize(buffer.size() * 3 / 2 + 1024);
+        }
+    }
+
+    std::span<std::byte> tl_ostream_string::used_buffer() {
+        return {reinterpret_cast<std::byte*>(buffer.data()), used_size};
+    }
+}`
