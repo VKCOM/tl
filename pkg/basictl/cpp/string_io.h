@@ -3,24 +3,27 @@
 #include "basictl.h"
 
 namespace basictl {
-    class tl_istream_string : public basictl::tl_istream_interface {
+    class tl_istream_string : public tl_istream_interface {
     public:
         explicit tl_istream_string(const std::string & buffer) : buffer(buffer) {}
 
         std::span<const std::byte> get_buffer() override;
         void release_buffer(size_t size) override;
-
+        
+        std::span<const std::byte> used_buffer();
     private:
         const std::string & buffer;
         size_t used_size = 0;
     };
 
-    class tl_ostream_string : public basictl::tl_ostream_interface {
+    class tl_ostream_string : public tl_ostream_interface {
     public:
         explicit tl_ostream_string(std::string & buffer) : buffer(buffer) {}
 
         std::span<std::byte> get_buffer() override;
         void release_buffer(size_t size) override;
+
+        std::span<std::byte> used_buffer();
     private:
         std::string & buffer;
         size_t used_size = 0;

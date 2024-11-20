@@ -11,6 +11,10 @@ namespace basictl {
         used_size += size;
     }
 
+    std::span<const std::byte> tl_istream_string::used_buffer() {
+        return {reinterpret_cast<const std::byte*>(buffer.data()), used_size};
+    }
+
     std::span<std::byte> tl_ostream_string::get_buffer() {
         return {reinterpret_cast<std::byte*>(buffer.data()) + used_size, buffer.size() - used_size};
     }
@@ -20,5 +24,9 @@ namespace basictl {
         if (used_size == buffer.size()) {
             buffer.resize(buffer.size() * 3 / 2 + 1024);
         }
+    }
+
+    std::span<std::byte> tl_ostream_string::used_buffer() {
+        return {reinterpret_cast<std::byte*>(buffer.data()), used_size};
     }
 }

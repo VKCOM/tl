@@ -14,11 +14,8 @@
 #include <vector>
 #include <span>
 
-#define TLGEN2_UNLIKELY(x)                                                                         \
-  (x)                   // __builtin_expect((x), 0) // could improve performance on your platform
-#define TLGEN2_NOINLINE // __attribute__ ((noinline)) // could improve performance on your platform
-
 namespace basictl {
+
     enum {
         TL_MAX_TINY_STRING_LEN = 253,
         TL_BIG_STRING_LEN = 0xffffff,
@@ -127,7 +124,6 @@ namespace basictl {
         bool store_data(const void* vdata, size_t size);
         bool store_pad(size_t size);
     };
+
 } // namespace basictl
 
-#undef TLGEN2_NOINLINE
-#undef TLGEN2_UNLIKELY

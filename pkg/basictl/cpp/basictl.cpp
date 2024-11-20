@@ -6,6 +6,7 @@
 #define TLGEN2_NOINLINE // __attribute__ ((noinline)) // could improve performance on your platform
 
 namespace basictl {
+
     tl_istream::tl_istream(tl_istream_interface *provider) : provider(provider) {}
 
     tl_istream::~tl_istream() {
@@ -323,7 +324,9 @@ namespace basictl {
         }
         return true;
     }
+
 } // namespace basictl
+
 
 #undef TLGEN2_NOINLINE
 #undef TLGEN2_UNLIKELY
