@@ -190,18 +190,26 @@ func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 	return false
 }
 
-func (trw *TypeRWUnion) PhpName() string {
+func (trw *TypeRWUnion) PhpClassName(withPath bool) string {
 	name := trw.wr.tlName.Name
+	if len(trw.wr.tlName.Namespace) != 0 {
+		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
+	}
 
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, "__", arg.tip.trw.PhpName())
+			elems = append(elems, "__", arg.tip.trw.PhpClassName(false))
 		}
 	}
 
-	args := strings.Join(elems, "")
-	name += args
-
+	name += strings.Join(elems, "")
+	if withPath {
+		name = trw.wr.PHPTypePath() + name
+	}
 	return name
+}
+
+func (trw *TypeRWUnion) PhpTypeName(withPath bool) string {
+	return trw.PhpClassName(withPath)
 }

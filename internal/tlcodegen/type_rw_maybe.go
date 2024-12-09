@@ -119,9 +119,14 @@ func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *D
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
-func (trw *TypeRWMaybe) PhpName() string {
+func (trw *TypeRWMaybe) PhpClassName(withPath bool) string {
 	target := trw.getInnerTarget()
-	return "maybe_" + target.trw.PhpName()
+	return "maybe_" + target.trw.PhpClassName(withPath)
+}
+
+func (trw *TypeRWMaybe) PhpTypeName(withPath bool) string {
+	target := trw.getInnerTarget()
+	return target.trw.PhpTypeName(withPath) + "|null"
 }
 
 func (trw *TypeRWMaybe) getInnerTarget() *TypeRWWrapper {

@@ -494,6 +494,24 @@ func (w *TypeRWWrapper) PHPGenerateCode(code *strings.Builder, bytes bool) {
 
 }
 
+func (w *TypeRWWrapper) PHPTypePath() string {
+	_, isStruct := w.trw.(*TypeRWStruct)
+	_, isUnion := w.trw.(*TypeRWUnion)
+	if !(isStruct || isUnion) {
+		return ""
+	}
+
+	category := "Types"
+	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct && strct.ResultType != nil {
+		category = "Functions"
+	}
+	group := "_common"
+	if w.tlName.Namespace != "" {
+		group = w.tlName.Namespace
+	}
+	return fmt.Sprintf("TL\\%[1]s\\%[2]s\\", group, category)
+}
+
 func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	if visitedNodes[w] {
 		return
@@ -731,7 +749,8 @@ outer:
 }
 
 type TypeRWPHPData interface {
-	PhpName() string
+	PhpClassName(withPath bool) string
+	PhpTypeName(withPath bool) string
 }
 
 // TODO remove skipAlias after we start generating go code like we do for C++
