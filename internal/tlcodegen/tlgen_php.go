@@ -1,6 +1,8 @@
 package tlcodegen
 
 import (
+	"fmt"
+	"reflect"
 	"strings"
 )
 
@@ -16,7 +18,7 @@ const (
 	//PHPFileEnd   = "?>\n"
 )
 
-func (gen *Gen2) PhpGeneratecode() error {
+func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	if err := gen.addCodeFile(BasicTlPathPhp, BasicTLCodePHP); err != nil {
 		return err
 	}
@@ -33,10 +35,12 @@ func (gen *Gen2) PhpGeneratecode() error {
 
 		wrapper.PHPGenerateCode(&code, true)
 
-		filepathName := wrapper.phpInfo.FileName
-		if err := gen.addCodeFile(filepathName, code.String()); err != nil {
-			return err
-		}
+		fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s}\n", wrapper.tlName.String(), wrapper.goGlobalName, wrapper.trw.PhpName(), reflect.TypeOf(wrapper.trw))
+
+		//filepathName := wrapper.phpInfo.FileName
+		//if err := gen.addCodeFile(filepathName, code.String()); err != nil {
+		//	return err
+		//}
 	}
 	return nil
 }

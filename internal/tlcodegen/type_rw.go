@@ -730,6 +730,10 @@ outer:
 	return result
 }
 
+type TypeRWPHPData interface {
+	PhpName() string
+}
+
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
@@ -774,6 +778,8 @@ type TypeRW interface {
 	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
 	CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string
 	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
+
+	TypeRWPHPData
 }
 
 type Field struct {

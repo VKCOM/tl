@@ -118,3 +118,16 @@ func (trw *TypeRWMaybe) typeJSONReadingCode(bytesVersion bool, directImports *Di
 func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
+
+func (trw *TypeRWMaybe) PhpName() string {
+	target := trw.getInnerTarget()
+	return "maybe_" + target.trw.PhpName()
+}
+
+func (trw *TypeRWMaybe) getInnerTarget() *TypeRWWrapper {
+	if inner, ok := trw.element.t.trw.(*TypeRWMaybe); ok {
+		return inner.getInnerTarget()
+	} else {
+		return trw.element.t
+	}
+}

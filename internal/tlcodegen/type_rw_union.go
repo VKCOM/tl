@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"strings"
 )
 
 type TypeRWUnion struct {
@@ -187,4 +188,20 @@ func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 		}
 	}
 	return false
+}
+
+func (trw *TypeRWUnion) PhpName() string {
+	name := trw.wr.tlName.Name
+
+	elems := make([]string, 0, len(trw.wr.arguments))
+	for _, arg := range trw.wr.arguments {
+		if arg.tip != nil {
+			elems = append(elems, "__", arg.tip.trw.PhpName())
+		}
+	}
+
+	args := strings.Join(elems, "")
+	name += args
+
+	return name
 }

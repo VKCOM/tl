@@ -170,3 +170,17 @@ func (trw *TypeRWPrimitive) typeJSON2ReadingCode(bytesVersion bool, directImport
 func (trw *TypeRWPrimitive) GenerateCode(byteVersion bool, directImports *DirectImports) string {
 	return ""
 }
+
+// TODO
+func (trw *TypeRWPrimitive) PhpName() string {
+	switch trw.goType {
+	case "int32", "int64", "uint32":
+		return "int"
+	case "string":
+		return "string"
+	case "float32", "float64":
+		return "float"
+	default:
+		return fmt.Sprintf("<? %s>", trw.tlType)
+	}
+}
