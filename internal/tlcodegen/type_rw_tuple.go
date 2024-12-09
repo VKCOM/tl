@@ -210,3 +210,11 @@ func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	return fmt.Sprintf("if err := %sReadJSON(legacyTypeNames, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
 }
+
+func (trw *TypeRWBrackets) PhpName() string {
+	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
+		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
+		return "array_" + trw.element.t.trw.PhpName()
+	}
+	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
+}

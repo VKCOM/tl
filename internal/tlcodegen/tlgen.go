@@ -812,6 +812,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		gen.RootCPPNamespaceElements = strings.Split(options.RootCPPNamespace, "::")
 		gen.DetailsCPPNamespaceElements = []string{options.RootCPPNamespace, "details"} // TODO - rename to prevent collisions with TL namespace details
 		gen.DetailsCPPNamespace = options.RootCPPNamespace + "::details"
+	case "php":
 	default:
 		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported, plus '' for linting", options.Language)
 	}
@@ -1242,6 +1243,11 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		if err := gen.generateCodeCPP(generateByteVersions); err != nil {
 			return nil, err
 		}
+	case "php":
+		if err := gen.generateCodePHP(generateByteVersions); err != nil {
+			return nil, err
+		}
+
 	}
 
 	if options.SchemaDocumentation {

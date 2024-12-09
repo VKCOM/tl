@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"sort"
+	"strings"
 )
 
 type TypeRWStruct struct {
@@ -563,4 +564,35 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 		return trw.Fields[0].t.TypeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, trw.replaceUnwrapArgs(natArgs), ref)
 	}
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWStruct) PhpName() string {
+	if len(trw.Fields) == 1 {
+		return trw.Fields[0].t.trw.PhpName()
+	}
+
+	isDict, _, _, valueType := isDictionaryElement(trw.wr)
+	if isDict {
+		return valueType.t.trw.PhpName()
+	}
+
+	name := trw.wr.tlName.Name
+	if len(trw.wr.tlName.Namespace) != 0 {
+		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
+	}
+
+	elems := make([]string, 0, len(trw.wr.arguments))
+	for _, arg := range trw.wr.arguments {
+		if arg.tip != nil {
+			elems = append(elems, arg.tip.trw.PhpName())
+		}
+	}
+
+	args := strings.Join(elems, "__")
+	if len(args) > 0 {
+		name += "__"
+		name += args
+	}
+
+	return name
 }
