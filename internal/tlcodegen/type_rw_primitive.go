@@ -171,8 +171,7 @@ func (trw *TypeRWPrimitive) GenerateCode(byteVersion bool, directImports *Direct
 	return ""
 }
 
-// TODO
-func (trw *TypeRWPrimitive) PhpName() string {
+func (trw *TypeRWPrimitive) PhpClassName(withPath bool) string {
 	switch trw.goType {
 	case "int32", "int64", "uint32":
 		return "int"
@@ -183,4 +182,8 @@ func (trw *TypeRWPrimitive) PhpName() string {
 	default:
 		return fmt.Sprintf("<? %s>", trw.tlType)
 	}
+}
+
+func (trw *TypeRWPrimitive) PhpTypeName(withPath bool) string {
+	return trw.PhpClassName(withPath)
 }

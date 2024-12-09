@@ -110,6 +110,10 @@ func (trw *TypeRWBool) typeJSON2ReadingCode(bytesVersion bool, directImports *Di
 	return wrapLast(false, fmt.Sprintf("%sJson2ReadBool(%s, %s)", trw.wr.gen.InternalPrefix(), jvalue, addAmpersand(ref, val)))
 }
 
-func (trw *TypeRWBool) PhpName() string {
+func (trw *TypeRWBool) PhpClassName(withPath bool) string {
 	return "boolean"
+}
+
+func (trw *TypeRWBool) PhpTypeName(withPath bool) string {
+	return trw.PhpClassName(withPath)
 }

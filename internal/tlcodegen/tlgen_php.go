@@ -35,7 +35,13 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 
 		wrapper.PHPGenerateCode(&code, true)
 
-		fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s}\n", wrapper.tlName.String(), wrapper.goGlobalName, wrapper.trw.PhpName(), reflect.TypeOf(wrapper.trw))
+		fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s, %[5]s}\n",
+			wrapper.tlName.String(),
+			wrapper.goGlobalName,
+			wrapper.trw.PhpClassName(true),
+			reflect.TypeOf(wrapper.trw),
+			wrapper.trw.PhpTypeName(true),
+		)
 
 		//filepathName := wrapper.phpInfo.FileName
 		//if err := gen.addCodeFile(filepathName, code.String()); err != nil {

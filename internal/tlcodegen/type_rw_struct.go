@@ -566,14 +566,14 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
-func (trw *TypeRWStruct) PhpName() string {
-	if len(trw.Fields) == 1 {
-		return trw.Fields[0].t.trw.PhpName()
+func (trw *TypeRWStruct) PhpClassName(withPath bool) string {
+	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
+		return trw.Fields[0].t.trw.PhpClassName(withPath)
 	}
 
 	isDict, _, _, valueType := isDictionaryElement(trw.wr)
 	if isDict {
-		return valueType.t.trw.PhpName()
+		return valueType.t.trw.PhpClassName(withPath)
 	}
 
 	name := trw.wr.tlName.Name
@@ -584,15 +584,20 @@ func (trw *TypeRWStruct) PhpName() string {
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, arg.tip.trw.PhpName())
+			elems = append(elems, "__", arg.tip.trw.PhpClassName(false))
 		}
 	}
 
-	args := strings.Join(elems, "__")
-	if len(args) > 0 {
-		name += "__"
-		name += args
+	name += strings.Join(elems, "")
+	if withPath {
+		name = trw.wr.PHPTypePath() + name
 	}
-
 	return name
+}
+
+func (trw *TypeRWStruct) PhpTypeName(withPath bool) string {
+	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
+		return trw.Fields[0].t.trw.PhpTypeName(withPath)
+	}
+	return trw.PhpClassName(withPath)
 }
