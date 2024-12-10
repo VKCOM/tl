@@ -603,8 +603,10 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool) string {
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
-	code.WriteString(`use VK\TL;
-
+	if isUsingTLImport(trw) {
+		code.WriteString("\nuse VK\\TL;\n")
+	}
+	code.WriteString(`
 /**
  * @kphp-tl-class
  */
@@ -692,7 +694,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 
 	code.WriteString(") {\n")
 	for _, f := range necessaryFieldsInConstructor {
-		code.WriteString(fmt.Sprintf("    $this->$%[1]s = $%[1]s;\n", f.originalName))
+		code.WriteString(fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", f.originalName))
 	}
 	code.WriteString("  }\n")
 
@@ -762,6 +764,16 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 
 	code.WriteString("\n}")
 	return nil
+}
+
+func isUsingTLImport(trw *TypeRWStruct) bool {
+	for _, field := range trw.Fields {
+		fieldType, _ := fieldTypeAndDefaultValue(field)
+		if strings.Contains(fieldType, "TL\\") {
+			return true
+		}
+	}
+	return false
 }
 
 func fieldTypeAndDefaultValue(f Field) (string, string) {
