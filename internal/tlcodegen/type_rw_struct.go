@@ -679,6 +679,9 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		fieldType, _ := fieldTypeAndDefaultValue(f)
 		code.WriteString(fmt.Sprintf("   * @param %[1]s $%[2]s\n", fieldType, f.originalName))
 	}
+	if len(necessaryFieldsInConstructor) == 0 {
+		code.WriteString("   * @kphp-inline\n")
+	}
 
 	code.WriteString(`   */
 `)

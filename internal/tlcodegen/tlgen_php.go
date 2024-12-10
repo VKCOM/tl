@@ -39,6 +39,9 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 		if createdTypes[wrapper.trw.PhpClassName(true)] {
 			continue
 		}
+		if strct, isStrct := wrapper.trw.(*TypeRWStruct); isStrct && strct.ResultType != nil && strct.wr.HasAnnotation("internal") {
+			continue
+		}
 		var code strings.Builder
 		// add start symbol
 		code.WriteString(PHPFileStart)
