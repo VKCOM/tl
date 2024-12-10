@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"strings"
 )
 
 type TypeRWMaybe struct {
@@ -135,4 +136,12 @@ func (trw *TypeRWMaybe) getInnerTarget() *TypeRWWrapper {
 	} else {
 		return trw.element.t
 	}
+}
+
+func (trw *TypeRWMaybe) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	return fmt.Errorf("maybe doesn't have php code")
+}
+
+func (trw *TypeRWMaybe) PhpDefaultValue() string {
+	return "null"
 }

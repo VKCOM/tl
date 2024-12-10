@@ -230,3 +230,11 @@ func (trw *TypeRWBrackets) PhpTypeName(withPath bool) string {
 	}
 	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
+
+func (trw *TypeRWBrackets) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	return fmt.Errorf("tuples don't have php code")
+}
+
+func (trw *TypeRWBrackets) PhpDefaultValue() string {
+	return "[]"
+}
