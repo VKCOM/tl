@@ -215,6 +215,30 @@ func (trw *TypeRWUnion) PhpTypeName(withPath bool) string {
 }
 
 func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	classes := make([]string, len(trw.Fields))
+	for i, field := range trw.Fields {
+		classes[i] = fmt.Sprintf("%s::class", field.t.trw.PhpClassName(true))
+	}
+
+	code.WriteString(`use VK\TL;
+
+/**
+ * @kphp-tl-class
+ */
+`)
+	code.WriteString(fmt.Sprintf(
+		`interface %[1]s {
+
+  /** Allows kphp implicitly load all available constructors */
+  const CONSTRUCTORS = [
+	%[2]s
+  ];
+
+}
+`,
+		trw.PhpClassName(false),
+		strings.Join(classes, ",\n    "),
+	))
 	return nil
 }
 
