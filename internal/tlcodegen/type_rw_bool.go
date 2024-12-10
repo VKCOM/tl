@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"strings"
 )
 
 type TypeRWBool struct {
@@ -116,4 +117,12 @@ func (trw *TypeRWBool) PhpClassName(withPath bool) string {
 
 func (trw *TypeRWBool) PhpTypeName(withPath bool) string {
 	return trw.PhpClassName(withPath)
+}
+
+func (trw *TypeRWBool) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	return fmt.Errorf("boolean doesn't have php code")
+}
+
+func (trw *TypeRWBool) PhpDefaultValue() string {
+	return "false"
 }

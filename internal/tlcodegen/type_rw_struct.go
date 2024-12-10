@@ -601,3 +601,193 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool) string {
 	}
 	return trw.PhpClassName(withPath)
 }
+
+func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	code.WriteString(`use VK\TL;
+
+/**
+ * @kphp-tl-class
+ */
+`)
+	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false)))
+	if trw.wr.unionParent != nil {
+		code.WriteString(fmt.Sprintf("implements %s ", trw.wr.unionParent.PhpClassName(true)))
+	}
+	code.WriteString("{\n")
+	// print fieldmasks
+	for _, f := range trw.Fields {
+		if f.fieldMask == nil {
+			continue
+		}
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /** Field mask for %[1]s field */
+  const BIT_%[2]s_%[3]d = (1 << %[3]d);
+`,
+				f.originalName,
+				strings.ToUpper(f.originalName),
+				f.BitNumber,
+			),
+		)
+	}
+	// print fields declarations
+	for _, f := range trw.Fields {
+		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /** @var %[1]s */
+  public $%[2]s = %[3]s;
+`,
+				fieldType,
+				f.originalName,
+				defaultValue,
+			),
+		)
+	}
+	// print constructor
+	necessaryFieldsInConstructor := make([]Field, 0)
+	usedFieldMasksIndecies := make([]int, 0)
+	usedFieldMasks := make(map[int][]Field)
+	for _, f := range trw.Fields {
+		if f.fieldMask == nil {
+			necessaryFieldsInConstructor = append(necessaryFieldsInConstructor, f)
+		} else {
+			index := f.fieldMask.FieldIndex
+			if !f.fieldMask.isField {
+				for i, argument := range trw.wr.NatParams {
+					if argument == f.fieldMask.name {
+						index = -(i + 1)
+						break
+					}
+				}
+			}
+			if usedFieldMasks[index] == nil {
+				usedFieldMasksIndecies = append(usedFieldMasksIndecies, index)
+			}
+			usedFieldMasks[index] = append(usedFieldMasks[index], f)
+		}
+	}
+
+	code.WriteString(`
+  /**
+`)
+	for _, f := range necessaryFieldsInConstructor {
+		fieldType, _ := fieldTypeAndDefaultValue(f)
+		code.WriteString(fmt.Sprintf("   * @param %[1]s $%[2]s\n", fieldType, f.originalName))
+	}
+
+	code.WriteString(`   */
+`)
+	code.WriteString("  public function __construct(")
+
+	for i, f := range necessaryFieldsInConstructor {
+		_, defaultValue := fieldTypeAndDefaultValue(f)
+		if i != 0 {
+			code.WriteString(", ")
+		}
+		code.WriteString(fmt.Sprintf("$%[1]s = %[2]s", f.originalName, defaultValue))
+	}
+
+	code.WriteString(") {\n")
+	for _, f := range necessaryFieldsInConstructor {
+		code.WriteString(fmt.Sprintf("    $this->$%[1]s = $%[1]s;\n", f.originalName))
+	}
+	code.WriteString("  }\n")
+
+	sort.Ints(usedFieldMasksIndecies)
+	for _, natIndex := range usedFieldMasksIndecies {
+		natName := ""
+		if natIndex < 0 {
+			natName = trw.wr.NatParams[-(natIndex + 1)]
+		} else {
+			natName = trw.Fields[natIndex].originalName
+		}
+		code.WriteString(`
+  /**`)
+		additionalArgs := make([]string, 0)
+		// arguments with ambiguous existence
+		for _, dependentField := range usedFieldMasks[natIndex] {
+			if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
+				additionalArgs = append(additionalArgs, fmt.Sprintf("$has_%s", dependentField.originalName))
+				code.WriteString(fmt.Sprintf("\n   * @param bool $has_%s", dependentField.originalName))
+			}
+		}
+		code.WriteString(`
+   * @return int
+   */
+`,
+		)
+		code.WriteString(
+			fmt.Sprintf(
+				"  public function calculate%[1]s(%[2]s) {\n    $mask = 0;\n",
+				ToUpperFirst(natName),
+				strings.Join(additionalArgs, ", "),
+			),
+		)
+
+		for _, dependentField := range usedFieldMasks[natIndex] {
+			condition := ""
+			if dependentField.t.IsTrueType() {
+				condition = fmt.Sprintf(
+					"$this->%[1]s",
+					dependentField.originalName,
+				)
+			} else if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
+				condition = fmt.Sprintf("$has_%s", dependentField.originalName)
+			} else {
+				condition = fmt.Sprintf(
+					"$this->%[1]s !== null",
+					dependentField.originalName,
+				)
+			}
+			code.WriteString(
+				fmt.Sprintf(
+					`
+    if (%[1]s) {
+      $mask |= BIT_%[2]s_%[3]d;
+    }
+`,
+					condition,
+					strings.ToUpper(dependentField.originalName),
+					dependentField.BitNumber,
+				),
+			)
+		}
+
+		code.WriteString("    return $mask;\n")
+		code.WriteString("  }\n")
+	}
+
+	code.WriteString("\n}")
+	return nil
+}
+
+func fieldTypeAndDefaultValue(f Field) (string, string) {
+	fieldType := f.t.trw.PhpTypeName(true)
+	defaultValue := f.t.trw.PhpDefaultValue()
+	if f.t.IsTrueType() {
+		fieldType = "boolean"
+		defaultValue = "true"
+		if f.fieldMask != nil {
+			defaultValue = "false"
+		}
+	} else {
+		if f.fieldMask != nil {
+			defaultValue = "null"
+			if _, isMaybe := f.t.PHPGenCoreType().trw.(*TypeRWMaybe); !isMaybe {
+				fieldType = fieldType + "|null"
+			}
+		}
+	}
+	return fieldType, defaultValue
+}
+
+func (trw *TypeRWStruct) PhpDefaultValue() string {
+	core := trw.wr.PHPGenCoreType()
+	if core != trw.wr {
+		return core.PHPDefaultValue()
+	}
+	return "null"
+}

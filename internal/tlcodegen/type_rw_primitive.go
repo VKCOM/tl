@@ -9,6 +9,7 @@ package tlcodegen
 import (
 	"fmt"
 	"log"
+	"strings"
 )
 
 type TypeRWPrimitive struct {
@@ -186,4 +187,21 @@ func (trw *TypeRWPrimitive) PhpClassName(withPath bool) string {
 
 func (trw *TypeRWPrimitive) PhpTypeName(withPath bool) string {
 	return trw.PhpClassName(withPath)
+}
+
+func (trw *TypeRWPrimitive) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	return fmt.Errorf("primitives don't have php code")
+}
+
+func (trw *TypeRWPrimitive) PhpDefaultValue() string {
+	switch trw.goType {
+	case "int32", "int64", "uint32":
+		return "0"
+	case "string":
+		return "\"\""
+	case "float32", "float64":
+		return "0"
+	default:
+		return fmt.Sprintf("<? %s>", trw.tlType)
+	}
 }

@@ -213,3 +213,11 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool) string {
 func (trw *TypeRWUnion) PhpTypeName(withPath bool) string {
 	return trw.PhpClassName(withPath)
 }
+
+func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	return nil
+}
+
+func (trw *TypeRWUnion) PhpDefaultValue() string {
+	return "null"
+}

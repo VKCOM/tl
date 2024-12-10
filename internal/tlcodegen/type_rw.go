@@ -490,15 +490,15 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
-func (w *TypeRWWrapper) PHPGenerateCode(code *strings.Builder, bytes bool) {
-
+func (w *TypeRWWrapper) PHPGenerateCode(code *strings.Builder, bytes bool) error {
+	return w.trw.PhpGenerateCode(code, bytes)
 }
 
-func (w *TypeRWWrapper) PHPTypePath() string {
+func (w *TypeRWWrapper) PHPTypePathElements() []string {
 	_, isStruct := w.trw.(*TypeRWStruct)
 	_, isUnion := w.trw.(*TypeRWUnion)
 	if !(isStruct || isUnion) {
-		return ""
+		return nil
 	}
 
 	category := "Types"
@@ -509,7 +509,48 @@ func (w *TypeRWWrapper) PHPTypePath() string {
 	if w.tlName.Namespace != "" {
 		group = w.tlName.Namespace
 	}
-	return fmt.Sprintf("TL\\%[1]s\\%[2]s\\", group, category)
+	return []string{"TL", group, category}
+}
+
+func (w *TypeRWWrapper) PHPDefaultValue() string {
+	core := w.PHPGenCoreType()
+	return core.trw.PhpDefaultValue()
+}
+
+func (w *TypeRWWrapper) PHPTypePath() string {
+	path := w.PHPTypePathElements()
+	if path == nil {
+		return ""
+	} else {
+		return strings.Join(path, "\\") + "\\"
+	}
+}
+
+func (w *TypeRWWrapper) PHPGenCoreType() *TypeRWWrapper {
+	if w.unionParent == nil {
+		struct_, isStruct := w.trw.(*TypeRWStruct)
+		if isStruct && len(struct_.Fields) == 1 && struct_.ResultType == nil {
+			return struct_.Fields[0].t.PHPGenCoreType()
+		}
+	}
+	return w
+}
+
+func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
+	core := w.PHPGenCoreType()
+	if _, isPrimitive := core.trw.(*TypeRWPrimitive); isPrimitive {
+		return true
+	}
+	if struct_, isStruct := core.trw.(*TypeRWStruct); isStruct {
+		isDict, _, _, valueType := isDictionaryElement(struct_.wr)
+		if isDict {
+			return valueType.t.PHPIsPrimitiveType()
+		}
+	}
+	if _, isBrackets := core.trw.(*TypeRWBrackets); isBrackets {
+		return true
+	}
+	return false
 }
 
 func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
@@ -751,6 +792,8 @@ outer:
 type TypeRWPHPData interface {
 	PhpClassName(withPath bool) string
 	PhpTypeName(withPath bool) string
+	PhpGenerateCode(code *strings.Builder, bytes bool) error
+	PhpDefaultValue() string
 }
 
 // TODO remove skipAlias after we start generating go code like we do for C++
