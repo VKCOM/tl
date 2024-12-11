@@ -8,8 +8,10 @@ package tlast
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"math"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -56,7 +58,7 @@ func (it *tokenIterator) skipToNewline() bool {
 		switch tok := it.front(); tok.tokenType {
 		case comment, whiteSpace, tab:
 			continue
-		case newLine:
+		case newLine, eof:
 			return true
 		default:
 			return false
@@ -613,18 +615,13 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 }
 
 func ParseTL(str string) (TL, error) {
-	return ParseTLFile(str, "", false)
-}
-
-func ParseTLFile(str, file string, allowDirty bool) (TL, error) {
-	return ParseTL2(str, file, false, allowDirty)
+	return ParseTLFile(str, "", LexerOptions{AllowMLC: true}, os.Stdout)
 }
 
 // ParseTL2 TL := TypesSection [ type ... ] FunctionSection [ function ... ]
-// allowDirty - allows to use '_' (underscore) as constructor name
-func ParseTL2(str, file string, allowBuiltin, allowDirty bool) (TL, error) {
-	lex := newLexer(str, file, allowBuiltin)
-	allTokens, err := lex.generateTokens(allowDirty)
+func ParseTLFile(str, file string, opts LexerOptions, errorWriter io.Writer) (TL, error) {
+	lex := newLexer(str, file, opts)
+	allTokens, err := lex.generateTokens()
 	if err != nil {
 		return TL{}, fmt.Errorf("tokenizer error: %w", err)
 	}
@@ -633,6 +630,19 @@ func ParseTL2(str, file string, allowBuiltin, allowDirty bool) (TL, error) {
 
 	if str != recombined { // We test on all user files forever
 		log.Panicf("invariant violation in tokenizer, %s", ContactAuthorsString)
+	}
+
+	it := tokenIterator{tokens: allTokens}
+	for ; it.count() != 0; it.popFront() {
+		tok := it.front()
+		if tok.tokenType == comment && strings.HasPrefix(tok.val, "/*") {
+			tok.val = tok.val[:2] // do not print the whole comment, but only the first line
+			e1 := parseErrToken(fmt.Errorf("multiline comments are not part of language"), tok, tok.pos)
+			if !opts.AllowMLC {
+				return TL{}, e1
+			}
+			e1.PrintWarning(errorWriter, nil)
+		}
 	}
 
 	functionSection := false
@@ -655,7 +665,7 @@ func ParseTL2(str, file string, allowBuiltin, allowDirty bool) (TL, error) {
 			continue
 		}
 		var td Combinator
-		td, rest, err = parseCombinator(commentStart, rest, functionSection, allowBuiltin)
+		td, rest, err = parseCombinator(commentStart, rest, functionSection, opts.AllowBuiltin)
 		if err != nil {
 			if functionSection {
 				return nil, fmt.Errorf("function declaration error: %w", err)

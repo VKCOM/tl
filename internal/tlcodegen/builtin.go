@@ -138,8 +138,8 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 			tl = append(tl, res)
 			return tWithArgs
 		}
-		var replaceRepeated func(toVector bool, insideField tlast.Field) (tlast.TypeRef, error)
-		replaceRepeated = func(toVector bool, insideField tlast.Field) (tlast.TypeRef, error) {
+		var replaceRepeated func(toVector bool, insideField tlast.Field, originalCommentRight string) (tlast.TypeRef, error)
+		replaceRepeated = func(toVector bool, insideField tlast.Field, originalCommentRight string) (tlast.TypeRef, error) {
 			if len(insideField.ScaleRepeat.Rep) == 0 {
 				return tlast.TypeRef{}, insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("repetition with no fields is not allowed"))
 			}
@@ -160,20 +160,22 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 				// This is experimental support for transformation of [# [int]] into [__vector<int>]
 				insideField.ScaleRepeat.Rep[1].ScaleRepeat.ExplicitScale = true
 				var err error
-				if tWithArgs, err = replaceRepeated(true, insideField.ScaleRepeat.Rep[1]); err != nil {
+				if tWithArgs, err = replaceRepeated(true, insideField.ScaleRepeat.Rep[1], originalCommentRight); err != nil {
 					return tWithArgs, err
 				}
 			} else if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil {
-				e1 := insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("tlgen has to invent name for type inside brackets, please give a good name to it manually"))
 				tWithArgs = replaceRep(insideField.ScaleRepeat.Rep)
+				if doLint(originalCommentRight) {
+					e1 := insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("tlgen has to invent name for type inside brackets, please give a good name to it manually."))
 
-				if gen.options.WarningsAreErrors {
-					return tWithArgs, e1
+					if gen.options.WarningsAreErrors {
+						return tWithArgs, e1
+					}
+					e1.PrintWarning(gen.options.ErrorWriter, nil)
 				}
-				e1.PrintWarning(gen.options.ErrorWriter, nil)
 			} else if insideField.ScaleRepeat.Rep[0].IsRepeated {
 				var err error
-				if tWithArgs, err = replaceRepeated(false, insideField.ScaleRepeat.Rep[0]); err != nil {
+				if tWithArgs, err = replaceRepeated(false, insideField.ScaleRepeat.Rep[0], originalCommentRight); err != nil {
 					return tWithArgs, err
 				}
 			}
@@ -239,7 +241,7 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 				newField.ScaleRepeat.ExplicitScale = true
 			}
 			var err error
-			if newField.FieldType, err = replaceRepeated(toVector, newField); err != nil {
+			if newField.FieldType, err = replaceRepeated(toVector, newField, newField.CommentRight); err != nil {
 				return nil, err
 			}
 			newField.IsRepeated = false

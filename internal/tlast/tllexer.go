@@ -129,22 +129,28 @@ func numberLexeme(s string) (string, bool) {
 	return s[:i], allDigits
 }
 
+type LexerOptions struct {
+	AllowBuiltin bool // allows constructor to start from '_' (underscore), used only internally by tlgen
+	AllowDirty   bool // allows to use '_' (underscore) as constructor name, will be removed after combined.tl is cleaned up
+	AllowMLC     bool // allow multiline comments. They are treated as warnings.
+}
+
 type lexer struct {
-	allowBuiltin bool
-	str          string // iterator-like
-	tokens       []token
+	opts   LexerOptions
+	str    string // iterator-like
+	tokens []token
 
 	position Position
 }
 
-func newLexer(s, file string, allowBuiltin bool) lexer {
-	return lexer{allowBuiltin, s, make([]token, 0, len(s)/3), Position{s, file, 1, 1, 0, 0}}
+func newLexer(s, file string, opts LexerOptions) lexer {
+	return lexer{opts, s, make([]token, 0, len(s)/3), Position{s, file, 1, 1, 0, 0}}
 }
 
 // when error is returned, undefined token is added to tokens
-func (l *lexer) generateTokens(allowDirty bool) ([]token, error) {
+func (l *lexer) generateTokens() ([]token, error) {
 	for l.str != "" {
-		err := l.nextToken(allowDirty)
+		err := l.nextToken()
 		if err != nil {
 			return l.tokens, err
 		}
@@ -195,7 +201,7 @@ func (l *lexer) checkPrimitive() bool {
 	}
 }
 
-func (l *lexer) nextToken(allowDirty bool) error {
+func (l *lexer) nextToken() error {
 	switch {
 	case l.checkPrimitive():
 		return nil
@@ -215,7 +221,7 @@ func (l *lexer) nextToken(allowDirty bool) error {
 	case l.str[0] == '#':
 		return l.lexNumberSign()
 	case l.str[0] == '_':
-		if l.allowBuiltin {
+		if l.opts.AllowBuiltin {
 			w := builtinIdent(l.str)
 			if w == "_" {
 				l.advance(len(w), ucIdent) // for TypeDecls that do not exist
@@ -224,7 +230,7 @@ func (l *lexer) nextToken(allowDirty bool) error {
 			}
 			return nil
 		}
-		if allowDirty {
+		if l.opts.AllowDirty {
 			l.advance(1, lcIdent)
 			return nil
 		}
