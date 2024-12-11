@@ -553,6 +553,22 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
 	return false
 }
 
+func (w *TypeRWWrapper) PHPNeedsCode() bool {
+	if w.PHPTypePath() == "" ||
+		w.PHPIsPrimitiveType() {
+		return false
+	}
+	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
+		if strct.ResultType == nil && strct.wr.IsTrueType() && strct.wr.unionParent == nil {
+			return false
+		}
+		if strct.ResultType != nil && strct.wr.HasAnnotation("internal") {
+			return false
+		}
+	}
+	return true
+}
+
 func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	if visitedNodes[w] {
 		return

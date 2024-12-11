@@ -30,18 +30,11 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
-		if wrapper.PHPTypePath() == "" ||
-			wrapper.PHPIsPrimitiveType() ||
-			createdTypes[wrapper.trw.PhpClassName(true, true)] {
+		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
-		if strct, isStrct := wrapper.trw.(*TypeRWStruct); isStrct {
-			if strct.ResultType == nil && strct.wr.IsTrueType() && strct.wr.unionParent == nil {
-				continue
-			}
-			if strct.ResultType != nil && strct.wr.HasAnnotation("internal") {
-				continue
-			}
+		if !wrapper.PHPNeedsCode() {
+			continue
 		}
 		var code strings.Builder
 		// add start symbol
