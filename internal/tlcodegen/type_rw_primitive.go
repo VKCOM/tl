@@ -172,7 +172,7 @@ func (trw *TypeRWPrimitive) GenerateCode(byteVersion bool, directImports *Direct
 	return ""
 }
 
-func (trw *TypeRWPrimitive) PhpClassName(withPath bool) string {
+func (trw *TypeRWPrimitive) PhpClassName(withPath bool, bare bool) string {
 	switch trw.goType {
 	case "int32", "int64", "uint32":
 		return "int"
@@ -186,7 +186,7 @@ func (trw *TypeRWPrimitive) PhpClassName(withPath bool) string {
 }
 
 func (trw *TypeRWPrimitive) PhpTypeName(withPath bool) string {
-	return trw.PhpClassName(withPath)
+	return trw.PhpClassName(withPath, false)
 }
 
 func (trw *TypeRWPrimitive) PhpGenerateCode(code *strings.Builder, bytes bool) error {
