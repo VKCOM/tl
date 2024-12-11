@@ -790,7 +790,7 @@ outer:
 }
 
 type TypeRWPHPData interface {
-	PhpClassName(withPath bool) string
+	PhpClassName(withPath bool, bare bool) string
 	PhpTypeName(withPath bool) string
 	PhpGenerateCode(code *strings.Builder, bytes bool) error
 	PhpDefaultValue() string

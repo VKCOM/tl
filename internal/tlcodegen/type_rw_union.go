@@ -190,7 +190,7 @@ func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 	return false
 }
 
-func (trw *TypeRWUnion) PhpClassName(withPath bool) string {
+func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 	name := trw.wr.tlName.Name
 	if len(trw.wr.tlName.Namespace) != 0 {
 		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
@@ -199,7 +199,7 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool) string {
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, "__", arg.tip.trw.PhpClassName(false))
+			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, arg.bare))
 		}
 	}
 
@@ -211,16 +211,17 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool) string {
 }
 
 func (trw *TypeRWUnion) PhpTypeName(withPath bool) string {
-	return trw.PhpClassName(withPath)
+	return trw.PhpClassName(withPath, false)
 }
 
 func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error {
 	classes := make([]string, len(trw.Fields))
 	for i, field := range trw.Fields {
-		classes[i] = fmt.Sprintf("%s::class", field.t.trw.PhpClassName(true))
+		classes[i] = fmt.Sprintf("%s::class", field.t.trw.PhpClassName(true, false))
 	}
 
-	code.WriteString(`use VK\TL;
+	code.WriteString(`
+use VK\TL;
 
 /**
  * @kphp-tl-class
@@ -231,12 +232,12 @@ func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error
 
   /** Allows kphp implicitly load all available constructors */
   const CONSTRUCTORS = [
-	%[2]s
+    %[2]s
   ];
 
 }
 `,
-		trw.PhpClassName(false),
+		trw.PhpClassName(false, false),
 		strings.Join(classes, ",\n    "),
 	))
 	return nil

@@ -566,17 +566,25 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
-func (trw *TypeRWStruct) PhpClassName(withPath bool) string {
+func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
-		return trw.Fields[0].t.trw.PhpClassName(withPath)
+		return trw.Fields[0].t.trw.PhpClassName(withPath, bare)
+	}
+
+	if trw.ResultType == nil && trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return "boolean"
 	}
 
 	isDict, _, _, valueType := isDictionaryElement(trw.wr)
 	if isDict {
-		return valueType.t.trw.PhpClassName(withPath)
+		return valueType.t.trw.PhpClassName(withPath, bare)
 	}
 
 	name := trw.wr.tlName.Name
+	if !bare {
+		//name = trw.wr.origTL[0].TypeDecl.Name.Name
+		print("debug")
+	}
 	if len(trw.wr.tlName.Namespace) != 0 {
 		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
 	}
@@ -584,7 +592,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool) string {
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, "__", arg.tip.trw.PhpClassName(false))
+			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, arg.bare))
 		}
 	}
 
@@ -599,11 +607,13 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool) string {
 	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
 		return trw.Fields[0].t.trw.PhpTypeName(withPath)
 	}
-	return trw.PhpClassName(withPath)
+	return trw.PhpClassName(withPath, true)
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
-	if isUsingTLImport(trw) || trw.ResultType != nil {
+	if isUsingTLImport(trw) ||
+		trw.ResultType != nil ||
+		trw.wr.unionParent != nil {
 		code.WriteString("\nuse VK\\TL;\n")
 	}
 	code.WriteString(`
@@ -611,12 +621,15 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
  * @kphp-tl-class
  */
 `)
-	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false)))
+	if "right1__test_gigi" == trw.PhpClassName(false, true) {
+		print("debug")
+	}
+	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
 	if trw.wr.unionParent != nil {
-		code.WriteString(fmt.Sprintf("implements %s ", trw.wr.unionParent.PhpClassName(true)))
+		code.WriteString(fmt.Sprintf("implements %s ", trw.wr.unionParent.PhpClassName(true, true)))
 	}
 	if trw.ResultType != nil {
-		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction"))
+		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction "))
 	}
 	code.WriteString("{\n")
 	// print fieldmasks
@@ -627,7 +640,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		code.WriteString(
 			fmt.Sprintf(
 				`
-  /** Field mask for %[1]s field */
+  /** Field mask for $%[1]s field */
   const BIT_%[2]s_%[3]d = (1 << %[3]d);
 `,
 				f.originalName,
@@ -682,7 +695,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
   /** Allows kphp implicitly load function result class */
   private const RESULT = %s_result::class;
 `,
-				trw.PhpClassName(true),
+				trw.PhpClassName(true, true),
 			),
 		)
 	}
@@ -747,7 +760,16 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 			),
 		)
 
-		for _, dependentField := range usedFieldMasks[natIndex] {
+		if trw.PhpClassName(false, true) == "test_namesCheck" {
+			print("debug")
+		}
+
+		fields := usedFieldMasks[natIndex]
+		sort.Slice(fields, func(i, j int) bool {
+			return fields[i].BitNumber <= fields[j].BitNumber
+		})
+
+		for _, dependentField := range fields {
 			condition := ""
 			if dependentField.t.IsTrueType() {
 				condition = fmt.Sprintf(
@@ -766,7 +788,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 				fmt.Sprintf(
 					`
     if (%[1]s) {
-      $mask |= BIT_%[2]s_%[3]d;
+      $mask |= self::BIT_%[2]s_%[3]d;
     }
 `,
 					condition,
@@ -776,7 +798,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 			)
 		}
 
-		code.WriteString("    return $mask;\n")
+		code.WriteString("\n    return $mask;\n")
 		code.WriteString("  }\n")
 	}
 
@@ -815,21 +837,20 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
     return '%[3]s';
   }
 `,
-				trw.PhpClassName(false),
-				trw.PhpClassName(true),
+				trw.PhpClassName(false, true),
+				trw.PhpClassName(true, true),
 				trw.wr.tlName.String(),
 				trw.ResultType.trw.PhpTypeName(true),
 			),
 		)
 	}
 
-	code.WriteString("\n}")
+	code.WriteString("\n}\n")
 
 	if trw.ResultType != nil {
 		code.WriteString(
 			fmt.Sprintf(
 				`
-
 /**
  * @kphp-tl-class
  */
@@ -838,9 +859,10 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
   /** @var %[2]s */
   public $value = %[3]s;
 
-}`,
-				trw.PhpClassName(false),
-				trw.ResultType.trw.PhpClassName(true),
+}
+`,
+				trw.PhpClassName(false, true),
+				trw.ResultType.trw.PhpTypeName(true),
 				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
@@ -882,6 +904,9 @@ func (trw *TypeRWStruct) PhpDefaultValue() string {
 	core := trw.wr.PHPGenCoreType()
 	if core != trw.wr {
 		return core.PHPDefaultValue()
+	}
+	if core.IsTrueType() {
+		return "true"
 	}
 	return "null"
 }

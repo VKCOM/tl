@@ -120,9 +120,9 @@ func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *D
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
-func (trw *TypeRWMaybe) PhpClassName(withPath bool) string {
+func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
-	return "maybe_" + target.trw.PhpClassName(withPath)
+	return "maybe_" + target.trw.PhpClassName(withPath, trw.element.bare)
 }
 
 func (trw *TypeRWMaybe) PhpTypeName(withPath bool) string {

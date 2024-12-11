@@ -111,12 +111,12 @@ func (trw *TypeRWBool) typeJSON2ReadingCode(bytesVersion bool, directImports *Di
 	return wrapLast(false, fmt.Sprintf("%sJson2ReadBool(%s, %s)", trw.wr.gen.InternalPrefix(), jvalue, addAmpersand(ref, val)))
 }
 
-func (trw *TypeRWBool) PhpClassName(withPath bool) string {
+func (trw *TypeRWBool) PhpClassName(withPath bool, bare bool) string {
 	return "boolean"
 }
 
 func (trw *TypeRWBool) PhpTypeName(withPath bool) string {
-	return trw.PhpClassName(withPath)
+	return trw.PhpClassName(withPath, true)
 }
 
 func (trw *TypeRWBool) PhpGenerateCode(code *strings.Builder, bytes bool) error {
