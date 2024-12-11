@@ -198,7 +198,7 @@ func (trw *TypeRWPrimitive) PhpDefaultValue() string {
 	case "int32", "int64", "uint32":
 		return "0"
 	case "string":
-		return "\"\""
+		return "''"
 	case "float32", "float64":
 		return "0"
 	default:
