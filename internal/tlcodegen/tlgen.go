@@ -516,10 +516,13 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 				gen.typeDescriptors[typeName] = append(gen.typeDescriptors[typeName], typ)
 			}
 		} else {
-			if len(typ.TemplateArguments) != 0 {
-				// @read funWithArg {fields_mask: #} => True;
-				pr := typ.TemplateArgumentsPR
-				return pr.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
+			for _, t := range typ.TemplateArguments {
+				if t.IsNat {
+					// @read funWithArg {fields_mask: #} => True;
+					return t.PR.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
+				}
+				// TODO - sort out things with rpc wrapping later which has a form
+				// @readwrite tree_stats.preferMaster {X:Type} query:!X = X;
 			}
 			if len(typ.Modifiers) == 0 && doLint(typ.CommentRight) {
 				e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
