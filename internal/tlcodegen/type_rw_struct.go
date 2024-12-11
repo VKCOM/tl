@@ -603,7 +603,7 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool) string {
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
-	if isUsingTLImport(trw) {
+	if isUsingTLImport(trw) || trw.ResultType != nil {
 		code.WriteString("\nuse VK\\TL;\n")
 	}
 	code.WriteString(`
@@ -614,6 +614,9 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false)))
 	if trw.wr.unionParent != nil {
 		code.WriteString(fmt.Sprintf("implements %s ", trw.wr.unionParent.PhpClassName(true)))
+	}
+	if trw.ResultType != nil {
+		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction"))
 	}
 	code.WriteString("{\n")
 	// print fieldmasks
@@ -671,7 +674,19 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 			usedFieldMasks[index] = append(usedFieldMasks[index], f)
 		}
 	}
-
+	// print result type for function
+	if trw.ResultType != nil {
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /** Allows kphp implicitly load function result class */
+  private const RESULT = %s_result::class;
+`,
+				trw.PhpClassName(true),
+			),
+		)
+	}
+	// print constructor
 	code.WriteString(`
   /**
 `)
@@ -765,7 +780,71 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		code.WriteString("  }\n")
 	}
 
+	if trw.ResultType != nil {
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /**
+   * @param TL\RpcFunctionReturnResult $function_return_result
+   * @return %[4]s
+   */
+  public static function functionReturnValue($function_return_result) {
+    if ($function_return_result instanceof %[1]s_result) {
+      return $function_return_result->value;
+    }
+    warning('Unexpected result type in functionReturnValue: ' . ($function_return_result ? get_class($function_return_result) : 'null'));
+    return (new %[1]s_result())->value;
+  }
+
+  /**
+   * @kphp-inline
+   *
+   * @param TL\RpcResponse $response
+   * @return %[4]s
+   */
+  public static function result(TL\RpcResponse $response) {
+    return self::functionReturnValue($response->getResult());
+  }
+
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName() {
+    return '%[3]s';
+  }
+`,
+				trw.PhpClassName(false),
+				trw.PhpClassName(true),
+				trw.wr.tlName.String(),
+				trw.ResultType.trw.PhpTypeName(true),
+			),
+		)
+	}
+
 	code.WriteString("\n}")
+
+	if trw.ResultType != nil {
+		code.WriteString(
+			fmt.Sprintf(
+				`
+
+/**
+ * @kphp-tl-class
+ */
+class %[1]s_result implements TL\RpcFunctionReturnResult {
+
+  /** @var %[2]s */
+  public $value = %[3]s;
+
+}`,
+				trw.PhpClassName(false),
+				trw.ResultType.trw.PhpClassName(true),
+				trw.ResultType.trw.PhpDefaultValue(),
+			),
+		)
+	}
 	return nil
 }
 
