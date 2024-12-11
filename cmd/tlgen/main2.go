@@ -123,11 +123,11 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		return fmt.Errorf("error while walkking through paths: %w", err)
 	}
 	for _, path := range paths {
-		tl, err := parseTlFile(path, false, opt)
+		tl, err := parseTlFile(path, true, opt)
 		if err != nil {
 			return err
 		}
-		fullTl, err := parseTlFile(path, true, opt)
+		fullTl, err := parseTlFile(path, false, opt)
 		if err != nil {
 			return err
 		}
@@ -197,10 +197,17 @@ func parseTlFile(file string, replaceStrange bool, opt *tlcodegen.Gen2Options) (
 		dataStr = strings.ReplaceAll(dataStr, "_ {X:Type} result:X = ReqResult X;", "")
 		dataStr = strings.ReplaceAll(dataStr, "engine.query {X:Type} query:!X = engine.Query;", "")
 		dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "@any @internal engine.sendResponseTo {X:Type} pid:%net.Pid query:!X = Bool;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "@internal @write messages.responseQuery {X:Type} response_query_id:long query:!X = X;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "@any rpcDestActor#7568aabd {X:Type} actor_id:long query:!X = X;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "@any rpcDestActorFlags#f0a5acf7 {X:Type} actor_id:long flags:# extra:%(RpcInvokeReqExtra flags) query:!X = X;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "@any rpcDestFlags#e352035e {X:Type} flags:# extra:%(RpcInvokeReqExtra flags) query:!X = X;", "")
+		//		dataStr = strings.ReplaceAll(dataStr, "@any rpcInvokeReq#2374df3d {X:Type} query_id:long query:!X = RpcReqResult X;", "")
 	}
 	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{
 		AllowBuiltin: false,
-		AllowDirty:   false,
+		AllowDirty:   !replaceStrange,
 		AllowMLC:     !opt.WarningsAreErrors,
 	}, opt.ErrorWriter)
 	if err != nil {
