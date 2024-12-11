@@ -771,7 +771,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 
 		for _, dependentField := range fields {
 			condition := ""
-			if dependentField.t.IsTrueType() {
+			if dependentField.t.IsTrueType() || dependentField.t.PHPNeedsCode() {
 				condition = fmt.Sprintf(
 					"$this->%[1]s",
 					dependentField.originalName,
