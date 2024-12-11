@@ -166,7 +166,7 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 			} else if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil {
 				tWithArgs = replaceRep(insideField.ScaleRepeat.Rep)
 				if doLint(originalCommentRight) {
-					e1 := insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("tlgen has to invent name for type inside brackets, please give a good name to it manually."))
+					e1 := insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("tlgen has to invent name for type inside brackets, please give a good name to it manually"))
 
 					if gen.options.WarningsAreErrors {
 						return tWithArgs, e1
