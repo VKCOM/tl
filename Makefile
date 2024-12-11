@@ -26,12 +26,17 @@ BASIC_TL_PATH := github.com/vkcom/tl/pkg/basictl
 
 TL_BYTE_VERSIONS := ch_proxy.,ab.
 
-.PHONY: build
-
 all: build
 
+.PHONY: build
 build:
 	@$(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+
+
+.PHONY: test
+test:
+	@$(GO) test $(shell go list ./... | grep -v internal/tlcodegen/test/gen/)
+
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \

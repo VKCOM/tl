@@ -61,12 +61,12 @@ stat#9d56e6b2 %(Dictionary string) = Stat;
 dictionaryField {t:Type} key:string value:t = DictionaryField t;
 dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 `
-	var err error
-	require.NoError(t, err)
+
 	t.Run("Full file", func(t *testing.T) {
 		str := combinedBytes
-		lex := newLexer(str, "", false)
-		tokens, _ := lex.generateTokens(false) // TODO - what if err?
+		lex := newLexer(str, "", LexerOptions{})
+		tokens, err := lex.generateTokens()
+		require.NoError(t, err)
 		require.Equal(t, 0, countToken(tokens, undefined))
 		recombined := lex.recombineTokens()
 		require.Equal(t, str, recombined)
@@ -74,16 +74,17 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
 	t.Run("Empty file", func(t *testing.T) {
 		str := ""
-		lex := newLexer(str, "", false)
-		_, _ = lex.generateTokens(false)
+		lex := newLexer(str, "", LexerOptions{})
+		_, err := lex.generateTokens()
+		require.NoError(t, err)
 		recombined := lex.recombineTokens()
 		require.Equal(t, str, recombined)
 	})
 
 	t.Run("Upper case in tag", func(t *testing.T) {
 		str := "foo#1234567F = Foo;"
-		lex := newLexer(str, "", false)
-		_, err = lex.generateTokens(false)
+		lex := newLexer(str, "", LexerOptions{})
+		_, err := lex.generateTokens()
 		require.EqualError(t, err, "expect tag with exactly 8 lowercase hex digits here")
 	})
 
@@ -92,8 +93,8 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 			from := rand.Intn(len(combinedBytes))
 			to := from + rand.Intn(len(combinedBytes)-from)
 			str := combinedBytes[from:to]
-			lex := newLexer(str, "", false)
-			_, _ = lex.generateTokens(false)
+			lex := newLexer(str, "", LexerOptions{})
+			_, _ = lex.generateTokens() // returns errors, but recombination still works
 			recombined := lex.recombineTokens()
 			require.Equal(t, str, recombined)
 		}

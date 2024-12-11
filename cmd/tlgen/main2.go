@@ -123,11 +123,11 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		return fmt.Errorf("error while walkking through paths: %w", err)
 	}
 	for _, path := range paths {
-		tl, err := parseTlFile(path)
+		tl, err := parseTlFile(path, false, opt)
 		if err != nil {
 			return err
 		}
-		fullTl, err := parseFullTlFile(path)
+		fullTl, err := parseTlFile(path, true, opt)
 		if err != nil {
 			return err
 		}
@@ -186,30 +186,23 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	return nil
 }
 
-func parseTlFile(file string) (tlast.TL, error) {
+func parseTlFile(file string, replaceStrange bool, opt *tlcodegen.Gen2Options) (tlast.TL, error) {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, fmt.Errorf("error reading schema file %q - %w", file, err)
 	}
+	dataStr := string(data)
 	// Exceptions we cannot fix upstream
-	dataStr := strings.ReplaceAll(string(data), "_ {X:Type} result:X = ReqResult X;", "")
-	dataStr = strings.ReplaceAll(dataStr, "engine.query {X:Type} query:!X = engine.Query;", "")
-	dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
-
-	tl, err := tlast.ParseTLFile(dataStr, file, false)
-	if err != nil {
-		return tl, err // Do not add excess info to already long parse error
+	if replaceStrange {
+		dataStr = strings.ReplaceAll(dataStr, "_ {X:Type} result:X = ReqResult X;", "")
+		dataStr = strings.ReplaceAll(dataStr, "engine.query {X:Type} query:!X = engine.Query;", "")
+		dataStr = strings.ReplaceAll(dataStr, "engine.queryShortened query:%(VectorTotal int) = engine.Query;", "")
 	}
-	return tl, nil
-}
-
-func parseFullTlFile(file string) (tlast.TL, error) {
-	data, err := os.ReadFile(file)
-	if err != nil {
-		return nil, fmt.Errorf("error reading schema file %q - %w", file, err)
-	}
-	// Exceptions we cannot fix upstream
-	tl, err := tlast.ParseTLFile(string(data), file, true)
+	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{
+		AllowBuiltin: false,
+		AllowDirty:   false,
+		AllowMLC:     !opt.WarningsAreErrors,
+	}, opt.ErrorWriter)
 	if err != nil {
 		return tl, err // Do not add excess info to already long parse error
 	}

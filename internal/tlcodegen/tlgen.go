@@ -379,6 +379,18 @@ type Gen2 struct {
 	componentsOrder []int
 }
 
+func doLint(commentRight string) bool {
+	if len(commentRight) < 2 {
+		return true
+	}
+	for _, f := range strings.Fields(commentRight[2:]) {
+		if f == "tlgen:nolint" {
+			return false
+		}
+	}
+	return true
+}
+
 func (gen *Gen2) InternalPrefix() string {
 	if gen.options.SplitInternal {
 		return "internal."
@@ -504,7 +516,12 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 				gen.typeDescriptors[typeName] = append(gen.typeDescriptors[typeName], typ)
 			}
 		} else {
-			if len(typ.Modifiers) == 0 {
+			if len(typ.TemplateArguments) != 0 {
+				// @read funWithArg {fields_mask: #} => True;
+				pr := typ.TemplateArgumentsPR
+				return pr.BeautifulError(fmt.Errorf("function declaration %q cannot have template arguments", conName))
+			}
+			if len(typ.Modifiers) == 0 && doLint(typ.CommentRight) {
 				e1 := typ.Construct.NamePR.CollapseToBegin().BeautifulError(fmt.Errorf("function constructor %q without modifier (identifier starting with '@') not recommended", typ.Construct.Name.String()))
 				if gen.options.WarningsAreErrors {
 					return e1
@@ -526,7 +543,7 @@ func (gen *Gen2) buildMapDescriptors(tl tlast.TL) error {
 			}
 			// We temporarily allow relaxed case match. To use strict match, remove strings.ToLower() calls below
 			if EnableWarningsSimpleTypeName && strings.ToLower(cName.Name) != typePrefix &&
-				!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) {
+				!LegacyEnableWarningsSimpleTypeNameSkip(cName.String()) && doLint(typ[0].CommentRight) {
 				e1 := typ[0].Construct.NamePR.BeautifulError(fmt.Errorf("simple type constructor name should differ from type name by case only"))
 				e2 := typ[0].TypeDecl.NamePR.BeautifulError(errSeeHere)
 				if gen.options.WarningsAreErrors {
@@ -564,7 +581,8 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 	for _, typ := range types {
 		conName := strings.ToLower(typ.Construct.Name.Name)
 		if EnableWarningsUnionNamespace && typ.Construct.Name.Namespace != typ.TypeDecl.Name.Namespace &&
-			!LegacyEnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) {
+			!LegacyEnableWarningsUnionNamespaceSkip(typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace) &&
+			doLint(typ.CommentRight) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor namespace %q should match type namespace %q", typ.Construct.Name.Namespace, typ.TypeDecl.Name.Namespace))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -575,7 +593,8 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 		if EnableWarningsUnionNamePrefix &&
 			!strings.HasPrefix(conName, typePrefix) &&
 			!strings.HasSuffix(conName, typeSuffix) &&
-			!LegacyEnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) { // same check as in generateType
+			!LegacyEnableWarningsUnionNamePrefixSkip(typ.Construct.Name.Name, typePrefix, typeSuffix) &&
+			doLint(typ.CommentRight) { // same check as in generateType
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor should have type name prefix or suffix %q", typePrefix))
 			e2 := typ.TypeDecl.NamePR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -585,7 +604,8 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 			continue
 		}
 		if EnableWarningsUnionNameExact && conName == typePrefix &&
-			!LegacyEnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) {
+			!LegacyEnableWarningsUnionNameExactSkip(typ.Construct.Name.String()) &&
+			doLint(typ.CommentRight) {
 			e1 := typ.Construct.NamePR.BeautifulError(fmt.Errorf("union constructor name should not exactly match type name %q", typePrefix))
 			e2 := typ.TypeDecl.PR.BeautifulError(errSeeHere)
 			if options.WarningsAreErrors {
@@ -905,7 +925,11 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		primitiveTypes[cn.tlType] = cn
 	}
 
-	btl, err := tlast.ParseTL2(builtinBeautifulText, "<builtin>", true, false) // We need references to token positions for beautification
+	btl, err := tlast.ParseTLFile(builtinBeautifulText, "<builtin>", tlast.LexerOptions{
+		AllowBuiltin: true,
+		AllowDirty:   false,
+		AllowMLC:     false,
+	}, options.ErrorWriter) // We need references to token positions for beautification, so we decided to parse as a TL file
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse internal builtin type representation for beautification: %w", err)
 	}
@@ -1035,8 +1059,8 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 					return nil, m.PR.BeautifulError(fmt.Errorf("annotations must be lower case"))
 				}
 				if _, ok := allAnnotations[m.Name]; !ok {
-					if _, ok := gen.supportedAnnotations[m.Name]; !ok {
-						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tl compiler", m.Name))
+					if _, ok := gen.supportedAnnotations[m.Name]; !ok && doLint(typ.CommentRight) {
+						e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
 						if gen.options.WarningsAreErrors {
 							return nil, e1
 						}
