@@ -199,7 +199,7 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, arg.bare))
+			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, false))
 		}
 	}
 
@@ -217,7 +217,7 @@ func (trw *TypeRWUnion) PhpTypeName(withPath bool) string {
 func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error {
 	classes := make([]string, len(trw.Fields))
 	for i, field := range trw.Fields {
-		classes[i] = fmt.Sprintf("%s::class", field.t.trw.PhpClassName(true, false))
+		classes[i] = fmt.Sprintf("%s::class", field.t.trw.PhpClassName(true, true))
 	}
 
 	code.WriteString(`

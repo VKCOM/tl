@@ -32,7 +32,7 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	for _, wrapper := range gen.generatedTypesList {
 		if wrapper.PHPTypePath() == "" ||
 			wrapper.PHPIsPrimitiveType() ||
-			createdTypes[wrapper.trw.PhpClassName(true, false)] {
+			createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
 		if strct, isStrct := wrapper.trw.(*TypeRWStruct); isStrct {
@@ -58,21 +58,21 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 		fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s, %[5]s}\n",
 			wrapper.tlName.String(),
 			wrapper.goGlobalName,
-			wrapper.trw.PhpClassName(true, false),
+			wrapper.trw.PhpClassName(true, true),
 			reflect.TypeOf(wrapper.trw),
 			wrapper.trw.PhpTypeName(true),
 		)
 
-		fmt.Printf("Core[%s] = %s, %s\n", wrapper.goGlobalName, wrapper.PHPGenCoreType().goGlobalName, reflect.TypeOf(wrapper.PHPGenCoreType().trw))
+		//fmt.Printf("Core[%s] = %s, %s\n", wrapper.goGlobalName, wrapper.PHPGenCoreType().goGlobalName, reflect.TypeOf(wrapper.PHPGenCoreType().trw))
 
 		filepathParts := []string{"VK"}
 		filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
-		filepathParts = append(filepathParts, fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(false, false)))
+		filepathParts = append(filepathParts, fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(false, true)))
 		filepathName := filepath.Join(filepathParts...)
 		if err := gen.addCodeFile(filepathName, code.String()); err != nil {
 			return err
 		}
-		createdTypes[wrapper.trw.PhpClassName(true, false)] = true
+		createdTypes[wrapper.trw.PhpClassName(true, true)] = true
 	}
 	return nil
 }
