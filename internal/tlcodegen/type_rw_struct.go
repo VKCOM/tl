@@ -582,7 +582,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 
 	name := trw.wr.tlName.Name
 	if !bare {
-		//name = trw.wr.origTL[0].TypeDecl.Name.Name
+		name = trw.wr.origTL[0].TypeDecl.Name.Name
 		print("debug")
 	}
 	if len(trw.wr.tlName.Namespace) != 0 {
@@ -592,7 +592,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, arg.bare))
+			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, false))
 		}
 	}
 
