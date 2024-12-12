@@ -200,7 +200,7 @@ func (trw *TypeRWPrimitive) PhpDefaultValue() string {
 	case "string":
 		return "''"
 	case "float32", "float64":
-		return "0"
+		return "0.0"
 	default:
 		return fmt.Sprintf("<? %s>", trw.tlType)
 	}
