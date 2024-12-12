@@ -8,10 +8,8 @@ import (
 )
 
 type PhpClassMeta struct {
-	FileName  string
-	GroupName string
-
-	ClassName string
+	UsedOnlyInInternal bool
+	UsedInFunctions    bool
 }
 
 const (
@@ -25,6 +23,7 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	}
 
 	// select files where to write code
+	gen.PhpMarkAllInternalTypes()
 	gen.PhpChoosePaths()
 	if err := gen.PhpAdditionalFiles(); err != nil {
 		return err
@@ -37,6 +36,12 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 			continue
 		}
 		if !wrapper.PHPNeedsCode() {
+			continue
+		}
+		if !wrapper.phpInfo.UsedInFunctions {
+			continue
+		}
+		if wrapper.phpInfo.UsedOnlyInInternal {
 			continue
 		}
 		var code strings.Builder
@@ -56,7 +61,7 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 			wrapper.goGlobalName,
 			wrapper.trw.PhpClassName(true, true),
 			reflect.TypeOf(wrapper.trw),
-			wrapper.trw.PhpTypeName(true),
+			wrapper.trw.PhpTypeName(true, true),
 		)
 
 		//fmt.Printf("Core[%s] = %s, %s\n", wrapper.goGlobalName, wrapper.PHPGenCoreType().goGlobalName, reflect.TypeOf(wrapper.PHPGenCoreType().trw))
@@ -85,4 +90,39 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 		return err
 	}
 	return nil
+}
+
+func (gen *Gen2) PhpMarkAllInternalTypes() {
+	internalFunctions := make([]*TypeRWWrapper, 0)
+	nonInternalFunctions := make([]*TypeRWWrapper, 0)
+	for _, wrapper := range gen.generatedTypesList {
+		if strct, isStrct := wrapper.trw.(*TypeRWStruct); isStrct && strct.ResultType != nil {
+			if strct.wr.HasAnnotation("internal") {
+				internalFunctions = append(internalFunctions, wrapper)
+			} else {
+				nonInternalFunctions = append(nonInternalFunctions, wrapper)
+			}
+		}
+	}
+	internalReachable := PHPGetAllReachableTypes(internalFunctions)
+	nonInternalReachable := PHPGetAllReachableTypes(nonInternalFunctions)
+
+	for wrapper, _ := range internalReachable {
+		if !nonInternalReachable[wrapper] {
+			wrapper.phpInfo.UsedOnlyInInternal = true
+		}
+		wrapper.phpInfo.UsedInFunctions = true
+	}
+
+	for wrapper, _ := range nonInternalReachable {
+		wrapper.phpInfo.UsedInFunctions = true
+	}
+}
+
+func PHPGetAllReachableTypes(startTypes []*TypeRWWrapper) map[*TypeRWWrapper]bool {
+	reachable := make(map[*TypeRWWrapper]bool)
+	for _, startType := range startTypes {
+		startType.PhpIterateReachableTypes(&reachable)
+	}
+	return reachable
 }

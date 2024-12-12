@@ -210,8 +210,8 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 	return name
 }
 
-func (trw *TypeRWUnion) PhpTypeName(withPath bool) string {
-	return trw.PhpClassName(withPath, false)
+func (trw *TypeRWUnion) PhpTypeName(withPath bool, bare bool) string {
+	return trw.PhpClassName(withPath, true)
 }
 
 func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error {
@@ -245,4 +245,10 @@ use VK\TL;
 
 func (trw *TypeRWUnion) PhpDefaultValue() string {
 	return "null"
+}
+
+func (trw *TypeRWUnion) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
+	for _, field := range trw.Fields {
+		field.t.PhpIterateReachableTypes(reachableTypes)
+	}
 }

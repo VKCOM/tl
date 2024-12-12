@@ -569,6 +569,14 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 	return true
 }
 
+func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
+	if (*reachableTypes)[w] {
+		return
+	}
+	(*reachableTypes)[w] = true
+	w.trw.PhpIterateReachableTypes(reachableTypes)
+}
+
 func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	if visitedNodes[w] {
 		return
@@ -807,9 +815,10 @@ outer:
 
 type TypeRWPHPData interface {
 	PhpClassName(withPath bool, bare bool) string
-	PhpTypeName(withPath bool) string
+	PhpTypeName(withPath bool, bare bool) string
 	PhpGenerateCode(code *strings.Builder, bytes bool) error
 	PhpDefaultValue() string
+	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
 }
 
 // TODO remove skipAlias after we start generating go code like we do for C++

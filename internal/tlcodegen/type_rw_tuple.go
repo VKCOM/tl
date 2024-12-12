@@ -219,10 +219,10 @@ func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
 	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
 
-func (trw *TypeRWBrackets) PhpTypeName(withPath bool) string {
+func (trw *TypeRWBrackets) PhpTypeName(withPath bool, bare bool) string {
 	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
 		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
-		elementText := trw.element.t.trw.PhpTypeName(withPath)
+		elementText := trw.element.t.trw.PhpTypeName(withPath, trw.element.bare)
 		if _, ok := trw.element.t.trw.(*TypeRWMaybe); ok {
 			elementText = "(" + elementText + ")"
 		}
@@ -237,4 +237,8 @@ func (trw *TypeRWBrackets) PhpGenerateCode(code *strings.Builder, bytes bool) er
 
 func (trw *TypeRWBrackets) PhpDefaultValue() string {
 	return "[]"
+}
+
+func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
+	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
