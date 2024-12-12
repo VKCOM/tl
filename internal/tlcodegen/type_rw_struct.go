@@ -729,6 +729,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 	code.WriteString("  }\n")
 
+	// print methods to calculate fieldmasks
 	sort.Ints(usedFieldMasksIndecies)
 	for _, natIndex := range usedFieldMasksIndecies {
 		natName := ""
@@ -766,34 +767,63 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 
 		fields := usedFieldMasks[natIndex]
 		sort.Slice(fields, func(i, j int) bool {
-			return fields[i].BitNumber <= fields[j].BitNumber
+			if fields[i].BitNumber == fields[j].BitNumber {
+				return i < j
+			}
+			return fields[i].BitNumber < fields[j].BitNumber
 		})
 
+		fieldsGroupedByBitNumber := make([][]Field, 0)
 		for _, dependentField := range fields {
-			condition := ""
-			if dependentField.t.IsTrueType() || dependentField.t.PHPNeedsCode() {
-				condition = fmt.Sprintf(
-					"$this->%[1]s",
-					dependentField.originalName,
-				)
-			} else if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
-				condition = fmt.Sprintf("$has_%s", dependentField.originalName)
-			} else {
-				condition = fmt.Sprintf(
-					"$this->%[1]s !== null",
-					dependentField.originalName,
-				)
+			if len(fieldsGroupedByBitNumber) == 0 ||
+				fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1][0].BitNumber != dependentField.BitNumber {
+				fieldsGroupedByBitNumber = append(fieldsGroupedByBitNumber, make([]Field, 0))
 			}
+			fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1] = append(fieldsGroupedByBitNumber[len(fieldsGroupedByBitNumber)-1], dependentField)
+		}
+
+		for _, dependentFields := range fieldsGroupedByBitNumber {
+			conditions := make([]string, 0)
+			bitConstants := make([]string, 0)
+			for _, dependentField := range dependentFields {
+				condition := ""
+				if dependentField.t.IsTrueType() || dependentField.t.PHPNeedsCode() {
+					condition = fmt.Sprintf(
+						"$this->%[1]s",
+						dependentField.originalName,
+					)
+				} else if _, isMaybe := dependentField.t.PHPGenCoreType().trw.(*TypeRWMaybe); isMaybe {
+					condition = fmt.Sprintf("$has_%s", dependentField.originalName)
+				} else {
+					condition = fmt.Sprintf(
+						"$this->%[1]s !== null",
+						dependentField.originalName,
+					)
+				}
+				conditions = append(conditions, condition)
+				bitConstants = append(bitConstants, fmt.Sprintf(
+					"self::BIT_%[1]s_%[2]d",
+					strings.ToUpper(dependentField.originalName),
+					dependentField.BitNumber))
+			}
+
+			finalCondition := conditions[0]
+			finalMask := bitConstants[0]
+
+			if len(conditions) > 1 {
+				finalCondition = strings.Join(conditions, " && ")
+				finalMask = "(" + strings.Join(bitConstants, " | ") + ")"
+			}
+
 			code.WriteString(
 				fmt.Sprintf(
 					`
     if (%[1]s) {
-      $mask |= self::BIT_%[2]s_%[3]d;
+      $mask |= %[2]s;
     }
 `,
-					condition,
-					strings.ToUpper(dependentField.originalName),
-					dependentField.BitNumber,
+					finalCondition,
+					finalMask,
 				),
 			)
 		}
@@ -802,6 +832,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		code.WriteString("  }\n")
 	}
 
+	// print function specific methods and types
 	if trw.ResultType != nil {
 		kphpSpecialCode := ""
 		if trw.wr.HasAnnotation("kphp") {
