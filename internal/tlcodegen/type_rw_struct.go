@@ -603,9 +603,13 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	return name
 }
 
-func (trw *TypeRWStruct) PhpTypeName(withPath bool) string {
+func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
-		return trw.Fields[0].t.trw.PhpTypeName(withPath)
+		return trw.Fields[0].t.trw.PhpTypeName(withPath, bare)
+	}
+	isDict, _, _, valueType := isDictionaryElement(trw.wr)
+	if isDict {
+		return valueType.t.trw.PhpTypeName(withPath, bare)
 	}
 	return trw.PhpClassName(withPath, true)
 }
@@ -621,9 +625,6 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
  * @kphp-tl-class
  */
 `)
-	if "right1__test_gigi" == trw.PhpClassName(false, true) {
-		print("debug")
-	}
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
 	if trw.wr.unionParent != nil {
 		code.WriteString(fmt.Sprintf("implements %s ", trw.wr.unionParent.PhpClassName(true, true)))
@@ -651,6 +652,9 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 	// print fields declarations
 	for _, f := range trw.Fields {
+		if "tree_stats_periodsListResultPeriodsIntCounters" == trw.PhpClassName(false, true) {
+			print("debug")
+		}
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
 		code.WriteString(
 			fmt.Sprintf(
@@ -862,9 +866,13 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
     $response->value = $value;
     return $response;
   }`,
-				trw.ResultType.trw.PhpTypeName(true),
+				trw.ResultType.trw.PhpTypeName(true, true),
 				trw.PhpClassName(true, true),
 			)
+		}
+
+		if trw.PhpClassName(false, true) == "money_checkSystemReady" {
+			print("debug")
 		}
 
 		code.WriteString(
@@ -904,7 +912,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 				trw.PhpClassName(false, true),
 				trw.PhpClassName(true, true),
 				trw.wr.tlName.String(),
-				trw.ResultType.trw.PhpTypeName(true),
+				trw.ResultType.trw.PhpTypeName(true, false),
 				kphpSpecialCode,
 			),
 		)
@@ -928,7 +936,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 }
 `,
 				trw.PhpClassName(false, true),
-				trw.ResultType.trw.PhpTypeName(true),
+				trw.ResultType.trw.PhpTypeName(true, true),
 				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
@@ -955,7 +963,7 @@ func isUsingTLImport(trw *TypeRWStruct) bool {
 }
 
 func fieldTypeAndDefaultValue(f Field) (string, string) {
-	fieldType := f.t.trw.PhpTypeName(true)
+	fieldType := f.t.trw.PhpTypeName(true, true)
 	defaultValue := f.t.trw.PhpDefaultValue()
 	if f.t.IsTrueType() {
 		fieldType = "boolean"
@@ -983,4 +991,13 @@ func (trw *TypeRWStruct) PhpDefaultValue() string {
 		return "true"
 	}
 	return "null"
+}
+
+func (trw *TypeRWStruct) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
+	for _, field := range trw.Fields {
+		field.t.PhpIterateReachableTypes(reachableTypes)
+	}
+	if trw.ResultType != nil {
+		trw.ResultType.PhpIterateReachableTypes(reachableTypes)
+	}
 }

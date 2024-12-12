@@ -185,8 +185,8 @@ func (trw *TypeRWPrimitive) PhpClassName(withPath bool, bare bool) string {
 	}
 }
 
-func (trw *TypeRWPrimitive) PhpTypeName(withPath bool) string {
-	return trw.PhpClassName(withPath, false)
+func (trw *TypeRWPrimitive) PhpTypeName(withPath bool, bare bool) string {
+	return trw.PhpClassName(withPath, true)
 }
 
 func (trw *TypeRWPrimitive) PhpGenerateCode(code *strings.Builder, bytes bool) error {
@@ -205,3 +205,5 @@ func (trw *TypeRWPrimitive) PhpDefaultValue() string {
 		return fmt.Sprintf("<? %s>", trw.tlType)
 	}
 }
+
+func (trw *TypeRWPrimitive) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {}

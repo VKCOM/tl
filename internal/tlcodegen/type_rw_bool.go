@@ -115,7 +115,7 @@ func (trw *TypeRWBool) PhpClassName(withPath bool, bare bool) string {
 	return "boolean"
 }
 
-func (trw *TypeRWBool) PhpTypeName(withPath bool) string {
+func (trw *TypeRWBool) PhpTypeName(withPath bool, bare bool) string {
 	return trw.PhpClassName(withPath, true)
 }
 
@@ -125,4 +125,7 @@ func (trw *TypeRWBool) PhpGenerateCode(code *strings.Builder, bytes bool) error 
 
 func (trw *TypeRWBool) PhpDefaultValue() string {
 	return "false"
+}
+
+func (trw *TypeRWBool) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 }

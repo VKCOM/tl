@@ -125,9 +125,13 @@ func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
 	return "maybe_" + target.trw.PhpClassName(withPath, trw.element.bare)
 }
 
-func (trw *TypeRWMaybe) PhpTypeName(withPath bool) string {
+func (trw *TypeRWMaybe) PhpTypeName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
-	return target.trw.PhpTypeName(withPath) + "|null"
+	if !trw.element.bare {
+		target = trw.element.t
+		bare = trw.element.bare
+	}
+	return target.trw.PhpTypeName(withPath, bare) + "|null"
 }
 
 func (trw *TypeRWMaybe) getInnerTarget() *TypeRWWrapper {
@@ -144,4 +148,8 @@ func (trw *TypeRWMaybe) PhpGenerateCode(code *strings.Builder, bytes bool) error
 
 func (trw *TypeRWMaybe) PhpDefaultValue() string {
 	return "null"
+}
+
+func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
+	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
