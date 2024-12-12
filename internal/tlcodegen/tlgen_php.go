@@ -26,6 +26,9 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 
 	// select files where to write code
 	gen.PhpChoosePaths()
+	if err := gen.PhpAdditionalFiles(); err != nil {
+		return err
+	}
 
 	createdTypes := make(map[string]bool)
 
@@ -72,4 +75,14 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 
 func (gen *Gen2) PhpChoosePaths() {
 
+}
+
+func (gen *Gen2) PhpAdditionalFiles() error {
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
+		return err
+	}
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
+		return err
+	}
+	return nil
 }

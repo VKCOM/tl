@@ -224,3 +224,76 @@ class tl_output_stream {
 }
 ?>
 `
+
+const RpcFunctionPHP = `<?php
+
+%s#ifndef KPHP
+
+namespace VK\TL;
+
+/**
+ * @kphp-tl-class
+ */
+interface RpcFunction {
+
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName();
+}
+
+/**
+ * @kphp-tl-class
+ */
+interface RpcFunctionReturnResult {
+
+}
+
+#endif
+`
+const RpcResponsePHP = `<?php
+
+%s#ifndef KPHP
+
+namespace VK\TL;
+
+use VK\TL;
+
+/**
+ * @kphp-tl-class
+ */
+interface RpcResponse {
+
+  /** Allows kphp implicitly load all available constructors */
+  const CONSTRUCTORS = [
+    TL\_common\Types\rpcResponseError::class,
+    TL\_common\Types\rpcResponseHeader::class,
+    TL\_common\Types\rpcResponseOk::class
+  ];
+
+  /**
+   * @return TL\RpcFunctionReturnResult
+   */
+  public function getResult();
+
+  /**
+   * @return TL\_common\Types\rpcResponseHeader
+   */
+  public function getHeader();
+
+  /**
+   * @return bool
+   */
+  public function isError();
+
+  /**
+   * @return TL\_common\Types\rpcResponseError
+   */
+  public function getError();
+
+}
+
+#endif
+`
