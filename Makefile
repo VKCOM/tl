@@ -1,10 +1,12 @@
+GO = go
+
 BUILD_VERSION    := $(if $(BUILD_VERSION),$(BUILD_VERSION),$(shell git describe --tags --always --dirty))
 BUILD_COMMIT     := $(if $(BUILD_COMMIT),$(BUILD_COMMIT),$(shell git log --format="%H" -n 1))
 BUILD_COMMIT_TS  := $(if $(BUILD_COMMIT_TS),$(BUILD_COMMIT_TS),$(shell git log --format="%ct" -n 1))
 BUILD_BRANCH     := $(if $(BUILD_BRANCH),$(BUILD_BRANCH),$(shell git rev-parse --abbrev-ref HEAD))
 BUILD_TIME       := $(if $(BUILD_TIME),$(BUILD_TIME),$(shell date +%FT%T%z))
 BUILD_MACHINE    := $(if $(BUILD_MACHINE),$(BUILD_MACHINE),$(shell uname -n -m -r -s))
-BUILD_GO_VERSION := $(if $(BUILD_GO_VERSION),$(BUILD_GO_VERSION),$(shell go version | cut -d' ' -f3))
+BUILD_GO_VERSION := $(if $(BUILD_GO_VERSION),$(BUILD_GO_VERSION),$(shell $(GO) version | cut -d' ' -f3))
 
 COMMON_BUILD_VARS := \
   -X 'github.com/vkcom/tl/pkg/build.buildTimestamp=$(BUILD_TIME)' \
@@ -15,8 +17,6 @@ COMMON_BUILD_VARS := \
   -X 'github.com/vkcom/tl/pkg/build.branchName=$(BUILD_BRANCH)' \
 
 COMMON_LDFLAGS = $(COMMON_BUILD_VARS) -extldflags '-O2'
-
-GO = go
 
 TEST_PATH := internal/tlcodegen/test
 TLS_PATH := $(TEST_PATH)/tls
@@ -31,12 +31,6 @@ all: build
 .PHONY: build
 build:
 	@$(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
-
-
-.PHONY: test
-test:
-	@$(GO) test $(shell go list ./... | grep -v internal/tlcodegen/test/gen/)
-
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \
@@ -161,8 +155,11 @@ cpp:
 	$(MAKE) cpp_build
 
 
+.PHONY: test
+test:
+	@$(GO) test $(shell $(GO) list ./... | grep -v internal/tlcodegen/test/gen/)
+
 # target should be as close as possible to github actions used to enable merge
 .PHONY: check
-check: build
-	@go test $(shell go list ./cmd/... ./internal/... ./pkg/... | grep -v /internal/tlcodegen/test/gen/)
-	@go run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... # update version together with github actions
+check: build test
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... # update version together with github actions
