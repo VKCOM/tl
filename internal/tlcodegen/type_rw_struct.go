@@ -729,8 +729,22 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 	code.WriteString("  }\n")
 
+	//sort.Ints(usedFieldMasksIndecies)
+	sort.Slice(usedFieldMasksIndecies, func(i, j int) bool {
+		iGEQ0 := usedFieldMasksIndecies[i] >= 0
+		jGEQ0 := usedFieldMasksIndecies[j] >= 0
+		if iGEQ0 && jGEQ0 {
+			return usedFieldMasksIndecies[i] <= usedFieldMasksIndecies[j]
+		} else if iGEQ0 && !jGEQ0 {
+			return true
+		} else if !iGEQ0 && jGEQ0 {
+			return false
+		} else {
+			return usedFieldMasksIndecies[i] > usedFieldMasksIndecies[j]
+		}
+	})
+
 	// print methods to calculate fieldmasks
-	sort.Ints(usedFieldMasksIndecies)
 	for _, natIndex := range usedFieldMasksIndecies {
 		natName := ""
 		if natIndex < 0 {
@@ -756,7 +770,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		code.WriteString(
 			fmt.Sprintf(
 				"  public function calculate%[1]s(%[2]s) {\n    $mask = 0;\n",
-				ToUpperFirst(natName),
+				toPhpFieldMaskName(natName),
 				strings.Join(additionalArgs, ", "),
 			),
 		)
@@ -920,6 +934,14 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 		)
 	}
 	return nil
+}
+
+func toPhpFieldMaskName(natName string) string {
+	parts := strings.Split(natName, "_")
+	for i, _ := range parts {
+		parts[i] = ToUpperFirst(parts[i])
+	}
+	return strings.Join(parts, "")
 }
 
 func isUsingTLImport(trw *TypeRWStruct) bool {
