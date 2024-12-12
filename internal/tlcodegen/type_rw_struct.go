@@ -803,6 +803,25 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 
 	if trw.ResultType != nil {
+		kphpSpecialCode := ""
+		if trw.wr.HasAnnotation("kphp") {
+			kphpSpecialCode = fmt.Sprintf(
+				`
+
+  /**
+   * @param %[1]s $value
+   * @return %[2]s_result
+   */
+  public static function createRpcServerResponse($value) {
+    $response = new %[2]s_result();
+    $response->value = $value;
+    return $response;
+  }`,
+				trw.ResultType.trw.PhpTypeName(true),
+				trw.PhpClassName(true, true),
+			)
+		}
+
 		code.WriteString(
 			fmt.Sprintf(
 				`
@@ -826,7 +845,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
    */
   public static function result(TL\RpcResponse $response) {
     return self::functionReturnValue($response->getResult());
-  }
+  }%[5]s
 
   /**
    * @kphp-inline
@@ -841,8 +860,10 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 				trw.PhpClassName(true, true),
 				trw.wr.tlName.String(),
 				trw.ResultType.trw.PhpTypeName(true),
+				kphpSpecialCode,
 			),
 		)
+
 	}
 
 	code.WriteString("\n}\n")
