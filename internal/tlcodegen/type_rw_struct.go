@@ -579,7 +579,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 		}
 
 		isDict, _, _, valueType := isDictionaryElement(trw.wr)
-		if isDict {
+		if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
 			return valueType.t.trw.PhpClassName(withPath, bare)
 		}
 	}
@@ -613,7 +613,7 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 			return trw.Fields[0].t.trw.PhpTypeName(withPath, trw.Fields[0].bare)
 		}
 		isDict, _, _, valueType := isDictionaryElement(trw.wr)
-		if isDict {
+		if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
 			return valueType.t.trw.PhpTypeName(withPath, bare)
 		}
 	}
@@ -660,7 +660,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 	// print fields declarations
 	for _, f := range trw.Fields {
-		if "trustId_link" == trw.PhpClassName(false, true) {
+		if "logs2_setDictionary" == trw.PhpClassName(false, true) {
 			print("debug")
 		}
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
@@ -885,7 +885,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 			)
 		}
 
-		if trw.PhpClassName(false, true) == "playground_deleteObject" {
+		if trw.PhpClassName(false, true) == "healthLoyalty_tmpBuyShopItem2" {
 			print("debug")
 		}
 
@@ -926,7 +926,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 				trw.PhpClassName(false, true),
 				trw.PhpClassName(true, true),
 				trw.wr.tlName.String(),
-				trw.ResultType.trw.PhpTypeName(true, trw.ResultType.PHPIsBare()),
+				phpResultType(trw),
 				kphpSpecialCode,
 			),
 		)
@@ -950,12 +950,16 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 }
 `,
 				trw.PhpClassName(false, true),
-				trw.ResultType.trw.PhpTypeName(true, trw.ResultType.PHPIsBare()),
+				phpResultType(trw),
 				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
 	}
 	return nil
+}
+
+func phpResultType(trw *TypeRWStruct) string {
+	return trw.ResultType.trw.PhpTypeName(true, trw.ResultType.PHPIsBare())
 }
 
 func toPhpFieldMaskName(natName string) string {
@@ -977,9 +981,6 @@ func isUsingTLImport(trw *TypeRWStruct) bool {
 }
 
 func fieldTypeAndDefaultValue(f Field) (string, string) {
-	if f.t.trw.PhpTypeName(false, f.bare) == "messages_unreadCounterSettings" {
-		print("debug")
-	}
 	fieldType := f.t.trw.PhpTypeName(true, f.t.PHPIsBare())
 	defaultValue := f.t.trw.PhpDefaultValue()
 	if f.t.PHPIsTrueType() {
