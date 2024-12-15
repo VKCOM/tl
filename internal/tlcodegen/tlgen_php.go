@@ -38,43 +38,63 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 		if !wrapper.PHPNeedsCode() {
 			continue
 		}
-		if !wrapper.phpInfo.UsedInFunctions {
+		if !wrapper.phpInfo.UsedInFunctions || wrapper.phpInfo.UsedOnlyInInternal {
 			continue
 		}
-		if wrapper.phpInfo.UsedOnlyInInternal {
+		if wrapper.PHPGenCoreType() != wrapper {
 			continue
 		}
-		var code strings.Builder
-		// add start symbol
-		code.WriteString(PHPFileStart)
-		code.WriteString("\n")
-		// add copyright text
-		code.WriteString(gen.copyrightText)
-		code.WriteString(fmt.Sprintf("namespace VK\\%s;\n", strings.Join(wrapper.PHPTypePathElements(), "\\")))
-
-		if err := wrapper.PHPGenerateCode(&code, true); err != nil {
+		err := phpGenerateCodeForWrapper(gen, wrapper, createdTypes, true, wrapper.PHPGenerateCode)
+		if err != nil {
 			return err
 		}
-
-		fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s, %[5]s}\n",
-			wrapper.tlName.String(),
-			wrapper.goGlobalName,
-			wrapper.trw.PhpClassName(true, true),
-			reflect.TypeOf(wrapper.trw),
-			wrapper.trw.PhpTypeName(true, true),
-		)
-
-		//fmt.Printf("Core[%s] = %s, %s\n", wrapper.goGlobalName, wrapper.PHPGenCoreType().goGlobalName, reflect.TypeOf(wrapper.PHPGenCoreType().trw))
-
-		filepathParts := []string{"VK"}
-		filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
-		filepathParts = append(filepathParts, fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(false, true)))
-		filepathName := filepath.Join(filepathParts...)
-		if err := gen.addCodeFile(filepathName, code.String()); err != nil {
-			return err
-		}
-		createdTypes[wrapper.trw.PhpClassName(true, true)] = true
 	}
+	return nil
+}
+
+func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes map[string]bool, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
+	var code strings.Builder
+	// add start symbol
+	code.WriteString(PHPFileStart)
+	code.WriteString("\n")
+	// add copyright text
+	code.WriteString(gen.copyrightText)
+	code.WriteString(fmt.Sprintf("namespace VK\\%s;\n", strings.Join(wrapper.PHPTypePathElements(), "\\")))
+
+	if err := codeGenerator(&code, true); err != nil {
+		return err
+	}
+
+	if createInterfaceIfNeeded {
+		if strct, isStruct := wrapper.trw.(*TypeRWStruct); isStruct {
+			unionParent := strct.PhpConstructorNeedsUnion()
+			if unionParent != nil && unionParent == wrapper {
+				err := phpGenerateCodeForWrapper(gen, wrapper, createdTypes, false, func(code *strings.Builder, bytes bool) error {
+					return PhpGenerateInterfaceCode(code, bytes, wrapper, []*TypeRWWrapper{wrapper})
+				})
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s, %[5]s}\n",
+		wrapper.tlName.String(),
+		wrapper.goGlobalName,
+		wrapper.trw.PhpClassName(true, true),
+		reflect.TypeOf(wrapper.trw),
+		wrapper.trw.PhpTypeName(true, true),
+	)
+
+	filepathParts := []string{"VK"}
+	filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
+	filepathParts = append(filepathParts, fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(false, createInterfaceIfNeeded)))
+	filepathName := filepath.Join(filepathParts...)
+	if err := gen.addCodeFile(filepathName, code.String()); err != nil {
+		return err
+	}
+	createdTypes[wrapper.trw.PhpClassName(true, createInterfaceIfNeeded)] = true
 	return nil
 }
 

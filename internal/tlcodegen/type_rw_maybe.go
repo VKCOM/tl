@@ -122,23 +122,19 @@ func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *D
 
 func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
-	return "maybe_" + target.trw.PhpClassName(withPath, trw.element.bare)
+	return "maybe_" + target.t.trw.PhpClassName(withPath, target.bare)
 }
 
 func (trw *TypeRWMaybe) PhpTypeName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
-	if !trw.element.bare {
-		target = trw.element.t
-		bare = trw.element.bare
-	}
-	return target.trw.PhpTypeName(withPath, bare) + "|null"
+	return target.t.trw.PhpTypeName(withPath, target.bare) + "|null"
 }
 
-func (trw *TypeRWMaybe) getInnerTarget() *TypeRWWrapper {
+func (trw *TypeRWMaybe) getInnerTarget() Field {
 	if inner, ok := trw.element.t.trw.(*TypeRWMaybe); ok {
 		return inner.getInnerTarget()
 	} else {
-		return trw.element.t
+		return trw.element
 	}
 }
 

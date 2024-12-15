@@ -214,7 +214,7 @@ func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports
 func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
 	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
 		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
-		return "array_" + trw.element.t.trw.PhpClassName(false, trw.element.bare)
+		return "array_" + trw.element.t.trw.PhpClassName(false, false)
 	}
 	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
@@ -222,7 +222,7 @@ func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
 func (trw *TypeRWBrackets) PhpTypeName(withPath bool, bare bool) string {
 	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
 		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
-		elementText := trw.element.t.trw.PhpTypeName(withPath, trw.element.bare)
+		elementText := trw.element.t.trw.PhpTypeName(withPath, trw.element.t.PHPIsBare())
 		if _, ok := trw.element.t.trw.(*TypeRWMaybe); ok {
 			elementText = "(" + elementText + ")"
 		}
