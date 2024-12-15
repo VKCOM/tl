@@ -127,7 +127,7 @@ func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
 
 func (trw *TypeRWMaybe) PhpTypeName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
-	return target.t.trw.PhpTypeName(withPath, target.bare) + "|null"
+	return target.t.trw.PhpTypeName(withPath, target.t.PHPIsBare()) + "|null"
 }
 
 func (trw *TypeRWMaybe) getInnerTarget() Field {

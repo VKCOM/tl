@@ -502,6 +502,10 @@ func (w *TypeRWWrapper) PHPIsTrueType() bool {
 				return false
 			}
 		}
+		// TODO: I HATE THIS SOOO MUCH
+		if strings.ToLower(w.tlName.String()) != "true" {
+			return false
+		}
 		return w.IsTrueType()
 	}
 	return false
