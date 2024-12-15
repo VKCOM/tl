@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"strings"
 )
 
@@ -215,9 +216,13 @@ func (trw *TypeRWUnion) PhpTypeName(withPath bool, bare bool) string {
 }
 
 func (trw *TypeRWUnion) PhpGenerateCode(code *strings.Builder, bytes bool) error {
-	classes := make([]string, len(trw.Fields))
-	for i, field := range trw.Fields {
-		classes[i] = fmt.Sprintf("%s::class", field.t.trw.PhpClassName(true, true))
+	return PhpGenerateInterfaceCode(code, bytes, trw.wr, utils.MapSlice(trw.Fields, func(f Field) *TypeRWWrapper { return f.t }))
+}
+
+func PhpGenerateInterfaceCode(code *strings.Builder, bytes bool, targetType *TypeRWWrapper, itsConstructors []*TypeRWWrapper) error {
+	constructors := make([]string, len(itsConstructors))
+	for i, constructor := range itsConstructors {
+		constructors[i] = fmt.Sprintf("%s::class", constructor.trw.PhpClassName(true, true))
 	}
 
 	code.WriteString(`
@@ -237,8 +242,8 @@ use VK\TL;
 
 }
 `,
-		trw.PhpClassName(false, false),
-		strings.Join(classes, ",\n    "),
+		targetType.trw.PhpClassName(false, false),
+		strings.Join(constructors, ",\n    "),
 	))
 	return nil
 }

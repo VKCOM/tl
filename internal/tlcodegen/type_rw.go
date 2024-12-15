@@ -490,6 +490,23 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
+func (w *TypeRWWrapper) PHPIsTrueType() bool {
+	structElement, ok := w.trw.(*TypeRWStruct)
+	if ok {
+		unionParent := structElement.PhpConstructorNeedsUnion()
+		if unionParent != nil {
+			return false
+		}
+		for _, argument := range w.origTL[0].TemplateArguments {
+			if argument.IsNat {
+				return false
+			}
+		}
+		return w.IsTrueType()
+	}
+	return false
+}
+
 func (w *TypeRWWrapper) PHPGenerateCode(code *strings.Builder, bytes bool) error {
 	return w.trw.PhpGenerateCode(code, bytes)
 }
@@ -527,13 +544,33 @@ func (w *TypeRWWrapper) PHPTypePath() string {
 }
 
 func (w *TypeRWWrapper) PHPGenCoreType() *TypeRWWrapper {
-	if w.unionParent == nil {
+	if w.PHPUnionParent() == nil {
 		struct_, isStruct := w.trw.(*TypeRWStruct)
-		if isStruct && len(struct_.Fields) == 1 && struct_.ResultType == nil {
+		if isStruct && len(struct_.Fields) == 1 && struct_.ResultType == nil && struct_.Fields[0].fieldMask == nil {
 			return struct_.Fields[0].t.PHPGenCoreType()
 		}
 	}
 	return w
+}
+
+func (w *TypeRWWrapper) PHPUnionParent() *TypeRWWrapper {
+	if w.unionParent != nil {
+		return w.unionParent.wr
+	}
+	if strct, isStruct := w.trw.(*TypeRWStruct); isStruct {
+		unionParent := strct.PhpConstructorNeedsUnion()
+		if unionParent != nil {
+			return unionParent
+		}
+	}
+	return nil
+}
+
+func (w *TypeRWWrapper) PHPIsBare() bool {
+	if strct, isStruct := w.trw.(*TypeRWStruct); isStruct && strct.PhpConstructorNeedsUnion() != nil {
+		return false
+	}
+	return true
 }
 
 func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
@@ -559,7 +596,8 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 		return false
 	}
 	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
-		if strct.ResultType == nil && strct.wr.IsTrueType() && strct.wr.unionParent == nil {
+		unionParent := strct.PhpConstructorNeedsUnion()
+		if strct.ResultType == nil && strct.wr.IsTrueType() && unionParent == nil {
 			return false
 		}
 		if strct.ResultType != nil && strct.wr.HasAnnotation("internal") {

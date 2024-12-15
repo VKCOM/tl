@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"log"
 	"sort"
 	"strings"
@@ -567,25 +568,27 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 }
 
 func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
-	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
-		return trw.Fields[0].t.trw.PhpClassName(withPath, bare)
-	}
+	unionParent := trw.PhpConstructorNeedsUnion()
+	if unionParent == nil {
+		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+			return trw.Fields[0].t.trw.PhpClassName(withPath, bare)
+		}
 
-	if trw.ResultType == nil && trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-		return "boolean"
-	}
+		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
+			return "boolean"
+		}
 
-	isDict, _, _, valueType := isDictionaryElement(trw.wr)
-	if isDict {
-		return valueType.t.trw.PhpClassName(withPath, bare)
+		isDict, _, _, valueType := isDictionaryElement(trw.wr)
+		if isDict {
+			return valueType.t.trw.PhpClassName(withPath, bare)
+		}
 	}
 
 	name := trw.wr.tlName.Name
 	if !bare {
 		name = trw.wr.origTL[0].TypeDecl.Name.Name
-		print("debug")
 	}
-	if len(trw.wr.tlName.Namespace) != 0 {
+	if trw.wr.tlName.Namespace != "" {
 		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)
 	}
 
@@ -604,20 +607,25 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 }
 
 func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
-	if len(trw.Fields) == 1 && trw.ResultType == nil && trw.wr.unionParent == nil {
-		return trw.Fields[0].t.trw.PhpTypeName(withPath, bare)
+	unionParent := trw.PhpConstructorNeedsUnion()
+	if unionParent == nil {
+		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+			return trw.Fields[0].t.trw.PhpTypeName(withPath, trw.Fields[0].bare)
+		}
+		isDict, _, _, valueType := isDictionaryElement(trw.wr)
+		if isDict {
+			return valueType.t.trw.PhpTypeName(withPath, bare)
+		}
 	}
-	isDict, _, _, valueType := isDictionaryElement(trw.wr)
-	if isDict {
-		return valueType.t.trw.PhpTypeName(withPath, bare)
-	}
-	return trw.PhpClassName(withPath, true)
+	return trw.PhpClassName(withPath, bare)
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
+	unionParent := trw.PhpConstructorNeedsUnion()
+
 	if isUsingTLImport(trw) ||
 		trw.ResultType != nil ||
-		trw.wr.unionParent != nil {
+		unionParent != nil {
 		code.WriteString("\nuse VK\\TL;\n")
 	}
 	code.WriteString(`
@@ -626,8 +634,8 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
  */
 `)
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
-	if trw.wr.unionParent != nil {
-		code.WriteString(fmt.Sprintf("implements %s ", trw.wr.unionParent.PhpClassName(true, true)))
+	if unionParent != nil {
+		code.WriteString(fmt.Sprintf("implements %s ", unionParent.trw.PhpClassName(true, false)))
 	}
 	if trw.ResultType != nil {
 		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction "))
@@ -652,7 +660,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 	// print fields declarations
 	for _, f := range trw.Fields {
-		if "tree_stats_periodsListResultPeriodsIntCounters" == trw.PhpClassName(false, true) {
+		if "trustId_link" == trw.PhpClassName(false, true) {
 			print("debug")
 		}
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
@@ -678,8 +686,8 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		} else {
 			index := f.fieldMask.FieldIndex
 			if !f.fieldMask.isField {
-				for i, argument := range trw.wr.NatParams {
-					if argument == f.fieldMask.name {
+				for i, argument := range trw.wr.origTL[0].TemplateArguments {
+					if argument.IsNat && argument.FieldName == f.fieldMask.name {
 						index = -(i + 1)
 						break
 					}
@@ -733,29 +741,32 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 	}
 	code.WriteString("  }\n")
 
-	//sort.Ints(usedFieldMasksIndecies)
-	sort.Slice(usedFieldMasksIndecies, func(i, j int) bool {
-		iGEQ0 := usedFieldMasksIndecies[i] >= 0
-		jGEQ0 := usedFieldMasksIndecies[j] >= 0
-		if iGEQ0 && jGEQ0 {
-			return usedFieldMasksIndecies[i] <= usedFieldMasksIndecies[j]
-		} else if iGEQ0 && !jGEQ0 {
-			return true
-		} else if !iGEQ0 && jGEQ0 {
-			return false
-		} else {
-			return usedFieldMasksIndecies[i] > usedFieldMasksIndecies[j]
-		}
-	})
-
-	// print methods to calculate fieldmasks
-	for _, natIndex := range usedFieldMasksIndecies {
+	// fix order
+	names := utils.MapSlice(usedFieldMasksIndecies, func(natIndex int) string {
 		natName := ""
 		if natIndex < 0 {
-			natName = trw.wr.NatParams[-(natIndex + 1)]
+			natName = trw.wr.origTL[0].TemplateArguments[-(natIndex + 1)].FieldName
 		} else {
 			natName = trw.Fields[natIndex].originalName
 		}
+		return natName
+	})
+
+	namesToIndices := make(map[string]int)
+	for i := range names {
+		namesToIndices[names[i]] = usedFieldMasksIndecies[i]
+	}
+	sort.Strings(names)
+
+	fieldNameToFieldOrder := make(map[string]int)
+	for i := range trw.Fields {
+		fieldNameToFieldOrder[trw.Fields[i].originalName] = i
+	}
+
+	// print methods to calculate fieldmasks
+	for _, name := range names {
+		natIndex := namesToIndices[name]
+		natName := name
 		code.WriteString(`
   /**`)
 		additionalArgs := make([]string, 0)
@@ -803,9 +814,12 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		for _, dependentFields := range fieldsGroupedByBitNumber {
 			conditions := make([]string, 0)
 			bitConstants := make([]string, 0)
+			sort.Slice(dependentFields, func(i, j int) bool {
+				return fieldNameToFieldOrder[dependentFields[i].originalName] < fieldNameToFieldOrder[dependentFields[j].originalName]
+			})
 			for _, dependentField := range dependentFields {
 				condition := ""
-				if dependentField.t.IsTrueType() || dependentField.t.PHPNeedsCode() {
+				if dependentField.t.PHPIsTrueType() || dependentField.t.PHPNeedsCode() {
 					condition = fmt.Sprintf(
 						"$this->%[1]s",
 						dependentField.originalName,
@@ -871,7 +885,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 			)
 		}
 
-		if trw.PhpClassName(false, true) == "money_checkSystemReady" {
+		if trw.PhpClassName(false, true) == "playground_deleteObject" {
 			print("debug")
 		}
 
@@ -912,7 +926,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 				trw.PhpClassName(false, true),
 				trw.PhpClassName(true, true),
 				trw.wr.tlName.String(),
-				trw.ResultType.trw.PhpTypeName(true, false),
+				trw.ResultType.trw.PhpTypeName(true, trw.ResultType.PHPIsBare()),
 				kphpSpecialCode,
 			),
 		)
@@ -936,7 +950,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 }
 `,
 				trw.PhpClassName(false, true),
-				trw.ResultType.trw.PhpTypeName(true, true),
+				trw.ResultType.trw.PhpTypeName(true, trw.ResultType.PHPIsBare()),
 				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
@@ -963,9 +977,12 @@ func isUsingTLImport(trw *TypeRWStruct) bool {
 }
 
 func fieldTypeAndDefaultValue(f Field) (string, string) {
-	fieldType := f.t.trw.PhpTypeName(true, true)
+	if f.t.trw.PhpTypeName(false, f.bare) == "messages_unreadCounterSettings" {
+		print("debug")
+	}
+	fieldType := f.t.trw.PhpTypeName(true, f.t.PHPIsBare())
 	defaultValue := f.t.trw.PhpDefaultValue()
-	if f.t.IsTrueType() {
+	if f.t.PHPIsTrueType() {
 		fieldType = "boolean"
 		defaultValue = "true"
 		if f.fieldMask != nil {
@@ -987,7 +1004,7 @@ func (trw *TypeRWStruct) PhpDefaultValue() string {
 	if core != trw.wr {
 		return core.PHPDefaultValue()
 	}
-	if core.IsTrueType() {
+	if core.PHPIsTrueType() {
 		return "true"
 	}
 	return "null"
@@ -1000,4 +1017,17 @@ func (trw *TypeRWStruct) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWra
 	if trw.ResultType != nil {
 		trw.ResultType.PhpIterateReachableTypes(reachableTypes)
 	}
+}
+
+func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper) {
+	if trw.ResultType == nil {
+		if trw.wr.unionParent != nil {
+			return trw.wr.unionParent.wr
+		} else if strings.ToLower(trw.wr.tlName.Name) != strings.ToLower(trw.wr.origTL[0].TypeDecl.Name.Name) {
+			// NOTE: constructor name is not same as type => type can become union in future?
+			return trw.wr
+		}
+	}
+
+	return nil
 }
