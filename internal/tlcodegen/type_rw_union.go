@@ -204,7 +204,10 @@ func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 	elems := make([]string, 0, len(trw.wr.arguments))
 	for _, arg := range trw.wr.arguments {
 		if arg.tip != nil {
-			elems = append(elems, "__", arg.tip.trw.PhpClassName(false, false))
+			argText := arg.tip.trw.PhpClassName(false, false)
+			if argText != "" {
+				elems = append(elems, "__", argText)
+			}
 		}
 	}
 

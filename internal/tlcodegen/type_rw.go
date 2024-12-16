@@ -601,14 +601,14 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 	}
 	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
 		unionParent := strct.PhpConstructorNeedsUnion()
-		if strct.ResultType == nil && strct.wr.IsTrueType() && unionParent == nil {
+		if strct.ResultType == nil && strct.wr.PHPIsTrueType() && unionParent == nil {
 			return false
 		}
 		if strct.ResultType != nil && strct.wr.HasAnnotation("internal") {
 			return false
 		}
 	}
-	return true
+	return !w.trw.PhpClassNameReplaced()
 }
 
 func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
