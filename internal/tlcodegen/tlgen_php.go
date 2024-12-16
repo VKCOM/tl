@@ -32,6 +32,12 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
+		if wrapper.tlName.String() == "exactlyOnce.uuid" {
+			print(wrapper.trw.PhpClassName(true, true))
+		}
+		if wrapper.trw.PhpClassNameReplaced() {
+			continue
+		}
 		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
@@ -88,11 +94,15 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes m
 	)
 
 	filepathParts := []string{"VK"}
-	filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
-	filepathParts = append(filepathParts, fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(false, createInterfaceIfNeeded)))
+	//filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
+	path := fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(true, createInterfaceIfNeeded))
+	filepathParts = append(filepathParts, strings.Split(path, "\\")...)
 	filepathName := filepath.Join(filepathParts...)
 	if err := gen.addCodeFile(filepathName, code.String()); err != nil {
 		return err
+	}
+	if wrapper.trw.PhpClassName(false, createInterfaceIfNeeded) == "gucene_Query" {
+		print(wrapper.trw.PhpClassName(true, createInterfaceIfNeeded))
 	}
 	createdTypes[wrapper.trw.PhpClassName(true, createInterfaceIfNeeded)] = true
 	return nil

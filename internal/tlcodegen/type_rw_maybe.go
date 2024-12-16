@@ -125,6 +125,10 @@ func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
 	return "maybe_" + target.t.trw.PhpClassName(withPath, target.bare)
 }
 
+func (trw *TypeRWMaybe) PhpClassNameReplaced() bool {
+	return true
+}
+
 func (trw *TypeRWMaybe) PhpTypeName(withPath bool, bare bool) string {
 	target := trw.getInnerTarget()
 	return target.t.trw.PhpTypeName(withPath, target.t.PHPIsBare()) + "|null"
