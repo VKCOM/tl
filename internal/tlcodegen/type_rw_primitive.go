@@ -185,6 +185,10 @@ func (trw *TypeRWPrimitive) PhpClassName(withPath bool, bare bool) string {
 	}
 }
 
+func (trw *TypeRWPrimitive) PhpClassNameReplaced() bool {
+	return true
+}
+
 func (trw *TypeRWPrimitive) PhpTypeName(withPath bool, bare bool) string {
 	return trw.PhpClassName(withPath, true)
 }

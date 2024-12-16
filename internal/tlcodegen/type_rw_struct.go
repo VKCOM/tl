@@ -567,6 +567,25 @@ func (trw *TypeRWStruct) typeJSON2ReadingCode(bytesVersion bool, directImports *
 	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
 }
 
+func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
+	unionParent := trw.PhpConstructorNeedsUnion()
+	if unionParent == nil {
+		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+			return true
+		}
+
+		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
+			return true
+		}
+
+		isDict, _, _, _ := isDictionaryElement(trw.wr)
+		if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+			return true
+		}
+	}
+	return false
+}
+
 func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {

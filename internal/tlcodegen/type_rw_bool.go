@@ -115,6 +115,10 @@ func (trw *TypeRWBool) PhpClassName(withPath bool, bare bool) string {
 	return "boolean"
 }
 
+func (trw *TypeRWBool) PhpClassNameReplaced() bool {
+	return true
+}
+
 func (trw *TypeRWBool) PhpTypeName(withPath bool, bare bool) string {
 	return trw.PhpClassName(withPath, true)
 }

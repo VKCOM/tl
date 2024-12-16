@@ -191,6 +191,10 @@ func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {
 	return false
 }
 
+func (trw *TypeRWUnion) PhpClassNameReplaced() bool {
+	return false
+}
+
 func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
 	name := trw.wr.tlName.Name
 	if len(trw.wr.tlName.Namespace) != 0 {

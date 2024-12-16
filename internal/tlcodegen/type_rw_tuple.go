@@ -219,6 +219,10 @@ func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
 	return fmt.Sprintf("<? %s>", trw.wr.goGlobalName)
 }
 
+func (trw *TypeRWBrackets) PhpClassNameReplaced() bool {
+	return true
+}
+
 func (trw *TypeRWBrackets) PhpTypeName(withPath bool, bare bool) string {
 	if strings.HasPrefix(trw.wr.tlName.String(), BuiltinTupleName) ||
 		strings.HasPrefix(trw.wr.tlName.String(), BuiltinVectorName) {
