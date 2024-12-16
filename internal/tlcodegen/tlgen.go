@@ -937,6 +937,40 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse internal builtin type representation for beautification: %w", err)
 	}
+
+	if gen.options.Language == "php" {
+		// CHANGE ALL GENERIC FUNCTIONS
+		rpcFunctionTypeRef := tlast.TypeRef{
+			Type: tlast.Name{
+				Name: PHPRPCFunctionMock,
+			},
+			Bare: false,
+		}
+		rpcFunctionResultTypeRef := tlast.TypeRef{
+			Type: tlast.Name{
+				Name: PHPRPCFunctionResultMock,
+			},
+			Bare: false,
+		}
+		tl = append(tl, &tlast.Combinator{
+			TypeDecl: tlast.TypeDeclaration{
+				Name: rpcFunctionTypeRef.Type,
+			},
+			Construct: tlast.Constructor{Name: rpcFunctionTypeRef.Type},
+		})
+		tl = append(tl, &tlast.Combinator{
+			TypeDecl: tlast.TypeDeclaration{
+				Name: rpcFunctionResultTypeRef.Type,
+			},
+			Construct: tlast.Constructor{Name: rpcFunctionResultTypeRef.Type},
+		})
+		for _, typ := range tl {
+			if typ.IsFunction && len(typ.TemplateArguments) == 1 {
+				phpRemoveTemplateFromGenericFunction(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
+			}
+		}
+	}
+
 	for i, typ := range tl { // replace built-in
 		tName := typ.Construct.Name.String()
 		// convert that old syntax to new syntax.
@@ -1267,6 +1301,27 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	return gen, nil
+}
+
+func phpRemoveTemplateFromGenericFunction(combinator *tlast.Combinator, newTypeRef, newTypeResultRef *tlast.TypeRef) {
+	template := combinator.TemplateArguments[0].FieldName
+	combinator.TemplateArguments = nil
+	for i := range combinator.Fields {
+		phpRemoveTemplateFromTypeDecl(&combinator.Fields[i].FieldType, template, newTypeRef)
+	}
+	phpRemoveTemplateFromTypeDecl(&combinator.FuncDecl, template, newTypeResultRef)
+}
+
+func phpRemoveTemplateFromTypeDecl(declaration *tlast.TypeRef, template string, newTypeRef *tlast.TypeRef) {
+	if declaration.Type.String() == template {
+		*declaration = *newTypeRef
+	} else {
+		for i := range declaration.Args {
+			if !declaration.Args[i].IsArith {
+				phpRemoveTemplateFromTypeDecl(&declaration.Args[i].T, template, newTypeRef)
+			}
+		}
+	}
 }
 
 var TypeComparator = func(a, b *TypeRWWrapper) int {

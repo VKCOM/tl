@@ -13,8 +13,9 @@ type PhpClassMeta struct {
 }
 
 const (
-	PHPFileStart = "<?php\n"
-	//PHPFileEnd   = "?>\n"
+	PHPFileStart             = "<?php\n"
+	PHPRPCFunctionMock       = "__RPC_FUNCTION_MOCK"
+	PHPRPCFunctionResultMock = "__RPC_FUNCTION_RESULT_MOCK"
 )
 
 func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
@@ -32,7 +33,7 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
-		if wrapper.tlName.String() == "exactlyOnce.uuid" {
+		if wrapper.tlName.String() == "healthCourses.buyResult" {
 			print(wrapper.trw.PhpClassName(true, true))
 		}
 		if wrapper.trw.PhpClassNameReplaced() {
@@ -100,9 +101,6 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes m
 	filepathName := filepath.Join(filepathParts...)
 	if err := gen.addCodeFile(filepathName, code.String()); err != nil {
 		return err
-	}
-	if wrapper.trw.PhpClassName(false, createInterfaceIfNeeded) == "gucene_Query" {
-		print(wrapper.trw.PhpClassName(true, createInterfaceIfNeeded))
 	}
 	createdTypes[wrapper.trw.PhpClassName(true, createInterfaceIfNeeded)] = true
 	return nil
