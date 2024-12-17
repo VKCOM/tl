@@ -584,7 +584,7 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
 	}
 	if struct_, isStruct := core.trw.(*TypeRWStruct); isStruct {
 		isDict, _, _, valueType := isDictionaryElement(struct_.wr)
-		if isDict {
+		if isDict && struct_.wr.tlName.Namespace == "" {
 			return valueType.t.PHPIsPrimitiveType()
 		}
 	}
