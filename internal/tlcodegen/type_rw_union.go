@@ -196,6 +196,15 @@ func (trw *TypeRWUnion) PhpClassNameReplaced() bool {
 }
 
 func (trw *TypeRWUnion) PhpClassName(withPath bool, bare bool) string {
+	if trw.wr.tlName.String() == PHPRPCFunctionMock {
+		return "TL\\RpcFunction"
+	}
+	if trw.wr.tlName.String() == PHPRPCFunctionResultMock {
+		return "TL\\RpcFunctionReturnResult"
+	}
+	if trw.wr.tlName.String() == PHPRPCResponseMock {
+		return "TL\\RpcResponse"
+	}
 	name := trw.wr.tlName.Name
 	if len(trw.wr.tlName.Namespace) != 0 {
 		name = fmt.Sprintf("%s_%s", trw.wr.tlName.Namespace, name)

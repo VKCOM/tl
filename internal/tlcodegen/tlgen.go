@@ -912,19 +912,61 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 
 	if gen.options.Language == "php" {
-		// CHANGE ALL GENERIC FUNCTIONS
+		// RPC SPECIAL CHANGES
+		const rpcRequestResultName = "ReqResult"
+		rpcResultsMapping := map[string]string{
+			"reqError":        "rpcResponseError",
+			"reqResultHeader": "rpcResponseHeader",
+			"_":               "rpcResponseOk",
+		}
+		rpcRemovedTypes := map[string]bool{
+			"rpcReqResult": true,
+			"rpcReqError":  true,
+			"rpcInvokeReq": true,
+		}
 		rpcFunctionTypeRef := tlast.TypeRef{
 			Type: tlast.Name{
 				Name: PHPRPCFunctionMock,
 			},
-			Bare: false,
 		}
 		rpcFunctionResultTypeRef := tlast.TypeRef{
 			Type: tlast.Name{
 				Name: PHPRPCFunctionResultMock,
 			},
-			Bare: false,
 		}
+		rpcResponseTypeRef := tlast.TypeRef{
+			Type: tlast.Name{
+				Name: PHPRPCResponseMock,
+			},
+		}
+		// TODO: RETURN ORIGINAL COMBINATOR
+		tl = append(tl, &tlast.Combinator{
+			TypeDecl: tlast.TypeDeclaration{
+				Name: tlast.Name{
+					Name: "ReqResult",
+				},
+				Arguments: []string{"X"},
+			},
+			Construct: tlast.Constructor{
+				Name: tlast.Name{Name: "_"},
+			},
+			TemplateArguments: []tlast.TemplateArgument{
+				{
+					FieldName: "X",
+					IsNat:     false,
+				},
+			},
+			Fields: []tlast.Field{
+				{
+					FieldName: "result",
+					FieldType: tlast.TypeRef{
+						Type: tlast.Name{
+							Name: "X",
+						},
+					},
+				},
+			},
+		})
 		tl = append(tl, &tlast.Combinator{
 			TypeDecl: tlast.TypeDeclaration{
 				Name: rpcFunctionTypeRef.Type,
@@ -939,8 +981,24 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		})
 		for _, typ := range tl {
 			if typ.IsFunction && len(typ.TemplateArguments) == 1 {
-				phpRemoveTemplateFromGenericFunction(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
+				phpRemoveTemplateFromGeneric(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
+			} else if !typ.IsFunction &&
+				rpcResultsMapping[typ.Construct.Name.String()] != "" &&
+				typ.TypeDecl.Name.String() == rpcRequestResultName {
+				typ.Construct.Name.Name = rpcResultsMapping[typ.Construct.Name.String()]
+				typ.TypeDecl = tlast.TypeDeclaration{Name: rpcResponseTypeRef.Type}
+				phpRemoveTemplateFromGeneric(typ, &rpcFunctionResultTypeRef, &rpcFunctionResultTypeRef)
 			}
+		}
+		var removedTypesIndecies []int
+		for i, typ := range tl {
+			if rpcRemovedTypes[typ.Construct.Name.String()] {
+				removedTypesIndecies = append(removedTypesIndecies, i)
+			}
+		}
+		sort.Ints(removedTypesIndecies)
+		for i, index := range removedTypesIndecies {
+			tl = append(tl[:index-i], tl[index-i+1:]...)
 		}
 	}
 
@@ -1276,7 +1334,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	return gen, nil
 }
 
-func phpRemoveTemplateFromGenericFunction(combinator *tlast.Combinator, newTypeRef, newTypeResultRef *tlast.TypeRef) {
+func phpRemoveTemplateFromGeneric(combinator *tlast.Combinator, newTypeRef, newTypeResultRef *tlast.TypeRef) {
 	template := combinator.TemplateArguments[0].FieldName
 	combinator.TemplateArguments = nil
 	for i := range combinator.Fields {

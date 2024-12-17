@@ -593,6 +593,9 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	if trw.wr.tlName.String() == PHPRPCFunctionResultMock {
 		return ""
 	}
+	if trw.wr.tlName.String() == PHPRPCResponseMock {
+		return ""
+	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
@@ -640,6 +643,9 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 	}
 	if trw.wr.tlName.String() == PHPRPCFunctionResultMock {
 		return "TL\\RpcFunctionReturnResult"
+	}
+	if trw.wr.tlName.String() == PHPRPCResponseMock {
+		return "TL\\RpcResponse"
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
