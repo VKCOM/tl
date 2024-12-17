@@ -587,13 +587,7 @@ func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
 }
 
 func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
-	if trw.wr.tlName.String() == PHPRPCFunctionMock {
-		return ""
-	}
-	if trw.wr.tlName.String() == PHPRPCFunctionResultMock {
-		return ""
-	}
-	if trw.wr.tlName.String() == PHPRPCResponseMock {
+	if PHPSpecialMembersTypes(trw.wr) != "" {
 		return ""
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
@@ -638,14 +632,8 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 }
 
 func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
-	if trw.wr.tlName.String() == PHPRPCFunctionMock {
-		return "TL\\RpcFunction"
-	}
-	if trw.wr.tlName.String() == PHPRPCFunctionResultMock {
-		return "TL\\RpcFunctionReturnResult"
-	}
-	if trw.wr.tlName.String() == PHPRPCResponseMock {
-		return "TL\\RpcResponse"
+	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
+		return specialCase
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
@@ -661,62 +649,11 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 }
 
 func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) error {
-	unionParent := trw.PhpConstructorNeedsUnion()
+	trw.PHPStructHeader(code)
+	trw.PHPStructFieldMasks(code)
+	trw.PHPStructFields(code)
+	trw.PHPStructResultType(code)
 
-	if isUsingTLImport(trw) ||
-		trw.ResultType != nil ||
-		unionParent != nil {
-		code.WriteString("\nuse VK\\TL;\n")
-	}
-	code.WriteString(`
-/**
- * @kphp-tl-class
- */
-`)
-	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
-	if unionParent != nil {
-		code.WriteString(fmt.Sprintf("implements %s ", unionParent.trw.PhpClassName(true, false)))
-	}
-	if trw.ResultType != nil {
-		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction "))
-	}
-	code.WriteString("{\n")
-	// print fieldmasks
-	for _, f := range trw.Fields {
-		if f.fieldMask == nil {
-			continue
-		}
-		code.WriteString(
-			fmt.Sprintf(
-				`
-  /** Field mask for $%[1]s field */
-  const BIT_%[2]s_%[3]d = (1 << %[3]d);
-`,
-				f.originalName,
-				strings.ToUpper(f.originalName),
-				f.BitNumber,
-			),
-		)
-	}
-	// print fields declarations
-	for _, f := range trw.Fields {
-		if "logs2_setDictionary" == trw.PhpClassName(false, true) {
-			print("debug")
-		}
-		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
-		code.WriteString(
-			fmt.Sprintf(
-				`
-  /** @var %[1]s */
-  public $%[2]s = %[3]s;
-`,
-				fieldType,
-				f.originalName,
-				defaultValue,
-			),
-		)
-	}
-	// print constructor
 	necessaryFieldsInConstructor := make([]Field, 0)
 	usedFieldMasksIndecies := make([]int, 0)
 	usedFieldMasks := make(map[int][]Field)
@@ -739,48 +676,110 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 			usedFieldMasks[index] = append(usedFieldMasks[index], f)
 		}
 	}
-	// print result type for function
+
+	trw.PHPStructConstructor(code, necessaryFieldsInConstructor)
+	trw.PHPStructRPCSpecialGetters(code)
+	trw.PHPStructFieldMaskCalculators(code, usedFieldMasksIndecies, usedFieldMasks)
+	trw.PHPStructFunctionSpecificMethods(code)
+
+	code.WriteString("\n}\n")
+
+	trw.PHPStructFunctionSpecificTypes(code)
+	return nil
+}
+
+func (trw *TypeRWStruct) PHPStructFunctionSpecificTypes(code *strings.Builder) {
 	if trw.ResultType != nil {
 		code.WriteString(
 			fmt.Sprintf(
 				`
-  /** Allows kphp implicitly load function result class */
-  private const RESULT = %s_result::class;
+/**
+ * @kphp-tl-class
+ */
+class %[1]s_result implements TL\RpcFunctionReturnResult {
+
+  /** @var %[2]s */
+  public $value = %[3]s;
+
+}
 `,
-				trw.PhpClassName(true, true),
+				trw.PhpClassName(false, true),
+				phpResultType(trw),
+				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
 	}
-	// print constructor
-	code.WriteString(`
+}
+
+func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder) {
+	// print function specific methods and types
+	if trw.ResultType != nil {
+		kphpSpecialCode := ""
+		if trw.wr.HasAnnotation("kphp") {
+			kphpSpecialCode = fmt.Sprintf(
+				`
+
   /**
-`)
-	for _, f := range necessaryFieldsInConstructor {
-		fieldType, _ := fieldTypeAndDefaultValue(f)
-		code.WriteString(fmt.Sprintf("   * @param %[1]s $%[2]s\n", fieldType, f.originalName))
-	}
-	if len(necessaryFieldsInConstructor) == 0 {
-		code.WriteString("   * @kphp-inline\n")
-	}
-
-	code.WriteString(`   */
-`)
-	code.WriteString("  public function __construct(")
-
-	for i, f := range necessaryFieldsInConstructor {
-		_, defaultValue := fieldTypeAndDefaultValue(f)
-		if i != 0 {
-			code.WriteString(", ")
+   * @param %[1]s $value
+   * @return %[2]s_result
+   */
+  public static function createRpcServerResponse($value) {
+    $response = new %[2]s_result();
+    $response->value = $value;
+    return $response;
+  }`,
+				trw.ResultType.trw.PhpTypeName(true, true),
+				trw.PhpClassName(true, true),
+			)
 		}
-		code.WriteString(fmt.Sprintf("$%[1]s = %[2]s", f.originalName, defaultValue))
-	}
 
-	code.WriteString(") {\n")
-	for _, f := range necessaryFieldsInConstructor {
-		code.WriteString(fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", f.originalName))
-	}
-	code.WriteString("  }\n")
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /**
+   * @param TL\RpcFunctionReturnResult $function_return_result
+   * @return %[4]s
+   */
+  public static function functionReturnValue($function_return_result) {
+    if ($function_return_result instanceof %[1]s_result) {
+      return $function_return_result->value;
+    }
+    warning('Unexpected result type in functionReturnValue: ' . ($function_return_result ? get_class($function_return_result) : 'null'));
+    return (new %[1]s_result())->value;
+  }
 
+  /**
+   * @kphp-inline
+   *
+   * @param TL\RpcResponse $response
+   * @return %[4]s
+   */
+  public static function result(TL\RpcResponse $response) {
+    return self::functionReturnValue($response->getResult());
+  }%[5]s
+
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName() {
+    return '%[3]s';
+  }
+`,
+				trw.PhpClassName(false, true),
+				trw.PhpClassName(true, true),
+				trw.wr.tlName.String(),
+				phpResultType(trw),
+				kphpSpecialCode,
+			),
+		)
+
+	}
+}
+
+func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, usedFieldMasksIndecies []int, usedFieldMasks map[int][]Field) {
+	// print methods to calculate fieldmasks
 	// fix order
 	names := utils.MapSlice(usedFieldMasksIndecies, func(natIndex int) string {
 		natName := ""
@@ -803,7 +802,6 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		fieldNameToFieldOrder[trw.Fields[i].originalName] = i
 	}
 
-	// print methods to calculate fieldmasks
 	for _, name := range names {
 		natIndex := namesToIndices[name]
 		natName := name
@@ -829,10 +827,6 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 				strings.Join(additionalArgs, ", "),
 			),
 		)
-
-		if trw.PhpClassName(false, true) == "test_namesCheck" {
-			print("debug")
-		}
 
 		fields := usedFieldMasks[natIndex]
 		sort.Slice(fields, func(i, j int) bool {
@@ -903,99 +897,212 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 		code.WriteString("\n    return $mask;\n")
 		code.WriteString("  }\n")
 	}
+}
 
-	// print function specific methods and types
-	if trw.ResultType != nil {
-		kphpSpecialCode := ""
-		if trw.wr.HasAnnotation("kphp") {
-			kphpSpecialCode = fmt.Sprintf(
-				`
-
+func (trw *TypeRWStruct) PHPStructConstructor(code *strings.Builder, necessaryFieldsInConstructor []Field) {
+	// print constructor
+	code.WriteString(`
   /**
-   * @param %[1]s $value
-   * @return %[2]s_result
-   */
-  public static function createRpcServerResponse($value) {
-    $response = new %[2]s_result();
-    $response->value = $value;
-    return $response;
-  }`,
-				trw.ResultType.trw.PhpTypeName(true, true),
-				trw.PhpClassName(true, true),
-			)
-		}
-
-		if trw.PhpClassName(false, true) == "healthLoyalty_tmpBuyShopItem2" {
-			print("debug")
-		}
-
-		code.WriteString(
-			fmt.Sprintf(
-				`
-  /**
-   * @param TL\RpcFunctionReturnResult $function_return_result
-   * @return %[4]s
-   */
-  public static function functionReturnValue($function_return_result) {
-    if ($function_return_result instanceof %[1]s_result) {
-      return $function_return_result->value;
-    }
-    warning('Unexpected result type in functionReturnValue: ' . ($function_return_result ? get_class($function_return_result) : 'null'));
-    return (new %[1]s_result())->value;
-  }
-
-  /**
-   * @kphp-inline
-   *
-   * @param TL\RpcResponse $response
-   * @return %[4]s
-   */
-  public static function result(TL\RpcResponse $response) {
-    return self::functionReturnValue($response->getResult());
-  }%[5]s
-
-  /**
-   * @kphp-inline
-   *
-   * @return string
-   */
-  public function getTLFunctionName() {
-    return '%[3]s';
-  }
-`,
-				trw.PhpClassName(false, true),
-				trw.PhpClassName(true, true),
-				trw.wr.tlName.String(),
-				phpResultType(trw),
-				kphpSpecialCode,
-			),
-		)
-
+`)
+	for _, f := range necessaryFieldsInConstructor {
+		fieldType, _ := fieldTypeAndDefaultValue(f)
+		code.WriteString(fmt.Sprintf("   * @param %[1]s $%[2]s\n", fieldType, f.originalName))
+	}
+	if len(necessaryFieldsInConstructor) == 0 {
+		code.WriteString("   * @kphp-inline\n")
 	}
 
-	code.WriteString("\n}\n")
+	code.WriteString(`   */
+`)
+	code.WriteString("  public function __construct(")
 
+	for i, f := range necessaryFieldsInConstructor {
+		_, defaultValue := fieldTypeAndDefaultValue(f)
+		if i != 0 {
+			code.WriteString(", ")
+		}
+		code.WriteString(fmt.Sprintf("$%[1]s = %[2]s", f.originalName, defaultValue))
+	}
+
+	code.WriteString(") {\n")
+	for _, f := range necessaryFieldsInConstructor {
+		code.WriteString(fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", f.originalName))
+	}
+	code.WriteString("  }\n")
+}
+
+func (trw *TypeRWStruct) PHPStructRPCSpecialGetters(code *strings.Builder) {
+	if unionParent := trw.wr.PHPUnionParent(); unionParent == nil || PHPSpecialMembersTypes(unionParent) == "" {
+		return
+	}
+
+	const ThisType = "__this"
+	type SpecialField struct {
+		Name                string
+		Type                string
+		Default             string
+		NullTypeIfNullValue bool
+		AddHasMethod        bool
+	}
+
+	fields := []SpecialField{
+		{
+			"result",
+			"TL\\RpcFunctionReturnResult",
+			"null",
+			true,
+			false,
+		},
+		{
+			"header",
+			ThisType,
+			"null",
+			true,
+			false,
+		},
+		{
+			"error",
+			ThisType,
+			"null",
+			true,
+			true,
+		},
+	}
+
+	containsSuchField := func(name, ifTrue, ifFalse string) string {
+		for _, field := range trw.Fields {
+			if field.originalName == name {
+				return ifTrue
+			}
+		}
+		return ifFalse
+	}
+
+	for _, field := range fields {
+		returnObject := field.Default
+		returnType := field.Default
+		if field.Type == ThisType &&
+			strings.Contains(strings.ToLower(trw.PhpClassName(false, true)), strings.ToLower(field.Name)) {
+			returnObject = "$this"
+			returnType = trw.PhpTypeName(true, true)
+		} else {
+			if field.Type != ThisType {
+				returnObject = "$this->" + field.Name
+				returnType = field.Type
+			}
+			if field.NullTypeIfNullValue {
+				returnType = containsSuchField(field.Name, returnType, "null")
+				returnObject = containsSuchField(field.Name, returnObject, "null")
+			}
+		}
+		if field.AddHasMethod {
+			code.WriteString(
+				fmt.Sprintf(
+					`
+  /**
+   * @return bool
+   */
+  public function is%[1]s() {
+    return %[2]s;
+  }
+`,
+					ToUpperFirst(field.Name),
+					containsSuchField(field.Name, "true", "false"),
+				),
+			)
+		}
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /**
+   * @return %[3]s
+   */
+  public function get%[1]s() {
+    return %[2]s;
+  }
+`,
+				ToUpperFirst(field.Name),
+				returnObject,
+				returnType,
+			),
+		)
+	}
+}
+
+func (trw *TypeRWStruct) PHPStructResultType(code *strings.Builder) {
+	// print result type for function
 	if trw.ResultType != nil {
 		code.WriteString(
 			fmt.Sprintf(
 				`
+  /** Allows kphp implicitly load function result class */
+  private const RESULT = %s_result::class;
+`,
+				trw.PhpClassName(true, true),
+			),
+		)
+	}
+}
+
+func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
+	// print fields declarations
+	for _, f := range trw.Fields {
+		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /** @var %[1]s */
+  public $%[2]s = %[3]s;
+`,
+				fieldType,
+				f.originalName,
+				defaultValue,
+			),
+		)
+	}
+}
+
+func (trw *TypeRWStruct) PHPStructFieldMasks(code *strings.Builder) {
+	// print fieldmasks
+	for _, f := range trw.Fields {
+		if f.fieldMask == nil {
+			continue
+		}
+		code.WriteString(
+			fmt.Sprintf(
+				`
+  /** Field mask for $%[1]s field */
+  const BIT_%[2]s_%[3]d = (1 << %[3]d);
+`,
+				f.originalName,
+				strings.ToUpper(f.originalName),
+				f.BitNumber,
+			),
+		)
+	}
+}
+
+func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
+	unionParent := trw.PhpConstructorNeedsUnion()
+
+	if isUsingTLImport(trw) ||
+		trw.ResultType != nil ||
+		unionParent != nil {
+		code.WriteString("\nuse VK\\TL;\n")
+	}
+	code.WriteString(`
 /**
  * @kphp-tl-class
  */
-class %[1]s_result implements TL\RpcFunctionReturnResult {
-
-  /** @var %[2]s */
-  public $value = %[3]s;
-
-}
-`,
-				trw.PhpClassName(false, true),
-				phpResultType(trw),
-				trw.ResultType.trw.PhpDefaultValue(),
-			),
-		)
+`)
+	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
+	if unionParent != nil {
+		code.WriteString(fmt.Sprintf("implements %s ", unionParent.trw.PhpClassName(true, false)))
 	}
-	return nil
+	if trw.ResultType != nil {
+		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction "))
+	}
+	code.WriteString("{\n")
 }
 
 func phpResultType(trw *TypeRWStruct) string {

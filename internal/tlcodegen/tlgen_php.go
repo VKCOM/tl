@@ -3,7 +3,6 @@ package tlcodegen
 import (
 	"fmt"
 	"path/filepath"
-	"reflect"
 	"strings"
 )
 
@@ -34,9 +33,6 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
-		if wrapper.tlName.String() == "rpcResponseOk" {
-			print(wrapper.trw.PhpClassName(true, true))
-		}
 		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
@@ -77,14 +73,6 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes m
 			}
 		}
 	}
-
-	fmt.Printf("TL[%[1]s] = Go {%[2]s, %[4]s} -> PHP {%[3]s, %[5]s}\n",
-		wrapper.tlName.String(),
-		wrapper.goGlobalName,
-		wrapper.trw.PhpClassName(true, true),
-		reflect.TypeOf(wrapper.trw),
-		wrapper.trw.PhpTypeName(true, true),
-	)
 
 	filepathParts := []string{"VK"}
 	//filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
@@ -154,4 +142,17 @@ func PHPGetAllReachableTypes(startTypes []*TypeRWWrapper) map[*TypeRWWrapper]boo
 		startType.PhpIterateReachableTypes(&reachable)
 	}
 	return reachable
+}
+
+func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
+	if wrapper.tlName.String() == PHPRPCFunctionMock {
+		return "TL\\RpcFunction"
+	}
+	if wrapper.tlName.String() == PHPRPCFunctionResultMock {
+		return "TL\\RpcFunctionReturnResult"
+	}
+	if wrapper.tlName.String() == PHPRPCResponseMock {
+		return "TL\\RpcResponse"
+	}
+	return ""
 }
