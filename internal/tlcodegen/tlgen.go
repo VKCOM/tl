@@ -1017,6 +1017,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 				phpRemoveTemplateFromGeneric(typ, &rpcFunctionResultTypeRef, &rpcFunctionResultTypeRef)
 			}
 		}
+		// TODO DELETE AS NORMAL PEOPLE
 		var removedTypesIndecies []int
 		for i, typ := range tl {
 			if rpcRemovedTypes[typ.Construct.Name.String()] {
