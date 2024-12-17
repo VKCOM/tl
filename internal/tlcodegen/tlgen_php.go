@@ -33,6 +33,9 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
+		if wrapper.trw.PhpClassName(false, true) == "logs2_dictionarySetInfo" {
+			print("debug")
+		}
 		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
