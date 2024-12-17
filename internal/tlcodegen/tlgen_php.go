@@ -16,6 +16,7 @@ const (
 	PHPFileStart             = "<?php\n"
 	PHPRPCFunctionMock       = "__RPC_FUNCTION_MOCK"
 	PHPRPCFunctionResultMock = "__RPC_FUNCTION_RESULT_MOCK"
+	PHPRPCResponseMock       = "__RPC_RESPONSE_MOCK"
 )
 
 func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
@@ -33,22 +34,13 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
-		if wrapper.tlName.String() == "healthCourses.buyResult" {
+		if wrapper.tlName.String() == "rpcResponseOk" {
 			print(wrapper.trw.PhpClassName(true, true))
-		}
-		if wrapper.trw.PhpClassNameReplaced() {
-			continue
 		}
 		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
 		if !wrapper.PHPNeedsCode() {
-			continue
-		}
-		if !wrapper.phpInfo.UsedInFunctions || wrapper.phpInfo.UsedOnlyInInternal {
-			continue
-		}
-		if wrapper.PHPGenCoreType() != wrapper {
 			continue
 		}
 		err := phpGenerateCodeForWrapper(gen, wrapper, createdTypes, true, wrapper.PHPGenerateCode)
@@ -121,6 +113,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 }
 
 func (gen *Gen2) PhpMarkAllInternalTypes() {
+	rpcResults := map[string]bool{
+		"rpcResponseError":  true,
+		"rpcResponseHeader": true,
+		"rpcResponseOk":     true,
+	}
 	internalFunctions := make([]*TypeRWWrapper, 0)
 	nonInternalFunctions := make([]*TypeRWWrapper, 0)
 	for _, wrapper := range gen.generatedTypesList {
@@ -130,6 +127,10 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 			} else {
 				nonInternalFunctions = append(nonInternalFunctions, wrapper)
 			}
+		}
+		// TODO: CHANGE SOMEHOW
+		if rpcResults[wrapper.tlName.String()] {
+			nonInternalFunctions = append(nonInternalFunctions, wrapper)
 		}
 	}
 	internalReachable := PHPGetAllReachableTypes(internalFunctions)

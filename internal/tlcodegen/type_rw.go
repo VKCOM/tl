@@ -608,6 +608,28 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 			return false
 		}
 	}
+	if w.trw.PhpClassName(false, true) == "" {
+		return false
+	}
+	if !w.phpInfo.UsedInFunctions || w.phpInfo.UsedOnlyInInternal {
+		return false
+	}
+	if w.PHPGenCoreType() != w {
+		return false
+	}
+	if w.trw.PhpClassNameReplaced() {
+		return false
+	}
+	if w.tlName.String() == "rpcInvokeReq" {
+		return false
+	}
+	if w.tlName.String() == PHPRPCFunctionMock {
+		return false
+	}
+	if w.tlName.String() == PHPRPCFunctionResultMock {
+		return false
+	}
+
 	return !w.trw.PhpClassNameReplaced()
 }
 
