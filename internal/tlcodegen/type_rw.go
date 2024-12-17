@@ -85,6 +85,8 @@ type TypeRWWrapper struct {
 	cppDetailsFileName string
 	groupName          string
 
+	phpInfo PhpClassMeta
+
 	tlTag  uint32     // TODO - turn into function
 	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation
 	origTL []*tlast.Combinator
@@ -488,6 +490,157 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
+func (w *TypeRWWrapper) PHPIsTrueType() bool {
+	structElement, ok := w.trw.(*TypeRWStruct)
+	if ok {
+		unionParent := structElement.PhpConstructorNeedsUnion()
+		if unionParent != nil {
+			return false
+		}
+		for _, argument := range w.origTL[0].TemplateArguments {
+			if argument.IsNat {
+				return false
+			}
+		}
+		// TODO: I HATE THIS SOOO MUCH
+		if strings.ToLower(w.tlName.String()) != "true" {
+			return false
+		}
+		return w.IsTrueType()
+	}
+	return false
+}
+
+func (w *TypeRWWrapper) PHPGenerateCode(code *strings.Builder, bytes bool) error {
+	return w.trw.PhpGenerateCode(code, bytes)
+}
+
+func (w *TypeRWWrapper) PHPTypePathElements() []string {
+	_, isStruct := w.trw.(*TypeRWStruct)
+	_, isUnion := w.trw.(*TypeRWUnion)
+	if !(isStruct || isUnion) {
+		return nil
+	}
+
+	category := "Types"
+	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct && strct.ResultType != nil {
+		category = "Functions"
+	}
+	group := "_common"
+	if w.tlName.Namespace != "" {
+		group = w.tlName.Namespace
+	}
+	return []string{"TL", group, category}
+}
+
+func (w *TypeRWWrapper) PHPDefaultValue() string {
+	core := w.PHPGenCoreType()
+	return core.trw.PhpDefaultValue()
+}
+
+func (w *TypeRWWrapper) PHPTypePath() string {
+	path := w.PHPTypePathElements()
+	if path == nil {
+		return ""
+	} else {
+		return strings.Join(path, "\\") + "\\"
+	}
+}
+
+func (w *TypeRWWrapper) PHPGenCoreType() *TypeRWWrapper {
+	if w.PHPUnionParent() == nil {
+		struct_, isStruct := w.trw.(*TypeRWStruct)
+		if isStruct && len(struct_.Fields) == 1 && struct_.ResultType == nil && struct_.Fields[0].fieldMask == nil {
+			return struct_.Fields[0].t.PHPGenCoreType()
+		}
+	}
+	return w
+}
+
+func (w *TypeRWWrapper) PHPUnionParent() *TypeRWWrapper {
+	if w.unionParent != nil {
+		return w.unionParent.wr
+	}
+	if strct, isStruct := w.trw.(*TypeRWStruct); isStruct {
+		unionParent := strct.PhpConstructorNeedsUnion()
+		if unionParent != nil {
+			return unionParent
+		}
+	}
+	return nil
+}
+
+func (w *TypeRWWrapper) PHPIsBare() bool {
+	if strct, isStruct := w.trw.(*TypeRWStruct); isStruct && strct.PhpConstructorNeedsUnion() != nil {
+		return false
+	}
+	return true
+}
+
+func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
+	core := w.PHPGenCoreType()
+	if _, isPrimitive := core.trw.(*TypeRWPrimitive); isPrimitive {
+		return true
+	}
+	if struct_, isStruct := core.trw.(*TypeRWStruct); isStruct {
+		isDict, _, _, valueType := isDictionaryElement(struct_.wr)
+		if isDict && struct_.wr.tlName.Namespace == "" {
+			return valueType.t.PHPIsPrimitiveType()
+		}
+	}
+	if _, isBrackets := core.trw.(*TypeRWBrackets); isBrackets {
+		return true
+	}
+	return false
+}
+
+func (w *TypeRWWrapper) PHPNeedsCode() bool {
+	if w.PHPTypePath() == "" ||
+		w.PHPIsPrimitiveType() {
+		return false
+	}
+	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
+		unionParent := strct.PhpConstructorNeedsUnion()
+		if strct.ResultType == nil && strct.wr.PHPIsTrueType() && unionParent == nil {
+			return false
+		}
+		if strct.ResultType != nil && strct.wr.HasAnnotation("internal") {
+			return false
+		}
+	}
+	if w.trw.PhpClassName(false, true) == "" {
+		return false
+	}
+	if !w.phpInfo.UsedInFunctions || w.phpInfo.UsedOnlyInInternal {
+		return false
+	}
+	if w.PHPGenCoreType() != w {
+		return false
+	}
+	if w.trw.PhpClassNameReplaced() {
+		return false
+	}
+	if w.tlName.String() == "rpcInvokeReq" {
+		return false
+	}
+	if w.tlName.String() == PHPRPCFunctionMock {
+		return false
+	}
+	if w.tlName.String() == PHPRPCFunctionResultMock {
+		return false
+	}
+
+	return !w.trw.PhpClassNameReplaced()
+}
+
+func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
+	if (*reachableTypes)[w] {
+		return
+	}
+	(*reachableTypes)[w] = true
+	w.trw.PhpIterateReachableTypes(reachableTypes)
+}
+
 func (w *TypeRWWrapper) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 	if visitedNodes[w] {
 		return
@@ -724,6 +877,15 @@ outer:
 	return result
 }
 
+type TypeRWPHPData interface {
+	PhpClassName(withPath bool, bare bool) string
+	PhpClassNameReplaced() bool
+	PhpTypeName(withPath bool, bare bool) string
+	PhpGenerateCode(code *strings.Builder, bytes bool) error
+	PhpDefaultValue() string
+	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
+}
+
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
@@ -768,6 +930,8 @@ type TypeRW interface {
 	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
 	CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string
 	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
+
+	TypeRWPHPData
 }
 
 type Field struct {
