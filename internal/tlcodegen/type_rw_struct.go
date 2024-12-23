@@ -1100,7 +1100,7 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 		code.WriteString(fmt.Sprintf("implements %s ", unionParent.trw.PhpClassName(true, false)))
 	}
 	if trw.ResultType != nil {
-		code.WriteString(fmt.Sprintf("implements TL\\RpcFunction "))
+		code.WriteString("implements TL\\RpcFunction ")
 	}
 	code.WriteString("{\n")
 }
@@ -1111,7 +1111,7 @@ func phpResultType(trw *TypeRWStruct) string {
 
 func toPhpFieldMaskName(natName string) string {
 	parts := strings.Split(natName, "_")
-	for i, _ := range parts {
+	for i := range parts {
 		parts[i] = ToUpperFirst(parts[i])
 	}
 	return strings.Join(parts, "")
@@ -1171,7 +1171,7 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	if trw.ResultType == nil {
 		if trw.wr.unionParent != nil {
 			return trw.wr.unionParent.wr
-		} else if strings.ToLower(trw.wr.tlName.Name) != strings.ToLower(trw.wr.origTL[0].TypeDecl.Name.Name) {
+		} else if !strings.EqualFold(trw.wr.tlName.Name, trw.wr.origTL[0].TypeDecl.Name.Name) {
 			// NOTE: constructor name is not same as type => type can become union in future?
 			return trw.wr
 		}

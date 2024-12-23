@@ -127,14 +127,14 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 	internalReachable := PHPGetAllReachableTypes(internalFunctions)
 	nonInternalReachable := PHPGetAllReachableTypes(nonInternalFunctions)
 
-	for wrapper, _ := range internalReachable {
+	for wrapper := range internalReachable {
 		if !nonInternalReachable[wrapper] {
 			wrapper.phpInfo.UsedOnlyInInternal = true
 		}
 		wrapper.phpInfo.UsedInFunctions = true
 	}
 
-	for wrapper, _ := range nonInternalReachable {
+	for wrapper := range nonInternalReachable {
 		wrapper.phpInfo.UsedInFunctions = true
 	}
 }
