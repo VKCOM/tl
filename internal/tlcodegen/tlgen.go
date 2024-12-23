@@ -331,6 +331,9 @@ type Gen2Options struct {
 	RootCPPNamespace string
 	SeparateFiles    bool
 
+	// PHP
+	AddFunctionBodies bool
+
 	// .tlo
 	TLOPath           string
 	CanonicalFormPath string // combinators in canonical form, with comment of source schema file path
