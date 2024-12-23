@@ -76,6 +76,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
 		`c++ root namespace, separated by '::' if more than 1 element`)
 
+	// PHP
+	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
+		`whether to generate body to write/read generated structs and functions`)
+
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
