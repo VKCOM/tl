@@ -168,6 +168,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 	// valueFieldName := ""
 	switch {
 	// TODO - does not work yet
+	// REAL TODO CPP
 	/*
 		case trw.dictLike && !bytesVersion:
 				keyTypeString = trw.dictKeyField.t.TypeString(bytesVersion)

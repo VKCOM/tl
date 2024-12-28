@@ -6,6 +6,19 @@ import (
 	"strings"
 )
 
+type TypeRWPHPData interface {
+	PhpClassName(withPath bool, bare bool) string
+	PhpClassNameReplaced() bool
+	PhpTypeName(withPath bool, bare bool) string
+	PhpGenerateCode(code *strings.Builder, bytes bool) error
+	// PhpDefaultInit return not null type initialization value
+	PhpDefaultInit() string
+	// PhpDefaultValue return default value for field of this type (can be null)
+	PhpDefaultValue() string
+	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
+	PhpReadMethodCall(targetName string, bare bool, args []string) []string
+}
+
 type PhpClassMeta struct {
 	UsedOnlyInInternal bool
 	UsedInFunctions    bool
@@ -33,15 +46,20 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	createdTypes := make(map[string]bool)
 
 	for _, wrapper := range gen.generatedTypesList {
-		if wrapper.trw.PhpClassName(false, true) == "logs2_dictionarySetInfo" {
-			print("debug")
-		}
 		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
 			continue
 		}
 		if !wrapper.PHPNeedsCode() {
 			continue
 		}
+		fmt.Println(fmt.Sprintf(
+			"PHP{%[1]s} in GO{%[2]s}",
+			wrapper.trw.PhpClassName(false, true),
+			wrapper.goGlobalName,
+			wrapper.NatParams,
+			wrapper.origTL[0].TemplateArguments,
+			wrapper.arguments),
+		)
 		err := phpGenerateCodeForWrapper(gen, wrapper, createdTypes, true, wrapper.PHPGenerateCode)
 		if err != nil {
 			return err
@@ -158,4 +176,12 @@ func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
 		return "TL\\RpcResponse"
 	}
 	return ""
+}
+
+func phpFormatArgs(args []string) string {
+	s := ""
+	for _, arg := range args {
+		s += ", " + arg
+	}
+	return s
 }

@@ -40,3 +40,89 @@ func (trw *TypeRWBrackets) PhpDefaultValue() string {
 func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
+
+func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+	//fmt.Println(">>>>>", trw.wr.goGlobalName, trw.dictLike, trw.vectorLike, trw.dynamicSize, trw.size)
+	//fmt.Println(">>>>> >>>>>", args)
+	result := make([]string, 0)
+	switch {
+	// actual vector
+	case trw.vectorLike && !trw.dictLike:
+		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, args)
+		for i := range elementRead {
+			elementRead[i] = "  " + elementRead[i]
+		}
+		result = append(result,
+			"[$vector_size, $success] = $stream->read_uint32();",
+			"if (!$success) {",
+			"  return false;",
+			"}",
+			// TODO MAKE MORE EFFICIENT
+			fmt.Sprintf("%[1]s = [];", targetName),
+			"for($i = 0; $i < $vector_size; $i++) {",
+			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
+		)
+		result = append(result, elementRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
+			"}",
+		)
+		return result
+	// tuple with size as last argument
+	case !trw.vectorLike && !trw.dictLike:
+		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
+		tupleSize := args[len(args)-1]
+		elementArgs := args[:len(args)-1]
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, elementArgs)
+		for i := range elementRead {
+			elementRead[i] = "  " + elementRead[i]
+		}
+		result = append(result,
+			// TODO MAKE MORE EFFICIENT
+			fmt.Sprintf("%[1]s = [];", targetName),
+			fmt.Sprintf("for($i = 0; $i < %[1]s; $i++) {", tupleSize),
+			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
+		)
+		result = append(result, elementRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
+			"}",
+		)
+		return result
+	// actual map / dictionary
+	case trw.dictLike:
+		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
+		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
+		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, args)
+		for i := range keyRead {
+			keyRead[i] = "  " + keyRead[i]
+		}
+		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, args)
+		for i := range valueRead {
+			valueRead[i] = "  " + valueRead[i]
+		}
+
+		result = append(result,
+			"[$dict_size, $success] = $stream->read_uint32();",
+			"if (!$success) {",
+			"  return false;",
+			"}",
+			// TODO MAKE MORE EFFICIENT
+			fmt.Sprintf("%[1]s = [];", targetName),
+			"for($i = 0; $i < $dict_size; $i++) {",
+		)
+		result = append(result, keyRead...)
+		result = append(result, valueRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[%[2]s] = %[3]s;", targetName, keyElement, valueElement),
+			"}",
+		)
+		return result
+	}
+	return []string{fmt.Sprintf("<??? %s read>", trw.wr.goGlobalName)}
+}
+
+func (trw *TypeRWBrackets) PhpDefaultInit() string {
+	return "[]"
+}

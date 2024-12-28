@@ -15,6 +15,21 @@ import (
 	"strings"
 )
 
+type TypeRWCPPData interface {
+	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
+	cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string
+	cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string
+	cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string
+	cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string
+	CPPHasBytesVersion() bool
+	CPPTypeResettingCode(bytesVersion bool, val string) string
+	CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
+	CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string
+	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
+}
+
 func cppStartNamespace(s *strings.Builder, ns []string) {
 	for _, n := range ns {
 		s.WriteString(fmt.Sprintf("namespace %s { ", n))
