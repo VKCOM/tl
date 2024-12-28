@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 	"regexp"
 	"strconv"
@@ -633,6 +634,84 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 	return !w.trw.PhpClassNameReplaced()
 }
 
+type TypeArgumentsTree struct {
+	value    string
+	leaf     bool
+	children []*TypeArgumentsTree
+}
+
+func (t *TypeArgumentsTree) IsEmpty() bool {
+	if t.leaf {
+		return false
+	}
+	for _, child := range t.children {
+		if child != nil && !child.IsEmpty() {
+			return false
+		}
+	}
+	return true
+}
+
+func (t *TypeArgumentsTree) EnumerateWithPrefixes() []string {
+	const natPrefix = ""
+	values := make([]string, 0)
+	t.enumerateWithPrefixes(&values, "")
+	values = utils.MapSlice(values, func(s string) string { return natPrefix + s })
+	return values
+}
+
+func (t *TypeArgumentsTree) EnumerateSubTreeWithPrefixes(childIndex int) []string {
+	if !(0 <= childIndex && childIndex < len(t.children)) {
+		panic("no such subtree")
+	}
+	ct := *t
+	ct.children = []*TypeArgumentsTree{t.children[childIndex]}
+	return ct.EnumerateWithPrefixes()
+}
+
+func (t *TypeArgumentsTree) enumerateWithPrefixes(values *[]string, curPrefix string) {
+	const delimiter = "_"
+	if t.leaf {
+		*values = append(*values, curPrefix)
+	} else {
+		for _, child := range t.children {
+			if child != nil {
+				prefix := curPrefix + child.value
+				if !child.leaf {
+					prefix += delimiter
+				}
+				child.enumerateWithPrefixes(values, prefix)
+			}
+		}
+	}
+}
+
+func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDeclAsArray() []string {
+	t := TypeArgumentsTree{}
+	w.PHPGetNatTypeDependenciesDecl(&t)
+	return t.EnumerateWithPrefixes()
+}
+
+func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDecl(tree *TypeArgumentsTree) {
+	for i, template := range w.origTL[0].TemplateArguments {
+		tree.children = append(tree.children, nil)
+		actualArg := w.arguments[i]
+		if template.IsNat {
+			tree.children[i] = &TypeArgumentsTree{}
+			tree.children[i].leaf = true
+			tree.children[i].value = template.FieldName
+		} else {
+			tree.children[i] = &TypeArgumentsTree{}
+			tree.children[i].leaf = false
+			tree.children[i].value = template.FieldName
+			actualArg.tip.PHPGetNatTypeDependenciesDecl(tree.children[i])
+			if tree.children[i].IsEmpty() {
+				tree.children[i] = nil
+			}
+		}
+	}
+}
+
 func (w *TypeRWWrapper) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 	if (*reachableTypes)[w] {
 		return
@@ -877,15 +956,6 @@ outer:
 	return result
 }
 
-type TypeRWPHPData interface {
-	PhpClassName(withPath bool, bare bool) string
-	PhpClassNameReplaced() bool
-	PhpTypeName(withPath bool, bare bool) string
-	PhpGenerateCode(code *strings.Builder, bytes bool) error
-	PhpDefaultValue() string
-	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
-}
-
 // TODO remove skipAlias after we start generating go code like we do for C++
 type TypeRW interface {
 	// methods below are target language independent
@@ -918,19 +988,7 @@ type TypeRW interface {
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
-	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
-	cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string
-	cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string
-	cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string
-	cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string
-	CPPHasBytesVersion() bool
-	CPPTypeResettingCode(bytesVersion bool, val string) string
-	CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
-	CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string
-	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
-
+	TypeRWCPPData
 	TypeRWPHPData
 }
 

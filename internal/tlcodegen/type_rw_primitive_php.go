@@ -44,3 +44,32 @@ func (trw *TypeRWPrimitive) PhpDefaultValue() string {
 }
 
 func (trw *TypeRWPrimitive) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {}
+
+func (trw *TypeRWPrimitive) phpIOMethodsSuffix() string {
+	switch trw.goType {
+	case "int32", "int64", "uint32", "string":
+		return trw.goType
+	case "float32":
+		return "float"
+	case "float64":
+		return "double"
+	default:
+		return fmt.Sprintf("<? %s>", trw.tlType)
+	}
+}
+
+func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+	if !bare {
+		panic("can't be boxed")
+	}
+	return []string{
+		fmt.Sprintf("[%[1]s, $success] = $stream->read_%[2]s();", targetName, trw.phpIOMethodsSuffix()),
+		"if (!$success) {",
+		"  return false;",
+		"}",
+	}
+}
+
+func (trw *TypeRWPrimitive) PhpDefaultInit() string {
+	return trw.PhpDefaultValue()
+}

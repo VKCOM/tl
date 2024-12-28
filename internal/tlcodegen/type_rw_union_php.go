@@ -82,3 +82,40 @@ func (trw *TypeRWUnion) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 		field.t.PhpIterateReachableTypes(reachableTypes)
 	}
 }
+
+func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+	if bare {
+		panic("union can't be bare")
+	}
+	var result []string
+	result = append(result,
+		"[$tag, $success] = $stream->read_uint32();",
+		"if (!$success) {",
+		"  return false;",
+		"}",
+		"switch ($tag) {",
+	)
+	for _, field := range trw.Fields {
+		curType := field.t
+		result = append(result,
+			fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+			fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(false, true)),
+			fmt.Sprintf("    $success = $variant->read($stream%s);", phpFormatArgs(args)),
+			"    if (!$success) {",
+			"      return false;",
+			"    }",
+			fmt.Sprintf("    %[1]s = $variant", targetName),
+			"    break;",
+		)
+	}
+	result = append(result,
+		"  default:",
+		"    return false;",
+		"}",
+	)
+	return result
+}
+
+func (trw *TypeRWUnion) PhpDefaultInit() string {
+	return trw.Fields[0].t.trw.PhpDefaultInit()
+}

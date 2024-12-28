@@ -38,3 +38,42 @@ func (trw *TypeRWMaybe) PhpDefaultValue() string {
 func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
+
+func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+	if !bare {
+		result := []string{
+			fmt.Sprintf(
+				"[$maybeContainsValue, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x)",
+				trw.emptyTag,
+				trw.okTag,
+			),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+			"if ($maybeContainsValue) {",
+		}
+		if trw.element.t == trw.getInnerTarget().t {
+			result = append(result,
+				fmt.Sprintf("  if (%[1]s == null) {", targetName),
+				fmt.Sprintf("    %[1]s = %[2]s;", targetName, trw.element.t.trw.PhpDefaultInit()),
+				"  }",
+			)
+		}
+		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, args)
+		for i, _ := range bodyReader {
+			bodyReader[i] = "  " + bodyReader[i]
+		}
+		result = append(result, bodyReader...)
+		result = append(result,
+			"} else {",
+			fmt.Sprintf("  %[1]s = null;", targetName),
+			"}",
+		)
+		return result
+	}
+	return nil
+}
+
+func (trw *TypeRWMaybe) PhpDefaultInit() string {
+	return trw.element.t.trw.PhpDefaultInit()
+}

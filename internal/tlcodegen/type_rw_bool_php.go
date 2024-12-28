@@ -27,3 +27,24 @@ func (trw *TypeRWBool) PhpDefaultValue() string {
 
 func (trw *TypeRWBool) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 }
+
+func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+	if !bare {
+		return []string{
+			fmt.Sprintf(
+				"[%[1]s, $success] = $stream->read_bool(0x%08[2]x, 0x%08[3]x);",
+				targetName,
+				trw.falseTag,
+				trw.trueTag,
+			),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		}
+	}
+	return nil
+}
+
+func (trw *TypeRWBool) PhpDefaultInit() string {
+	return "false"
+}

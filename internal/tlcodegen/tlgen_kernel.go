@@ -205,6 +205,10 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	tlType := myWrapper.origTL
 
+	if tlType[0].Construct.Name.String() == "test.dataIgnoreFlags" {
+		print("debug")
+	}
+
 	lrc := LocalResolveContext{
 		localTypeArgs: map[string]LocalTypeArg{},
 		localNatArgs:  map[string]LocalNatArg{},
