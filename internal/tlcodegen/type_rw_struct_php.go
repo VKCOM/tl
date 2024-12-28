@@ -337,11 +337,6 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 		))
 		const tab = "  "
 		for i, field := range trw.Fields {
-			//fmt.Printf("\tfield \"%s\" with fieldMask \"%s\" and deps %v\n", field.originalName, trw.PHPGetFieldMask(i), trw.PHPGetFieldNatDependenciesValues(i))
-			if field.originalName == "x" && trw.PhpClassName(false, true) == "test_gigi" {
-				print("debug")
-			}
-
 			fieldMask := trw.PHPGetFieldMask(i)
 			shift := 2
 			textTab := func() string { return strings.Repeat(tab, shift) }
@@ -362,12 +357,17 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 			}
 			if fieldMask != "" {
 				shift -= 1
-				code.WriteString(
-					fmt.Sprintf(
-						"%[1]s}\n",
-						textTab(),
-					),
-				)
+				code.WriteString(fmt.Sprintf("%[1]s} else {\n", textTab()))
+				shift += 1
+				_, defaultValue := fieldTypeAndDefaultValue(field)
+				code.WriteString(fmt.Sprintf(
+					"%[1]s%[2]s = %[3]s;\n",
+					textTab(),
+					"$this->"+field.originalName,
+					defaultValue,
+				))
+				shift -= 1
+				code.WriteString(fmt.Sprintf("%[1]s}\n", textTab()))
 			}
 		}
 
@@ -797,12 +797,28 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, args)...)
 			return result
 		}
+		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
+			var result []string
+			if !bare {
+				result = append(result,
+					"[$magic, $success] = $stream->read_uint32();",
+					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+					"  return false;",
+					"}",
+				)
+			}
+			result = append(result, fmt.Sprintf("%[1]s = true;", targetName))
+			return result
+		}
 		//isDict, _, _, valueType := isDictionaryElement(trw.wr)
 		//if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
 		//	return valueType.t.trw.PhpTypeName(withPath, bare)
 		//}
 	}
 	return []string{
+		fmt.Sprintf("if (%[1]s == null) {", targetName),
+		fmt.Sprintf("  %[1]s = %[2]s", targetName, trw.PhpDefaultInit()),
+		"}",
 		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
 		"if ($success) {",
 		"  return false;",
