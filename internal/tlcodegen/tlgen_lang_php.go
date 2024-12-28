@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+const (
+	PHPFileStart             = "<?php\n"
+	PHPRPCFunctionMock       = "__RPC_FUNCTION_MOCK"
+	PHPRPCFunctionResultMock = "__RPC_FUNCTION_RESULT_MOCK"
+	PHPRPCResponseMock       = "__RPC_RESPONSE_MOCK"
+)
+
 type TypeRWPHPData interface {
 	PhpClassName(withPath bool, bare bool) string
 	PhpClassNameReplaced() bool
@@ -23,13 +30,6 @@ type PhpClassMeta struct {
 	UsedOnlyInInternal bool
 	UsedInFunctions    bool
 }
-
-const (
-	PHPFileStart             = "<?php\n"
-	PHPRPCFunctionMock       = "__RPC_FUNCTION_MOCK"
-	PHPRPCFunctionResultMock = "__RPC_FUNCTION_RESULT_MOCK"
-	PHPRPCResponseMock       = "__RPC_RESPONSE_MOCK"
-)
 
 func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	if err := gen.addCodeFile(BasicTlPathPhp, BasicTLCodePHP); err != nil {

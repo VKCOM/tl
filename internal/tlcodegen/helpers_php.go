@@ -3,7 +3,6 @@ package tlcodegen
 const BasicTlPathPhp = "basictl.php"
 const BasicTLCodePHP = `
 <?php
-include "run.php";
 
 class tl_constants {
     const tinyStringLen    = 253;
@@ -117,7 +116,7 @@ class tl_input_stream {
                 return ["", false];
             }
             $l64 = (ord($this->data[$this->offset + 7]) << 48) + (ord($this->data[$this->offset + 6]) << 40) + (ord($this->data[$this->offset + 5]) << 32) + (ord($this->data[$this->offset + 4]) << 24) + (ord($this->data[$this->offset + 3]) << 16) + (ord($this->data[$this->offset + 2]) << 8) + (ord($this->data[$this->offset + 1]) << 0);
-            // TODO: check l64 > maxint
+            // TODO: check l64 > max int
             $l = $l64;
             $this->offset += 8;
             $p = $l;
