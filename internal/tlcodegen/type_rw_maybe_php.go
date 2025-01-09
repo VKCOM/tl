@@ -43,7 +43,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args []s
 	if !bare {
 		result := []string{
 			fmt.Sprintf(
-				"[$maybeContainsValue, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x)",
+				"[$maybeContainsValue, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x);",
 				trw.emptyTag,
 				trw.okTag,
 			),
