@@ -99,12 +99,12 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, args []s
 		curType := field.t
 		result = append(result,
 			fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
-			fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(false, true)),
+			fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
 			fmt.Sprintf("    $success = $variant->read($stream%s);", phpFormatArgs(args)),
 			"    if (!$success) {",
 			"      return false;",
 			"    }",
-			fmt.Sprintf("    %[1]s = $variant", targetName),
+			fmt.Sprintf("    %[1]s = $variant;", targetName),
 			"    break;",
 		)
 	}

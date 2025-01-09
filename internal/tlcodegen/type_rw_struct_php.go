@@ -297,7 +297,7 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 		natParamsComment := strings.Join(
 			utils.MapSlice(
 				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return fmt.Sprintf("\n    * @param int $%s", s) }),
+				func(s string) string { return fmt.Sprintf("\n   * @param int $%s", s) }),
 			"",
 		)
 		natParamsDecl := strings.Join(
@@ -308,9 +308,9 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 		)
 		code.WriteString(fmt.Sprintf(`
   /**
-    * @param TL\tl_input_stream $stream%[1]s
-    * @return bool 
-    */
+   * @param TL\tl_input_stream $stream%[1]s
+   * @return bool 
+   */
   public function read_boxed($stream%[2]s) {
     [$magic, $success] = $stream->read_uint32();
     if (!$success || $magic != 0x%08[3]x) {
@@ -326,9 +326,9 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 
 		code.WriteString(fmt.Sprintf(`
   /**
-    * @param TL\tl_input_stream $stream%[1]s
-    * @return bool 
-    */
+   * @param TL\tl_input_stream $stream%[1]s
+   * @return bool 
+   */
   public function read($stream%[2]s) {
 `,
 			natParamsComment,
@@ -818,7 +818,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 	}
 	return []string{
 		fmt.Sprintf("if (%[1]s == null) {", targetName),
-		fmt.Sprintf("  %[1]s = %[2]s", targetName, trw.PhpDefaultInit()),
+		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
 		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
 		"if ($success) {",
