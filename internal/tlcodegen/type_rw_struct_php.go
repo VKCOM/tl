@@ -308,14 +308,14 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 		)
 		code.WriteString(fmt.Sprintf(`
   /**
-    * @param tl_input_stream $stream%[1]s
-	* @return bool 
-	*/
+    * @param TL\tl_input_stream $stream%[1]s
+    * @return bool 
+    */
   public function read_boxed($stream%[2]s) {
     [$magic, $success] = $stream->read_uint32();
-	if (!$success || $magic != 0x%08[3]x) {
+    if (!$success || $magic != 0x%08[3]x) {
       return false;
-	}
+    }
     return $this->read($stream%[2]s);
   }
 `,
@@ -326,9 +326,9 @@ func (trw *TypeRWStruct) PHPReadMethods(code *strings.Builder) {
 
 		code.WriteString(fmt.Sprintf(`
   /**
-    * @param tl_input_stream $stream%[1]s
-	* @return bool 
-	*/
+    * @param TL\tl_input_stream $stream%[1]s
+    * @return bool 
+    */
   public function read($stream%[2]s) {
 `,
 			natParamsComment,
@@ -685,7 +685,8 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 
 	if isUsingTLImport(trw) ||
 		trw.ResultType != nil ||
-		unionParent != nil {
+		unionParent != nil ||
+		trw.wr.gen.options.AddFunctionBodies {
 		code.WriteString("\nuse VK\\TL;\n")
 	}
 	code.WriteString(`

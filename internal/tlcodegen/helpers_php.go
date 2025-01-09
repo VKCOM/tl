@@ -1,8 +1,9 @@
 package tlcodegen
 
 const BasicTlPathPhp = "basictl.php"
-const BasicTLCodePHP = `
-<?php
+const BasicTLCodePHP = `<?php
+
+namespace VK\TL;
 
 class tl_constants {
     const tinyStringLen    = 253;
