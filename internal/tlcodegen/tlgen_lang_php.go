@@ -32,7 +32,7 @@ type PhpClassMeta struct {
 }
 
 func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
-	if err := gen.addCodeFile(BasicTlPathPhp, BasicTLCodePHP); err != nil {
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPhp), BasicTLCodePHP); err != nil {
 		return err
 	}
 
