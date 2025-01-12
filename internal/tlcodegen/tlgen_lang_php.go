@@ -32,8 +32,13 @@ type PhpClassMeta struct {
 }
 
 func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPhp), BasicTLCodePHP); err != nil {
-		return err
+	if gen.options.AddFunctionBodies {
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
+			return err
+		}
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
+			return err
+		}
 	}
 
 	// select files where to write code
@@ -118,6 +123,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 	if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
 		return err
 	}
+	if gen.options.AddMetaData {
+		if err := gen.phpCreateMeta(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -155,6 +165,100 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 	for wrapper := range nonInternalReachable {
 		wrapper.phpInfo.UsedInFunctions = true
 	}
+}
+
+func (gen *Gen2) phpCreateMeta() error {
+	var code strings.Builder
+
+	code.WriteString(`<?php
+
+namespace VK\TL;
+
+use VK\TL;
+
+
+class tl_item {
+  /** @var int */
+  public $tag = 0;
+
+  /** @var int */
+  public $annotations = 0;
+
+  /** @var string **/
+  public $tl_name = '';
+
+  /** 
+   * @param int $tag
+   * @param int $annotations
+   * @param string $tl_name
+   */
+  function __construct($tag, $annotations, $tl_name) {
+    $this->tag = $tag;
+    $this->annotations = $annotations;
+    $this->tl_name = $tl_name;
+  }
+}
+
+class tl_meta {
+  /** @var tl_item[] */
+  private $tl_item_by_tag = null;
+
+  /** @var tl_item[] */
+  private $tl_item_by_name = null;
+
+  /**
+   * @param string $tl_name
+   * @return tl_item|null
+   */
+  function tl_item_by_name($tl_name) {
+    if (array_key_exists($tl_name, $this->tl_item_by_name)) {
+        return $this->tl_item_by_name[$tl_name];
+    }
+    return null;
+  }
+
+  /**
+   * @param int $tl_name
+   * @return tl_item|null
+   */
+  function tl_item_by_tag($tl_tag) {
+    if (array_key_exists($tl_tag, $this->tl_item_by_tag)) {
+        return $this->tl_item_by_tag[$tl_tag];
+    }
+    return null;
+  }
+
+  function __construct() {`)
+
+	createdTypes := make(map[string]bool)
+
+	for _, wr := range gen.generatedTypesList {
+		if createdTypes[wr.trw.PhpClassName(true, true)] {
+			continue
+		}
+		if !wr.PHPNeedsCode() {
+			continue
+		}
+		if _, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 {
+			code.WriteString(fmt.Sprintf(`
+    $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
+    $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
+    $this->tl_item_by_tag[0x%08[1]x] = $item%08[1]x;`,
+				wr.tlTag,
+				wr.AnnotationsMask(),
+				wr.tlName.String(),
+			))
+		}
+	}
+
+	code.WriteString(`
+  }
+}
+`)
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "meta.php"), code.String()); err != nil {
+		return err
+	}
+	return nil
 }
 
 func PHPGetAllReachableTypes(startTypes []*TypeRWWrapper) map[*TypeRWWrapper]bool {

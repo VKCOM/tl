@@ -695,11 +695,24 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
  */
 `)
 	code.WriteString(fmt.Sprintf("class %s ", trw.PhpClassName(false, true)))
+	implementingInterfaces := make([]string, 0)
+
 	if unionParent != nil {
-		code.WriteString(fmt.Sprintf("implements %s ", unionParent.trw.PhpClassName(true, false)))
+		implementingInterfaces = append(implementingInterfaces, unionParent.trw.PhpClassName(true, false))
 	}
+
 	if trw.ResultType != nil {
-		code.WriteString("implements TL\\RpcFunction ")
+		implementingInterfaces = append(implementingInterfaces, "TL\\RpcFunction")
+	}
+
+	if len(trw.wr.origTL[0].TemplateArguments) == 0 {
+		implementingInterfaces = append(implementingInterfaces, "TL\\Readable")
+	}
+
+	if trw.wr.gen.options.AddFunctionBodies && len(implementingInterfaces) != 0 {
+		code.WriteString("implements ")
+		code.WriteString(strings.Join(implementingInterfaces, ", "))
+		code.WriteString(" ")
 	}
 	code.WriteString("{\n")
 }

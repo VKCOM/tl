@@ -333,6 +333,8 @@ type Gen2Options struct {
 
 	// PHP
 	AddFunctionBodies bool
+	AddMetaData       bool
+	AddFactoryData    bool
 
 	// .tlo
 	TLOPath           string
