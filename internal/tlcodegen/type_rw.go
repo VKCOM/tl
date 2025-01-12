@@ -548,6 +548,13 @@ func (w *TypeRWWrapper) PHPTypePath() string {
 	}
 }
 
+func (w *TypeRWWrapper) PHPFilePath(bare bool) []string {
+	filepathParts := []string{"VK"}
+	path := fmt.Sprintf("%s.php", w.trw.PhpClassName(true, bare))
+	filepathParts = append(filepathParts, strings.Split(path, "\\")...)
+	return filepathParts
+}
+
 func (w *TypeRWWrapper) PHPGenCoreType() *TypeRWWrapper {
 	if w.PHPUnionParent() == nil {
 		struct_, isStruct := w.trw.(*TypeRWStruct)

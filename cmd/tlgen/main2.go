@@ -84,6 +84,9 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.BoolVar(&opt.AddFactoryData, "php-generate-factory", false,
 		`whether to generate factory of tl objects`)
 
+	if opt.AddFactoryData {
+		opt.AddFunctionBodies = true
+	}
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")
