@@ -79,6 +79,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
 		`whether to generate body to write/read generated structs and functions`)
+	flag.BoolVar(&opt.AddMetaData, "php-generate-meta", false,
+		`whether to generate methods to get meta information about tl objects`)
+	flag.BoolVar(&opt.AddFactoryData, "php-generate-factory", false,
+		`whether to generate factory of tl objects`)
 
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
