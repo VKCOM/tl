@@ -32,31 +32,15 @@ type PhpClassMeta struct {
 }
 
 func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
-	if gen.options.AddFunctionBodies {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
-			return err
-		}
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
-			return err
-		}
-	}
-
 	// select files where to write code
 	gen.PhpMarkAllInternalTypes()
 	gen.PhpChoosePaths()
+
 	if err := gen.PhpAdditionalFiles(); err != nil {
 		return err
 	}
 
-	createdTypes := make(map[string]bool)
-
-	for _, wrapper := range gen.generatedTypesList {
-		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
-			continue
-		}
-		if !wrapper.PHPNeedsCode() {
-			continue
-		}
+	for _, wrapper := range gen.PhpSelectTypesForGeneration() {
 		fmt.Println(fmt.Sprintf(
 			"PHP{%[1]s} in GO{%[2]s}",
 			wrapper.trw.PhpClassName(false, true),
@@ -65,7 +49,7 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 			wrapper.origTL[0].TemplateArguments,
 			wrapper.arguments),
 		)
-		err := phpGenerateCodeForWrapper(gen, wrapper, createdTypes, true, wrapper.PHPGenerateCode)
+		err := phpGenerateCodeForWrapper(gen, wrapper, true, wrapper.PHPGenerateCode)
 		if err != nil {
 			return err
 		}
@@ -73,7 +57,7 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	return nil
 }
 
-func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes map[string]bool, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
+func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createInterfaceIfNeeded bool, codeGenerator func(code *strings.Builder, bytes bool) error) error {
 	var code strings.Builder
 	// add start symbol
 	code.WriteString(PHPFileStart)
@@ -90,7 +74,7 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes m
 		if strct, isStruct := wrapper.trw.(*TypeRWStruct); isStruct {
 			unionParent := strct.PhpConstructorNeedsUnion()
 			if unionParent != nil && unionParent == wrapper {
-				err := phpGenerateCodeForWrapper(gen, wrapper, createdTypes, false, func(code *strings.Builder, bytes bool) error {
+				err := phpGenerateCodeForWrapper(gen, wrapper, false, func(code *strings.Builder, bytes bool) error {
 					return PhpGenerateInterfaceCode(code, bytes, wrapper, []*TypeRWWrapper{wrapper})
 				})
 				if err != nil {
@@ -100,15 +84,10 @@ func phpGenerateCodeForWrapper(gen *Gen2, wrapper *TypeRWWrapper, createdTypes m
 		}
 	}
 
-	filepathParts := []string{"VK"}
-	//filepathParts = append(filepathParts, wrapper.PHPTypePathElements()...)
-	path := fmt.Sprintf("%s.php", wrapper.trw.PhpClassName(true, createInterfaceIfNeeded))
-	filepathParts = append(filepathParts, strings.Split(path, "\\")...)
-	filepathName := filepath.Join(filepathParts...)
+	filepathName := filepath.Join(wrapper.PHPFilePath(createInterfaceIfNeeded)...)
 	if err := gen.addCodeFile(filepathName, code.String()); err != nil {
 		return err
 	}
-	createdTypes[wrapper.trw.PhpClassName(true, createInterfaceIfNeeded)] = true
 	return nil
 }
 
@@ -116,7 +95,32 @@ func (gen *Gen2) PhpChoosePaths() {
 
 }
 
+func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
+	createdTypes := make(map[string]bool)
+	wrappers := make([]*TypeRWWrapper, 0)
+
+	for _, wrapper := range gen.generatedTypesList {
+		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
+			continue
+		}
+		if !wrapper.PHPNeedsCode() {
+			continue
+		}
+		createdTypes[wrapper.trw.PhpClassName(true, true)] = true
+		wrappers = append(wrappers, wrapper)
+	}
+	return wrappers
+}
+
 func (gen *Gen2) PhpAdditionalFiles() error {
+	if gen.options.AddFunctionBodies {
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
+			return err
+		}
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
+			return err
+		}
+	}
 	if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
 		return err
 	}
@@ -125,6 +129,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
+			return err
+		}
+	}
+	if gen.options.AddFactoryData {
+		if err := gen.phpCreateFactory(); err != nil {
 			return err
 		}
 	}
@@ -170,12 +179,11 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 func (gen *Gen2) phpCreateMeta() error {
 	var code strings.Builder
 
-	code.WriteString(`<?php
+	code.WriteString(fmt.Sprintf(`<?php
 
-namespace VK\TL;
+%snamespace VK\TL;
 
 use VK\TL;
-
 
 class tl_item {
   /** @var int */
@@ -201,10 +209,10 @@ class tl_item {
 
 class tl_meta {
   /** @var tl_item[] */
-  private $tl_item_by_tag = null;
+  private $tl_item_by_tag = [];
 
   /** @var tl_item[] */
-  private $tl_item_by_name = null;
+  private $tl_item_by_name = [];
 
   /**
    * @param string $tl_name
@@ -218,7 +226,7 @@ class tl_meta {
   }
 
   /**
-   * @param int $tl_name
+   * @param int $tl_tag
    * @return tl_item|null
    */
   function tl_item_by_tag($tl_tag) {
@@ -228,17 +236,9 @@ class tl_meta {
     return null;
   }
 
-  function __construct() {`)
+  function __construct() {`, gen.copyrightText))
 
-	createdTypes := make(map[string]bool)
-
-	for _, wr := range gen.generatedTypesList {
-		if createdTypes[wr.trw.PhpClassName(true, true)] {
-			continue
-		}
-		if !wr.PHPNeedsCode() {
-			continue
-		}
+	for _, wr := range gen.PhpSelectTypesForGeneration() {
 		if _, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 {
 			code.WriteString(fmt.Sprintf(`
     $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
@@ -256,6 +256,88 @@ class tl_meta {
 }
 `)
 	if err := gen.addCodeFile(filepath.Join("VK", "TL", "meta.php"), code.String()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (gen *Gen2) phpCreateFactory() error {
+	addFactory := func(wr *TypeRWWrapper) bool {
+		_, iStruct := wr.trw.(*TypeRWStruct)
+		return iStruct && len(wr.origTL[0].TemplateArguments) == 0 && wr.PHPUnionParent() == nil
+	}
+
+	var code strings.Builder
+
+	includes := ""
+
+	for _, wr := range gen.PhpSelectTypesForGeneration() {
+		if addFactory(wr) {
+			includes += fmt.Sprintf("include \"%s\";\n", filepath.Join(wr.PHPFilePath(true)[2:]...))
+		}
+	}
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+use VK\TL;
+
+include "tl_interfaces.php";
+include "RpcFunction.php";
+include "RpcResponse.php";
+
+%[2]s
+class tl_factory {
+  /** @var mixed[] */ // TODO
+  private $tl_factory_by_tag = [];
+
+  /** @var mixed[] */ // TODO
+  private $tl_factory_by_name = [];
+
+  /**
+   * @param string $tl_name
+   * @return TL\TL_Object|null
+   */
+  function tl_object_by_name($tl_name) {
+    if (array_key_exists($tl_name, $this->tl_factory_by_name)) {
+        return $this->tl_factory_by_name[$tl_name]();
+    }
+    return null;
+  }
+
+  /**
+   * @param int $tl_tag
+   * @return TL\TL_Object|null
+   */
+  function tl_object_by_tag($tl_tag) {
+    if (array_key_exists($tl_tag, $this->tl_factory_by_tag)) {
+        return $this->tl_factory_by_tag[$tl_tag]();
+    }
+    return null;
+  }
+
+  function __construct() {`, gen.copyrightText, includes))
+
+	for _, wr := range gen.PhpSelectTypesForGeneration() {
+		if addFactory(wr) {
+			code.WriteString(fmt.Sprintf(`
+    $item%08[1]x = function () { return new %[4]s(); };
+    $this->tl_factory_by_name["%[3]s"] = $item%08[1]x;
+    $this->tl_factory_by_tag[0x%08[1]x] = $item%08[1]x;`,
+				wr.tlTag,
+				wr.AnnotationsMask(),
+				wr.tlName.String(),
+				wr.trw.PhpClassName(true, true),
+			))
+		}
+	}
+
+	code.WriteString(`
+  }
+}
+`)
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "factory.php"), code.String()); err != nil {
 		return err
 	}
 	return nil
