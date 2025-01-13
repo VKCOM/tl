@@ -42,8 +42,6 @@ func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWW
 }
 
 func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
-	//fmt.Println(">>>>>", trw.wr.goGlobalName, trw.dictLike, trw.vectorLike, trw.dynamicSize, trw.size)
-	//fmt.Println(">>>>> >>>>>", args)
 	result := make([]string, 0)
 	switch {
 	// actual vector
@@ -121,6 +119,71 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 		return result
 	}
 	return []string{fmt.Sprintf("<??? %s read>", trw.wr.goGlobalName)}
+}
+
+func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+	result := make([]string, 0)
+	switch {
+	// actual vector
+	case trw.vectorLike && !trw.dictLike:
+		result = append(result,
+			fmt.Sprintf("$vector_size = count(%[1]s);", targetName),
+			// TODO MAKE MORE EFFICIENT
+			"for($i = 0; $i < $vector_size; $i++) {",
+		)
+		{
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[$i]", targetName), trw.element.bare, args)
+			for i := range elementRead {
+				elementRead[i] = "  " + elementRead[i]
+			}
+			result = append(result, elementRead...)
+		}
+		result = append(result,
+			"}",
+		)
+		return result
+	// tuple with size as last argument
+	case !trw.vectorLike && !trw.dictLike:
+		tupleSize := args[len(args)-1]
+		elementArgs := args[:len(args)-1]
+		result = append(result,
+			fmt.Sprintf("$tuple_size = %[1]s;", tupleSize),
+			// TODO MAKE MORE EFFICIENT
+			"for($i = 0; $i < $tuple_size; $i++) {",
+		)
+		{
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[$i]", targetName), trw.element.bare, elementArgs)
+			for i := range elementRead {
+				elementRead[i] = "  " + elementRead[i]
+			}
+			result = append(result, elementRead...)
+		}
+		result = append(result, "}")
+		return result
+	// actual map / dictionary
+	case trw.dictLike:
+		keyElement := "$key"
+		valueElement := "$value"
+		result = append(result,
+			fmt.Sprintf("ksort(%[1]s);", targetName),
+			fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
+		)
+		{
+			keyRead := trw.dictKeyField.t.trw.PhpWriteMethodCall(keyElement, trw.dictKeyField.bare, args)
+			for i := range keyRead {
+				keyRead[i] = "  " + keyRead[i]
+			}
+			valueRead := trw.dictValueField.t.trw.PhpWriteMethodCall(valueElement, trw.dictValueField.bare, args)
+			for i := range valueRead {
+				valueRead[i] = "  " + valueRead[i]
+			}
+			result = append(result, keyRead...)
+			result = append(result, valueRead...)
+		}
+		result = append(result, "}")
+		return result
+	}
+	return []string{fmt.Sprintf("<??? %s write>", trw.wr.goGlobalName)}
 }
 
 func (trw *TypeRWBrackets) PhpDefaultInit() string {

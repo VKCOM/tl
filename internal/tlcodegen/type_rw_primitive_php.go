@@ -70,6 +70,18 @@ func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, args
 	}
 }
 
+func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+	if !bare {
+		panic("can't be boxed")
+	}
+	return []string{
+		fmt.Sprintf("$success = $stream->write_%[2]s(%[1]s);", targetName, trw.phpIOMethodsSuffix()),
+		"if (!$success) {",
+		"  return false;",
+		"}",
+	}
+}
+
 func (trw *TypeRWPrimitive) PhpDefaultInit() string {
 	return trw.PhpDefaultValue()
 }

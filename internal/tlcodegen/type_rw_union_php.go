@@ -64,13 +64,50 @@ use VK\TL;
   const CONSTRUCTORS = [
     %[2]s
   ];
-
+%[3]s
 }
 `,
 		targetType.trw.PhpClassName(false, false),
 		strings.Join(constructors, ",\n    "),
+		phpGenerateIOBoxedMethodsForInterface(bytes, targetType),
 	))
+
 	return nil
+}
+
+func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper) string {
+	if !targetType.gen.options.AddFunctionBodies {
+		return ""
+	}
+	natParamsComment := strings.Join(
+		utils.MapSlice(
+			targetType.PHPGetNatTypeDependenciesDeclAsArray(),
+			func(s string) string { return fmt.Sprintf("\n   * @param int $%s", s) }),
+		"",
+	)
+	natParamsDecl := strings.Join(
+		utils.MapSlice(
+			targetType.PHPGetNatTypeDependenciesDeclAsArray(),
+			func(s string) string { return ", $" + s }),
+		"",
+	)
+	ioCode := ""
+	ioCode += fmt.Sprintf(`
+  /**
+   * @param TL\tl_input_stream $stream%[1]s
+   * @return bool 
+   */
+  public function read_boxed($stream%[2]s);
+
+  /**
+   * @param TL\tl_output_stream $stream%[1]s
+   * @return bool 
+   */
+  public function write_boxed($stream%[2]s);`,
+		natParamsComment,
+		natParamsDecl)
+
+	return ioCode
 }
 
 func (trw *TypeRWUnion) PhpDefaultValue() string {
@@ -113,6 +150,24 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, args []s
 		"    return false;",
 		"}",
 	)
+	return result
+}
+
+func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+	if bare {
+		panic("union can't be bare")
+	}
+	var result []string
+	result = append(result,
+		fmt.Sprintf("if (%[1]s == null) {", targetName),
+		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+		"}",
+		fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args)),
+		"if (!$success) {",
+		"  return false;",
+		"}",
+	)
+
 	return result
 }
 
