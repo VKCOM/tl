@@ -913,7 +913,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
 		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
-		"if ($success) {",
+		"if (!$success) {",
 		"  return false;",
 		"}",
 	}
@@ -960,7 +960,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
 		fmt.Sprintf("$success = %[2]s->write%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
-		"if ($success) {",
+		"if (!$success) {",
 		"  return false;",
 		"}",
 	}
