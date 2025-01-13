@@ -425,6 +425,10 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			fieldMask := trw.PHPGetFieldMask(i)
 			shift := 2
 			textTab := func() string { return strings.Repeat(tab, shift) }
+			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, trw.PHPGetFieldNatDependenciesValues(i))
+			if fieldRead == nil {
+				continue
+			}
 			if fieldMask != "" {
 				code.WriteString(
 					fmt.Sprintf(
@@ -436,7 +440,6 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 				)
 				shift += 1
 			}
-			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, trw.PHPGetFieldNatDependenciesValues(i))
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
 			}
