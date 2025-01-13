@@ -54,6 +54,17 @@ class tl_input_stream {
         }
     }
 
+    /** @return tuple(int, bool) */
+    public function read_int64() {
+        $data = unpack('q', $this->data, $this->offset);
+        if (!$data) {
+            return [0, false];
+        } else {
+            $this->offset += 8;
+            return [$data[1], true];
+        }
+    }
+
     /** @return tuple(bool, bool) */
     public function read_bool(int $false_tag, $true_tag) {
         [$tag, $success] = $this->read_uint32();
@@ -167,6 +178,12 @@ class tl_output_stream {
     /** @return bool */
     public function write_int32(int $value) {
         $this->data .= pack('l', $value);
+ 		return true;
+    }
+
+    /** @return bool */
+    public function write_int64(int $value) {
+        $this->data .= pack('q', $value);
  		return true;
     }
 
