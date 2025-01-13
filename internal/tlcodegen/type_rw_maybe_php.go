@@ -74,6 +74,35 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args []s
 	return nil
 }
 
+func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+	if !bare {
+		result := []string{
+			fmt.Sprintf(
+				"$success = $stream->write_bool(%[1]s != null, 0x%08[1]x, 0x%08[2]x);",
+				targetName,
+				trw.emptyTag,
+				trw.okTag,
+			),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+			fmt.Sprintf("if (%[1]s != null) {", targetName),
+		}
+		{
+			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, args)
+			for i, _ := range bodyWriter {
+				bodyWriter[i] = "  " + bodyWriter[i]
+			}
+			result = append(result, bodyWriter...)
+		}
+		result = append(result,
+			"}",
+		)
+		return result
+	}
+	return nil
+}
+
 func (trw *TypeRWMaybe) PhpDefaultInit() string {
 	return trw.element.t.trw.PhpDefaultInit()
 }

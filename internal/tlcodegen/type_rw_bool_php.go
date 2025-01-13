@@ -45,6 +45,23 @@ func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, args []st
 	return nil
 }
 
+func (trw *TypeRWBool) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+	if !bare {
+		return []string{
+			fmt.Sprintf(
+				"$success = $stream->write_bool(%[1]s, 0x%08[2]x, 0x%08[3]x);",
+				targetName,
+				trw.falseTag,
+				trw.trueTag,
+			),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		}
+	}
+	return nil
+}
+
 func (trw *TypeRWBool) PhpDefaultInit() string {
 	return "false"
 }

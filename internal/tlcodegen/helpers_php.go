@@ -157,31 +157,42 @@ class tl_output_stream {
     public function get_data(): string {
         return $this->data;
     }
-
+	
+	/** @return bool */
     public function write_uint32(int $value) {
         $this->data .= pack('V', $value);
+ 		return true;       
     }
 
+    /** @return bool */
     public function write_int32(int $value) {
         $this->data .= pack('l', $value);
+ 		return true;
     }
 
+    /** @return bool */
     public function write_bool(bool $value, int $false_tag, $true_tag) {
         if ($value) {
             $this->data .= pack('V', $true_tag);
         } else {
             $this->data .= pack('V', $false_tag);
         }
+ 		return true;
     }
 
+    /** @return bool */
     public function write_float(float $value) {
         $this->data .= pack('f', $value);
+ 		return true; 
     }
 
+    /** @return bool */
     public function write_double(float $value) {
         $this->data .= pack('d', $value);
+ 		return true; 
     }
 
+    /** @return bool */
     public function write_string(string $value) {
         $l = strlen($value);
         $p = 0;
@@ -220,6 +231,7 @@ class tl_output_stream {
         } else if ($p % 4 == 3) {
             $this->data .= chr(0);
         }
+ 		return true; 
     }
 }
 ?>

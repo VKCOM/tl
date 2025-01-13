@@ -24,6 +24,7 @@ type TypeRWPHPData interface {
 	PhpDefaultValue() string
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
 	PhpReadMethodCall(targetName string, bare bool, args []string) []string
+	PhpWriteMethodCall(targetName string, bare bool, args []string) []string
 }
 
 type PhpClassMeta struct {
