@@ -83,7 +83,7 @@ func (trw *TypeRWStruct) phpGetFieldArgs(currentType *TypeRWWrapper, currentType
 func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
-		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+		if trw.PhpCanBeSimplify() {
 			return true
 		}
 
@@ -105,7 +105,7 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
-		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+		if trw.PhpCanBeSimplify() {
 			return trw.Fields[0].t.trw.PhpClassName(withPath, bare)
 		}
 
@@ -150,7 +150,7 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
-		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+		if trw.PhpCanBeSimplify() {
 			return trw.Fields[0].t.trw.PhpTypeName(withPath, trw.Fields[0].bare)
 		}
 		isDict, _, _, valueType := isDictionaryElement(trw.wr)
@@ -880,7 +880,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
-		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+		if trw.PhpCanBeSimplify() {
 			var result []string
 			if !bare {
 				result = append(result,
@@ -928,7 +928,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
-		if len(trw.Fields) == 1 && trw.ResultType == nil && trw.Fields[0].fieldMask == nil {
+		if trw.PhpCanBeSimplify() {
 			var result []string
 			if !bare {
 				result = append(result,
@@ -978,4 +978,11 @@ func (trw *TypeRWStruct) PhpDefaultInit() string {
 		return "true"
 	}
 	return fmt.Sprintf("new %s()", core.trw.PhpClassName(true, true))
+}
+
+func (trw *TypeRWStruct) PhpCanBeSimplify() bool {
+	return len(trw.Fields) == 1 &&
+		trw.ResultType == nil &&
+		trw.Fields[0].fieldMask == nil &&
+		(trw.wr.gen.options.InplaceSimpleStructs || trw.Fields[0].t.PHPIsPrimitiveType(false))
 }

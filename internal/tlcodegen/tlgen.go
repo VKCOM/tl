@@ -337,6 +337,7 @@ type Gen2Options struct {
 	AddFactoryData               bool
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
+	InplaceSimpleStructs         bool
 
 	// .tlo
 	TLOPath           string

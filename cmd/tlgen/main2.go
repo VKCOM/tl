@@ -87,6 +87,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to not generate types without usages in functions`)
 	flag.BoolVar(&opt.AddRPCTypes, "php-rpc-support", true,
 		`whether to generate special rpc types`)
+	flag.BoolVar(&opt.InplaceSimpleStructs, "php-inplace-simple-structs", true,
+		`whether to avoid generation of structs with no arguments and only 1 field`)
 
 	if opt.AddFactoryData {
 		opt.AddFunctionBodies = true
