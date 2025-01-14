@@ -280,15 +280,20 @@ func (gen *Gen2) phpCreateFactory() error {
 		}
 	}
 
+	includesOfRPC := ""
+	if gen.options.AddRPCTypes {
+		includesOfRPC = `
+include "RpcFunction.php";
+include "RpcResponse.php";`
+	}
+
 	code.WriteString(fmt.Sprintf(`<?php
 
 %[1]snamespace VK\TL;
 
 use VK\TL;
 
-include "tl_interfaces.php";
-include "RpcFunction.php";
-include "RpcResponse.php";
+include "tl_interfaces.php";%[3]s
 
 %[2]s
 class tl_factory {
@@ -320,7 +325,7 @@ class tl_factory {
     return null;
   }
 
-  function __construct() {`, gen.copyrightText, includes))
+  function __construct() {`, gen.copyrightText, includes, includesOfRPC))
 
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
 		if addFactory(wr) {

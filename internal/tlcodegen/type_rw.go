@@ -558,7 +558,7 @@ func (w *TypeRWWrapper) PHPFilePath(bare bool) []string {
 func (w *TypeRWWrapper) PHPGenCoreType() *TypeRWWrapper {
 	if w.PHPUnionParent() == nil {
 		struct_, isStruct := w.trw.(*TypeRWStruct)
-		if isStruct && len(struct_.Fields) == 1 && struct_.ResultType == nil && struct_.Fields[0].fieldMask == nil {
+		if isStruct && struct_.PhpCanBeSimplify() {
 			return struct_.Fields[0].t.PHPGenCoreType()
 		}
 	}
@@ -585,15 +585,18 @@ func (w *TypeRWWrapper) PHPIsBare() bool {
 	return true
 }
 
-func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
-	core := w.PHPGenCoreType()
+func (w *TypeRWWrapper) PHPIsPrimitiveType(recursiveCheck bool) bool {
+	core := w
+	if recursiveCheck {
+		core = w.PHPGenCoreType()
+	}
 	if _, isPrimitive := core.trw.(*TypeRWPrimitive); isPrimitive {
 		return true
 	}
 	if struct_, isStruct := core.trw.(*TypeRWStruct); isStruct {
 		isDict, _, _, valueType := isDictionaryElement(struct_.wr)
 		if isDict && struct_.wr.tlName.Namespace == "" {
-			return valueType.t.PHPIsPrimitiveType()
+			return valueType.t.PHPIsPrimitiveType(true)
 		}
 	}
 	if _, isBrackets := core.trw.(*TypeRWBrackets); isBrackets {
@@ -604,7 +607,7 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType() bool {
 
 func (w *TypeRWWrapper) PHPNeedsCode() bool {
 	if w.PHPTypePath() == "" ||
-		w.PHPIsPrimitiveType() {
+		w.PHPIsPrimitiveType(true) {
 		return false
 	}
 	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
