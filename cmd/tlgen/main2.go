@@ -83,6 +83,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate methods to get meta information about tl objects`)
 	flag.BoolVar(&opt.AddFactoryData, "php-generate-factory", false,
 		`whether to generate factory of tl objects`)
+	flag.BoolVar(&opt.IgnoreUnusedInFunctionsTypes, "php-ignore-unused-types", true,
+		`whether to not generate types without usages in functions`)
+	flag.BoolVar(&opt.AddRPCTypes, "php-rpc-support", true,
+		`whether to generate special rpc types`)
 
 	if opt.AddFactoryData {
 		opt.AddFunctionBodies = true

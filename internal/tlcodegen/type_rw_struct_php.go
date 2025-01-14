@@ -204,7 +204,7 @@ func (trw *TypeRWStruct) PhpGenerateCode(code *strings.Builder, bytes bool) erro
 }
 
 func (trw *TypeRWStruct) PHPStructFunctionSpecificTypes(code *strings.Builder) {
-	if trw.ResultType != nil {
+	if trw.wr.gen.options.AddRPCTypes && trw.ResultType != nil {
 		code.WriteString(
 			fmt.Sprintf(
 				`
@@ -228,7 +228,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 
 func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder) {
 	// print function specific methods and types
-	if trw.ResultType != nil {
+	if trw.wr.gen.options.AddRPCTypes && trw.ResultType != nil {
 		kphpSpecialCode := ""
 		if trw.wr.HasAnnotation("kphp") {
 			kphpSpecialCode = fmt.Sprintf(
@@ -608,6 +608,9 @@ func (trw *TypeRWStruct) PHPStructConstructor(code *strings.Builder, necessaryFi
 }
 
 func (trw *TypeRWStruct) PHPStructRPCSpecialGetters(code *strings.Builder) {
+	if !trw.wr.gen.options.AddRPCTypes {
+		return
+	}
 	if unionParent := trw.wr.PHPUnionParent(); unionParent == nil || PHPSpecialMembersTypes(unionParent) == "" {
 		return
 	}
@@ -779,16 +782,16 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 		implementingInterfaces = append(implementingInterfaces, unionParent.trw.PhpClassName(true, false))
 	}
 
-	if trw.ResultType != nil {
+	if trw.wr.gen.options.AddRPCTypes && trw.ResultType != nil {
 		implementingInterfaces = append(implementingInterfaces, "TL\\RpcFunction")
 	}
 
-	if len(trw.wr.origTL[0].TemplateArguments) == 0 {
+	if trw.wr.gen.options.AddFunctionBodies && len(trw.wr.origTL[0].TemplateArguments) == 0 {
 		implementingInterfaces = append(implementingInterfaces, "TL\\Readable")
 		implementingInterfaces = append(implementingInterfaces, "TL\\Writeable")
 	}
 
-	if trw.wr.gen.options.AddFunctionBodies && len(implementingInterfaces) != 0 {
+	if len(implementingInterfaces) != 0 {
 		code.WriteString("implements ")
 		code.WriteString(strings.Join(implementingInterfaces, ", "))
 		code.WriteString(" ")
