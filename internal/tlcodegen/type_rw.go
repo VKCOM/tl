@@ -619,8 +619,10 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 	if w.trw.PhpClassName(false, true) == "" {
 		return false
 	}
-	if !w.phpInfo.UsedInFunctions || w.phpInfo.UsedOnlyInInternal {
-		return false
+	if w.gen.options.IgnoreUnusedInFunctionsTypes {
+		if !w.phpInfo.UsedInFunctions || w.phpInfo.UsedOnlyInInternal {
+			return false
+		}
 	}
 	if w.PHPGenCoreType() != w {
 		return false

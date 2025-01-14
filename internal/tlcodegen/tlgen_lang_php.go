@@ -122,11 +122,13 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 			return err
 		}
 	}
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
-		return err
-	}
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
-		return err
+	if gen.options.AddRPCTypes {
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
+			return err
+		}
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
+			return err
+		}
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
@@ -158,7 +160,7 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 			}
 		}
 		// TODO: CHANGE SOMEHOW
-		if rpcResults[wrapper.tlName.String()] {
+		if gen.options.AddRPCTypes && rpcResults[wrapper.tlName.String()] {
 			nonInternalFunctions = append(nonInternalFunctions, wrapper)
 		}
 	}
