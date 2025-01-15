@@ -159,7 +159,7 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args []
 	}
 	var result []string
 	result = append(result,
-		fmt.Sprintf("if (%[1]s == null) {", targetName),
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
 		fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args)),
