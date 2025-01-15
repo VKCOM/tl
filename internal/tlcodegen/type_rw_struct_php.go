@@ -91,8 +91,7 @@ func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
 			return true
 		}
 
-		isDict, _, _, _ := isDictionaryElement(trw.wr)
-		if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+		if phpIsDictionary(trw.wr) {
 			return true
 		}
 	}
@@ -113,8 +112,8 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 			return "boolean"
 		}
 
-		isDict, _, _, valueType := isDictionaryElement(trw.wr)
-		if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+		if phpIsDictionary(trw.wr) { // TODO NOT A SOLUTION, BUT...
+			_, _, _, valueType := isDictionaryElement(trw.wr)
 			return valueType.t.trw.PhpClassName(withPath, bare)
 		}
 	}
@@ -153,8 +152,9 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 		if trw.PhpCanBeSimplify() {
 			return trw.Fields[0].t.trw.PhpTypeName(withPath, trw.Fields[0].bare)
 		}
-		isDict, _, _, valueType := isDictionaryElement(trw.wr)
-		if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+
+		if phpIsDictionary(trw.wr) { // TODO NOT A SOLUTION, BUT...
+			_, _, _, valueType := isDictionaryElement(trw.wr)
 			return valueType.t.trw.PhpTypeName(withPath, bare)
 		}
 	}
@@ -822,6 +822,9 @@ func isUsingTLImport(trw *TypeRWStruct) bool {
 }
 
 func fieldTypeAndDefaultValue(f Field) (string, string) {
+	if f.originalName == "dict" {
+		print("debug")
+	}
 	fieldType := f.t.trw.PhpTypeName(true, f.t.PHPIsBare())
 	defaultValue := f.t.trw.PhpDefaultValue()
 	if f.t.PHPIsTrueType() {

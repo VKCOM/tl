@@ -63,6 +63,7 @@ func (trw *TypeRWBrackets) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper
 func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	// it is hard to mark Dictionary constructor as dictionary,
 	// because it is typedef to Vector or built-in brackets.
+	// TODO: FIX IT, because len(structElement.Fields) != 2 is true
 	structElement, ok := wr.trw.(*TypeRWStruct)
 	if !ok || len(structElement.Fields) != 2 || !strings.Contains(strings.ToLower(wr.tlName.Name), "dictionary") {
 		return false, false, Field{}, Field{}
@@ -72,6 +73,14 @@ func isDictionaryElement(wr *TypeRWWrapper) (bool, bool, Field, Field) {
 	}
 	ok, isString := structElement.Fields[0].t.trw.IsDictKeySafe()
 	return ok, isString, structElement.Fields[0], structElement.Fields[1]
+}
+
+func phpIsDictionary(wr *TypeRWWrapper) bool {
+	isDict, _, _, _ := isDictionaryElement(wr)
+	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+		return true
+	}
+	return false
 }
 
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {

@@ -594,8 +594,8 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType(recursiveCheck bool) bool {
 		return true
 	}
 	if struct_, isStruct := core.trw.(*TypeRWStruct); isStruct {
-		isDict, _, _, valueType := isDictionaryElement(struct_.wr)
-		if isDict && struct_.wr.tlName.Namespace == "" {
+		if phpIsDictionary(struct_.wr) {
+			_, _, _, valueType := isDictionaryElement(struct_.wr)
 			return valueType.t.PHPIsPrimitiveType(true)
 		}
 	}
@@ -606,10 +606,21 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType(recursiveCheck bool) bool {
 }
 
 func (w *TypeRWWrapper) PHPNeedsCode() bool {
+	if w.tlName.String() == "dictionary" {
+		print("debug")
+	}
 	if w.PHPTypePath() == "" ||
 		w.PHPIsPrimitiveType(true) {
 		return false
 	}
+	// TODO
+	if _, ok := w.trw.(*TypeRWStruct); ok &&
+		!w.gen.options.InplaceSimpleStructs &&
+		strings.HasSuffix(w.tlName.String(), "dictionary") &&
+		w.tlName.Namespace == "" {
+		return false
+	}
+
 	if strct, isStrct := w.trw.(*TypeRWStruct); isStrct {
 		unionParent := strct.PhpConstructorNeedsUnion()
 		if strct.ResultType == nil && strct.wr.PHPIsTrueType() && unionParent == nil {
