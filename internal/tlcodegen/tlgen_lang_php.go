@@ -275,9 +275,9 @@ func (gen *Gen2) phpCreateFactory() error {
 	includes := ""
 
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
-		if addFactory(wr) {
-			includes += fmt.Sprintf("include \"%s\";\n", filepath.Join(wr.PHPFilePath(true)[2:]...))
-		}
+		//if addFactory(wr) {
+		includes += fmt.Sprintf("include \"%s\";\n", filepath.Join(wr.PHPFilePath(true)[2:]...))
+		//}
 	}
 
 	includesOfRPC := ""
