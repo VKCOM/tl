@@ -94,6 +94,12 @@ func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
 		if phpIsDictionary(trw.wr) {
 			return true
 		}
+
+		if !trw.wr.gen.options.InplaceSimpleStructs &&
+			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+			trw.wr.tlName.Namespace == "" {
+			return true
+		}
 	}
 	return false
 }
@@ -115,6 +121,12 @@ func (trw *TypeRWStruct) PhpClassName(withPath bool, bare bool) string {
 		if phpIsDictionary(trw.wr) { // TODO NOT A SOLUTION, BUT...
 			_, _, _, valueType := isDictionaryElement(trw.wr)
 			return valueType.t.trw.PhpClassName(withPath, bare)
+		}
+
+		if !trw.wr.gen.options.InplaceSimpleStructs &&
+			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+			trw.wr.tlName.Namespace == "" {
+			return trw.Fields[0].t.trw.PhpClassName(withPath, bare)
 		}
 	}
 
@@ -156,6 +168,12 @@ func (trw *TypeRWStruct) PhpTypeName(withPath bool, bare bool) string {
 		if phpIsDictionary(trw.wr) { // TODO NOT A SOLUTION, BUT...
 			_, _, _, valueType := isDictionaryElement(trw.wr)
 			return valueType.t.trw.PhpTypeName(withPath, bare)
+		}
+
+		if !trw.wr.gen.options.InplaceSimpleStructs &&
+			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+			trw.wr.tlName.Namespace == "" {
+			return trw.Fields[0].t.trw.PhpTypeName(withPath, bare)
 		}
 	}
 	return trw.PhpClassName(withPath, bare)
@@ -726,6 +744,9 @@ func (trw *TypeRWStruct) PHPStructResultType(code *strings.Builder) {
 func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
+		if trw.PhpClassName(false, true) == "cases_testDictString" && f.originalName == "dict" {
+			print("debug")
+		}
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
 		code.WriteString(
 			fmt.Sprintf(
@@ -822,9 +843,6 @@ func isUsingTLImport(trw *TypeRWStruct) bool {
 }
 
 func fieldTypeAndDefaultValue(f Field) (string, string) {
-	if f.originalName == "dict" {
-		print("debug")
-	}
 	fieldType := f.t.trw.PhpTypeName(true, f.t.PHPIsBare())
 	defaultValue := f.t.trw.PhpDefaultValue()
 	if f.t.PHPIsTrueType() {
@@ -851,6 +869,11 @@ func (trw *TypeRWStruct) PhpDefaultValue() string {
 	}
 	if core.PHPIsTrueType() {
 		return "true"
+	}
+	if !trw.wr.gen.options.InplaceSimpleStructs &&
+		strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+		trw.wr.tlName.Namespace == "" {
+		return trw.Fields[0].t.trw.PhpDefaultValue()
 	}
 	return "null"
 }
@@ -913,6 +936,21 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 		//if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
 		//	return valueType.t.trw.PhpTypeName(withPath, bare)
 		//}
+		if !trw.wr.gen.options.InplaceSimpleStructs &&
+			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+			trw.wr.tlName.Namespace == "" {
+			var result []string
+			if !bare {
+				result = append(result,
+					"[$magic, $success] = $stream->read_uint32();",
+					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+					"  return false;",
+					"}",
+				)
+			}
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, args)...)
+			return result
+		}
 	}
 	return []string{
 		fmt.Sprintf("if (%[1]s == null) {", targetName),
@@ -960,6 +998,21 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 		//if isDict && trw.wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
 		//	return valueType.t.trw.PhpTypeName(withPath, bare)
 		//}
+		if !trw.wr.gen.options.InplaceSimpleStructs &&
+			strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+			trw.wr.tlName.Namespace == "" {
+			var result []string
+			if !bare {
+				result = append(result,
+					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+					"if (!$success) {",
+					"  return false;",
+					"}",
+				)
+			}
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args)...)
+			return result
+		}
 	}
 	return []string{
 		fmt.Sprintf("if (%[1]s == null) {", targetName),
@@ -979,6 +1032,11 @@ func (trw *TypeRWStruct) PhpDefaultInit() string {
 	}
 	if core.PHPIsTrueType() {
 		return "true"
+	}
+	if !trw.wr.gen.options.InplaceSimpleStructs &&
+		strings.HasSuffix(trw.wr.tlName.String(), "dictionary") &&
+		trw.wr.tlName.Namespace == "" {
+		return trw.Fields[0].t.trw.PhpDefaultInit()
 	}
 	return fmt.Sprintf("new %s()", core.trw.PhpClassName(true, true))
 }
