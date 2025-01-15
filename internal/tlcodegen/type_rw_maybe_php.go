@@ -54,7 +54,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args []s
 		}
 		if trw.element.t == trw.getInnerTarget().t {
 			result = append(result,
-				fmt.Sprintf("  if (%[1]s == null) {", targetName),
+				fmt.Sprintf("  if (is_null(%[1]s)) {", targetName),
 				fmt.Sprintf("    %[1]s = %[2]s;", targetName, trw.element.t.trw.PhpDefaultInit()),
 				"  }",
 			)
@@ -78,7 +78,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args []
 	if !bare {
 		result := []string{
 			fmt.Sprintf(
-				"$success = $stream->write_bool(%[1]s != null, 0x%08[1]x, 0x%08[2]x);",
+				"$success = $stream->write_bool(!is_null(%[1]s), 0x%08[2]x, 0x%08[3]x);",
 				targetName,
 				trw.emptyTag,
 				trw.okTag,
@@ -86,7 +86,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args []
 			"if (!$success) {",
 			"  return false;",
 			"}",
-			fmt.Sprintf("if (%[1]s != null) {", targetName),
+			fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
 		}
 		{
 			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, args)

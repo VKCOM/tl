@@ -42,6 +42,7 @@ func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWW
 }
 
 func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
 	// actual vector
@@ -58,7 +59,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 			"}",
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("%[1]s = [];", targetName),
-			"for($i = 0; $i < $vector_size; $i++) {",
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < $vector_size; %[1]s++) {", index),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
 		result = append(result, elementRead...)
@@ -70,8 +71,8 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
-		tupleSize := args[len(args)-1]
-		elementArgs := args[:len(args)-1]
+		tupleSize := args[0]
+		elementArgs := args[1:]
 		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, elementArgs)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
@@ -79,7 +80,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 		result = append(result,
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("%[1]s = [];", targetName),
-			fmt.Sprintf("for($i = 0; $i < %[1]s; $i++) {", tupleSize),
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
 		result = append(result, elementRead...)
@@ -100,7 +101,6 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}
-
 		result = append(result,
 			"[$dict_size, $success] = $stream->read_uint32();",
 			"if (!$success) {",
@@ -108,7 +108,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 			"}",
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("%[1]s = [];", targetName),
-			"for($i = 0; $i < $dict_size; $i++) {",
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < $dict_size; %[1]s++) {", index),
 		)
 		result = append(result, keyRead...)
 		result = append(result, valueRead...)
@@ -122,6 +122,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 }
 
 func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
 	// actual vector
@@ -133,12 +134,11 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 			"}",
 		)
 		result = append(result,
-			fmt.Sprintf("$vector_size = count(%[1]s);", targetName),
 			// TODO MAKE MORE EFFICIENT
-			"for($i = 0; $i < $vector_size; $i++) {",
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < count(%[2]s); %[1]s++) {", index, targetName),
 		)
 		{
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[$i]", targetName), trw.element.bare, args)
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[%[2]s]", targetName, index), trw.element.bare, args)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
@@ -150,15 +150,14 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		return result
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
-		tupleSize := args[len(args)-1]
-		elementArgs := args[:len(args)-1]
+		tupleSize := args[0]
+		elementArgs := args[1:]
 		result = append(result,
-			fmt.Sprintf("$tuple_size = %[1]s;", tupleSize),
 			// TODO MAKE MORE EFFICIENT
-			"for($i = 0; $i < $tuple_size; $i++) {",
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
 		)
 		{
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[$i]", targetName), trw.element.bare, elementArgs)
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[%[2]s]", targetName, index), trw.element.bare, elementArgs)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}

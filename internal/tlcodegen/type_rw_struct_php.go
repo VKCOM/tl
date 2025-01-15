@@ -370,6 +370,9 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				)
 				shift += 1
 			}
+			if trw.wr.tlName.String() == "cases.replace7" && field.originalName == "a" {
+				print("debug")
+			}
 			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, trw.PHPGetFieldNatDependenciesValues(i))
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
@@ -556,7 +559,7 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 					condition = fmt.Sprintf("$has_%s", dependentField.originalName)
 				} else {
 					condition = fmt.Sprintf(
-						"$this->%[1]s !== null",
+						"!is_null($this->%[1]s)",
 						dependentField.originalName,
 					)
 				}
@@ -953,7 +956,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 		}
 	}
 	return []string{
-		fmt.Sprintf("if (%[1]s == null) {", targetName),
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
 		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
@@ -1015,7 +1018,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 		}
 	}
 	return []string{
-		fmt.Sprintf("if (%[1]s == null) {", targetName),
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
 		fmt.Sprintf("$success = %[2]s->write%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
