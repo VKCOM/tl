@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TL JSON help</title>
+  </head>
+  <body>
+    <h1>Schema</h1>
+    <ul>
+      <li>tlgen version: (devel)</li>
+      <li><abbr>TL</abbr> schema <a href="https://github.com/VKCOM/tl/blob/master/internal/tlcodegen/test/tls/cases.tl">url</a></li>
+      <li><abbr>TL</abbr> schema commit: abcdefgh</li>
+      <li><abbr>TL</abbr> schema version: 301822800 (1979-07-26 07:40:00 +0000 UTC)</li>
+      <li><abbr>TL</abbr> ⟷ <abbr>JSON</abbr> mapping rules: <a href="https://github.com/VKCOM/tl/blob/master/TLJSON.md">TLJSON.md</a></li>
+    </ul>
+    <h1>Functions</h1>
+    <ul>
+    </ul>
+    <h1>Types</h1>
+<h2 id="#">#</h2>
+Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
+<h2 id="BenchmarksVruHash">benchmarks.vruhash</h2>
+    <code style="color:DarkCyan">// BLOCK: BENCHMARKS</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"low"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"high"</td><td>: &lt;int64&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>benchmarks.vruhash#d31bd0fd low:long high:long = benchmarks.VruHash;</code>
+    <code style="color:DarkCyan">// We store xxh3 components in LE endianness, as common in TL</code></br>
+  </dd>
+</dl>
+
+<h2 id="BenchmarksVruPosition">benchmarks.vruposition</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"commit_bit"</td><td>: true,</td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+    <code style="color:DarkCyan">// we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"meta_block"</td><td>: true,</td>
+          <td>// fields_mask bit #1
+</td>
+          <td>
+    <code style="color:DarkCyan">// this block contains meta data of VR protocol</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"split_payload"</td><td>: true,</td>
+          <td>// fields_mask bit #3
+</td>
+          <td>
+    <code style="color:DarkCyan">// this position splits payload. If this set, meta_block and commit_bit are both not set</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"rotation_block"</td><td>: true,</td>
+          <td>// fields_mask bit #5
+</td>
+          <td>
+    <code style="color:DarkCyan">// If set, binlog should rotate and this block should be in new file</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"canonical_hash"</td><td>: true,</td>
+          <td>// fields_mask bit #15
+</td>
+          <td>
+    <code style="color:DarkCyan">// If set, hash is stored in canonical byte order.</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"payload_offset"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// Motivation for storing it in each block - when random seeking into the middle of file, we must be sure without scanning from beginning</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"block_time_nano"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// Only for debug, not used in any logic</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"hash"</td><td>: <a href="#BenchmarksVruHash">benchmarks.vruhash</a>,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"file_offset"</td><td>: &lt;int64&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"seq_number"</td><td>: &lt;int64&gt;</td>
+          <td>// fields_mask bit #14
+</td>
+          <td>
+    <code style="color:DarkCyan">// incremented after each block.</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>benchmarks.vruposition#32792c04 fields_mask:# commit_bit:fields_mask.0?true meta_block:fields_mask.1?true split_payload:fields_mask.3?true rotation_block:fields_mask.5?true canonical_hash:fields_mask.15?true payload_offset:long block_time_nano:long hash:benchmarks.vruhash file_offset:long seq_number:fields_mask.14?long = benchmarks.VruPosition;</code>
+  </dd>
+</dl>
+
+<h2 id="BenchmarksVrutoyPositions">benchmarks.vrutoyPositions&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>n</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"next_positions"</td><td>: [n × <a href="#BenchmarksVruPosition">benchmarks.vruposition</a>]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>benchmarks.vrutoyPositions#b6003de0 {n:#}{n:Type} next_positions:%(__tuple n benchmarks.vruposition) = benchmarks.VrutoyPositions n;</code>
+  </dd>
+</dl>
+
+<h2 id="BenchmarksVrutoyTopLevelContainer">benchmarks.vrutoyTopLevelContainer</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#BenchmarksVrutoyTopLevelUnion">benchmarks.VrutoyTopLevelUnion</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>benchmarks.vrutoyTopLevelContainer#fb442ca5 value:benchmarks.VrutoyTopLevelUnion = benchmarks.VrutoyTopLevelContainer;</code>
+  </dd>
+</dl>
+
+<h2 id="BenchmarksVrutoyTopLevelContainerWithDependency">benchmarks.vrutoyTopLevelContainerWithDependency</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#BenchmarksVrutoyPositions">benchmarks.vrutoyPositions&lt;n&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>benchmarks.vrutoyTopLevelContainerWithDependency#c176008e n:# value:(benchmarks.vrutoyPositions n) = benchmarks.VrutoyTopLevelContainerWithDependency;</code>
+  </dd>
+</dl>
+
+<h2 id="BenchmarksVrutoyTopLevelUnion">benchmarks.VrutoyTopLevelUnion</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "benchmarks.vrutoytopLevelUnionBig" or "#ef556bee"' style="color:MediumVioletRed">"benchmarks.vrutoytopLevelUnionBig#ef556bee"</span>,</td><td>"value":<a href="#BenchmarksVrutoytopLevelUnionBig">benchmarks.vrutoytopLevelUnionBig</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "benchmarks.vrutoytopLevelUnionEmpty" or "#ce27c770"' style="color:MediumVioletRed">"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"</span>}</td><td></td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>benchmarks.vrutoytopLevelUnionBig#ef556bee next_positions:(vector benchmarks.vruposition) = benchmarks.VrutoyTopLevelUnion;</code>
+    </li>
+    <li>
+    <code>benchmarks.vrutoytopLevelUnionEmpty#ce27c770 = benchmarks.VrutoyTopLevelUnion;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="BenchmarksVrutoytopLevelUnionBig">benchmarks.vrutoytopLevelUnionBig</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"next_positions"</td><td>: [<a href="#BenchmarksVruPosition">benchmarks.vruposition</a>, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>benchmarks.vrutoytopLevelUnionBig#ef556bee next_positions:(vector benchmarks.vruposition) = benchmarks.VrutoyTopLevelUnion;</code>
+  </dd>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="CasesBytesTestArray">cases_bytes.testArray</h2>
+    <code style="color:DarkCyan">// BLOCK: Bytes vesrion</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"arr"</td><td>: [n × &lt;string&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testArray#3762fb81 n:# arr:%(__tuple n string) = cases_bytes.TestArray;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestDictAny">cases_bytes.testDictAny</h2>
+    <code style="color:DarkCyan">// will be array of tuples</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: [<a href="#DictionaryFieldAnyDoubleInt">dictionaryFieldAny&lt;double,int&gt;</a>, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testDictAny#5a5fce57 dict:(dictionaryAny double int) = cases_bytes.TestDictAny;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestDictInt">cases_bytes.testDictInt</h2>
+    <code style="color:DarkCyan">// will be map</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: {&lt;int32&gt;: &lt;int32&gt;}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testDictInt#453ace07 dict:(dictionaryAny int int) = cases_bytes.TestDictInt;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestDictString">cases_bytes.testDictString</h2>
+    <code style="color:DarkCyan">// will be map</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: {&lt;string&gt;: &lt;int32&gt;}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testDictString#6c04d6ce dict:(dictionary int) = cases_bytes.TestDictString;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestDictStringString">cases_bytes.testDictStringString</h2>
+    <code style="color:DarkCyan">// will be map</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: {&lt;string&gt;: &lt;string&gt;}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testDictStringString#ad69c772 dict:(dictionary string) = cases_bytes.TestDictStringString;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestEnum">cases_bytes.TestEnum</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td><span title='Can be also specified as "cases_bytes.testEnum1" or "#58aad3f5"' style="color:MediumVioletRed">"cases_bytes.testEnum1#58aad3f5"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "cases_bytes.testEnum2" or "#00b47add"' style="color:MediumVioletRed">"cases_bytes.testEnum2#00b47add"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "cases_bytes.testEnum3" or "#81911ffa"' style="color:MediumVioletRed">"cases_bytes.testEnum3#81911ffa"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>cases_bytes.testEnum1#58aad3f5 = cases_bytes.TestEnum;</code>
+    </li>
+    <li>
+    <code>cases_bytes.testEnum2#00b47add = cases_bytes.TestEnum;</code>
+    </li>
+    <li>
+    <code>cases_bytes.testEnum3#81911ffa = cases_bytes.TestEnum;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+
+
+
+<h2 id="CasesBytesTestEnumContainer">cases_bytes.testEnumContainer</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#CasesTestEnum">cases.TestEnum</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testEnumContainer#32b92037 value:cases.TestEnum = cases_bytes.TestEnumContainer;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestTuple">cases_bytes.testTuple</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"tpl"</td><td>: [4 × &lt;string&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testTuple#2dd3bacf tpl:(tuple string 4) = cases_bytes.TestTuple;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesBytesTestVector">cases_bytes.testVector</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"arr"</td><td>: [&lt;string&gt;, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases_bytes.testVector#3647c8ae arr:(vector string) = cases_bytes.TestVector;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesMyCycle1">cases.myCycle1</h2>
+    <code style="color:DarkCyan">// BLOCK: TEST RECURSIVE TYPES</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#CasesMyCycle2">cases.myCycle2</a></td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.myCycle1#d3ca919d fields_mask:# a:fields_mask.0?cases.myCycle2 = cases.MyCycle1;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesMyCycle2">cases.myCycle2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#CasesMyCycle3">cases.myCycle3</a></td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.myCycle2#5444c9a2 fields_mask:# a:fields_mask.0?cases.myCycle3 = cases.MyCycle2;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesMyCycle3">cases.myCycle3</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"fields_mask"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: <a href="#CasesMyCycle1">cases.myCycle1</a></td>
+          <td>// fields_mask bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.myCycle3#7624f86b fields_mask:# a:fields_mask.0?cases.myCycle1 = cases.MyCycle3;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesReplace7">cases.replace7</h2>
+    <code style="color:DarkCyan">// BLOCK: TEST JSON TRANSALTION SPECS</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"m"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [m × [m × &lt;int32&gt;]]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.replace7#6ccce4be n:# m:# a:%(__tuple n %(__tuple m int)) = cases.Replace7;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesReplace7plus">cases.replace7plus</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"m"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [m × [m × &lt;int32&gt;]]</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.replace7plus#197858f5 n:# m:# a:n.0?%(__tuple n %(__tuple m int)) = cases.Replace7plus;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesReplace7plusplus">cases.replace7plusplus</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"N"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"M"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"A"</td><td>: [M × [M × &lt;int32&gt;]]</td>
+          <td>// N bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.replace7plusplus#abc39b68 N:# M:# A:N.0?%(__tuple N %(__tuple M int)) = cases.Replace7plusplus;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestAllPossibleFieldConfigs">cases.testAllPossibleFieldConfigs&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>outer</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"local"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f00"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// no fieldmask, no nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f01"</td><td>: true,</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// no fieldmask, true type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f02"</td><td>: [local × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// no fieldmask, have some local nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f03"</td><td>: [outer × &lt;int32&gt;],</td>
+          <td></td>
+          <td>
+    <code style="color:DarkCyan">// no fieldmask, have only external nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f10"</td><td>: &lt;int32&gt;,</td>
+          <td>// local bit #0
+</td>
+          <td>
+    <code style="color:DarkCyan">// local fieldmask, no nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f11"</td><td>: true,</td>
+          <td>// local bit #1
+</td>
+          <td>
+    <code style="color:DarkCyan">// local fieldmask, true type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f12"</td><td>: [local × &lt;int32&gt;],</td>
+          <td>// local bit #2
+</td>
+          <td>
+    <code style="color:DarkCyan">// local fieldmask, have some local nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f13"</td><td>: [outer × &lt;int32&gt;],</td>
+          <td>// local bit #3
+</td>
+          <td>
+    <code style="color:DarkCyan">// local fieldmask, have only external nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f20"</td><td>: &lt;int32&gt;,</td>
+          <td>// outer bit #0
+</td>
+          <td>
+    <code style="color:DarkCyan">// outer fieldmask, no nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f21"</td><td>: true,</td>
+          <td>// outer bit #1
+</td>
+          <td>
+    <code style="color:DarkCyan">// outer fieldmask, true type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f22"</td><td>: [local × &lt;int32&gt;],</td>
+          <td>// outer bit #2
+</td>
+          <td>
+    <code style="color:DarkCyan">// outer fieldmask, have some local nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f23"</td><td>: [outer × &lt;int32&gt;]</td>
+          <td>// outer bit #3
+</td>
+          <td>
+    <code style="color:DarkCyan">// outer fieldmask, have only external nat dependencies in type</code></td></tr><tr><td colspan="4">
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testAllPossibleFieldConfigs#fb6836d3 {outer:#}{outer:Type} local:# f00:int f01:%True f02:%(__tuple local int) f03:%(__tuple outer int) f10:local.0?int f11:local.1?%True f12:local.2?%(__tuple local int) f13:local.3?%(__tuple outer int) f20:outer.0?int f21:outer.1?%True f22:outer.2?%(__tuple local int) f23:outer.3?%(__tuple outer int) = cases.TestAllPossibleFieldConfigs outer;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestAllPossibleFieldConfigsContainer">cases.testAllPossibleFieldConfigsContainer</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"outer"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#CasesTestAllPossibleFieldConfigs">cases.testAllPossibleFieldConfigs&lt;outer&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testAllPossibleFieldConfigsContainer#e3fae936 outer:# value:(cases.testAllPossibleFieldConfigs outer) = cases.TestAllPossibleFieldConfigsContainer;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestArray">cases.testArray</h2>
+    <code style="color:DarkCyan">// BLOCK: TEST BRACKETS (arrays, vectors, dicitinaries etc.)</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"arr"</td><td>: [n × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testArray#a888030d n:# arr:%(__tuple n int) = cases.TestArray;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestBeforeReadBitValidation">cases.testBeforeReadBitValidation</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"n"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"a"</td><td>: [n × &lt;int32&gt;],</td>
+          <td>// n bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"b"</td><td>: [n × &lt;int32&gt;]</td>
+          <td>// n bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testBeforeReadBitValidation#9b2396db n:# a:n.0?%(__tuple n int) b:n.1?%(__tuple n int) = cases.TestBeforeReadBitValidation;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestDictAny">cases.testDictAny</h2>
+    <code style="color:DarkCyan">// will be array of tuples</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: [<a href="#DictionaryFieldAnyDoubleInt">dictionaryFieldAny&lt;double,int&gt;</a>, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testDictAny#e29b8ae6 dict:(dictionaryAny double int) = cases.TestDictAny;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestDictInt">cases.testDictInt</h2>
+    <code style="color:DarkCyan">// will be map</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: {&lt;int32&gt;: &lt;int32&gt;}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testDictInt#d3877643 dict:(dictionaryAny int int) = cases.TestDictInt;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestDictString">cases.testDictString</h2>
+    <code style="color:DarkCyan">// will be map</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"dict"</td><td>: {&lt;string&gt;: &lt;int32&gt;}</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testDictString#c463c79b dict:(dictionary int) = cases.TestDictString;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestEnum">cases.TestEnum</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td><span title='Can be also specified as "cases.testEnum1" or "#6c6c55ac"' style="color:MediumVioletRed">"cases.testEnum1#6c6c55ac"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "cases.testEnum2" or "#86ea88ce"' style="color:MediumVioletRed">"cases.testEnum2#86ea88ce"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+            <tr>
+                <td><span title='Can be also specified as "cases.testEnum3" or "#69b83e2f"' style="color:MediumVioletRed">"cases.testEnum3#69b83e2f"</span></td><td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>cases.testEnum1#6c6c55ac = cases.TestEnum;</code>
+    </li>
+    <li>
+    <code>cases.testEnum2#86ea88ce = cases.TestEnum;</code>
+    </li>
+    <li>
+    <code>cases.testEnum3#69b83e2f = cases.TestEnum;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+
+
+
+<h2 id="CasesTestEnumContainer">cases.testEnumContainer</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#CasesTestEnum">cases.TestEnum</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testEnumContainer#cb684231 value:cases.TestEnum = cases.TestEnumContainer;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestLocalFieldmask">cases.testLocalFieldmask</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f1"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f2"</td><td>: &lt;uint32&gt;,</td>
+          <td>// f1 bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f3"</td><td>: true,</td>
+          <td>// f2 bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f4"</td><td>: true</td>
+          <td>// f2 bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testLocalFieldmask#f68fd3f9 f1:# f2:f1.0?# f3:f2.1?%True f4:f2.1?%True = cases.TestLocalFieldmask;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestMaybe">cases.testMaybe</h2>
+    <code style="color:DarkCyan">// BLOCK: TEST UNIONS</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#IntMaybe">Maybe&lt;int&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testMaybe#d6602613 value:(Maybe int) = cases.TestMaybe;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestOutFieldMask">cases.testOutFieldMask&lt;#&gt;</h2>
+
+External # (nat) arguments: <b>f</b>
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f1"</td><td>: &lt;uint32&gt;,</td>
+          <td>// f bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f2"</td><td>: true,</td>
+          <td>// f bit #3
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f3"</td><td>: [f × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testOutFieldMask#bd6b4b3c {f:#}{f:Type} f1:f.0?# f2:f.3?%True f3:%(__tuple f int) = cases.TestOutFieldMask f;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestOutFieldMaskContainer">cases.testOutFieldMaskContainer</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"inner"</td><td>: <a href="#CasesTestOutFieldMask">cases.testOutFieldMask&lt;f&gt;</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testOutFieldMaskContainer#1850ffe4 f:# inner:(cases.testOutFieldMask f) = cases.TestOutFieldMaskContainer;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestRecursiveFieldmask">cases.testRecursiveFieldMask</h2>
+    <code style="color:DarkCyan">// BLOCK: TEST FIELD MASKS</code></br>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f0"</td><td>: &lt;uint32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f1"</td><td>: &lt;uint32&gt;,</td>
+          <td>// f0 bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"f2"</td><td>: &lt;uint32&gt;,</td>
+          <td>// f1 bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"t1"</td><td>: true,</td>
+          <td>// f0 bit #0
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"t2"</td><td>: true,</td>
+          <td>// f1 bit #1
+</td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"t3"</td><td>: true</td>
+          <td>// f2 bit #2
+</td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testRecursiveFieldMask#c58cf85e f0:# f1:f0.0?# f2:f1.1?# t1:f0.0?%True t2:f1.1?%True t3:f2.2?%True = cases.TestRecursiveFieldmask;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestTuple">cases.testTuple</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"tpl"</td><td>: [4 × &lt;int32&gt;]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testTuple#4b9caf8f tpl:(tuple int 4) = cases.TestTuple;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestUnion">cases.TestUnion</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+      <table>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "cases.testUnion1" or "#4b4f09b1"' style="color:MediumVioletRed">"cases.testUnion1#4b4f09b1"</span>,</td><td>"value":<a href="#CasesTestUnion1">cases.testUnion1</a>}</td>          <td>
+          </td>
+        </tr>
+            <tr>
+                <td>{"type":<span title='Can be also specified as "cases.testUnion2" or "#464f96c4"' style="color:MediumVioletRed">"cases.testUnion2#464f96c4"</span>,</td><td>"value":<a href="#CasesTestUnion2">cases.testUnion2</a>}</td>          <td>
+          </td>
+        </tr>
+      </table>
+  </code></dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li>
+    <code>cases.testUnion1#4b4f09b1 value:int = cases.TestUnion;</code>
+    </li>
+    <li>
+    <code>cases.testUnion2#464f96c4 value:string = cases.TestUnion;</code>
+    </li>
+    </ul>
+  </dd>
+</dl>
+
+<h2 id="CasesTestUnion1">cases.testUnion1</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testUnion1#4b4f09b1 value:int = cases.TestUnion;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestUnion2">cases.testUnion2</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testUnion2#464f96c4 value:string = cases.TestUnion;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestUnionContainer">cases.testUnionContainer</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: <a href="#CasesTestUnion">cases.TestUnion</a></td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testUnionContainer#4497a381 value:cases.TestUnion = cases.TestUnionContainer;</code>
+  </dd>
+</dl>
+
+<h2 id="CasesTestVector">cases.testVector</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"arr"</td><td>: [&lt;int32&gt;, ...]</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>cases.testVector#4975695c arr:(vector int) = cases.TestVector;</code>
+  </dd>
+</dl>
+
+
+
+<h2 id="DictionaryFieldAnyDoubleInt">dictionaryFieldAny&lt;double,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;float64&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryFieldAny#2c43a65b {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryFieldAnyIntInt">dictionaryFieldAny&lt;int,int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;int32&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryFieldAny#2c43a65b {k:Type} {v:Type} key:k value:v = DictionaryFieldAny k v;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryFieldInt">dictionaryField&lt;int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;int32&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+  </dd>
+</dl>
+
+<h2 id="DictionaryFieldString">dictionaryField&lt;string&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd><code>
+    {
+      <table>
+        <tr>
+
+          <td>&nbsp;&nbsp;"key"</td><td>: &lt;string&gt;,</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+        <tr>
+
+          <td>&nbsp;&nbsp;"value"</td><td>: &lt;string&gt;</td>
+          <td></td>
+          <td>
+          </td>
+        </tr>
+      </table>
+    }
+</code></dd>
+  <dt>TL</dt>
+  <dd>
+    <code>dictionaryField#239c1b62 {t:Type} key:string value:t = DictionaryField t;</code>
+  </dd>
+</dl>
+
+
+
+
+
+
+<h2 id="IntMaybe">Maybe&lt;int&gt;</h2>
+
+<p></p>
+<dl>
+  <dt>JSON</dt>
+  <dd>
+    <ul>
+      <li><code>{}</code></li>
+      <li><code>{&quot;value&quot;: &lt;int32&gt;}</code></li>
+    </ul>
+  </dd>
+  <dt>TL</dt>
+  <dd>
+    <ul>
+    <li><code>resultFalse#27930a7b {t:Type} = Maybe t;</code></li>
+    <li><code>resultTrue#3f9c8ef8 {t:Type} t = Maybe t;</code></li>
+    </ul>
+  </dd>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
