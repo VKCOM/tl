@@ -123,15 +123,15 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 
 func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
 	result := make([]string, 0)
-	result = append(result,
-		fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
-		"if (!$success) {",
-		"  return false;",
-		"}",
-	)
 	switch {
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
+		result = append(result,
+			fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		)
 		result = append(result,
 			fmt.Sprintf("$vector_size = count(%[1]s);", targetName),
 			// TODO MAKE MORE EFFICIENT
@@ -168,6 +168,12 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		return result
 	// actual map / dictionary
 	case trw.dictLike:
+		result = append(result,
+			fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		)
 		keyElement := "$key"
 		valueElement := "$value"
 		result = append(result,

@@ -344,7 +344,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			if fieldMask != "" {
 				code.WriteString(
 					fmt.Sprintf(
-						"%[1]sif (%[2]s & (1 << %[3]d) != 0) {\n",
+						"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {\n",
 						textTab(),
 						fieldMask,
 						field.BitNumber,
@@ -432,7 +432,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			if fieldMask != "" {
 				code.WriteString(
 					fmt.Sprintf(
-						"%[1]sif (%[2]s & (1 << %[3]d) != 0) {\n",
+						"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {\n",
 						textTab(),
 						fieldMask,
 						field.BitNumber,
