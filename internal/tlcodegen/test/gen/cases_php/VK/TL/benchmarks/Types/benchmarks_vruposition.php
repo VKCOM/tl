@@ -135,7 +135,7 @@ class benchmarks_vruposition implements TL\Readable, TL\Writeable {
     if (!$success) {
       return false;
     }
-    if ($this->hash == null) {
+    if (is_null($this->hash)) {
       $this->hash = new TL\benchmarks\Types\benchmarks_vruhash();
     }
     $success = $this->hash->read($stream);
@@ -186,7 +186,7 @@ class benchmarks_vruposition implements TL\Readable, TL\Writeable {
     if (!$success) {
       return false;
     }
-    if ($this->hash == null) {
+    if (is_null($this->hash)) {
       $this->hash = new TL\benchmarks\Types\benchmarks_vruhash();
     }
     $success = $this->hash->write($stream);
@@ -228,7 +228,7 @@ class benchmarks_vruposition implements TL\Readable, TL\Writeable {
       $mask |= self::BIT_ROTATION_BLOCK_5;
     }
 
-    if ($this->seq_number !== null) {
+    if (!is_null($this->seq_number)) {
       $mask |= self::BIT_SEQ_NUMBER_14;
     }
 

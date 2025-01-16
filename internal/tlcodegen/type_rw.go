@@ -606,9 +606,6 @@ func (w *TypeRWWrapper) PHPIsPrimitiveType(recursiveCheck bool) bool {
 }
 
 func (w *TypeRWWrapper) PHPNeedsCode() bool {
-	if w.tlName.String() == "dictionary" {
-		print("debug")
-	}
 	if w.PHPTypePath() == "" ||
 		w.PHPIsPrimitiveType(true) {
 		return false

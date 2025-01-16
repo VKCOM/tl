@@ -94,7 +94,7 @@ class cases_bytes_testEnumContainer implements TL\Readable, TL\Writeable {
    * @return bool 
    */
   public function write($stream) {
-    if ($this->value == null) {
+    if (is_null($this->value)) {
       $this->value = new TL\cases\Types\cases_testEnum1();
     }
     $success = $this->value->write_boxed($stream);

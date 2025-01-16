@@ -54,7 +54,7 @@ class benchmarks_vrutoyTopLevelContainerWithDependency implements TL\Readable, T
     $this->value = [];
     for($i28 = 0; $i28 < $this->n; $i28++) {
       $array_benchmarks_VruPosition___element = new TL\benchmarks\Types\benchmarks_vruposition();
-      if ($array_benchmarks_VruPosition___element == null) {
+      if (is_null($array_benchmarks_VruPosition___element)) {
         $array_benchmarks_VruPosition___element = new TL\benchmarks\Types\benchmarks_vruposition();
       }
       $success = $array_benchmarks_VruPosition___element->read($stream);
@@ -88,7 +88,7 @@ class benchmarks_vrutoyTopLevelContainerWithDependency implements TL\Readable, T
       return false;
     }
     for($i28 = 0; $i28 < $this->n; $i28++) {
-      if ($this->value[$i28] == null) {
+      if (is_null($this->value[$i28])) {
         $this->value[$i28] = new TL\benchmarks\Types\benchmarks_vruposition();
       }
       $success = $this->value[$i28]->write($stream);

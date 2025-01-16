@@ -49,7 +49,7 @@ class benchmarks_vrutoytopLevelUnionBig implements TL\benchmarks\Types\benchmark
     $this->next_positions = [];
     for($i28 = 0; $i28 < $vector_size; $i28++) {
       $array_benchmarks_VruPosition___element = new TL\benchmarks\Types\benchmarks_vruposition();
-      if ($array_benchmarks_VruPosition___element == null) {
+      if (is_null($array_benchmarks_VruPosition___element)) {
         $array_benchmarks_VruPosition___element = new TL\benchmarks\Types\benchmarks_vruposition();
       }
       $success = $array_benchmarks_VruPosition___element->read($stream);
@@ -83,7 +83,7 @@ class benchmarks_vrutoytopLevelUnionBig implements TL\benchmarks\Types\benchmark
       return false;
     }
     for($i28 = 0; $i28 < count($this->next_positions); $i28++) {
-      if ($this->next_positions[$i28] == null) {
+      if (is_null($this->next_positions[$i28])) {
         $this->next_positions[$i28] = new TL\benchmarks\Types\benchmarks_vruposition();
       }
       $success = $this->next_positions[$i28]->write($stream);

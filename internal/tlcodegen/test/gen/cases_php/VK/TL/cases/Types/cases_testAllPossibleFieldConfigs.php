@@ -312,7 +312,7 @@ class cases_testAllPossibleFieldConfigs {
   public function calculateLocal() {
     $mask = 0;
 
-    if ($this->f10 !== null) {
+    if (!is_null($this->f10)) {
       $mask |= self::BIT_F10_0;
     }
 
@@ -320,11 +320,11 @@ class cases_testAllPossibleFieldConfigs {
       $mask |= self::BIT_F11_1;
     }
 
-    if ($this->f12 !== null) {
+    if (!is_null($this->f12)) {
       $mask |= self::BIT_F12_2;
     }
 
-    if ($this->f13 !== null) {
+    if (!is_null($this->f13)) {
       $mask |= self::BIT_F13_3;
     }
 
@@ -337,7 +337,7 @@ class cases_testAllPossibleFieldConfigs {
   public function calculateOuter() {
     $mask = 0;
 
-    if ($this->f20 !== null) {
+    if (!is_null($this->f20)) {
       $mask |= self::BIT_F20_0;
     }
 
@@ -345,11 +345,11 @@ class cases_testAllPossibleFieldConfigs {
       $mask |= self::BIT_F21_1;
     }
 
-    if ($this->f22 !== null) {
+    if (!is_null($this->f22)) {
       $mask |= self::BIT_F22_2;
     }
 
-    if ($this->f23 !== null) {
+    if (!is_null($this->f23)) {
       $mask |= self::BIT_F23_3;
     }
 
