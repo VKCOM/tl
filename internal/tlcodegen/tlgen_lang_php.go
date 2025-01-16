@@ -42,14 +42,6 @@ func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
 	}
 
 	for _, wrapper := range gen.PhpSelectTypesForGeneration() {
-		fmt.Println(fmt.Sprintf(
-			"PHP{%[1]s} in GO{%[2]s}",
-			wrapper.trw.PhpClassName(false, true),
-			wrapper.goGlobalName,
-			wrapper.NatParams,
-			wrapper.origTL[0].TemplateArguments,
-			wrapper.arguments),
-		)
 		err := phpGenerateCodeForWrapper(gen, wrapper, true, wrapper.PHPGenerateCode)
 		if err != nil {
 			return err

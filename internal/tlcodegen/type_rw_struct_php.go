@@ -370,9 +370,6 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				)
 				shift += 1
 			}
-			if trw.wr.tlName.String() == "cases.replace7" && field.originalName == "a" {
-				print("debug")
-			}
 			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, trw.PHPGetFieldNatDependenciesValues(i))
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
@@ -747,9 +744,6 @@ func (trw *TypeRWStruct) PHPStructResultType(code *strings.Builder) {
 func (trw *TypeRWStruct) PHPStructFields(code *strings.Builder) {
 	// print fields declarations
 	for _, f := range trw.Fields {
-		if trw.PhpClassName(false, true) == "cases_testDictString" && f.originalName == "dict" {
-			print("debug")
-		}
 		fieldType, defaultValue := fieldTypeAndDefaultValue(f)
 		code.WriteString(
 			fmt.Sprintf(

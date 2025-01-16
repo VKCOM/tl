@@ -152,7 +152,7 @@ class cases_testRecursiveFieldMask implements TL\Readable, TL\Writeable {
   public function calculateF0() {
     $mask = 0;
 
-    if ($this->f1 !== null && $this->t1) {
+    if (!is_null($this->f1) && $this->t1) {
       $mask |= (self::BIT_F1_0 | self::BIT_T1_0);
     }
 
@@ -165,7 +165,7 @@ class cases_testRecursiveFieldMask implements TL\Readable, TL\Writeable {
   public function calculateF1() {
     $mask = 0;
 
-    if ($this->f2 !== null && $this->t2) {
+    if (!is_null($this->f2) && $this->t2) {
       $mask |= (self::BIT_F2_1 | self::BIT_T2_1);
     }
 

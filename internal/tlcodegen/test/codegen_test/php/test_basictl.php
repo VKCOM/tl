@@ -1,6 +1,9 @@
 <?php
 
-include "basictl.php";
+
+use VK\TL;
+
+require_once(__DIR__."/../../gen/cases_php/VK/TL/tl_streams.php");
 
 class test_case {
     /** @var string */
@@ -26,7 +29,7 @@ class test_case {
 
     public function test_read_write_interaction(): bool
     {
-        $w = new tl_output_stream("");
+        $w = new TL\tl_output_stream("");
         switch ($this->data_type) {
             case "string": {
                 $w->write_string($this->serializing_data);
@@ -57,7 +60,7 @@ class test_case {
         if ($this->tl_data && $serialized_data != test_case::binary_to_string($this->tl_data)) {
             return false;
         }
-        $r = new tl_input_stream($w->get_data());
+        $r = new TL\tl_input_stream($w->get_data());
         $return_value = "";
         $success = true;
         switch ($this->data_type) {
@@ -128,9 +131,9 @@ foreach ($tests as $test_name => $test) {
 }
 
 if (count($failed_tests) == 0) {
-    printf("ALL TESTS PASSED!\n");
+    printf("\033[01;32mAll tests are passed!\033[0m\n");
 } else {
-    printf("FAILED %d TESTS:\n", count($failed_tests));
+    printf("Failed %d tests:\n", count($failed_tests));
     foreach ($failed_tests as $failed_test) {
         printf("\t%s\n", $failed_test);
     }

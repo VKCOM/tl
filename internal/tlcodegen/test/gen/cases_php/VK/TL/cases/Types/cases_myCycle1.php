@@ -53,7 +53,7 @@ class cases_myCycle1 implements TL\Readable, TL\Writeable {
       return false;
     }
     if (($this->fields_mask & (1 << 0)) != 0) {
-      if ($this->a == null) {
+      if (is_null($this->a)) {
         $this->a = new TL\cases\Types\cases_myCycle2();
       }
       $success = $this->a->read($stream);
@@ -88,7 +88,7 @@ class cases_myCycle1 implements TL\Readable, TL\Writeable {
       return false;
     }
     if (($this->fields_mask & (1 << 0)) != 0) {
-      if ($this->a == null) {
+      if (is_null($this->a)) {
         $this->a = new TL\cases\Types\cases_myCycle2();
       }
       $success = $this->a->write($stream);

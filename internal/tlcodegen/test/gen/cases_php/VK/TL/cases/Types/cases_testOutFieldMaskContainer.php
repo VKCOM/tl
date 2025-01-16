@@ -51,7 +51,7 @@ class cases_testOutFieldMaskContainer implements TL\Readable, TL\Writeable {
     if (!$success) {
       return false;
     }
-    if ($this->inner == null) {
+    if (is_null($this->inner)) {
       $this->inner = new TL\cases\Types\cases_testOutFieldMask();
     }
     $success = $this->inner->read($stream, $this->f);
@@ -82,7 +82,7 @@ class cases_testOutFieldMaskContainer implements TL\Readable, TL\Writeable {
     if (!$success) {
       return false;
     }
-    if ($this->inner == null) {
+    if (is_null($this->inner)) {
       $this->inner = new TL\cases\Types\cases_testOutFieldMask();
     }
     $success = $this->inner->write($stream, $this->f);

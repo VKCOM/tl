@@ -49,7 +49,7 @@ class cases_bytes_testDictAny implements TL\Readable, TL\Writeable {
     $this->dict = [];
     for($i36 = 0; $i36 < $vector_size; $i36++) {
       $array_DictionaryFieldAny__float__int___element = new TL\_common\Types\dictionaryFieldAny__float__int();
-      if ($array_DictionaryFieldAny__float__int___element == null) {
+      if (is_null($array_DictionaryFieldAny__float__int___element)) {
         $array_DictionaryFieldAny__float__int___element = new TL\_common\Types\dictionaryFieldAny__float__int();
       }
       $success = $array_DictionaryFieldAny__float__int___element->read($stream);
@@ -83,7 +83,7 @@ class cases_bytes_testDictAny implements TL\Readable, TL\Writeable {
       return false;
     }
     for($i36 = 0; $i36 < count($this->dict); $i36++) {
-      if ($this->dict[$i36] == null) {
+      if (is_null($this->dict[$i36])) {
         $this->dict[$i36] = new TL\_common\Types\dictionaryFieldAny__float__int();
       }
       $success = $this->dict[$i36]->write($stream);

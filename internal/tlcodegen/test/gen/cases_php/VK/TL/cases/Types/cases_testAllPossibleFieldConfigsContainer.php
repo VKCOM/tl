@@ -51,7 +51,7 @@ class cases_testAllPossibleFieldConfigsContainer implements TL\Readable, TL\Writ
     if (!$success) {
       return false;
     }
-    if ($this->value == null) {
+    if (is_null($this->value)) {
       $this->value = new TL\cases\Types\cases_testAllPossibleFieldConfigs();
     }
     $success = $this->value->read($stream, $this->outer);
@@ -82,7 +82,7 @@ class cases_testAllPossibleFieldConfigsContainer implements TL\Readable, TL\Writ
     if (!$success) {
       return false;
     }
-    if ($this->value == null) {
+    if (is_null($this->value)) {
       $this->value = new TL\cases\Types\cases_testAllPossibleFieldConfigs();
     }
     $success = $this->value->write($stream, $this->outer);

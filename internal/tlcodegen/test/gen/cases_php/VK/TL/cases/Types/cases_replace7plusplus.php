@@ -126,7 +126,7 @@ class cases_replace7plusplus implements TL\Readable, TL\Writeable {
   public function calculateN() {
     $mask = 0;
 
-    if ($this->A !== null) {
+    if (!is_null($this->A)) {
       $mask |= self::BIT_A_0;
     }
 

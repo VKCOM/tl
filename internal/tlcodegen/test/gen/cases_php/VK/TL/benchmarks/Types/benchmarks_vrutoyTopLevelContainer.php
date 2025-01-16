@@ -86,7 +86,7 @@ class benchmarks_vrutoyTopLevelContainer implements TL\Readable, TL\Writeable {
    * @return bool 
    */
   public function write($stream) {
-    if ($this->value == null) {
+    if (is_null($this->value)) {
       $this->value = new TL\benchmarks\Types\benchmarks_vrutoytopLevelUnionBig();
     }
     $success = $this->value->write_boxed($stream);

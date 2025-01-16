@@ -121,7 +121,7 @@ class cases_testOutFieldMask {
   public function calculateF() {
     $mask = 0;
 
-    if ($this->f1 !== null) {
+    if (!is_null($this->f1)) {
       $mask |= self::BIT_F1_0;
     }
 
