@@ -44,12 +44,13 @@ class cases_bytes_testTuple implements TL\Readable, TL\Writeable {
   public function read($stream) {
     $this->tpl = [];
     for($i12 = 0; $i12 < 4; $i12++) {
-      $array_string___element = '';
-      [$array_string___element, $success] = $stream->read_string();
+      /** @var string */
+      $obj12 = '';
+      [$obj12, $success] = $stream->read_string();
       if (!$success) {
         return false;
       }
-      $this->tpl[] = $array_string___element;
+      $this->tpl[] = $obj12;
     }
     return true;
   }

@@ -123,21 +123,23 @@ class cases_testAllPossibleFieldConfigs {
     $this->f01 = true;
     $this->f02 = [];
     for($i9 = 0; $i9 < $this->local; $i9++) {
-      $array_int___element = 0;
-      [$array_int___element, $success] = $stream->read_int32();
+      /** @var int */
+      $obj9 = 0;
+      [$obj9, $success] = $stream->read_int32();
       if (!$success) {
         return false;
       }
-      $this->f02[] = $array_int___element;
+      $this->f02[] = $obj9;
     }
     $this->f03 = [];
     for($i9 = 0; $i9 < $outer; $i9++) {
-      $array_int___element = 0;
-      [$array_int___element, $success] = $stream->read_int32();
+      /** @var int */
+      $obj9 = 0;
+      [$obj9, $success] = $stream->read_int32();
       if (!$success) {
         return false;
       }
-      $this->f03[] = $array_int___element;
+      $this->f03[] = $obj9;
     }
     if (($this->local & (1 << 0)) != 0) {
       [$this->f10, $success] = $stream->read_int32();
@@ -155,12 +157,13 @@ class cases_testAllPossibleFieldConfigs {
     if (($this->local & (1 << 2)) != 0) {
       $this->f12 = [];
       for($i9 = 0; $i9 < $this->local; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $this->f12[] = $array_int___element;
+        $this->f12[] = $obj9;
       }
     } else {
       $this->f12 = null;
@@ -168,12 +171,13 @@ class cases_testAllPossibleFieldConfigs {
     if (($this->local & (1 << 3)) != 0) {
       $this->f13 = [];
       for($i9 = 0; $i9 < $outer; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $this->f13[] = $array_int___element;
+        $this->f13[] = $obj9;
       }
     } else {
       $this->f13 = null;
@@ -194,12 +198,13 @@ class cases_testAllPossibleFieldConfigs {
     if (($outer & (1 << 2)) != 0) {
       $this->f22 = [];
       for($i9 = 0; $i9 < $this->local; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $this->f22[] = $array_int___element;
+        $this->f22[] = $obj9;
       }
     } else {
       $this->f22 = null;
@@ -207,12 +212,13 @@ class cases_testAllPossibleFieldConfigs {
     if (($outer & (1 << 3)) != 0) {
       $this->f23 = [];
       for($i9 = 0; $i9 < $outer; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $this->f23[] = $array_int___element;
+        $this->f23[] = $obj9;
       }
     } else {
       $this->f23 = null;

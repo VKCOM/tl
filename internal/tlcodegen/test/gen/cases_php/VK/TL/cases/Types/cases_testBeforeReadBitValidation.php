@@ -61,12 +61,13 @@ class cases_testBeforeReadBitValidation implements TL\Readable, TL\Writeable {
     if (($this->n & (1 << 0)) != 0) {
       $this->a = [];
       for($i9 = 0; $i9 < $this->n; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $this->a[] = $array_int___element;
+        $this->a[] = $obj9;
       }
     } else {
       $this->a = null;
@@ -74,12 +75,13 @@ class cases_testBeforeReadBitValidation implements TL\Readable, TL\Writeable {
     if (($this->n & (1 << 1)) != 0) {
       $this->b = [];
       for($i9 = 0; $i9 < $this->n; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $this->b[] = $array_int___element;
+        $this->b[] = $obj9;
       }
     } else {
       $this->b = null;

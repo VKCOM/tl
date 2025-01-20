@@ -44,12 +44,13 @@ class cases_testTuple implements TL\Readable, TL\Writeable {
   public function read($stream) {
     $this->tpl = [];
     for($i9 = 0; $i9 < 4; $i9++) {
-      $array_int___element = 0;
-      [$array_int___element, $success] = $stream->read_int32();
+      /** @var int */
+      $obj9 = 0;
+      [$obj9, $success] = $stream->read_int32();
       if (!$success) {
         return false;
       }
-      $this->tpl[] = $array_int___element;
+      $this->tpl[] = $obj9;
     }
     return true;
   }

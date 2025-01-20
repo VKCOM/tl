@@ -64,16 +64,18 @@ class cases_replace7plusplus implements TL\Readable, TL\Writeable {
     if (($this->N & (1 << 0)) != 0) {
       $this->A = [];
       for($i15 = 0; $i15 < $this->N; $i15++) {
-        $array_array_int___element = [];
+        /** @var int[] */
+        $obj15 = [];
         for($i9 = 0; $i9 < $this->M; $i9++) {
-          $array_int___element = 0;
-          [$array_int___element, $success] = $stream->read_int32();
+          /** @var int */
+          $obj9 = 0;
+          [$obj9, $success] = $stream->read_int32();
           if (!$success) {
             return false;
           }
-          $array_array_int___element[] = $array_int___element;
+          $obj15[] = $obj9;
         }
-        $this->A[] = $array_array_int___element;
+        $this->A[] = $obj15;
       }
     } else {
       $this->A = null;

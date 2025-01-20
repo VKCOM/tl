@@ -71,12 +71,13 @@ class cases_testOutFieldMask {
     }
     $this->f3 = [];
     for($i9 = 0; $i9 < $f; $i9++) {
-      $array_int___element = 0;
-      [$array_int___element, $success] = $stream->read_int32();
+      /** @var int */
+      $obj9 = 0;
+      [$obj9, $success] = $stream->read_int32();
       if (!$success) {
         return false;
       }
-      $this->f3[] = $array_int___element;
+      $this->f3[] = $obj9;
     }
     return true;
   }

@@ -53,12 +53,13 @@ class cases_bytes_testArray implements TL\Readable, TL\Writeable {
     }
     $this->arr = [];
     for($i12 = 0; $i12 < $this->n; $i12++) {
-      $array_string___element = '';
-      [$array_string___element, $success] = $stream->read_string();
+      /** @var string */
+      $obj12 = '';
+      [$obj12, $success] = $stream->read_string();
       if (!$success) {
         return false;
       }
-      $this->arr[] = $array_string___element;
+      $this->arr[] = $obj12;
     }
     return true;
   }

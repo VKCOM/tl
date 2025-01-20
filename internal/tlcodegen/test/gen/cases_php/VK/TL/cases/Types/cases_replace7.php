@@ -62,16 +62,18 @@ class cases_replace7 implements TL\Readable, TL\Writeable {
     }
     $this->a = [];
     for($i15 = 0; $i15 < $this->n; $i15++) {
-      $array_array_int___element = [];
+      /** @var int[] */
+      $obj15 = [];
       for($i9 = 0; $i9 < $this->m; $i9++) {
-        $array_int___element = 0;
-        [$array_int___element, $success] = $stream->read_int32();
+        /** @var int */
+        $obj9 = 0;
+        [$obj9, $success] = $stream->read_int32();
         if (!$success) {
           return false;
         }
-        $array_array_int___element[] = $array_int___element;
+        $obj15[] = $obj9;
       }
-      $this->a[] = $array_array_int___element;
+      $this->a[] = $obj15;
     }
     return true;
   }
