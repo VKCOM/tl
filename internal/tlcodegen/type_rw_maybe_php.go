@@ -39,7 +39,7 @@ func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
 	if !bare {
 		result := []string{
 			fmt.Sprintf(
@@ -52,14 +52,15 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args *Ty
 			"}",
 			"if ($maybeContainsValue) {",
 		}
-		if trw.element.t == trw.getInnerTarget().t {
+		if trw.element.t == trw.getInnerTarget().t && initIfDefault {
 			result = append(result,
 				fmt.Sprintf("  if (is_null(%[1]s)) {", targetName),
 				fmt.Sprintf("    %[1]s = %[2]s;", targetName, trw.element.t.trw.PhpDefaultInit()),
 				"  }",
 			)
+			initIfDefault = false
 		}
-		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, args)
+		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, args)
 		for i, _ := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
 		}

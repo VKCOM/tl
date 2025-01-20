@@ -120,7 +120,7 @@ func (trw *TypeRWUnion) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	}
 }
 
-func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
 	if bare {
 		panic("union can't be bare")
 	}

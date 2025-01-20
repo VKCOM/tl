@@ -65,7 +65,6 @@ class cases_replace7plusplus implements TL\Readable, TL\Writeable {
       $this->A = [];
       for($i15 = 0; $i15 < $this->N; $i15++) {
         $array_array_int___element = [];
-        $array_array_int___element = [];
         for($i9 = 0; $i9 < $this->M; $i9++) {
           $array_int___element = 0;
           [$array_int___element, $success] = $stream->read_int32();
