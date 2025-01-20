@@ -87,4 +87,4 @@ foreach($value->Tests as $test_name => $test_data) {
     }
 }
 
-printf("\n\033[01;32mAll tests are passed!\033[01;0m\n");
+printf("\n\033[01;32mAll tests are passed!\033[01;0m\n\n");

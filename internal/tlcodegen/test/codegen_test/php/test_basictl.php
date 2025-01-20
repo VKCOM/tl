@@ -124,18 +124,18 @@ $failed_tests = array();
 
 foreach ($tests as $test_name => $test) {
     $test_result = $test->test_read_write_interaction();
-//    println("Test \"" . $test_name . "\": " . bool_to_string($test_result));
     if (!$test_result) {
         $failed_tests[] = $test_name;
     }
 }
 
 if (count($failed_tests) == 0) {
-    printf("\033[01;32mAll tests are passed!\033[0m\n");
+    printf("\n\033[01;32mAll tests are passed!\033[0m\n\n");
 } else {
-    printf("Failed %d tests:\n", count($failed_tests));
+    printf("\n\033[01;31mFailed %d tests:\033[01;0m\n", count($failed_tests));
     foreach ($failed_tests as $failed_test) {
         printf("\t%s\n", $failed_test);
     }
+    printf("\n");
 }
 ?>
