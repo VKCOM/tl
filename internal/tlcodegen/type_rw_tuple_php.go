@@ -41,7 +41,7 @@ func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWW
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
@@ -71,9 +71,12 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
-		tupleSize := args[0]
-		elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, elementArgs)
+		tupleSize := *args.children[0].value
+		//elementArgs := args[1:]
+		if elementName == "$array_test_Data4__Pair__int__int___element" || elementName == "$array_test_Data3__Pair__int__int___element" {
+			print("debug")
+		}
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, args.children[1])
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -121,7 +124,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 	return []string{fmt.Sprintf("<??? %s read>", trw.wr.goGlobalName)}
 }
 
-func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
@@ -150,8 +153,8 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		return result
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
-		tupleSize := args[0]
-		elementArgs := args[1:]
+		tupleSize := *args.children[0].value
+		elementArgs := args.children[1]
 		result = append(result,
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),

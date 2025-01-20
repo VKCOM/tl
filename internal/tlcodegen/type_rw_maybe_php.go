@@ -39,7 +39,7 @@ func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	if !bare {
 		result := []string{
 			fmt.Sprintf(
@@ -74,7 +74,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, args []s
 	return nil
 }
 
-func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	if !bare {
 		result := []string{
 			fmt.Sprintf(

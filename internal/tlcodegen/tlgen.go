@@ -1185,7 +1185,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 	skippedDueToWhitelist := 0
 
-	gen.typesInfo = processCombinators(gen.allConstructors)
+	if gen.options.Language == "cpp" {
+		gen.typesInfo = processCombinators(gen.allConstructors)
+	}
 
 	for _, typ := range tl {
 		if LegacyGenerateUnusedNatTemplates(typ.Construct.Name.String()) && len(typ.TemplateArguments) == 1 && typ.TemplateArguments[0].IsNat {

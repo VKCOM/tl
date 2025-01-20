@@ -23,12 +23,28 @@ func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDe
 	panic(fmt.Sprintf("no such nat \"%s\"", name))
 }
 
-func (trw *TypeRWStruct) PHPGetFieldNatDependenciesValues(fieldIndex int) []string {
+func (trw *TypeRWStruct) PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex int, calculatedArgs *TypeArgumentsTree) TypeArgumentsTree {
 	field := trw.Fields[fieldIndex]
-	argsValues := make([]string, 0)
-	currentType := field.t
-	trw.phpGetFieldArgs(currentType, &field.origTL.FieldType, &argsValues)
-	return argsValues
+	tree := TypeArgumentsTree{}
+	localTree := TypeArgumentsTree{}
+
+	if calculatedArgs == nil {
+		trw.wr.PHPGetNatTypeDependenciesDecl(&tree)
+		tree.FillAllLeafs()
+	} else {
+		tree = *calculatedArgs
+	}
+
+	genericsMap := make(map[string]*TypeArgumentsTree)
+	for _, child := range tree.children {
+		if child != nil {
+			genericsMap[child.name] = child
+		}
+	}
+
+	field.t.PHPGetNatTypeDependenciesDecl(&localTree)
+	trw.phpGetFieldArgsTree(field.t, &field.origTL.FieldType, &localTree, &genericsMap)
+	return localTree
 }
 
 func (trw *TypeRWStruct) PHPGetFieldMask(fieldIndex int) string {
@@ -43,38 +59,32 @@ func (trw *TypeRWStruct) PHPGetFieldMask(fieldIndex int) string {
 	return ""
 }
 
-func (trw *TypeRWStruct) phpGetFieldArgs(currentType *TypeRWWrapper, currentTypeRef *tlast.TypeRef, argsValues *[]string) {
+func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, currentTypeRef *tlast.TypeRef, tree *TypeArgumentsTree, genericsToTrees *map[string]*TypeArgumentsTree) {
 	if len(currentTypeRef.Args) != len(currentType.origTL[0].TemplateArguments) {
 		generic := currentTypeRef.Type.String()
-		index := -1
-		for i, arg := range trw.wr.origTL[0].TemplateArguments {
-			if arg.FieldName == generic {
-				index = i
-				break
-			}
-		}
-		var args TypeArgumentsTree
-		trw.wr.PHPGetNatTypeDependenciesDecl(&args)
-		for _, arg := range args.EnumerateSubTreeWithPrefixes(index) {
-			*argsValues = append(*argsValues, fmt.Sprintf("$%s", arg))
-		}
+		tree.CloneValuesFrom((*genericsToTrees)[generic])
 		return
 	}
 	for i, _ := range currentType.origTL[0].TemplateArguments {
 		actualArg := currentType.arguments[i]
+		actualArgRef := currentTypeRef.Args[i]
 		if actualArg.isNat {
 			if actualArg.isArith {
-				*argsValues = append(*argsValues, strconv.FormatUint(uint64(actualArg.Arith.Res), 10))
+				value := strconv.FormatUint(uint64(actualArg.Arith.Res), 10)
+				(*tree).children[i].value = &value
 			} else {
-				isLocal, index := trw.PHPFindNatByName(currentTypeRef.Args[i].T.String())
+				isLocal, index := trw.PHPFindNatByName(actualArgRef.T.String())
 				if isLocal {
-					*argsValues = append(*argsValues, fmt.Sprintf("$this->%s", trw.Fields[index].originalName))
+					value := fmt.Sprintf("$this->%s", trw.Fields[index].originalName)
+					(*tree).children[i].value = &value
 				} else {
-					*argsValues = append(*argsValues, "$"+trw.wr.origTL[0].TemplateArguments[index].FieldName)
+					(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.origTL[0].TemplateArguments[index].FieldName])
 				}
 			}
 		} else {
-			trw.phpGetFieldArgs(actualArg.tip, &currentTypeRef.Args[i].T, argsValues)
+			if tree != nil {
+				trw.phpGetFieldArgsTree(actualArg.tip, &actualArgRef.T, tree.children[i], genericsToTrees)
+			}
 		}
 	}
 	return
@@ -316,13 +326,13 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 		natParamsComment := strings.Join(
 			utils.MapSlice(
 				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return fmt.Sprintf("\n   * @param int $%s", s) }),
+				func(s string) string { return fmt.Sprintf("\n   * @param int %s", s) }),
 			"",
 		)
 		natParamsDecl := strings.Join(
 			utils.MapSlice(
 				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return ", $" + s }),
+				func(s string) string { return ", " + s }),
 			"",
 		)
 		code.WriteString(fmt.Sprintf(`
@@ -370,7 +380,23 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				)
 				shift += 1
 			}
-			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, trw.PHPGetFieldNatDependenciesValues(i))
+			if (trw.wr.goGlobalName == "TestData3TestData3PairIntInt" ||
+				trw.wr.goGlobalName == "TestData4TestData4PairIntInt") &&
+				field.originalName == "y" {
+				print("debug")
+			}
+			if trw.wr.goGlobalName == "PairIntBoxedTupleTupleInt47" && field.originalName == "b" {
+				localTree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
+				fmt.Println(localTree)
+				print("debug")
+			}
+			if trw.wr.goGlobalName == "Left1VectorEitherStatBoxedBool" &&
+				field.originalName == "name" {
+				print("debug")
+			}
+
+			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
+			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, &tree)
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
 			}
@@ -400,13 +426,13 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 		natParamsComment := strings.Join(
 			utils.MapSlice(
 				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return fmt.Sprintf("\n   * @param int $%s", s) }),
+				func(s string) string { return fmt.Sprintf("\n   * @param int %s", s) }),
 			"",
 		)
 		natParamsDecl := strings.Join(
 			utils.MapSlice(
 				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return ", $" + s }),
+				func(s string) string { return ", " + s }),
 			"",
 		)
 		code.WriteString(fmt.Sprintf(`
@@ -443,7 +469,8 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			fieldMask := trw.PHPGetFieldMask(i)
 			shift := 2
 			textTab := func() string { return strings.Repeat(tab, shift) }
-			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, trw.PHPGetFieldNatDependenciesValues(i))
+			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
+			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree)
 			if fieldRead == nil {
 				continue
 			}
@@ -897,7 +924,7 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	return nil
 }
 
-func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []string) []string {
+func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{fmt.Sprintf("$success = RPC_READ%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
 	}
@@ -913,7 +940,11 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 					"}",
 				)
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, args)...)
+			if trw.wr.goGlobalName == "TupleTuplePairIntInt" {
+				print("debug")
+			}
+			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
@@ -953,14 +984,14 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args []
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
+		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
 		"if (!$success) {",
 		"  return false;",
 		"}",
 	}
 }
 
-func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args []string) []string {
+func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{fmt.Sprintf("$success = RPC_WRITE%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
 	}
@@ -976,7 +1007,8 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 					"}",
 				)
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, args)...)
+			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
@@ -1015,7 +1047,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args [
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("$success = %[2]s->write%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args)),
+		fmt.Sprintf("$success = %[2]s->write%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
 		"if (!$success) {",
 		"  return false;",
 		"}",
