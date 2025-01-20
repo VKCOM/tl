@@ -73,9 +73,6 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
 		tupleSize := *args.children[0].value
 		//elementArgs := args[1:]
-		if elementName == "$array_test_Data4__Pair__int__int___element" || elementName == "$array_test_Data3__Pair__int__int___element" {
-			print("debug")
-		}
 		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, args.children[1])
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]

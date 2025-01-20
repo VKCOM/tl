@@ -380,21 +380,6 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				)
 				shift += 1
 			}
-			if (trw.wr.goGlobalName == "TestData3TestData3PairIntInt" ||
-				trw.wr.goGlobalName == "TestData4TestData4PairIntInt") &&
-				field.originalName == "y" {
-				print("debug")
-			}
-			if trw.wr.goGlobalName == "PairIntBoxedTupleTupleInt47" && field.originalName == "b" {
-				localTree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-				fmt.Println(localTree)
-				print("debug")
-			}
-			if trw.wr.goGlobalName == "Left1VectorEitherStatBoxedBool" &&
-				field.originalName == "name" {
-				print("debug")
-			}
-
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
 			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, &tree)
 			for _, line := range fieldRead {
@@ -939,9 +924,6 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args *T
 					"  return false;",
 					"}",
 				)
-			}
-			if trw.wr.goGlobalName == "TupleTuplePairIntInt" {
-				print("debug")
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
 			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)

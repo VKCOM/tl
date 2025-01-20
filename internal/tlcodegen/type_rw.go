@@ -768,9 +768,6 @@ func fillAllLeafsRecursive(t *TypeArgumentsTree, curIndex *int, values *[]string
 
 func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDeclAsArray() []string {
 	t := TypeArgumentsTree{}
-	if w.goGlobalName == "PairIntBoxedTupleTupleInt47" {
-		print("debug")
-	}
 	w.PHPGetNatTypeDependenciesDecl(&t)
 	return t.EnumerateWithPrefixes()
 }
