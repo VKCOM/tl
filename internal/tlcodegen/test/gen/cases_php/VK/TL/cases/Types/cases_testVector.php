@@ -48,12 +48,13 @@ class cases_testVector implements TL\Readable, TL\Writeable {
     }
     $this->arr = [];
     for($i9 = 0; $i9 < $vector_size; $i9++) {
-      $array_int___element = 0;
-      [$array_int___element, $success] = $stream->read_int32();
+      /** @var int */
+      $obj9 = 0;
+      [$obj9, $success] = $stream->read_int32();
       if (!$success) {
         return false;
       }
-      $this->arr[] = $array_int___element;
+      $this->arr[] = $obj9;
     }
     return true;
   }

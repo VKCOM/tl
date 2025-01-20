@@ -47,7 +47,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	switch {
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
-		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
+		elementName := fmt.Sprintf("$obj%d", len(trw.PhpClassName(false, true)))
 		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
@@ -66,6 +66,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		}
 		result = append(result,
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < $vector_size; %[1]s++) {", index),
+			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
 		result = append(result, elementRead...)
@@ -76,7 +77,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		return result
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
-		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
+		elementName := fmt.Sprintf("$obj%d", len(trw.PhpClassName(false, true)))
 		tupleSize := *args.children[0].value
 		//elementArgs := args[1:]
 		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[1])
@@ -91,6 +92,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		}
 		result = append(result,
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
+			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
 		result = append(result, elementRead...)
