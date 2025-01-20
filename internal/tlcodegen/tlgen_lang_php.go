@@ -23,7 +23,7 @@ type TypeRWPHPData interface {
 	// PhpDefaultValue return default value for field of this type (can be null)
 	PhpDefaultValue() string
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
-	PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string
+	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string
 	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string
 }
 

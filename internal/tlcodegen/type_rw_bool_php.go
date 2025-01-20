@@ -28,7 +28,7 @@ func (trw *TypeRWBool) PhpDefaultValue() string {
 func (trw *TypeRWBool) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
 	if !bare {
 		return []string{
 			fmt.Sprintf(

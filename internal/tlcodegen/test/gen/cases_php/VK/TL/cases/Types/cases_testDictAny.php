@@ -49,9 +49,6 @@ class cases_testDictAny implements TL\Readable, TL\Writeable {
     $this->dict = [];
     for($i36 = 0; $i36 < $vector_size; $i36++) {
       $array_DictionaryFieldAny__float__int___element = new TL\_common\Types\dictionaryFieldAny__float__int();
-      if (is_null($array_DictionaryFieldAny__float__int___element)) {
-        $array_DictionaryFieldAny__float__int___element = new TL\_common\Types\dictionaryFieldAny__float__int();
-      }
       $success = $array_DictionaryFieldAny__float__int___element->read($stream);
       if (!$success) {
         return false;

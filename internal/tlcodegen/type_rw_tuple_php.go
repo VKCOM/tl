@@ -41,14 +41,14 @@ func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWW
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, args)
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -57,8 +57,14 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 			"if (!$success) {",
 			"  return false;",
 			"}",
-			// TODO MAKE MORE EFFICIENT
-			fmt.Sprintf("%[1]s = [];", targetName),
+		)
+		if initIfDefault {
+			result = append(result,
+				// TODO MAKE MORE EFFICIENT
+				fmt.Sprintf("%[1]s = [];", targetName),
+			)
+		}
+		result = append(result,
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < $vector_size; %[1]s++) {", index),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
@@ -73,13 +79,17 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 		elementName := fmt.Sprintf("$%s___element", trw.PhpClassName(false, true))
 		tupleSize := *args.children[0].value
 		//elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, args.children[1])
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[1])
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
+		if initIfDefault {
+			result = append(result,
+				// TODO MAKE MORE EFFICIENT
+				fmt.Sprintf("%[1]s = [];", targetName),
+			)
+		}
 		result = append(result,
-			// TODO MAKE MORE EFFICIENT
-			fmt.Sprintf("%[1]s = [];", targetName),
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
@@ -93,11 +103,11 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, args 
 	case trw.dictLike:
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
-		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, args)
+		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args)
 		for i := range keyRead {
 			keyRead[i] = "  " + keyRead[i]
 		}
-		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, args)
+		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, true, args)
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}

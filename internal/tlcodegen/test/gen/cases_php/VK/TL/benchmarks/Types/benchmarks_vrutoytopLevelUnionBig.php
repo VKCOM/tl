@@ -49,9 +49,6 @@ class benchmarks_vrutoytopLevelUnionBig implements TL\benchmarks\Types\benchmark
     $this->next_positions = [];
     for($i28 = 0; $i28 < $vector_size; $i28++) {
       $array_benchmarks_VruPosition___element = new TL\benchmarks\Types\benchmarks_vruposition();
-      if (is_null($array_benchmarks_VruPosition___element)) {
-        $array_benchmarks_VruPosition___element = new TL\benchmarks\Types\benchmarks_vruposition();
-      }
       $success = $array_benchmarks_VruPosition___element->read($stream);
       if (!$success) {
         return false;

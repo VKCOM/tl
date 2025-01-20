@@ -381,7 +381,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				shift += 1
 			}
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, &tree)
+			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree)
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
 			}
@@ -909,7 +909,7 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	return nil
 }
 
-func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{fmt.Sprintf("$success = RPC_READ%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
 	}
@@ -926,7 +926,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args *T
 				)
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
@@ -958,19 +958,25 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, args *T
 					"}",
 				)
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, args)...)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args)...)
 			return result
 		}
 	}
-	return []string{
-		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
-		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
-		"}",
+	result := make([]string, 0)
+	if initIfDefault {
+		result = append(result,
+			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+			"}",
+		)
+	}
+	result = append(result,
 		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
 		"if (!$success) {",
 		"  return false;",
 		"}",
-	}
+	)
+	return result
 }
 
 func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
