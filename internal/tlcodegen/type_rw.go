@@ -655,8 +655,9 @@ func (w *TypeRWWrapper) PHPNeedsCode() bool {
 }
 
 type TypeArgumentsTree struct {
-	value    string
+	name     string
 	leaf     bool
+	value    *string // value != nil => leaf == True
 	children []*TypeArgumentsTree
 }
 
@@ -675,7 +676,7 @@ func (t *TypeArgumentsTree) IsEmpty() bool {
 func (t *TypeArgumentsTree) EnumerateWithPrefixes() []string {
 	const natPrefix = ""
 	values := make([]string, 0)
-	t.enumerateWithPrefixes(&values, "")
+	t.enumerateWithPrefixes(&values, "$")
 	values = utils.MapSlice(values, func(s string) string { return natPrefix + s })
 	return values
 }
@@ -696,7 +697,7 @@ func (t *TypeArgumentsTree) enumerateWithPrefixes(values *[]string, curPrefix st
 	} else {
 		for _, child := range t.children {
 			if child != nil {
-				prefix := curPrefix + child.value
+				prefix := curPrefix + child.name
 				if !child.leaf {
 					prefix += delimiter
 				}
@@ -706,8 +707,70 @@ func (t *TypeArgumentsTree) enumerateWithPrefixes(values *[]string, curPrefix st
 	}
 }
 
+func (t *TypeArgumentsTree) ListAllValues() []string {
+	if t == nil {
+		return nil
+	}
+	values := make([]string, 0)
+	listAllValuesRecursive(t, &values)
+	return values
+}
+
+func listAllValuesRecursive(t *TypeArgumentsTree, values *[]string) {
+	if t == nil {
+		return
+	}
+	if t.leaf {
+		if t.value != nil {
+			*values = append(*values, *t.value)
+		}
+	} else {
+		for _, child := range t.children {
+			listAllValuesRecursive(child, values)
+		}
+	}
+}
+
+func (t *TypeArgumentsTree) FillAllLeafs() {
+	values := t.EnumerateWithPrefixes()
+	curIndex := 0
+	fillAllLeafsRecursive(t, &curIndex, &values)
+}
+
+func (t *TypeArgumentsTree) CloneValuesFrom(src *TypeArgumentsTree) {
+	if t == nil {
+		return
+	}
+	if t.leaf {
+		t.value = src.value
+		return
+	}
+	for i, child := range t.children {
+		if child != nil {
+			child.CloneValuesFrom(src.children[i])
+		}
+	}
+}
+
+func fillAllLeafsRecursive(t *TypeArgumentsTree, curIndex *int, values *[]string) {
+	if t == nil {
+		return
+	}
+	if t.leaf {
+		t.value = &(*values)[*curIndex]
+		*curIndex += 1
+		return
+	}
+	for _, child := range t.children {
+		fillAllLeafsRecursive(child, curIndex, values)
+	}
+}
+
 func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDeclAsArray() []string {
 	t := TypeArgumentsTree{}
+	if w.goGlobalName == "PairIntBoxedTupleTupleInt47" {
+		print("debug")
+	}
 	w.PHPGetNatTypeDependenciesDecl(&t)
 	return t.EnumerateWithPrefixes()
 }
@@ -719,11 +782,11 @@ func (w *TypeRWWrapper) PHPGetNatTypeDependenciesDecl(tree *TypeArgumentsTree) {
 		if template.IsNat {
 			tree.children[i] = &TypeArgumentsTree{}
 			tree.children[i].leaf = true
-			tree.children[i].value = template.FieldName
+			tree.children[i].name = template.FieldName
 		} else {
 			tree.children[i] = &TypeArgumentsTree{}
 			tree.children[i].leaf = false
-			tree.children[i].value = template.FieldName
+			tree.children[i].name = template.FieldName
 			actualArg.tip.PHPGetNatTypeDependenciesDecl(tree.children[i])
 			if tree.children[i].IsEmpty() {
 				tree.children[i] = nil
