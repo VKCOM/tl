@@ -9,10 +9,13 @@ package casetests
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases"
+
 	"github.com/vkcom/tl/internal/utils"
 	"math/rand"
 	"os"
+
+	common "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tl"
+	cases "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases"
 
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
@@ -163,21 +166,131 @@ func TestAppendNewCasesForTesting(t *testing.T) {
 	type Sample struct {
 		sample   meta.Object
 		testName string
+		// if "" then check is skipped
+		expectingHexValue string
 	}
 
 	// write your samples here
 	newSamples := []Sample{
-		{testName: "TestReadOrder", sample: &tlcases.Replace7{N: 2, M: 1, A: [][]int32{[]int32{2}, []int32{1}}}},
+		{
+			testName:          "TestReadOrder",
+			sample:            &cases.Replace7{N: 2, M: 1, A: [][]int32{[]int32{2}, []int32{1}}},
+			expectingHexValue: "00000002 00000001 00000002 00000001",
+		},
+		{
+			testName: "TestInplace",
+			sample: &cases.TestInplaceStructArgs{
+				A1: 1,
+				A2: 2,
+				A3: 3,
+				Arg: cases.Inplace1Int{Value: cases.Inplace2Int{Value: cases.Inplace3TupleInt2{
+					Value: common.PairTupleTupleInt2TupleTupleInt2{
+						X: common.TupleTupleInt2{[2]int32{3, 4}},
+						Y: common.TupleTupleInt2{[2]int32{5, 6}, [2]int32{7, 8}},
+					},
+				}}},
+			},
+			expectingHexValue: "00000001 00000002 00000003 00000003 00000004 00000005 00000006 00000007 00000008",
+		},
+		{
+			testName: "TestInplace2",
+			sample: &cases.TestInplaceStructArgs2{
+				A1: 1,
+				A2: 2,
+				A3: 3,
+				Arg: cases.Inplace1PairTupleIntTupleInt{Value: cases.Inplace2PairTupleIntTupleInt{Value: cases.Inplace3TuplePairTupleIntTupleInt2{
+					Value: common.PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2{
+						X: common.TupleTuplePairTupleIntTupleInt2{
+							common.TuplePairTupleIntTupleInt2{
+								common.PairTupleIntTupleInt{
+									X: common.TupleInt{
+										4,
+										5,
+										6,
+									},
+									Y: common.TupleInt{
+										7,
+										8,
+									},
+								},
+								common.PairTupleIntTupleInt{
+									X: common.TupleInt{
+										9,
+										10,
+										11,
+									},
+									Y: common.TupleInt{
+										12,
+										13,
+									},
+								},
+							},
+						},
+						Y: common.TupleTuplePairTupleIntTupleInt2{
+							common.TuplePairTupleIntTupleInt2{
+								common.PairTupleIntTupleInt{
+									X: common.TupleInt{
+										14,
+										15,
+										16,
+									},
+									Y: common.TupleInt{
+										17,
+										18,
+									},
+								},
+								common.PairTupleIntTupleInt{
+									X: common.TupleInt{
+										19,
+										20,
+										21,
+									},
+									Y: common.TupleInt{
+										22,
+										23,
+									},
+								},
+							},
+							common.TuplePairTupleIntTupleInt2{
+								common.PairTupleIntTupleInt{
+									X: common.TupleInt{
+										24,
+										25,
+										26,
+									},
+									Y: common.TupleInt{
+										27,
+										28,
+									},
+								},
+								common.PairTupleIntTupleInt{
+									X: common.TupleInt{
+										29,
+										30,
+										31,
+									},
+									Y: common.TupleInt{
+										32,
+										33,
+									},
+								},
+							},
+						},
+					},
+				}}},
+			},
+			expectingHexValue: "00000001 00000002 00000003 00000004 00000005 00000006 00000007 00000008 00000009 0000000a 0000000b 0000000c 0000000d 0000000e 0000000f 00000010 00000011 00000012 00000013 00000014 00000015 00000016 00000017 00000018 00000019 0000001a 0000001b 0000001c 0000001d 0000001e 0000001f 00000020 00000021",
+		},
 	}
 
 	newSamplesCount := 0
 
 	for i, sample := range newSamples {
-		success, err := addSample(&tests, sample.testName, sample.sample)
+		success, err := addSample(&tests, sample.testName, sample.sample, sample.expectingHexValue)
 		if success {
 			newSamplesCount += 1
 		} else if err != nil {
-			t.Fatalf("Incorrent test sample #%[1]d for \"%[2]s\" was provided", i, sample.sample.TLName())
+			t.Fatalf("Incorrent test sample #%[1]d for \"%[2]s\" was provided, error message: %s", i, sample.sample.TLName(), err.Error())
 			return
 		}
 	}
@@ -258,12 +371,15 @@ func checkExistenceOfTest(tests *allTestsBytes, testName, typeName, bytesHex str
 	return true, false, testName
 }
 
-func addSample(tests *allTestsBytes, testName string, sample meta.Object) (bool, error) {
+func addSample(tests *allTestsBytes, testName string, sample meta.Object, expectingHex string) (bool, error) {
 	bytes, err := sample.WriteGeneral(nil)
 	if err != nil {
 		return false, err
 	}
 	hexBytes := utils.SprintHexDump(bytes)
+	if expectingHex != "" && hexBytes != expectingHex {
+		return false, fmt.Errorf("bytes are different from expecting:\n\tactual:   %s\n\texpected: %s", hexBytes, expectingHex)
+	}
 	canAdd, exists, placeToAdd := checkExistenceOfTest(tests, testName, sample.TLName(), hexBytes)
 	if canAdd && !exists {
 		successes := tests.Tests[placeToAdd]

@@ -334,6 +334,8 @@ func init() {
 	fillObject("cases.testEnum2#86ea88ce", "#86ea88ce", &TLItem{tag: 0x86ea88ce, annotations: 0x0, tlName: "cases.testEnum2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testEnum3#69b83e2f", "#69b83e2f", &TLItem{tag: 0x69b83e2f, annotations: 0x0, tlName: "cases.testEnum3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testEnumContainer#cb684231", "#cb684231", &TLItem{tag: 0xcb684231, annotations: 0x0, tlName: "cases.testEnumContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testInplaceStructArgs#a9e4441e", "#a9e4441e", &TLItem{tag: 0xa9e4441e, annotations: 0x0, tlName: "cases.testInplaceStructArgs", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testInplaceStructArgs2#aa9f2480", "#aa9f2480", &TLItem{tag: 0xaa9f2480, annotations: 0x0, tlName: "cases.testInplaceStructArgs2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testLocalFieldmask#f68fd3f9", "#f68fd3f9", &TLItem{tag: 0xf68fd3f9, annotations: 0x0, tlName: "cases.testLocalFieldmask", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testMaybe#d6602613", "#d6602613", &TLItem{tag: 0xd6602613, annotations: 0x0, tlName: "cases.testMaybe", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testOutFieldMaskContainer#1850ffe4", "#1850ffe4", &TLItem{tag: 0x1850ffe4, annotations: 0x0, tlName: "cases.testOutFieldMaskContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

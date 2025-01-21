@@ -19,6 +19,8 @@ true = True;
 resultFalse#27930a7b {t:Type} = Maybe t;
 resultTrue#3f9c8ef8 {t:Type} t = Maybe t;
 
+pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
+
 // BLOCK: TEST RECURSIVE TYPES
 cases.myCycle1 fields_mask:# a:fields_mask.0?cases.myCycle2 = cases.MyCycle1;
 cases.myCycle2 fields_mask:# a:fields_mask.0?cases.myCycle3 = cases.MyCycle2;
@@ -81,6 +83,14 @@ cases.testAllPossibleFieldConfigsContainer outer:#
 cases.replace7 n:# m:# a:n*[m*[int]] = cases.Replace7;
 cases.replace7plus n:# m:# a:n.0?n*[m*[int]] = cases.Replace7plus;
 cases.replace7plusplus N:# M:# A:N.0?N*[M*[int]] = cases.Replace7plusplus;
+
+// BLOCK: TEST INPLACING ARGUMENTS
+cases.testInplaceStructArgs a1:# a2:# a3:# arg:cases.inplace1<a1, a2, a3, int> = cases.TestInplaceStructArgs;
+cases.testInplaceStructArgs2 a1:# a2:# a3:# arg:cases.inplace1<a1, a2, a3, pair<tuple<int, a3>, tuple<int, a2>>> = cases.TestInplaceStructArgs2;
+
+cases.inplace1 {a1:#} {a2:#} {a3:#} {X:Type} value:cases.inplace2<a2, a3, a1, X> = cases.Inplace1 a1 a2 a3 X;
+cases.inplace2 {a1:#} {a2:#} {a3:#} {X:Type} value:cases.inplace3<a2, a3, a1, tuple<X, 2>> = cases.Inplace2 a1 a2 a3 X;
+cases.inplace3 {a1:#} {a2:#} {a3:#} {X:Type} value:pair<tuple<X, a2>, tuple<X, a3>> = cases.Inplace3 a1 a2 a3 X;
 
 // BLOCK: Bytes vesrion
 cases_bytes.testArray n:# arr:n*[string] = cases_bytes.TestArray;

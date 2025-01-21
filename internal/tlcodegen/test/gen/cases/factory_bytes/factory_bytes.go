@@ -31,6 +31,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestDictInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestDictString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestEnumContainer"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestInplaceStructArgs"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestInplaceStructArgs2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestLocalFieldmask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestOutFieldMaskContainer"
@@ -122,6 +124,8 @@ func init() {
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0x86ea88ce)
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0x69b83e2f)
 	meta.SetGlobalFactoryCreateForObjectBytes(0xcb684231, func() meta.Object { var ret tlCasesTestEnumContainer.CasesTestEnumContainer; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0xa9e4441e, func() meta.Object { var ret tlCasesTestInplaceStructArgs.CasesTestInplaceStructArgs; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0xaa9f2480, func() meta.Object { var ret tlCasesTestInplaceStructArgs2.CasesTestInplaceStructArgs2; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xf68fd3f9, func() meta.Object { var ret tlCasesTestLocalFieldmask.CasesTestLocalFieldmask; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xd6602613, func() meta.Object { var ret tlCasesTestMaybe.CasesTestMaybe; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x1850ffe4, func() meta.Object {
