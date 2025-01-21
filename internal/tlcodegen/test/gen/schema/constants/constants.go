@@ -179,5 +179,4 @@ const (
 	WithFlags10                         = 0xcdca5ce1 // withFlags10
 	WithFlags11                         = 0x832c48e0 // withFlags11
 	WithFloat                           = 0x071b8685 // withFloat
-	WithNatParam                        = 0xf738d0a5 // withNatParam
 )

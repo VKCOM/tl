@@ -1,4 +1,4 @@
-package codegen_test
+package golang_test
 
 import (
 	"encoding/json"
@@ -44,7 +44,7 @@ type writeTest struct {
 }
 
 func TestWriteArgs(t *testing.T) {
-	const PathToJsonData = "data/test-functions-bytes.json"
+	const PathToJsonData = "../data/test-functions-bytes.json"
 	data, readErr := os.ReadFile(PathToJsonData)
 
 	if readErr != nil {
@@ -99,7 +99,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 }
 
 func TestReadResult(t *testing.T) {
-	const PathToJsonData = "data/test-functions-bytes.json"
+	const PathToJsonData = "../data/test-functions-bytes.json"
 	data, readErr := os.ReadFile(PathToJsonData)
 
 	if readErr != nil {

@@ -1,4 +1,4 @@
-package codegen
+package golang
 
 import (
 	"github.com/stretchr/testify/assert"

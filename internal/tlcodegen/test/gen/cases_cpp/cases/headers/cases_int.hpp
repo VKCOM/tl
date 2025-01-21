@@ -5,6 +5,16 @@
 
 namespace tl2 { namespace details { 
 
+void BuiltinTuple2IntReset(std::array<int32_t, 2>& item);
+
+bool BuiltinTuple2IntWriteJSON(std::ostream & s, const std::array<int32_t, 2>& item);
+bool BuiltinTuple2IntRead(::basictl::tl_istream & s, std::array<int32_t, 2>& item);
+bool BuiltinTuple2IntWrite(::basictl::tl_ostream & s, const std::array<int32_t, 2>& item);
+
+}} // namespace tl2::details
+
+namespace tl2 { namespace details { 
+
 void BuiltinTuple4IntReset(std::array<int32_t, 4>& item);
 
 bool BuiltinTuple4IntWriteJSON(std::ostream & s, const std::array<int32_t, 4>& item);

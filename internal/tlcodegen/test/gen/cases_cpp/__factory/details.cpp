@@ -10,6 +10,8 @@
 #include "../cases/types/cases.testOutFieldMaskContainer.hpp"
 #include "../cases/types/cases.testMaybe.hpp"
 #include "../cases/types/cases.testLocalFieldmask.hpp"
+#include "../cases/types/cases.testInplaceStructArgs2.hpp"
+#include "../cases/types/cases.testInplaceStructArgs.hpp"
 #include "../cases/types/cases.testEnumContainer.hpp"
 #include "../cases/types/cases.testDictString.hpp"
 #include "../cases/types/cases.testDictInt.hpp"
@@ -569,6 +571,38 @@ void tl2::factory::set_all_factories() {
     };
 	tl2::meta::set_create_object_by_name("cases.testEnumContainer", []() -> std::unique_ptr<tl2::meta::tl_object> {
         return std::make_unique<tl2_cases_TestEnumContainer_tl_object>();
+	});
+
+	struct tl2_cases_TestInplaceStructArgs_tl_object : public tl2::meta::tl_object {
+        tl2::cases::TestInplaceStructArgs object;
+
+        bool read(basictl::tl_istream &s) override {return object.read(s);}
+        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+        
+		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
+        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    };
+	tl2::meta::set_create_object_by_name("cases.testInplaceStructArgs", []() -> std::unique_ptr<tl2::meta::tl_object> {
+        return std::make_unique<tl2_cases_TestInplaceStructArgs_tl_object>();
+	});
+
+	struct tl2_cases_TestInplaceStructArgs2_tl_object : public tl2::meta::tl_object {
+        tl2::cases::TestInplaceStructArgs2 object;
+
+        bool read(basictl::tl_istream &s) override {return object.read(s);}
+        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+        
+		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
+        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    };
+	tl2::meta::set_create_object_by_name("cases.testInplaceStructArgs2", []() -> std::unique_ptr<tl2::meta::tl_object> {
+        return std::make_unique<tl2_cases_TestInplaceStructArgs2_tl_object>();
 	});
 
 	struct tl2_cases_TestLocalFieldmask_tl_object : public tl2::meta::tl_object {

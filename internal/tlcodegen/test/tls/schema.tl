@@ -308,7 +308,7 @@ fieldConflict4 X:%Int SetX:%Int = FieldConflict4;
 @any service5.query query:string params:%service5.Params = service5.Output;
 @any service5.insert table:string data:string = service5.Output;
 
-@any withNatParam {n:#} = MyTuple n;
+//@any withNatParam {n:#} = MyTuple n;
 
 @any tasks.addTask type_name:string queue_id:%(Vector int) task:%tasks.Task = Long; // id is returned
 

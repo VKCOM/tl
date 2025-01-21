@@ -155,6 +155,12 @@ tl_items::tl_items() {
 	auto item3412607537 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xcb684231,.annotations=0x0,.name="cases.testEnumContainer",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["cases.testEnumContainer"] = item3412607537;
 	(this->items_by_tag)[0xcb684231] = item3412607537;
+	auto item2850309150 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xa9e4441e,.annotations=0x0,.name="cases.testInplaceStructArgs",.create_object=no_object_generator,.create_function=no_function_generator});
+	(this->items)["cases.testInplaceStructArgs"] = item2850309150;
+	(this->items_by_tag)[0xa9e4441e] = item2850309150;
+	auto item2862556288 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xaa9f2480,.annotations=0x0,.name="cases.testInplaceStructArgs2",.create_object=no_object_generator,.create_function=no_function_generator});
+	(this->items)["cases.testInplaceStructArgs2"] = item2862556288;
+	(this->items_by_tag)[0xaa9f2480] = item2862556288;
 	auto item4136621049 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xf68fd3f9,.annotations=0x0,.name="cases.testLocalFieldmask",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["cases.testLocalFieldmask"] = item4136621049;
 	(this->items_by_tag)[0xf68fd3f9] = item4136621049;
