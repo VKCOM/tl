@@ -61,7 +61,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			initIfDefault = false
 		}
 		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, args)
-		for i, _ := range bodyReader {
+		for i := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
 		}
 		result = append(result, bodyReader...)
@@ -91,7 +91,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 		}
 		{
 			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, args)
-			for i, _ := range bodyWriter {
+			for i := range bodyWriter {
 				bodyWriter[i] = "  " + bodyWriter[i]
 			}
 			result = append(result, bodyWriter...)

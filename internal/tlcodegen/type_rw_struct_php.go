@@ -65,7 +65,7 @@ func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, current
 		tree.CloneValuesFrom((*genericsToTrees)[generic])
 		return
 	}
-	for i, _ := range currentType.origTL[0].TemplateArguments {
+	for i := range currentType.origTL[0].TemplateArguments {
 		actualArg := currentType.arguments[i]
 		actualArgRef := currentTypeRef.Args[i]
 		if actualArg.isNat {
@@ -93,7 +93,6 @@ func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, current
 			}
 		}
 	}
-	return
 }
 
 func (trw *TypeRWStruct) PhpClassNameReplaced() bool {
