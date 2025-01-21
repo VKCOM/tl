@@ -5,10 +5,16 @@ SCHEMA_DIR = $(CPP_DIR)/schema_cpp
 CC = g++
 CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 
+build-test-gen:
+	@cd ../../../../../; \
+	$(MAKE) build; \
+	$(MAKE) cpp_gen_test_data;
+
 # run in project root "make cpp_gen_test_data"
-run-all-tests:
-	make run-objects-test
-	make run-functions-test
+run-all-tests: build-test-gen
+	make run-objects-test; \
+	make run-functions-test; \
+	make clean-build;
 
 clean-build:
 	rm -rf build

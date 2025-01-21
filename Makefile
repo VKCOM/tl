@@ -154,6 +154,10 @@ cpp:
 	$(MAKE) cpp_gen
 	$(MAKE) cpp_build
 
+.PHONY: test_multi_lang_cases
+test_multi_lang_cases:
+	@cd internal/tlcodegen/test/codegen_test/; \
+	$(MAKE) run-all-languages-tests;
 
 .PHONY: test
 test:
