@@ -155,7 +155,7 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 	}
 }
 
-const PathToBytesData = "../data/test-objects-bytes.json"
+const PathToBytesData = "../../data/test-objects-bytes.json"
 
 func TestAppendNewCasesForTesting(t *testing.T) {
 	tests, success := initTestData(t)

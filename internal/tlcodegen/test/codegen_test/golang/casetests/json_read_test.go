@@ -178,7 +178,7 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 }
 
 func TestGeneralCases(t *testing.T) {
-	const PathToJsonData = "../data/test-objects-json.json"
+	const PathToJsonData = "../../data/test-objects-json.json"
 	data, readErr := os.ReadFile(PathToJsonData)
 
 	if readErr != nil {
