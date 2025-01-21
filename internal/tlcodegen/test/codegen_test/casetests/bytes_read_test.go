@@ -383,6 +383,9 @@ func addSample(tests *allTestsBytes, testName string, sample meta.Object, expect
 	canAdd, exists, placeToAdd := checkExistenceOfTest(tests, testName, sample.TLName(), hexBytes)
 	if canAdd && !exists {
 		successes := tests.Tests[placeToAdd]
+		if successes.Successes == nil {
+			successes.TestingType = sample.TLName()
+		}
 		successes.Successes = append(successes.Successes, MappingSuccessBytes{Bytes: hexBytes})
 		tests.Tests[placeToAdd] = successes
 		return true, nil

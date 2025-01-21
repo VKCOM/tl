@@ -31,6 +31,12 @@ include "cases_bytes/Types/cases_bytes_testEnum3.php";
 include "cases_bytes/Types/cases_bytes_testEnumContainer.php";
 include "cases_bytes/Types/cases_bytes_testTuple.php";
 include "cases_bytes/Types/cases_bytes_testVector.php";
+include "cases/Types/cases_inplace1__int.php";
+include "cases/Types/cases_inplace1__Pair__array_int__array_int.php";
+include "cases/Types/cases_inplace2__int.php";
+include "cases/Types/cases_inplace2__Pair__array_int__array_int.php";
+include "cases/Types/cases_inplace3__array_int.php";
+include "cases/Types/cases_inplace3__array_Pair__array_int__array_int.php";
 include "cases/Types/cases_myCycle1.php";
 include "cases/Types/cases_myCycle2.php";
 include "cases/Types/cases_myCycle3.php";
@@ -49,6 +55,8 @@ include "cases/Types/cases_testEnum1.php";
 include "cases/Types/cases_testEnum2.php";
 include "cases/Types/cases_testEnum3.php";
 include "cases/Types/cases_testEnumContainer.php";
+include "cases/Types/cases_testInplaceStructArgs.php";
+include "cases/Types/cases_testInplaceStructArgs2.php";
 include "cases/Types/cases_testLocalFieldmask.php";
 include "cases/Types/cases_testMaybe.php";
 include "cases/Types/cases_testOutFieldMask.php";
@@ -61,6 +69,9 @@ include "cases/Types/cases_testUnion2.php";
 include "cases/Types/cases_testUnionContainer.php";
 include "cases/Types/cases_testVector.php";
 include "_common/Types/dictionaryFieldAny__float__int.php";
+include "_common/Types/pair__array_int__array_int.php";
+include "_common/Types/pair__array_array_int__array_array_int.php";
+include "_common/Types/pair__array_array_Pair__array_int__array_int__array_array_Pair__array_int__array_int.php";
 
 class tl_factory {
   /** @var mixed[] */ // TODO
@@ -167,6 +178,12 @@ class tl_factory {
     $itemcb684231 = function () { return new TL\cases\Types\cases_testEnumContainer(); };
     $this->tl_factory_by_name["cases.testEnumContainer"] = $itemcb684231;
     $this->tl_factory_by_tag[0xcb684231] = $itemcb684231;
+    $itema9e4441e = function () { return new TL\cases\Types\cases_testInplaceStructArgs(); };
+    $this->tl_factory_by_name["cases.testInplaceStructArgs"] = $itema9e4441e;
+    $this->tl_factory_by_tag[0xa9e4441e] = $itema9e4441e;
+    $itemaa9f2480 = function () { return new TL\cases\Types\cases_testInplaceStructArgs2(); };
+    $this->tl_factory_by_name["cases.testInplaceStructArgs2"] = $itemaa9f2480;
+    $this->tl_factory_by_tag[0xaa9f2480] = $itemaa9f2480;
     $itemf68fd3f9 = function () { return new TL\cases\Types\cases_testLocalFieldmask(); };
     $this->tl_factory_by_name["cases.testLocalFieldmask"] = $itemf68fd3f9;
     $this->tl_factory_by_tag[0xf68fd3f9] = $itemf68fd3f9;
