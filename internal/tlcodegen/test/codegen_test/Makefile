@@ -8,8 +8,9 @@ run-php-tests:
 	cd php && make run-all-tests
 
 run-cpp-tests:
-	#cd cpp && make run-all-tests
+	cd cpp && make run-all-tests
 
 run-golang-tests:
-	@cd golang; \
+	cd ../../../.. && make goldmaster_nocompile;
+	cd golang;
 	go test ./...
