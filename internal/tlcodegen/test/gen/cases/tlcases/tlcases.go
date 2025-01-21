@@ -10,6 +10,12 @@ package tlcases
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/cycle_42a1a8597f818829cd168dce9785322f"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/cycle_44515dca4b2e76ca676b13645e716786"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace1Int"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace1PairTupleIntTupleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace2Int"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace2PairTupleIntTupleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace3TupleInt2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace3TuplePairTupleIntTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesReplace7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesReplace7plus"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesReplace7plusplus"
@@ -25,6 +31,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestEnum2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestEnum3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestEnumContainer"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestInplaceStructArgs"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestInplaceStructArgs2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestLocalFieldmask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestOutFieldMask"
@@ -36,6 +44,12 @@ import (
 )
 
 type (
+	Inplace1Int                          = tlCasesInplace1Int.CasesInplace1Int
+	Inplace1PairTupleIntTupleInt         = tlCasesInplace1PairTupleIntTupleInt.CasesInplace1PairTupleIntTupleInt
+	Inplace2Int                          = tlCasesInplace2Int.CasesInplace2Int
+	Inplace2PairTupleIntTupleInt         = tlCasesInplace2PairTupleIntTupleInt.CasesInplace2PairTupleIntTupleInt
+	Inplace3TupleInt2                    = tlCasesInplace3TupleInt2.CasesInplace3TupleInt2
+	Inplace3TuplePairTupleIntTupleInt2   = tlCasesInplace3TuplePairTupleIntTupleInt2.CasesInplace3TuplePairTupleIntTupleInt2
 	MyCycle1                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle1
 	MyCycle2                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle2
 	MyCycle3                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle3
@@ -51,6 +65,8 @@ type (
 	TestDictString                       = tlCasesTestDictString.CasesTestDictString
 	TestEnum                             = tlCasesTestEnum.CasesTestEnum
 	TestEnumContainer                    = tlCasesTestEnumContainer.CasesTestEnumContainer
+	TestInplaceStructArgs                = tlCasesTestInplaceStructArgs.CasesTestInplaceStructArgs
+	TestInplaceStructArgs2               = tlCasesTestInplaceStructArgs2.CasesTestInplaceStructArgs2
 	TestLocalFieldmask                   = tlCasesTestLocalFieldmask.CasesTestLocalFieldmask
 	TestMaybe                            = tlCasesTestMaybe.CasesTestMaybe
 	TestOutFieldMask                     = tlCasesTestOutFieldMask.CasesTestOutFieldMask

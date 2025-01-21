@@ -21,10 +21,18 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlInt64"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlIntMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlLong"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleIntTupleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleTupleInt2TupleTupleInt2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlPairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleInt4"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTuplePairTupleIntTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleString4"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTupleInt2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTuplePairTupleIntTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVruPosition"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldString"
@@ -33,35 +41,43 @@ import (
 )
 
 type (
-	DictionaryAnyDoubleInt           = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
-	DictionaryAnyIntInt              = tlDictionaryAnyIntInt.DictionaryAnyIntInt
-	DictionaryAnyIntIntBytes         = tlDictionaryAnyIntInt.DictionaryAnyIntIntBytes
-	DictionaryFieldAnyDoubleInt      = tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
-	DictionaryFieldAnyIntInt         = tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
-	DictionaryFieldInt               = tlDictionaryFieldInt.DictionaryFieldInt
-	DictionaryFieldIntBytes          = tlDictionaryFieldInt.DictionaryFieldIntBytes
-	DictionaryFieldString            = tlDictionaryFieldString.DictionaryFieldString
-	DictionaryFieldStringBytes       = tlDictionaryFieldString.DictionaryFieldStringBytes
-	DictionaryInt                    = tlDictionaryInt.DictionaryInt
-	DictionaryIntBytes               = tlDictionaryInt.DictionaryIntBytes
-	DictionaryString                 = tlDictionaryString.DictionaryString
-	DictionaryStringBytes            = tlDictionaryString.DictionaryStringBytes
-	Int                              = tlInt.Int
-	Int32                            = tlInt32.Int32
-	Int64                            = tlInt64.Int64
-	IntMaybe                         = tlIntMaybe.IntMaybe
-	Long                             = tlLong.Long
-	String                           = tlString.String
-	True                             = tlTrue.True
-	TupleInt4                        = tlTupleInt4.TupleInt4
-	TupleString4                     = tlTupleString4.TupleString4
-	TupleString4Bytes                = tlTupleString4.TupleString4Bytes
-	VectorBenchmarksVruPosition      = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
-	VectorDictionaryFieldInt         = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
-	VectorDictionaryFieldIntBytes    = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes
-	VectorDictionaryFieldString      = tlVectorDictionaryFieldString.VectorDictionaryFieldString
-	VectorDictionaryFieldStringBytes = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
-	VectorInt                        = tlVectorInt.VectorInt
-	VectorString                     = tlVectorString.VectorString
-	VectorStringBytes                = tlVectorString.VectorStringBytes
+	DictionaryAnyDoubleInt                                             = tlDictionaryAnyDoubleInt.DictionaryAnyDoubleInt
+	DictionaryAnyIntInt                                                = tlDictionaryAnyIntInt.DictionaryAnyIntInt
+	DictionaryAnyIntIntBytes                                           = tlDictionaryAnyIntInt.DictionaryAnyIntIntBytes
+	DictionaryFieldAnyDoubleInt                                        = tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
+	DictionaryFieldAnyIntInt                                           = tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
+	DictionaryFieldInt                                                 = tlDictionaryFieldInt.DictionaryFieldInt
+	DictionaryFieldIntBytes                                            = tlDictionaryFieldInt.DictionaryFieldIntBytes
+	DictionaryFieldString                                              = tlDictionaryFieldString.DictionaryFieldString
+	DictionaryFieldStringBytes                                         = tlDictionaryFieldString.DictionaryFieldStringBytes
+	DictionaryInt                                                      = tlDictionaryInt.DictionaryInt
+	DictionaryIntBytes                                                 = tlDictionaryInt.DictionaryIntBytes
+	DictionaryString                                                   = tlDictionaryString.DictionaryString
+	DictionaryStringBytes                                              = tlDictionaryString.DictionaryStringBytes
+	Int                                                                = tlInt.Int
+	Int32                                                              = tlInt32.Int32
+	Int64                                                              = tlInt64.Int64
+	IntMaybe                                                           = tlIntMaybe.IntMaybe
+	Long                                                               = tlLong.Long
+	PairTupleIntTupleInt                                               = tlPairTupleIntTupleInt.PairTupleIntTupleInt
+	PairTupleTupleInt2TupleTupleInt2                                   = tlPairTupleTupleInt2TupleTupleInt2.PairTupleTupleInt2TupleTupleInt2
+	PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2 = tlPairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2.PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2
+	String                                                             = tlString.String
+	True                                                               = tlTrue.True
+	TupleInt                                                           = tlTupleInt.TupleInt
+	TupleInt2                                                          = tlTupleInt2.TupleInt2
+	TupleInt4                                                          = tlTupleInt4.TupleInt4
+	TuplePairTupleIntTupleInt2                                         = tlTuplePairTupleIntTupleInt2.TuplePairTupleIntTupleInt2
+	TupleString4                                                       = tlTupleString4.TupleString4
+	TupleString4Bytes                                                  = tlTupleString4.TupleString4Bytes
+	TupleTupleInt2                                                     = tlTupleTupleInt2.TupleTupleInt2
+	TupleTuplePairTupleIntTupleInt2                                    = tlTupleTuplePairTupleIntTupleInt2.TupleTuplePairTupleIntTupleInt2
+	VectorBenchmarksVruPosition                                        = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
+	VectorDictionaryFieldInt                                           = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
+	VectorDictionaryFieldIntBytes                                      = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes
+	VectorDictionaryFieldString                                        = tlVectorDictionaryFieldString.VectorDictionaryFieldString
+	VectorDictionaryFieldStringBytes                                   = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
+	VectorInt                                                          = tlVectorInt.VectorInt
+	VectorString                                                       = tlVectorString.VectorString
+	VectorStringBytes                                                  = tlVectorString.VectorStringBytes
 )

@@ -15,6 +15,9 @@ const (
 	BenchmarksVrutoyTopLevelContainerWithDependency = 0xc176008e // benchmarks.vrutoyTopLevelContainerWithDependency
 	BenchmarksVrutoytopLevelUnionBig                = 0xef556bee // benchmarks.vrutoytopLevelUnionBig
 	BenchmarksVrutoytopLevelUnionEmpty              = 0xce27c770 // benchmarks.vrutoytopLevelUnionEmpty
+	CasesInplace1                                   = 0x5533e8e9 // cases.inplace1
+	CasesInplace2                                   = 0x869fcff5 // cases.inplace2
+	CasesInplace3                                   = 0x4ffb95cb // cases.inplace3
 	CasesMyCycle1                                   = 0xd3ca919d // cases.myCycle1
 	CasesMyCycle2                                   = 0x5444c9a2 // cases.myCycle2
 	CasesMyCycle3                                   = 0x7624f86b // cases.myCycle3
@@ -32,6 +35,8 @@ const (
 	CasesTestEnum2                                  = 0x86ea88ce // cases.testEnum2
 	CasesTestEnum3                                  = 0x69b83e2f // cases.testEnum3
 	CasesTestEnumContainer                          = 0xcb684231 // cases.testEnumContainer
+	CasesTestInplaceStructArgs                      = 0xa9e4441e // cases.testInplaceStructArgs
+	CasesTestInplaceStructArgs2                     = 0xaa9f2480 // cases.testInplaceStructArgs2
 	CasesTestLocalFieldmask                         = 0xf68fd3f9 // cases.testLocalFieldmask
 	CasesTestMaybe                                  = 0xd6602613 // cases.testMaybe
 	CasesTestOutFieldMask                           = 0xbd6b4b3c // cases.testOutFieldMask
@@ -61,6 +66,7 @@ const (
 	Int32                                           = 0x7934e71f // int32
 	Int64                                           = 0xf5609de0 // int64
 	Long                                            = 0x22076cba // long
+	Pair                                            = 0xf01604df // pair
 	ResultFalse                                     = 0x27930a7b // resultFalse
 	ResultTrue                                      = 0x3f9c8ef8 // resultTrue
 	String                                          = 0xb5286e24 // string
