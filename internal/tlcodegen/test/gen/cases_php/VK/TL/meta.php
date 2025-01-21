@@ -161,6 +161,12 @@ class tl_meta {
     $itemcb684231 = new tl_item(0xcb684231, 0x0, "cases.testEnumContainer");
     $this->tl_item_by_name["cases.testEnumContainer"] = $itemcb684231;
     $this->tl_item_by_tag[0xcb684231] = $itemcb684231;
+    $itema9e4441e = new tl_item(0xa9e4441e, 0x0, "cases.testInplaceStructArgs");
+    $this->tl_item_by_name["cases.testInplaceStructArgs"] = $itema9e4441e;
+    $this->tl_item_by_tag[0xa9e4441e] = $itema9e4441e;
+    $itemaa9f2480 = new tl_item(0xaa9f2480, 0x0, "cases.testInplaceStructArgs2");
+    $this->tl_item_by_name["cases.testInplaceStructArgs2"] = $itemaa9f2480;
+    $this->tl_item_by_tag[0xaa9f2480] = $itemaa9f2480;
     $itemf68fd3f9 = new tl_item(0xf68fd3f9, 0x0, "cases.testLocalFieldmask");
     $this->tl_item_by_name["cases.testLocalFieldmask"] = $itemf68fd3f9;
     $this->tl_item_by_tag[0xf68fd3f9] = $itemf68fd3f9;
