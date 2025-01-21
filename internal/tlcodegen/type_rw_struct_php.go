@@ -70,8 +70,14 @@ func (trw *TypeRWStruct) phpGetFieldArgsTree(currentType *TypeRWWrapper, current
 		actualArgRef := currentTypeRef.Args[i]
 		if actualArg.isNat {
 			if actualArg.isArith {
-				value := strconv.FormatUint(uint64(actualArg.Arith.Res), 10)
-				(*tree).children[i].value = &value
+				if actualArgRef.IsArith {
+					value := strconv.FormatUint(uint64(actualArg.Arith.Res), 10)
+					(*tree).children[i].value = &value
+				} else {
+					// argument resolving to constant by in definition it is outer nat
+					_, index := trw.PHPFindNatByName(actualArgRef.T.String())
+					(*tree).children[i].CloneValuesFrom((*genericsToTrees)[trw.wr.origTL[0].TemplateArguments[index].FieldName])
+				}
 			} else {
 				isLocal, index := trw.PHPFindNatByName(actualArgRef.T.String())
 				if isLocal {
@@ -379,6 +385,10 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 					),
 				)
 				shift += 1
+			}
+			if trw.PhpClassName(false, true) == "test_dataIgnoreFlags__test_DataIgnoreFlags__test_DataIgnoreFlags__int" &&
+				field.originalName == "t" {
+				print("debug")
 			}
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
 			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree)
