@@ -9,6 +9,7 @@ package casetests
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases"
 	"github.com/vkcom/tl/internal/utils"
 	"math/rand"
 	"os"
@@ -151,20 +152,71 @@ func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 	}
 }
 
-func TestGeneralCasesBytes(t *testing.T) {
-	const PathToJsonData = "../data/test-objects-bytes.json"
-	data, readErr := os.ReadFile(PathToJsonData)
+const PathToBytesData = "../data/test-objects-bytes.json"
 
-	if readErr != nil {
-		t.Fatalf("testing data is not provided")
+func TestAppendNewCasesForTesting(t *testing.T) {
+	tests, success := initTestData(t)
+	if !success {
 		return
 	}
 
-	tests := allTestsBytes{map[string]mappingTestSamplesBytes{}}
-	err := json.Unmarshal(data, &tests)
+	type Sample struct {
+		sample   meta.Object
+		testName string
+	}
 
-	if err != nil {
-		t.Fatalf("can't unmarshall test data")
+	// write your samples here
+	newSamples := []Sample{
+		{testName: "TestReadOrder", sample: &tlcases.Replace7{N: 2, M: 1, A: [][]int32{[]int32{2}, []int32{1}}}},
+	}
+
+	newSamplesCount := 0
+
+	for i, sample := range newSamples {
+		success, err := addSample(&tests, sample.testName, sample.sample)
+		if success {
+			newSamplesCount += 1
+		} else if err != nil {
+			t.Fatalf("Incorrent test sample #%[1]d for \"%[2]s\" was provided", i, sample.sample.TLName())
+			return
+		}
+	}
+
+	fmt.Println("")
+
+	if newSamplesCount != 0 {
+		bytes, err := json.MarshalIndent(&tests, "", "\t")
+
+		if err != nil {
+			t.Fatalf("can't marshal new values")
+			return
+		}
+
+		file, err := os.Create(PathToBytesData)
+
+		if err != nil {
+			t.Fatalf("can't open file with test cases")
+			return
+		}
+		defer file.Close()
+
+		_, err = file.Write(bytes)
+		if err != nil {
+			t.Fatalf("can't overwrite file with test cases")
+			return
+		}
+
+		fmt.Printf("To \"%s\" were added %d test cases\n", PathToBytesData, newSamplesCount)
+	} else {
+		fmt.Printf("Nothing to add to \"%s\"\n", PathToBytesData)
+	}
+
+	fmt.Println("")
+}
+
+func TestGeneralCasesBytes(t *testing.T) {
+	tests, success := initTestData(t)
+	if !success {
 		return
 	}
 
@@ -181,4 +233,61 @@ func TestGeneralCasesBytes(t *testing.T) {
 			})
 		})
 	}
+}
+
+func checkExistenceOfTest(tests *allTestsBytes, testName, typeName, bytesHex string) (testCanBeAdded bool, testExists bool, testNameToAdd string) {
+	for testNameValue, test := range tests.Tests {
+		// testName exists, but it is not for this type then return false
+		if testNameValue == testName {
+			if test.TestingType != typeName {
+				return false, false, ""
+			}
+		} else {
+			// testName different, but maybe it is for same type
+			if test.TestingType != typeName {
+				continue
+			}
+		}
+
+		for _, success := range test.Successes {
+			if success.Bytes == bytesHex {
+				return true, true, testNameValue
+			}
+		}
+	}
+	return true, false, testName
+}
+
+func addSample(tests *allTestsBytes, testName string, sample meta.Object) (bool, error) {
+	bytes, err := sample.WriteGeneral(nil)
+	if err != nil {
+		return false, err
+	}
+	hexBytes := utils.SprintHexDump(bytes)
+	canAdd, exists, placeToAdd := checkExistenceOfTest(tests, testName, sample.TLName(), hexBytes)
+	if canAdd && !exists {
+		successes := tests.Tests[placeToAdd]
+		successes.Successes = append(successes.Successes, MappingSuccessBytes{Bytes: hexBytes})
+		tests.Tests[placeToAdd] = successes
+		return true, nil
+	}
+	return false, nil
+}
+
+func initTestData(t *testing.T) (_ allTestsBytes, success bool) {
+	data, readErr := os.ReadFile(PathToBytesData)
+
+	if readErr != nil {
+		t.Fatalf("testing data is not provided")
+		return allTestsBytes{}, false
+	}
+
+	tests := allTestsBytes{map[string]mappingTestSamplesBytes{}}
+	err := json.Unmarshal(data, &tests)
+
+	if err != nil {
+		t.Fatalf("can't unmarshall test data")
+		return allTestsBytes{}, false
+	}
+	return tests, true
 }
