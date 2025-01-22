@@ -577,7 +577,7 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 					condition = fmt.Sprintf("$has_%s", dependentField.originalName)
 				} else {
 					condition = fmt.Sprintf(
-						"!is_null($this->%[1]s)",
+						"$this->%[1]s !== null",
 						dependentField.originalName,
 					)
 				}
