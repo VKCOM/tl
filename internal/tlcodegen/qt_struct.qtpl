@@ -1,6 +1,9 @@
 {% package tlcodegen %}
 
 {% import "fmt" %}
+{% import "github.com/vkcom/tl/internal/utils" %}
+{% import "strings" %}
+{% import "sort" %}
 
 {%- func (struct_ *TypeRWStruct)GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
@@ -794,6 +797,63 @@ func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) ([]byt
   w, err = item.WriteResult(w, ret)
   return r, w, err
 }
+{%- for fieldId, field := range struct_.Fields -%}
+    {%- if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 -%}
+        {%- code
+            bits := make([]uint32, 0)
+            for i := range affectedBits {
+                bits = append(bits, i)
+            }
+            sort.Slice(bits, func(i, j int) bool {
+                return bits[i] < bits[j]
+            })
+        -%}
+        {%- for _, bit := range bits -%}
+            {%- code
+                bitUsage := affectedBits[bit]
+                affectedTypes := make([]*TypeRWStruct, 0)
+            	for i := range bitUsage.AffectedFields {
+            		affectedTypes = append(affectedTypes, i)
+            	}
+            	sort.Slice(affectedTypes, func(i, j int) bool {
+            		return TypeRWWrapperLessGlobal(affectedTypes[i].wr, affectedTypes[j].wr) > 0
+            	})
+            -%}
+            {%- for _, affectedType := range affectedTypes -%}
+                {%- code
+                    affectedFieldsByBit := bitUsage.AffectedFields[affectedType]
+                    affectedFieldsByBit = utils.SetToSlice(utils.SliceToSet(affectedFieldsByBit))
+                    sort.Slice(affectedFieldsByBit, func(i, j int) bool {
+                        return affectedFieldsByBit[i] < affectedFieldsByBit[j]
+                    })
+                    fieldNames := make([]string, len(affectedFieldsByBit))
+                    fieldNamesForComment := make([]string, len(affectedFieldsByBit))
+
+                    for i := range fieldNames {
+                        fieldNames[i] = affectedType.Fields[affectedFieldsByBit[i]].goName
+                        fieldNamesForComment[i] = "\"" + affectedType.Fields[affectedFieldsByBit[i]].originalName + "\""
+                    }
+
+                    mergedFields := strings.Join(fieldNames, "And")
+                    mergedFieldsForComment := strings.Join(fieldNamesForComment, ", ")
+                    maybeS := ""
+                    if len(affectedFieldsByBit) > 1 {
+                        maybeS = "s"
+                    }
+                -%}
+// Set field{%s= maybeS %} {%s= mergedFieldsForComment %} in "{%s= affectedType.wr.tlName.String() %}" by changing fieldMask "{%s= field.originalName %}"
+func (item *{%s= goName %}) SetInReturn{%s= mergedFields %}For{%s= affectedType.wr.goGlobalName %}(value bool) {
+    if value {
+        item.{%s= field.goName %} |= 1 << {%d= int(bit) %}
+    } else {
+        item.{%s= field.goName %} &^= 1 << {%d= int(bit) %}
+    }
+}
+
+            {%- endfor -%}
+        {%- endfor -%}
+    {%- endif -%}
+{%- endfor -%}
 
 {%- endfunc -%}
 

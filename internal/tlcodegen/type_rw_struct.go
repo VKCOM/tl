@@ -281,7 +281,7 @@ const (
 )
 
 func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties, []uint32) {
-	result, affectedIndexes := trw.GetFieldNatPropertiesAsUsageMap(fieldId)
+	result, affectedIndexes := trw.GetFieldNatPropertiesAsUsageMap(fieldId, true, true)
 	indexes := make([]uint32, 0)
 	for i := range affectedIndexes {
 		indexes = append(indexes, i)
@@ -293,7 +293,7 @@ func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties,
 	return result, indexes
 }
 
-func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int) (FieldNatProperties, map[uint32]BitUsageInfo) {
+func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int, inStruct, inReturnType bool) (FieldNatProperties, map[uint32]BitUsageInfo) {
 	if fieldId < 0 || len(trw.Fields) <= fieldId {
 		return FieldIsNotNat, nil
 	}
@@ -305,32 +305,34 @@ func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int) (FieldNatP
 	result := FieldIsNat
 	affectedIndexes := make(map[uint32]BitUsageInfo)
 	natParamUsageMap := make(map[VisitedTypeNatParam]VisitResult)
-	for i, f := range trw.Fields {
-		if i == fieldId {
-			continue
-		}
-		if f.fieldMask != nil &&
-			f.fieldMask.isField &&
-			f.fieldMask.FieldIndex == fieldId {
-			if _, hasBit := affectedIndexes[f.BitNumber]; !hasBit {
-				affectedIndexes[f.BitNumber] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
+	if inStruct {
+		for i, f := range trw.Fields {
+			if i == fieldId {
+				continue
 			}
-			affectedIndexes[f.BitNumber].AffectedFields[trw] = append(affectedIndexes[f.BitNumber].AffectedFields[trw], i)
+			if f.fieldMask != nil &&
+				f.fieldMask.isField &&
+				f.fieldMask.FieldIndex == fieldId {
+				if _, hasBit := affectedIndexes[f.BitNumber]; !hasBit {
+					affectedIndexes[f.BitNumber] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
+				}
+				affectedIndexes[f.BitNumber].AffectedFields[trw] = append(affectedIndexes[f.BitNumber].AffectedFields[trw], i)
 
-			result |= FieldUsedAsFieldMask
-		}
-		natIndexes := make([]int, 0)
-		for j, natArg := range f.natArgs {
-			if natArg.isField && natArg.FieldIndex == fieldId {
-				natIndexes = append(natIndexes, j)
+				result |= FieldUsedAsFieldMask
 			}
-		}
-		for _, j := range natIndexes {
-			visit(f.t, j, &natParamUsageMap, &affectedIndexes, &result)
+			natIndexes := make([]int, 0)
+			for j, natArg := range f.natArgs {
+				if natArg.isField && natArg.FieldIndex == fieldId {
+					natIndexes = append(natIndexes, j)
+				}
+			}
+			for _, j := range natIndexes {
+				visit(f.t, j, &natParamUsageMap, &affectedIndexes, &result)
+			}
 		}
 	}
 
-	if trw.ResultType != nil {
+	if inReturnType && (trw.ResultType != nil) {
 		for j, natArg := range trw.ResultNatArgs {
 			if natArg.isField && natArg.FieldIndex == fieldId {
 				visit(trw.ResultType, j, &natParamUsageMap, &affectedIndexes, &result)
