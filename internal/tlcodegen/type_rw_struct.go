@@ -312,6 +312,15 @@ func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties,
 			visit(f.t, j, &natParamUsageMap, &affectedIndexes, &result)
 		}
 	}
+
+	if trw.ResultType != nil {
+		for j, natArg := range trw.ResultNatArgs {
+			if natArg.isField && natArg.FieldIndex == fieldId {
+				visit(trw.ResultType, j, &natParamUsageMap, &affectedIndexes, &result)
+			}
+		}
+	}
+
 	indexes := make([]uint32, 0)
 	for i := range affectedIndexes {
 		indexes = append(indexes, i)
@@ -397,18 +406,22 @@ func visit(
 		}
 	case *TypeRWBrackets:
 		{
-			*natProps |= FieldUsedAsSize
-			elementType := i.element.t
-			natIndexes := make([]int, 0)
-			for i, natParam := range elementType.NatParams {
-				if natParam == natParamName {
-					natIndexes = append(natIndexes, i)
+			// tuple
+			if !i.vectorLike && !i.dictLike && i.dynamicSize && natIndex == 0 {
+				*natProps |= FieldUsedAsSize
+			} else {
+				elementType := i.element.t
+				natIndexes := make([]int, 0)
+				for i, natParam := range elementType.NatParams {
+					if natParam == natParamName {
+						natIndexes = append(natIndexes, i)
+					}
 				}
-			}
-			for _, index := range natIndexes {
-				res := visit(elementType, index, visitResults, affectedIndexes, natProps)
-				if res == VisitSuccess {
-					(*visitResults)[key] = VisitSuccess
+				for _, index := range natIndexes {
+					res := visit(elementType, index, visitResults, affectedIndexes, natProps)
+					if res == VisitSuccess {
+						(*visitResults)[key] = VisitSuccess
+					}
 				}
 			}
 		}
