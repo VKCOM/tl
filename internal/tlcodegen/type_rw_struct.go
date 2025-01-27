@@ -281,6 +281,19 @@ const (
 )
 
 func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties, []uint32) {
+	result, affectedIndexes := trw.GetFieldNatPropertiesAsUsageMap(fieldId)
+	indexes := make([]uint32, 0)
+	for i := range affectedIndexes {
+		indexes = append(indexes, i)
+	}
+	// not necessary
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
+	return result, indexes
+}
+
+func (trw *TypeRWStruct) GetFieldNatPropertiesAsUsageMap(fieldId int) (FieldNatProperties, map[uint32]BitUsageInfo) {
 	if fieldId < 0 || len(trw.Fields) <= fieldId {
 		return FieldIsNotNat, nil
 	}
@@ -290,7 +303,7 @@ func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties,
 		return FieldIsNotNat, nil
 	}
 	result := FieldIsNat
-	affectedIndexes := make(map[uint32]bool)
+	affectedIndexes := make(map[uint32]BitUsageInfo)
 	natParamUsageMap := make(map[VisitedTypeNatParam]VisitResult)
 	for i, f := range trw.Fields {
 		if i == fieldId {
@@ -299,7 +312,11 @@ func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties,
 		if f.fieldMask != nil &&
 			f.fieldMask.isField &&
 			f.fieldMask.FieldIndex == fieldId {
-			affectedIndexes[f.BitNumber] = true
+			if _, hasBit := affectedIndexes[f.BitNumber]; !hasBit {
+				affectedIndexes[f.BitNumber] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
+			}
+			affectedIndexes[f.BitNumber].AffectedFields[trw] = append(affectedIndexes[f.BitNumber].AffectedFields[trw], i)
+
 			result |= FieldUsedAsFieldMask
 		}
 		natIndexes := make([]int, 0)
@@ -321,15 +338,11 @@ func (trw *TypeRWStruct) GetFieldNatProperties(fieldId int) (FieldNatProperties,
 		}
 	}
 
-	indexes := make([]uint32, 0)
-	for i := range affectedIndexes {
-		indexes = append(indexes, i)
-	}
-	// not necessary
-	sort.Slice(indexes, func(i, j int) bool {
-		return indexes[i] < indexes[j]
-	})
-	return result, indexes
+	return result, affectedIndexes
+}
+
+type BitUsageInfo struct {
+	AffectedFields map[*TypeRWStruct][]int
 }
 
 type VisitedTypeNatParam struct {
@@ -349,7 +362,7 @@ func visit(
 	t *TypeRWWrapper,
 	natIndex int,
 	visitResults *map[VisitedTypeNatParam]VisitResult,
-	affectedIndexes *map[uint32]bool,
+	affectedIndexes *map[uint32]BitUsageInfo,
 	natProps *FieldNatProperties,
 ) VisitResult {
 	natParamName := t.NatParams[natIndex]
@@ -365,13 +378,16 @@ func visit(
 	switch i := t.trw.(type) {
 	case *TypeRWStruct:
 		{
-			for _, f := range i.Fields {
+			for fId, f := range i.Fields {
 				if f.fieldMask != nil &&
 					!f.fieldMask.isField &&
 					!f.fieldMask.isArith &&
 					natParamName == f.fieldMask.name {
 					*natProps |= FieldUsedAsFieldMask
-					(*affectedIndexes)[f.BitNumber] = true
+					if _, hasBit := (*affectedIndexes)[f.BitNumber]; !hasBit {
+						(*affectedIndexes)[f.BitNumber] = BitUsageInfo{AffectedFields: map[*TypeRWStruct][]int{}}
+					}
+					(*affectedIndexes)[f.BitNumber].AffectedFields[i] = append((*affectedIndexes)[f.BitNumber].AffectedFields[i], fId)
 					(*visitResults)[key] = VisitSuccess
 				}
 				natIndexes := make([]int, 0)
