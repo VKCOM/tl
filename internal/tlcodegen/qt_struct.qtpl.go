@@ -5,6 +5,12 @@ package tlcodegen
 
 import "fmt"
 
+import "github.com/vkcom/tl/internal/utils"
+
+import "strings"
+
+import "sort"
+
 import (
 	qtio422016 "io"
 
@@ -1665,7 +1671,85 @@ func (item *`)
   w, err = item.WriteResult(w, ret)
   return r, w, err
 }
+`)
+	for fieldId, field := range struct_.Fields {
+		if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 {
+			bits := make([]uint32, 0)
+			for i := range affectedBits {
+				bits = append(bits, i)
+			}
+			sort.Slice(bits, func(i, j int) bool {
+				return bits[i] < bits[j]
+			})
 
+			for _, bit := range bits {
+				bitUsage := affectedBits[bit]
+				affectedTypes := make([]*TypeRWStruct, 0)
+				for i := range bitUsage.AffectedFields {
+					affectedTypes = append(affectedTypes, i)
+				}
+				sort.Slice(affectedTypes, func(i, j int) bool {
+					return TypeRWWrapperLessGlobal(affectedTypes[i].wr, affectedTypes[j].wr) > 0
+				})
+
+				for _, affectedType := range affectedTypes {
+					affectedFieldsByBit := bitUsage.AffectedFields[affectedType]
+					affectedFieldsByBit = utils.SetToSlice(utils.SliceToSet(affectedFieldsByBit))
+					sort.Slice(affectedFieldsByBit, func(i, j int) bool {
+						return affectedFieldsByBit[i] < affectedFieldsByBit[j]
+					})
+					fieldNames := make([]string, len(affectedFieldsByBit))
+					fieldNamesForComment := make([]string, len(affectedFieldsByBit))
+
+					for i := range fieldNames {
+						fieldNames[i] = affectedType.Fields[affectedFieldsByBit[i]].goName
+						fieldNamesForComment[i] = "\"" + affectedType.Fields[affectedFieldsByBit[i]].originalName + "\""
+					}
+
+					mergedFields := strings.Join(fieldNames, "And")
+					mergedFieldsForComment := strings.Join(fieldNamesForComment, ", ")
+					maybeS := ""
+					if len(affectedFieldsByBit) > 1 {
+						maybeS = "s"
+					}
+
+					qw422016.N().S(`// Set field`)
+					qw422016.N().S(maybeS)
+					qw422016.N().S(` `)
+					qw422016.N().S(mergedFieldsForComment)
+					qw422016.N().S(` in "`)
+					qw422016.N().S(affectedType.wr.tlName.String())
+					qw422016.N().S(`" by changing fieldMask "`)
+					qw422016.N().S(field.originalName)
+					qw422016.N().S(`"
+func (item *`)
+					qw422016.N().S(goName)
+					qw422016.N().S(`) SetInReturn`)
+					qw422016.N().S(mergedFields)
+					qw422016.N().S(`For`)
+					qw422016.N().S(affectedType.wr.goGlobalName)
+					qw422016.N().S(`(value bool) {
+    if value {
+        item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` |= 1 << `)
+					qw422016.N().D(int(bit))
+					qw422016.N().S(`
+    } else {
+        item.`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(` &^= 1 << `)
+					qw422016.N().D(int(bit))
+					qw422016.N().S(`
+    }
+}
+
+`)
+				}
+			}
+		}
+	}
+	qw422016.N().S(`
 `)
 }
 
