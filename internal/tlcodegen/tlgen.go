@@ -541,6 +541,18 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 				},
 			})
 	}
+	//for i, oldField := range oldCombinator.Fields {
+	//	newField := newCombinator.Fields[i]
+	//}
+	for i := len(oldCombinator.Fields); i < len(newCombinator.Fields); i++ {
+		newField := newCombinator.Fields[i]
+		if newField.Mask == nil {
+			return tlast.ParseError{
+				Err: fmt.Errorf("new fields must have field mask due to backward compaibilty"),
+				Pos: newField.PR,
+			}
+		}
+	}
 	return tlast.ParseError{}
 }
 
