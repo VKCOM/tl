@@ -441,47 +441,57 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 	for _, typeName := range oldOrder {
 		oldCombinators := oldTypes[typeName]
 		newCombinators := newTypes[typeName]
-		// not union
-		if len(newCombinators) == 1 {
-			// both single constructed => compatible constructor
-			if len(oldCombinators) == len(newCombinators) {
-				if err := checkCombinatorsBackwardCompatibility(newCombinators[0], oldCombinators[0]); err.Err != nil {
+
+		constructorToCombinator := make(map[tlast.Name]*tlast.Combinator)
+		for _, constructor := range newCombinators {
+			constructorToCombinator[constructor.Construct.Name] = constructor
+		}
+
+		for _, constructor := range oldCombinators {
+			newConstructor := constructorToCombinator[constructor.Construct.Name]
+			if newConstructor == nil {
+				return &tlast.ParseError{
+					Err: fmt.Errorf("this constructor can't be removed"),
+					Pos: constructor.Construct.NamePR,
+				}
+			} else {
+				if err := checkCombinatorsBackwardCompatibility(newConstructor, constructor); err.Err != nil {
 					return err
 				}
 			}
-			// was union, but lost constructors => check that type continue to be used in boxed version
-			if len(oldCombinators) > len(newCombinators) {
-				combinator := newCombinators[0]
+		}
 
-				// check that combinator not used in bare version or by its only version
-				var checkBoxUsage func(tlast.TypeRef) tlast.ParseError
-				checkBoxUsage = func(ref tlast.TypeRef) tlast.ParseError {
-					// check it is not bare used
-					if ref.Type == combinator.TypeDecl.Name {
-						if ref.Bare {
-							return tlast.ParseError{
-								Err: fmt.Errorf("this type reference must be boxed due to backward compaibilty"),
-								Pos: ref.PR,
-							}
-						}
-					}
-					if ref.Type == combinator.Construct.Name {
+		// some type "evolve" to union, then we must check it's used everywhere boxed (redundant due to another check before)
+		if len(oldCombinators) == 1 && len(newCombinators) > 1 {
+			combinator := oldCombinators[0]
+
+			var checkBoxUsage func(tlast.TypeRef) tlast.ParseError
+			checkBoxUsage = func(ref tlast.TypeRef) tlast.ParseError {
+				// check that type used in boxed version
+				if ref.Type == combinator.TypeDecl.Name {
+					if ref.Bare {
 						return tlast.ParseError{
-							Err: fmt.Errorf("this type was union before, change this reference be boxed due to backward compaibilty"),
+							Err: fmt.Errorf("type \"%s\" can't change to union type due to backward compaibilty and its bare usage here", combinator.TypeDecl.Name),
 							Pos: ref.PR,
 						}
 					}
-					for _, arg := range ref.Args {
-						if !arg.IsArith {
-							return checkBoxUsage(arg.T)
-						}
+				}
+				if ref.Type == combinator.Construct.Name {
+					return tlast.ParseError{
+						Err: fmt.Errorf("type \"%s\" can't change to union type due to backward compaibilty and its usage by constructor here", combinator.TypeDecl.Name),
+						Pos: ref.PR,
 					}
-					return tlast.ParseError{}
 				}
+				for _, arg := range ref.Args {
+					if !arg.IsArith {
+						return checkBoxUsage(arg.T)
+					}
+				}
+				return tlast.ParseError{}
+			}
 
-				if err := checkAllTypeRefs(newTL, checkBoxUsage); err.Err != nil {
-					return &err
-				}
+			if err := checkAllTypeRefs(oldTL, checkBoxUsage); err.Err != nil {
+				return &err
 			}
 		}
 	}
