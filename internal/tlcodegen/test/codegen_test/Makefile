@@ -16,9 +16,10 @@ run-golang-tests:
 	go test ./...
 
 INCORRECT_TLS := \
-	backward_compatibilty_samples/schema-incorrect-remove-union-variants.tl \
-	backward_compatibilty_samples/schema-incorrect-add-constructors-to-nonunion-with-bare-usages.tl \
-	backward_compatibilty_samples/schema-incorrect-remove-fields.tl \
+	schema-incorrect-remove-union-variants.tl \
+	schema-incorrect-add-constructors-to-nonunion-with-bare-usages.tl \
+	schema-incorrect-remove-fields.tl \
+	schema-incorrect-new-fields-without-fieldmask.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;
@@ -26,7 +27,7 @@ run-linter-check-diff-test:
 	    if ../../../../target/bin/tlgen \
 			--linter-mode=check-diff \
 			--schema-to-compare=../tls/backward_compatibilty_samples/schema-correct.tl \
-			../tls/$${sample}; \
+			../tls/backward_compatibilty_samples/$${sample}; \
 		then \
 		  	echo DIFF CHECK MUST FAIL ON $${sample}; \
 			exit 1; \
