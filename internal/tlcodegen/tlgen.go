@@ -455,7 +455,7 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 				}
 			} else {
 				if err := checkCombinatorsBackwardCompatibility(newConstructor, constructor); err.Err != nil {
-					return err
+					return &err
 				}
 			}
 		}
@@ -525,8 +525,23 @@ func checkAllTypeRefs(allCombinators *tlast.TL, checkFunc func(ref tlast.TypeRef
 	return tlast.ParseError{}
 }
 
-func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.Combinator) *tlast.ParseError {
-	return &tlast.ParseError{}
+func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.Combinator) tlast.ParseError {
+	if len(newCombinator.Fields) < len(oldCombinator.Fields) {
+		return *tlast.BeautifulError2(
+			&tlast.ParseError{
+				Err: fmt.Errorf("new version of combinator can't have less fields, then before"),
+				Pos: newCombinator.TypeDecl.NamePR,
+			},
+			&tlast.ParseError{
+				Err: fmt.Errorf("missing fields"),
+				Pos: tlast.PositionRange{
+					Begin: oldCombinator.Fields[len(newCombinator.Fields)].PRName.Begin,
+					End:   oldCombinator.Fields[len(oldCombinator.Fields)-1].PR.End,
+					Outer: oldCombinator.PR.Outer,
+				},
+			})
+	}
+	return tlast.ParseError{}
 }
 
 func checkTagCollisions(tl tlast.TL) error {

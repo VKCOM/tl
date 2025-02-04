@@ -18,6 +18,7 @@ run-golang-tests:
 INCORRECT_TLS := \
 	backward_compatibilty_samples/schema-incorrect-remove-union-variants.tl \
 	backward_compatibilty_samples/schema-incorrect-add-constructors-to-nonunion-with-bare-usages.tl \
+	backward_compatibilty_samples/schema-incorrect-remove-fields.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;
