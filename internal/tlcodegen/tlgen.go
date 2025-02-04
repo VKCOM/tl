@@ -313,6 +313,10 @@ type Gen2Options struct {
 	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 	SplitInternal     bool
 
+	// Linter
+	Mode           string
+	Schema2Compare string
+
 	// Go
 	BasicPackageNameFull   string // if empty, will be created
 	TLPackageNameFull      string
@@ -428,6 +432,91 @@ func (gen *Gen2) getNamespace(n string) *Namespace {
 		// etc...
 	}
 	return na
+}
+
+func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
+	newTypes, _ := extractTypes(newTL)
+	oldTypes, oldOrder := extractTypes(oldTL)
+	for _, typeName := range oldOrder {
+		oldCombinators := oldTypes[typeName]
+		newCombinators := newTypes[typeName]
+		// not union
+		if len(newCombinators) == 1 {
+			// both single constructed => compatible constructor
+			if len(oldCombinators) == len(newCombinators) {
+				if err := checkCombinatorsBackwardCompatibility(newCombinators[0], oldCombinators[0]); err.Err != nil {
+					return err
+				}
+			}
+			// was union, but lost constructors => check that type continue to be used in boxed version
+			if len(oldCombinators) > len(newCombinators) {
+				combinator := newCombinators[0]
+
+				// check that combinator not used in bare version or by its only version
+				var checkBoxUsage func(tlast.TypeRef) tlast.ParseError
+				checkBoxUsage = func(ref tlast.TypeRef) tlast.ParseError {
+					// check it is not bare used
+					if ref.Type == combinator.TypeDecl.Name {
+						if ref.Bare {
+							return tlast.ParseError{
+								Err: fmt.Errorf("this type reference must be boxed due to backward compaibilty"),
+								Pos: ref.PR,
+							}
+						}
+					}
+					if ref.Type == combinator.Construct.Name {
+						return tlast.ParseError{
+							Err: fmt.Errorf("this type was union before, change this reference be boxed due to backward compaibilty"),
+							Pos: ref.PR,
+						}
+					}
+					for _, arg := range ref.Args {
+						if !arg.IsArith {
+							return checkBoxUsage(arg.T)
+						}
+					}
+					return tlast.ParseError{}
+				}
+
+				if err := checkAllTypeRefs(newTL, checkBoxUsage); err.Err != nil {
+					return &err
+				}
+			}
+		}
+	}
+	return &tlast.ParseError{}
+}
+
+func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, order []tlast.Name) {
+	types = make(map[tlast.Name][]*tlast.Combinator)
+	for _, combinator := range *tl {
+		if !combinator.IsFunction && !combinator.Builtin {
+			name := combinator.TypeDecl.Name
+			if types[name] == nil {
+				order = append(order, name)
+			}
+			types[name] = append(types[name], combinator)
+		}
+	}
+	return
+}
+
+func checkAllTypeRefs(allCombinators *tlast.TL, checkFunc func(ref tlast.TypeRef) tlast.ParseError) tlast.ParseError {
+	for _, combinator := range *allCombinators {
+		if err := checkFunc(combinator.FuncDecl); err.Err != nil {
+			return err
+		}
+		for _, field := range combinator.Fields {
+			if err := checkFunc(field.FieldType); err.Err != nil {
+				return err
+			}
+		}
+	}
+	return tlast.ParseError{}
+}
+
+func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.Combinator) *tlast.ParseError {
+	return &tlast.ParseError{}
 }
 
 func checkTagCollisions(tl tlast.TL) error {

@@ -13,6 +13,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -29,7 +30,7 @@ const tlExt = ".tl"
 func parseFlags(opt *tlcodegen.Gen2Options) {
 	// General
 	flag.StringVar(&opt.Language, "language", "",
-		`generation target language (go, cpp). Empty for linter.`)
+		`generation target language (go, cpp, php). Empty for linter.`)
 	ignoreGeneratedCode := false
 	flag.BoolVar(&ignoreGeneratedCode, "ignoreGeneratedCode", false,
 		"flag is ignored, because default generator is linting now")
@@ -45,6 +46,12 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"prints diff of outdir contents before and after generating")
 	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
+
+	// Linter
+	flag.StringVar(&opt.Mode, "linter-mode", "",
+		`use linter in some specific mode, such as: "check-diff"`)
+	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
+		`path to old version TL schema to compare on backward compatibility (works only in "--linter-mode=check-diff")`)
 
 	// Go
 	flag.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",
@@ -155,6 +162,12 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
+	if opt.Language == "" && opt.Mode == "check-diff" && opt.Schema2Compare != "" {
+		compErr := runCompatibilityCheck(opt, &ast)
+		if compErr != nil {
+			return compErr
+		}
+	}
 	if opt.Language != "" {
 		if opt.Outdir == "" {
 			return fmt.Errorf("--outdir should not be empty")
@@ -200,6 +213,28 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
+	clonedOpt := *opt
+	clonedOpt.ErrorWriter = io.Discard
+
+	log.Print("STEP: Load old tl schema to compare...")
+
+	parsedPaths, err := utils.WalkDeterministic(tlExt, clonedOpt.Schema2Compare)
+	if err != nil {
+		return err
+	}
+	oldTLPath := parsedPaths[0]
+	oldTL, err := parseTlFile(oldTLPath, true, &clonedOpt)
+
+	log.Print("STEP: Compare old tl schema with passed...")
+
+	if compErr := tlcodegen.CheckBackwardCompatibility(ast, &oldTL); compErr.Err != nil {
+		return compErr
+	}
+	log.Print("RESULT: New version is backward compatible with passed schema")
 	return nil
 }
 
