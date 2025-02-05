@@ -641,6 +641,35 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 					},
 				)
 			}
+		} else if newField.Mask != nil {
+			newIndex, _ := newMapping[newField.Mask.MaskName]
+			oldIndex, _ := oldMapping[oldField.Mask.MaskName]
+
+			if newIndex != oldIndex {
+				return *tlast.BeautifulError2(
+					&tlast.ParseError{
+						Err: fmt.Errorf("can't change reference used as a fieldmask"),
+						Pos: newField.Mask.PRName,
+					},
+					&tlast.ParseError{
+						Err: fmt.Errorf("original fieldmask"),
+						Pos: oldField.Mask.PRName,
+					},
+				)
+			}
+
+			if newField.Mask.BitNumber != oldField.Mask.BitNumber {
+				return *tlast.BeautifulError2(
+					&tlast.ParseError{
+						Err: fmt.Errorf("can't bit in fieldmask"),
+						Pos: newField.Mask.PRBits,
+					},
+					&tlast.ParseError{
+						Err: fmt.Errorf("original bit in fieldmask"),
+						Pos: oldField.Mask.PRBits,
+					},
+				)
+			}
 		}
 	}
 
