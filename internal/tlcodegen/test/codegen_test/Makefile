@@ -23,6 +23,8 @@ INCORRECT_TLS := \
 	schema-incorrect-remove-template-arguments.tl \
 	schema-incorrect-remove-fieldmask.tl \
 	schema-incorrect-add-fieldmask-to-old-field.tl \
+	schema-incorrect-change-bit-in-fieldmask.tl \
+    schema-incorrect-change-reference-in-fieldmask.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;
