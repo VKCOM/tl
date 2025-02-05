@@ -529,7 +529,7 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 	if len(newCombinator.Fields) < len(oldCombinator.Fields) {
 		return *tlast.BeautifulError2(
 			&tlast.ParseError{
-				Err: fmt.Errorf("new version of combinator can't have less fields, then before"),
+				Err: fmt.Errorf("new version of combinator can't have less fields"),
 				Pos: newCombinator.TypeDecl.NamePR,
 			},
 			&tlast.ParseError{
@@ -541,9 +541,108 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 				},
 			})
 	}
-	//for i, oldField := range oldCombinator.Fields {
-	//	newField := newCombinator.Fields[i]
+
+	if len(newCombinator.TemplateArguments) < len(oldCombinator.TemplateArguments) {
+		return *tlast.BeautifulError2(
+			&tlast.ParseError{
+				Err: fmt.Errorf("new version of combinator can't have less template arguments"),
+				Pos: newCombinator.TemplateArgumentsPR,
+			},
+			&tlast.ParseError{
+				Err: fmt.Errorf("missing template arguments"),
+				Pos: tlast.PositionRange{
+					Begin: oldCombinator.TemplateArguments[len(newCombinator.TemplateArguments)].PR.Begin,
+					End:   oldCombinator.TemplateArguments[len(oldCombinator.TemplateArguments)-1].PR.End,
+					Outer: oldCombinator.PR.Outer,
+				},
+			})
+	}
+
+	//extractName := func(name string, mapping *map[string]int, combinator *tlast.Combinator) (bool, string) {
+	//	index, ok := (*mapping)[name]
+	//	if !ok {
+	//		return false, ""
+	//	}
+	//	if index >= 0 {
+	//		return true, combinator.Fields[index].FieldName
+	//	} else {
+	//		return true, combinator.TemplateArguments[len(combinator.TemplateArguments)+index].FieldName
+	//	}
 	//}
+
+	fillMapping := func(mapping *map[string]int, combinator *tlast.Combinator) {
+		for i, field := range combinator.Fields {
+			(*mapping)[field.FieldName] = i
+		}
+		for i, arg := range combinator.TemplateArguments {
+			(*mapping)[arg.FieldName] = -len(combinator.TemplateArguments) + i
+		}
+	}
+
+	oldMapping := make(map[string]int)
+	newMapping := make(map[string]int)
+
+	fillMapping(&oldMapping, oldCombinator)
+	fillMapping(&newMapping, newCombinator)
+
+	var compareTypes func(newType, oldType *tlast.TypeRef) *tlast.ParseError
+	compareTypes = func(newType, oldType *tlast.TypeRef) *tlast.ParseError {
+		newIndex, newOk := newMapping[newType.Type.String()]
+		oldIndex, oldOk := oldMapping[oldType.Type.String()]
+
+		// TODO: maybe accept shuffle of template arguments
+		if (newOk && !oldOk) || // argument starts referencing smth in type, but wasn't before
+			(!newOk && oldOk) || // argument was referencing smth in type, but ended to do this
+			(newOk && oldOk && newIndex != oldIndex) ||
+			(!newOk && !oldOk && newType.Type != oldType.Type) {
+			return tlast.BeautifulError2(
+				&tlast.ParseError{
+					Err: fmt.Errorf("this reference changed to different source in compare with original"),
+					Pos: newType.PR,
+				},
+				&tlast.ParseError{
+					Err: fmt.Errorf("original source"),
+					Pos: oldType.PR,
+				},
+			)
+		}
+
+		return nil
+	}
+
+	for i, oldField := range oldCombinator.Fields {
+		newField := newCombinator.Fields[i]
+		if compErr := compareTypes(&newField.FieldType, &oldField.FieldType); compErr != nil {
+			return *compErr
+		}
+
+		if (newField.Mask == nil) != (oldField.Mask == nil) {
+			if newField.Mask != nil {
+				return *tlast.BeautifulError2(
+					&tlast.ParseError{
+						Err: fmt.Errorf("you can't add fieldmask to a field if it wasn't before"),
+						Pos: newField.Mask.PRName,
+					},
+					&tlast.ParseError{
+						Err: fmt.Errorf("original field without fieldmask"),
+						Pos: oldField.PRName,
+					},
+				)
+			} else if oldField.Mask != nil {
+				return *tlast.BeautifulError2(
+					&tlast.ParseError{
+						Err: fmt.Errorf("you can't remove fieldmask to a field if it was before"),
+						Pos: newField.PRName,
+					},
+					&tlast.ParseError{
+						Err: fmt.Errorf("original fieldmask"),
+						Pos: oldField.Mask.PRName,
+					},
+				)
+			}
+		}
+	}
+
 	for i := len(oldCombinator.Fields); i < len(newCombinator.Fields); i++ {
 		newField := newCombinator.Fields[i]
 		if newField.Mask == nil {

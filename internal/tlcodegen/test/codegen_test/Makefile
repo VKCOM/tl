@@ -20,6 +20,9 @@ INCORRECT_TLS := \
 	schema-incorrect-add-constructors-to-nonunion-with-bare-usages.tl \
 	schema-incorrect-remove-fields.tl \
 	schema-incorrect-new-fields-without-fieldmask.tl \
+	schema-incorrect-remove-template-arguments.tl \
+	schema-incorrect-remove-fieldmask.tl \
+	schema-incorrect-add-fieldmask-to-old-field.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;
