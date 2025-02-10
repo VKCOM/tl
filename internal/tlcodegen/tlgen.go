@@ -435,9 +435,358 @@ func (gen *Gen2) getNamespace(n string) *Namespace {
 	return na
 }
 
+type NatUsagesInfo struct {
+	TypeNameAndArgIndexToBitsUsedByNat    map[tlast.Name]map[int]map[int]bool
+	CombinatorAndNatFieldIndexToBitsUsed  map[tlast.Name]map[int]map[int]bool
+	TypeNameAndArgIndexToBitsUsedInLayout map[tlast.Name]map[int]map[int]bool
+}
+
+func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
+	types, functions, order := extractTypes(tl)
+
+	// all names to its type names (t -> t and constructor[t] -> t)
+	typeRefsToTypeNames := make(map[tlast.Name]tlast.Name)
+
+	{
+		for _, typeName := range order {
+			typeRefsToTypeNames[typeName] = typeName
+			for _, combinator := range types[typeName] {
+				typeRefsToTypeNames[combinator.Construct.Name] = typeName
+			}
+		}
+	}
+
+	// get all bits which affected if nat used as an argument at selected position
+
+	typeNameToTypeArguments := make(map[tlast.Name]map[int]map[int]bool)
+	typeArgumentToAffectedTypeArguments := make(map[tlast.Name]map[int]map[tlast.Name]map[int]bool)
+
+	{
+		dfsQueue := make(map[tlast.Name]map[int]bool)
+		initIfNotVisited := true
+
+		var fillUsages func(tlast.Name, int)
+		var iterateTypeRefArgs func(*tlast.TypeRef, tlast.Name, int)
+
+		fillUsages = func(typeName tlast.Name, i int) {
+			if _, ok := dfsQueue[typeName]; !ok {
+				dfsQueue[typeName] = make(map[int]bool)
+				if initIfNotVisited {
+					typeNameToTypeArguments[typeName] = make(map[int]map[int]bool)
+					typeArgumentToAffectedTypeArguments[typeName] = make(map[int]map[tlast.Name]map[int]bool)
+				}
+			}
+			if _, ok := dfsQueue[typeName][i]; !ok {
+				dfsQueue[typeName][i] = true
+				if initIfNotVisited {
+					typeNameToTypeArguments[typeName][i] = make(map[int]bool)
+					typeArgumentToAffectedTypeArguments[typeName][i] = make(map[tlast.Name]map[int]bool)
+				}
+
+				for _, combinator := range types[typeName] {
+					//if combinator.Construct.Name.String() == "tasks.queueStats" {
+					//	print("debug")
+					//}
+					for _, field := range combinator.Fields {
+						// add used bit
+						if field.Mask != nil && field.Mask.MaskName == combinator.TemplateArguments[i].FieldName {
+							typeNameToTypeArguments[typeName][i][int(field.Mask.BitNumber)] = true
+						}
+						iterateTypeRefArgs(&field.FieldType, typeName, i)
+					}
+				}
+			}
+		}
+
+		iterateTypeRefArgs = func(ref *tlast.TypeRef, filledType tlast.Name, filledIndex int) {
+			searchingArgument := types[filledType][0].TemplateArguments[filledIndex].FieldName
+			typeName, ok := typeRefsToTypeNames[ref.Type]
+			if !ok {
+				return
+			}
+			for i, arg := range ref.Args {
+				if !arg.IsArith {
+					if arg.T.Type.String() == searchingArgument {
+						if _, ok := dfsQueue[typeName]; !ok {
+							dfsQueue[typeName] = make(map[int]bool)
+							if initIfNotVisited {
+								typeNameToTypeArguments[typeName] = make(map[int]map[int]bool)
+								typeArgumentToAffectedTypeArguments[typeName] = make(map[int]map[tlast.Name]map[int]bool)
+							}
+						}
+						if _, ok := dfsQueue[typeName][i]; !ok {
+							fillUsages(typeName, i)
+						}
+
+						{
+							for bit, _ := range typeNameToTypeArguments[typeName][i] {
+								typeNameToTypeArguments[filledType][filledIndex][bit] = true
+							}
+						}
+						{
+							if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex]; !ok {
+								typeArgumentToAffectedTypeArguments[filledType][filledIndex] = make(map[tlast.Name]map[int]bool)
+							}
+							if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName]; !ok {
+								typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName] = make(map[int]bool)
+							}
+
+							typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName][i] = true
+
+							for affectedType, affectedNats := range typeArgumentToAffectedTypeArguments[typeName][i] {
+								if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex]; !ok {
+									typeArgumentToAffectedTypeArguments[filledType][filledIndex] = make(map[tlast.Name]map[int]bool)
+								}
+								if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType]; !ok {
+									typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType] = make(map[int]bool)
+								}
+								for affectedNat, _ := range affectedNats {
+									typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType][affectedNat] = true
+								}
+							}
+						}
+					} else {
+						iterateTypeRefArgs(&arg.T, filledType, filledIndex)
+					}
+				}
+			}
+		}
+
+		for _, typeName := range order {
+			for i, arg := range types[typeName][0].TemplateArguments {
+				if arg.IsNat {
+					fillUsages(typeName, i)
+				}
+			}
+		}
+
+		//// repeat to get all values missed in recursion
+
+		dfsQueue = make(map[tlast.Name]map[int]bool)
+		initIfNotVisited = false
+
+		for _, typeName := range order {
+			for i, arg := range types[typeName][0].TemplateArguments {
+				if arg.IsNat {
+					fillUsages(typeName, i)
+				}
+			}
+		}
+	}
+
+	// get all used bit for each nat field in each combinator
+	combinatorsNatFieldToAffectedBits := make(map[tlast.Name]map[int]map[int]bool)
+
+	{
+		var searchNat func(*tlast.TypeRef, string, tlast.Name, int)
+		searchNat = func(ref *tlast.TypeRef, searchingArgument string, filledCombinator tlast.Name, filledIndex int) {
+			typeName, ok := typeRefsToTypeNames[ref.Type]
+			if !ok {
+				return
+			}
+			for i, arg := range ref.Args {
+				if !arg.IsArith {
+					if arg.T.Type.String() == searchingArgument {
+						if _, ok := combinatorsNatFieldToAffectedBits[filledCombinator]; !ok {
+							combinatorsNatFieldToAffectedBits[filledCombinator] = make(map[int]map[int]bool)
+						}
+						if _, ok := combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex]; !ok {
+							combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] = make(map[int]bool)
+						}
+						if affectedArgs, ok := typeNameToTypeArguments[typeName]; ok {
+							if affectedBits, ok := affectedArgs[i]; ok {
+								for bit, _ := range affectedBits {
+									combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex][bit] = true
+								}
+							}
+						}
+					} else {
+						searchNat(&arg.T, searchingArgument, filledCombinator, filledIndex)
+					}
+				}
+			}
+		}
+
+		for _, typeName := range order {
+			for _, combinator := range types[typeName] {
+				combinatorsNatFieldToAffectedBits[combinator.Construct.Name] = make(map[int]map[int]bool)
+				for i, _ := range combinator.Fields {
+					searchItem := combinator.Fields[i].FieldName
+					if combinator.Fields[i].FieldType.Type.String() != "#" {
+						continue
+					}
+					for j := i + 1; j < len(combinator.Fields); j++ {
+						consideredField := combinator.Fields[j]
+						if consideredField.Mask != nil && consideredField.Mask.MaskName == searchItem {
+							if _, ok := combinatorsNatFieldToAffectedBits[combinator.Construct.Name][i]; !ok {
+								combinatorsNatFieldToAffectedBits[combinator.Construct.Name][i] = make(map[int]bool)
+							}
+							combinatorsNatFieldToAffectedBits[combinator.Construct.Name][i][int(consideredField.Mask.BitNumber)] = true
+						}
+						searchNat(&consideredField.FieldType, searchItem, combinator.Construct.Name, i)
+					}
+				}
+			}
+		}
+
+		for _, combinator := range functions {
+			combinatorsNatFieldToAffectedBits[combinator.Construct.Name] = make(map[int]map[int]bool)
+			//if combinator.Construct.Name.String() == "tasks.getQueueSize" {
+			//	print("debug")
+			//}
+			for i, _ := range combinator.Fields {
+				searchItem := combinator.Fields[i].FieldName
+				if combinator.Fields[i].FieldType.Type.String() != "#" {
+					continue
+				}
+				for j := i + 1; j < len(combinator.Fields); j++ {
+					consideredField := combinator.Fields[j]
+					if consideredField.Mask != nil && consideredField.Mask.MaskName == searchItem {
+						if _, ok := combinatorsNatFieldToAffectedBits[combinator.Construct.Name][i]; !ok {
+							combinatorsNatFieldToAffectedBits[combinator.Construct.Name][i] = make(map[int]bool)
+						}
+						combinatorsNatFieldToAffectedBits[combinator.Construct.Name][i][int(consideredField.Mask.BitNumber)] = true
+					}
+					searchNat(&consideredField.FieldType, searchItem, combinator.Construct.Name, i)
+				}
+				searchNat(&combinator.FuncDecl, searchItem, combinator.Construct.Name, i)
+			}
+		}
+	}
+
+	typeNameToVisitingTypeArguments := make(map[tlast.Name]map[int]map[int]bool)
+
+	{
+		var searchNat func(*tlast.TypeRef, string, tlast.Name, int)
+		searchNat = func(ref *tlast.TypeRef, searchingArgument string, filledCombinator tlast.Name, filledIndex int) {
+			typeName, ok := typeRefsToTypeNames[ref.Type]
+			if !ok {
+				return
+			}
+			for i, arg := range ref.Args {
+				if !arg.IsArith {
+					if arg.T.Type.String() == searchingArgument {
+						// all affected by this type indirrect
+						for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
+							for affectedArg, _ := range affectedArgs {
+								if _, ok := typeNameToVisitingTypeArguments[affectedType]; !ok {
+									typeNameToVisitingTypeArguments[affectedType] = make(map[int]map[int]bool)
+								}
+								if _, ok := typeNameToVisitingTypeArguments[affectedType][affectedArg]; !ok {
+									typeNameToVisitingTypeArguments[affectedType][affectedArg] = make(map[int]bool)
+								}
+								for bit, _ := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
+									typeNameToVisitingTypeArguments[affectedType][affectedArg][bit] = true
+								}
+							}
+						}
+						// and itself is affected
+						if _, ok := typeNameToVisitingTypeArguments[typeName]; !ok {
+							typeNameToVisitingTypeArguments[typeName] = make(map[int]map[int]bool)
+						}
+						if _, ok := typeNameToVisitingTypeArguments[typeName][i]; !ok {
+							typeNameToVisitingTypeArguments[typeName][i] = make(map[int]bool)
+						}
+						for bit, _ := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
+							typeNameToVisitingTypeArguments[typeName][i][bit] = true
+						}
+					} else {
+						searchNat(&arg.T, searchingArgument, filledCombinator, filledIndex)
+					}
+				}
+			}
+		}
+
+		for _, typeName := range order {
+			for _, combinator := range types[typeName] {
+				for i, _ := range combinator.Fields {
+					searchItem := combinator.Fields[i].FieldName
+					if combinator.Fields[i].FieldType.Type.String() != "#" {
+						continue
+					}
+					for j := i + 1; j < len(combinator.Fields); j++ {
+						searchNat(&combinator.Fields[j].FieldType, searchItem, combinator.Construct.Name, i)
+					}
+				}
+			}
+		}
+
+		for _, combinator := range functions {
+			for i, _ := range combinator.Fields {
+				searchItem := combinator.Fields[i].FieldName
+				if combinator.Fields[i].FieldType.Type.String() != "#" {
+					continue
+				}
+				//if combinator.Construct.Name.String() == "tasks.getQueueSize" {
+				//	print("debug")
+				//}
+				for j := i + 1; j < len(combinator.Fields); j++ {
+					searchNat(&combinator.Fields[j].FieldType, searchItem, combinator.Construct.Name, i)
+				}
+				searchNat(&combinator.FuncDecl, searchItem, combinator.Construct.Name, i)
+			}
+		}
+	}
+
+	return NatUsagesInfo{
+		TypeNameAndArgIndexToBitsUsedByNat:    typeNameToVisitingTypeArguments,
+		CombinatorAndNatFieldIndexToBitsUsed:  combinatorsNatFieldToAffectedBits,
+		TypeNameAndArgIndexToBitsUsedInLayout: typeNameToTypeArguments,
+	}
+}
+
 func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
-	newTypes, _ := extractTypes(newTL)
-	oldTypes, oldOrder := extractTypes(oldTL)
+	newTypes, _, _ := extractTypes(newTL)
+	oldTypes, _, oldOrder := extractTypes(oldTL)
+	natInfos := checkNatUsages(oldTL)
+
+	//appendingStructs := getAllAppendingTypes(&newTypes, &oldTypes, oldOrder)
+
+	//{
+	//	print("debug")
+	//	natInfos := checkNatUsages(oldTL)
+	//
+	//	fmt.Println("A")
+	//	for name, m := range natInfos.TypeNameAndArgIndexToBitsUsedByNat {
+	//		if len(m) == 0 {
+	//			continue
+	//		}
+	//		s := fmt.Sprintf("%v:\n", name)
+	//		hasInfo := false
+	//		for index, nats := range m {
+	//			if len(nats) == 0 {
+	//				continue
+	//			}
+	//			hasInfo = true
+	//			s += fmt.Sprintf("\t%v: %v\n", index, utils.Keys(nats))
+	//		}
+	//		if hasInfo {
+	//			fmt.Print(s)
+	//		}
+	//	}
+	//	println()
+	//
+	//	fmt.Println("B")
+	//	for name, m := range natInfos.CombinatorAndNatFieldIndexToBitsUsed {
+	//		if len(m) == 0 {
+	//			continue
+	//		}
+	//		s := fmt.Sprintf("%v:\n", name)
+	//		hasInfo := false
+	//		for index, nats := range m {
+	//			if len(nats) == 0 {
+	//				continue
+	//			}
+	//			hasInfo = true
+	//			s += fmt.Sprintf("\t%v: %v\n", index, utils.Keys(nats))
+	//		}
+	//		if hasInfo {
+	//			fmt.Print(s)
+	//		}
+	//	}
+	//	println()
+	//}
+
 	for _, typeName := range oldOrder {
 		oldCombinators := oldTypes[typeName]
 		newCombinators := newTypes[typeName]
@@ -455,7 +804,7 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 					Pos: constructor.Construct.NamePR,
 				}
 			} else {
-				if err := checkCombinatorsBackwardCompatibility(newConstructor, constructor); err.Err != nil {
+				if err := checkCombinatorsBackwardCompatibility(newConstructor, constructor, &natInfos); err.Err != nil {
 					return &err
 				}
 			}
@@ -498,15 +847,45 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 	return &tlast.ParseError{}
 }
 
-func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, order []tlast.Name) {
+// not validating invariants
+func getAllAppendingTypes(newTypes, oldTypes *map[tlast.Name][]*tlast.Combinator, order []tlast.Name) map[tlast.Name]bool {
+	appendingTypes := make(map[tlast.Name]bool)
+	for _, typeName := range order {
+		appendingTypes[typeName] = false
+
+		oldCombinators := (*oldTypes)[typeName]
+		newCombinators := (*newTypes)[typeName]
+
+		constructorToCombinator := make(map[tlast.Name]*tlast.Combinator)
+		for _, constructor := range newCombinators {
+			constructorToCombinator[constructor.Construct.Name] = constructor
+		}
+
+		for _, oldConstructor := range oldCombinators {
+			newConstructor := constructorToCombinator[oldConstructor.Construct.Name]
+			if newConstructor != nil && len(newConstructor.Fields) > len(oldConstructor.Fields) {
+				appendingTypes[typeName] = true
+				if len(newCombinators) == 1 {
+					appendingTypes[newConstructor.Construct.Name] = true
+				}
+			}
+		}
+	}
+	return appendingTypes
+}
+
+func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, functions []*tlast.Combinator, order []tlast.Name) {
 	types = make(map[tlast.Name][]*tlast.Combinator)
 	for _, combinator := range *tl {
-		if !combinator.IsFunction && !combinator.Builtin {
+		if !combinator.Builtin {
 			name := combinator.TypeDecl.Name
 			if types[name] == nil {
 				order = append(order, name)
 			}
 			types[name] = append(types[name], combinator)
+		}
+		if combinator.IsFunction {
+			functions = append(functions, combinator)
 		}
 	}
 	return
@@ -526,7 +905,7 @@ func checkAllTypeRefs(allCombinators *tlast.TL, checkFunc func(ref tlast.TypeRef
 	return tlast.ParseError{}
 }
 
-func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.Combinator) tlast.ParseError {
+func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.Combinator, prevNatInfo *NatUsagesInfo) tlast.ParseError {
 	if len(newCombinator.Fields) < len(oldCombinator.Fields) {
 		return *tlast.BeautifulError2(
 			&tlast.ParseError{
@@ -558,18 +937,6 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 				},
 			})
 	}
-
-	//extractName := func(name string, mapping *map[string]int, combinator *tlast.Combinator) (bool, string) {
-	//	index, ok := (*mapping)[name]
-	//	if !ok {
-	//		return false, ""
-	//	}
-	//	if index >= 0 {
-	//		return true, combinator.Fields[index].FieldName
-	//	} else {
-	//		return true, combinator.TemplateArguments[len(combinator.TemplateArguments)+index].FieldName
-	//	}
-	//}
 
 	fillMapping := func(mapping *map[string]int, combinator *tlast.Combinator) {
 		for i, field := range combinator.Fields {
@@ -606,6 +973,32 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 					Pos: oldType.PR,
 				},
 			)
+		}
+
+		// check all common args in both types
+		for i := 0; i < len(oldType.Args); i++ {
+			oldArg := oldType.Args[i]
+			newArg := newType.Args[i]
+			if (oldArg.IsArith && !newArg.IsArith) ||
+				(!oldArg.IsArith && newArg.IsArith) ||
+				(oldArg.IsArith && newArg.IsArith && oldArg.Arith.Res != newArg.Arith.Res) {
+				return tlast.BeautifulError2(
+					&tlast.ParseError{
+						Err: fmt.Errorf("arguments change its types or values from original source"),
+						Pos: newType.PR,
+					},
+					&tlast.ParseError{
+						Err: fmt.Errorf("original source"),
+						Pos: oldType.PR,
+					},
+				)
+			}
+
+			if !oldArg.IsArith && !newArg.IsArith {
+				if compErr := compareTypes(&newArg.T, &oldArg.T); compErr != nil {
+					return compErr
+				}
+			}
 		}
 
 		return nil
@@ -681,8 +1074,86 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 				Pos: newField.PR,
 			}
 		}
+		if canUse, recommendation := checkIsSelectedBitAvailable(newCombinator, i, prevNatInfo); !canUse {
+			if recommendation != nil {
+				return tlast.ParseError{
+					Err: fmt.Errorf("new fields must have field mask with not used anywhere bit due to backward compaibilty (recommended bit to use = %d)", *recommendation),
+					Pos: newField.Mask.PRBits,
+				}
+			} else {
+				return tlast.ParseError{
+					Err: fmt.Errorf("this field mask can't be used since all bits of it are used in schema (change to another field mask)"),
+					Pos: newField.Mask.PRName,
+				}
+			}
+		}
 	}
 	return tlast.ParseError{}
+}
+
+func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, info *NatUsagesInfo) (bool, *int) {
+	isTemplateArg := false
+	templateIndex := -1
+
+	mask := combinator.Fields[fieldId].Mask
+
+	for i, argument := range combinator.TemplateArguments {
+		if argument.FieldName == mask.MaskName {
+			isTemplateArg = true
+			templateIndex = i
+			break
+		}
+	}
+
+	findNextAvailable := func(used map[int]bool) *int {
+		for i := 0; i < 32; i++ {
+			if used[i] == false {
+				return &i
+			}
+		}
+		return nil
+	}
+
+	if isTemplateArg {
+		var outerUsage map[int]bool
+		if outerUsageForType, ok := info.TypeNameAndArgIndexToBitsUsedByNat[combinator.TypeDecl.Name]; ok {
+			outerUsage = outerUsageForType[templateIndex]
+		}
+		if len(outerUsage) != 0 {
+			if outerUsage[int(mask.BitNumber)] != false {
+				return false, findNextAvailable(outerUsage)
+			}
+		} else {
+			var innerUsage map[int]bool
+			if innerUsageForType, ok := info.TypeNameAndArgIndexToBitsUsedInLayout[combinator.TypeDecl.Name]; ok {
+				innerUsage = innerUsageForType[templateIndex]
+			}
+			if len(innerUsage) != 0 {
+				if innerUsage[int(mask.BitNumber)] != false {
+					return false, findNextAvailable(innerUsage)
+				}
+			}
+		}
+	} else {
+		natIndexAsField := -1
+		for i, argument := range combinator.Fields {
+			if argument.FieldName == mask.MaskName {
+				natIndexAsField = i
+				break
+			}
+		}
+		var innerUsage map[int]bool
+		if innerUsageForType, ok := info.CombinatorAndNatFieldIndexToBitsUsed[combinator.Construct.Name]; ok {
+			innerUsage = innerUsageForType[natIndexAsField]
+		}
+		if len(innerUsage) != 0 {
+			if innerUsage[int(mask.BitNumber)] != false {
+				return false, findNextAvailable(innerUsage)
+			}
+		}
+	}
+
+	return true, nil
 }
 
 func checkTagCollisions(tl tlast.TL) error {

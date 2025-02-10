@@ -149,6 +149,42 @@ tasks.cronTime#d4177d7f
     months:fields_mask.5?%(Vector int)        // [1..12]
     = tasks.CronTime;
 
+tasks.fullFilledCron#d4177d7e
+    fields_mask:#
+    a0:fields_mask.0?int
+    a1:fields_mask.1?int
+    a2:fields_mask.2?int
+    a3:fields_mask.3?int
+    a4:fields_mask.4?int
+    a5:fields_mask.5?int
+    a6:fields_mask.6?int
+    a7:fields_mask.7?int
+    a8:fields_mask.8?int
+    a9:fields_mask.9?int
+    a10:fields_mask.10?int
+    a11:fields_mask.11?int
+    a12:fields_mask.12?int
+    a13:fields_mask.13?int
+    a14:fields_mask.14?int
+    a15:fields_mask.15?int
+    a16:fields_mask.16?int
+    a17:fields_mask.17?int 
+    a18:fields_mask.18?int
+    a19:fields_mask.19?int
+    a20:fields_mask.20?int
+    a21:fields_mask.21?int
+    a22:fields_mask.22?int
+    a23:fields_mask.23?int
+    a24:fields_mask.24?int
+    a25:fields_mask.25?int
+    a26:fields_mask.26?int
+    a27:fields_mask.27?int
+    a28:fields_mask.28?int
+    a29:fields_mask.29?int
+    a30:fields_mask.30?int
+    a31:fields_mask.31?int
+    = tasks.FullFilledCron;
+
 tasks.cronTask
     type_name:string
     queue_id:%(Vector int)
@@ -318,7 +354,7 @@ fieldConflict4 X:%Int SetX:%Int = FieldConflict4;
 
 @any tasks.getTaskFromQueue type_name:string queue_id:%(Vector int) = Maybe %tasks.TaskInfo;
 
-@any tasks.getQueueSize type_name:string queue_id:%(Vector int) fields_mask:# = tasks.QueueStats fields_mask;
+@any tasks.getQueueSize type_name:string queue_id:%(Vector int) fields_mask:# local_dep:fields_mask.4?int = tasks.QueueStats fields_mask;
 
 @any getStats x:tasks.queueTypeStats = tasks.QueueTypeStats;
 

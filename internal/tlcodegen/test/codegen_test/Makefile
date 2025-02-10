@@ -25,6 +25,10 @@ INCORRECT_TLS := \
 	schema-incorrect-add-fieldmask-to-old-field.tl \
 	schema-incorrect-change-bit-in-fieldmask.tl \
     schema-incorrect-change-reference-in-fieldmask.tl \
+    schema-incorrect-all-fieldmask-bits-are-used.tl \
+    schema-incorrect-bit-that-already-used-1.tl \
+    schema-incorrect-bit-that-already-used-2-from-outer-scope.tl \
+    schema-incorrect-bit-that-already-used-3-not-used-but-forbiden.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;
