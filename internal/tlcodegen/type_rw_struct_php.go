@@ -385,10 +385,6 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				)
 				shift += 1
 			}
-			if trw.PhpClassName(false, true) == "test_dataIgnoreFlags__test_DataIgnoreFlags__test_DataIgnoreFlags__int" &&
-				field.originalName == "t" {
-				print("debug")
-			}
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
 			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree)
 			for _, line := range fieldRead {

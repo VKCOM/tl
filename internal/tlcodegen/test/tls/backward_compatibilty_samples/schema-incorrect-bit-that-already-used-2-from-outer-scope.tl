@@ -130,6 +130,7 @@ tasks.queueStats#1d942543
     waiting_size:fields_mask.0?int
     scheduled_size:fields_mask.1?int
     in_progress_size:fields_mask.2?int
+    another_cool_field:fields_mask.4?int
     = tasks.QueueStats fields_mask;
 
 tasks.queueTypeInfo
@@ -227,7 +228,7 @@ benchObject xs:%(Vector int) ys:%(Vector %Integer) = BenchObject;
 service1.not_found = service1.Value;
 // generally, service1.strvalue is returned in every case, except for functions `service1.incr`, `service1.decr`,
 // in which service1.longvalue is returned
-service1.strvalue value:string = service1.Value;
+service1.strvalue value:string flags:int = service1.Value;
 service1.longvalue value:long flags:int = service1.Value;
 service1.strvalueWithTime value:string flags:int modificationTime:int = service1.Value;
 service1.longvalueWithTime value:long flags:int modificationTime:int = service1.Value;

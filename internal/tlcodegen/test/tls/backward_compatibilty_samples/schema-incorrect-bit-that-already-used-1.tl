@@ -87,6 +87,7 @@ tasks.queueTypeSettings#561fbc09
     max_queue_size:fields_mask.7?int // maximum number of tasks in one queue_id, older tasks will be removed
     // limits for queues?
     // something else here
+    max_queue_size2:fields_mask.7?int
 = tasks.QueueTypeSettings;
 
 // flags is just extra int
@@ -227,7 +228,7 @@ benchObject xs:%(Vector int) ys:%(Vector %Integer) = BenchObject;
 service1.not_found = service1.Value;
 // generally, service1.strvalue is returned in every case, except for functions `service1.incr`, `service1.decr`,
 // in which service1.longvalue is returned
-service1.strvalue value:string = service1.Value;
+service1.strvalue value:string flags:int = service1.Value;
 service1.longvalue value:long flags:int = service1.Value;
 service1.strvalueWithTime value:string flags:int modificationTime:int = service1.Value;
 service1.longvalueWithTime value:long flags:int modificationTime:int = service1.Value;
