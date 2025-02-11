@@ -29,6 +29,7 @@ INCORRECT_TLS := \
     schema-incorrect-bit-that-already-used-1.tl \
     schema-incorrect-bit-that-already-used-2-from-outer-scope.tl \
     schema-incorrect-bit-that-already-used-3-not-used-but-forbiden.tl \
+    schema-incorrect-bit-that-already-used-4-new-fieldmask-with-some-bits-used-in-schema-already.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;

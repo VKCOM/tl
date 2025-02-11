@@ -127,10 +127,12 @@ tasks.queueTypeStats#e1b785f2
 
 tasks.queueStats#1d942543
     {fields_mask:#}
+    {fields_mask2:#}
     waiting_size:fields_mask.0?int
     scheduled_size:fields_mask.1?int
     in_progress_size:fields_mask.2?int
-    = tasks.QueueStats fields_mask;
+    in_progress_size2:fields_mask2.1?int
+    = tasks.QueueStats fields_mask fields_mask2;
 
 tasks.queueTypeInfo
     type_name:string
@@ -354,7 +356,7 @@ fieldConflict4 X:%Int SetX:%Int = FieldConflict4;
 
 @any tasks.getTaskFromQueue type_name:string queue_id:%(Vector int) = Maybe %tasks.TaskInfo;
 
-@any tasks.getQueueSize type_name:string queue_id:%(Vector int) fields_mask:# local_dep:fields_mask.4?int = tasks.QueueStats fields_mask;
+@any tasks.getQueueSize type_name:string queue_id:%(Vector int) fields_mask:# local_dep:fields_mask.4?int = tasks.QueueStats fields_mask fields_mask;
 
 @any getStats x:tasks.queueTypeStats = tasks.QueueTypeStats;
 
