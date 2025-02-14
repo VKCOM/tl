@@ -27,13 +27,8 @@ func (item *Replace14Long) Reset() {
 }
 
 func (item *Replace14Long) FillRandom(rg *basictl.RandGenerator, nat_n uint32) {
-	var maskK uint32
-	maskK = basictl.RandomUint(rg)
-	maskK = rg.LimitValue(maskK)
-	item.K = 0
-	if maskK&(1<<0) != 0 {
-		item.K |= (1 << 0)
-	}
+	item.K = basictl.RandomUint(rg)
+	item.K = rg.LimitValue(item.K)
 	BuiltinTupleReplace14ElemLongFillRandom(rg, &item.A, item.K, nat_n, item.K)
 }
 

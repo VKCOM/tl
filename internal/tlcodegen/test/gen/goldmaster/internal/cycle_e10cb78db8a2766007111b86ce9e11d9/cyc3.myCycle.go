@@ -29,6 +29,7 @@ func (item *Cyc3MyCycle) Reset() {
 }
 
 func (item *Cyc3MyCycle) FillRandom(rg *basictl.RandGenerator) {
+	item.FieldsMask = basictl.RandomUint(rg)
 	BuiltinVectorCyc1MyCycleFillRandom(rg, &item.A)
 }
 

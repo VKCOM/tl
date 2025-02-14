@@ -393,8 +393,8 @@ func visit(
 					(*visitResults)[key] = VisitSuccess
 				}
 				natIndexes := make([]int, 0)
-				for i, natParam := range f.t.NatParams {
-					if natParam == natParamName {
+				for i, natParam := range f.natArgs {
+					if natParam.name == natParamName {
 						natIndexes = append(natIndexes, i)
 					}
 				}
@@ -430,8 +430,8 @@ func visit(
 			} else {
 				elementType := i.element.t
 				natIndexes := make([]int, 0)
-				for i, natParam := range elementType.NatParams {
-					if natParam == natParamName {
+				for i, natParam := range i.element.natArgs {
+					if !natParam.isArith && natParam.name == natParamName {
 						natIndexes = append(natIndexes, i)
 					}
 				}

@@ -45,6 +45,8 @@ func (item *MaybeTest1) Reset() {
 }
 
 func (item *MaybeTest1) FillRandom(rg *basictl.RandGenerator) {
+	item.N = basictl.RandomUint(rg)
+	item.N = rg.LimitValue(item.N)
 	item.A.FillRandom(rg)
 	item.B.FillRandom(rg)
 	item.C.FillRandom(rg)

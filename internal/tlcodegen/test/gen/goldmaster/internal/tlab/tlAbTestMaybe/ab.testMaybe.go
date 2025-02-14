@@ -39,6 +39,7 @@ func (item *AbTestMaybe) Reset() {
 }
 
 func (item *AbTestMaybe) FillRandom(rg *basictl.RandGenerator) {
+	item.N = basictl.RandomUint(rg)
 	item.A.FillRandom(rg)
 	item.B.FillRandom(rg)
 	item.C.FillRandom(rg)

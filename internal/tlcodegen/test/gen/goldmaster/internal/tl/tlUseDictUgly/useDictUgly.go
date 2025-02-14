@@ -64,8 +64,16 @@ func (item *UseDictUgly) Reset() {
 }
 
 func (item *UseDictUgly) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	var maskN uint32
+	maskN = basictl.RandomUint(rg)
+	maskN = rg.LimitValue(maskN)
+	item.N = 0
+	if maskN&(1<<0) != 0 {
+		item.N |= (1 << 0)
+	}
+	if maskN&(1<<1) != 0 {
+		item.N |= (1 << 1)
+	}
 	tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringFillRandom(rg, &item.A, item.N)
 	tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringFillRandom(rg, &item.B)
 	tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntFillRandom(rg, &item.C)

@@ -34,6 +34,12 @@ func (item *CasesTestInplaceStructArgs2) Reset() {
 }
 
 func (item *CasesTestInplaceStructArgs2) FillRandom(rg *basictl.RandGenerator) {
+	item.A1 = basictl.RandomUint(rg)
+	item.A1 = rg.LimitValue(item.A1)
+	item.A2 = basictl.RandomUint(rg)
+	item.A2 = rg.LimitValue(item.A2)
+	item.A3 = basictl.RandomUint(rg)
+	item.A3 = rg.LimitValue(item.A3)
 	item.Arg.FillRandom(rg, item.A1, item.A2, item.A3, item.A3, item.A2)
 }
 
