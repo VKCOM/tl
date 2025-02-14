@@ -35,9 +35,11 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
+    {%- if tuple.wr.gen.options.UseCheckLengthSanity -%}
     if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
+    {%- endif -%}
     if uint32(cap(*vec)) < l {
         *vec = make([]{%s= elementTypeString %}, l)
     } else {
@@ -240,9 +242,11 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
+    {%- if tuple.wr.gen.options.UseCheckLengthSanity -%}
     if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
+    {%- endif -%}
     var data map[{%s= keyTypeString %}]{%s= valueTypeString %}
     if *m == nil {
         if l == 0 {
@@ -460,9 +464,11 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
+    {%- if tuple.wr.gen.options.UseCheckLengthSanity -%}
     if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
+    {%- endif -%}
     if uint32(cap(*vec)) < l {
         *vec = make([]{%s= elementTypeString %}, l)
     } else {
@@ -559,9 +565,11 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
             {%- endif -%}
 
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.gen.options.UseCheckLengthSanity -%}
     if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
         return w, err
     }
+    {%- endif -%}
     if uint32(cap(*vec)) < nat_n {
         *vec = make([]{%s= elementTypeString %}, nat_n)
     } else {

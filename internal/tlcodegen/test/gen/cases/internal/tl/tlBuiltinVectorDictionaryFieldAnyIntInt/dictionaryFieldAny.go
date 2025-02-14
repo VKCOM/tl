@@ -40,9 +40,6 @@ func BuiltinVectorDictionaryFieldAnyIntIntRead(w []byte, m *map[int32]int32) (_ 
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	var data map[int32]int32
 	if *m == nil {
 		if l == 0 {
@@ -164,9 +161,6 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesFillRandom(rg *basictl.RandGenera
 func BuiltinVectorDictionaryFieldAnyIntIntBytesRead(w []byte, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
-		return w, err
-	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {

@@ -29,9 +29,6 @@ func BuiltinVectorStringRead(w []byte, vec *[]string) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < l {
 		*vec = make([]string, l)
 	} else {
@@ -105,9 +102,6 @@ func BuiltinVectorStringBytesFillRandom(rg *basictl.RandGenerator, vec *[][]byte
 func BuiltinVectorStringBytesRead(w []byte, vec *[][]byte) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
-		return w, err
-	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {

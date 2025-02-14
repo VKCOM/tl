@@ -71,6 +71,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"timestamp of schema (for documentation, TLO version)")
 	flag.StringVar(&opt.SchemaCommit, "schemaCommit", "",
 		"commit of schema (for documentation)")
+	flag.BoolVar(&opt.UseCheckLengthSanity, "checkLengthSanity", true,
+		"enable feature to generate code to check length sanity of arrays (default:true)")
 
 	// C++
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
