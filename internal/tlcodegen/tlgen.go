@@ -326,6 +326,7 @@ type Gen2Options struct {
 	SchemaURL              string
 	SchemaTimestamp        uint // for TLO version/date
 	SchemaCommit           string
+	UseCheckLengthSanity   bool
 
 	// C++
 	RootCPPNamespace string

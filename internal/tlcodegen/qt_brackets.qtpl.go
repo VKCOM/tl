@@ -66,10 +66,14 @@ func `)
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
-    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+`)
+			if tuple.wr.gen.options.UseCheckLengthSanity {
+				qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
-    if uint32(cap(*vec)) < l {
+`)
+			}
+			qw422016.N().S(`    if uint32(cap(*vec)) < l {
         *vec = make([]`)
 			qw422016.N().S(elementTypeString)
 			qw422016.N().S(`, l)
@@ -469,10 +473,14 @@ func `)
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
-    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+`)
+			if tuple.wr.gen.options.UseCheckLengthSanity {
+				qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
-    var data map[`)
+`)
+			}
+			qw422016.N().S(`    var data map[`)
 			qw422016.N().S(keyTypeString)
 			qw422016.N().S(`]`)
 			qw422016.N().S(valueTypeString)
@@ -879,10 +887,14 @@ func `)
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
-    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+`)
+		if tuple.wr.gen.options.UseCheckLengthSanity {
+			qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
-    if uint32(cap(*vec)) < l {
+`)
+		}
+		qw422016.N().S(`    if uint32(cap(*vec)) < l {
         *vec = make([]`)
 		qw422016.N().S(elementTypeString)
 		qw422016.N().S(`, l)
@@ -1072,10 +1084,14 @@ func `)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
+`)
+		if tuple.wr.gen.options.UseCheckLengthSanity {
+			qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
         return w, err
     }
-    if uint32(cap(*vec)) < nat_n {
+`)
+		}
+		qw422016.N().S(`    if uint32(cap(*vec)) < nat_n {
         *vec = make([]`)
 		qw422016.N().S(elementTypeString)
 		qw422016.N().S(`, nat_n)

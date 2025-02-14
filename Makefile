@@ -70,6 +70,7 @@ goldmaster_nocompile: build
 		--generateByteVersions=cases_bytes. \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
+		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tlgen --language=go --split-internal -v \
 		--copyrightPath=./COPYRIGHT \
