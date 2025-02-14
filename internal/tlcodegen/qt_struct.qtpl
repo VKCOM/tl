@@ -842,7 +842,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) ([]byt
                     }
                 -%}
 // Set field{%s= maybeS %} {%s= mergedFieldsForComment %} in "{%s= affectedType.wr.tlName.String() %}" by changing fieldMask "{%s= field.originalName %}"
-func (item *{%s= goName %}) SetInReturn{%s= mergedFields %}For{%s= affectedType.wr.goGlobalName %}(value bool) {
+func (item *{%s= goName %}) Set{%s= affectedType.wr.goGlobalName %}{%s= mergedFields %}(value bool) {
     if value {
         item.{%s= field.goName %} |= 1 << {%d= int(bit) %}
     } else {
@@ -914,6 +914,8 @@ if mask{%s= field.goName %} & (1<<{%v= index %}) != 0 {
             {%- elseif (fieldProps & FieldUsedAsSize) != 0 -%}
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
 item.{%s= field.goName %} = rg.LimitValue(item.{%s= field.goName %})
+            {%- elseif fieldProps == FieldIsNat -%}
+{%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
             {%- endif -%}
         {%- else -%}
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}

@@ -57,6 +57,7 @@ func (item *CasesTestOutFieldMask) Reset() {
 
 func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {
 	if nat_f&(1<<0) != 0 {
+		item.F1 = basictl.RandomUint(rg)
 	} else {
 		item.F1 = 0
 	}

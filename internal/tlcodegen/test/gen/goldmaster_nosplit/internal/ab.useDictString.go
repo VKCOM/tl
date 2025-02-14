@@ -27,6 +27,7 @@ func (item *AbUseDictString) Reset() {
 }
 
 func (item *AbUseDictString) FillRandom(rg *basictl.RandGenerator) {
+	item.FieldsMask = basictl.RandomUint(rg)
 	BuiltinVectorDictionaryFieldStringFillRandom(rg, &item.Tags)
 }
 
@@ -169,6 +170,7 @@ func (item *AbUseDictStringBytes) Reset() {
 }
 
 func (item *AbUseDictStringBytes) FillRandom(rg *basictl.RandGenerator) {
+	item.FieldsMask = basictl.RandomUint(rg)
 	BuiltinVectorDictionaryFieldStringBytesFillRandom(rg, &item.Tags)
 }
 

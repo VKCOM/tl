@@ -1724,10 +1724,9 @@ func (item *`)
 					qw422016.N().S(`"
 func (item *`)
 					qw422016.N().S(goName)
-					qw422016.N().S(`) SetInReturn`)
-					qw422016.N().S(mergedFields)
-					qw422016.N().S(`For`)
+					qw422016.N().S(`) Set`)
 					qw422016.N().S(affectedType.wr.goGlobalName)
+					qw422016.N().S(mergedFields)
 					qw422016.N().S(`(value bool) {
     if value {
         item.`)
@@ -1897,6 +1896,10 @@ item.`)
 				qw422016.N().S(` = rg.LimitValue(item.`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`)
+`)
+			} else if fieldProps == FieldIsNat {
+				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
+				qw422016.N().S(`
 `)
 			}
 		} else {

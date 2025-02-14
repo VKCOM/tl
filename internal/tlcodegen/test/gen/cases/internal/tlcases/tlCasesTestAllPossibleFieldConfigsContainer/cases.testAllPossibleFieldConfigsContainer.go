@@ -34,6 +34,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) Reset() {
 func (item *CasesTestAllPossibleFieldConfigsContainer) FillRandom(rg *basictl.RandGenerator) {
 	var maskOuter uint32
 	maskOuter = basictl.RandomUint(rg)
+	maskOuter = rg.LimitValue(maskOuter)
 	item.Outer = 0
 	if maskOuter&(1<<0) != 0 {
 		item.Outer |= (1 << 0)
