@@ -27,9 +27,6 @@ func BuiltinTupleTuplePairTupleIntTupleInt2FillRandom(rg *basictl.RandGenerator,
 }
 
 func BuiltinTupleTuplePairTupleIntTupleInt2Read(w []byte, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
-	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n)
 	} else {
