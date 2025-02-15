@@ -436,10 +436,23 @@ func (gen *Gen2) getNamespace(n string) *Namespace {
 }
 
 type NatUsagesInfo struct {
-	TypeNameAndArgIndexToBitsUsedByNat            map[tlast.Name]map[int]map[int]bool
-	CombinatorAndNatFieldIndexToBitsUsed          map[tlast.Name]map[int]map[int]bool
-	TypeNameAndArgIndexToBitsUsedInLayout         map[tlast.Name]map[int]map[int]bool
+	// which bits are affected by all passing through nat values for selected template argument
+	TypeNameAndArgIndexToBitsUsedByNat map[tlast.Name]map[int]map[int]bool
+	// which bits are used in schema for selected nat field in some combinator
+	CombinatorAndNatFieldIndexToBitsUsed map[tlast.Name]map[int]map[int]bool
+	// which bits affected in type layout for selected template argument
+	TypeNameAndArgIndexToBitsUsedInLayout map[tlast.Name]map[int]map[int]bool
+	// which nat fields passing through selected template argument
 	TypeNameAndArgToAffectingCombinatorsNatFields map[tlast.Name]map[int]map[tlast.Name]map[int]bool
+}
+
+func (info *NatUsagesInfo) GetAffectedBitsNatField(combinator tlast.Name, fieldId int) map[int]bool {
+	if m, ok := info.CombinatorAndNatFieldIndexToBitsUsed[combinator]; ok && len(m) != 0 {
+		if bits, ok := m[fieldId]; ok && len(bits) != 0 {
+			return bits
+		}
+	}
+	return make(map[int]bool)
 }
 
 func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
@@ -485,9 +498,6 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 				}
 
 				for _, combinator := range types[typeName] {
-					//if combinator.Construct.Name.String() == "tasks.queueStats" {
-					//	print("debug")
-					//}
 					for _, field := range combinator.Fields {
 						// add used bit
 						if field.Mask != nil && field.Mask.MaskName == combinator.TemplateArguments[i].FieldName {
@@ -668,9 +678,6 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 
 		for _, combinator := range functions {
 			combinatorsNatFieldToAffectedBits[combinator.Construct.Name] = make(map[int]map[int]bool)
-			//if combinator.Construct.Name.String() == "tasks.getQueueSize" {
-			//	print("debug")
-			//}
 			for i, _ := range combinator.Fields {
 				searchItem := combinator.Fields[i].FieldName
 				if combinator.Fields[i].FieldType.Type.String() != "#" {
@@ -771,8 +778,8 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 }
 
 func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
-	newTypes, _, _, _ := extractTypes(newTL)
-	oldTypes, _, oldOrder, _ := extractTypes(oldTL)
+	newTypes, newFunctions, _, _ := extractTypes(newTL)
+	oldTypes, oldFunctions, oldOrder, oldFunctionsOrder := extractTypes(oldTL)
 	oldNatInfos := checkNatUsages(oldTL)
 	newNatInfos := checkNatUsages(newTL)
 
@@ -833,34 +840,24 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 			}
 		}
 	}
-	return &tlast.ParseError{}
-}
 
-// not validating invariants
-func getAllAppendingTypes(newTypes, oldTypes *map[tlast.Name][]*tlast.Combinator, order []tlast.Name) map[tlast.Name]bool {
-	appendingTypes := make(map[tlast.Name]bool)
-	for _, typeName := range order {
-		appendingTypes[typeName] = false
+	for _, typeName := range oldFunctionsOrder {
+		oldFunction := oldFunctions[typeName]
+		newFunction := newFunctions[typeName]
 
-		oldCombinators := (*oldTypes)[typeName]
-		newCombinators := (*newTypes)[typeName]
-
-		constructorToCombinator := make(map[tlast.Name]*tlast.Combinator)
-		for _, constructor := range newCombinators {
-			constructorToCombinator[constructor.Construct.Name] = constructor
-		}
-
-		for _, oldConstructor := range oldCombinators {
-			newConstructor := constructorToCombinator[oldConstructor.Construct.Name]
-			if newConstructor != nil && len(newConstructor.Fields) > len(oldConstructor.Fields) {
-				appendingTypes[typeName] = true
-				if len(newCombinators) == 1 {
-					appendingTypes[newConstructor.Construct.Name] = true
-				}
+		if newFunction == nil {
+			return &tlast.ParseError{
+				Err: fmt.Errorf("this function can't be removed"),
+				Pos: newFunction.Construct.NamePR,
+			}
+		} else {
+			if err := checkCombinatorsBackwardCompatibility(newFunction, oldFunction, &oldNatInfos, &newNatInfos); err.Err != nil {
+				return &err
 			}
 		}
 	}
-	return appendingTypes
+
+	return &tlast.ParseError{}
 }
 
 func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, functions map[tlast.Name]*tlast.Combinator, order []tlast.Name, functionsOrder []tlast.Name) {
@@ -1057,11 +1054,88 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 		}
 	}
 
-	for i := len(oldCombinator.Fields); i < len(newCombinator.Fields); i++ {
+	firstCombinatorToCheck := len(oldCombinator.Fields)
+	functionCheck := newCombinator.IsFunction && oldCombinator.IsFunction
+
+	if functionCheck {
+		containsNats := false
+		containsFieldMask := false
+
+		for _, field := range oldCombinator.Fields {
+			if field.Mask != nil {
+				containsFieldMask = true
+				break
+			}
+		}
+
+		for _, field := range oldCombinator.Fields {
+			if field.FieldType.Type.String() == "#" {
+				containsNats = true
+				break
+			}
+		}
+
+		// check that new arguments of function if it doesn't contain any nat arguments must be nat
+		if len(newCombinator.Fields) > firstCombinatorToCheck && !containsFieldMask {
+			if !containsNats {
+				firstAppendingField := newCombinator.Fields[firstCombinatorToCheck]
+				if firstAppendingField.FieldType.Type.String() != "#" {
+					return tlast.ParseError{
+						Err: fmt.Errorf("to append arguments for this method: add field with type # to the end and then add other fields (example: \"@read getItem#11111111 x:int = True;\" change to \"@read getItem#11111111 x:int field_mask:# y:field_mask.0?int = True;\" to append \"y\")"),
+						Pos: firstAppendingField.FieldType.PR,
+					}
+				}
+				firstCombinatorToCheck += 1
+				if len(newCombinator.Fields) == firstCombinatorToCheck &&
+					len(newNatInfo.GetAffectedBitsNatField(newCombinator.Construct.Name, firstCombinatorToCheck-1)) == 0 {
+					return tlast.ParseError{
+						Err: fmt.Errorf("can't append only one unused fieldmask"),
+						Pos: firstAppendingField.FieldType.PR,
+					}
+				}
+			} else {
+				// if any nat field wasn't used as local field mask, allow to add such, but only if it will be used immediately
+				if len(newCombinator.Fields) > len(oldCombinator.Fields)+1 {
+					firstAppendingField := newCombinator.Fields[firstCombinatorToCheck]
+					if firstAppendingField.FieldType.Type.String() == "#" && firstAppendingField.Mask == nil {
+						firstCombinatorToCheck += 1
+						// check that all new fields after this one are using it as field mask
+						for i := firstCombinatorToCheck; i < len(newCombinator.Fields); i++ {
+							newField := newCombinator.Fields[i]
+							if newField.Mask == nil ||
+								newField.Mask.MaskName != firstAppendingField.FieldName {
+								var errToCmp tlast.ParseError
+								if newField.Mask == nil {
+									errToCmp = tlast.ParseError{
+										Err: fmt.Errorf("add field mask \"%s\" with some bit", firstAppendingField.FieldName),
+										Pos: newField.PRName,
+									}
+								} else {
+									errToCmp = tlast.ParseError{
+										Err: fmt.Errorf("change field mask to \"%s\"", firstAppendingField.FieldName),
+										Pos: newField.Mask.PRName,
+									}
+								}
+								return *tlast.BeautifulError2(
+									&tlast.ParseError{
+										Err: fmt.Errorf("only allowed case to append new # field without fieldmask if it is a field which will be a fieldmask for other new fields, but early mentioned field breaks this condition"),
+										Pos: firstAppendingField.FieldType.PR,
+									},
+									&errToCmp,
+								)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for i := firstCombinatorToCheck; i < len(newCombinator.Fields); i++ {
 		newField := newCombinator.Fields[i]
 		if newField.Mask == nil {
 			return tlast.ParseError{
-				Err: fmt.Errorf("new fields must have a field mask due to backward compaibilty"),
+				Err: fmt.Errorf("new fields must have a field mask due to backward compaibilty (only for cases without usable field with type # already existed, you can firstly add such field and then other new fields)"),
 				Pos: newField.PR,
 			}
 		}
@@ -1079,23 +1153,17 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 			}
 		}
 	}
-	return tlast.ParseError{}
-}
 
-func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, oldInfo, newInfo *NatUsagesInfo) (bool, *int) {
-	isTemplateArg := false
-	templateIndex := -1
-
-	mask := combinator.Fields[fieldId].Mask
-
-	for i, argument := range combinator.TemplateArguments {
-		if argument.FieldName == mask.MaskName {
-			isTemplateArg = true
-			templateIndex = i
-			break
+	if functionCheck {
+		if err := compareTypes(&newCombinator.FuncDecl, &oldCombinator.FuncDecl); err != nil {
+			return *err
 		}
 	}
 
+	return tlast.ParseError{}
+}
+func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, oldInfo, newInfo *NatUsagesInfo) (bool, *int) {
+	used := getUsedBitsForFieldMask(combinator, fieldId, oldInfo, newInfo)
 	findNextAvailable := func(used map[int]bool) *int {
 		for i := 0; i < 32; i++ {
 			if used[i] == false {
@@ -1105,24 +1173,43 @@ func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, oldI
 		return nil
 	}
 
+	mask := combinator.Fields[fieldId].Mask
+
+	if len(used) != 0 && used[int(mask.BitNumber)] {
+		return false, findNextAvailable(used)
+	}
+
+	return true, nil
+}
+
+func getUsedBitsForFieldMask(combinator *tlast.Combinator, fieldId int, oldInfo, newInfo *NatUsagesInfo) map[int]bool {
+	isTemplateArg := false
+	templateIndex := -1
+
+	maskName := combinator.Fields[fieldId].Mask.MaskName
+
+	for i, argument := range combinator.TemplateArguments {
+		if argument.FieldName == maskName {
+			isTemplateArg = true
+			templateIndex = i
+			break
+		}
+	}
+
 	if isTemplateArg {
 		var outerUsage map[int]bool
 		if outerUsageForType, ok := oldInfo.TypeNameAndArgIndexToBitsUsedByNat[combinator.TypeDecl.Name]; ok {
 			outerUsage = outerUsageForType[templateIndex]
 		}
 		if len(outerUsage) != 0 {
-			if outerUsage[int(mask.BitNumber)] != false {
-				return false, findNextAvailable(outerUsage)
-			}
+			return outerUsage
 		} else {
 			var innerUsage map[int]bool
 			if innerUsageForType, ok := oldInfo.TypeNameAndArgIndexToBitsUsedInLayout[combinator.TypeDecl.Name]; ok {
 				innerUsage = innerUsageForType[templateIndex]
 			}
 			if len(innerUsage) != 0 {
-				if innerUsage[int(mask.BitNumber)] != false {
-					return false, findNextAvailable(innerUsage)
-				}
+				return innerUsage
 			} else {
 				used := make(map[int]bool)
 				if _, ok := newInfo.TypeNameAndArgToAffectingCombinatorsNatFields[combinator.TypeDecl.Name]; ok {
@@ -1140,15 +1227,13 @@ func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, oldI
 						}
 					}
 				}
-				if used[int(mask.BitNumber)] != false {
-					return false, findNextAvailable(used)
-				}
+				return used
 			}
 		}
 	} else {
 		natIndexAsField := -1
 		for i, argument := range combinator.Fields {
-			if argument.FieldName == mask.MaskName {
+			if argument.FieldName == maskName {
 				natIndexAsField = i
 				break
 			}
@@ -1158,13 +1243,11 @@ func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, oldI
 			innerUsage = innerUsageForType[natIndexAsField]
 		}
 		if len(innerUsage) != 0 {
-			if innerUsage[int(mask.BitNumber)] != false {
-				return false, findNextAvailable(innerUsage)
-			}
+			return innerUsage
 		}
 	}
 
-	return true, nil
+	return nil
 }
 
 func checkTagCollisions(tl tlast.TL) error {
