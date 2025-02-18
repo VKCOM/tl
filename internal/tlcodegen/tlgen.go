@@ -778,7 +778,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 }
 
 func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
-	newTypes, newFunctions, _, _ := extractTypes(newTL)
+	newTypes, newFunctions, _, newFunctionsOrder := extractTypes(newTL)
 	oldTypes, oldFunctions, oldOrder, oldFunctionsOrder := extractTypes(oldTL)
 	oldNatInfos := checkNatUsages(oldTL)
 	newNatInfos := checkNatUsages(newTL)
@@ -857,7 +857,36 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 		}
 	}
 
-	return &tlast.ParseError{}
+	// check new functions
+	for _, newFunctionName := range newFunctionsOrder {
+		if oldFunctions[newFunctionName] != nil {
+			continue
+		}
+		newFunction := newFunctions[newFunctionName]
+
+		// maybe add modifier about fixed
+		if len(newFunction.Fields) > 0 {
+			firstArgument := newFunction.Fields[0]
+			if firstArgument.FieldType.Type.String() != "#" {
+				return &tlast.ParseError{
+					Err: fmt.Errorf("new functions with arguments must have as a first argument field with type # which used as a fieldmask for other fields"),
+					Pos: firstArgument.PR,
+				}
+			} else {
+				for i := 1; i < len(newFunction.Fields); i++ {
+					newArg := newFunction.Fields[i]
+					if newArg.Mask == nil {
+						return &tlast.ParseError{
+							Err: fmt.Errorf("arguments, except first, of new functions must have field mask"),
+							Pos: newArg.PR,
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return nil
 }
 
 func extractTypes(tl *tlast.TL) (types map[tlast.Name][]*tlast.Combinator, functions map[tlast.Name]*tlast.Combinator, order []tlast.Name, functionsOrder []tlast.Name) {

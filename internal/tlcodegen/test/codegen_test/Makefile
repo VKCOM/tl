@@ -30,6 +30,12 @@ INCORRECT_TLS := \
     schema-incorrect-bit-that-already-used-2-from-outer-scope.tl \
     schema-incorrect-bit-that-already-used-3-not-used-but-forbiden.tl \
     schema-incorrect-bit-that-already-used-4-new-fieldmask-with-some-bits-used-in-schema-already.tl \
+    schema-incorrect-add-only-fieldmask-but-without-usage.tl \
+    schema-incorrect-new-arguments-added-by-fieldmask-forgotten.tl \
+    schema-incorrect-new-arguments-added-with-new-fieldmask-but-old-one-used.tl \
+    schema-incorrect-new-arguments-added-without-new-fieldmask.tl \
+    schema-incorrect-new-function-first-arg-not-nat.tl \
+    schema-incorrect-new-function-non-first-args-without-fieldmask.tl \
 
 run-linter-check-diff-test:
 	cd ../../../.. && make build;
