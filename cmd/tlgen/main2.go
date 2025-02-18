@@ -226,6 +226,9 @@ func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
 	}
 	oldTLPath := parsedPaths[0]
 	oldTL, err := parseTlFile(oldTLPath, true, &clonedOpt)
+	if err != nil {
+		return err
+	}
 
 	log.Print("STEP: Compare old tl schema with passed...")
 
