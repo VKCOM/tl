@@ -314,7 +314,6 @@ type Gen2Options struct {
 	SplitInternal     bool
 
 	// Linter
-	Mode           string
 	Schema2Compare string
 
 	// Go
