@@ -48,10 +48,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 
 	// Linter
-	flag.StringVar(&opt.Mode, "linter-mode", "",
-		`use linter in some specific mode, such as: "check-diff"`)
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
-		`path to old version TL schema to compare on backward compatibility (works only in "--linter-mode=check-diff")`)
+		`path to old version TL schema to compare on backward compatibility`)
 
 	// Go
 	flag.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",
@@ -162,7 +160,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
-	if opt.Language == "" && opt.Mode == "check-diff" && opt.Schema2Compare != "" {
+	if opt.Language == "" && opt.Schema2Compare != "" {
 		compErr := runCompatibilityCheck(opt, &ast)
 		if compErr != nil {
 			return compErr

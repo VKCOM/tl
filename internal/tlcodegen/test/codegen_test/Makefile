@@ -41,7 +41,6 @@ run-linter-check-diff-test:
 	cd ../../../.. && make build;
 	for sample in $(INCORRECT_TLS); do \
 	    if ../../../../target/bin/tlgen \
-			--linter-mode=check-diff \
 			--schema-to-compare=../tls/backward_compatibilty_samples/schema-correct.tl \
 			../tls/backward_compatibilty_samples/$${sample}; \
 		then \
