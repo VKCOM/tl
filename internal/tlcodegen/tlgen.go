@@ -529,7 +529,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 						}
 
 						{
-							for bit, _ := range typeNameToTypeArguments[typeName][i] {
+							for bit := range typeNameToTypeArguments[typeName][i] {
 								typeNameToTypeArguments[filledType][filledIndex][bit] = true
 							}
 						}
@@ -550,7 +550,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 								if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType]; !ok {
 									typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType] = make(map[int]bool)
 								}
-								for affectedNat, _ := range affectedNats {
+								for affectedNat := range affectedNats {
 									typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType][affectedNat] = true
 								}
 							}
@@ -606,7 +606,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 						}
 						if affectedArgs, ok := typeNameToTypeArguments[typeName]; ok {
 							if affectedBits, ok := affectedArgs[i]; ok {
-								for bit, _ := range affectedBits {
+								for bit := range affectedBits {
 									combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex][bit] = true
 								}
 							}
@@ -629,7 +629,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 
 							if _, ok := typeArgumentToAffectedTypeArguments[typeName]; ok {
 								for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
-									for affectedArg, _ := range affectedArgs {
+									for affectedArg := range affectedArgs {
 										if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType]; !ok {
 											typeArgumentToAffectingCombinatorsNatFields[affectedType] = make(map[int]map[tlast.Name]map[int]bool)
 										}
@@ -656,7 +656,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 		for _, typeName := range order {
 			for _, combinator := range types[typeName] {
 				combinatorsNatFieldToAffectedBits[combinator.Construct.Name] = make(map[int]map[int]bool)
-				for i, _ := range combinator.Fields {
+				for i := range combinator.Fields {
 					searchItem := combinator.Fields[i].FieldName
 					if combinator.Fields[i].FieldType.Type.String() != "#" {
 						continue
@@ -677,7 +677,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 
 		for _, combinator := range functions {
 			combinatorsNatFieldToAffectedBits[combinator.Construct.Name] = make(map[int]map[int]bool)
-			for i, _ := range combinator.Fields {
+			for i := range combinator.Fields {
 				searchItem := combinator.Fields[i].FieldName
 				if combinator.Fields[i].FieldType.Type.String() != "#" {
 					continue
@@ -711,14 +711,14 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 					if arg.T.Type.String() == searchingArgument {
 						// all affected by this type indirrect
 						for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
-							for affectedArg, _ := range affectedArgs {
+							for affectedArg := range affectedArgs {
 								if _, ok := typeNameToVisitingTypeArguments[affectedType]; !ok {
 									typeNameToVisitingTypeArguments[affectedType] = make(map[int]map[int]bool)
 								}
 								if _, ok := typeNameToVisitingTypeArguments[affectedType][affectedArg]; !ok {
 									typeNameToVisitingTypeArguments[affectedType][affectedArg] = make(map[int]bool)
 								}
-								for bit, _ := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
+								for bit := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
 									typeNameToVisitingTypeArguments[affectedType][affectedArg][bit] = true
 								}
 							}
@@ -730,7 +730,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 						if _, ok := typeNameToVisitingTypeArguments[typeName][i]; !ok {
 							typeNameToVisitingTypeArguments[typeName][i] = make(map[int]bool)
 						}
-						for bit, _ := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
+						for bit := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
 							typeNameToVisitingTypeArguments[typeName][i][bit] = true
 						}
 					} else {
@@ -742,7 +742,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 
 		for _, typeName := range order {
 			for _, combinator := range types[typeName] {
-				for i, _ := range combinator.Fields {
+				for i := range combinator.Fields {
 					searchItem := combinator.Fields[i].FieldName
 					if combinator.Fields[i].FieldType.Type.String() != "#" {
 						continue
@@ -755,7 +755,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 		}
 
 		for _, combinator := range functions {
-			for i, _ := range combinator.Fields {
+			for i := range combinator.Fields {
 				searchItem := combinator.Fields[i].FieldName
 				if combinator.Fields[i].FieldType.Type.String() != "#" {
 					continue
@@ -1051,8 +1051,8 @@ func checkCombinatorsBackwardCompatibility(newCombinator, oldCombinator *tlast.C
 				)
 			}
 		} else if newField.Mask != nil {
-			newIndex, _ := newMapping[newField.Mask.MaskName]
-			oldIndex, _ := oldMapping[oldField.Mask.MaskName]
+			newIndex := newMapping[newField.Mask.MaskName]
+			oldIndex := oldMapping[oldField.Mask.MaskName]
 
 			if newIndex != oldIndex {
 				return *tlast.BeautifulError2(
@@ -1194,7 +1194,7 @@ func checkIsSelectedBitAvailable(combinator *tlast.Combinator, fieldId int, oldI
 	used := getUsedBitsForFieldMask(combinator, fieldId, oldInfo, newInfo)
 	findNextAvailable := func(used map[int]bool) *int {
 		for i := 0; i < 32; i++ {
-			if used[i] == false {
+			if !used[i] {
 				return &i
 			}
 		}
@@ -1243,10 +1243,10 @@ func getUsedBitsForFieldMask(combinator *tlast.Combinator, fieldId int, oldInfo,
 				if _, ok := newInfo.TypeNameAndArgToAffectingCombinatorsNatFields[combinator.TypeDecl.Name]; ok {
 					if _, ok := newInfo.TypeNameAndArgToAffectingCombinatorsNatFields[combinator.TypeDecl.Name][templateIndex]; ok {
 						for comb, fields := range newInfo.TypeNameAndArgToAffectingCombinatorsNatFields[combinator.TypeDecl.Name][templateIndex] {
-							for field, _ := range fields {
+							for field := range fields {
 								if _, ok := oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb]; ok {
 									if _, ok := oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb][field]; ok {
-										for bit, _ := range oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb][field] {
+										for bit := range oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb][field] {
 											used[bit] = true
 										}
 									}
