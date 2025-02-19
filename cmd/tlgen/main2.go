@@ -234,7 +234,7 @@ func runCompatibilityCheck(opt *tlcodegen.Gen2Options, ast *tlast.TL) error {
 
 	log.Print("STEP: Compare old tl schema with passed...")
 
-	if compErr := tlcodegen.CheckBackwardCompatibility(ast, &oldTL); compErr.Err != nil {
+	if compErr := tlcodegen.CheckBackwardCompatibility(ast, &oldTL); compErr != nil {
 		return compErr
 	}
 	log.Print("RESULT: New version is backward compatible with passed schema")
