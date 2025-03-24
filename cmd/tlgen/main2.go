@@ -165,7 +165,15 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	if opt.Language == "" && opt.Schema2Compare != "" {
 		compErr := runCompatibilityCheck(opt, &ast)
 		if compErr != nil {
-			return compErr
+			var parseError *tlast.ParseError
+			if errors.As(compErr, &parseError) {
+				if opt.WarningsAreErrors {
+					return compErr
+				}
+				parseError.ConsolePrint(opt.ErrorWriter, compErr, true)
+			} else {
+				return compErr
+			}
 		}
 	}
 	if opt.Language != "" {
