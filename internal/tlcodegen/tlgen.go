@@ -847,7 +847,7 @@ func CheckBackwardCompatibility(newTL, oldTL *tlast.TL) *tlast.ParseError {
 		if newFunction == nil {
 			return &tlast.ParseError{
 				Err: fmt.Errorf("this function can't be removed"),
-				Pos: newFunction.Construct.NamePR,
+				Pos: oldFunction.Construct.NamePR,
 			}
 		} else {
 			if err := checkCombinatorsBackwardCompatibility(newFunction, oldFunction, &oldNatInfos, &newNatInfos); err.Err != nil {
