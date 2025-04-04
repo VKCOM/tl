@@ -30,7 +30,8 @@ namespace basictl {
         }
         void nat_read(uint32_t& value) {
             if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
-                return fetch_data2(&value, TL_UINT32_SIZE);            }
+                return fetch_data2(&value, TL_UINT32_SIZE);
+            }
             std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_UINT32_SIZE);
             ptr += TL_UINT32_SIZE;
         }
@@ -112,7 +113,7 @@ namespace basictl {
             value = false;
         }
 
-        bool string_read(std::string& value);
+        void string_read(std::string& value);
 
         void last_release() noexcept;
     private:
@@ -178,7 +179,7 @@ namespace basictl {
             std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_FLOAT64_SIZE);
             ptr += TL_FLOAT64_SIZE;
         };
-        bool string_write(const std::string& value);
+        void string_write(const std::string& value);
 
         void last_release() noexcept;
 
