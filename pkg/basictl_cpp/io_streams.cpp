@@ -10,7 +10,7 @@ namespace basictl {
         auto len = size_t(static_cast<unsigned char>(*ptr));
         if (len >= TL_BIG_STRING_MARKER) [[unlikely]] {
             if (len > TL_BIG_STRING_MARKER) [[unlikely]] {
-                return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                return set_error_sequence_length();
             }
             uint32_t len32 = 0;
             if (!nat_read(len32)) [[unlikely]] {
@@ -55,11 +55,11 @@ namespace basictl {
         start_block = ptr;
     }
 
-    bool tl_istream::has_error() const {
+    bool tl_istream::has_error() const noexcept {
         return error.has_value();
     }
 
-    std::optional<tl_stream_error> &tl_istream::get_error() {
+    std::optional<tl_stream_error> &tl_istream::get_error() noexcept {
         return error;
     }
 
@@ -71,12 +71,10 @@ namespace basictl {
     }
 
     bool tl_istream::set_error_eof() noexcept { return set_error(tl_error_type::STREAM_EOF, "EOF"); }
-
     bool tl_istream::set_error_sequence_length() noexcept { return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length"); }
-
     bool tl_istream::set_error_string_padding() noexcept { return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding"); }
-
     bool tl_istream::set_error_expected_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag"); }
+    bool tl_istream::set_error_union_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "union_tag"); };
 
     void tl_istream::grow_buffer() noexcept {
         ptr = end_block;
@@ -160,7 +158,7 @@ namespace basictl {
         auto len = value.size();
         if (len > TL_MAX_TINY_STRING_LEN) [[unlikely]] {
             if (len > TL_BIG_STRING_LEN) [[unlikely]] {
-                return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                return set_error_sequence_length();
             }
             uint32_t p = (len << 8U) | TL_BIG_STRING_MARKER;
             if (!store_data(&p, 4)) [[unlikely]] {
@@ -203,24 +201,27 @@ namespace basictl {
         start_block = ptr;
     }
 
-    bool tl_ostream::has_error() const {
+    bool tl_ostream::has_error() const noexcept {
         return error.has_value();
     }
 
-    std::optional<tl_stream_error> &tl_ostream::get_error() {
+    std::optional<tl_stream_error> &tl_ostream::get_error() noexcept {
         return error;
     }
 
-    bool tl_ostream::set_error(tl_error_type type, const char *what) {
+    bool tl_ostream::set_error(tl_error_type type, const char *what) noexcept {
         if (!error.has_value()) {
             error = tl_error(type, what);
         }
         return false;
     }
 
-    bool tl_ostream::set_error_eof() { return set_error(tl_error_type::STREAM_EOF, "EOF"); }
-
-    bool tl_ostream::set_error_sequence_length() { return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length"); }
+    bool tl_ostream::set_error_eof() noexcept { return set_error(tl_error_type::STREAM_EOF, "EOF"); }
+    bool tl_ostream::set_error_sequence_length() noexcept { return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length"); }
+    bool tl_ostream::set_error_string_padding() noexcept { return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding"); }
+    bool tl_ostream::set_error_bool_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "bool_tag"); }
+    bool tl_ostream::set_error_expected_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag"); }
+    bool tl_ostream::set_error_union_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "union_tag"); }
 
     void tl_ostream::grow_buffer() {
         ptr = end_block;
