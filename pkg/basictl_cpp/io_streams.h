@@ -122,7 +122,7 @@ namespace basictl {
 
     class tl_ostream {
     public:
-        explicit tl_ostream(tl_output_connector* provider);
+        explicit tl_ostream(tl_output_connector& provider);
         tl_ostream(const tl_ostream&) = delete;
         tl_ostream& operator=(const tl_ostream&) = delete;
 
