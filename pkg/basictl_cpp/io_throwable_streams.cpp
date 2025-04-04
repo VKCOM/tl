@@ -3,7 +3,7 @@
 namespace basictl {
     tl_throwable_istream::tl_throwable_istream(tl_input_connector &provider) : provider(&provider) {}
 
-    bool tl_throwable_istream::string_read(std::string &value) {
+    void tl_throwable_istream::string_read(std::string &value) {
         ensure_byte();
         auto len = size_t(static_cast<unsigned char>(*ptr));
         if (len >= TL_BIG_STRING_MARKER) [[unlikely]] {
@@ -11,14 +11,12 @@ namespace basictl {
                 throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t len32 = 0;
-            if (!nat_read(len32)) [[unlikely]] {
-                return false;
-            }
+            nat_read(len32);
             len = len32 >> 8U;
             value.clear();
             fetch_data_append(value, len);
             fetch_pad((-len) & 3);
-            return true;
+            return;
         }
         auto pad = ((-(len + 1)) & 3);
         auto fullLen = 1 + len + pad;
@@ -27,7 +25,7 @@ namespace basictl {
             value.clear();
             fetch_data_append(value, len);
             fetch_pad(pad);
-            return true;
+            return;
         }
         // fast path for short strings that fully fit in buffer
         uint32_t x = 0;
@@ -37,8 +35,7 @@ namespace basictl {
         }
         value.assign(reinterpret_cast<const char*>(ptr + 1), len);
         ptr += fullLen;
-        return true;
-    }
+   }
 
     void tl_throwable_istream::last_release() noexcept {
         provider->release_buffer(ptr - start_block);
@@ -118,7 +115,7 @@ namespace basictl {
         this->provider = provider;
     }
 
-    bool tl_throwable_ostream::string_write(const std::string &value) {
+    void tl_throwable_ostream::string_write(const std::string &value) {
         auto len = value.size();
         if (len > TL_MAX_TINY_STRING_LEN) [[unlikely]] {
             if (len > TL_BIG_STRING_LEN) [[unlikely]] {
@@ -128,7 +125,7 @@ namespace basictl {
             store_data(&p, 4);
             store_data(value.data(), value.size());
             store_pad((-len) & 3);
-            return true;
+            return;
         }
         auto pad = ((-(len + 1)) & 3);
         auto fullLen = 1 + len + pad;
@@ -137,7 +134,7 @@ namespace basictl {
             store_data(&p, 1);
             store_data(value.data(), value.size());
             store_pad(pad);
-            return true;
+            return;
         }
         // fast path for short strings that fully fit in buffer
         uint32_t x = 0;
@@ -145,8 +142,7 @@ namespace basictl {
         *ptr = static_cast<std::byte>(len);
         std::memcpy(ptr + 1, value.data(), len);
         ptr += fullLen;
-        return true;
-    }
+   }
 
     void tl_throwable_ostream::last_release() noexcept {
         provider->release_buffer(ptr - start_block);

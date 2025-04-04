@@ -154,9 +154,7 @@ namespace basictl {
         return true;
     }
 
-    tl_ostream::tl_ostream(tl_output_connector *provider) {
-        this->provider = provider;
-    }
+    tl_ostream::tl_ostream(tl_output_connector &provider): provider(&provider) {}
 
     bool tl_ostream::string_write(const std::string &value) {
         auto len = value.size();
