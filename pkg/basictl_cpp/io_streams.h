@@ -94,14 +94,15 @@ namespace basictl {
 
         void last_release() noexcept;
 
-        [[nodiscard]] bool has_error() const;
-        [[nodiscard]] std::optional<tl_stream_error>& get_error();
+        [[nodiscard]] bool has_error() const noexcept;
+        [[nodiscard]] std::optional<tl_stream_error>& get_error() noexcept;
 
         bool set_error(tl_error_type type, const char* what) noexcept;
         bool set_error_eof() noexcept;
         bool set_error_sequence_length() noexcept;
         bool set_error_string_padding() noexcept;
         bool set_error_expected_tag() noexcept;
+        bool set_error_union_tag() noexcept;
     private:
         tl_input_connector* provider;
         std::optional<tl_stream_error> error;
@@ -175,12 +176,16 @@ namespace basictl {
 
         void last_release() noexcept;
 
-        [[nodiscard]] bool has_error() const;
-        [[nodiscard]] std::optional<tl_stream_error>& get_error();
+        [[nodiscard]] bool has_error() const noexcept;
+        [[nodiscard]] std::optional<tl_stream_error>& get_error() noexcept;
 
-        bool set_error(tl_error_type type, const char* e);
-        bool set_error_eof();
-        bool set_error_sequence_length();
+        bool set_error(tl_error_type type, const char* e) noexcept;
+        bool set_error_eof() noexcept;
+        bool set_error_sequence_length() noexcept;
+        bool set_error_string_padding() noexcept;
+        bool set_error_bool_tag() noexcept;
+        bool set_error_expected_tag() noexcept;
+        bool set_error_union_tag() noexcept;
     private:
         tl_output_connector* provider;
         std::optional<tl_stream_error> error;
