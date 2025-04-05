@@ -1,8 +1,8 @@
-#include "../a_tlgen_helpers_code.hpp"
+#include "../basictl/io_streams.h"
 
 #include <map>
 
-#include "headers.hpp"
+#include "headers.h"
 
 namespace {
 	struct tl_items {

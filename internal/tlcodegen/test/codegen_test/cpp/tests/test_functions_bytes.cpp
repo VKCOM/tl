@@ -5,9 +5,11 @@
 #include "../utils/hex.h"
 #include "../dependencies/json.hpp"
 
-#include "../../../gen/schema_cpp/a_tlgen_helpers_code.hpp"
-#include "../../../gen/schema_cpp/__meta/headers.hpp"
-#include "../../../gen/schema_cpp/__factory/headers.hpp"
+#include "../../../gen/schema_cpp/basictl/io_streams.h"
+#include "../../../gen/schema_cpp/basictl/impl/string_io.h"
+
+#include "../../../gen/schema_cpp/__meta/headers.h"
+#include "../../../gen/schema_cpp/__factory/headers.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -26,9 +28,16 @@ int main() {
         auto function_body_input = hex::parse_hex_to_bytes(test_data.at("FunctionBodyBytes"));
         auto expected_result_output = hex::parse_hex_to_bytes(test_data.at("ResultBytes"));
 
-        basictl::tl_istream_string input1{function_body_input};
-        basictl::tl_istream_string input2{expected_result_output};
-        basictl::tl_ostream_string output{};
+        basictl::tl_istream_string input1_connector{function_body_input};
+        basictl::tl_istream input1{input1_connector};
+
+        basictl::tl_istream_string input2_connector{expected_result_output};
+        basictl::tl_istream input2{input2_connector};
+
+        std::string out_string;
+        basictl::tl_ostream_string output_connector{out_string};
+        basictl::tl_ostream output{output_connector};
+
 
         bool read_result = test_function->read(input1);
         bool test_result = read_result;
@@ -36,16 +45,20 @@ int main() {
         if (read_result) {
             test_result = test_function->read_write_result(input2, output);
             if (test_result) {
-                test_result = output.get_buffer() == expected_result_output;
+                auto result = output_connector.used_buffer();
+                std::string string_result(reinterpret_cast<char *>(result.data()), result.size());
+                test_result = string_result == expected_result_output;
             }
         }
 
         if (test_result) {
             std::cout << "SUCCESS" << std::endl;
         } else {
+            auto result = output_connector.used_buffer();
+            std::string string_result(reinterpret_cast<char *>(result.data()), result.size());
             std::cout << "FAILED" << std::endl;
             std::cout << "\t\tExpected output:" << test_data.at("ResultBytes") << std::endl;
-            std::cout << "\t\tActual result  :" << output.get_buffer() << std::endl;
+            std::cout << "\t\tActual result  :" << string_result << std::endl;
             return 1;
         }
     }
