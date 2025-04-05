@@ -1,44 +1,44 @@
-#include "headers/service1_vector.hpp"
-#include "headers/service1.Value.hpp"
-#include "headers/service1.touch.hpp"
-#include "headers/service1.setOrIncr.hpp"
-#include "headers/service1.set.hpp"
-#include "headers/service1.replaceOrIncr.hpp"
-#include "headers/service1.replace.hpp"
-#include "headers/service1.keysStat.hpp"
-#include "headers/service1.incr.hpp"
-#include "headers/service1.getWildcardWithFlags.hpp"
-#include "headers/service1.getWildcardList.hpp"
-#include "headers/service1.getWildcardDict.hpp"
-#include "headers/service1.getWildcard.hpp"
-#include "headers/service1.getKeysStatPeriods.hpp"
-#include "headers/service1.getKeysStat.hpp"
-#include "headers/service1.getExpireTime.hpp"
-#include "headers/service1.get.hpp"
-#include "headers/service1.exists.hpp"
-#include "headers/service1.enableKeysStat.hpp"
-#include "headers/service1.enableExpiration.hpp"
-#include "headers/service1.disableKeysStat.hpp"
-#include "headers/service1.disableExpiration.hpp"
-#include "headers/service1.delete.hpp"
-#include "headers/service1.decr.hpp"
-#include "headers/service1.cas.hpp"
-#include "headers/service1.append.hpp"
-#include "headers/service1.addOrIncr.hpp"
-#include "headers/service1.addOrGet.hpp"
-#include "headers/service1.add.hpp"
-#include "../__common_namespace/headers/int.hpp"
-#include "headers/service1.strvalueWithTime.hpp"
-#include "headers/service1.strvalue.hpp"
-#include "headers/service1.not_found.hpp"
-#include "headers/service1.longvalueWithTime.hpp"
-#include "headers/service1.longvalue.hpp"
-#include "headers/service1_dictionary.hpp"
-#include "../__common_namespace/headers/dictionary.hpp"
-#include "headers/service1_dictionaryField.hpp"
-#include "../__common_namespace/headers/string.hpp"
-#include "../__common_namespace/headers/map.hpp"
-#include "../__common_namespace/headers/Bool.hpp"
+#include "headers/service1_vector.h"
+#include "headers/service1.Value.h"
+#include "headers/service1.touch.h"
+#include "headers/service1.setOrIncr.h"
+#include "headers/service1.set.h"
+#include "headers/service1.replaceOrIncr.h"
+#include "headers/service1.replace.h"
+#include "headers/service1.keysStat.h"
+#include "headers/service1.incr.h"
+#include "headers/service1.getWildcardWithFlags.h"
+#include "headers/service1.getWildcardList.h"
+#include "headers/service1.getWildcardDict.h"
+#include "headers/service1.getWildcard.h"
+#include "headers/service1.getKeysStatPeriods.h"
+#include "headers/service1.getKeysStat.h"
+#include "headers/service1.getExpireTime.h"
+#include "headers/service1.get.h"
+#include "headers/service1.exists.h"
+#include "headers/service1.enableKeysStat.h"
+#include "headers/service1.enableExpiration.h"
+#include "headers/service1.disableKeysStat.h"
+#include "headers/service1.disableExpiration.h"
+#include "headers/service1.delete.h"
+#include "headers/service1.decr.h"
+#include "headers/service1.cas.h"
+#include "headers/service1.append.h"
+#include "headers/service1.addOrIncr.h"
+#include "headers/service1.addOrGet.h"
+#include "headers/service1.add.h"
+#include "../__common_namespace/headers/int.h"
+#include "headers/service1.strvalueWithTime.h"
+#include "headers/service1.strvalue.h"
+#include "headers/service1.not_found.h"
+#include "headers/service1.longvalueWithTime.h"
+#include "headers/service1.longvalue.h"
+#include "headers/service1_dictionary.h"
+#include "../__common_namespace/headers/dictionary.h"
+#include "headers/service1_dictionaryField.h"
+#include "../__common_namespace/headers/string.h"
+#include "../__common_namespace/headers/map.h"
+#include "../__common_namespace/headers/Bool.h"
 
 
 void tl2::details::BuiltinTuple3Service1ValueReset(std::array<::tl2::service1::Value, 3>& item) {
@@ -456,21 +456,25 @@ bool tl2::service1::Add::write_json(std::ostream& s)const {
 
 bool tl2::service1::Add::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AddRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Add::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AddWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Add::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AddReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Add::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AddWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -553,10 +557,14 @@ bool tl2::details::Service1AddWriteResult(::basictl::tl_ostream & s, tl2::servic
 }
 
 bool tl2::service1::Add::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1AddReadResult(s, *this, result);
+	bool success = tl2::details::Service1AddReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Add::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1AddWriteResult(s, *this, result);
+	bool success = tl2::details::Service1AddWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::AddOrGet::write_json(std::ostream& s)const {
@@ -566,21 +574,25 @@ bool tl2::service1::AddOrGet::write_json(std::ostream& s)const {
 
 bool tl2::service1::AddOrGet::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AddOrGetRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrGet::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AddOrGetWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrGet::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AddOrGetReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrGet::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AddOrGetWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -663,10 +675,14 @@ bool tl2::details::Service1AddOrGetWriteResult(::basictl::tl_ostream & s, tl2::s
 }
 
 bool tl2::service1::AddOrGet::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1AddOrGetReadResult(s, *this, result);
+	bool success = tl2::details::Service1AddOrGetReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::AddOrGet::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1AddOrGetWriteResult(s, *this, result);
+	bool success = tl2::details::Service1AddOrGetWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::AddOrIncr::write_json(std::ostream& s)const {
@@ -676,21 +692,25 @@ bool tl2::service1::AddOrIncr::write_json(std::ostream& s)const {
 
 bool tl2::service1::AddOrIncr::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AddOrIncrRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrIncr::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AddOrIncrWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrIncr::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AddOrIncrReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrIncr::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AddOrIncrWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -773,10 +793,14 @@ bool tl2::details::Service1AddOrIncrWriteResult(::basictl::tl_ostream & s, tl2::
 }
 
 bool tl2::service1::AddOrIncr::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1AddOrIncrReadResult(s, *this, result);
+	bool success = tl2::details::Service1AddOrIncrReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::AddOrIncr::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1AddOrIncrWriteResult(s, *this, result);
+	bool success = tl2::details::Service1AddOrIncrWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Append::write_json(std::ostream& s)const {
@@ -786,21 +810,25 @@ bool tl2::service1::Append::write_json(std::ostream& s)const {
 
 bool tl2::service1::Append::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AppendRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Append::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AppendWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Append::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1AppendReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Append::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1AppendWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -883,10 +911,14 @@ bool tl2::details::Service1AppendWriteResult(::basictl::tl_ostream & s, tl2::ser
 }
 
 bool tl2::service1::Append::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1AppendReadResult(s, *this, result);
+	bool success = tl2::details::Service1AppendReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Append::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1AppendWriteResult(s, *this, result);
+	bool success = tl2::details::Service1AppendWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Cas::write_json(std::ostream& s)const {
@@ -896,21 +928,25 @@ bool tl2::service1::Cas::write_json(std::ostream& s)const {
 
 bool tl2::service1::Cas::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1CasRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Cas::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1CasWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Cas::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1CasReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Cas::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1CasWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1004,10 +1040,14 @@ bool tl2::details::Service1CasWriteResult(::basictl::tl_ostream & s, tl2::servic
 }
 
 bool tl2::service1::Cas::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1CasReadResult(s, *this, result);
+	bool success = tl2::details::Service1CasReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Cas::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1CasWriteResult(s, *this, result);
+	bool success = tl2::details::Service1CasWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Decr::write_json(std::ostream& s)const {
@@ -1017,21 +1057,25 @@ bool tl2::service1::Decr::write_json(std::ostream& s)const {
 
 bool tl2::service1::Decr::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DecrRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Decr::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DecrWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Decr::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DecrReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Decr::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DecrWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1092,10 +1136,14 @@ bool tl2::details::Service1DecrWriteResult(::basictl::tl_ostream & s, tl2::servi
 }
 
 bool tl2::service1::Decr::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1DecrReadResult(s, *this, result);
+	bool success = tl2::details::Service1DecrReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Decr::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1DecrWriteResult(s, *this, result);
+	bool success = tl2::details::Service1DecrWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Delete::write_json(std::ostream& s)const {
@@ -1105,21 +1153,25 @@ bool tl2::service1::Delete::write_json(std::ostream& s)const {
 
 bool tl2::service1::Delete::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DeleteRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Delete::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DeleteWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Delete::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DeleteReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Delete::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DeleteWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1167,10 +1219,14 @@ bool tl2::details::Service1DeleteWriteResult(::basictl::tl_ostream & s, tl2::ser
 }
 
 bool tl2::service1::Delete::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1DeleteReadResult(s, *this, result);
+	bool success = tl2::details::Service1DeleteReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Delete::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1DeleteWriteResult(s, *this, result);
+	bool success = tl2::details::Service1DeleteWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::DisableExpiration::write_json(std::ostream& s)const {
@@ -1180,21 +1236,25 @@ bool tl2::service1::DisableExpiration::write_json(std::ostream& s)const {
 
 bool tl2::service1::DisableExpiration::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DisableExpirationRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableExpiration::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DisableExpirationWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableExpiration::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DisableExpirationReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableExpiration::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DisableExpirationWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1242,10 +1302,14 @@ bool tl2::details::Service1DisableExpirationWriteResult(::basictl::tl_ostream & 
 }
 
 bool tl2::service1::DisableExpiration::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1DisableExpirationReadResult(s, *this, result);
+	bool success = tl2::details::Service1DisableExpirationReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::DisableExpiration::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1DisableExpirationWriteResult(s, *this, result);
+	bool success = tl2::details::Service1DisableExpirationWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::DisableKeysStat::write_json(std::ostream& s)const {
@@ -1255,21 +1319,25 @@ bool tl2::service1::DisableKeysStat::write_json(std::ostream& s)const {
 
 bool tl2::service1::DisableKeysStat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DisableKeysStatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableKeysStat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DisableKeysStatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableKeysStat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1DisableKeysStatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableKeysStat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1DisableKeysStatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1317,10 +1385,14 @@ bool tl2::details::Service1DisableKeysStatWriteResult(::basictl::tl_ostream & s,
 }
 
 bool tl2::service1::DisableKeysStat::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1DisableKeysStatReadResult(s, *this, result);
+	bool success = tl2::details::Service1DisableKeysStatReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::DisableKeysStat::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1DisableKeysStatWriteResult(s, *this, result);
+	bool success = tl2::details::Service1DisableKeysStatWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::EnableExpiration::write_json(std::ostream& s)const {
@@ -1330,21 +1402,25 @@ bool tl2::service1::EnableExpiration::write_json(std::ostream& s)const {
 
 bool tl2::service1::EnableExpiration::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1EnableExpirationRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableExpiration::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1EnableExpirationWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableExpiration::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1EnableExpirationReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableExpiration::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1EnableExpirationWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1392,10 +1468,14 @@ bool tl2::details::Service1EnableExpirationWriteResult(::basictl::tl_ostream & s
 }
 
 bool tl2::service1::EnableExpiration::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1EnableExpirationReadResult(s, *this, result);
+	bool success = tl2::details::Service1EnableExpirationReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::EnableExpiration::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1EnableExpirationWriteResult(s, *this, result);
+	bool success = tl2::details::Service1EnableExpirationWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::EnableKeysStat::write_json(std::ostream& s)const {
@@ -1405,21 +1485,25 @@ bool tl2::service1::EnableKeysStat::write_json(std::ostream& s)const {
 
 bool tl2::service1::EnableKeysStat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1EnableKeysStatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableKeysStat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1EnableKeysStatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableKeysStat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1EnableKeysStatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableKeysStat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1EnableKeysStatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1467,10 +1551,14 @@ bool tl2::details::Service1EnableKeysStatWriteResult(::basictl::tl_ostream & s, 
 }
 
 bool tl2::service1::EnableKeysStat::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1EnableKeysStatReadResult(s, *this, result);
+	bool success = tl2::details::Service1EnableKeysStatReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::EnableKeysStat::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1EnableKeysStatWriteResult(s, *this, result);
+	bool success = tl2::details::Service1EnableKeysStatWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Exists::write_json(std::ostream& s)const {
@@ -1480,21 +1568,25 @@ bool tl2::service1::Exists::write_json(std::ostream& s)const {
 
 bool tl2::service1::Exists::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1ExistsRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Exists::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1ExistsWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Exists::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1ExistsReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Exists::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1ExistsWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1542,10 +1634,14 @@ bool tl2::details::Service1ExistsWriteResult(::basictl::tl_ostream & s, tl2::ser
 }
 
 bool tl2::service1::Exists::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1ExistsReadResult(s, *this, result);
+	bool success = tl2::details::Service1ExistsReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Exists::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1ExistsWriteResult(s, *this, result);
+	bool success = tl2::details::Service1ExistsWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Get::write_json(std::ostream& s)const {
@@ -1555,21 +1651,25 @@ bool tl2::service1::Get::write_json(std::ostream& s)const {
 
 bool tl2::service1::Get::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Get::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Get::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Get::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1617,10 +1717,14 @@ bool tl2::details::Service1GetWriteResult(::basictl::tl_ostream & s, tl2::servic
 }
 
 bool tl2::service1::Get::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1GetReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Get::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1GetWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetExpireTime::write_json(std::ostream& s)const {
@@ -1630,21 +1734,25 @@ bool tl2::service1::GetExpireTime::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetExpireTime::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetExpireTimeRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetExpireTime::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetExpireTimeWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetExpireTime::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetExpireTimeReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetExpireTime::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetExpireTimeWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1692,10 +1800,14 @@ bool tl2::details::Service1GetExpireTimeWriteResult(::basictl::tl_ostream & s, t
 }
 
 bool tl2::service1::GetExpireTime::read_result(::basictl::tl_istream & s, std::optional<int32_t> & result) {
-	return tl2::details::Service1GetExpireTimeReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetExpireTimeReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetExpireTime::write_result(::basictl::tl_ostream & s, std::optional<int32_t> & result) {
-	return tl2::details::Service1GetExpireTimeWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetExpireTimeWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetKeysStat::write_json(std::ostream& s)const {
@@ -1705,21 +1817,25 @@ bool tl2::service1::GetKeysStat::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetKeysStat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetKeysStatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetKeysStatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetKeysStatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetKeysStatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1767,10 +1883,14 @@ bool tl2::details::Service1GetKeysStatWriteResult(::basictl::tl_ostream & s, tl2
 }
 
 bool tl2::service1::GetKeysStat::read_result(::basictl::tl_istream & s, std::optional<::tl2::service1::KeysStat> & result) {
-	return tl2::details::Service1GetKeysStatReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetKeysStatReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetKeysStat::write_result(::basictl::tl_ostream & s, std::optional<::tl2::service1::KeysStat> & result) {
-	return tl2::details::Service1GetKeysStatWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetKeysStatWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetKeysStatPeriods::write_json(std::ostream& s)const {
@@ -1780,21 +1900,25 @@ bool tl2::service1::GetKeysStatPeriods::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetKeysStatPeriods::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetKeysStatPeriodsRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStatPeriods::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetKeysStatPeriodsWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStatPeriods::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetKeysStatPeriodsReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStatPeriods::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetKeysStatPeriodsWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1836,10 +1960,14 @@ bool tl2::details::Service1GetKeysStatPeriodsWriteResult(::basictl::tl_ostream &
 }
 
 bool tl2::service1::GetKeysStatPeriods::read_result(::basictl::tl_istream & s, std::vector<int32_t> & result) {
-	return tl2::details::Service1GetKeysStatPeriodsReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetKeysStatPeriodsReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetKeysStatPeriods::write_result(::basictl::tl_ostream & s, std::vector<int32_t> & result) {
-	return tl2::details::Service1GetKeysStatPeriodsWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetKeysStatPeriodsWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetWildcard::write_json(std::ostream& s)const {
@@ -1849,21 +1977,25 @@ bool tl2::service1::GetWildcard::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetWildcard::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcard::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcard::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcard::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1913,10 +2045,14 @@ bool tl2::details::Service1GetWildcardWriteResult(::basictl::tl_ostream & s, tl2
 }
 
 bool tl2::service1::GetWildcard::read_result(::basictl::tl_istream & s, std::vector<::tl2::Map<std::string, std::string>> & result) {
-	return tl2::details::Service1GetWildcardReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetWildcard::write_result(::basictl::tl_ostream & s, std::vector<::tl2::Map<std::string, std::string>> & result) {
-	return tl2::details::Service1GetWildcardWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetWildcardDict::write_json(std::ostream& s)const {
@@ -1926,21 +2062,25 @@ bool tl2::service1::GetWildcardDict::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetWildcardDict::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardDictRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardDict::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardDictWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardDict::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardDictReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardDict::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardDictWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1988,10 +2128,14 @@ bool tl2::details::Service1GetWildcardDictWriteResult(::basictl::tl_ostream & s,
 }
 
 bool tl2::service1::GetWildcardDict::read_result(::basictl::tl_istream & s, ::tl2::Dictionary<std::string> & result) {
-	return tl2::details::Service1GetWildcardDictReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardDictReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetWildcardDict::write_result(::basictl::tl_ostream & s, ::tl2::Dictionary<std::string> & result) {
-	return tl2::details::Service1GetWildcardDictWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardDictWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetWildcardList::write_json(std::ostream& s)const {
@@ -2001,21 +2145,25 @@ bool tl2::service1::GetWildcardList::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetWildcardList::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardListRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardList::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardListWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardList::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardListReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardList::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardListWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2065,10 +2213,14 @@ bool tl2::details::Service1GetWildcardListWriteResult(::basictl::tl_ostream & s,
 }
 
 bool tl2::service1::GetWildcardList::read_result(::basictl::tl_istream & s, std::vector<std::string> & result) {
-	return tl2::details::Service1GetWildcardListReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardListReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetWildcardList::write_result(::basictl::tl_ostream & s, std::vector<std::string> & result) {
-	return tl2::details::Service1GetWildcardListWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardListWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::GetWildcardWithFlags::write_json(std::ostream& s)const {
@@ -2078,21 +2230,25 @@ bool tl2::service1::GetWildcardWithFlags::write_json(std::ostream& s)const {
 
 bool tl2::service1::GetWildcardWithFlags::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardWithFlagsRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardWithFlags::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardWithFlagsWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardWithFlags::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1GetWildcardWithFlagsReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardWithFlags::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1GetWildcardWithFlagsWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2140,10 +2296,14 @@ bool tl2::details::Service1GetWildcardWithFlagsWriteResult(::basictl::tl_ostream
 }
 
 bool tl2::service1::GetWildcardWithFlags::read_result(::basictl::tl_istream & s, ::tl2::Dictionary<::tl2::service1::Value> & result) {
-	return tl2::details::Service1GetWildcardWithFlagsReadResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardWithFlagsReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::GetWildcardWithFlags::write_result(::basictl::tl_ostream & s, ::tl2::Dictionary<::tl2::service1::Value> & result) {
-	return tl2::details::Service1GetWildcardWithFlagsWriteResult(s, *this, result);
+	bool success = tl2::details::Service1GetWildcardWithFlagsWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Incr::write_json(std::ostream& s)const {
@@ -2153,21 +2313,25 @@ bool tl2::service1::Incr::write_json(std::ostream& s)const {
 
 bool tl2::service1::Incr::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1IncrRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Incr::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1IncrWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Incr::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1IncrReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Incr::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1IncrWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2228,10 +2392,14 @@ bool tl2::details::Service1IncrWriteResult(::basictl::tl_ostream & s, tl2::servi
 }
 
 bool tl2::service1::Incr::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1IncrReadResult(s, *this, result);
+	bool success = tl2::details::Service1IncrReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Incr::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1IncrWriteResult(s, *this, result);
+	bool success = tl2::details::Service1IncrWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::KeysStat::write_json(std::ostream& s)const {
@@ -2241,21 +2409,25 @@ bool tl2::service1::KeysStat::write_json(std::ostream& s)const {
 
 bool tl2::service1::KeysStat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1KeysStatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::KeysStat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1KeysStatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::KeysStat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1KeysStatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::KeysStat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1KeysStatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2345,21 +2517,25 @@ bool tl2::service1::Longvalue::write_json(std::ostream& s)const {
 
 bool tl2::service1::Longvalue::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1LongvalueRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Longvalue::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1LongvalueWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Longvalue::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1LongvalueReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Longvalue::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1LongvalueWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2417,21 +2593,25 @@ bool tl2::service1::LongvalueWithTime::write_json(std::ostream& s)const {
 
 bool tl2::service1::LongvalueWithTime::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1LongvalueWithTimeRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::LongvalueWithTime::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1LongvalueWithTimeWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::LongvalueWithTime::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1LongvalueWithTimeReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::LongvalueWithTime::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1LongvalueWithTimeWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2500,21 +2680,25 @@ bool tl2::service1::Not_found::write_json(std::ostream& s)const {
 
 bool tl2::service1::Not_found::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1NotFoundRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Not_found::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1NotFoundWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Not_found::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1NotFoundReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Not_found::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1NotFoundWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2551,21 +2735,25 @@ bool tl2::service1::Replace::write_json(std::ostream& s)const {
 
 bool tl2::service1::Replace::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1ReplaceRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Replace::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1ReplaceWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Replace::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1ReplaceReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Replace::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1ReplaceWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2648,10 +2836,14 @@ bool tl2::details::Service1ReplaceWriteResult(::basictl::tl_ostream & s, tl2::se
 }
 
 bool tl2::service1::Replace::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1ReplaceReadResult(s, *this, result);
+	bool success = tl2::details::Service1ReplaceReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Replace::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1ReplaceWriteResult(s, *this, result);
+	bool success = tl2::details::Service1ReplaceWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::ReplaceOrIncr::write_json(std::ostream& s)const {
@@ -2661,21 +2853,25 @@ bool tl2::service1::ReplaceOrIncr::write_json(std::ostream& s)const {
 
 bool tl2::service1::ReplaceOrIncr::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1ReplaceOrIncrRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::ReplaceOrIncr::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1ReplaceOrIncrWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::ReplaceOrIncr::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1ReplaceOrIncrReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::ReplaceOrIncr::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1ReplaceOrIncrWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2758,10 +2954,14 @@ bool tl2::details::Service1ReplaceOrIncrWriteResult(::basictl::tl_ostream & s, t
 }
 
 bool tl2::service1::ReplaceOrIncr::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1ReplaceOrIncrReadResult(s, *this, result);
+	bool success = tl2::details::Service1ReplaceOrIncrReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::ReplaceOrIncr::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1ReplaceOrIncrWriteResult(s, *this, result);
+	bool success = tl2::details::Service1ReplaceOrIncrWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Set::write_json(std::ostream& s)const {
@@ -2771,21 +2971,25 @@ bool tl2::service1::Set::write_json(std::ostream& s)const {
 
 bool tl2::service1::Set::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1SetRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Set::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1SetWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Set::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1SetReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Set::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1SetWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2868,10 +3072,14 @@ bool tl2::details::Service1SetWriteResult(::basictl::tl_ostream & s, tl2::servic
 }
 
 bool tl2::service1::Set::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1SetReadResult(s, *this, result);
+	bool success = tl2::details::Service1SetReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Set::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1SetWriteResult(s, *this, result);
+	bool success = tl2::details::Service1SetWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::SetOrIncr::write_json(std::ostream& s)const {
@@ -2881,21 +3089,25 @@ bool tl2::service1::SetOrIncr::write_json(std::ostream& s)const {
 
 bool tl2::service1::SetOrIncr::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1SetOrIncrRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::SetOrIncr::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1SetOrIncrWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::SetOrIncr::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1SetOrIncrReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::SetOrIncr::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1SetOrIncrWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2978,10 +3190,14 @@ bool tl2::details::Service1SetOrIncrWriteResult(::basictl::tl_ostream & s, tl2::
 }
 
 bool tl2::service1::SetOrIncr::read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1SetOrIncrReadResult(s, *this, result);
+	bool success = tl2::details::Service1SetOrIncrReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::SetOrIncr::write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) {
-	return tl2::details::Service1SetOrIncrWriteResult(s, *this, result);
+	bool success = tl2::details::Service1SetOrIncrWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service1::Strvalue::write_json(std::ostream& s)const {
@@ -2991,21 +3207,25 @@ bool tl2::service1::Strvalue::write_json(std::ostream& s)const {
 
 bool tl2::service1::Strvalue::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1StrvalueRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Strvalue::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1StrvalueWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Strvalue::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1StrvalueReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Strvalue::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1StrvalueWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3063,21 +3283,25 @@ bool tl2::service1::StrvalueWithTime::write_json(std::ostream& s)const {
 
 bool tl2::service1::StrvalueWithTime::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1StrvalueWithTimeRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::StrvalueWithTime::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1StrvalueWithTimeWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::StrvalueWithTime::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1StrvalueWithTimeReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::StrvalueWithTime::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1StrvalueWithTimeWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3146,21 +3370,25 @@ bool tl2::service1::Touch::write_json(std::ostream& s)const {
 
 bool tl2::service1::Touch::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1TouchRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Touch::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1TouchWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Touch::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service1TouchReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Touch::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service1TouchWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3221,10 +3449,14 @@ bool tl2::details::Service1TouchWriteResult(::basictl::tl_ostream & s, tl2::serv
 }
 
 bool tl2::service1::Touch::read_result(::basictl::tl_istream & s, bool & result) {
-	return tl2::details::Service1TouchReadResult(s, *this, result);
+	bool success = tl2::details::Service1TouchReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service1::Touch::write_result(::basictl::tl_ostream & s, bool & result) {
-	return tl2::details::Service1TouchWriteResult(s, *this, result);
+	bool success = tl2::details::Service1TouchWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 static const std::string_view Service1Value_tbl_tl_name[]{"service1.not_found", "service1.strvalue", "service1.longvalue", "service1.strvalueWithTime", "service1.longvalueWithTime"};

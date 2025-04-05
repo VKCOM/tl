@@ -1,71 +1,71 @@
-#include "headers/withFloat.hpp"
-#include "headers/vector.hpp"
-#include "headers/tuple.hpp"
-#include "../tasks/headers/tasks.queueTypeInfo.hpp"
-#include "headers/string.hpp"
-#include "headers/statOne.hpp"
-#include "../service6/headers/service6.findWithBoundsResult.hpp"
-#include "../service2/headers/service2.counterSet.hpp"
-#include "../service1/headers/service1.Value.hpp"
-#include "headers/rpcInvokeReqExtra.hpp"
-#include "headers/true.hpp"
-#include "headers/nonOptNat.hpp"
-#include "headers/myTwoDicts.hpp"
-#include "headers/myMcValueVector.hpp"
-#include "headers/myMcValueTuple.hpp"
-#include "headers/myMcValue.hpp"
-#include "headers/myMaybe2.hpp"
-#include "headers/myMaybe1.hpp"
-#include "headers/myTuple.hpp"
-#include "headers/myBoxedVectorSlice.hpp"
-#include "headers/myAnonMcValue.hpp"
-#include "headers/map.hpp"
-#include "headers/long.hpp"
-#include "headers/issue3498.hpp"
-#include "../service6/headers/service6.findResultRow.hpp"
-#include "../service6/headers/service6.error.hpp"
-#include "headers/int.hpp"
-#include "headers/getStats.hpp"
-#include "../tasks/headers/tasks.queueTypeStats.hpp"
-#include "headers/getNonOptNat.hpp"
-#include "headers/getMyValue.hpp"
-#include "headers/MyValue.hpp"
-#include "headers/myString.hpp"
-#include "headers/myInt.hpp"
-#include "headers/getMyDouble.hpp"
-#include "headers/myDouble.hpp"
-#include "headers/getMyDictOfInt.hpp"
-#include "headers/myDictOfInt.hpp"
-#include "headers/getMaybeIface.hpp"
-#include "headers/getFloat.hpp"
-#include "headers/getDouble.hpp"
-#include "headers/get_arrays.hpp"
-#include "headers/float.hpp"
-#include "headers/fieldConflict4.hpp"
-#include "headers/fieldConflict3.hpp"
-#include "headers/fieldConflict2.hpp"
-#include "headers/fieldConflict1.hpp"
-#include "headers/Either.hpp"
-#include "headers/right.hpp"
-#include "headers/left.hpp"
-#include "headers/double.hpp"
-#include "headers/dictionary.hpp"
-#include "headers/dictionaryField.hpp"
-#include "headers/integer.hpp"
-#include "headers/boxedVector64.hpp"
-#include "headers/boxedVector32BoxedElem.hpp"
-#include "headers/boxedVector32.hpp"
-#include "headers/boxedTupleSlice3.hpp"
-#include "headers/boxedTupleSlice2.hpp"
-#include "headers/myBoxedTupleSlice.hpp"
-#include "headers/boxedTupleSlice1.hpp"
-#include "headers/boxedTuple.hpp"
-#include "headers/boxedString.hpp"
-#include "headers/boxedInt.hpp"
-#include "headers/boxedArray.hpp"
-#include "headers/myBoxedArray.hpp"
-#include "headers/Bool.hpp"
-#include "headers/benchObject.hpp"
+#include "headers/withFloat.h"
+#include "headers/vector.h"
+#include "headers/tuple.h"
+#include "../tasks/headers/tasks.queueTypeInfo.h"
+#include "headers/string.h"
+#include "headers/statOne.h"
+#include "../service6/headers/service6.findWithBoundsResult.h"
+#include "../service2/headers/service2.counterSet.h"
+#include "../service1/headers/service1.Value.h"
+#include "headers/rpcInvokeReqExtra.h"
+#include "headers/true.h"
+#include "headers/nonOptNat.h"
+#include "headers/myTwoDicts.h"
+#include "headers/myMcValueVector.h"
+#include "headers/myMcValueTuple.h"
+#include "headers/myMcValue.h"
+#include "headers/myMaybe2.h"
+#include "headers/myMaybe1.h"
+#include "headers/myTuple.h"
+#include "headers/myBoxedVectorSlice.h"
+#include "headers/myAnonMcValue.h"
+#include "headers/map.h"
+#include "headers/long.h"
+#include "headers/issue3498.h"
+#include "../service6/headers/service6.findResultRow.h"
+#include "../service6/headers/service6.error.h"
+#include "headers/int.h"
+#include "headers/getStats.h"
+#include "../tasks/headers/tasks.queueTypeStats.h"
+#include "headers/getNonOptNat.h"
+#include "headers/getMyValue.h"
+#include "headers/MyValue.h"
+#include "headers/myString.h"
+#include "headers/myInt.h"
+#include "headers/getMyDouble.h"
+#include "headers/myDouble.h"
+#include "headers/getMyDictOfInt.h"
+#include "headers/myDictOfInt.h"
+#include "headers/getMaybeIface.h"
+#include "headers/getFloat.h"
+#include "headers/getDouble.h"
+#include "headers/get_arrays.h"
+#include "headers/float.h"
+#include "headers/fieldConflict4.h"
+#include "headers/fieldConflict3.h"
+#include "headers/fieldConflict2.h"
+#include "headers/fieldConflict1.h"
+#include "headers/Either.h"
+#include "headers/right.h"
+#include "headers/left.h"
+#include "headers/double.h"
+#include "headers/dictionary.h"
+#include "headers/dictionaryField.h"
+#include "headers/integer.h"
+#include "headers/boxedVector64.h"
+#include "headers/boxedVector32BoxedElem.h"
+#include "headers/boxedVector32.h"
+#include "headers/boxedTupleSlice3.h"
+#include "headers/boxedTupleSlice2.h"
+#include "headers/myBoxedTupleSlice.h"
+#include "headers/boxedTupleSlice1.h"
+#include "headers/boxedTuple.h"
+#include "headers/boxedString.h"
+#include "headers/boxedInt.h"
+#include "headers/boxedArray.h"
+#include "headers/myBoxedArray.h"
+#include "headers/Bool.h"
+#include "headers/benchObject.h"
 
 
 bool tl2::BenchObject::write_json(std::ostream& s)const {
@@ -75,21 +75,25 @@ bool tl2::BenchObject::write_json(std::ostream& s)const {
 
 bool tl2::BenchObject::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BenchObjectRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BenchObject::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BenchObjectWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BenchObject::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BenchObjectReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BenchObject::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BenchObjectWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -164,21 +168,25 @@ bool tl2::BoxedArray::write_json(std::ostream& s)const {
 
 bool tl2::BoxedArray::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedArrayRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedArray::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedArrayWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedArray::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedArrayReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedArray::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedArrayWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -224,10 +232,14 @@ bool tl2::details::BoxedArrayWriteResult(::basictl::tl_ostream & s, tl2::BoxedAr
 }
 
 bool tl2::BoxedArray::read_result(::basictl::tl_istream & s, ::tl2::MyBoxedArray & result) {
-	return tl2::details::BoxedArrayReadResult(s, *this, result);
+	bool success = tl2::details::BoxedArrayReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedArray::write_result(::basictl::tl_ostream & s, ::tl2::MyBoxedArray & result) {
-	return tl2::details::BoxedArrayWriteResult(s, *this, result);
+	bool success = tl2::details::BoxedArrayWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedInt::write_json(std::ostream& s)const {
@@ -237,21 +249,25 @@ bool tl2::BoxedInt::write_json(std::ostream& s)const {
 
 bool tl2::BoxedInt::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedIntRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedInt::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedIntWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedInt::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedIntReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedInt::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedIntWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -303,10 +319,14 @@ bool tl2::details::BoxedIntWriteResult(::basictl::tl_ostream & s, tl2::BoxedInt&
 }
 
 bool tl2::BoxedInt::read_result(::basictl::tl_istream & s, int32_t & result) {
-	return tl2::details::BoxedIntReadResult(s, *this, result);
+	bool success = tl2::details::BoxedIntReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedInt::write_result(::basictl::tl_ostream & s, int32_t & result) {
-	return tl2::details::BoxedIntWriteResult(s, *this, result);
+	bool success = tl2::details::BoxedIntWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedString::write_json(std::ostream& s)const {
@@ -316,21 +336,25 @@ bool tl2::BoxedString::write_json(std::ostream& s)const {
 
 bool tl2::BoxedString::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedStringRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedString::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedStringWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedString::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedStringReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedString::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedStringWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -382,10 +406,14 @@ bool tl2::details::BoxedStringWriteResult(::basictl::tl_ostream & s, tl2::BoxedS
 }
 
 bool tl2::BoxedString::read_result(::basictl::tl_istream & s, std::string & result) {
-	return tl2::details::BoxedStringReadResult(s, *this, result);
+	bool success = tl2::details::BoxedStringReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedString::write_result(::basictl::tl_ostream & s, std::string & result) {
-	return tl2::details::BoxedStringWriteResult(s, *this, result);
+	bool success = tl2::details::BoxedStringWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedTuple::write_json(std::ostream& s)const {
@@ -395,21 +423,25 @@ bool tl2::BoxedTuple::write_json(std::ostream& s)const {
 
 bool tl2::BoxedTuple::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTuple::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTuple::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTuple::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -459,10 +491,14 @@ bool tl2::details::BoxedTupleWriteResult(::basictl::tl_ostream & s, tl2::BoxedTu
 }
 
 bool tl2::BoxedTuple::read_result(::basictl::tl_istream & s, std::array<int32_t, 3> & result) {
-	return tl2::details::BoxedTupleReadResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedTuple::write_result(::basictl::tl_ostream & s, std::array<int32_t, 3> & result) {
-	return tl2::details::BoxedTupleWriteResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedTupleSlice1::write_json(std::ostream& s)const {
@@ -472,21 +508,25 @@ bool tl2::BoxedTupleSlice1::write_json(std::ostream& s)const {
 
 bool tl2::BoxedTupleSlice1::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleSlice1Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice1::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleSlice1Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice1::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleSlice1ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice1::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleSlice1WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -551,10 +591,14 @@ bool tl2::details::BoxedTupleSlice1WriteResult(::basictl::tl_ostream & s, tl2::B
 }
 
 bool tl2::BoxedTupleSlice1::read_result(::basictl::tl_istream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedTupleSlice1ReadResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleSlice1ReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedTupleSlice1::write_result(::basictl::tl_ostream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedTupleSlice1WriteResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleSlice1WriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedTupleSlice2::write_json(std::ostream& s)const {
@@ -564,21 +608,25 @@ bool tl2::BoxedTupleSlice2::write_json(std::ostream& s)const {
 
 bool tl2::BoxedTupleSlice2::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleSlice2Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice2::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleSlice2Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice2::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleSlice2ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice2::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleSlice2WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -624,10 +672,14 @@ bool tl2::details::BoxedTupleSlice2WriteResult(::basictl::tl_ostream & s, tl2::B
 }
 
 bool tl2::BoxedTupleSlice2::read_result(::basictl::tl_istream & s, ::tl2::MyBoxedTupleSlice & result) {
-	return tl2::details::BoxedTupleSlice2ReadResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleSlice2ReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedTupleSlice2::write_result(::basictl::tl_ostream & s, ::tl2::MyBoxedTupleSlice & result) {
-	return tl2::details::BoxedTupleSlice2WriteResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleSlice2WriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedTupleSlice3::write_json(std::ostream& s)const {
@@ -637,21 +689,25 @@ bool tl2::BoxedTupleSlice3::write_json(std::ostream& s)const {
 
 bool tl2::BoxedTupleSlice3::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleSlice3Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice3::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleSlice3Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice3::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedTupleSlice3ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedTupleSlice3::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedTupleSlice3WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -716,10 +772,14 @@ bool tl2::details::BoxedTupleSlice3WriteResult(::basictl::tl_ostream & s, tl2::B
 }
 
 bool tl2::BoxedTupleSlice3::read_result(::basictl::tl_istream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedTupleSlice3ReadResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleSlice3ReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedTupleSlice3::write_result(::basictl::tl_ostream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedTupleSlice3WriteResult(s, *this, result);
+	bool success = tl2::details::BoxedTupleSlice3WriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedVector32::write_json(std::ostream& s)const {
@@ -729,21 +789,25 @@ bool tl2::BoxedVector32::write_json(std::ostream& s)const {
 
 bool tl2::BoxedVector32::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedVector32Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector32::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedVector32Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector32::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedVector32ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector32::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedVector32WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -795,10 +859,14 @@ bool tl2::details::BoxedVector32WriteResult(::basictl::tl_ostream & s, tl2::Boxe
 }
 
 bool tl2::BoxedVector32::read_result(::basictl::tl_istream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedVector32ReadResult(s, *this, result);
+	bool success = tl2::details::BoxedVector32ReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedVector32::write_result(::basictl::tl_ostream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedVector32WriteResult(s, *this, result);
+	bool success = tl2::details::BoxedVector32WriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedVector32BoxedElem::write_json(std::ostream& s)const {
@@ -808,21 +876,25 @@ bool tl2::BoxedVector32BoxedElem::write_json(std::ostream& s)const {
 
 bool tl2::BoxedVector32BoxedElem::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedVector32BoxedElemRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector32BoxedElem::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedVector32BoxedElemWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector32BoxedElem::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedVector32BoxedElemReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector32BoxedElem::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedVector32BoxedElemWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -874,10 +946,14 @@ bool tl2::details::BoxedVector32BoxedElemWriteResult(::basictl::tl_ostream & s, 
 }
 
 bool tl2::BoxedVector32BoxedElem::read_result(::basictl::tl_istream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedVector32BoxedElemReadResult(s, *this, result);
+	bool success = tl2::details::BoxedVector32BoxedElemReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedVector32BoxedElem::write_result(::basictl::tl_ostream & s, std::vector<int32_t> & result) {
-	return tl2::details::BoxedVector32BoxedElemWriteResult(s, *this, result);
+	bool success = tl2::details::BoxedVector32BoxedElemWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::BoxedVector64::write_json(std::ostream& s)const {
@@ -887,21 +963,25 @@ bool tl2::BoxedVector64::write_json(std::ostream& s)const {
 
 bool tl2::BoxedVector64::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedVector64Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector64::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedVector64Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector64::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::BoxedVector64ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::BoxedVector64::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::BoxedVector64WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -953,10 +1033,14 @@ bool tl2::details::BoxedVector64WriteResult(::basictl::tl_ostream & s, tl2::Boxe
 }
 
 bool tl2::BoxedVector64::read_result(::basictl::tl_istream & s, std::vector<int64_t> & result) {
-	return tl2::details::BoxedVector64ReadResult(s, *this, result);
+	bool success = tl2::details::BoxedVector64ReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::BoxedVector64::write_result(::basictl::tl_ostream & s, std::vector<int64_t> & result) {
-	return tl2::details::BoxedVector64WriteResult(s, *this, result);
+	bool success = tl2::details::BoxedVector64WriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 void tl2::details::BuiltinTuple10IntBoxedReset(std::array<int32_t, 10>& item) {
@@ -1740,21 +1824,25 @@ bool tl2::FieldConflict1::write_json(std::ostream& s)const {
 
 bool tl2::FieldConflict1::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict1Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict1::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict1Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict1::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict1ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict1::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict1WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1812,21 +1900,25 @@ bool tl2::FieldConflict2::write_json(std::ostream& s)const {
 
 bool tl2::FieldConflict2::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict2Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict2::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict2Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict2::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict2ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict2::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict2WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1884,21 +1976,25 @@ bool tl2::FieldConflict3::write_json(std::ostream& s)const {
 
 bool tl2::FieldConflict3::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict3Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict3::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict3Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict3::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict3ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict3::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict3WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -1956,21 +2052,25 @@ bool tl2::FieldConflict4::write_json(std::ostream& s)const {
 
 bool tl2::FieldConflict4::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict4Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict4::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict4Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict4::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::FieldConflict4ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::FieldConflict4::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::FieldConflict4WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2057,21 +2157,25 @@ bool tl2::Get_arrays::write_json(std::ostream& s)const {
 
 bool tl2::Get_arrays::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetArraysRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Get_arrays::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetArraysWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Get_arrays::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetArraysReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Get_arrays::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetArraysWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2143,10 +2247,14 @@ bool tl2::details::GetArraysWriteResult(::basictl::tl_ostream & s, tl2::Get_arra
 }
 
 bool tl2::Get_arrays::read_result(::basictl::tl_istream & s, std::array<int32_t, 5> & result) {
-	return tl2::details::GetArraysReadResult(s, *this, result);
+	bool success = tl2::details::GetArraysReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::Get_arrays::write_result(::basictl::tl_ostream & s, std::array<int32_t, 5> & result) {
-	return tl2::details::GetArraysWriteResult(s, *this, result);
+	bool success = tl2::details::GetArraysWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetDouble::write_json(std::ostream& s)const {
@@ -2156,21 +2264,25 @@ bool tl2::GetDouble::write_json(std::ostream& s)const {
 
 bool tl2::GetDouble::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetDoubleRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetDouble::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetDoubleWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetDouble::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetDoubleReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetDouble::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetDoubleWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2222,10 +2334,14 @@ bool tl2::details::GetDoubleWriteResult(::basictl::tl_ostream & s, tl2::GetDoubl
 }
 
 bool tl2::GetDouble::read_result(::basictl::tl_istream & s, double & result) {
-	return tl2::details::GetDoubleReadResult(s, *this, result);
+	bool success = tl2::details::GetDoubleReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetDouble::write_result(::basictl::tl_ostream & s, double & result) {
-	return tl2::details::GetDoubleWriteResult(s, *this, result);
+	bool success = tl2::details::GetDoubleWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetFloat::write_json(std::ostream& s)const {
@@ -2235,21 +2351,25 @@ bool tl2::GetFloat::write_json(std::ostream& s)const {
 
 bool tl2::GetFloat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetFloatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetFloat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetFloatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetFloat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetFloatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetFloat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetFloatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2299,10 +2419,14 @@ bool tl2::details::GetFloatWriteResult(::basictl::tl_ostream & s, tl2::GetFloat&
 }
 
 bool tl2::GetFloat::read_result(::basictl::tl_istream & s, float & result) {
-	return tl2::details::GetFloatReadResult(s, *this, result);
+	bool success = tl2::details::GetFloatReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetFloat::write_result(::basictl::tl_ostream & s, float & result) {
-	return tl2::details::GetFloatWriteResult(s, *this, result);
+	bool success = tl2::details::GetFloatWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetMaybeIface::write_json(std::ostream& s)const {
@@ -2312,21 +2436,25 @@ bool tl2::GetMaybeIface::write_json(std::ostream& s)const {
 
 bool tl2::GetMaybeIface::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMaybeIfaceRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMaybeIface::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMaybeIfaceWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMaybeIface::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMaybeIfaceReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMaybeIface::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMaybeIfaceWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2372,10 +2500,14 @@ bool tl2::details::GetMaybeIfaceWriteResult(::basictl::tl_ostream & s, tl2::GetM
 }
 
 bool tl2::GetMaybeIface::read_result(::basictl::tl_istream & s, std::optional<::tl2::service1::Value> & result) {
-	return tl2::details::GetMaybeIfaceReadResult(s, *this, result);
+	bool success = tl2::details::GetMaybeIfaceReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetMaybeIface::write_result(::basictl::tl_ostream & s, std::optional<::tl2::service1::Value> & result) {
-	return tl2::details::GetMaybeIfaceWriteResult(s, *this, result);
+	bool success = tl2::details::GetMaybeIfaceWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetMyDictOfInt::write_json(std::ostream& s)const {
@@ -2385,21 +2517,25 @@ bool tl2::GetMyDictOfInt::write_json(std::ostream& s)const {
 
 bool tl2::GetMyDictOfInt::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMyDictOfIntRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyDictOfInt::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMyDictOfIntWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyDictOfInt::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMyDictOfIntReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyDictOfInt::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMyDictOfIntWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2447,10 +2583,14 @@ bool tl2::details::GetMyDictOfIntWriteResult(::basictl::tl_ostream & s, tl2::Get
 }
 
 bool tl2::GetMyDictOfInt::read_result(::basictl::tl_istream & s, ::tl2::MyDictOfInt & result) {
-	return tl2::details::GetMyDictOfIntReadResult(s, *this, result);
+	bool success = tl2::details::GetMyDictOfIntReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetMyDictOfInt::write_result(::basictl::tl_ostream & s, ::tl2::MyDictOfInt & result) {
-	return tl2::details::GetMyDictOfIntWriteResult(s, *this, result);
+	bool success = tl2::details::GetMyDictOfIntWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetMyDouble::write_json(std::ostream& s)const {
@@ -2460,21 +2600,25 @@ bool tl2::GetMyDouble::write_json(std::ostream& s)const {
 
 bool tl2::GetMyDouble::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMyDoubleRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyDouble::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMyDoubleWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyDouble::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMyDoubleReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyDouble::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMyDoubleWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2522,10 +2666,14 @@ bool tl2::details::GetMyDoubleWriteResult(::basictl::tl_ostream & s, tl2::GetMyD
 }
 
 bool tl2::GetMyDouble::read_result(::basictl::tl_istream & s, ::tl2::MyDouble & result) {
-	return tl2::details::GetMyDoubleReadResult(s, *this, result);
+	bool success = tl2::details::GetMyDoubleReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetMyDouble::write_result(::basictl::tl_ostream & s, ::tl2::MyDouble & result) {
-	return tl2::details::GetMyDoubleWriteResult(s, *this, result);
+	bool success = tl2::details::GetMyDoubleWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetMyValue::write_json(std::ostream& s)const {
@@ -2535,21 +2683,25 @@ bool tl2::GetMyValue::write_json(std::ostream& s)const {
 
 bool tl2::GetMyValue::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMyValueRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyValue::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMyValueWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyValue::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetMyValueReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetMyValue::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetMyValueWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2595,10 +2747,14 @@ bool tl2::details::GetMyValueWriteResult(::basictl::tl_ostream & s, tl2::GetMyVa
 }
 
 bool tl2::GetMyValue::read_result(::basictl::tl_istream & s, ::tl2::MyValue & result) {
-	return tl2::details::GetMyValueReadResult(s, *this, result);
+	bool success = tl2::details::GetMyValueReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetMyValue::write_result(::basictl::tl_ostream & s, ::tl2::MyValue & result) {
-	return tl2::details::GetMyValueWriteResult(s, *this, result);
+	bool success = tl2::details::GetMyValueWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetNonOptNat::write_json(std::ostream& s)const {
@@ -2608,21 +2764,25 @@ bool tl2::GetNonOptNat::write_json(std::ostream& s)const {
 
 bool tl2::GetNonOptNat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetNonOptNatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetNonOptNat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetNonOptNatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetNonOptNat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetNonOptNatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetNonOptNat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetNonOptNatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2687,10 +2847,14 @@ bool tl2::details::GetNonOptNatWriteResult(::basictl::tl_ostream & s, tl2::GetNo
 }
 
 bool tl2::GetNonOptNat::read_result(::basictl::tl_istream & s, std::vector<int32_t> & result) {
-	return tl2::details::GetNonOptNatReadResult(s, *this, result);
+	bool success = tl2::details::GetNonOptNatReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetNonOptNat::write_result(::basictl::tl_ostream & s, std::vector<int32_t> & result) {
-	return tl2::details::GetNonOptNatWriteResult(s, *this, result);
+	bool success = tl2::details::GetNonOptNatWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::GetStats::write_json(std::ostream& s)const {
@@ -2700,21 +2864,25 @@ bool tl2::GetStats::write_json(std::ostream& s)const {
 
 bool tl2::GetStats::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetStatsRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetStats::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetStatsWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetStats::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::GetStatsReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::GetStats::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::GetStatsWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2760,10 +2928,14 @@ bool tl2::details::GetStatsWriteResult(::basictl::tl_ostream & s, tl2::GetStats&
 }
 
 bool tl2::GetStats::read_result(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeStats & result) {
-	return tl2::details::GetStatsReadResult(s, *this, result);
+	bool success = tl2::details::GetStatsReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::GetStats::write_result(::basictl::tl_ostream & s, ::tl2::tasks::QueueTypeStats & result) {
-	return tl2::details::GetStatsWriteResult(s, *this, result);
+	bool success = tl2::details::GetStatsWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 void tl2::details::IntReset(int32_t& item) {
@@ -2836,21 +3008,25 @@ bool tl2::Integer::write_json(std::ostream& s)const {
 
 bool tl2::Integer::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::IntegerRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Integer::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::IntegerWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Integer::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::IntegerReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Integer::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::IntegerWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -2895,21 +3071,25 @@ bool tl2::Issue3498::write_json(std::ostream& s)const {
 
 bool tl2::Issue3498::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Issue3498Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Issue3498::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Issue3498Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Issue3498::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Issue3498ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::Issue3498::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Issue3498WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3127,21 +3307,25 @@ bool tl2::MyBoxedArray::write_json(std::ostream& s)const {
 
 bool tl2::MyBoxedArray::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyBoxedArrayRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedArray::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyBoxedArrayWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedArray::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyBoxedArrayReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedArray::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyBoxedArrayWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3186,21 +3370,25 @@ bool tl2::MyBoxedTupleSlice::write_json(std::ostream& s)const {
 
 bool tl2::MyBoxedTupleSlice::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyBoxedTupleSliceRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedTupleSlice::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyBoxedTupleSliceWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedTupleSlice::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyBoxedTupleSliceReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedTupleSlice::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyBoxedTupleSliceWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3260,21 +3448,25 @@ bool tl2::MyBoxedVectorSlice::write_json(std::ostream& s)const {
 
 bool tl2::MyBoxedVectorSlice::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyBoxedVectorSliceRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedVectorSlice::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyBoxedVectorSliceWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedVectorSlice::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyBoxedVectorSliceReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyBoxedVectorSlice::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyBoxedVectorSliceWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3381,21 +3573,25 @@ bool tl2::MyInt::write_json(std::ostream& s)const {
 
 bool tl2::MyInt::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyIntRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyInt::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyIntWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyInt::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyIntReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyInt::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyIntWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3500,21 +3696,25 @@ bool tl2::MyMcValue::write_json(std::ostream& s)const {
 
 bool tl2::MyMcValue::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyMcValueRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValue::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyMcValueWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValue::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyMcValueReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValue::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyMcValueWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3557,21 +3757,25 @@ bool tl2::MyMcValueTuple::write_json(std::ostream& s)const {
 
 bool tl2::MyMcValueTuple::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyMcValueTupleRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValueTuple::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyMcValueTupleWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValueTuple::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyMcValueTupleReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValueTuple::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyMcValueTupleWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3614,21 +3818,25 @@ bool tl2::MyMcValueVector::write_json(std::ostream& s)const {
 
 bool tl2::MyMcValueVector::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyMcValueVectorRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValueVector::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyMcValueVectorWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValueVector::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyMcValueVectorReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyMcValueVector::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyMcValueVectorWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3673,21 +3881,25 @@ bool tl2::MyString::write_json(std::ostream& s)const {
 
 bool tl2::MyString::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyStringRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyString::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyStringWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyString::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyStringReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyString::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyStringWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3797,21 +4009,25 @@ bool tl2::MyTwoDicts::write_json(std::ostream& s)const {
 
 bool tl2::MyTwoDicts::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyTwoDictsRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyTwoDicts::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyTwoDictsWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyTwoDicts::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::MyTwoDictsReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::MyTwoDicts::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::MyTwoDictsWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -3944,21 +4160,25 @@ bool tl2::NonOptNat::write_json(std::ostream& s)const {
 
 bool tl2::NonOptNat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::NonOptNatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::NonOptNat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::NonOptNatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::NonOptNat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::NonOptNatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::NonOptNat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::NonOptNatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -4086,21 +4306,25 @@ bool tl2::RpcInvokeReqExtra::write_json(std::ostream& s)const {
 
 bool tl2::RpcInvokeReqExtra::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::RpcInvokeReqExtraRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::RpcInvokeReqExtra::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::RpcInvokeReqExtraWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::RpcInvokeReqExtra::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::RpcInvokeReqExtraReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::RpcInvokeReqExtra::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::RpcInvokeReqExtraWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -4232,21 +4456,25 @@ bool tl2::StatOne::write_json(std::ostream& s)const {
 
 bool tl2::StatOne::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::StatOneRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::StatOne::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::StatOneWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::StatOne::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::StatOneReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::StatOne::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::StatOneWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -4333,21 +4561,25 @@ bool tl2::True::write_json(std::ostream& s)const {
 
 bool tl2::True::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::TrueRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::True::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::TrueWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::True::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::TrueReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::True::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::TrueWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -4993,21 +5225,25 @@ bool tl2::WithFloat::write_json(std::ostream& s)const {
 
 bool tl2::WithFloat::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::WithFloatRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::WithFloat::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::WithFloatWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::WithFloat::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::WithFloatReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::WithFloat::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::WithFloatWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 

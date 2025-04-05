@@ -44,7 +44,7 @@ const EnableWarningsSimpleTypeName = true
 const (
 	goExt  = ".go"
 	cppExt = ".cpp"
-	hppExt = ".hpp"
+	hppExt = ".h"
 )
 
 const TlJSONHTML = "tljson.html"

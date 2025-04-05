@@ -1,6 +1,6 @@
-#include "headers/pkg2.t2.hpp"
-#include "headers/pkg2.t1.hpp"
-#include "headers/pkg2.foo.hpp"
+#include "headers/pkg2.t2.h"
+#include "headers/pkg2.t1.h"
+#include "headers/pkg2.foo.h"
 
 
 bool tl2::pkg2::Foo::write_json(std::ostream& s)const {
@@ -10,21 +10,25 @@ bool tl2::pkg2::Foo::write_json(std::ostream& s)const {
 
 bool tl2::pkg2::Foo::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Pkg2FooRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::pkg2::Foo::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Pkg2FooWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::pkg2::Foo::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Pkg2FooReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::pkg2::Foo::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Pkg2FooWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -69,21 +73,25 @@ bool tl2::pkg2::T1::write_json(std::ostream& s)const {
 
 bool tl2::pkg2::T1::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Pkg2T1Read(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::pkg2::T1::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Pkg2T1Write(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::pkg2::T1::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Pkg2T1ReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::pkg2::T1::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Pkg2T1WriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 

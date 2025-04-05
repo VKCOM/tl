@@ -1,10 +1,10 @@
-#include "headers/service5.query.hpp"
-#include "headers/service5.performQuery.hpp"
-#include "headers/service5.params.hpp"
-#include "headers/service5.Output.hpp"
-#include "headers/service5.stringOutput.hpp"
-#include "headers/service5.insert.hpp"
-#include "headers/service5.emptyOutput.hpp"
+#include "headers/service5.query.h"
+#include "headers/service5.performQuery.h"
+#include "headers/service5.params.h"
+#include "headers/service5.Output.h"
+#include "headers/service5.stringOutput.h"
+#include "headers/service5.insert.h"
+#include "headers/service5.emptyOutput.h"
 
 
 bool tl2::service5::EmptyOutput::write_json(std::ostream& s)const {
@@ -14,21 +14,25 @@ bool tl2::service5::EmptyOutput::write_json(std::ostream& s)const {
 
 bool tl2::service5::EmptyOutput::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5EmptyOutputRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::EmptyOutput::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5EmptyOutputWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::EmptyOutput::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5EmptyOutputReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::EmptyOutput::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5EmptyOutputWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -65,21 +69,25 @@ bool tl2::service5::Insert::write_json(std::ostream& s)const {
 
 bool tl2::service5::Insert::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5InsertRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Insert::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5InsertWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Insert::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5InsertReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Insert::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5InsertWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -140,10 +148,14 @@ bool tl2::details::Service5InsertWriteResult(::basictl::tl_ostream & s, tl2::ser
 }
 
 bool tl2::service5::Insert::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) {
-	return tl2::details::Service5InsertReadResult(s, *this, result);
+	bool success = tl2::details::Service5InsertReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service5::Insert::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) {
-	return tl2::details::Service5InsertWriteResult(s, *this, result);
+	bool success = tl2::details::Service5InsertWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 static const std::string_view Service5Output_tbl_tl_name[]{"service5.emptyOutput", "service5.stringOutput"};
@@ -220,21 +232,25 @@ bool tl2::service5::Params::write_json(std::ostream& s)const {
 
 bool tl2::service5::Params::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5ParamsRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Params::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5ParamsWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Params::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5ParamsReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Params::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5ParamsWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -315,21 +331,25 @@ bool tl2::service5::PerformQuery::write_json(std::ostream& s)const {
 
 bool tl2::service5::PerformQuery::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5PerformQueryRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::PerformQuery::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5PerformQueryWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::PerformQuery::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5PerformQueryReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::PerformQuery::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5PerformQueryWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -377,10 +397,14 @@ bool tl2::details::Service5PerformQueryWriteResult(::basictl::tl_ostream & s, tl
 }
 
 bool tl2::service5::PerformQuery::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) {
-	return tl2::details::Service5PerformQueryReadResult(s, *this, result);
+	bool success = tl2::details::Service5PerformQueryReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service5::PerformQuery::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) {
-	return tl2::details::Service5PerformQueryWriteResult(s, *this, result);
+	bool success = tl2::details::Service5PerformQueryWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service5::Query::write_json(std::ostream& s)const {
@@ -390,21 +414,25 @@ bool tl2::service5::Query::write_json(std::ostream& s)const {
 
 bool tl2::service5::Query::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5QueryRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Query::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5QueryWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Query::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5QueryReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::Query::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5QueryWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
@@ -463,10 +491,14 @@ bool tl2::details::Service5QueryWriteResult(::basictl::tl_ostream & s, tl2::serv
 }
 
 bool tl2::service5::Query::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) {
-	return tl2::details::Service5QueryReadResult(s, *this, result);
+	bool success = tl2::details::Service5QueryReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 bool tl2::service5::Query::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) {
-	return tl2::details::Service5QueryWriteResult(s, *this, result);
+	bool success = tl2::details::Service5QueryWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
 bool tl2::service5::StringOutput::write_json(std::ostream& s)const {
@@ -476,21 +508,25 @@ bool tl2::service5::StringOutput::write_json(std::ostream& s)const {
 
 bool tl2::service5::StringOutput::read(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5StringOutputRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::StringOutput::write(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5StringOutputWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::StringOutput::read_boxed(::basictl::tl_istream & s) {
 	if (!::tl2::details::Service5StringOutputReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
 bool tl2::service5::StringOutput::write_boxed(::basictl::tl_ostream & s)const {
 	if (!::tl2::details::Service5StringOutputWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 

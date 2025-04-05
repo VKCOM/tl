@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -42,7 +43,8 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 }
 
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
-	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
+	const basicTLPackage = "basictl"
+	const basicTLFilepathName = basicTLPackage + "/io_streams" + hppExt
 
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
@@ -295,22 +297,43 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 	cppMake.WriteString(`
 CC = g++
-CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
+	cppMake.WriteString("# compile all object files together\n")
 	cppMake.WriteString("all: ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 `)
+	cppMake.WriteString("\n")
+	cppMake.WriteString("# compile meta sources such as meta data collection and objects factories\n")
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
+
 	cppMake.WriteString("\n")
 
+	cppMake.WriteString("# compile streams which are used to work with io\n")
+	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("# compile individual namespaces\n")
 	cppMake.WriteString(cppMake1.String())
 	//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
 	//	return err
@@ -345,14 +368,31 @@ main.o: main.cpp
 	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
 	// }
 	{
-		//	filepathName := filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		//	gen.Code[filepathName] = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
-		//	filepathName = "factory.go"
-		//	gen.Code[filepathName] = gen.GenerateFactory()
-		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
-			fmt.Sprintf(basicCPPTLCodeFooter, BasicTLCPPNamespaceName)
-		if err := gen.addCodeFile(basicTLFilepathName, code); err != nil {
-			return err
+		basictlCppFolder := "pkg/basictl_cpp"
+		exportingFiles := []string{
+			"constants.h",
+			"errors.h",
+			"io_connectors.h",
+			"io_streams.cpp",
+			"io_streams.h",
+			"io_throwable_streams.cpp",
+			"io_throwable_streams.h",
+			"impl/string_io.h",
+			"impl/string_io.cpp",
+		}
+
+		for _, file := range exportingFiles {
+			data, err := os.ReadFile(filepath.Join(basictlCppFolder, file))
+			if err != nil {
+				return err
+			}
+			code := strings.Builder{}
+			code.Write([]byte(HeaderComment))
+			code.Write([]byte("\n"))
+			code.Write(data)
+			if err := gen.addCodeFile(filepath.Join(basicTLPackage, file), code.String()); err != nil {
+				return err
+			}
 		}
 	}
 	// if gen.options.Verbose {
@@ -564,9 +604,9 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+}`, getCppDiff(filepathName, "basictl/io_streams.h")))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "a_tlgen_helpers_code.hpp")))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "basictl/io_streams.h")))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -654,8 +694,7 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 		return err
 	}
 
-	make.WriteString(fmt.Sprintf(`
-__build/__meta.o: %[1]s %[2]s
+	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s
 	$(CC) $(CFLAGS) -o __build/__meta.o -c %[2]s
 `,
 		filepathName,
@@ -793,8 +832,7 @@ void tl2::factory::set_all_factories() {
 		return err
 	}
 
-	make.WriteString(fmt.Sprintf(`
-__build/__factory.o: %[1]s %[2]s%[3]s
+	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s
 	$(CC) $(CFLAGS) -o __build/__factory.o -c %[2]s
 `,
 		filepathName,
