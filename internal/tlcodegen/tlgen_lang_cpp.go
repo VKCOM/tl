@@ -44,7 +44,6 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	const basicTLPackage = "basictl"
-	const basicTLFilepathName = basicTLPackage + "/io_streams" + hppExt
 
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
@@ -119,7 +118,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
 		{
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
@@ -164,7 +163,10 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hppDet.Reset()
 
 		hppDet.WriteString("#pragma once\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOThrowableStreamsPath)))
+
 		if createdHpps[specs[0].fileName] {
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
 		}
@@ -292,8 +294,12 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	metaMake := strings.Builder{}
 	factoryMake := strings.Builder{}
 
-	_ = createMeta(gen, &metaMake)
-	_ = createFactory(gen, createdHpps, &factoryMake)
+	if err := createMeta(gen, &metaMake); err != nil {
+		return err
+	}
+	if err := createFactory(gen, createdHpps, &factoryMake); err != nil {
+		return err
+	}
 
 	cppMake.WriteString(`
 CC = g++
@@ -317,19 +323,7 @@ main.o: main.cpp
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("# compile streams which are used to work with io\n")
-	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_streams.o -c basictl/io_streams.cpp\n")
-
-	cppMake.WriteString("\n")
-
-	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
-
-	cppMake.WriteString("\n")
-
-	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+	createStreams(gen, &cppMake)
 
 	cppMake.WriteString("\n")
 
@@ -408,6 +402,22 @@ main.o: main.cpp
 	//	gen.Code[filepathName] = string(formattedCode)
 	// }
 	return nil
+}
+
+func createStreams(gen *Gen2, cppMake *strings.Builder) {
+	cppMake.WriteString("# compile streams which are used to work with io\n")
+	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
@@ -566,7 +576,8 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 #include <string>
 #include <functional>
 
-#include "%s"
+#include "%[1]s"
+#include "%[2]s"
 
 namespace tl2 {
     namespace meta {
@@ -574,8 +585,14 @@ namespace tl2 {
             virtual bool read(::basictl::tl_istream &s) = 0;
             virtual bool write(::basictl::tl_ostream &s) = 0;
 
+			virtual void read_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_or_throw(::basictl::tl_throwable_ostream &s) = 0;
+
             virtual bool read_boxed(::basictl::tl_istream &s) = 0;
             virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+
+			virtual void read_boxed_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) = 0;
 			
 			virtual bool write_json(std::ostream &s) = 0;
 
@@ -604,9 +621,9 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, "basictl/io_streams.h")))
+}`, getCppDiff(filepathName, basicCPPTLIOStreamsPath), getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "basictl/io_streams.h")))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, basicCPPTLIOStreamsPath)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -750,9 +767,15 @@ void tl2::factory::set_all_factories() {
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
+
+		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
+		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
+		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
 		
 		bool write_json(std::ostream &s) override {return object.write_json(s);}
 `,

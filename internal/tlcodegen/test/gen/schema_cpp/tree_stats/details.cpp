@@ -106,28 +106,52 @@ bool tl2::tree_stats::ObjectLimitValueLong::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tree_stats::ObjectLimitValueLong::read(::basictl::tl_istream & s) {
+bool tl2::tree_stats::ObjectLimitValueLong::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tree_stats::ObjectLimitValueLong::write(::basictl::tl_ostream & s)const {
+bool tl2::tree_stats::ObjectLimitValueLong::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tree_stats::ObjectLimitValueLong::read_boxed(::basictl::tl_istream & s) {
+void tl2::tree_stats::ObjectLimitValueLong::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tree_stats::ObjectLimitValueLong::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tree_stats::ObjectLimitValueLong::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tree_stats::ObjectLimitValueLong::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tree_stats::ObjectLimitValueLong::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TreeStatsObjectLimitValueLongWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tree_stats::ObjectLimitValueLong::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tree_stats::ObjectLimitValueLong::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TreeStatsObjectLimitValueLongReset(::tl2::tree_stats::ObjectLimitValueLong& item) {

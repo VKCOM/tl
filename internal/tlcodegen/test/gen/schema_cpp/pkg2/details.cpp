@@ -8,28 +8,52 @@ bool tl2::pkg2::Foo::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::pkg2::Foo::read(::basictl::tl_istream & s) {
+bool tl2::pkg2::Foo::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Pkg2FooRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::pkg2::Foo::write(::basictl::tl_ostream & s)const {
+bool tl2::pkg2::Foo::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Pkg2FooWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::pkg2::Foo::read_boxed(::basictl::tl_istream & s) {
+void tl2::pkg2::Foo::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::pkg2::Foo::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::pkg2::Foo::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Pkg2FooReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::pkg2::Foo::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::pkg2::Foo::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Pkg2FooWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::pkg2::Foo::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::pkg2::Foo::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Pkg2FooReset(::tl2::pkg2::Foo& item) {
@@ -71,28 +95,52 @@ bool tl2::pkg2::T1::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::pkg2::T1::read(::basictl::tl_istream & s) {
+bool tl2::pkg2::T1::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Pkg2T1Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::pkg2::T1::write(::basictl::tl_ostream & s)const {
+bool tl2::pkg2::T1::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Pkg2T1Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::pkg2::T1::read_boxed(::basictl::tl_istream & s) {
+void tl2::pkg2::T1::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::pkg2::T1::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::pkg2::T1::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Pkg2T1ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::pkg2::T1::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::pkg2::T1::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Pkg2T1WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::pkg2::T1::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::pkg2::T1::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Pkg2T1Reset(::tl2::pkg2::T1& item) {

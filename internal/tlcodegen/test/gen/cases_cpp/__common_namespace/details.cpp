@@ -500,28 +500,52 @@ bool tl2::True::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::True::read(::basictl::tl_istream & s) {
+bool tl2::True::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TrueRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::True::write(::basictl::tl_ostream & s)const {
+bool tl2::True::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TrueWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::True::read_boxed(::basictl::tl_istream & s) {
+void tl2::True::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::True::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::True::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TrueReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::True::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::True::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TrueWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::True::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::True::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TrueReset(::tl2::True& item) {

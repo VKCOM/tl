@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "../basictl/io_streams.h"
+#include "../basictl/io_streams.h"
 
 namespace tl2 {
     namespace meta {
@@ -13,8 +14,14 @@ namespace tl2 {
             virtual bool read(::basictl::tl_istream &s) = 0;
             virtual bool write(::basictl::tl_ostream &s) = 0;
 
+			virtual void read_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_or_throw(::basictl::tl_throwable_ostream &s) = 0;
+
             virtual bool read_boxed(::basictl::tl_istream &s) = 0;
             virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+
+			virtual void read_boxed_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) = 0;
 			
 			virtual bool write_json(std::ostream &s) = 0;
 
