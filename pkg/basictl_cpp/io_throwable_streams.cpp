@@ -119,8 +119,8 @@ namespace basictl {
         to.end_block = end_block;
     }
 
-    tl_throwable_ostream::tl_throwable_ostream(tl_output_connector *provider) {
-        this->provider = provider;
+    tl_throwable_ostream::tl_throwable_ostream(tl_output_connector& provider) {
+        this->provider = &provider;
     }
 
     void tl_throwable_ostream::string_write(const std::string &value) {

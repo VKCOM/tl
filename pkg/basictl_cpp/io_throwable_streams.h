@@ -142,7 +142,7 @@ namespace basictl {
 
     class tl_throwable_ostream { // TODO - prohibit copy/move
     public:
-        explicit tl_throwable_ostream(tl_output_connector* provider);
+        explicit tl_throwable_ostream(tl_output_connector& provider);
         tl_throwable_ostream(const tl_throwable_ostream&) = delete;
         tl_throwable_ostream& operator=(const tl_throwable_ostream&) = delete;
 
