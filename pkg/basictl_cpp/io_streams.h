@@ -10,12 +10,16 @@
 
 #include "constants.h"
 #include "io_connectors.h"
+#include "impl/string_io.h"
 
 namespace basictl {
+    class tl_throwable_istream;
 
     class tl_istream {
     public:
         explicit tl_istream(tl_input_connector& provider);
+        explicit tl_istream(tl_throwable_istream& from);
+
         tl_istream(const tl_istream&) = delete;
         tl_istream& operator=(const tl_istream&) = delete;
 
@@ -23,6 +27,9 @@ namespace basictl {
         tl_istream& operator=(tl_istream&&) = delete;
 
         ~tl_istream() { last_release(); };
+
+        friend class tl_throwable_istream;
+        void pass_data(tl_throwable_istream& to);
 
         bool nat_read(uint32_t& value) noexcept {
             if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
@@ -121,9 +128,13 @@ namespace basictl {
         bool fetch_pad(size_t len) noexcept;
     };
 
+    class tl_throwable_ostream;
+
     class tl_ostream {
     public:
         explicit tl_ostream(tl_output_connector& provider);
+        explicit tl_ostream(tl_throwable_ostream& from);
+
         tl_ostream(const tl_ostream&) = delete;
         tl_ostream& operator=(const tl_ostream&) = delete;
 
@@ -131,6 +142,9 @@ namespace basictl {
         tl_ostream& operator=(tl_ostream&&) = delete;
 
         ~tl_ostream() { last_release(); };
+
+        friend class tl_throwable_ostream;
+        void pass_data(tl_throwable_ostream& to);
 
         bool nat_write(uint32_t value) {
             if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
