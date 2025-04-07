@@ -13,6 +13,7 @@ add_executable(test_objects_json
 		../../gen/cases_cpp/basictl/errors.h
 		../../gen/cases_cpp/basictl/constants.h
 		../../gen/cases_cpp/basictl/io_streams.cpp
+		../../gen/cases_cpp/basictl/io_throwable_streams.cpp
 
 		../../gen/cases_cpp/__meta/details.cpp
 		../../gen/cases_cpp/__factory/details.cpp
@@ -33,6 +34,7 @@ add_executable(test_objects_bytes
         ../../gen/cases_cpp/basictl/errors.h
         ../../gen/cases_cpp/basictl/constants.h
 		../../gen/cases_cpp/basictl/io_streams.cpp
+		../../gen/cases_cpp/basictl/io_throwable_streams.cpp
 
 		../../gen/cases_cpp/__meta/details.cpp
         ../../gen/cases_cpp/__factory/details.cpp
@@ -53,12 +55,11 @@ add_executable(test_functions_bytes
         ../../gen/schema_cpp/basictl/errors.h
         ../../gen/schema_cpp/basictl/constants.h
 		../../gen/schema_cpp/basictl/io_streams.cpp
+		../../gen/schema_cpp/basictl/io_throwable_streams.cpp
 
 		../../gen/schema_cpp/__meta/details.cpp
 		../../gen/schema_cpp/__factory/details.cpp
 
-		../../gen/schema_cpp/__meta/details.cpp
-		../../gen/schema_cpp/__factory/details.cpp
         ../../gen/schema_cpp/__common_namespace/details.cpp
         ../../gen/schema_cpp/antispam/details.cpp
         ../../gen/schema_cpp/pkg2/details.cpp
