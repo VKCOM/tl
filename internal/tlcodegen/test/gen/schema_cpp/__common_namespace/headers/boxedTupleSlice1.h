@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../functions/boxedTupleSlice1.h"
 #include "../types/int.h"
 

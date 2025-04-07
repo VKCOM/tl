@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../functions/service6.multiFind.h"
 #include "../types/service6.findResultRow.h"
 #include "../types/service6.error.h"
