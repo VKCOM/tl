@@ -1,3 +1,4 @@
+#include "io_streams.h"
 #include "io_throwable_streams.h"
 
 namespace basictl {
@@ -111,6 +112,13 @@ namespace basictl {
         }
     }
 
+    void tl_throwable_istream::pass_data(tl_istream& to) noexcept {
+        to.provider = provider;
+        to.ptr = ptr;
+        to.start_block = start_block;
+        to.end_block = end_block;
+    }
+
     tl_throwable_ostream::tl_throwable_ostream(tl_output_connector *provider) {
         this->provider = provider;
     }
@@ -204,5 +212,12 @@ namespace basictl {
             ptr[size / 2] = static_cast<std::byte>(0);
             ptr += size;
         }
+    }
+
+    void tl_throwable_ostream::pass_data(tl_ostream& to) noexcept {
+        to.provider = provider;
+        to.ptr = ptr;
+        to.start_block = start_block;
+        to.end_block = end_block;
     }
 } // namespace basictl

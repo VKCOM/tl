@@ -1,7 +1,11 @@
 #include "io_streams.h"
+#include "io_throwable_streams.h"
 
 namespace basictl {
     tl_istream::tl_istream(tl_input_connector &provider) : provider(&provider) {}
+    tl_istream::tl_istream(tl_throwable_istream& from) : provider(nullptr) {
+        from.pass_data(*this);
+    }
 
     bool tl_istream::string_read(std::string &value) noexcept {
         if (!ensure_byte()) [[unlikely]] {
@@ -152,7 +156,21 @@ namespace basictl {
         return true;
     }
 
+    void tl_istream::pass_data(tl_throwable_istream& to) {
+        to.provider = provider;
+        to.ptr = ptr;
+        to.start_block = start_block;
+        to.end_block = end_block;
+
+        if (has_error()) {
+            throw ::basictl::exception_from_tl_stream_error(error.value());
+        }
+    }
+
     tl_ostream::tl_ostream(tl_output_connector &provider): provider(&provider) {}
+    tl_ostream::tl_ostream(tl_throwable_ostream& from) : provider(nullptr) {
+        from.pass_data(*this);
+    }
 
     bool tl_ostream::string_write(const std::string &value) {
         auto len = value.size();
@@ -280,5 +298,16 @@ namespace basictl {
             ptr += size;
         }
         return true;
+    }
+
+    void tl_ostream::pass_data(tl_throwable_ostream& to) {
+        to.provider = provider;
+        to.ptr = ptr;
+        to.start_block = start_block;
+        to.end_block = end_block;
+
+        if (has_error()) {
+            throw ::basictl::exception_from_tl_stream_error(error.value());
+        }
     }
 } // namespace basictl
