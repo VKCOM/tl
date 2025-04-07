@@ -6,6 +6,9 @@
 
 package tlcodegen
 
+const basicCPPTLIOStreamsPath = "basictl/io_streams.h"
+const basicCPPTLIOThrowableStreamsPath = "basictl/io_throwable_streams.h"
+
 const basicCPPTLCodeHeader = `%s
 #pragma once
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../types/cases_bytes.TestEnum.h"
 
 namespace tl2 { namespace details { 

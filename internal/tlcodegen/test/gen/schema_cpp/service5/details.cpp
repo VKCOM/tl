@@ -12,28 +12,52 @@ bool tl2::service5::EmptyOutput::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service5::EmptyOutput::read(::basictl::tl_istream & s) {
+bool tl2::service5::EmptyOutput::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5EmptyOutputRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::EmptyOutput::write(::basictl::tl_ostream & s)const {
+bool tl2::service5::EmptyOutput::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5EmptyOutputWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::EmptyOutput::read_boxed(::basictl::tl_istream & s) {
+void tl2::service5::EmptyOutput::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::EmptyOutput::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service5::EmptyOutput::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5EmptyOutputReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::EmptyOutput::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service5::EmptyOutput::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5EmptyOutputWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::service5::EmptyOutput::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::EmptyOutput::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Service5EmptyOutputReset(::tl2::service5::EmptyOutput& item) {
@@ -67,28 +91,52 @@ bool tl2::service5::Insert::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service5::Insert::read(::basictl::tl_istream & s) {
+bool tl2::service5::Insert::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5InsertRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Insert::write(::basictl::tl_ostream & s)const {
+bool tl2::service5::Insert::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5InsertWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Insert::read_boxed(::basictl::tl_istream & s) {
+void tl2::service5::Insert::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::Insert::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service5::Insert::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5InsertReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Insert::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service5::Insert::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5InsertWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::service5::Insert::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::Insert::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Service5InsertReset(::tl2::service5::Insert& item) {
@@ -147,15 +195,26 @@ bool tl2::details::Service5InsertWriteResult(::basictl::tl_ostream & s, tl2::ser
 	return true;
 }
 
-bool tl2::service5::Insert::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) {
+bool tl2::service5::Insert::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) noexcept {
 	bool success = tl2::details::Service5InsertReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::service5::Insert::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) {
+bool tl2::service5::Insert::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) noexcept {
 	bool success = tl2::details::Service5InsertWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::service5::Insert::read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service5::Output & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::service5::Insert::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service5::Output & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 static const std::string_view Service5Output_tbl_tl_name[]{"service5.emptyOutput", "service5.stringOutput"};
@@ -230,28 +289,52 @@ bool tl2::service5::Params::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service5::Params::read(::basictl::tl_istream & s) {
+bool tl2::service5::Params::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5ParamsRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Params::write(::basictl::tl_ostream & s)const {
+bool tl2::service5::Params::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5ParamsWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Params::read_boxed(::basictl::tl_istream & s) {
+void tl2::service5::Params::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::Params::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service5::Params::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5ParamsReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Params::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service5::Params::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5ParamsWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::service5::Params::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::Params::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Service5ParamsReset(::tl2::service5::Params& item) {
@@ -329,28 +412,52 @@ bool tl2::service5::PerformQuery::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service5::PerformQuery::read(::basictl::tl_istream & s) {
+bool tl2::service5::PerformQuery::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5PerformQueryRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::PerformQuery::write(::basictl::tl_ostream & s)const {
+bool tl2::service5::PerformQuery::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5PerformQueryWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::PerformQuery::read_boxed(::basictl::tl_istream & s) {
+void tl2::service5::PerformQuery::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::PerformQuery::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service5::PerformQuery::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5PerformQueryReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::PerformQuery::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service5::PerformQuery::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5PerformQueryWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::service5::PerformQuery::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::PerformQuery::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Service5PerformQueryReset(::tl2::service5::PerformQuery& item) {
@@ -396,15 +503,26 @@ bool tl2::details::Service5PerformQueryWriteResult(::basictl::tl_ostream & s, tl
 	return true;
 }
 
-bool tl2::service5::PerformQuery::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) {
+bool tl2::service5::PerformQuery::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) noexcept {
 	bool success = tl2::details::Service5PerformQueryReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::service5::PerformQuery::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) {
+bool tl2::service5::PerformQuery::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) noexcept {
 	bool success = tl2::details::Service5PerformQueryWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::service5::PerformQuery::read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service5::Output & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::service5::PerformQuery::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service5::Output & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::service5::Query::write_json(std::ostream& s)const {
@@ -412,28 +530,52 @@ bool tl2::service5::Query::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service5::Query::read(::basictl::tl_istream & s) {
+bool tl2::service5::Query::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5QueryRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Query::write(::basictl::tl_ostream & s)const {
+bool tl2::service5::Query::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5QueryWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Query::read_boxed(::basictl::tl_istream & s) {
+void tl2::service5::Query::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::Query::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service5::Query::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5QueryReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::Query::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service5::Query::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5QueryWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::service5::Query::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::Query::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Service5QueryReset(::tl2::service5::Query& item) {
@@ -490,15 +632,26 @@ bool tl2::details::Service5QueryWriteResult(::basictl::tl_ostream & s, tl2::serv
 	return true;
 }
 
-bool tl2::service5::Query::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) {
+bool tl2::service5::Query::read_result(::basictl::tl_istream & s, ::tl2::service5::Output & result) noexcept {
 	bool success = tl2::details::Service5QueryReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::service5::Query::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) {
+bool tl2::service5::Query::write_result(::basictl::tl_ostream & s, ::tl2::service5::Output & result) noexcept {
 	bool success = tl2::details::Service5QueryWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::service5::Query::read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service5::Output & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::service5::Query::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service5::Output & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::service5::StringOutput::write_json(std::ostream& s)const {
@@ -506,28 +659,52 @@ bool tl2::service5::StringOutput::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service5::StringOutput::read(::basictl::tl_istream & s) {
+bool tl2::service5::StringOutput::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5StringOutputRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::StringOutput::write(::basictl::tl_ostream & s)const {
+bool tl2::service5::StringOutput::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5StringOutputWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::StringOutput::read_boxed(::basictl::tl_istream & s) {
+void tl2::service5::StringOutput::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::StringOutput::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service5::StringOutput::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service5StringOutputReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::service5::StringOutput::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service5::StringOutput::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service5StringOutputWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::service5::StringOutput::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service5::StringOutput::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::Service5StringOutputReset(::tl2::service5::StringOutput& item) {

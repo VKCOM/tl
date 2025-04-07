@@ -13,11 +13,17 @@ struct VrutoyPositions {
 
 	bool write_json(std::ostream& s, uint32_t nat_n)const;
 
-	bool read(::basictl::tl_istream & s, uint32_t nat_n);
-	bool write(::basictl::tl_ostream & s, uint32_t nat_n)const;
+	bool read(::basictl::tl_istream & s, uint32_t nat_n) noexcept;
+	bool write(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept;
 
-	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_n);
-	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_n)const;
+	void read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_n);
+	void write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_n)const;
+
+	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_n) noexcept;
+	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept;
+	
+	void read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_n);
+	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_n)const;
 };
 
 }} // namespace tl2::benchmarks

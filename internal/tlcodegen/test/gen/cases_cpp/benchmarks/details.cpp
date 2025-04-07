@@ -15,28 +15,52 @@ bool tl2::benchmarks::Vruhash::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::benchmarks::Vruhash::read(::basictl::tl_istream & s) {
+bool tl2::benchmarks::Vruhash::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVruHashRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::Vruhash::write(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::Vruhash::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVruHashWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::Vruhash::read_boxed(::basictl::tl_istream & s) {
+void tl2::benchmarks::Vruhash::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::Vruhash::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::Vruhash::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVruHashReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::Vruhash::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::Vruhash::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVruHashWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::Vruhash::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::Vruhash::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item) {
@@ -91,28 +115,52 @@ bool tl2::benchmarks::Vruposition::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::benchmarks::Vruposition::read(::basictl::tl_istream & s) {
+bool tl2::benchmarks::Vruposition::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVruPositionRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::Vruposition::write(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::Vruposition::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVruPositionWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::Vruposition::read_boxed(::basictl::tl_istream & s) {
+void tl2::benchmarks::Vruposition::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::Vruposition::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::Vruposition::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVruPositionReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::Vruposition::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::Vruposition::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVruPositionWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::Vruposition::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::Vruposition::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVruPositionReset(::tl2::benchmarks::Vruposition& item) {
@@ -300,28 +348,52 @@ bool tl2::benchmarks::VrutoyPositions::write_json(std::ostream& s, uint32_t nat_
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyPositions::read(::basictl::tl_istream & s, uint32_t nat_n) {
+bool tl2::benchmarks::VrutoyPositions::read(::basictl::tl_istream & s, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, *this, nat_n)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyPositions::write(::basictl::tl_ostream & s, uint32_t nat_n)const {
+bool tl2::benchmarks::VrutoyPositions::write(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoyPositionsWrite(s, *this, nat_n)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyPositions::read_boxed(::basictl::tl_istream & s, uint32_t nat_n) {
+void tl2::benchmarks::VrutoyPositions::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_n) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_n);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoyPositions::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_n)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_n);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::VrutoyPositions::read_boxed(::basictl::tl_istream & s, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BenchmarksVrutoyPositionsReadBoxed(s, *this, nat_n)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyPositions::write_boxed(::basictl::tl_ostream & s, uint32_t nat_n)const {
+bool tl2::benchmarks::VrutoyPositions::write_boxed(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoyPositionsWriteBoxed(s, *this, nat_n)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::VrutoyPositions::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_n) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_n);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoyPositions::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_n)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_n);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVrutoyPositionsReset(::tl2::benchmarks::VrutoyPositions& item) {
@@ -363,28 +435,52 @@ bool tl2::benchmarks::VrutoyTopLevelContainer::write_json(std::ostream& s)const 
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainer::read(::basictl::tl_istream & s) {
+bool tl2::benchmarks::VrutoyTopLevelContainer::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainer::write(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoyTopLevelContainer::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainer::read_boxed(::basictl::tl_istream & s) {
+void tl2::benchmarks::VrutoyTopLevelContainer::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoyTopLevelContainer::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::VrutoyTopLevelContainer::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainer::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoyTopLevelContainer::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::VrutoyTopLevelContainer::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoyTopLevelContainer::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVrutoyTopLevelContainerReset(::tl2::benchmarks::VrutoyTopLevelContainer& item) {
@@ -424,28 +520,52 @@ bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_json(std::ost
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read(::basictl::tl_istream & s) {
+bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read_boxed(::basictl::tl_istream & s) {
+void tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReset(::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) {
@@ -565,28 +685,52 @@ bool tl2::benchmarks::VrutoytopLevelUnionBig::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionBig::read(::basictl::tl_istream & s) {
+bool tl2::benchmarks::VrutoytopLevelUnionBig::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionBig::write(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoytopLevelUnionBig::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionBig::read_boxed(::basictl::tl_istream & s) {
+void tl2::benchmarks::VrutoytopLevelUnionBig::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoytopLevelUnionBig::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::VrutoytopLevelUnionBig::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionBig::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoytopLevelUnionBig::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::VrutoytopLevelUnionBig::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoytopLevelUnionBig::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVrutoytopLevelUnionBigReset(::tl2::benchmarks::VrutoytopLevelUnionBig& item) {
@@ -628,28 +772,52 @@ bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_json(std::ostream& s)const
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read(::basictl::tl_istream & s) {
+bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read_boxed(::basictl::tl_istream & s) {
+void tl2::benchmarks::VrutoytopLevelUnionEmpty::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoytopLevelUnionEmpty::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::benchmarks::VrutoytopLevelUnionEmpty::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::benchmarks::VrutoytopLevelUnionEmpty::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::BenchmarksVrutoytopLevelUnionEmptyReset(::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) {

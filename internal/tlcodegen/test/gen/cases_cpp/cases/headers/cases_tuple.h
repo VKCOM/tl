@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../../__common_namespace/types/tuple.h"
 #include "../../__common_namespace/types/pair.h"
 #include "../../__common_namespace/types/int.h"

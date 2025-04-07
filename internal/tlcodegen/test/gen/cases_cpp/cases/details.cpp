@@ -536,28 +536,52 @@ bool tl2::cases::MyCycle1::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::MyCycle1::read(::basictl::tl_istream & s) {
+bool tl2::cases::MyCycle1::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesMyCycle1Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle1::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::MyCycle1::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesMyCycle1Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle1::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::MyCycle1::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::MyCycle1::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::MyCycle1::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesMyCycle1ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle1::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::MyCycle1::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesMyCycle1WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::MyCycle1::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::MyCycle1::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesMyCycle1Reset(::tl2::cases::MyCycle1& item) {
@@ -618,28 +642,52 @@ bool tl2::cases::MyCycle2::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::MyCycle2::read(::basictl::tl_istream & s) {
+bool tl2::cases::MyCycle2::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesMyCycle2Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle2::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::MyCycle2::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesMyCycle2Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle2::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::MyCycle2::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::MyCycle2::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::MyCycle2::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesMyCycle2ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle2::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::MyCycle2::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesMyCycle2WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::MyCycle2::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::MyCycle2::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesMyCycle2Reset(::tl2::cases::MyCycle2& item) {
@@ -700,28 +748,52 @@ bool tl2::cases::MyCycle3::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::MyCycle3::read(::basictl::tl_istream & s) {
+bool tl2::cases::MyCycle3::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesMyCycle3Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle3::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::MyCycle3::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesMyCycle3Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle3::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::MyCycle3::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::MyCycle3::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::MyCycle3::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesMyCycle3ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::MyCycle3::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::MyCycle3::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesMyCycle3WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::MyCycle3::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::MyCycle3::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesMyCycle3Reset(::tl2::cases::MyCycle3& item) {
@@ -788,28 +860,52 @@ bool tl2::cases::Replace7::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::Replace7::read(::basictl::tl_istream & s) {
+bool tl2::cases::Replace7::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesReplace7Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::Replace7::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesReplace7Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::Replace7::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::Replace7::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::Replace7::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesReplace7ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::Replace7::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesReplace7WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::Replace7::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::Replace7::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesReplace7Reset(::tl2::cases::Replace7& item) {
@@ -875,28 +971,52 @@ bool tl2::cases::Replace7plus::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::Replace7plus::read(::basictl::tl_istream & s) {
+bool tl2::cases::Replace7plus::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesReplace7plusRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7plus::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::Replace7plus::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesReplace7plusWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7plus::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::Replace7plus::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::Replace7plus::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::Replace7plus::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesReplace7plusReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7plus::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::Replace7plus::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesReplace7plusWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::Replace7plus::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::Replace7plus::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesReplace7plusReset(::tl2::cases::Replace7plus& item) {
@@ -968,28 +1088,52 @@ bool tl2::cases::Replace7plusplus::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::Replace7plusplus::read(::basictl::tl_istream & s) {
+bool tl2::cases::Replace7plusplus::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesReplace7plusplusRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7plusplus::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::Replace7plusplus::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesReplace7plusplusWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7plusplus::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::Replace7plusplus::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::Replace7plusplus::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::Replace7plusplus::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesReplace7plusplusReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::Replace7plusplus::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::Replace7plusplus::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesReplace7plusplusWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::Replace7plusplus::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::Replace7plusplus::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesReplace7plusplusReset(::tl2::cases::Replace7plusplus& item) {
@@ -1061,28 +1205,52 @@ bool tl2::cases::TestAllPossibleFieldConfigs::write_json(std::ostream& s, uint32
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigs::read(::basictl::tl_istream & s, uint32_t nat_outer) {
+bool tl2::cases::TestAllPossibleFieldConfigs::read(::basictl::tl_istream & s, uint32_t nat_outer) noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsRead(s, *this, nat_outer)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigs::write(::basictl::tl_ostream & s, uint32_t nat_outer)const {
+bool tl2::cases::TestAllPossibleFieldConfigs::write(::basictl::tl_ostream & s, uint32_t nat_outer)const noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsWrite(s, *this, nat_outer)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigs::read_boxed(::basictl::tl_istream & s, uint32_t nat_outer) {
+void tl2::cases::TestAllPossibleFieldConfigs::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_outer) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_outer);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestAllPossibleFieldConfigs::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_outer)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_outer);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestAllPossibleFieldConfigs::read_boxed(::basictl::tl_istream & s, uint32_t nat_outer) noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsReadBoxed(s, *this, nat_outer)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigs::write_boxed(::basictl::tl_ostream & s, uint32_t nat_outer)const {
+bool tl2::cases::TestAllPossibleFieldConfigs::write_boxed(::basictl::tl_ostream & s, uint32_t nat_outer)const noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsWriteBoxed(s, *this, nat_outer)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestAllPossibleFieldConfigs::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_outer) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_outer);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestAllPossibleFieldConfigs::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_outer)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_outer);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestAllPossibleFieldConfigsReset(::tl2::cases::TestAllPossibleFieldConfigs& item) {
@@ -1290,28 +1458,52 @@ bool tl2::cases::TestAllPossibleFieldConfigsContainer::write_json(std::ostream& 
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigsContainer::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestAllPossibleFieldConfigsContainer::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsContainerRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigsContainer::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestAllPossibleFieldConfigsContainer::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsContainerWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigsContainer::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestAllPossibleFieldConfigsContainer::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestAllPossibleFieldConfigsContainer::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestAllPossibleFieldConfigsContainer::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsContainerReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestAllPossibleFieldConfigsContainer::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestAllPossibleFieldConfigsContainer::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestAllPossibleFieldConfigsContainerWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestAllPossibleFieldConfigsContainer::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestAllPossibleFieldConfigsContainer::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestAllPossibleFieldConfigsContainerReset(::tl2::cases::TestAllPossibleFieldConfigsContainer& item) {
@@ -1364,28 +1556,52 @@ bool tl2::cases::TestArray::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestArray::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestArray::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestArrayRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestArray::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestArray::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestArrayWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestArray::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestArray::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestArray::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestArray::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestArrayReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestArray::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestArray::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestArrayWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestArray::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestArray::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestArrayReset(::tl2::cases::TestArray& item) {
@@ -1440,28 +1656,52 @@ bool tl2::cases::TestBeforeReadBitValidation::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestBeforeReadBitValidation::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestBeforeReadBitValidation::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestBeforeReadBitValidationRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestBeforeReadBitValidation::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestBeforeReadBitValidation::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestBeforeReadBitValidationWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestBeforeReadBitValidation::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestBeforeReadBitValidation::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestBeforeReadBitValidation::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestBeforeReadBitValidation::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestBeforeReadBitValidationReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestBeforeReadBitValidation::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestBeforeReadBitValidation::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestBeforeReadBitValidationWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestBeforeReadBitValidation::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestBeforeReadBitValidation::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestBeforeReadBitValidationReset(::tl2::cases::TestBeforeReadBitValidation& item) {
@@ -1539,28 +1779,52 @@ bool tl2::cases::TestDictAny::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestDictAny::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestDictAny::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestDictAnyRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictAny::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestDictAny::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestDictAnyWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictAny::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestDictAny::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestDictAny::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestDictAny::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestDictAnyReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictAny::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestDictAny::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestDictAnyWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestDictAny::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestDictAny::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestDictAnyReset(::tl2::cases::TestDictAny& item) {
@@ -1602,28 +1866,52 @@ bool tl2::cases::TestDictInt::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestDictInt::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestDictInt::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestDictIntRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictInt::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestDictInt::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestDictIntWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictInt::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestDictInt::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestDictInt::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestDictInt::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestDictIntReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictInt::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestDictInt::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestDictIntWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestDictInt::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestDictInt::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestDictIntReset(::tl2::cases::TestDictInt& item) {
@@ -1665,28 +1953,52 @@ bool tl2::cases::TestDictString::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestDictString::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestDictString::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestDictStringRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictString::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestDictString::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestDictStringWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictString::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestDictString::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestDictString::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestDictString::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestDictStringReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestDictString::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestDictString::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestDictStringWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestDictString::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestDictString::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestDictStringReset(::tl2::cases::TestDictString& item) {
@@ -1785,28 +2097,52 @@ bool tl2::cases::TestEnum1::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestEnum1::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestEnum1::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnum1Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum1::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnum1::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnum1Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum1::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestEnum1::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnum1::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestEnum1::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnum1ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum1::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnum1::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnum1WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestEnum1::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnum1::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestEnum1Reset(::tl2::cases::TestEnum1& item) {
@@ -1840,28 +2176,52 @@ bool tl2::cases::TestEnum2::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestEnum2::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestEnum2::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnum2Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum2::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnum2::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnum2Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum2::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestEnum2::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnum2::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestEnum2::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnum2ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum2::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnum2::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnum2WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestEnum2::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnum2::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestEnum2Reset(::tl2::cases::TestEnum2& item) {
@@ -1895,28 +2255,52 @@ bool tl2::cases::TestEnum3::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestEnum3::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestEnum3::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnum3Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum3::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnum3::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnum3Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum3::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestEnum3::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnum3::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestEnum3::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnum3ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnum3::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnum3::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnum3WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestEnum3::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnum3::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestEnum3Reset(::tl2::cases::TestEnum3& item) {
@@ -1950,28 +2334,52 @@ bool tl2::cases::TestEnumContainer::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestEnumContainer::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestEnumContainer::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnumContainerRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnumContainer::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnumContainer::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnumContainerWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnumContainer::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestEnumContainer::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnumContainer::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestEnumContainer::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestEnumContainerReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestEnumContainer::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestEnumContainer::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestEnumContainerWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestEnumContainer::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestEnumContainer::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestEnumContainerReset(::tl2::cases::TestEnumContainer& item) {
@@ -2011,28 +2419,52 @@ bool tl2::cases::TestInplaceStructArgs::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestInplaceStructArgs::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgsRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestInplaceStructArgs::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgsWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestInplaceStructArgs::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestInplaceStructArgs::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestInplaceStructArgs::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgsReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestInplaceStructArgs::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgsWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestInplaceStructArgs::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestInplaceStructArgs::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestInplaceStructArgsReset(::tl2::cases::TestInplaceStructArgs& item) {
@@ -2107,28 +2539,52 @@ bool tl2::cases::TestInplaceStructArgs2::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs2::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestInplaceStructArgs2::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgs2Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs2::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestInplaceStructArgs2::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgs2Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs2::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestInplaceStructArgs2::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestInplaceStructArgs2::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestInplaceStructArgs2::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgs2ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestInplaceStructArgs2::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestInplaceStructArgs2::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestInplaceStructArgs2WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestInplaceStructArgs2::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestInplaceStructArgs2::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestInplaceStructArgs2Reset(::tl2::cases::TestInplaceStructArgs2& item) {
@@ -2203,28 +2659,52 @@ bool tl2::cases::TestLocalFieldmask::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestLocalFieldmask::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestLocalFieldmask::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestLocalFieldmaskRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestLocalFieldmask::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestLocalFieldmask::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestLocalFieldmaskWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestLocalFieldmask::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestLocalFieldmask::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestLocalFieldmask::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestLocalFieldmask::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestLocalFieldmaskReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestLocalFieldmask::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestLocalFieldmask::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestLocalFieldmaskWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestLocalFieldmask::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestLocalFieldmask::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestLocalFieldmaskReset(::tl2::cases::TestLocalFieldmask& item) {
@@ -2319,28 +2799,52 @@ bool tl2::cases::TestMaybe::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestMaybe::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestMaybe::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestMaybeRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestMaybe::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestMaybe::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestMaybeWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestMaybe::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestMaybe::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestMaybe::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestMaybe::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestMaybeReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestMaybe::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestMaybe::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestMaybeWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestMaybe::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestMaybe::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestMaybeReset(::tl2::cases::TestMaybe& item) {
@@ -2382,28 +2886,52 @@ bool tl2::cases::TestOutFieldMask::write_json(std::ostream& s, uint32_t nat_f)co
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMask::read(::basictl::tl_istream & s, uint32_t nat_f) {
+bool tl2::cases::TestOutFieldMask::read(::basictl::tl_istream & s, uint32_t nat_f) noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskRead(s, *this, nat_f)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMask::write(::basictl::tl_ostream & s, uint32_t nat_f)const {
+bool tl2::cases::TestOutFieldMask::write(::basictl::tl_ostream & s, uint32_t nat_f)const noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskWrite(s, *this, nat_f)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMask::read_boxed(::basictl::tl_istream & s, uint32_t nat_f) {
+void tl2::cases::TestOutFieldMask::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_f) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_f);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestOutFieldMask::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_f)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_f);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestOutFieldMask::read_boxed(::basictl::tl_istream & s, uint32_t nat_f) noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskReadBoxed(s, *this, nat_f)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMask::write_boxed(::basictl::tl_ostream & s, uint32_t nat_f)const {
+bool tl2::cases::TestOutFieldMask::write_boxed(::basictl::tl_ostream & s, uint32_t nat_f)const noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskWriteBoxed(s, *this, nat_f)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestOutFieldMask::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_f) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_f);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestOutFieldMask::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_f)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_f);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestOutFieldMaskReset(::tl2::cases::TestOutFieldMask& item) {
@@ -2473,28 +3001,52 @@ bool tl2::cases::TestOutFieldMaskContainer::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMaskContainer::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestOutFieldMaskContainer::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskContainerRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMaskContainer::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestOutFieldMaskContainer::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskContainerWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMaskContainer::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestOutFieldMaskContainer::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestOutFieldMaskContainer::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestOutFieldMaskContainer::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskContainerReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestOutFieldMaskContainer::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestOutFieldMaskContainer::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestOutFieldMaskContainerWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestOutFieldMaskContainer::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestOutFieldMaskContainer::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestOutFieldMaskContainerReset(::tl2::cases::TestOutFieldMaskContainer& item) {
@@ -2547,28 +3099,52 @@ bool tl2::cases::TestRecursiveFieldMask::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestRecursiveFieldMask::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestRecursiveFieldMask::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestRecursiveFieldmaskRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestRecursiveFieldMask::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestRecursiveFieldMask::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestRecursiveFieldmaskWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestRecursiveFieldMask::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestRecursiveFieldMask::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestRecursiveFieldMask::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestRecursiveFieldMask::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestRecursiveFieldmaskReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestRecursiveFieldMask::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestRecursiveFieldMask::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestRecursiveFieldmaskWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestRecursiveFieldMask::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestRecursiveFieldMask::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestRecursiveFieldmaskReset(::tl2::cases::TestRecursiveFieldMask& item) {
@@ -2697,28 +3273,52 @@ bool tl2::cases::TestTuple::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestTuple::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestTuple::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestTupleRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestTuple::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestTuple::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestTupleWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestTuple::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestTuple::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestTuple::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestTuple::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestTupleReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestTuple::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestTuple::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestTupleWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestTuple::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestTuple::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestTupleReset(::tl2::cases::TestTuple& item) {
@@ -2833,28 +3433,52 @@ bool tl2::cases::TestUnion1::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestUnion1::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestUnion1::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestUnion1Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnion1::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestUnion1::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestUnion1Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnion1::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestUnion1::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestUnion1::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestUnion1::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestUnion1ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnion1::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestUnion1::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestUnion1WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestUnion1::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestUnion1::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestUnion1Reset(::tl2::cases::TestUnion1& item) {
@@ -2896,28 +3520,52 @@ bool tl2::cases::TestUnion2::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestUnion2::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestUnion2::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestUnion2Read(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnion2::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestUnion2::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestUnion2Write(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnion2::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestUnion2::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestUnion2::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestUnion2::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestUnion2ReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnion2::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestUnion2::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestUnion2WriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestUnion2::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestUnion2::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestUnion2Reset(::tl2::cases::TestUnion2& item) {
@@ -2959,28 +3607,52 @@ bool tl2::cases::TestUnionContainer::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestUnionContainer::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestUnionContainer::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestUnionContainerRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnionContainer::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestUnionContainer::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestUnionContainerWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnionContainer::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestUnionContainer::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestUnionContainer::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestUnionContainer::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestUnionContainerReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestUnionContainer::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestUnionContainer::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestUnionContainerWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestUnionContainer::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestUnionContainer::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestUnionContainerReset(::tl2::cases::TestUnionContainer& item) {
@@ -3020,28 +3692,52 @@ bool tl2::cases::TestVector::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::cases::TestVector::read(::basictl::tl_istream & s) {
+bool tl2::cases::TestVector::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestVectorRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestVector::write(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestVector::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestVectorWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestVector::read_boxed(::basictl::tl_istream & s) {
+void tl2::cases::TestVector::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestVector::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::cases::TestVector::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesTestVectorReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::cases::TestVector::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases::TestVector::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesTestVectorWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::cases::TestVector::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases::TestVector::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::CasesTestVectorReset(::tl2::cases::TestVector& item) {

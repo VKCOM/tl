@@ -12,11 +12,17 @@ struct ObjectId {
 
 	bool write_json(std::ostream& s, uint32_t nat_objectIdLength)const;
 
-	bool read(::basictl::tl_istream & s, uint32_t nat_objectIdLength);
-	bool write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const;
+	bool read(::basictl::tl_istream & s, uint32_t nat_objectIdLength) noexcept;
+	bool write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const noexcept;
 
-	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_objectIdLength);
-	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const;
+	void read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_objectIdLength);
+	void write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_objectIdLength)const;
+
+	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_objectIdLength) noexcept;
+	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const noexcept;
+	
+	void read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_objectIdLength);
+	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_objectIdLength)const;
 };
 
 }} // namespace tl2::service2

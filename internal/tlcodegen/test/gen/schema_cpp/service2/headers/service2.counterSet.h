@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../types/service2.counterSet.h"
 
 namespace tl2 { namespace details { 

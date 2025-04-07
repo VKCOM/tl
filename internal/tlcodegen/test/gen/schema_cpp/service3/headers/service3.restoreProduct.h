@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../functions/service3.restoreProduct.h"
 #include "../../__common_namespace/types/Bool.h"
 

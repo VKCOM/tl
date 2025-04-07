@@ -8,28 +8,52 @@ bool tl2::unique::Get::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::unique::Get::read(::basictl::tl_istream & s) {
+bool tl2::unique::Get::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::UniqueGetRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::unique::Get::write(::basictl::tl_ostream & s)const {
+bool tl2::unique::Get::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::UniqueGetWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::unique::Get::read_boxed(::basictl::tl_istream & s) {
+void tl2::unique::Get::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::unique::Get::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::unique::Get::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::UniqueGetReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::unique::Get::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::unique::Get::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::UniqueGetWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::unique::Get::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::unique::Get::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::UniqueGetReset(::tl2::unique::Get& item) {
@@ -75,15 +99,26 @@ bool tl2::details::UniqueGetWriteResult(::basictl::tl_ostream & s, tl2::unique::
 	return true;
 }
 
-bool tl2::unique::Get::read_result(::basictl::tl_istream & s, std::optional<int32_t> & result) {
+bool tl2::unique::Get::read_result(::basictl::tl_istream & s, std::optional<int32_t> & result) noexcept {
 	bool success = tl2::details::UniqueGetReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::unique::Get::write_result(::basictl::tl_ostream & s, std::optional<int32_t> & result) {
+bool tl2::unique::Get::write_result(::basictl::tl_ostream & s, std::optional<int32_t> & result) noexcept {
 	bool success = tl2::details::UniqueGetWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::unique::Get::read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<int32_t> & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::unique::Get::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<int32_t> & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::unique::StringToInt::write_json(std::ostream& s)const {
@@ -91,28 +126,52 @@ bool tl2::unique::StringToInt::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::unique::StringToInt::read(::basictl::tl_istream & s) {
+bool tl2::unique::StringToInt::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::UniqueStringToIntRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::unique::StringToInt::write(::basictl::tl_ostream & s)const {
+bool tl2::unique::StringToInt::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::UniqueStringToIntWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::unique::StringToInt::read_boxed(::basictl::tl_istream & s) {
+void tl2::unique::StringToInt::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::unique::StringToInt::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::unique::StringToInt::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::UniqueStringToIntReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::unique::StringToInt::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::unique::StringToInt::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::UniqueStringToIntWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::unique::StringToInt::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::unique::StringToInt::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::UniqueStringToIntReset(::tl2::unique::StringToInt& item) {
@@ -160,13 +219,24 @@ bool tl2::details::UniqueStringToIntWriteResult(::basictl::tl_ostream & s, tl2::
 	return true;
 }
 
-bool tl2::unique::StringToInt::read_result(::basictl::tl_istream & s, int32_t & result) {
+bool tl2::unique::StringToInt::read_result(::basictl::tl_istream & s, int32_t & result) noexcept {
 	bool success = tl2::details::UniqueStringToIntReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::unique::StringToInt::write_result(::basictl::tl_ostream & s, int32_t & result) {
+bool tl2::unique::StringToInt::write_result(::basictl::tl_ostream & s, int32_t & result) noexcept {
 	bool success = tl2::details::UniqueStringToIntWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::unique::StringToInt::read_result_or_throw(::basictl::tl_throwable_istream & s, int32_t & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::unique::StringToInt::write_result_or_throw(::basictl::tl_throwable_ostream & s, int32_t & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }

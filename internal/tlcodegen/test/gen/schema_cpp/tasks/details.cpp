@@ -62,28 +62,52 @@ bool tl2::tasks::AddTask::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::AddTask::read(::basictl::tl_istream & s) {
+bool tl2::tasks::AddTask::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksAddTaskRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::AddTask::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::AddTask::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksAddTaskWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::AddTask::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::AddTask::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::AddTask::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::AddTask::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksAddTaskReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::AddTask::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::AddTask::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksAddTaskWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::AddTask::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::AddTask::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksAddTaskReset(::tl2::tasks::AddTask& item) {
@@ -153,15 +177,26 @@ bool tl2::details::TasksAddTaskWriteResult(::basictl::tl_ostream & s, tl2::tasks
 	return true;
 }
 
-bool tl2::tasks::AddTask::read_result(::basictl::tl_istream & s, int64_t & result) {
+bool tl2::tasks::AddTask::read_result(::basictl::tl_istream & s, int64_t & result) noexcept {
 	bool success = tl2::details::TasksAddTaskReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::tasks::AddTask::write_result(::basictl::tl_ostream & s, int64_t & result) {
+bool tl2::tasks::AddTask::write_result(::basictl::tl_ostream & s, int64_t & result) noexcept {
 	bool success = tl2::details::TasksAddTaskWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::tasks::AddTask::read_result_or_throw(::basictl::tl_throwable_istream & s, int64_t & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::tasks::AddTask::write_result_or_throw(::basictl::tl_throwable_ostream & s, int64_t & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::tasks::CronTask::write_json(std::ostream& s)const {
@@ -169,28 +204,52 @@ bool tl2::tasks::CronTask::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::CronTask::read(::basictl::tl_istream & s) {
+bool tl2::tasks::CronTask::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksCronTaskRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTask::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::CronTask::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksCronTaskWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTask::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::CronTask::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::CronTask::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::CronTask::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksCronTaskReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTask::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::CronTask::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksCronTaskWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::CronTask::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::CronTask::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksCronTaskReset(::tl2::tasks::CronTask& item) {
@@ -263,28 +322,52 @@ bool tl2::tasks::CronTaskWithId::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::CronTaskWithId::read(::basictl::tl_istream & s) {
+bool tl2::tasks::CronTaskWithId::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksCronTaskWithIdRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTaskWithId::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::CronTaskWithId::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksCronTaskWithIdWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTaskWithId::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::CronTaskWithId::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::CronTaskWithId::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::CronTaskWithId::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksCronTaskWithIdReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTaskWithId::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::CronTaskWithId::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksCronTaskWithIdWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::CronTaskWithId::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::CronTaskWithId::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksCronTaskWithIdReset(::tl2::tasks::CronTaskWithId& item) {
@@ -348,28 +431,52 @@ bool tl2::tasks::CronTime::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::CronTime::read(::basictl::tl_istream & s) {
+bool tl2::tasks::CronTime::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksCronTimeRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTime::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::CronTime::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksCronTimeWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTime::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::CronTime::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::CronTime::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::CronTime::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksCronTimeReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::CronTime::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::CronTime::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksCronTimeWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::CronTime::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::CronTime::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksCronTimeReset(::tl2::tasks::CronTime& item) {
@@ -515,28 +622,52 @@ bool tl2::tasks::FullFilledCron::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::FullFilledCron::read(::basictl::tl_istream & s) {
+bool tl2::tasks::FullFilledCron::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksFullFilledCronRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::FullFilledCron::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::FullFilledCron::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksFullFilledCronWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::FullFilledCron::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::FullFilledCron::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::FullFilledCron::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::FullFilledCron::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksFullFilledCronReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::FullFilledCron::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::FullFilledCron::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksFullFilledCronWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::FullFilledCron::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::FullFilledCron::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) {
@@ -1124,28 +1255,52 @@ bool tl2::tasks::GetAnyTask::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::GetAnyTask::read(::basictl::tl_istream & s) {
+bool tl2::tasks::GetAnyTask::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetAnyTaskRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetAnyTask::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetAnyTask::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetAnyTaskWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetAnyTask::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::GetAnyTask::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetAnyTask::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::GetAnyTask::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetAnyTaskReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetAnyTask::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetAnyTask::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetAnyTaskWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::GetAnyTask::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetAnyTask::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksGetAnyTaskReset(::tl2::tasks::GetAnyTask& item) {
@@ -1183,15 +1338,26 @@ bool tl2::details::TasksGetAnyTaskWriteResult(::basictl::tl_ostream & s, tl2::ta
 	return true;
 }
 
-bool tl2::tasks::GetAnyTask::read_result(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+bool tl2::tasks::GetAnyTask::read_result(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept {
 	bool success = tl2::details::TasksGetAnyTaskReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::tasks::GetAnyTask::write_result(::basictl::tl_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+bool tl2::tasks::GetAnyTask::write_result(::basictl::tl_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept {
 	bool success = tl2::details::TasksGetAnyTaskWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::tasks::GetAnyTask::read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::tasks::GetAnyTask::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::tasks::GetQueueSize::write_json(std::ostream& s)const {
@@ -1199,28 +1365,52 @@ bool tl2::tasks::GetQueueSize::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::GetQueueSize::read(::basictl::tl_istream & s) {
+bool tl2::tasks::GetQueueSize::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetQueueSizeRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetQueueSize::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetQueueSize::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetQueueSizeWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetQueueSize::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::GetQueueSize::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetQueueSize::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::GetQueueSize::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetQueueSizeReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetQueueSize::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetQueueSize::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetQueueSizeWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::GetQueueSize::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetQueueSize::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) {
@@ -1307,15 +1497,26 @@ bool tl2::details::TasksGetQueueSizeWriteResult(::basictl::tl_ostream & s, tl2::
 	return true;
 }
 
-bool tl2::tasks::GetQueueSize::read_result(::basictl::tl_istream & s, ::tl2::tasks::QueueStats & result) {
+bool tl2::tasks::GetQueueSize::read_result(::basictl::tl_istream & s, ::tl2::tasks::QueueStats & result) noexcept {
 	bool success = tl2::details::TasksGetQueueSizeReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::tasks::GetQueueSize::write_result(::basictl::tl_ostream & s, ::tl2::tasks::QueueStats & result) {
+bool tl2::tasks::GetQueueSize::write_result(::basictl::tl_ostream & s, ::tl2::tasks::QueueStats & result) noexcept {
 	bool success = tl2::details::TasksGetQueueSizeWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::tasks::GetQueueSize::read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::tasks::QueueStats & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::tasks::GetQueueSize::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::tasks::QueueStats & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::tasks::GetQueueTypes::write_json(std::ostream& s)const {
@@ -1323,28 +1524,52 @@ bool tl2::tasks::GetQueueTypes::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::GetQueueTypes::read(::basictl::tl_istream & s) {
+bool tl2::tasks::GetQueueTypes::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetQueueTypesRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetQueueTypes::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetQueueTypes::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetQueueTypesWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetQueueTypes::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::GetQueueTypes::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetQueueTypes::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::GetQueueTypes::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetQueueTypesReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetQueueTypes::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetQueueTypes::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetQueueTypesWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::GetQueueTypes::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetQueueTypes::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksGetQueueTypesReset(::tl2::tasks::GetQueueTypes& item) {
@@ -1405,15 +1630,26 @@ bool tl2::details::TasksGetQueueTypesWriteResult(::basictl::tl_ostream & s, tl2:
 	return true;
 }
 
-bool tl2::tasks::GetQueueTypes::read_result(::basictl::tl_istream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) {
+bool tl2::tasks::GetQueueTypes::read_result(::basictl::tl_istream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) noexcept {
 	bool success = tl2::details::TasksGetQueueTypesReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::tasks::GetQueueTypes::write_result(::basictl::tl_ostream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) {
+bool tl2::tasks::GetQueueTypes::write_result(::basictl::tl_ostream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) noexcept {
 	bool success = tl2::details::TasksGetQueueTypesWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::tasks::GetQueueTypes::read_result_or_throw(::basictl::tl_throwable_istream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::tasks::GetQueueTypes::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::tasks::GetTaskFromQueue::write_json(std::ostream& s)const {
@@ -1421,28 +1657,52 @@ bool tl2::tasks::GetTaskFromQueue::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::GetTaskFromQueue::read(::basictl::tl_istream & s) {
+bool tl2::tasks::GetTaskFromQueue::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetTaskFromQueueRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetTaskFromQueue::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetTaskFromQueue::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetTaskFromQueueWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetTaskFromQueue::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::GetTaskFromQueue::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetTaskFromQueue::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::GetTaskFromQueue::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksGetTaskFromQueueReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::GetTaskFromQueue::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::GetTaskFromQueue::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksGetTaskFromQueueWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::GetTaskFromQueue::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::GetTaskFromQueue::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksGetTaskFromQueueReset(::tl2::tasks::GetTaskFromQueue& item) {
@@ -1501,15 +1761,26 @@ bool tl2::details::TasksGetTaskFromQueueWriteResult(::basictl::tl_ostream & s, t
 	return true;
 }
 
-bool tl2::tasks::GetTaskFromQueue::read_result(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+bool tl2::tasks::GetTaskFromQueue::read_result(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept {
 	bool success = tl2::details::TasksGetTaskFromQueueReadResult(s, *this, result);
 	s.last_release();
 	return success;
 }
-bool tl2::tasks::GetTaskFromQueue::write_result(::basictl::tl_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+bool tl2::tasks::GetTaskFromQueue::write_result(::basictl::tl_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept {
 	bool success = tl2::details::TasksGetTaskFromQueueWriteResult(s, *this, result);
 	s.last_release();
 	return success;
+}
+
+void tl2::tasks::GetTaskFromQueue::read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::tasks::GetTaskFromQueue::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
+	::basictl::tl_ostream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::tasks::QueueStats::write_json(std::ostream& s, uint32_t nat_fields_mask)const {
@@ -1517,28 +1788,52 @@ bool tl2::tasks::QueueStats::write_json(std::ostream& s, uint32_t nat_fields_mas
 	return true;
 }
 
-bool tl2::tasks::QueueStats::read(::basictl::tl_istream & s, uint32_t nat_fields_mask) {
+bool tl2::tasks::QueueStats::read(::basictl::tl_istream & s, uint32_t nat_fields_mask) noexcept {
 	if (!::tl2::details::TasksQueueStatsRead(s, *this, nat_fields_mask)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueStats::write(::basictl::tl_ostream & s, uint32_t nat_fields_mask)const {
+bool tl2::tasks::QueueStats::write(::basictl::tl_ostream & s, uint32_t nat_fields_mask)const noexcept {
 	if (!::tl2::details::TasksQueueStatsWrite(s, *this, nat_fields_mask)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueStats::read_boxed(::basictl::tl_istream & s, uint32_t nat_fields_mask) {
+void tl2::tasks::QueueStats::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_fields_mask) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_fields_mask);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueStats::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_fields_mask)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_fields_mask);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::QueueStats::read_boxed(::basictl::tl_istream & s, uint32_t nat_fields_mask) noexcept {
 	if (!::tl2::details::TasksQueueStatsReadBoxed(s, *this, nat_fields_mask)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueStats::write_boxed(::basictl::tl_ostream & s, uint32_t nat_fields_mask)const {
+bool tl2::tasks::QueueStats::write_boxed(::basictl::tl_ostream & s, uint32_t nat_fields_mask)const noexcept {
 	if (!::tl2::details::TasksQueueStatsWriteBoxed(s, *this, nat_fields_mask)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::QueueStats::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_fields_mask) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_fields_mask);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueStats::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_fields_mask)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_fields_mask);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksQueueStatsReset(::tl2::tasks::QueueStats& item) {
@@ -1622,28 +1917,52 @@ bool tl2::tasks::QueueTypeInfo::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::QueueTypeInfo::read(::basictl::tl_istream & s) {
+bool tl2::tasks::QueueTypeInfo::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksQueueTypeInfoRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeInfo::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::QueueTypeInfo::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksQueueTypeInfoWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeInfo::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::QueueTypeInfo::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueTypeInfo::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::QueueTypeInfo::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksQueueTypeInfoReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeInfo::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::QueueTypeInfo::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksQueueTypeInfoWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::QueueTypeInfo::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueTypeInfo::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksQueueTypeInfoReset(::tl2::tasks::QueueTypeInfo& item) {
@@ -1705,28 +2024,52 @@ bool tl2::tasks::QueueTypeSettings::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::QueueTypeSettings::read(::basictl::tl_istream & s) {
+bool tl2::tasks::QueueTypeSettings::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksQueueTypeSettingsRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeSettings::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::QueueTypeSettings::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksQueueTypeSettingsWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeSettings::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::QueueTypeSettings::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueTypeSettings::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::QueueTypeSettings::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksQueueTypeSettingsReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeSettings::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::QueueTypeSettings::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksQueueTypeSettingsWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::QueueTypeSettings::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueTypeSettings::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksQueueTypeSettingsReset(::tl2::tasks::QueueTypeSettings& item) {
@@ -1923,28 +2266,52 @@ bool tl2::tasks::QueueTypeStats::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::QueueTypeStats::read(::basictl::tl_istream & s) {
+bool tl2::tasks::QueueTypeStats::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksQueueTypeStatsRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeStats::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::QueueTypeStats::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksQueueTypeStatsWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeStats::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::QueueTypeStats::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueTypeStats::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::QueueTypeStats::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksQueueTypeStatsReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::QueueTypeStats::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::QueueTypeStats::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksQueueTypeStatsWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::QueueTypeStats::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::QueueTypeStats::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksQueueTypeStatsReset(::tl2::tasks::QueueTypeStats& item) {
@@ -2056,28 +2423,52 @@ bool tl2::tasks::Task::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::Task::read(::basictl::tl_istream & s) {
+bool tl2::tasks::Task::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::Task::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::Task::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::Task::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::Task::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::Task::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::Task::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::Task::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::Task::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::Task::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::Task::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksTaskReset(::tl2::tasks::Task& item) {
@@ -2222,28 +2613,52 @@ bool tl2::tasks::TaskInfo::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::TaskInfo::read(::basictl::tl_istream & s) {
+bool tl2::tasks::TaskInfo::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskInfoRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskInfo::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskInfo::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskInfoWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskInfo::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::TaskInfo::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskInfo::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::TaskInfo::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskInfoReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskInfo::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskInfo::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskInfoWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::TaskInfo::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskInfo::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksTaskInfoReset(::tl2::tasks::TaskInfo& item) {
@@ -2399,28 +2814,52 @@ bool tl2::tasks::TaskStatusInProgress::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::TaskStatusInProgress::read(::basictl::tl_istream & s) {
+bool tl2::tasks::TaskStatusInProgress::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusInProgressRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusInProgress::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusInProgress::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusInProgressWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusInProgress::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::TaskStatusInProgress::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusInProgress::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::TaskStatusInProgress::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusInProgressReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusInProgress::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusInProgress::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusInProgressWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::TaskStatusInProgress::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusInProgress::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksTaskStatusInProgressReset(::tl2::tasks::TaskStatusInProgress& item) {
@@ -2454,28 +2893,52 @@ bool tl2::tasks::TaskStatusNotCurrentlyInEngine::write_json(std::ostream& s)cons
 	return true;
 }
 
-bool tl2::tasks::TaskStatusNotCurrentlyInEngine::read(::basictl::tl_istream & s) {
+bool tl2::tasks::TaskStatusNotCurrentlyInEngine::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusNotCurrentlyInEngineRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusNotCurrentlyInEngine::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusNotCurrentlyInEngine::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusNotCurrentlyInEngineWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusNotCurrentlyInEngine::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::TaskStatusNotCurrentlyInEngine::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusNotCurrentlyInEngine::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::TaskStatusNotCurrentlyInEngine::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusNotCurrentlyInEngineReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusNotCurrentlyInEngine::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusNotCurrentlyInEngine::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusNotCurrentlyInEngineWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::TaskStatusNotCurrentlyInEngine::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusNotCurrentlyInEngine::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksTaskStatusNotCurrentlyInEngineReset(::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) {
@@ -2509,28 +2972,52 @@ bool tl2::tasks::TaskStatusScheduled::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::TaskStatusScheduled::read(::basictl::tl_istream & s) {
+bool tl2::tasks::TaskStatusScheduled::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusScheduledRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusScheduled::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusScheduled::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusScheduledWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusScheduled::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::TaskStatusScheduled::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusScheduled::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::TaskStatusScheduled::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusScheduledReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusScheduled::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusScheduled::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusScheduledWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::TaskStatusScheduled::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusScheduled::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksTaskStatusScheduledReset(::tl2::tasks::TaskStatusScheduled& item) {
@@ -2564,28 +3051,52 @@ bool tl2::tasks::TaskStatusWaiting::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::tasks::TaskStatusWaiting::read(::basictl::tl_istream & s) {
+bool tl2::tasks::TaskStatusWaiting::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusWaitingRead(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusWaiting::write(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusWaiting::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusWaitingWrite(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusWaiting::read_boxed(::basictl::tl_istream & s) {
+void tl2::tasks::TaskStatusWaiting::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusWaiting::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::tasks::TaskStatusWaiting::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusWaitingReadBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
 }
 
-bool tl2::tasks::TaskStatusWaiting::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatusWaiting::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusWaitingWriteBoxed(s, *this)) { return false; }
 	s.last_release();
 	return true;
+}
+
+void tl2::tasks::TaskStatusWaiting::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatusWaiting::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
 }
 
 void tl2::details::TasksTaskStatusWaitingReset(::tl2::tasks::TaskStatusWaiting& item) {

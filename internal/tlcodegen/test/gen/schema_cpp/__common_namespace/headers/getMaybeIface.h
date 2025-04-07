@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
+#include "../../basictl/io_throwable_streams.h"
 #include "../functions/getMaybeIface.h"
 #include "../../service1/types/service1.Value.h"
 
