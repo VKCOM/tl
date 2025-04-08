@@ -27,8 +27,8 @@ struct BoxedString {
 	bool read_result(::basictl::tl_istream & s, std::string & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, std::string & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::string & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::string & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::string & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::string & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const BoxedString& rhs) {
 		rhs.write_json(s);

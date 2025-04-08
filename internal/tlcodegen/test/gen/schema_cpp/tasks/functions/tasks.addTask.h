@@ -30,8 +30,8 @@ struct AddTask {
 	bool read_result(::basictl::tl_istream & s, int64_t & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, int64_t & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, int64_t & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, int64_t & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, int64_t & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, int64_t & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const AddTask& rhs) {
 		rhs.write_json(s);

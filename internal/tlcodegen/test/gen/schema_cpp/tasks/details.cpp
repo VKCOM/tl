@@ -195,7 +195,7 @@ void tl2::tasks::AddTask::read_result_or_throw(::basictl::tl_throwable_istream &
 }
 void tl2::tasks::AddTask::write_result_or_throw(::basictl::tl_throwable_ostream & s, int64_t & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1356,7 +1356,7 @@ void tl2::tasks::GetAnyTask::read_result_or_throw(::basictl::tl_throwable_istrea
 }
 void tl2::tasks::GetAnyTask::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1515,7 +1515,7 @@ void tl2::tasks::GetQueueSize::read_result_or_throw(::basictl::tl_throwable_istr
 }
 void tl2::tasks::GetQueueSize::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::tasks::QueueStats & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1648,7 +1648,7 @@ void tl2::tasks::GetQueueTypes::read_result_or_throw(::basictl::tl_throwable_ist
 }
 void tl2::tasks::GetQueueTypes::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::tasks::QueueTypeInfo> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1779,7 +1779,7 @@ void tl2::tasks::GetTaskFromQueue::read_result_or_throw(::basictl::tl_throwable_
 }
 void tl2::tasks::GetTaskFromQueue::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 

@@ -28,8 +28,8 @@ struct GetKeysStat {
 	bool read_result(::basictl::tl_istream & s, std::optional<::tl2::service1::KeysStat> & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, std::optional<::tl2::service1::KeysStat> & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<::tl2::service1::KeysStat> & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::service1::KeysStat> & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<::tl2::service1::KeysStat> & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::service1::KeysStat> & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetKeysStat& rhs) {
 		rhs.write_json(s);

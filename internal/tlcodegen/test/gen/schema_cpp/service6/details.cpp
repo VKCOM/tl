@@ -482,7 +482,7 @@ void tl2::service6::MultiFind::read_result_or_throw(::basictl::tl_throwable_istr
 }
 void tl2::service6::MultiFind::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -602,6 +602,6 @@ void tl2::service6::MultiFindWithBounds::read_result_or_throw(::basictl::tl_thro
 }
 void tl2::service6::MultiFindWithBounds::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }

@@ -156,6 +156,14 @@ namespace basictl {
         return true;
     }
 
+    std::exception static exception_from_tl_stream_error(tl_stream_error & error) {
+        switch (error.index()) {
+            case 0: return std::get<0>(error);
+            case 1: return std::get<1>(error);
+            default: return {};
+        }
+    }
+
     void tl_istream::pass_data(tl_throwable_istream& to) {
         to.provider = provider;
         to.ptr = ptr;

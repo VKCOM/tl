@@ -297,7 +297,7 @@ void tl2::BoxedArray::read_result_or_throw(::basictl::tl_throwable_istream & s, 
 }
 void tl2::BoxedArray::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::MyBoxedArray & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -419,7 +419,7 @@ void tl2::BoxedInt::read_result_or_throw(::basictl::tl_throwable_istream & s, in
 }
 void tl2::BoxedInt::write_result_or_throw(::basictl::tl_throwable_ostream & s, int32_t & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -541,7 +541,7 @@ void tl2::BoxedString::read_result_or_throw(::basictl::tl_throwable_istream & s,
 }
 void tl2::BoxedString::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::string & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -661,7 +661,7 @@ void tl2::BoxedTuple::read_result_or_throw(::basictl::tl_throwable_istream & s, 
 }
 void tl2::BoxedTuple::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::array<int32_t, 3> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -796,7 +796,7 @@ void tl2::BoxedTupleSlice1::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::BoxedTupleSlice1::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -912,7 +912,7 @@ void tl2::BoxedTupleSlice2::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::BoxedTupleSlice2::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::MyBoxedTupleSlice & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1047,7 +1047,7 @@ void tl2::BoxedTupleSlice3::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::BoxedTupleSlice3::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1169,7 +1169,7 @@ void tl2::BoxedVector32::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::BoxedVector32::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1291,7 +1291,7 @@ void tl2::BoxedVector32BoxedElem::read_result_or_throw(::basictl::tl_throwable_i
 }
 void tl2::BoxedVector32BoxedElem::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1413,7 +1413,7 @@ void tl2::BoxedVector64::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::BoxedVector64::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int64_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2758,7 +2758,7 @@ void tl2::Get_arrays::read_result_or_throw(::basictl::tl_throwable_istream & s, 
 }
 void tl2::Get_arrays::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::array<int32_t, 5> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2880,7 +2880,7 @@ void tl2::GetDouble::read_result_or_throw(::basictl::tl_throwable_istream & s, d
 }
 void tl2::GetDouble::write_result_or_throw(::basictl::tl_throwable_ostream & s, double & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3000,7 +3000,7 @@ void tl2::GetFloat::read_result_or_throw(::basictl::tl_throwable_istream & s, fl
 }
 void tl2::GetFloat::write_result_or_throw(::basictl::tl_throwable_ostream & s, float & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3116,7 +3116,7 @@ void tl2::GetMaybeIface::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::GetMaybeIface::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::service1::Value> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3234,7 +3234,7 @@ void tl2::GetMyDictOfInt::read_result_or_throw(::basictl::tl_throwable_istream &
 }
 void tl2::GetMyDictOfInt::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::MyDictOfInt & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3352,7 +3352,7 @@ void tl2::GetMyDouble::read_result_or_throw(::basictl::tl_throwable_istream & s,
 }
 void tl2::GetMyDouble::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::MyDouble & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3468,7 +3468,7 @@ void tl2::GetMyValue::read_result_or_throw(::basictl::tl_throwable_istream & s, 
 }
 void tl2::GetMyValue::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::MyValue & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3603,7 +3603,7 @@ void tl2::GetNonOptNat::read_result_or_throw(::basictl::tl_throwable_istream & s
 }
 void tl2::GetNonOptNat::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3719,7 +3719,7 @@ void tl2::GetStats::read_result_or_throw(::basictl::tl_throwable_istream & s, ::
 }
 void tl2::GetStats::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::tasks::QueueTypeStats & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 

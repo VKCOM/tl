@@ -27,8 +27,8 @@ struct GetLimits {
 	bool read_result(::basictl::tl_istream & s, ::tl2::service3::Limits & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, ::tl2::service3::Limits & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service3::Limits & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service3::Limits & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service3::Limits & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service3::Limits & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetLimits& rhs) {
 		rhs.write_json(s);

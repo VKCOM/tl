@@ -490,7 +490,7 @@ void tl2::service3::CreateProduct::read_result_or_throw(::basictl::tl_throwable_
 }
 void tl2::service3::CreateProduct::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -643,7 +643,7 @@ void tl2::service3::DeleteAllProducts::read_result_or_throw(::basictl::tl_throwa
 }
 void tl2::service3::DeleteAllProducts::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -807,7 +807,7 @@ void tl2::service3::DeleteGroupedProducts::read_result_or_throw(::basictl::tl_th
 }
 void tl2::service3::DeleteGroupedProducts::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -960,7 +960,7 @@ void tl2::service3::DeleteProduct::read_result_or_throw(::basictl::tl_throwable_
 }
 void tl2::service3::DeleteProduct::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1078,7 +1078,7 @@ void tl2::service3::GetLastVisitTimestamp::read_result_or_throw(::basictl::tl_th
 }
 void tl2::service3::GetLastVisitTimestamp::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1188,7 +1188,7 @@ void tl2::service3::GetLimits::read_result_or_throw(::basictl::tl_throwable_istr
 }
 void tl2::service3::GetLimits::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service3::Limits & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1319,7 +1319,7 @@ void tl2::service3::GetProductStats::read_result_or_throw(::basictl::tl_throwabl
 }
 void tl2::service3::GetProductStats::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tl2::service3::ProductStatsOld>> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1516,7 +1516,7 @@ void tl2::service3::GetProducts::read_result_or_throw(::basictl::tl_throwable_is
 }
 void tl2::service3::GetProducts::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tl2::service3::Product>> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1647,7 +1647,7 @@ void tl2::service3::GetScheduledProducts::read_result_or_throw(::basictl::tl_thr
 }
 void tl2::service3::GetScheduledProducts::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tl2::service3::Productmode<0>>> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2502,7 +2502,7 @@ void tl2::service3::RestoreAllProducts::read_result_or_throw(::basictl::tl_throw
 }
 void tl2::service3::RestoreAllProducts::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2666,7 +2666,7 @@ void tl2::service3::RestoreGroupedProducts::read_result_or_throw(::basictl::tl_t
 }
 void tl2::service3::RestoreGroupedProducts::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2819,7 +2819,7 @@ void tl2::service3::RestoreProduct::read_result_or_throw(::basictl::tl_throwable
 }
 void tl2::service3::RestoreProduct::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2950,7 +2950,7 @@ void tl2::service3::SetLastVisitTimestamp::read_result_or_throw(::basictl::tl_th
 }
 void tl2::service3::SetLastVisitTimestamp::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3066,7 +3066,7 @@ void tl2::service3::SetLimits::read_result_or_throw(::basictl::tl_throwable_istr
 }
 void tl2::service3::SetLimits::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::BoolStat & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 

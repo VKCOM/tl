@@ -43,14 +43,6 @@ namespace basictl {
     using tl_error = basic_error<tl_error_type>;
     using tl_connector_error = basic_error<std::uint32_t>;
     using tl_stream_error = std::variant<tl_error, tl_connector_error>;
-
-    std::exception static exception_from_tl_stream_error(tl_stream_error & error) {
-        switch (error.index()) {
-            case 0: return std::get<0>(error);
-            case 1: return std::get<1>(error);
-            default: return {};
-        }
-    }
 }
 
 #endif //BASICTL_CPP_ERRORS_H

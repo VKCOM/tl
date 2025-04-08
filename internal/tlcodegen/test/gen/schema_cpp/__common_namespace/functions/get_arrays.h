@@ -29,8 +29,8 @@ struct Get_arrays {
 	bool read_result(::basictl::tl_istream & s, std::array<int32_t, 5> & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, std::array<int32_t, 5> & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::array<int32_t, 5> & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::array<int32_t, 5> & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::array<int32_t, 5> & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::array<int32_t, 5> & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const Get_arrays& rhs) {
 		rhs.write_json(s);

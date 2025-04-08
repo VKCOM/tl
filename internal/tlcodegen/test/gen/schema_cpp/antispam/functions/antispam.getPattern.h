@@ -28,8 +28,8 @@ struct GetPattern {
 	bool read_result(::basictl::tl_istream & s, ::tl2::antispam::PatternFull & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, ::tl2::antispam::PatternFull & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::antispam::PatternFull & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::antispam::PatternFull & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::antispam::PatternFull & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::antispam::PatternFull & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetPattern& rhs) {
 		rhs.write_json(s);
