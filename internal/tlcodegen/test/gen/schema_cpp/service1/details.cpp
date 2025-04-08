@@ -598,7 +598,7 @@ void tl2::service1::Add::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::service1::Add::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -751,7 +751,7 @@ void tl2::service1::AddOrGet::read_result_or_throw(::basictl::tl_throwable_istre
 }
 void tl2::service1::AddOrGet::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -904,7 +904,7 @@ void tl2::service1::AddOrIncr::read_result_or_throw(::basictl::tl_throwable_istr
 }
 void tl2::service1::AddOrIncr::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1057,7 +1057,7 @@ void tl2::service1::Append::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::service1::Append::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1221,7 +1221,7 @@ void tl2::service1::Cas::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::service1::Cas::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1352,7 +1352,7 @@ void tl2::service1::Decr::read_result_or_throw(::basictl::tl_throwable_istream &
 }
 void tl2::service1::Decr::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1470,7 +1470,7 @@ void tl2::service1::Delete::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::service1::Delete::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1588,7 +1588,7 @@ void tl2::service1::DisableExpiration::read_result_or_throw(::basictl::tl_throwa
 }
 void tl2::service1::DisableExpiration::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1706,7 +1706,7 @@ void tl2::service1::DisableKeysStat::read_result_or_throw(::basictl::tl_throwabl
 }
 void tl2::service1::DisableKeysStat::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1824,7 +1824,7 @@ void tl2::service1::EnableExpiration::read_result_or_throw(::basictl::tl_throwab
 }
 void tl2::service1::EnableExpiration::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -1942,7 +1942,7 @@ void tl2::service1::EnableKeysStat::read_result_or_throw(::basictl::tl_throwable
 }
 void tl2::service1::EnableKeysStat::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2060,7 +2060,7 @@ void tl2::service1::Exists::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::service1::Exists::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2178,7 +2178,7 @@ void tl2::service1::Get::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::service1::Get::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2296,7 +2296,7 @@ void tl2::service1::GetExpireTime::read_result_or_throw(::basictl::tl_throwable_
 }
 void tl2::service1::GetExpireTime::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2414,7 +2414,7 @@ void tl2::service1::GetKeysStat::read_result_or_throw(::basictl::tl_throwable_is
 }
 void tl2::service1::GetKeysStat::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::service1::KeysStat> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2526,7 +2526,7 @@ void tl2::service1::GetKeysStatPeriods::read_result_or_throw(::basictl::tl_throw
 }
 void tl2::service1::GetKeysStatPeriods::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<int32_t> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2646,7 +2646,7 @@ void tl2::service1::GetWildcard::read_result_or_throw(::basictl::tl_throwable_is
 }
 void tl2::service1::GetWildcard::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Map<std::string, std::string>> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2764,7 +2764,7 @@ void tl2::service1::GetWildcardDict::read_result_or_throw(::basictl::tl_throwabl
 }
 void tl2::service1::GetWildcardDict::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::Dictionary<std::string> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -2884,7 +2884,7 @@ void tl2::service1::GetWildcardList::read_result_or_throw(::basictl::tl_throwabl
 }
 void tl2::service1::GetWildcardList::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<std::string> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3002,7 +3002,7 @@ void tl2::service1::GetWildcardWithFlags::read_result_or_throw(::basictl::tl_thr
 }
 void tl2::service1::GetWildcardWithFlags::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::Dictionary<::tl2::service1::Value> & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3133,7 +3133,7 @@ void tl2::service1::Incr::read_result_or_throw(::basictl::tl_throwable_istream &
 }
 void tl2::service1::Incr::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3708,7 +3708,7 @@ void tl2::service1::Replace::read_result_or_throw(::basictl::tl_throwable_istrea
 }
 void tl2::service1::Replace::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -3861,7 +3861,7 @@ void tl2::service1::ReplaceOrIncr::read_result_or_throw(::basictl::tl_throwable_
 }
 void tl2::service1::ReplaceOrIncr::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -4014,7 +4014,7 @@ void tl2::service1::Set::read_result_or_throw(::basictl::tl_throwable_istream & 
 }
 void tl2::service1::Set::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -4167,7 +4167,7 @@ void tl2::service1::SetOrIncr::read_result_or_throw(::basictl::tl_throwable_istr
 }
 void tl2::service1::SetOrIncr::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -4509,7 +4509,7 @@ void tl2::service1::Touch::read_result_or_throw(::basictl::tl_throwable_istream 
 }
 void tl2::service1::Touch::write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 

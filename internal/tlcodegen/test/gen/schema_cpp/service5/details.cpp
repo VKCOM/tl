@@ -213,7 +213,7 @@ void tl2::service5::Insert::read_result_or_throw(::basictl::tl_throwable_istream
 }
 void tl2::service5::Insert::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service5::Output & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -521,7 +521,7 @@ void tl2::service5::PerformQuery::read_result_or_throw(::basictl::tl_throwable_i
 }
 void tl2::service5::PerformQuery::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service5::Output & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 
@@ -650,7 +650,7 @@ void tl2::service5::Query::read_result_or_throw(::basictl::tl_throwable_istream 
 }
 void tl2::service5::Query::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service5::Output & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 

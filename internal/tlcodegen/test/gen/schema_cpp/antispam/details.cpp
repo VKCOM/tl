@@ -118,7 +118,7 @@ void tl2::antispam::GetPattern::read_result_or_throw(::basictl::tl_throwable_ist
 }
 void tl2::antispam::GetPattern::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::antispam::PatternFull & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 

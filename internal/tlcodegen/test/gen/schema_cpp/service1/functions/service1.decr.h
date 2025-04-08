@@ -29,8 +29,8 @@ struct Decr {
 	bool read_result(::basictl::tl_istream & s, ::tl2::service1::Value & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, ::tl2::service1::Value & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service1::Value & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::service1::Value & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::service1::Value & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const Decr& rhs) {
 		rhs.write_json(s);

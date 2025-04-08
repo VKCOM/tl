@@ -29,8 +29,8 @@ struct MultiFindWithBounds {
 	bool read_result(::basictl::tl_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const MultiFindWithBounds& rhs) {
 		rhs.write_json(s);
