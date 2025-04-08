@@ -27,8 +27,8 @@ struct GetDouble {
 	bool read_result(::basictl::tl_istream & s, double & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, double & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, double & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, double & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, double & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, double & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetDouble& rhs) {
 		rhs.write_json(s);

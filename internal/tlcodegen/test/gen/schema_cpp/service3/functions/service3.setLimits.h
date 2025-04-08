@@ -29,8 +29,8 @@ struct SetLimits {
 	bool read_result(::basictl::tl_istream & s, ::tl2::BoolStat & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, ::tl2::BoolStat & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::BoolStat & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::BoolStat & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::BoolStat & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::BoolStat & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const SetLimits& rhs) {
 		rhs.write_json(s);

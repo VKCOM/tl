@@ -271,8 +271,8 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	bool read_result(::basictl::tl_istream & s, %[1]s & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, %[1]s & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, %[1]s & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, %[1]s & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, %[1]s & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, %[1]s & result);
 `,
 						trw.ResultType.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed),
 					))
@@ -493,7 +493,7 @@ void %[2]s::read_result_or_throw(::basictl::tl_throwable_istream & s, %[1]s & re
 }
 void %[2]s::write_result_or_throw(::basictl::tl_throwable_ostream & s, %[1]s & result) {
 	::basictl::tl_ostream s2(s);
-	this->read_result(s2, result);
+	this->write_result(s2, result);
 	s2.pass_data(s);
 }
 `,

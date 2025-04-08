@@ -29,8 +29,8 @@ struct GetTaskFromQueue {
 	bool read_result(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<::tl2::tasks::TaskInfo> & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<::tl2::tasks::TaskInfo> & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetTaskFromQueue& rhs) {
 		rhs.write_json(s);

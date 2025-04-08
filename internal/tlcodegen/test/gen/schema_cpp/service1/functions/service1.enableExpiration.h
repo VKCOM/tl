@@ -27,8 +27,8 @@ struct EnableExpiration {
 	bool read_result(::basictl::tl_istream & s, bool & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, bool & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, bool & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, bool & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, bool & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const EnableExpiration& rhs) {
 		rhs.write_json(s);

@@ -35,8 +35,8 @@ struct GetProducts {
 	bool read_result(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Product>> & result) noexcept;
 	bool write_result(::basictl::tl_ostream & s, std::optional<std::vector<::tl2::service3::Product>> & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<std::vector<::tl2::service3::Product>> & result) noexcept;
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tl2::service3::Product>> & result) noexcept;
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::optional<std::vector<::tl2::service3::Product>> & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tl2::service3::Product>> & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetProducts& rhs) {
 		rhs.write_json(s);
