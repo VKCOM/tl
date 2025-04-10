@@ -3,18 +3,18 @@
 #include "../../basictl/io_streams.h"
 #include "../../basictl/io_throwable_streams.h"
 #include "../../__common_namespace/types/vector.h"
-#include "../../__common_namespace/types/dictionaryField.h"
 #include "../../__common_namespace/types/string.h"
+#include "../../__common_namespace/types/dictionaryField.h"
 
 namespace tl2 { namespace details { 
 
-void VectorDictionaryFieldStringReset(std::vector<::tl2::DictionaryField<std::string>>& item);
+void VectorDictionaryFieldStringReset(std::map<std::string, std::string>& item);
 
-bool VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryField<std::string>>& item);
-bool VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<std::string>>& item);
-bool VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryField<std::string>>& item);
-bool VectorDictionaryFieldStringReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<std::string>>& item);
-bool VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryField<std::string>>& item);
+bool VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringReadBoxed(::basictl::tl_istream & s, std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
 
 }} // namespace tl2::details
 

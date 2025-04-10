@@ -44,20 +44,20 @@ func (trw *TypeRWStruct) isUnwrapType() bool {
 	if isBuiltinBrackets && (brackets.dictLike || trw.wr.tlName.String() == "vector" || trw.wr.tlName.String() == "tuple") {
 		return true
 	}
-	if trw.wr.gen.options.Language != "cpp" {
-		//in combined TL Dictionary is defined via Vector.
-		//dictionaryField {t:Type} key:string value:t = DictionaryField t;
-		//dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
-		//TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
-		str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
-		if isStruct && str.wr.tlName.String() == "vector" {
-			// repeat check above 1 level deeper
-			brackets, isBuiltinBrackets := str.Fields[0].t.trw.(*TypeRWBrackets)
-			if isBuiltinBrackets && brackets.dictLike {
-				return true
-			}
+	//if trw.wr.gen.options.Language != "cpp" {
+	//in combined TL Dictionary is defined via Vector.
+	//dictionaryField {t:Type} key:string value:t = DictionaryField t;
+	//dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
+	//TODO - change combined.tl to use # [] after we fully control generation of C++ & (k)PHP and remove code below
+	str, isStruct := trw.Fields[0].t.trw.(*TypeRWStruct)
+	if isStruct && str.wr.tlName.String() == "vector" {
+		// repeat check above 1 level deeper
+		brackets, isBuiltinBrackets := str.Fields[0].t.trw.(*TypeRWBrackets)
+		if isBuiltinBrackets && brackets.dictLike {
+			return true
 		}
 	}
+	//}
 	return false
 }
 

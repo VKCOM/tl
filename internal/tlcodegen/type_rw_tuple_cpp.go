@@ -36,6 +36,17 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *D
 	//	trw.dictKeyField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictKeyField.resolvedType, halfResolve),
 	//	trw.dictValueField.t.CPPTypeStringInNamespace(bytesVersion, hppInc, trw.dictValueField.resolvedType, halfResolve))
 	//}
+	if trw.dictLike {
+		pairType := trw.element.t.trw.(*TypeRWStruct)
+		if len(pairType.wr.origTL[0].TemplateArguments) == 1 {
+			keyType := pairType.Fields[0]
+			valueType := pairType.Fields[1]
+			return fmt.Sprintf("std::map<%[1]s, %[2]s>",
+				keyType.t.CPPTypeStringInNamespace(bytesVersion, hppInc),
+				valueType.t.CPPTypeStringInNamespace(bytesVersion, hppInc),
+			)
+		}
+	}
 	if trw.vectorLike || trw.dynamicSize {
 		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc))
 	}
@@ -64,6 +75,23 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved(bytesVersion boo
 func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
 	switch len(typeReduction.Type.Arguments) {
 	case 1:
+		if cppIsDictionaryElement(trw.element.t) && typeReduction.Type.Arguments[0].Type != nil && len(typeReduction.Type.Arguments[0].Type.Arguments) == 1 {
+			pairReduction := typeReduction.Type.Arguments[0].Type
+			pairType := trw.element.t.trw.(*TypeRWStruct)
+
+			keyType := pairType.Fields[0]
+			valueType := pairType.Fields[1]
+
+			typesInfo := trw.wr.gen.typesInfo
+
+			keyReduction := typesInfo.FieldTypeReduction(pairReduction, 0)
+			valueReduction := typesInfo.FieldTypeReduction(pairReduction, 1)
+
+			return fmt.Sprintf("std::map<%[1]s, %[2]s>",
+				keyType.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, keyReduction),
+				valueType.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, valueReduction),
+			)
+		}
 		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeReduction.Type.Arguments[0]))
 	case 2:
 		if typeReduction.Type.Arguments[0].VariableActsAsConstant {
@@ -216,6 +244,9 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 
 				`
 	*/
+	case trw.dictLike && len(trw.element.t.origTL[0].TemplateArguments) == 1:
+		trw.CPPGenerateCodeMap(hpp, hppInc, hppIncFwd, hppDet, hppDetInc, cppDet, cppDetInc, bytesVersion, forwardDeclaration)
+		return
 	case trw.vectorLike:
 		hppDetCode = `
 void %[1]sReset(std::vector<%[2]s>& item);
@@ -389,6 +420,104 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 			trw.element.t.trw.CPPTypeResettingCode(bytesVersion, "el"),
 			trw.wr.gen.DetailsCPPNamespace,
 			trw.element.t.trw.CPPTypeWritingJsonCode(bytesVersion, "el", false, formatNatArgsCPP(nil, trw.element.natArgs), false),
+		))
+	}
+}
+
+func (trw *TypeRWBrackets) CPPGenerateCodeMap(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
+	pairType := trw.element.t.trw.(*TypeRWStruct)
+
+	keyValue := pairType.Fields[0]
+	valueType := pairType.Fields[1]
+
+	if hppDet != nil {
+		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+
+		hppDet.WriteString(fmt.Sprintf(`
+void %[1]sReset(std::map<%[5]s, %[2]s>& item);
+
+bool %[1]sWriteJSON(std::ostream & s, const std::map<%[5]s, %[2]s>& item%[4]s);
+bool %[1]sRead(::basictl::tl_istream & s, std::map<%[5]s, %[2]s>& item%[4]s);
+bool %[1]sWrite(::basictl::tl_ostream & s, const std::map<%[5]s, %[2]s>& item%[4]s);
+`,
+			addBytes(trw.wr.goGlobalName, bytesVersion),
+			valueType.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+			"",
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			keyValue.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+		))
+
+		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
+	}
+
+	if cppDet != nil {
+		cppDet.WriteString(fmt.Sprintf(`
+void %[8]s::%[1]sReset(std::map<%[13]s, %[2]s>& item) {
+	item.clear(); // TODO - unwrap
+}
+
+bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::map<%[13]s, %[2]s>& item%[4]s) {
+	s << "{";
+	size_t index = 0;
+	for(const auto & el : item) {
+	%[9]s
+		s << ":";
+	%[10]s
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "}";
+	return true;
+}
+
+bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::map<%[13]s, %[2]s>& item%[4]s) {
+	uint32_t len = 0;
+	if (!s.nat_read(len)) { return false; }
+	item.clear();
+	for(uint32_t i = 0; i < len; i++) {
+		%[13]s key;
+	%[5]s
+	%[11]s
+	}
+	return true;
+}
+
+bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>& item%[4]s) {
+	if (!s.nat_write(item.size())) { return false; }
+	for(const auto & el : item) {
+	%[6]s
+	%[12]s
+	}
+	return true;
+}
+`,
+			addBytes(trw.wr.goGlobalName, bytesVersion), // 1
+			valueType.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+			trw.size, // 3
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			keyValue.t.trw.CPPTypeReadingCode(bytesVersion, "key",
+				keyValue.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				true), // 5
+			keyValue.t.trw.CPPTypeWritingCode(bytesVersion, "el.first",
+				keyValue.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				true),
+			"", // 7
+			trw.wr.gen.DetailsCPPNamespace,
+			keyValue.t.trw.CPPTypeWritingJsonCode(bytesVersion, "el.first",
+				keyValue.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				false), // 9
+			valueType.t.trw.CPPTypeWritingJsonCode(bytesVersion, "el.second",
+				valueType.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				true),
+			valueType.t.trw.CPPTypeReadingCode(bytesVersion, "item[key]",
+				valueType.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				true), // 11
+			valueType.t.trw.CPPTypeWritingCode(bytesVersion, "el.second",
+				valueType.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				false),
+			keyValue.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}), // 13
 		))
 	}
 }

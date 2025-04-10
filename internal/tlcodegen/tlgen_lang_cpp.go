@@ -373,6 +373,7 @@ main.o: main.cpp
 			"io_throwable_streams.h",
 			"impl/string_io.h",
 			"impl/string_io.cpp",
+			"dependencies.h",
 		}
 
 		for _, file := range exportingFiles {

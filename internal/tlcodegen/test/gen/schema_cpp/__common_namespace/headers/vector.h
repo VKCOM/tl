@@ -10,21 +10,45 @@
 #include "../../service6/types/service6.error.h"
 #include "../../service1/types/service1.Value.h"
 #include "../types/Either.h"
-#include "../types/dictionaryField.h"
 #include "../types/string.h"
 #include "../types/long.h"
 #include "../types/integer.h"
 #include "../types/int.h"
+#include "../types/dictionaryField.h"
 
 namespace tl2 { namespace details { 
 
-void VectorDictionaryFieldIntReset(std::vector<::tl2::DictionaryField<int32_t>>& item);
+void VectorDictionaryFieldIntReset(std::map<std::string, int32_t>& item);
 
-bool VectorDictionaryFieldIntWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryField<int32_t>>& item);
-bool VectorDictionaryFieldIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<int32_t>>& item);
-bool VectorDictionaryFieldIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryField<int32_t>>& item);
-bool VectorDictionaryFieldIntReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::DictionaryField<int32_t>>& item);
-bool VectorDictionaryFieldIntWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryField<int32_t>>& item);
+bool VectorDictionaryFieldIntWriteJSON(std::ostream& s, const std::map<std::string, int32_t>& item);
+bool VectorDictionaryFieldIntRead(::basictl::tl_istream & s, std::map<std::string, int32_t>& item);
+bool VectorDictionaryFieldIntWrite(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item);
+bool VectorDictionaryFieldIntReadBoxed(::basictl::tl_istream & s, std::map<std::string, int32_t>& item);
+bool VectorDictionaryFieldIntWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item);
+
+}} // namespace tl2::details
+
+namespace tl2 { namespace details { 
+
+void VectorDictionaryFieldService1ValueReset(std::map<std::string, ::tl2::service1::Value>& item);
+
+bool VectorDictionaryFieldService1ValueWriteJSON(std::ostream& s, const std::map<std::string, ::tl2::service1::Value>& item);
+bool VectorDictionaryFieldService1ValueRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::service1::Value>& item);
+bool VectorDictionaryFieldService1ValueWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::service1::Value>& item);
+bool VectorDictionaryFieldService1ValueReadBoxed(::basictl::tl_istream & s, std::map<std::string, ::tl2::service1::Value>& item);
+bool VectorDictionaryFieldService1ValueWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::service1::Value>& item);
+
+}} // namespace tl2::details
+
+namespace tl2 { namespace details { 
+
+void VectorDictionaryFieldStringReset(std::map<std::string, std::string>& item);
+
+bool VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringReadBoxed(::basictl::tl_istream & s, std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
 
 }} // namespace tl2::details
 
