@@ -1969,7 +1969,7 @@ void tl2::factory::set_all_factories() {
 		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::Dictionary<std::string> result;
+			std::map<std::string, std::string> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
 				return false;
@@ -2039,7 +2039,7 @@ void tl2::factory::set_all_factories() {
 		bool write_json(std::ostream &s) override {return object.write_json(s);}
 
 		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::Dictionary<::tl2::service1::Value> result;
+			std::map<std::string, ::tl2::service1::Value> result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
 				return false;

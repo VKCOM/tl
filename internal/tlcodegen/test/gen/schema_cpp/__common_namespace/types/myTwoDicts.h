@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
-#include "dictionary.h"
+#include "dictionaryField.h"
 
 
 namespace tl2 { 
 struct MyTwoDicts {
-	::tl2::Dictionary<int32_t> a{};
-	::tl2::Dictionary<int32_t> b{};
+	std::map<std::string, int32_t> a;
+	std::map<std::string, int32_t> b;
 
 	std::string_view tl_name() const { return "myTwoDicts"; }
 	uint32_t tl_tag() const { return 0xa859581d; }

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
-#include "../../__common_namespace/types/dictionary.h"
+#include "../../__common_namespace/types/dictionaryField.h"
 
 
 namespace tl2 { namespace cases_bytes { 
 struct TestDictStringString {
-	::tl2::Dictionary<std::string> dict{};
+	std::map<std::string, std::string> dict;
 
 	std::string_view tl_name() const { return "cases_bytes.testDictStringString"; }
 	uint32_t tl_tag() const { return 0xad69c772; }
