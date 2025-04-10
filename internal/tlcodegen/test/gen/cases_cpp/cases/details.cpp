@@ -34,9 +34,9 @@
 #include "headers/cases.inplace3.h"
 #include "headers/cases.TestEnum.h"
 #include "headers/cases.TestEnumItems.h"
-#include "../__common_namespace/headers/dictionary.h"
 #include "../__common_namespace/headers/dictionaryFieldAny.h"
 #include "../__common_namespace/headers/dictionaryAny.h"
+#include "../__common_namespace/headers/dictionaryField.h"
 #include "../__common_namespace/headers/true.h"
 
 
@@ -2002,26 +2002,26 @@ void tl2::cases::TestDictString::write_boxed_or_throw(::basictl::tl_throwable_os
 }
 
 void tl2::details::CasesTestDictStringReset(::tl2::cases::TestDictString& item) {
-	::tl2::details::DictionaryIntReset(item.dict);
+	item.dict.clear();
 }
 
 bool tl2::details::CasesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases::TestDictString& item) {
 	s << "{";
 	if (item.dict.size() != 0) {
 		s << "\"dict\":";
-		if (!::tl2::details::DictionaryIntWriteJSON(s, item.dict)) { return false; }
+		if (!::tl2::details::BuiltinVectorDictionaryFieldIntWriteJSON(s, item.dict)) { return false; }
 	}
 	s << "}";
 	return true;
 }
 
 bool tl2::details::CasesTestDictStringRead(::basictl::tl_istream & s, ::tl2::cases::TestDictString& item) {
-	if (!::tl2::details::DictionaryIntRead(s, item.dict)) { return false; }
+	if (!::tl2::details::BuiltinVectorDictionaryFieldIntRead(s, item.dict)) { return false; }
 	return true;
 }
 
 bool tl2::details::CasesTestDictStringWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestDictString& item) {
-	if (!::tl2::details::DictionaryIntWrite(s, item.dict)) { return false; }
+	if (!::tl2::details::BuiltinVectorDictionaryFieldIntWrite(s, item.dict)) { return false; }
 	return true;
 }
 

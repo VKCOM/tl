@@ -2,13 +2,7 @@
 #ifndef BASICTL_CPP_IO_THROWABLE_STREAMS_H
 #define BASICTL_CPP_IO_THROWABLE_STREAMS_H
 
-#include <array>
-#include <optional>
-#include <ostream>
-#include <memory>
-#include <variant>
-#include <vector>
-
+#include "dependencies.h"
 #include "constants.h"
 #include "io_connectors.h"
 

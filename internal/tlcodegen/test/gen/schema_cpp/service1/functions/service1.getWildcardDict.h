@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
-#include "../../__common_namespace/types/dictionary.h"
+#include "../../__common_namespace/types/dictionaryField.h"
 
 
 namespace tl2 { namespace service1 { 
@@ -25,11 +25,11 @@ struct GetWildcardDict {
 	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
 	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
 
-	bool read_result(::basictl::tl_istream & s, ::tl2::Dictionary<std::string> & result) noexcept;
-	bool write_result(::basictl::tl_ostream & s, ::tl2::Dictionary<std::string> & result) noexcept;
+	bool read_result(::basictl::tl_istream & s, std::map<std::string, std::string> & result) noexcept;
+	bool write_result(::basictl::tl_ostream & s, std::map<std::string, std::string> & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::Dictionary<std::string> & result);
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::Dictionary<std::string> & result);
+	void read_result_or_throw(::basictl::tl_throwable_istream & s, std::map<std::string, std::string> & result);
+	void write_result_or_throw(::basictl::tl_throwable_ostream & s, std::map<std::string, std::string> & result);
 
 	friend std::ostream& operator<<(std::ostream& s, const GetWildcardDict& rhs) {
 		rhs.write_json(s);

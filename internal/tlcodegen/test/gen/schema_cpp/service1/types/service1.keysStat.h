@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../../basictl/io_streams.h"
-#include "../../__common_namespace/types/dictionary.h"
+#include "../../__common_namespace/types/dictionaryField.h"
 
 
 namespace tl2 { namespace service1 { 
 struct KeysStat {
 	int32_t start_time = 0;
-	::tl2::Dictionary<::tl2::Dictionary<int32_t>> keys_tops{};
+	std::map<std::string, std::map<std::string, int32_t>> keys_tops;
 
 	std::string_view tl_name() const { return "service1.keysStat"; }
 	uint32_t tl_tag() const { return 0xf0f6bc68; }

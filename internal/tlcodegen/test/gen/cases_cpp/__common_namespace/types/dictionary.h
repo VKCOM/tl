@@ -6,6 +6,6 @@
 
 namespace tl2 { 
 template<typename t>
-using Dictionary = std::vector<::tl2::DictionaryField<t>>;
+using Dictionary = std::map<std::string, t>;
 } // namespace tl2
 
