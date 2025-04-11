@@ -14,15 +14,3 @@ bool BuiltinVectorDictionaryFieldDictionaryIntWrite(::basictl::tl_ostream & s, c
 
 }} // namespace tl2::details
 
-namespace tl2 { namespace details { 
-
-void DictionaryFieldDictionaryIntReset(::tl2::DictionaryField<std::map<std::string, int32_t>>& item);
-
-bool DictionaryFieldDictionaryIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::map<std::string, int32_t>>& item);
-bool DictionaryFieldDictionaryIntRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::map<std::string, int32_t>>& item);
-bool DictionaryFieldDictionaryIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::map<std::string, int32_t>>& item);
-bool DictionaryFieldDictionaryIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::map<std::string, int32_t>>& item);
-bool DictionaryFieldDictionaryIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::map<std::string, int32_t>>& item);
-
-}} // namespace tl2::details
-

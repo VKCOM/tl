@@ -110,13 +110,13 @@ void tl2::tasks::AddTask::write_boxed_or_throw(::basictl::tl_throwable_ostream &
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksAddTaskReset(::tl2::tasks::AddTask& item) {
+void tl2::details::TasksAddTaskReset(::tl2::tasks::AddTask& item) noexcept {
 	item.type_name.clear();
 	item.queue_id.clear();
 	::tl2::details::TasksTaskReset(item.task);
 }
 
-bool tl2::details::TasksAddTaskWriteJSON(std::ostream& s, const ::tl2::tasks::AddTask& item) {
+bool tl2::details::TasksAddTaskWriteJSON(std::ostream& s, const ::tl2::tasks::AddTask& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
@@ -142,14 +142,14 @@ bool tl2::details::TasksAddTaskWriteJSON(std::ostream& s, const ::tl2::tasks::Ad
 	return true;
 }
 
-bool tl2::details::TasksAddTaskRead(::basictl::tl_istream & s, ::tl2::tasks::AddTask& item) {
+bool tl2::details::TasksAddTaskRead(::basictl::tl_istream & s, ::tl2::tasks::AddTask& item) noexcept {
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.queue_id)) { return false; }
 	if (!::tl2::details::TasksTaskRead(s, item.task)) { return false; }
 	return true;
 }
 
-bool tl2::details::TasksAddTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::AddTask& item) {
+bool tl2::details::TasksAddTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::AddTask& item) noexcept {
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.queue_id)) { return false; }
 	if (!::tl2::details::TasksTaskWrite(s, item.task)) { return false; }
@@ -252,14 +252,14 @@ void tl2::tasks::CronTask::write_boxed_or_throw(::basictl::tl_throwable_ostream 
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksCronTaskReset(::tl2::tasks::CronTask& item) {
+void tl2::details::TasksCronTaskReset(::tl2::tasks::CronTask& item) noexcept {
 	item.type_name.clear();
 	item.queue_id.clear();
 	::tl2::details::TasksTaskReset(item.task);
 	::tl2::details::TasksCronTimeReset(item.time);
 }
 
-bool tl2::details::TasksCronTaskWriteJSON(std::ostream& s, const ::tl2::tasks::CronTask& item) {
+bool tl2::details::TasksCronTaskWriteJSON(std::ostream& s, const ::tl2::tasks::CronTask& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
@@ -291,7 +291,7 @@ bool tl2::details::TasksCronTaskWriteJSON(std::ostream& s, const ::tl2::tasks::C
 	return true;
 }
 
-bool tl2::details::TasksCronTaskRead(::basictl::tl_istream & s, ::tl2::tasks::CronTask& item) {
+bool tl2::details::TasksCronTaskRead(::basictl::tl_istream & s, ::tl2::tasks::CronTask& item) noexcept {
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.queue_id)) { return false; }
 	if (!::tl2::details::TasksTaskRead(s, item.task)) { return false; }
@@ -299,7 +299,7 @@ bool tl2::details::TasksCronTaskRead(::basictl::tl_istream & s, ::tl2::tasks::Cr
 	return true;
 }
 
-bool tl2::details::TasksCronTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTask& item) {
+bool tl2::details::TasksCronTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTask& item) noexcept {
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.queue_id)) { return false; }
 	if (!::tl2::details::TasksTaskWrite(s, item.task)) { return false; }
@@ -370,13 +370,13 @@ void tl2::tasks::CronTaskWithId::write_boxed_or_throw(::basictl::tl_throwable_os
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksCronTaskWithIdReset(::tl2::tasks::CronTaskWithId& item) {
+void tl2::details::TasksCronTaskWithIdReset(::tl2::tasks::CronTaskWithId& item) noexcept {
 	item.id = 0;
 	item.next_time = 0;
 	::tl2::details::TasksCronTaskReset(item.task);
 }
 
-bool tl2::details::TasksCronTaskWithIdWriteJSON(std::ostream& s, const ::tl2::tasks::CronTaskWithId& item) {
+bool tl2::details::TasksCronTaskWithIdWriteJSON(std::ostream& s, const ::tl2::tasks::CronTaskWithId& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.id != 0) {
@@ -402,14 +402,14 @@ bool tl2::details::TasksCronTaskWithIdWriteJSON(std::ostream& s, const ::tl2::ta
 	return true;
 }
 
-bool tl2::details::TasksCronTaskWithIdRead(::basictl::tl_istream & s, ::tl2::tasks::CronTaskWithId& item) {
+bool tl2::details::TasksCronTaskWithIdRead(::basictl::tl_istream & s, ::tl2::tasks::CronTaskWithId& item) noexcept {
 	if (!s.int_read(item.id)) { return false; }
 	if (!s.int_read(item.next_time)) { return false; }
 	if (!::tl2::details::TasksCronTaskRead(s, item.task)) { return false; }
 	return true;
 }
 
-bool tl2::details::TasksCronTaskWithIdWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTaskWithId& item) {
+bool tl2::details::TasksCronTaskWithIdWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTaskWithId& item) noexcept {
 	if (!s.int_write(item.id)) { return false;}
 	if (!s.int_write(item.next_time)) { return false;}
 	if (!::tl2::details::TasksCronTaskWrite(s, item.task)) { return false; }
@@ -479,7 +479,7 @@ void tl2::tasks::CronTime::write_boxed_or_throw(::basictl::tl_throwable_ostream 
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksCronTimeReset(::tl2::tasks::CronTime& item) {
+void tl2::details::TasksCronTimeReset(::tl2::tasks::CronTime& item) noexcept {
 	item.fields_mask = 0;
 	item.seconds.clear();
 	item.minutes.clear();
@@ -489,7 +489,7 @@ void tl2::details::TasksCronTimeReset(::tl2::tasks::CronTime& item) {
 	item.months.clear();
 }
 
-bool tl2::details::TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::CronTime& item) {
+bool tl2::details::TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::CronTime& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
@@ -549,7 +549,7 @@ bool tl2::details::TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::C
 	return true;
 }
 
-bool tl2::details::TasksCronTimeRead(::basictl::tl_istream & s, ::tl2::tasks::CronTime& item) {
+bool tl2::details::TasksCronTimeRead(::basictl::tl_istream & s, ::tl2::tasks::CronTime& item) noexcept {
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if ((item.fields_mask & (1<<0)) != 0) {
 		if (!::tl2::details::BuiltinVectorIntRead(s, item.seconds)) { return false; }
@@ -584,7 +584,7 @@ bool tl2::details::TasksCronTimeRead(::basictl::tl_istream & s, ::tl2::tasks::Cr
 	return true;
 }
 
-bool tl2::details::TasksCronTimeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTime& item) {
+bool tl2::details::TasksCronTimeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTime& item) noexcept {
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if ((item.fields_mask & (1<<0)) != 0) {
 			if (!::tl2::details::BuiltinVectorIntWrite(s, item.seconds)) { return false; }
@@ -670,7 +670,7 @@ void tl2::tasks::FullFilledCron::write_boxed_or_throw(::basictl::tl_throwable_os
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) {
+void tl2::details::TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) noexcept {
 	item.fields_mask = 0;
 	item.a0 = 0;
 	item.a1 = 0;
@@ -706,7 +706,7 @@ void tl2::details::TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) 
 	item.a31 = 0;
 }
 
-bool tl2::details::TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::tasks::FullFilledCron& item) {
+bool tl2::details::TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::tasks::FullFilledCron& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
@@ -974,7 +974,7 @@ bool tl2::details::TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::ta
 	return true;
 }
 
-bool tl2::details::TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item) {
+bool tl2::details::TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item) noexcept {
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if ((item.fields_mask & (1<<0)) != 0) {
 		if (!s.int_read(item.a0)) { return false; }
@@ -1139,7 +1139,7 @@ bool tl2::details::TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tas
 	return true;
 }
 
-bool tl2::details::TasksFullFilledCronWrite(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item) {
+bool tl2::details::TasksFullFilledCronWrite(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item) noexcept {
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if ((item.fields_mask & (1<<0)) != 0) {
 			if (!s.int_write(item.a0)) { return false;}
@@ -1303,19 +1303,19 @@ void tl2::tasks::GetAnyTask::write_boxed_or_throw(::basictl::tl_throwable_ostrea
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksGetAnyTaskReset(::tl2::tasks::GetAnyTask& item) {
+void tl2::details::TasksGetAnyTaskReset(::tl2::tasks::GetAnyTask& item) noexcept {
 }
 
-bool tl2::details::TasksGetAnyTaskWriteJSON(std::ostream& s, const ::tl2::tasks::GetAnyTask& item) {
+bool tl2::details::TasksGetAnyTaskWriteJSON(std::ostream& s, const ::tl2::tasks::GetAnyTask& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::TasksGetAnyTaskRead(::basictl::tl_istream & s, ::tl2::tasks::GetAnyTask& item) {
+bool tl2::details::TasksGetAnyTaskRead(::basictl::tl_istream & s, ::tl2::tasks::GetAnyTask& item) noexcept {
 	return true;
 }
 
-bool tl2::details::TasksGetAnyTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetAnyTask& item) {
+bool tl2::details::TasksGetAnyTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetAnyTask& item) noexcept {
 	return true;
 }
 
@@ -1413,14 +1413,14 @@ void tl2::tasks::GetQueueSize::write_boxed_or_throw(::basictl::tl_throwable_ostr
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) {
+void tl2::details::TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) noexcept {
 	item.type_name.clear();
 	item.queue_id.clear();
 	item.fields_mask = 0;
 	item.local_dep = 0;
 }
 
-bool tl2::details::TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item) {
+bool tl2::details::TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
@@ -1456,7 +1456,7 @@ bool tl2::details::TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::task
 	return true;
 }
 
-bool tl2::details::TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item) {
+bool tl2::details::TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item) noexcept {
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.queue_id)) { return false; }
 	if (!s.nat_read(item.fields_mask)) { return false; }
@@ -1468,7 +1468,7 @@ bool tl2::details::TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks
 	return true;
 }
 
-bool tl2::details::TasksGetQueueSizeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item) {
+bool tl2::details::TasksGetQueueSizeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item) noexcept {
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.queue_id)) { return false; }
 	if (!s.nat_write(item.fields_mask)) { return false;}
@@ -1572,12 +1572,12 @@ void tl2::tasks::GetQueueTypes::write_boxed_or_throw(::basictl::tl_throwable_ost
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksGetQueueTypesReset(::tl2::tasks::GetQueueTypes& item) {
+void tl2::details::TasksGetQueueTypesReset(::tl2::tasks::GetQueueTypes& item) noexcept {
 	item.settings_mask = 0;
 	item.stats_mask = 0;
 }
 
-bool tl2::details::TasksGetQueueTypesWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueTypes& item) {
+bool tl2::details::TasksGetQueueTypesWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueTypes& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.settings_mask != 0) {
@@ -1597,13 +1597,13 @@ bool tl2::details::TasksGetQueueTypesWriteJSON(std::ostream& s, const ::tl2::tas
 	return true;
 }
 
-bool tl2::details::TasksGetQueueTypesRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueTypes& item) {
+bool tl2::details::TasksGetQueueTypesRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueTypes& item) noexcept {
 	if (!s.nat_read(item.settings_mask)) { return false; }
 	if (!s.nat_read(item.stats_mask)) { return false; }
 	return true;
 }
 
-bool tl2::details::TasksGetQueueTypesWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueTypes& item) {
+bool tl2::details::TasksGetQueueTypesWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueTypes& item) noexcept {
 	if (!s.nat_write(item.settings_mask)) { return false;}
 	if (!s.nat_write(item.stats_mask)) { return false;}
 	return true;
@@ -1705,12 +1705,12 @@ void tl2::tasks::GetTaskFromQueue::write_boxed_or_throw(::basictl::tl_throwable_
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksGetTaskFromQueueReset(::tl2::tasks::GetTaskFromQueue& item) {
+void tl2::details::TasksGetTaskFromQueueReset(::tl2::tasks::GetTaskFromQueue& item) noexcept {
 	item.type_name.clear();
 	item.queue_id.clear();
 }
 
-bool tl2::details::TasksGetTaskFromQueueWriteJSON(std::ostream& s, const ::tl2::tasks::GetTaskFromQueue& item) {
+bool tl2::details::TasksGetTaskFromQueueWriteJSON(std::ostream& s, const ::tl2::tasks::GetTaskFromQueue& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
@@ -1730,13 +1730,13 @@ bool tl2::details::TasksGetTaskFromQueueWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::TasksGetTaskFromQueueRead(::basictl::tl_istream & s, ::tl2::tasks::GetTaskFromQueue& item) {
+bool tl2::details::TasksGetTaskFromQueueRead(::basictl::tl_istream & s, ::tl2::tasks::GetTaskFromQueue& item) noexcept {
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.queue_id)) { return false; }
 	return true;
 }
 
-bool tl2::details::TasksGetTaskFromQueueWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetTaskFromQueue& item) {
+bool tl2::details::TasksGetTaskFromQueueWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetTaskFromQueue& item) noexcept {
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.queue_id)) { return false; }
 	return true;
@@ -1836,13 +1836,13 @@ void tl2::tasks::QueueStats::write_boxed_or_throw(::basictl::tl_throwable_ostrea
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksQueueStatsReset(::tl2::tasks::QueueStats& item) {
+void tl2::details::TasksQueueStatsReset(::tl2::tasks::QueueStats& item) noexcept {
 	item.waiting_size = 0;
 	item.scheduled_size = 0;
 	item.in_progress_size = 0;
 }
 
-bool tl2::details::TasksQueueStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) {
+bool tl2::details::TasksQueueStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if ((nat_fields_mask & (1<<0)) != 0) {
@@ -1870,7 +1870,7 @@ bool tl2::details::TasksQueueStatsWriteJSON(std::ostream& s, const ::tl2::tasks:
 	return true;
 }
 
-bool tl2::details::TasksQueueStatsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) {
+bool tl2::details::TasksQueueStatsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) noexcept {
 	if ((nat_fields_mask & (1<<0)) != 0) {
 		if (!s.int_read(item.waiting_size)) { return false; }
 	} else {
@@ -1889,7 +1889,7 @@ bool tl2::details::TasksQueueStatsRead(::basictl::tl_istream & s, ::tl2::tasks::
 	return true;
 }
 
-bool tl2::details::TasksQueueStatsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) {
+bool tl2::details::TasksQueueStatsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) noexcept {
 	if ((nat_fields_mask & (1<<0)) != 0) {
 			if (!s.int_write(item.waiting_size)) { return false;}
 	}
@@ -1965,13 +1965,13 @@ void tl2::tasks::QueueTypeInfo::write_boxed_or_throw(::basictl::tl_throwable_ost
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksQueueTypeInfoReset(::tl2::tasks::QueueTypeInfo& item) {
+void tl2::details::TasksQueueTypeInfoReset(::tl2::tasks::QueueTypeInfo& item) noexcept {
 	item.type_name.clear();
 	::tl2::details::TasksQueueTypeSettingsReset(item.settings);
 	::tl2::details::TasksQueueTypeStatsReset(item.stats);
 }
 
-bool tl2::details::TasksQueueTypeInfoWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeInfo& item) {
+bool tl2::details::TasksQueueTypeInfoWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeInfo& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
@@ -1995,14 +1995,14 @@ bool tl2::details::TasksQueueTypeInfoWriteJSON(std::ostream& s, const ::tl2::tas
 	return true;
 }
 
-bool tl2::details::TasksQueueTypeInfoRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeInfo& item) {
+bool tl2::details::TasksQueueTypeInfoRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeInfo& item) noexcept {
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::TasksQueueTypeSettingsRead(s, item.settings)) { return false; }
 	if (!::tl2::details::TasksQueueTypeStatsRead(s, item.stats)) { return false; }
 	return true;
 }
 
-bool tl2::details::TasksQueueTypeInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeInfo& item) {
+bool tl2::details::TasksQueueTypeInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeInfo& item) noexcept {
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::TasksQueueTypeSettingsWrite(s, item.settings)) { return false; }
 	if (!::tl2::details::TasksQueueTypeStatsWrite(s, item.stats)) { return false; }
@@ -2072,7 +2072,7 @@ void tl2::tasks::QueueTypeSettings::write_boxed_or_throw(::basictl::tl_throwable
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksQueueTypeSettingsReset(::tl2::tasks::QueueTypeSettings& item) {
+void tl2::details::TasksQueueTypeSettingsReset(::tl2::tasks::QueueTypeSettings& item) noexcept {
 	item.fields_mask = 0;
 	item.is_enabled = false;
 	item.is_persistent = false;
@@ -2085,7 +2085,7 @@ void tl2::details::TasksQueueTypeSettingsReset(::tl2::tasks::QueueTypeSettings& 
 	item.max_queue_size = 0;
 }
 
-bool tl2::details::TasksQueueTypeSettingsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeSettings& item) {
+bool tl2::details::TasksQueueTypeSettingsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeSettings& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
@@ -2169,7 +2169,7 @@ bool tl2::details::TasksQueueTypeSettingsWriteJSON(std::ostream& s, const ::tl2:
 	return true;
 }
 
-bool tl2::details::TasksQueueTypeSettingsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeSettings& item) {
+bool tl2::details::TasksQueueTypeSettingsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeSettings& item) noexcept {
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if ((item.fields_mask & (1<<0)) != 0) {
 		if (!::tl2::details::BoolReadBoxed(s, item.is_enabled)) { return false; }
@@ -2219,7 +2219,7 @@ bool tl2::details::TasksQueueTypeSettingsRead(::basictl::tl_istream & s, ::tl2::
 	return true;
 }
 
-bool tl2::details::TasksQueueTypeSettingsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeSettings& item) {
+bool tl2::details::TasksQueueTypeSettingsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeSettings& item) noexcept {
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if ((item.fields_mask & (1<<0)) != 0) {
 			if (!::tl2::details::BoolWriteBoxed(s, item.is_enabled)) { return false; }
@@ -2314,7 +2314,7 @@ void tl2::tasks::QueueTypeStats::write_boxed_or_throw(::basictl::tl_throwable_os
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksQueueTypeStatsReset(::tl2::tasks::QueueTypeStats& item) {
+void tl2::details::TasksQueueTypeStatsReset(::tl2::tasks::QueueTypeStats& item) noexcept {
 	item.fields_mask = 0;
 	item.waiting_size = 0;
 	item.scheduled_size = 0;
@@ -2322,7 +2322,7 @@ void tl2::details::TasksQueueTypeStatsReset(::tl2::tasks::QueueTypeStats& item) 
 	item.num_queues = 0;
 }
 
-bool tl2::details::TasksQueueTypeStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeStats& item) {
+bool tl2::details::TasksQueueTypeStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeStats& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
@@ -2366,7 +2366,7 @@ bool tl2::details::TasksQueueTypeStatsWriteJSON(std::ostream& s, const ::tl2::ta
 	return true;
 }
 
-bool tl2::details::TasksQueueTypeStatsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeStats& item) {
+bool tl2::details::TasksQueueTypeStatsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeStats& item) noexcept {
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if ((item.fields_mask & (1<<0)) != 0) {
 		if (!s.long_read(item.waiting_size)) { return false; }
@@ -2391,7 +2391,7 @@ bool tl2::details::TasksQueueTypeStatsRead(::basictl::tl_istream & s, ::tl2::tas
 	return true;
 }
 
-bool tl2::details::TasksQueueTypeStatsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeStats& item) {
+bool tl2::details::TasksQueueTypeStatsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeStats& item) noexcept {
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if ((item.fields_mask & (1<<0)) != 0) {
 			if (!s.long_write(item.waiting_size)) { return false;}
@@ -2471,7 +2471,7 @@ void tl2::tasks::Task::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksTaskReset(::tl2::tasks::Task& item) {
+void tl2::details::TasksTaskReset(::tl2::tasks::Task& item) noexcept {
 	item.fields_mask = 0;
 	item.flags = 0;
 	item.tag.clear();
@@ -2482,7 +2482,7 @@ void tl2::details::TasksTaskReset(::tl2::tasks::Task& item) {
 	item.deadline = 0;
 }
 
-bool tl2::details::TasksTaskWriteJSON(std::ostream& s, const ::tl2::tasks::Task& item) {
+bool tl2::details::TasksTaskWriteJSON(std::ostream& s, const ::tl2::tasks::Task& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.fields_mask != 0) {
@@ -2550,7 +2550,7 @@ bool tl2::details::TasksTaskWriteJSON(std::ostream& s, const ::tl2::tasks::Task&
 	return true;
 }
 
-bool tl2::details::TasksTaskRead(::basictl::tl_istream & s, ::tl2::tasks::Task& item) {
+bool tl2::details::TasksTaskRead(::basictl::tl_istream & s, ::tl2::tasks::Task& item) noexcept {
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.tag)) { return false; }
@@ -2578,7 +2578,7 @@ bool tl2::details::TasksTaskRead(::basictl::tl_istream & s, ::tl2::tasks::Task& 
 	return true;
 }
 
-bool tl2::details::TasksTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::Task& item) {
+bool tl2::details::TasksTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::Task& item) noexcept {
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.tag)) { return false; }
@@ -2661,13 +2661,13 @@ void tl2::tasks::TaskInfo::write_boxed_or_throw(::basictl::tl_throwable_ostream 
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksTaskInfoReset(::tl2::tasks::TaskInfo& item) {
+void tl2::details::TasksTaskInfoReset(::tl2::tasks::TaskInfo& item) noexcept {
 	item.type_name.clear();
 	item.queue_id.clear();
 	::tl2::details::TasksTaskReset(item.task);
 }
 
-bool tl2::details::TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::TaskInfo& item) {
+bool tl2::details::TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::TaskInfo& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type_name.size() != 0) {
@@ -2693,14 +2693,14 @@ bool tl2::details::TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::T
 	return true;
 }
 
-bool tl2::details::TasksTaskInfoRead(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item) {
+bool tl2::details::TasksTaskInfoRead(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item) noexcept {
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.queue_id)) { return false; }
 	if (!::tl2::details::TasksTaskRead(s, item.task)) { return false; }
 	return true;
 }
 
-bool tl2::details::TasksTaskInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item) {
+bool tl2::details::TasksTaskInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item) noexcept {
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.queue_id)) { return false; }
 	if (!::tl2::details::TasksTaskWrite(s, item.task)) { return false; }
@@ -2756,14 +2756,27 @@ bool tl2::tasks::TaskStatus::write_json(std::ostream & s)const {
 	if (!::tl2::details::TasksTaskStatusWriteJSON(s, *this)) { return false; }
 	return true;
 }
-bool tl2::tasks::TaskStatus::read_boxed(::basictl::tl_istream & s) {
+bool tl2::tasks::TaskStatus::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TasksTaskStatusReadBoxed(s, *this)) { return false; }
 	return true;
 }
-bool tl2::tasks::TaskStatus::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tasks::TaskStatus::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TasksTaskStatusWriteBoxed(s, *this)) { return false; }
 	return true;
 }
+
+void tl2::tasks::TaskStatus::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tasks::TaskStatus::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
 std::string_view tl2::tasks::TaskStatus::tl_name() const {
 	return TasksTaskStatus_tbl_tl_name[value.index()];
 }
@@ -2772,15 +2785,15 @@ uint32_t tl2::tasks::TaskStatus::tl_tag() const {
 }
 
 
-void tl2::details::TasksTaskStatusReset(::tl2::tasks::TaskStatus& item) {
+void tl2::details::TasksTaskStatusReset(::tl2::tasks::TaskStatus& item) noexcept{
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::TasksTaskStatusWriteJSON(std::ostream & s, const ::tl2::tasks::TaskStatus& item) {
+bool tl2::details::TasksTaskStatusWriteJSON(std::ostream & s, const ::tl2::tasks::TaskStatus& item) noexcept {
 	s << "\"" << TasksTaskStatus_tbl_tl_name[item.value.index()] << "\"";
 	return true;
 }
-bool tl2::details::TasksTaskStatusReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::TaskStatus& item) {
+bool tl2::details::TasksTaskStatusReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::TaskStatus& item) noexcept {
 	uint32_t nat;
 	s.nat_read(nat);
 	switch (nat) {
@@ -2802,7 +2815,7 @@ bool tl2::details::TasksTaskStatusReadBoxed(::basictl::tl_istream & s, ::tl2::ta
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatus& item) {
+bool tl2::details::TasksTaskStatusWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatus& item) noexcept{
 	s.nat_write(TasksTaskStatus_tbl_tl_tag[item.value.index()]);
 	switch (item.value.index()) {
 	}
@@ -2862,19 +2875,19 @@ void tl2::tasks::TaskStatusInProgress::write_boxed_or_throw(::basictl::tl_throwa
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksTaskStatusInProgressReset(::tl2::tasks::TaskStatusInProgress& item) {
+void tl2::details::TasksTaskStatusInProgressReset(::tl2::tasks::TaskStatusInProgress& item) noexcept {
 }
 
-bool tl2::details::TasksTaskStatusInProgressWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusInProgress& item) {
+bool tl2::details::TasksTaskStatusInProgressWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusInProgress& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusInProgressRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusInProgress& item) {
+bool tl2::details::TasksTaskStatusInProgressRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusInProgress& item) noexcept {
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusInProgressWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusInProgress& item) {
+bool tl2::details::TasksTaskStatusInProgressWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusInProgress& item) noexcept {
 	return true;
 }
 
@@ -2941,19 +2954,19 @@ void tl2::tasks::TaskStatusNotCurrentlyInEngine::write_boxed_or_throw(::basictl:
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksTaskStatusNotCurrentlyInEngineReset(::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) {
+void tl2::details::TasksTaskStatusNotCurrentlyInEngineReset(::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) noexcept {
 }
 
-bool tl2::details::TasksTaskStatusNotCurrentlyInEngineWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) {
+bool tl2::details::TasksTaskStatusNotCurrentlyInEngineWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusNotCurrentlyInEngineRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) {
+bool tl2::details::TasksTaskStatusNotCurrentlyInEngineRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) noexcept {
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusNotCurrentlyInEngineWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) {
+bool tl2::details::TasksTaskStatusNotCurrentlyInEngineWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusNotCurrentlyInEngine& item) noexcept {
 	return true;
 }
 
@@ -3020,19 +3033,19 @@ void tl2::tasks::TaskStatusScheduled::write_boxed_or_throw(::basictl::tl_throwab
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksTaskStatusScheduledReset(::tl2::tasks::TaskStatusScheduled& item) {
+void tl2::details::TasksTaskStatusScheduledReset(::tl2::tasks::TaskStatusScheduled& item) noexcept {
 }
 
-bool tl2::details::TasksTaskStatusScheduledWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusScheduled& item) {
+bool tl2::details::TasksTaskStatusScheduledWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusScheduled& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusScheduledRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusScheduled& item) {
+bool tl2::details::TasksTaskStatusScheduledRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusScheduled& item) noexcept {
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusScheduledWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusScheduled& item) {
+bool tl2::details::TasksTaskStatusScheduledWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusScheduled& item) noexcept {
 	return true;
 }
 
@@ -3099,19 +3112,19 @@ void tl2::tasks::TaskStatusWaiting::write_boxed_or_throw(::basictl::tl_throwable
 	s2.pass_data(s);
 }
 
-void tl2::details::TasksTaskStatusWaitingReset(::tl2::tasks::TaskStatusWaiting& item) {
+void tl2::details::TasksTaskStatusWaitingReset(::tl2::tasks::TaskStatusWaiting& item) noexcept {
 }
 
-bool tl2::details::TasksTaskStatusWaitingWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusWaiting& item) {
+bool tl2::details::TasksTaskStatusWaitingWriteJSON(std::ostream& s, const ::tl2::tasks::TaskStatusWaiting& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusWaitingRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusWaiting& item) {
+bool tl2::details::TasksTaskStatusWaitingRead(::basictl::tl_istream & s, ::tl2::tasks::TaskStatusWaiting& item) noexcept {
 	return true;
 }
 
-bool tl2::details::TasksTaskStatusWaitingWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusWaiting& item) {
+bool tl2::details::TasksTaskStatusWaitingWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatusWaiting& item) noexcept {
 	return true;
 }
 

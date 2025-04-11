@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1ReplaceReset(::tl2::service1::Replace& item);
+void Service1ReplaceReset(::tl2::service1::Replace& item) noexcept;
 
-bool Service1ReplaceWriteJSON(std::ostream& s, const ::tl2::service1::Replace& item);
-bool Service1ReplaceRead(::basictl::tl_istream & s, ::tl2::service1::Replace& item);
-bool Service1ReplaceWrite(::basictl::tl_ostream & s, const ::tl2::service1::Replace& item);
+bool Service1ReplaceWriteJSON(std::ostream& s, const ::tl2::service1::Replace& item) noexcept;
+bool Service1ReplaceRead(::basictl::tl_istream & s, ::tl2::service1::Replace& item) noexcept; 
+bool Service1ReplaceWrite(::basictl::tl_ostream & s, const ::tl2::service1::Replace& item) noexcept;
 bool Service1ReplaceReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Replace& item);
 bool Service1ReplaceWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Replace& item);
 

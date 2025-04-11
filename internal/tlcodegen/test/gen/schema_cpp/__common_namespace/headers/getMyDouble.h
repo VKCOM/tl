@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void GetMyDoubleReset(::tl2::GetMyDouble& item);
+void GetMyDoubleReset(::tl2::GetMyDouble& item) noexcept;
 
-bool GetMyDoubleWriteJSON(std::ostream& s, const ::tl2::GetMyDouble& item);
-bool GetMyDoubleRead(::basictl::tl_istream & s, ::tl2::GetMyDouble& item);
-bool GetMyDoubleWrite(::basictl::tl_ostream & s, const ::tl2::GetMyDouble& item);
+bool GetMyDoubleWriteJSON(std::ostream& s, const ::tl2::GetMyDouble& item) noexcept;
+bool GetMyDoubleRead(::basictl::tl_istream & s, ::tl2::GetMyDouble& item) noexcept; 
+bool GetMyDoubleWrite(::basictl::tl_ostream & s, const ::tl2::GetMyDouble& item) noexcept;
 bool GetMyDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::GetMyDouble& item);
 bool GetMyDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::GetMyDouble& item);
 

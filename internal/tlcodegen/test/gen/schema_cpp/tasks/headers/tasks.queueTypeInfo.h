@@ -16,11 +16,11 @@ bool BuiltinVectorTasksQueueTypeInfoWrite(::basictl::tl_ostream & s, const std::
 
 namespace tl2 { namespace details { 
 
-void TasksQueueTypeInfoReset(::tl2::tasks::QueueTypeInfo& item);
+void TasksQueueTypeInfoReset(::tl2::tasks::QueueTypeInfo& item) noexcept;
 
-bool TasksQueueTypeInfoWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeInfo& item);
-bool TasksQueueTypeInfoRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeInfo& item);
-bool TasksQueueTypeInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeInfo& item);
+bool TasksQueueTypeInfoWriteJSON(std::ostream& s, const ::tl2::tasks::QueueTypeInfo& item) noexcept;
+bool TasksQueueTypeInfoRead(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeInfo& item) noexcept; 
+bool TasksQueueTypeInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeInfo& item) noexcept;
 bool TasksQueueTypeInfoReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::QueueTypeInfo& item);
 bool TasksQueueTypeInfoWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::QueueTypeInfo& item);
 

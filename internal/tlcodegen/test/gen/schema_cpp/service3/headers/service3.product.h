@@ -26,11 +26,11 @@ bool BuiltinVectorService3Product0Write(::basictl::tl_ostream & s, const std::ve
 
 namespace tl2 { namespace details { 
 
-void Service3ProductReset(::tl2::service3::Product& item);
+void Service3ProductReset(::tl2::service3::Product& item) noexcept;
 
-bool Service3ProductWriteJSON(std::ostream& s, const ::tl2::service3::Product& item, uint32_t nat_mode);
-bool Service3ProductRead(::basictl::tl_istream & s, ::tl2::service3::Product& item, uint32_t nat_mode);
-bool Service3ProductWrite(::basictl::tl_ostream & s, const ::tl2::service3::Product& item, uint32_t nat_mode);
+bool Service3ProductWriteJSON(std::ostream& s, const ::tl2::service3::Product& item, uint32_t nat_mode) noexcept;
+bool Service3ProductRead(::basictl::tl_istream & s, ::tl2::service3::Product& item, uint32_t nat_mode) noexcept; 
+bool Service3ProductWrite(::basictl::tl_ostream & s, const ::tl2::service3::Product& item, uint32_t nat_mode) noexcept;
 bool Service3ProductReadBoxed(::basictl::tl_istream & s, ::tl2::service3::Product& item, uint32_t nat_mode);
 bool Service3ProductWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::Product& item, uint32_t nat_mode);
 
@@ -38,11 +38,11 @@ bool Service3ProductWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3:
 
 namespace tl2 { namespace details { 
 
-void Service3Product0Reset(::tl2::service3::Productmode<0>& item);
+void Service3Product0Reset(::tl2::service3::Productmode<0>& item) noexcept;
 
-bool Service3Product0WriteJSON(std::ostream& s, const ::tl2::service3::Productmode<0>& item);
-bool Service3Product0Read(::basictl::tl_istream & s, ::tl2::service3::Productmode<0>& item);
-bool Service3Product0Write(::basictl::tl_ostream & s, const ::tl2::service3::Productmode<0>& item);
+bool Service3Product0WriteJSON(std::ostream& s, const ::tl2::service3::Productmode<0>& item) noexcept;
+bool Service3Product0Read(::basictl::tl_istream & s, ::tl2::service3::Productmode<0>& item) noexcept; 
+bool Service3Product0Write(::basictl::tl_ostream & s, const ::tl2::service3::Productmode<0>& item) noexcept;
 bool Service3Product0ReadBoxed(::basictl::tl_istream & s, ::tl2::service3::Productmode<0>& item);
 bool Service3Product0WriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::Productmode<0>& item);
 

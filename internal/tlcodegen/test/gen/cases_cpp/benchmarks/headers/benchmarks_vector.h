@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void VectorBenchmarksVruPositionReset(std::vector<::tl2::benchmarks::Vruposition>& item);
+void VectorBenchmarksVruPositionReset(std::vector<::tl2::benchmarks::Vruposition>& item) noexcept;
 
-bool VectorBenchmarksVruPositionWriteJSON(std::ostream& s, const std::vector<::tl2::benchmarks::Vruposition>& item);
-bool VectorBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item);
-bool VectorBenchmarksVruPositionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item);
+bool VectorBenchmarksVruPositionWriteJSON(std::ostream& s, const std::vector<::tl2::benchmarks::Vruposition>& item) noexcept;
+bool VectorBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item) noexcept; 
+bool VectorBenchmarksVruPositionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item) noexcept;
 bool VectorBenchmarksVruPositionReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item);
 bool VectorBenchmarksVruPositionWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item);
 

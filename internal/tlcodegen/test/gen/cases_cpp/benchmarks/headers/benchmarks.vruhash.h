@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item);
+void BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item) noexcept;
 
-bool BenchmarksVruHashWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruhash& item);
-bool BenchmarksVruHashRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruhash& item);
-bool BenchmarksVruHashWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruhash& item);
+bool BenchmarksVruHashWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruhash& item) noexcept;
+bool BenchmarksVruHashRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruhash& item) noexcept; 
+bool BenchmarksVruHashWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruhash& item) noexcept;
 bool BenchmarksVruHashReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::Vruhash& item);
 bool BenchmarksVruHashWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruhash& item);
 

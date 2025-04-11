@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void TasksTaskInfoReset(::tl2::tasks::TaskInfo& item);
+void TasksTaskInfoReset(::tl2::tasks::TaskInfo& item) noexcept;
 
-bool TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::TaskInfo& item);
-bool TasksTaskInfoRead(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item);
-bool TasksTaskInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item);
+bool TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::TaskInfo& item) noexcept;
+bool TasksTaskInfoRead(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item) noexcept; 
+bool TasksTaskInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item) noexcept;
 bool TasksTaskInfoReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item);
 bool TasksTaskInfoWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item);
 

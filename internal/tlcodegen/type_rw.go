@@ -234,6 +234,22 @@ func (w *TypeRWWrapper) actualTypeDependenciesRecur(evalType EvaluatedType, used
 		str.Fields[0].t.actualTypeDependenciesRecur(eval, used)
 		return
 	}
+	if br, isBr := w.trw.(*TypeRWBrackets); isBr && br.dictLike && len(br.element.t.origTL[0].TemplateArguments) == 1 {
+		pairType := br.element.t.trw.(*TypeRWStruct)
+		pairEvalType := evalType.Type.Arguments[0]
+
+		if pairEvalType.Type != nil {
+			keyValue := pairType.Fields[0]
+			valueType := pairType.Fields[1]
+
+			evalKey := br.wr.gen.typesInfo.FieldTypeReduction(pairEvalType.Type, 0)
+			evalValue := br.wr.gen.typesInfo.FieldTypeReduction(pairEvalType.Type, 1)
+
+			keyValue.t.actualTypeDependenciesRecur(evalKey, used)
+			valueType.t.actualTypeDependenciesRecur(evalValue, used)
+		}
+		return
+	}
 	if !(*used)[w] {
 		(*used)[w] = true
 	}

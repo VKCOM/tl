@@ -10,14 +10,27 @@ bool tl2::tree_stats::ObjectLimitValue::write_json(std::ostream & s)const {
 	if (!::tl2::details::TreeStatsObjectLimitValueWriteJSON(s, *this)) { return false; }
 	return true;
 }
-bool tl2::tree_stats::ObjectLimitValue::read_boxed(::basictl::tl_istream & s) {
+bool tl2::tree_stats::ObjectLimitValue::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::TreeStatsObjectLimitValueReadBoxed(s, *this)) { return false; }
 	return true;
 }
-bool tl2::tree_stats::ObjectLimitValue::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::tree_stats::ObjectLimitValue::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::TreeStatsObjectLimitValueWriteBoxed(s, *this)) { return false; }
 	return true;
 }
+
+void tl2::tree_stats::ObjectLimitValue::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::tree_stats::ObjectLimitValue::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
 std::string_view tl2::tree_stats::ObjectLimitValue::tl_name() const {
 	return TreeStatsObjectLimitValue_tbl_tl_name[value.index()];
 }
@@ -26,11 +39,11 @@ uint32_t tl2::tree_stats::ObjectLimitValue::tl_tag() const {
 }
 
 
-void tl2::details::TreeStatsObjectLimitValueReset(::tl2::tree_stats::ObjectLimitValue& item) {
+void tl2::details::TreeStatsObjectLimitValueReset(::tl2::tree_stats::ObjectLimitValue& item) noexcept{
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) {
+bool tl2::details::TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) noexcept {
 	s << "{";
 	s << "\"type\":";
 	s << "\"" << TreeStatsObjectLimitValue_tbl_tl_name[item.value.index()] << "\"";
@@ -45,7 +58,7 @@ bool tl2::details::TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::
 	s << "}";
 	return true;
 }
-bool tl2::details::TreeStatsObjectLimitValueReadBoxed(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValue& item) {
+bool tl2::details::TreeStatsObjectLimitValueReadBoxed(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValue& item) noexcept {
 	uint32_t nat;
 	s.nat_read(nat);
 	switch (nat) {
@@ -62,7 +75,7 @@ bool tl2::details::TreeStatsObjectLimitValueReadBoxed(::basictl::tl_istream & s,
 	return true;
 }
 
-bool tl2::details::TreeStatsObjectLimitValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) {
+bool tl2::details::TreeStatsObjectLimitValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) noexcept{
 	s.nat_write(TreeStatsObjectLimitValue_tbl_tl_tag[item.value.index()]);
 	switch (item.value.index()) {
 	case 1:
@@ -72,21 +85,21 @@ bool tl2::details::TreeStatsObjectLimitValueWriteBoxed(::basictl::tl_ostream & s
 	return true;
 }
 
-void tl2::details::TreeStatsObjectLimitValueDoubleReset(::tl2::tree_stats::ObjectLimitValueDouble& item) {
+void tl2::details::TreeStatsObjectLimitValueDoubleReset(::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept {
 	item = 0;
 }
 
-bool tl2::details::TreeStatsObjectLimitValueDoubleWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) {
+bool tl2::details::TreeStatsObjectLimitValueDoubleWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept {
 	s << item;
 	return true;
 }
 
-bool tl2::details::TreeStatsObjectLimitValueDoubleRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueDouble& item) {
+bool tl2::details::TreeStatsObjectLimitValueDoubleRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept {
 	if (!s.double_read(item)) { return false; }
 	return true;
 }
 
-bool tl2::details::TreeStatsObjectLimitValueDoubleWrite(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) {
+bool tl2::details::TreeStatsObjectLimitValueDoubleWrite(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept {
 	if (!s.double_write(item)) { return false;}
 	return true;
 }
@@ -154,19 +167,19 @@ void tl2::tree_stats::ObjectLimitValueLong::write_boxed_or_throw(::basictl::tl_t
 	s2.pass_data(s);
 }
 
-void tl2::details::TreeStatsObjectLimitValueLongReset(::tl2::tree_stats::ObjectLimitValueLong& item) {
+void tl2::details::TreeStatsObjectLimitValueLongReset(::tl2::tree_stats::ObjectLimitValueLong& item) noexcept {
 }
 
-bool tl2::details::TreeStatsObjectLimitValueLongWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueLong& item) {
+bool tl2::details::TreeStatsObjectLimitValueLongWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueLong& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::TreeStatsObjectLimitValueLongRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueLong& item) {
+bool tl2::details::TreeStatsObjectLimitValueLongRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueLong& item) noexcept {
 	return true;
 }
 
-bool tl2::details::TreeStatsObjectLimitValueLongWrite(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueLong& item) {
+bool tl2::details::TreeStatsObjectLimitValueLongWrite(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueLong& item) noexcept {
 	return true;
 }
 

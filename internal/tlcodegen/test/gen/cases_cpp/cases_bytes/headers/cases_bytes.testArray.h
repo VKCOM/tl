@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item);
+void CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item) noexcept;
 
-bool CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item);
-bool CasesBytesTestArrayRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item);
-bool CasesBytesTestArrayWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item);
+bool CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) noexcept;
+bool CasesBytesTestArrayRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item) noexcept; 
+bool CasesBytesTestArrayWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item) noexcept;
 bool CasesBytesTestArrayReadBoxed(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item);
 bool CasesBytesTestArrayWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item);
 

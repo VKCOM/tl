@@ -56,11 +56,11 @@ void tl2::unique::Get::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)
 	s2.pass_data(s);
 }
 
-void tl2::details::UniqueGetReset(::tl2::unique::Get& item) {
+void tl2::details::UniqueGetReset(::tl2::unique::Get& item) noexcept {
 	item.key.clear();
 }
 
-bool tl2::details::UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item) {
+bool tl2::details::UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item) noexcept {
 	s << "{";
 	if (item.key.size() != 0) {
 		s << "\"key\":";
@@ -70,12 +70,12 @@ bool tl2::details::UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get&
 	return true;
 }
 
-bool tl2::details::UniqueGetRead(::basictl::tl_istream & s, ::tl2::unique::Get& item) {
+bool tl2::details::UniqueGetRead(::basictl::tl_istream & s, ::tl2::unique::Get& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	return true;
 }
 
-bool tl2::details::UniqueGetWrite(::basictl::tl_ostream & s, const ::tl2::unique::Get& item) {
+bool tl2::details::UniqueGetWrite(::basictl::tl_ostream & s, const ::tl2::unique::Get& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	return true;
 }
@@ -174,11 +174,11 @@ void tl2::unique::StringToInt::write_boxed_or_throw(::basictl::tl_throwable_ostr
 	s2.pass_data(s);
 }
 
-void tl2::details::UniqueStringToIntReset(::tl2::unique::StringToInt& item) {
+void tl2::details::UniqueStringToIntReset(::tl2::unique::StringToInt& item) noexcept {
 	item.key.clear();
 }
 
-bool tl2::details::UniqueStringToIntWriteJSON(std::ostream& s, const ::tl2::unique::StringToInt& item) {
+bool tl2::details::UniqueStringToIntWriteJSON(std::ostream& s, const ::tl2::unique::StringToInt& item) noexcept {
 	s << "{";
 	if (item.key.size() != 0) {
 		s << "\"key\":";
@@ -188,12 +188,12 @@ bool tl2::details::UniqueStringToIntWriteJSON(std::ostream& s, const ::tl2::uniq
 	return true;
 }
 
-bool tl2::details::UniqueStringToIntRead(::basictl::tl_istream & s, ::tl2::unique::StringToInt& item) {
+bool tl2::details::UniqueStringToIntRead(::basictl::tl_istream & s, ::tl2::unique::StringToInt& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	return true;
 }
 
-bool tl2::details::UniqueStringToIntWrite(::basictl::tl_ostream & s, const ::tl2::unique::StringToInt& item) {
+bool tl2::details::UniqueStringToIntWrite(::basictl::tl_ostream & s, const ::tl2::unique::StringToInt& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	return true;
 }

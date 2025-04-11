@@ -16,11 +16,11 @@ bool BuiltinVectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const st
 
 namespace tl2 { namespace details { 
 
-void DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item);
+void DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) noexcept;
 
-bool DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item);
-bool DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item);
-bool DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item);
+bool DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) noexcept;
+bool DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) noexcept; 
+bool DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) noexcept;
 bool DictionaryFieldStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item);
 bool DictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item);
 
