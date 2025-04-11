@@ -514,11 +514,8 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 						groups[from.groupName] = true
 					}
 					if len(groups) == 1 {
-						to.groupName = utils.SetToSlice(groups)[0]
-						if to.groupName != CommonGroup && to.groupName != IndependentTypes {
-							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
-						}
-						to.hppDetailsFileName = to.cppDetailsFileName
+						newGroup := utils.SetToSlice(groups)[0]
+						changeTypeGroup(to, newGroup, CommonGroup, IndependentTypes)
 					} else if len(groups) > 1 {
 						to.groupName = CommonGroup
 					}
@@ -542,7 +539,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 	for _, t := range allTypes {
 		typeGroup := t.tlName.Namespace
-		if typeGroup == "" {
+		if typeGroup == NoNamespaceGroup {
 			typeGroup = CommonGroup
 		}
 		if strct, isStruct := t.trw.(*TypeRWStruct); isStruct && strct.ResultType != nil {
@@ -554,6 +551,14 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
+}
+
+func changeTypeGroup(to *TypeRWWrapper, newGroup string, CommonGroup string, IndependentTypes string) {
+	to.groupName = newGroup
+	if to.groupName != CommonGroup && to.groupName != IndependentTypes {
+		to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+	}
+	to.hppDetailsFileName = to.cppDetailsFileName
 }
 
 func getCppDiff(base string, target string) string {
