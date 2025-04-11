@@ -4,8 +4,8 @@
 #include "headers/int64.h"
 #include "headers/int32.h"
 #include "headers/int.h"
-#include "headers/dictionary.h"
 #include "headers/dictionaryField.h"
+#include "headers/dictionary.h"
 #include "headers/dictionaryAny.h"
 #include "headers/dictionaryFieldAny.h"
 #include "headers/true.h"
@@ -323,6 +323,53 @@ bool tl2::details::DictionaryFieldIntReadBoxed(::basictl::tl_istream & s, ::tl2:
 bool tl2::details::DictionaryFieldIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<int32_t>& item) {
 	if (!s.nat_write(0x239c1b62)) { return false; }
 	return tl2::details::DictionaryFieldIntWrite(s, item);
+}
+
+void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) noexcept {
+	item.key.clear();
+	item.value.clear();
+}
+
+bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) noexcept {
+	auto add_comma = false;
+	s << "{";
+	if (item.key.size() != 0) {
+		add_comma = true;
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value.size() != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"value\":";
+		s << "\"" << item.value << "\"";
+	}
+	s << "}";
+	return true;
+}
+
+bool tl2::details::DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) noexcept {
+	if (!s.string_read(item.key)) { return false; }
+	if (!s.string_read(item.value)) { return false; }
+	return true;
+}
+
+bool tl2::details::DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) noexcept {
+	if (!s.string_write(item.key)) { return false;}
+	if (!s.string_write(item.value)) { return false;}
+	return true;
+}
+
+bool tl2::details::DictionaryFieldStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) {
+	if (!s.nat_read_exact_tag(0x239c1b62)) { return false; }
+	return tl2::details::DictionaryFieldStringRead(s, item);
+}
+
+bool tl2::details::DictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) {
+	if (!s.nat_write(0x239c1b62)) { return false; }
+	return tl2::details::DictionaryFieldStringWrite(s, item);
 }
 
 void tl2::details::DictionaryIntReset(std::map<std::string, int32_t>& item) noexcept {

@@ -8,7 +8,6 @@
 #include "headers/cases_bytes.TestEnumItems.h"
 #include "headers/cases_bytes.testDictStringString.h"
 #include "headers/cases_bytes_dictionary.h"
-#include "headers/cases_bytes_dictionaryField.h"
 #include "headers/cases_bytes.testDictString.h"
 #include "headers/cases_bytes.testDictInt.h"
 #include "../__common_namespace/headers/dictionaryFieldAny.h"
@@ -16,6 +15,7 @@
 #include "../__common_namespace/headers/dictionaryAny.h"
 #include "headers/cases_bytes.testArray.h"
 #include "headers/cases_bytes_string.h"
+#include "headers/cases_bytes_dictionaryField.h"
 #include "../__common_namespace/headers/dictionaryField.h"
 
 
@@ -1181,53 +1181,6 @@ bool tl2::details::CasesBytesTestVectorReadBoxed(::basictl::tl_istream & s, ::tl
 bool tl2::details::CasesBytesTestVectorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestVector& item) {
 	if (!s.nat_write(0x3647c8ae)) { return false; }
 	return tl2::details::CasesBytesTestVectorWrite(s, item);
-}
-
-void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) noexcept {
-	item.key.clear();
-	item.value.clear();
-}
-
-bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.key.size() != 0) {
-		add_comma = true;
-		s << "\"key\":";
-		s << "\"" << item.key << "\"";
-	}
-	if (item.value.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << "\"" << item.value << "\"";
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) noexcept {
-	if (!s.string_read(item.key)) { return false; }
-	if (!s.string_read(item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) noexcept {
-	if (!s.string_write(item.key)) { return false;}
-	if (!s.string_write(item.value)) { return false;}
-	return true;
-}
-
-bool tl2::details::DictionaryFieldStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) {
-	if (!s.nat_read_exact_tag(0x239c1b62)) { return false; }
-	return tl2::details::DictionaryFieldStringRead(s, item);
-}
-
-bool tl2::details::DictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) {
-	if (!s.nat_write(0x239c1b62)) { return false; }
-	return tl2::details::DictionaryFieldStringWrite(s, item);
 }
 
 void tl2::details::DictionaryStringReset(std::map<std::string, std::string>& item) noexcept {
