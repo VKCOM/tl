@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -42,7 +43,7 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 }
 
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
-	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
+	const basicTLPackage = "basictl"
 
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
@@ -117,7 +118,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
 		{
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
@@ -162,7 +163,10 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hppDet.Reset()
 
 		hppDet.WriteString("#pragma once\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOThrowableStreamsPath)))
+
 		if createdHpps[specs[0].fileName] {
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
 		}
@@ -290,27 +294,40 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	metaMake := strings.Builder{}
 	factoryMake := strings.Builder{}
 
-	_ = createMeta(gen, &metaMake)
-	_ = createFactory(gen, createdHpps, &factoryMake)
+	if err := createMeta(gen, &metaMake); err != nil {
+		return err
+	}
+	if err := createFactory(gen, createdHpps, &factoryMake); err != nil {
+		return err
+	}
 
 	cppMake.WriteString(`
 CC = g++
-CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
+	cppMake.WriteString("# compile all object files together\n")
 	cppMake.WriteString("all: ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 `)
+	cppMake.WriteString("\n")
+	cppMake.WriteString("# compile meta sources such as meta data collection and objects factories\n")
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
+
 	cppMake.WriteString("\n")
 
+	createStreams(gen, &cppMake)
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("# compile individual namespaces\n")
 	cppMake.WriteString(cppMake1.String())
 	//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
 	//	return err
@@ -345,14 +362,32 @@ main.o: main.cpp
 	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
 	// }
 	{
-		//	filepathName := filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		//	gen.Code[filepathName] = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
-		//	filepathName = "factory.go"
-		//	gen.Code[filepathName] = gen.GenerateFactory()
-		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
-			fmt.Sprintf(basicCPPTLCodeFooter, BasicTLCPPNamespaceName)
-		if err := gen.addCodeFile(basicTLFilepathName, code); err != nil {
-			return err
+		basictlCppFolder := "pkg/basictl_cpp"
+		exportingFiles := []string{
+			"constants.h",
+			"errors.h",
+			"io_connectors.h",
+			"io_streams.cpp",
+			"io_streams.h",
+			"io_throwable_streams.cpp",
+			"io_throwable_streams.h",
+			"impl/string_io.h",
+			"impl/string_io.cpp",
+			"dependencies.h",
+		}
+
+		for _, file := range exportingFiles {
+			data, err := os.ReadFile(filepath.Join(basictlCppFolder, file))
+			if err != nil {
+				return err
+			}
+			code := strings.Builder{}
+			code.Write([]byte(HeaderComment))
+			code.Write([]byte("\n"))
+			code.Write(data)
+			if err := gen.addCodeFile(filepath.Join(basicTLPackage, file), code.String()); err != nil {
+				return err
+			}
 		}
 	}
 	// if gen.options.Verbose {
@@ -368,6 +403,22 @@ main.o: main.cpp
 	//	gen.Code[filepathName] = string(formattedCode)
 	// }
 	return nil
+}
+
+func createStreams(gen *Gen2, cppMake *strings.Builder) {
+	cppMake.WriteString("# compile streams which are used to work with io\n")
+	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
@@ -463,11 +514,8 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 						groups[from.groupName] = true
 					}
 					if len(groups) == 1 {
-						to.groupName = utils.SetToSlice(groups)[0]
-						if to.groupName != CommonGroup && to.groupName != IndependentTypes {
-							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
-						}
-						to.hppDetailsFileName = to.cppDetailsFileName
+						newGroup := utils.SetToSlice(groups)[0]
+						changeTypeGroup(to, newGroup, CommonGroup, IndependentTypes)
 					} else if len(groups) > 1 {
 						to.groupName = CommonGroup
 					}
@@ -491,7 +539,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 	for _, t := range allTypes {
 		typeGroup := t.tlName.Namespace
-		if typeGroup == "" {
+		if typeGroup == NoNamespaceGroup {
 			typeGroup = CommonGroup
 		}
 		if strct, isStruct := t.trw.(*TypeRWStruct); isStruct && strct.ResultType != nil {
@@ -503,6 +551,14 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
+}
+
+func changeTypeGroup(to *TypeRWWrapper, newGroup string, CommonGroup string, IndependentTypes string) {
+	to.groupName = newGroup
+	if to.groupName != CommonGroup && to.groupName != IndependentTypes {
+		to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+	}
+	to.hppDetailsFileName = to.cppDetailsFileName
 }
 
 func getCppDiff(base string, target string) string {
@@ -526,7 +582,8 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 #include <string>
 #include <functional>
 
-#include "%s"
+#include "%[1]s"
+#include "%[2]s"
 
 namespace tl2 {
     namespace meta {
@@ -534,8 +591,14 @@ namespace tl2 {
             virtual bool read(::basictl::tl_istream &s) = 0;
             virtual bool write(::basictl::tl_ostream &s) = 0;
 
+			virtual void read_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_or_throw(::basictl::tl_throwable_ostream &s) = 0;
+
             virtual bool read_boxed(::basictl::tl_istream &s) = 0;
             virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+
+			virtual void read_boxed_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) = 0;
 			
 			virtual bool write_json(std::ostream &s) = 0;
 
@@ -564,9 +627,9 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+}`, getCppDiff(filepathName, basicCPPTLIOStreamsPath), getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "a_tlgen_helpers_code.hpp")))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, basicCPPTLIOStreamsPath)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -654,8 +717,7 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 		return err
 	}
 
-	make.WriteString(fmt.Sprintf(`
-__build/__meta.o: %[1]s %[2]s
+	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s
 	$(CC) $(CFLAGS) -o __build/__meta.o -c %[2]s
 `,
 		filepathName,
@@ -711,9 +773,15 @@ void tl2::factory::set_all_factories() {
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
+
+		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
+		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
+		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
 		
 		bool write_json(std::ostream &s) override {return object.write_json(s);}
 `,
@@ -793,8 +861,7 @@ void tl2::factory::set_all_factories() {
 		return err
 	}
 
-	make.WriteString(fmt.Sprintf(`
-__build/__factory.o: %[1]s %[2]s%[3]s
+	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s
 	$(CC) $(CFLAGS) -o __build/__factory.o -c %[2]s
 `,
 		filepathName,

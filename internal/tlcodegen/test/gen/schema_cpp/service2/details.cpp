@@ -1,13 +1,13 @@
-#include "headers/service2_tuple.hpp"
-#include "headers/service2.setObjectTtl.hpp"
-#include "headers/service2.set.hpp"
-#include "headers/service2.addOrIncrMany.hpp"
-#include "headers/service2.deltaSet.hpp"
-#include "headers/service2.objectId.hpp"
-#include "headers/service2.counterSet.hpp"
-#include "../__common_namespace/headers/true.hpp"
-#include "../__common_namespace/headers/int.hpp"
-#include "headers/service2_double.hpp"
+#include "headers/service2_tuple.h"
+#include "headers/service2.setObjectTtl.h"
+#include "headers/service2.set.h"
+#include "headers/service2.addOrIncrMany.h"
+#include "headers/service2.deltaSet.h"
+#include "headers/service2.objectId.h"
+#include "headers/service2.counterSet.h"
+#include "../__common_namespace/headers/true.h"
+#include "../__common_namespace/headers/int.h"
+#include "headers/service2_double.h"
 
 
 void tl2::details::BuiltinTupleDoubleReset(std::vector<double>& item) {
@@ -135,27 +135,55 @@ bool tl2::service2::AddOrIncrMany::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service2::AddOrIncrMany::read(::basictl::tl_istream & s) {
+bool tl2::service2::AddOrIncrMany::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service2AddOrIncrManyRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::AddOrIncrMany::write(::basictl::tl_ostream & s)const {
+bool tl2::service2::AddOrIncrMany::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service2AddOrIncrManyWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::AddOrIncrMany::read_boxed(::basictl::tl_istream & s) {
+void tl2::service2::AddOrIncrMany::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service2::AddOrIncrMany::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service2::AddOrIncrMany::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service2AddOrIncrManyReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::AddOrIncrMany::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service2::AddOrIncrMany::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service2AddOrIncrManyWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& item) {
+void tl2::service2::AddOrIncrMany::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service2::AddOrIncrMany::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& item) noexcept {
 	item.objectIdLength = 0;
 	item.intCountersNum = 0;
 	item.floatCountersNum = 0;
@@ -165,7 +193,7 @@ void tl2::details::Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& it
 	item.deltas.clear();
 }
 
-bool tl2::details::Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::service2::AddOrIncrMany& item) {
+bool tl2::details::Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::service2::AddOrIncrMany& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.objectIdLength != 0) {
@@ -225,7 +253,7 @@ bool tl2::details::Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::Service2AddOrIncrManyRead(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item) {
+bool tl2::details::Service2AddOrIncrManyRead(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item) noexcept {
 	if (!s.nat_read(item.objectIdLength)) { return false; }
 	if (!s.nat_read(item.intCountersNum)) { return false; }
 	if (!s.nat_read(item.floatCountersNum)) { return false; }
@@ -236,7 +264,7 @@ bool tl2::details::Service2AddOrIncrManyRead(::basictl::tl_istream & s, ::tl2::s
 	return true;
 }
 
-bool tl2::details::Service2AddOrIncrManyWrite(::basictl::tl_ostream & s, const ::tl2::service2::AddOrIncrMany& item) {
+bool tl2::details::Service2AddOrIncrManyWrite(::basictl::tl_ostream & s, const ::tl2::service2::AddOrIncrMany& item) noexcept {
 	if (!s.nat_write(item.objectIdLength)) { return false;}
 	if (!s.nat_write(item.intCountersNum)) { return false;}
 	if (!s.nat_write(item.floatCountersNum)) { return false;}
@@ -268,11 +296,26 @@ bool tl2::details::Service2AddOrIncrManyWriteResult(::basictl::tl_ostream & s, t
 	return true;
 }
 
-bool tl2::service2::AddOrIncrMany::read_result(::basictl::tl_istream & s, std::vector<::tl2::service2::CounterSet> & result) {
-	return tl2::details::Service2AddOrIncrManyReadResult(s, *this, result);
+bool tl2::service2::AddOrIncrMany::read_result(::basictl::tl_istream & s, std::vector<::tl2::service2::CounterSet> & result) noexcept {
+	bool success = tl2::details::Service2AddOrIncrManyReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
-bool tl2::service2::AddOrIncrMany::write_result(::basictl::tl_ostream & s, std::vector<::tl2::service2::CounterSet> & result) {
-	return tl2::details::Service2AddOrIncrManyWriteResult(s, *this, result);
+bool tl2::service2::AddOrIncrMany::write_result(::basictl::tl_ostream & s, std::vector<::tl2::service2::CounterSet> & result) noexcept {
+	bool success = tl2::details::Service2AddOrIncrManyWriteResult(s, *this, result);
+	s.last_release();
+	return success;
+}
+
+void tl2::service2::AddOrIncrMany::read_result_or_throw(::basictl::tl_throwable_istream & s, std::vector<::tl2::service2::CounterSet> & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::service2::AddOrIncrMany::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::service2::CounterSet> & result) {
+	::basictl::tl_ostream s2(s);
+	this->write_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::service2::CounterSet::write_json(std::ostream& s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
@@ -280,32 +323,60 @@ bool tl2::service2::CounterSet::write_json(std::ostream& s, uint32_t nat_intCoun
 	return true;
 }
 
-bool tl2::service2::CounterSet::read(::basictl::tl_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::service2::CounterSet::read(::basictl::tl_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::Service2CounterSetRead(s, *this, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::CounterSet::write(::basictl::tl_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+bool tl2::service2::CounterSet::write(::basictl::tl_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const noexcept {
 	if (!::tl2::details::Service2CounterSetWrite(s, *this, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::CounterSet::read_boxed(::basictl::tl_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+void tl2::service2::CounterSet::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+void tl2::service2::CounterSet::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+bool tl2::service2::CounterSet::read_boxed(::basictl::tl_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::Service2CounterSetReadBoxed(s, *this, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::CounterSet::write_boxed(::basictl::tl_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+bool tl2::service2::CounterSet::write_boxed(::basictl::tl_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const noexcept {
 	if (!::tl2::details::Service2CounterSetWriteBoxed(s, *this, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service2CounterSetReset(::tl2::service2::CounterSet& item) {
+void tl2::service2::CounterSet::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+void tl2::service2::CounterSet::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service2CounterSetReset(::tl2::service2::CounterSet& item) noexcept {
 	item.intCounters.clear();
 	item.floatCounters.clear();
 }
 
-bool tl2::details::Service2CounterSetWriteJSON(std::ostream& s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::details::Service2CounterSetWriteJSON(std::ostream& s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if ((item.intCounters.size() != 0) || (nat_intCountersNum != 0)) {
@@ -325,13 +396,13 @@ bool tl2::details::Service2CounterSetWriteJSON(std::ostream& s, const ::tl2::ser
 	return true;
 }
 
-bool tl2::details::Service2CounterSetRead(::basictl::tl_istream & s, ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::details::Service2CounterSetRead(::basictl::tl_istream & s, ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::BuiltinTupleIntRead(s, item.intCounters, nat_intCountersNum)) { return false; }
 	if (!::tl2::details::BuiltinTupleDoubleRead(s, item.floatCounters, nat_floatCountersNum)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service2CounterSetWrite(::basictl::tl_ostream & s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::details::Service2CounterSetWrite(::basictl::tl_ostream & s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::BuiltinTupleIntWrite(s, item.intCounters, nat_intCountersNum)) { return false; }
 	if (!::tl2::details::BuiltinTupleDoubleWrite(s, item.floatCounters, nat_floatCountersNum)) { return false; }
 	return true;
@@ -352,32 +423,60 @@ bool tl2::service2::DeltaSet::write_json(std::ostream& s, uint32_t nat_objectIdL
 	return true;
 }
 
-bool tl2::service2::DeltaSet::read(::basictl::tl_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::service2::DeltaSet::read(::basictl::tl_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::Service2DeltaSetRead(s, *this, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::DeltaSet::write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+bool tl2::service2::DeltaSet::write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const noexcept {
 	if (!::tl2::details::Service2DeltaSetWrite(s, *this, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::DeltaSet::read_boxed(::basictl::tl_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+void tl2::service2::DeltaSet::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+void tl2::service2::DeltaSet::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+bool tl2::service2::DeltaSet::read_boxed(::basictl::tl_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::Service2DeltaSetReadBoxed(s, *this, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::DeltaSet::write_boxed(::basictl::tl_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+bool tl2::service2::DeltaSet::write_boxed(::basictl::tl_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const noexcept {
 	if (!::tl2::details::Service2DeltaSetWriteBoxed(s, *this, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service2DeltaSetReset(::tl2::service2::DeltaSet& item) {
+void tl2::service2::DeltaSet::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+void tl2::service2::DeltaSet::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service2DeltaSetReset(::tl2::service2::DeltaSet& item) noexcept {
 	::tl2::details::Service2ObjectIdReset(item.id);
 	::tl2::details::Service2CounterSetReset(item.counters);
 }
 
-bool tl2::details::Service2DeltaSetWriteJSON(std::ostream& s, const ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::details::Service2DeltaSetWriteJSON(std::ostream& s, const ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	auto add_comma = false;
 	s << "{";
 	add_comma = true;
@@ -393,13 +492,13 @@ bool tl2::details::Service2DeltaSetWriteJSON(std::ostream& s, const ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service2DeltaSetRead(::basictl::tl_istream & s, ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::details::Service2DeltaSetRead(::basictl::tl_istream & s, ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::Service2ObjectIdRead(s, item.id, nat_objectIdLength)) { return false; }
 	if (!::tl2::details::Service2CounterSetRead(s, item.counters, nat_intCountersNum, nat_floatCountersNum)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service2DeltaSetWrite(::basictl::tl_ostream & s, const ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) {
+bool tl2::details::Service2DeltaSetWrite(::basictl::tl_ostream & s, const ::tl2::service2::DeltaSet& item, uint32_t nat_objectIdLength, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept {
 	if (!::tl2::details::Service2ObjectIdWrite(s, item.id, nat_objectIdLength)) { return false; }
 	if (!::tl2::details::Service2CounterSetWrite(s, item.counters, nat_intCountersNum, nat_floatCountersNum)) { return false; }
 	return true;
@@ -420,31 +519,59 @@ bool tl2::service2::ObjectId::write_json(std::ostream& s, uint32_t nat_objectIdL
 	return true;
 }
 
-bool tl2::service2::ObjectId::read(::basictl::tl_istream & s, uint32_t nat_objectIdLength) {
+bool tl2::service2::ObjectId::read(::basictl::tl_istream & s, uint32_t nat_objectIdLength) noexcept {
 	if (!::tl2::details::Service2ObjectIdRead(s, *this, nat_objectIdLength)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::ObjectId::write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const {
+bool tl2::service2::ObjectId::write(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const noexcept {
 	if (!::tl2::details::Service2ObjectIdWrite(s, *this, nat_objectIdLength)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::ObjectId::read_boxed(::basictl::tl_istream & s, uint32_t nat_objectIdLength) {
+void tl2::service2::ObjectId::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_objectIdLength) {
+	::basictl::tl_istream s2(s);
+	this->read(s2, nat_objectIdLength);
+	s2.pass_data(s);
+}
+
+void tl2::service2::ObjectId::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_objectIdLength)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2, nat_objectIdLength);
+	s2.pass_data(s);
+}
+
+bool tl2::service2::ObjectId::read_boxed(::basictl::tl_istream & s, uint32_t nat_objectIdLength) noexcept {
 	if (!::tl2::details::Service2ObjectIdReadBoxed(s, *this, nat_objectIdLength)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::ObjectId::write_boxed(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const {
+bool tl2::service2::ObjectId::write_boxed(::basictl::tl_ostream & s, uint32_t nat_objectIdLength)const noexcept {
 	if (!::tl2::details::Service2ObjectIdWriteBoxed(s, *this, nat_objectIdLength)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service2ObjectIdReset(::tl2::service2::ObjectId& item) {
+void tl2::service2::ObjectId::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_objectIdLength) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2, nat_objectIdLength);
+	s2.pass_data(s);
+}
+
+void tl2::service2::ObjectId::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_objectIdLength)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2, nat_objectIdLength);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service2ObjectIdReset(::tl2::service2::ObjectId& item) noexcept {
 	item.id.clear();
 }
 
-bool tl2::details::Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) {
+bool tl2::details::Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) noexcept {
 	s << "{";
 	if ((item.id.size() != 0) || (nat_objectIdLength != 0)) {
 		s << "\"id\":";
@@ -454,12 +581,12 @@ bool tl2::details::Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service2ObjectIdRead(::basictl::tl_istream & s, ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) {
+bool tl2::details::Service2ObjectIdRead(::basictl::tl_istream & s, ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) noexcept {
 	if (!::tl2::details::BuiltinTupleIntRead(s, item.id, nat_objectIdLength)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service2ObjectIdWrite(::basictl::tl_ostream & s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) {
+bool tl2::details::Service2ObjectIdWrite(::basictl::tl_ostream & s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) noexcept {
 	if (!::tl2::details::BuiltinTupleIntWrite(s, item.id, nat_objectIdLength)) { return false; }
 	return true;
 }
@@ -479,27 +606,55 @@ bool tl2::service2::Set::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service2::Set::read(::basictl::tl_istream & s) {
+bool tl2::service2::Set::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service2SetRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::Set::write(::basictl::tl_ostream & s)const {
+bool tl2::service2::Set::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service2SetWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::Set::read_boxed(::basictl::tl_istream & s) {
+void tl2::service2::Set::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service2::Set::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service2::Set::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service2SetReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::Set::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service2::Set::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service2SetWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service2SetReset(::tl2::service2::Set& item) {
+void tl2::service2::Set::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service2::Set::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service2SetReset(::tl2::service2::Set& item) noexcept {
 	item.objectIdLength = 0;
 	item.intCountersNum = 0;
 	item.floatCountersNum = 0;
@@ -508,7 +663,7 @@ void tl2::details::Service2SetReset(::tl2::service2::Set& item) {
 	::tl2::details::Service2DeltaSetReset(item.newValues);
 }
 
-bool tl2::details::Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::Set& item) {
+bool tl2::details::Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::Set& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.objectIdLength != 0) {
@@ -558,7 +713,7 @@ bool tl2::details::Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::
 	return true;
 }
 
-bool tl2::details::Service2SetRead(::basictl::tl_istream & s, ::tl2::service2::Set& item) {
+bool tl2::details::Service2SetRead(::basictl::tl_istream & s, ::tl2::service2::Set& item) noexcept {
 	if (!s.nat_read(item.objectIdLength)) { return false; }
 	if (!s.nat_read(item.intCountersNum)) { return false; }
 	if (!s.nat_read(item.floatCountersNum)) { return false; }
@@ -568,7 +723,7 @@ bool tl2::details::Service2SetRead(::basictl::tl_istream & s, ::tl2::service2::S
 	return true;
 }
 
-bool tl2::details::Service2SetWrite(::basictl::tl_ostream & s, const ::tl2::service2::Set& item) {
+bool tl2::details::Service2SetWrite(::basictl::tl_ostream & s, const ::tl2::service2::Set& item) noexcept {
 	if (!s.nat_write(item.objectIdLength)) { return false;}
 	if (!s.nat_write(item.intCountersNum)) { return false;}
 	if (!s.nat_write(item.floatCountersNum)) { return false;}
@@ -597,11 +752,26 @@ bool tl2::details::Service2SetWriteResult(::basictl::tl_ostream & s, tl2::servic
 	return true;
 }
 
-bool tl2::service2::Set::read_result(::basictl::tl_istream & s, ::tl2::True & result) {
-	return tl2::details::Service2SetReadResult(s, *this, result);
+bool tl2::service2::Set::read_result(::basictl::tl_istream & s, ::tl2::True & result) noexcept {
+	bool success = tl2::details::Service2SetReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
-bool tl2::service2::Set::write_result(::basictl::tl_ostream & s, ::tl2::True & result) {
-	return tl2::details::Service2SetWriteResult(s, *this, result);
+bool tl2::service2::Set::write_result(::basictl::tl_ostream & s, ::tl2::True & result) noexcept {
+	bool success = tl2::details::Service2SetWriteResult(s, *this, result);
+	s.last_release();
+	return success;
+}
+
+void tl2::service2::Set::read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::True & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::service2::Set::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::True & result) {
+	::basictl::tl_ostream s2(s);
+	this->write_result(s2, result);
+	s2.pass_data(s);
 }
 
 bool tl2::service2::SetObjectTtl::write_json(std::ostream& s)const {
@@ -609,33 +779,61 @@ bool tl2::service2::SetObjectTtl::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service2::SetObjectTtl::read(::basictl::tl_istream & s) {
+bool tl2::service2::SetObjectTtl::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service2SetObjectTtlRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::SetObjectTtl::write(::basictl::tl_ostream & s)const {
+bool tl2::service2::SetObjectTtl::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service2SetObjectTtlWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::SetObjectTtl::read_boxed(::basictl::tl_istream & s) {
+void tl2::service2::SetObjectTtl::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service2::SetObjectTtl::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service2::SetObjectTtl::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service2SetObjectTtlReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service2::SetObjectTtl::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service2::SetObjectTtl::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service2SetObjectTtlWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service2SetObjectTtlReset(::tl2::service2::SetObjectTtl& item) {
+void tl2::service2::SetObjectTtl::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service2::SetObjectTtl::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service2SetObjectTtlReset(::tl2::service2::SetObjectTtl& item) noexcept {
 	item.objectIdLength = 0;
 	::tl2::details::Service2ObjectIdReset(item.objectId);
 	item.ttl = 0;
 }
 
-bool tl2::details::Service2SetObjectTtlWriteJSON(std::ostream& s, const ::tl2::service2::SetObjectTtl& item) {
+bool tl2::details::Service2SetObjectTtlWriteJSON(std::ostream& s, const ::tl2::service2::SetObjectTtl& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.objectIdLength != 0) {
@@ -661,14 +859,14 @@ bool tl2::details::Service2SetObjectTtlWriteJSON(std::ostream& s, const ::tl2::s
 	return true;
 }
 
-bool tl2::details::Service2SetObjectTtlRead(::basictl::tl_istream & s, ::tl2::service2::SetObjectTtl& item) {
+bool tl2::details::Service2SetObjectTtlRead(::basictl::tl_istream & s, ::tl2::service2::SetObjectTtl& item) noexcept {
 	if (!s.nat_read(item.objectIdLength)) { return false; }
 	if (!::tl2::details::Service2ObjectIdRead(s, item.objectId, item.objectIdLength)) { return false; }
 	if (!s.int_read(item.ttl)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service2SetObjectTtlWrite(::basictl::tl_ostream & s, const ::tl2::service2::SetObjectTtl& item) {
+bool tl2::details::Service2SetObjectTtlWrite(::basictl::tl_ostream & s, const ::tl2::service2::SetObjectTtl& item) noexcept {
 	if (!s.nat_write(item.objectIdLength)) { return false;}
 	if (!::tl2::details::Service2ObjectIdWrite(s, item.objectId, item.objectIdLength)) { return false; }
 	if (!s.int_write(item.ttl)) { return false;}
@@ -694,28 +892,43 @@ bool tl2::details::Service2SetObjectTtlWriteResult(::basictl::tl_ostream & s, tl
 	return true;
 }
 
-bool tl2::service2::SetObjectTtl::read_result(::basictl::tl_istream & s, ::tl2::True & result) {
-	return tl2::details::Service2SetObjectTtlReadResult(s, *this, result);
+bool tl2::service2::SetObjectTtl::read_result(::basictl::tl_istream & s, ::tl2::True & result) noexcept {
+	bool success = tl2::details::Service2SetObjectTtlReadResult(s, *this, result);
+	s.last_release();
+	return success;
 }
-bool tl2::service2::SetObjectTtl::write_result(::basictl::tl_ostream & s, ::tl2::True & result) {
-	return tl2::details::Service2SetObjectTtlWriteResult(s, *this, result);
+bool tl2::service2::SetObjectTtl::write_result(::basictl::tl_ostream & s, ::tl2::True & result) noexcept {
+	bool success = tl2::details::Service2SetObjectTtlWriteResult(s, *this, result);
+	s.last_release();
+	return success;
 }
 
-void tl2::details::TupleDoubleReset(std::vector<double>& item) {
+void tl2::service2::SetObjectTtl::read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::True & result) {
+	::basictl::tl_istream s2(s);
+	this->read_result(s2, result);
+	s2.pass_data(s);
+}
+void tl2::service2::SetObjectTtl::write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::True & result) {
+	::basictl::tl_ostream s2(s);
+	this->write_result(s2, result);
+	s2.pass_data(s);
+}
+
+void tl2::details::TupleDoubleReset(std::vector<double>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::TupleDoubleWriteJSON(std::ostream& s, const std::vector<double>& item, uint32_t nat_n) {
+bool tl2::details::TupleDoubleWriteJSON(std::ostream& s, const std::vector<double>& item, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BuiltinTupleDoubleWriteJSON(s, item, nat_n)) { return false; }
 	return true;
 }
 
-bool tl2::details::TupleDoubleRead(::basictl::tl_istream & s, std::vector<double>& item, uint32_t nat_n) {
+bool tl2::details::TupleDoubleRead(::basictl::tl_istream & s, std::vector<double>& item, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BuiltinTupleDoubleRead(s, item, nat_n)) { return false; }
 	return true;
 }
 
-bool tl2::details::TupleDoubleWrite(::basictl::tl_ostream & s, const std::vector<double>& item, uint32_t nat_n) {
+bool tl2::details::TupleDoubleWrite(::basictl::tl_ostream & s, const std::vector<double>& item, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BuiltinTupleDoubleWrite(s, item, nat_n)) { return false; }
 	return true;
 }
@@ -730,21 +943,21 @@ bool tl2::details::TupleDoubleWriteBoxed(::basictl::tl_ostream & s, const std::v
 	return tl2::details::TupleDoubleWrite(s, item, nat_n);
 }
 
-void tl2::details::TupleService2DeltaSetReset(std::vector<::tl2::service2::DeltaSet>& item) {
+void tl2::details::TupleService2DeltaSetReset(std::vector<::tl2::service2::DeltaSet>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::TupleService2DeltaSetWriteJSON(std::ostream& s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) {
+bool tl2::details::TupleService2DeltaSetWriteJSON(std::ostream& s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BuiltinTupleService2DeltaSetWriteJSON(s, item, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)) { return false; }
 	return true;
 }
 
-bool tl2::details::TupleService2DeltaSetRead(::basictl::tl_istream & s, std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) {
+bool tl2::details::TupleService2DeltaSetRead(::basictl::tl_istream & s, std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BuiltinTupleService2DeltaSetRead(s, item, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)) { return false; }
 	return true;
 }
 
-bool tl2::details::TupleService2DeltaSetWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) {
+bool tl2::details::TupleService2DeltaSetWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept {
 	if (!::tl2::details::BuiltinTupleService2DeltaSetWrite(s, item, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)) { return false; }
 	return true;
 }

@@ -83,6 +83,14 @@ func phpIsDictionary(wr *TypeRWWrapper) bool {
 	return false
 }
 
+func cppIsDictionaryElement(wr *TypeRWWrapper) bool {
+	isDict, _, _, _ := isDictionaryElement(wr)
+	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+		return true
+	}
+	return false
+}
+
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	for _, typeDep := range trw.AllPossibleRecursionProducers() {
 		typeDep.trw.FillRecursiveChildren(visitedNodes, generic)
@@ -101,7 +109,17 @@ func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
 
 func (trw *TypeRWBrackets) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
 	if !generic {
-		res = append(res, trw.element.t)
+		if trw.dictLike && len(trw.element.t.origTL[0].TemplateArguments) == 1 {
+			pairType := trw.element.t.trw.(*TypeRWStruct)
+
+			keyValue := pairType.Fields[0]
+			valueType := pairType.Fields[1]
+
+			res = append(res, keyValue.t)
+			res = append(res, valueType.t)
+		} else {
+			res = append(res, trw.element.t)
+		}
 	}
 	return
 }

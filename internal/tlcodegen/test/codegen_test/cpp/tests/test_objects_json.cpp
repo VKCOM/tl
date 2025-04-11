@@ -4,9 +4,11 @@
 #include "../dependencies/json.hpp"
 #include "../utils/hex.h"
 
-#include "../../../gen/cases_cpp/a_tlgen_helpers_code.hpp"
-#include "../../../gen/cases_cpp/__meta/headers.hpp"
-#include "../../../gen/cases_cpp/__factory/headers.hpp"
+#include "../../../gen/cases_cpp/basictl/io_streams.h"
+#include "../../../gen/cases_cpp/basictl/impl/string_io.h"
+
+#include "../../../gen/cases_cpp/__meta/headers.h"
+#include "../../../gen/cases_cpp/__factory/headers.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -27,7 +29,9 @@ int main() {
             auto bytes_input = hex::parse_hex_to_bytes(test_data_input.at("DataAsBytes"));
             std::string expected_json_output = test_data_input.at("DataAsJson");
 
-            basictl::tl_istream_string input{bytes_input};
+            basictl::tl_istream_string input_connector{bytes_input};
+            basictl::tl_istream input{input_connector};
+
             std::stringstream output;
 
             bool read_result = test_object->read(input);

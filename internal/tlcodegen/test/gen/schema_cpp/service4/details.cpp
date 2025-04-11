@@ -1,7 +1,7 @@
-#include "headers/service4.modifiedNewsEntry.hpp"
-#include "headers/service4.object.hpp"
-#include "../__common_namespace/headers/int.hpp"
-#include "../__common_namespace/headers/Bool.hpp"
+#include "headers/service4.modifiedNewsEntry.h"
+#include "headers/service4.object.h"
+#include "../__common_namespace/headers/int.h"
+#include "../__common_namespace/headers/Bool.h"
 
 
 bool tl2::service4::ModifiedNewsEntry::write_json(std::ostream& s)const {
@@ -9,27 +9,55 @@ bool tl2::service4::ModifiedNewsEntry::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service4::ModifiedNewsEntry::read(::basictl::tl_istream & s) {
+bool tl2::service4::ModifiedNewsEntry::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service4ModifiedNewsEntryRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service4::ModifiedNewsEntry::write(::basictl::tl_ostream & s)const {
+bool tl2::service4::ModifiedNewsEntry::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service4ModifiedNewsEntryWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service4::ModifiedNewsEntry::read_boxed(::basictl::tl_istream & s) {
+void tl2::service4::ModifiedNewsEntry::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service4::ModifiedNewsEntry::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service4::ModifiedNewsEntry::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service4ModifiedNewsEntryReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service4::ModifiedNewsEntry::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service4::ModifiedNewsEntry::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service4ModifiedNewsEntryWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service4ModifiedNewsEntryReset(::tl2::service4::ModifiedNewsEntry& item) {
+void tl2::service4::ModifiedNewsEntry::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service4::ModifiedNewsEntry::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service4ModifiedNewsEntryReset(::tl2::service4::ModifiedNewsEntry& item) noexcept {
 	::tl2::details::Service4ObjectReset(item.object);
 	item.creation_date = 0;
 	item.fields_mask = 0;
@@ -38,7 +66,7 @@ void tl2::details::Service4ModifiedNewsEntryReset(::tl2::service4::ModifiedNewsE
 	item.hidden_by_privacy = false;
 }
 
-bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::tl2::service4::ModifiedNewsEntry& item) {
+bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::tl2::service4::ModifiedNewsEntry& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	add_comma = true;
@@ -88,7 +116,7 @@ bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::t
 	return true;
 }
 
-bool tl2::details::Service4ModifiedNewsEntryRead(::basictl::tl_istream & s, ::tl2::service4::ModifiedNewsEntry& item) {
+bool tl2::details::Service4ModifiedNewsEntryRead(::basictl::tl_istream & s, ::tl2::service4::ModifiedNewsEntry& item) noexcept {
 	if (!::tl2::details::Service4ObjectRead(s, item.object)) { return false; }
 	if (!s.int_read(item.creation_date)) { return false; }
 	if (!s.nat_read(item.fields_mask)) { return false; }
@@ -110,7 +138,7 @@ bool tl2::details::Service4ModifiedNewsEntryRead(::basictl::tl_istream & s, ::tl
 	return true;
 }
 
-bool tl2::details::Service4ModifiedNewsEntryWrite(::basictl::tl_ostream & s, const ::tl2::service4::ModifiedNewsEntry& item) {
+bool tl2::details::Service4ModifiedNewsEntryWrite(::basictl::tl_ostream & s, const ::tl2::service4::ModifiedNewsEntry& item) noexcept {
 	if (!::tl2::details::Service4ObjectWrite(s, item.object)) { return false; }
 	if (!s.int_write(item.creation_date)) { return false;}
 	if (!s.nat_write(item.fields_mask)) { return false;}
@@ -141,33 +169,61 @@ bool tl2::service4::Object::write_json(std::ostream& s)const {
 	return true;
 }
 
-bool tl2::service4::Object::read(::basictl::tl_istream & s) {
+bool tl2::service4::Object::read(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service4ObjectRead(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service4::Object::write(::basictl::tl_ostream & s)const {
+bool tl2::service4::Object::write(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service4ObjectWrite(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service4::Object::read_boxed(::basictl::tl_istream & s) {
+void tl2::service4::Object::read_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service4::Object::write_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write(s2);
+	s2.pass_data(s);
+}
+
+bool tl2::service4::Object::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service4ObjectReadBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-bool tl2::service4::Object::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service4::Object::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service4ObjectWriteBoxed(s, *this)) { return false; }
+	s.last_release();
 	return true;
 }
 
-void tl2::details::Service4ObjectReset(::tl2::service4::Object& item) {
+void tl2::service4::Object::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service4::Object::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::details::Service4ObjectReset(::tl2::service4::Object& item) noexcept {
 	item.type = 0;
 	item.joint_id.clear();
 	item.object_id.clear();
 }
 
-bool tl2::details::Service4ObjectWriteJSON(std::ostream& s, const ::tl2::service4::Object& item) {
+bool tl2::details::Service4ObjectWriteJSON(std::ostream& s, const ::tl2::service4::Object& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.type != 0) {
@@ -195,14 +251,14 @@ bool tl2::details::Service4ObjectWriteJSON(std::ostream& s, const ::tl2::service
 	return true;
 }
 
-bool tl2::details::Service4ObjectRead(::basictl::tl_istream & s, ::tl2::service4::Object& item) {
+bool tl2::details::Service4ObjectRead(::basictl::tl_istream & s, ::tl2::service4::Object& item) noexcept {
 	if (!s.int_read(item.type)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.joint_id)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.object_id)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service4ObjectWrite(::basictl::tl_ostream & s, const ::tl2::service4::Object& item) {
+bool tl2::details::Service4ObjectWrite(::basictl::tl_ostream & s, const ::tl2::service4::Object& item) noexcept {
 	if (!s.int_write(item.type)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.joint_id)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.object_id)) { return false; }
