@@ -109,7 +109,17 @@ func (trw *TypeRWBrackets) AllPossibleRecursionProducers() []*TypeRWWrapper {
 
 func (trw *TypeRWBrackets) AllTypeDependencies(generic, countFunctions bool) (res []*TypeRWWrapper) {
 	if !generic {
-		res = append(res, trw.element.t)
+		if trw.dictLike && len(trw.element.t.origTL[0].TemplateArguments) == 1 {
+			pairType := trw.element.t.trw.(*TypeRWStruct)
+
+			keyValue := pairType.Fields[0]
+			valueType := pairType.Fields[1]
+
+			res = append(res, keyValue.t)
+			res = append(res, valueType.t)
+		} else {
+			res = append(res, trw.element.t)
+		}
 	}
 	return
 }

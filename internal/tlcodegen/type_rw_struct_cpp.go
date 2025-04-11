@@ -299,11 +299,11 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 
 		hppDet.WriteString(fmt.Sprintf(`
-void %[1]sReset(%[2]s& item);
+void %[1]sReset(%[2]s& item) noexcept;
 
-bool %[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s);
-bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+bool %[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s) noexcept;
+bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept; 
+bool %[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept;
 `, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
 
 		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
@@ -404,18 +404,18 @@ void %[5]s::write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const 
 			}
 		}
 		cppDet.WriteString(fmt.Sprintf(`
-void %[7]s::%[1]sReset(%[2]s& item) {
+void %[7]s::%[1]sReset(%[2]s& item) noexcept {
 %[4]s}
 
-bool %[7]s::%[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s) {
+bool %[7]s::%[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s) noexcept {
 %[8]s	return true;
 }
 
-bool %[7]s::%[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s) {
+bool %[7]s::%[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept {
 %[5]s	return true;
 }
 
-bool %[7]s::%[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
+bool %[7]s::%[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept {
 %[6]s	return true;
 }
 `,

@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void BoxedStringReset(::tl2::BoxedString& item);
+void BoxedStringReset(::tl2::BoxedString& item) noexcept;
 
-bool BoxedStringWriteJSON(std::ostream& s, const ::tl2::BoxedString& item);
-bool BoxedStringRead(::basictl::tl_istream & s, ::tl2::BoxedString& item);
-bool BoxedStringWrite(::basictl::tl_ostream & s, const ::tl2::BoxedString& item);
+bool BoxedStringWriteJSON(std::ostream& s, const ::tl2::BoxedString& item) noexcept;
+bool BoxedStringRead(::basictl::tl_istream & s, ::tl2::BoxedString& item) noexcept; 
+bool BoxedStringWrite(::basictl::tl_ostream & s, const ::tl2::BoxedString& item) noexcept;
 bool BoxedStringReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedString& item);
 bool BoxedStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::BoxedString& item);
 

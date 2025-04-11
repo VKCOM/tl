@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item);
+void TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) noexcept;
 
-bool TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item);
-bool TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item);
-bool TasksGetQueueSizeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item);
+bool TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item) noexcept;
+bool TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item) noexcept; 
+bool TasksGetQueueSizeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item) noexcept;
 bool TasksGetQueueSizeReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item);
 bool TasksGetQueueSizeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item);
 

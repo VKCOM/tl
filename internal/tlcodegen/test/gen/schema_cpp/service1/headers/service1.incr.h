@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1IncrReset(::tl2::service1::Incr& item);
+void Service1IncrReset(::tl2::service1::Incr& item) noexcept;
 
-bool Service1IncrWriteJSON(std::ostream& s, const ::tl2::service1::Incr& item);
-bool Service1IncrRead(::basictl::tl_istream & s, ::tl2::service1::Incr& item);
-bool Service1IncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::Incr& item);
+bool Service1IncrWriteJSON(std::ostream& s, const ::tl2::service1::Incr& item) noexcept;
+bool Service1IncrRead(::basictl::tl_istream & s, ::tl2::service1::Incr& item) noexcept; 
+bool Service1IncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::Incr& item) noexcept;
 bool Service1IncrReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Incr& item);
 bool Service1IncrWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Incr& item);
 

@@ -8,11 +8,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service3GetProductStatsReset(::tl2::service3::GetProductStats& item);
+void Service3GetProductStatsReset(::tl2::service3::GetProductStats& item) noexcept;
 
-bool Service3GetProductStatsWriteJSON(std::ostream& s, const ::tl2::service3::GetProductStats& item);
-bool Service3GetProductStatsRead(::basictl::tl_istream & s, ::tl2::service3::GetProductStats& item);
-bool Service3GetProductStatsWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetProductStats& item);
+bool Service3GetProductStatsWriteJSON(std::ostream& s, const ::tl2::service3::GetProductStats& item) noexcept;
+bool Service3GetProductStatsRead(::basictl::tl_istream & s, ::tl2::service3::GetProductStats& item) noexcept; 
+bool Service3GetProductStatsWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetProductStats& item) noexcept;
 bool Service3GetProductStatsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GetProductStats& item);
 bool Service3GetProductStatsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GetProductStats& item);
 

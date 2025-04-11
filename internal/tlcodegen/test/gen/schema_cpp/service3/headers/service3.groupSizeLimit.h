@@ -16,11 +16,11 @@ bool BuiltinVectorService3GroupSizeLimitWrite(::basictl::tl_ostream & s, const s
 
 namespace tl2 { namespace details { 
 
-void Service3GroupSizeLimitReset(::tl2::service3::GroupSizeLimit& item);
+void Service3GroupSizeLimitReset(::tl2::service3::GroupSizeLimit& item) noexcept;
 
-bool Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupSizeLimit& item);
-bool Service3GroupSizeLimitRead(::basictl::tl_istream & s, ::tl2::service3::GroupSizeLimit& item);
-bool Service3GroupSizeLimitWrite(::basictl::tl_ostream & s, const ::tl2::service3::GroupSizeLimit& item);
+bool Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupSizeLimit& item) noexcept;
+bool Service3GroupSizeLimitRead(::basictl::tl_istream & s, ::tl2::service3::GroupSizeLimit& item) noexcept; 
+bool Service3GroupSizeLimitWrite(::basictl::tl_ostream & s, const ::tl2::service3::GroupSizeLimit& item) noexcept;
 bool Service3GroupSizeLimitReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GroupSizeLimit& item);
 bool Service3GroupSizeLimitWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GroupSizeLimit& item);
 

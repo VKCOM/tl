@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict& item);
+void Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict& item) noexcept;
 
-bool Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item);
-bool Service1GetWildcardDictRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item);
-bool Service1GetWildcardDictWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item);
+bool Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item) noexcept;
+bool Service1GetWildcardDictRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item) noexcept; 
+bool Service1GetWildcardDictWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item) noexcept;
 bool Service1GetWildcardDictReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item);
 bool Service1GetWildcardDictWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item);
 

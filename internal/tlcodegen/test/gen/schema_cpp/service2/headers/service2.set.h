@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service2SetReset(::tl2::service2::Set& item);
+void Service2SetReset(::tl2::service2::Set& item) noexcept;
 
-bool Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::Set& item);
-bool Service2SetRead(::basictl::tl_istream & s, ::tl2::service2::Set& item);
-bool Service2SetWrite(::basictl::tl_ostream & s, const ::tl2::service2::Set& item);
+bool Service2SetWriteJSON(std::ostream& s, const ::tl2::service2::Set& item) noexcept;
+bool Service2SetRead(::basictl::tl_istream & s, ::tl2::service2::Set& item) noexcept; 
+bool Service2SetWrite(::basictl::tl_ostream & s, const ::tl2::service2::Set& item) noexcept;
 bool Service2SetReadBoxed(::basictl::tl_istream & s, ::tl2::service2::Set& item);
 bool Service2SetWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service2::Set& item);
 

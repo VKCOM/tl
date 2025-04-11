@@ -9,11 +9,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service6MultiFindReset(::tl2::service6::MultiFind& item);
+void Service6MultiFindReset(::tl2::service6::MultiFind& item) noexcept;
 
-bool Service6MultiFindWriteJSON(std::ostream& s, const ::tl2::service6::MultiFind& item);
-bool Service6MultiFindRead(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item);
-bool Service6MultiFindWrite(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item);
+bool Service6MultiFindWriteJSON(std::ostream& s, const ::tl2::service6::MultiFind& item) noexcept;
+bool Service6MultiFindRead(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item) noexcept; 
+bool Service6MultiFindWrite(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item) noexcept;
 bool Service6MultiFindReadBoxed(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item);
 bool Service6MultiFindWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item);
 

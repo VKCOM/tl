@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1EnableExpirationReset(::tl2::service1::EnableExpiration& item);
+void Service1EnableExpirationReset(::tl2::service1::EnableExpiration& item) noexcept;
 
-bool Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item);
-bool Service1EnableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item);
-bool Service1EnableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item);
+bool Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item) noexcept;
+bool Service1EnableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item) noexcept; 
+bool Service1EnableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item) noexcept;
 bool Service1EnableExpirationReadBoxed(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item);
 bool Service1EnableExpirationWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item);
 

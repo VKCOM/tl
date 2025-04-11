@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void BoxedArrayReset(::tl2::BoxedArray& item);
+void BoxedArrayReset(::tl2::BoxedArray& item) noexcept;
 
-bool BoxedArrayWriteJSON(std::ostream& s, const ::tl2::BoxedArray& item);
-bool BoxedArrayRead(::basictl::tl_istream & s, ::tl2::BoxedArray& item);
-bool BoxedArrayWrite(::basictl::tl_ostream & s, const ::tl2::BoxedArray& item);
+bool BoxedArrayWriteJSON(std::ostream& s, const ::tl2::BoxedArray& item) noexcept;
+bool BoxedArrayRead(::basictl::tl_istream & s, ::tl2::BoxedArray& item) noexcept; 
+bool BoxedArrayWrite(::basictl::tl_ostream & s, const ::tl2::BoxedArray& item) noexcept;
 bool BoxedArrayReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedArray& item);
 bool BoxedArrayWriteBoxed(::basictl::tl_ostream & s, const ::tl2::BoxedArray& item);
 

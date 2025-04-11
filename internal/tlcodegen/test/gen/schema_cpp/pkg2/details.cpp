@@ -56,11 +56,11 @@ void tl2::pkg2::Foo::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)co
 	s2.pass_data(s);
 }
 
-void tl2::details::Pkg2FooReset(::tl2::pkg2::Foo& item) {
+void tl2::details::Pkg2FooReset(::tl2::pkg2::Foo& item) noexcept {
 	item.x = 0;
 }
 
-bool tl2::details::Pkg2FooWriteJSON(std::ostream& s, const ::tl2::pkg2::Foo& item) {
+bool tl2::details::Pkg2FooWriteJSON(std::ostream& s, const ::tl2::pkg2::Foo& item) noexcept {
 	s << "{";
 	if (item.x != 0) {
 		s << "\"x\":";
@@ -70,12 +70,12 @@ bool tl2::details::Pkg2FooWriteJSON(std::ostream& s, const ::tl2::pkg2::Foo& ite
 	return true;
 }
 
-bool tl2::details::Pkg2FooRead(::basictl::tl_istream & s, ::tl2::pkg2::Foo& item) {
+bool tl2::details::Pkg2FooRead(::basictl::tl_istream & s, ::tl2::pkg2::Foo& item) noexcept {
 	if (!s.int_read(item.x)) { return false; }
 	return true;
 }
 
-bool tl2::details::Pkg2FooWrite(::basictl::tl_ostream & s, const ::tl2::pkg2::Foo& item) {
+bool tl2::details::Pkg2FooWrite(::basictl::tl_ostream & s, const ::tl2::pkg2::Foo& item) noexcept {
 	if (!s.int_write(item.x)) { return false;}
 	return true;
 }
@@ -143,11 +143,11 @@ void tl2::pkg2::T1::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)con
 	s2.pass_data(s);
 }
 
-void tl2::details::Pkg2T1Reset(::tl2::pkg2::T1& item) {
+void tl2::details::Pkg2T1Reset(::tl2::pkg2::T1& item) noexcept {
 	::tl2::details::Pkg2FooReset(item.x);
 }
 
-bool tl2::details::Pkg2T1WriteJSON(std::ostream& s, const ::tl2::pkg2::T1& item) {
+bool tl2::details::Pkg2T1WriteJSON(std::ostream& s, const ::tl2::pkg2::T1& item) noexcept {
 	s << "{";
 	s << "\"x\":";
 	if (!::tl2::details::Pkg2FooWriteJSON(s, item.x)) { return false; }
@@ -155,12 +155,12 @@ bool tl2::details::Pkg2T1WriteJSON(std::ostream& s, const ::tl2::pkg2::T1& item)
 	return true;
 }
 
-bool tl2::details::Pkg2T1Read(::basictl::tl_istream & s, ::tl2::pkg2::T1& item) {
+bool tl2::details::Pkg2T1Read(::basictl::tl_istream & s, ::tl2::pkg2::T1& item) noexcept {
 	if (!::tl2::details::Pkg2FooReadBoxed(s, item.x)) { return false; }
 	return true;
 }
 
-bool tl2::details::Pkg2T1Write(::basictl::tl_ostream & s, const ::tl2::pkg2::T1& item) {
+bool tl2::details::Pkg2T1Write(::basictl::tl_ostream & s, const ::tl2::pkg2::T1& item) noexcept {
 	if (!::tl2::details::Pkg2FooWriteBoxed(s, item.x)) { return false; }
 	return true;
 }
@@ -175,21 +175,21 @@ bool tl2::details::Pkg2T1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::pkg2
 	return tl2::details::Pkg2T1Write(s, item);
 }
 
-void tl2::details::Pkg2T2Reset(::tl2::pkg2::T2& item) {
+void tl2::details::Pkg2T2Reset(::tl2::pkg2::T2& item) noexcept {
 	::tl2::details::Pkg2FooReset(item);
 }
 
-bool tl2::details::Pkg2T2WriteJSON(std::ostream& s, const ::tl2::pkg2::T2& item) {
+bool tl2::details::Pkg2T2WriteJSON(std::ostream& s, const ::tl2::pkg2::T2& item) noexcept {
 	if (!::tl2::details::Pkg2FooWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::Pkg2T2Read(::basictl::tl_istream & s, ::tl2::pkg2::T2& item) {
+bool tl2::details::Pkg2T2Read(::basictl::tl_istream & s, ::tl2::pkg2::T2& item) noexcept {
 	if (!::tl2::details::Pkg2FooRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::Pkg2T2Write(::basictl::tl_ostream & s, const ::tl2::pkg2::T2& item) {
+bool tl2::details::Pkg2T2Write(::basictl::tl_ostream & s, const ::tl2::pkg2::T2& item) noexcept {
 	if (!::tl2::details::Pkg2FooWrite(s, item)) { return false; }
 	return true;
 }

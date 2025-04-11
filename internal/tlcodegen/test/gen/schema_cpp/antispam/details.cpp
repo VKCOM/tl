@@ -57,11 +57,11 @@ void tl2::antispam::GetPattern::write_boxed_or_throw(::basictl::tl_throwable_ost
 	s2.pass_data(s);
 }
 
-void tl2::details::AntispamGetPatternReset(::tl2::antispam::GetPattern& item) {
+void tl2::details::AntispamGetPatternReset(::tl2::antispam::GetPattern& item) noexcept {
 	item.id = 0;
 }
 
-bool tl2::details::AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item) {
+bool tl2::details::AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item) noexcept {
 	s << "{";
 	if (item.id != 0) {
 		s << "\"id\":";
@@ -71,12 +71,12 @@ bool tl2::details::AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::ant
 	return true;
 }
 
-bool tl2::details::AntispamGetPatternRead(::basictl::tl_istream & s, ::tl2::antispam::GetPattern& item) {
+bool tl2::details::AntispamGetPatternRead(::basictl::tl_istream & s, ::tl2::antispam::GetPattern& item) noexcept {
 	if (!s.int_read(item.id)) { return false; }
 	return true;
 }
 
-bool tl2::details::AntispamGetPatternWrite(::basictl::tl_ostream & s, const ::tl2::antispam::GetPattern& item) {
+bool tl2::details::AntispamGetPatternWrite(::basictl::tl_ostream & s, const ::tl2::antispam::GetPattern& item) noexcept {
 	if (!s.int_write(item.id)) { return false;}
 	return true;
 }
@@ -175,7 +175,7 @@ void tl2::antispam::PatternFound::write_boxed_or_throw(::basictl::tl_throwable_o
 	s2.pass_data(s);
 }
 
-void tl2::details::AntispamPatternFoundReset(::tl2::antispam::PatternFound& item) {
+void tl2::details::AntispamPatternFoundReset(::tl2::antispam::PatternFound& item) noexcept {
 	item.ip = 0;
 	item.uahash = 0;
 	item.flags = 0;
@@ -183,7 +183,7 @@ void tl2::details::AntispamPatternFoundReset(::tl2::antispam::PatternFound& item
 	item.text.clear();
 }
 
-bool tl2::details::AntispamPatternFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternFound& item) {
+bool tl2::details::AntispamPatternFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternFound& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.ip != 0) {
@@ -227,7 +227,7 @@ bool tl2::details::AntispamPatternFoundWriteJSON(std::ostream& s, const ::tl2::a
 	return true;
 }
 
-bool tl2::details::AntispamPatternFoundRead(::basictl::tl_istream & s, ::tl2::antispam::PatternFound& item) {
+bool tl2::details::AntispamPatternFoundRead(::basictl::tl_istream & s, ::tl2::antispam::PatternFound& item) noexcept {
 	if (!s.int_read(item.ip)) { return false; }
 	if (!s.int_read(item.uahash)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
@@ -236,7 +236,7 @@ bool tl2::details::AntispamPatternFoundRead(::basictl::tl_istream & s, ::tl2::an
 	return true;
 }
 
-bool tl2::details::AntispamPatternFoundWrite(::basictl::tl_ostream & s, const ::tl2::antispam::PatternFound& item) {
+bool tl2::details::AntispamPatternFoundWrite(::basictl::tl_ostream & s, const ::tl2::antispam::PatternFound& item) noexcept {
 	if (!s.int_write(item.ip)) { return false;}
 	if (!s.int_write(item.uahash)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
@@ -262,14 +262,27 @@ bool tl2::antispam::PatternFull::write_json(std::ostream & s)const {
 	if (!::tl2::details::AntispamPatternFullWriteJSON(s, *this)) { return false; }
 	return true;
 }
-bool tl2::antispam::PatternFull::read_boxed(::basictl::tl_istream & s) {
+bool tl2::antispam::PatternFull::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::AntispamPatternFullReadBoxed(s, *this)) { return false; }
 	return true;
 }
-bool tl2::antispam::PatternFull::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::antispam::PatternFull::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::AntispamPatternFullWriteBoxed(s, *this)) { return false; }
 	return true;
 }
+
+void tl2::antispam::PatternFull::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::antispam::PatternFull::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
 std::string_view tl2::antispam::PatternFull::tl_name() const {
 	return AntispamPatternFull_tbl_tl_name[value.index()];
 }
@@ -278,11 +291,11 @@ uint32_t tl2::antispam::PatternFull::tl_tag() const {
 }
 
 
-void tl2::details::AntispamPatternFullReset(::tl2::antispam::PatternFull& item) {
+void tl2::details::AntispamPatternFullReset(::tl2::antispam::PatternFull& item) noexcept{
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::AntispamPatternFullWriteJSON(std::ostream & s, const ::tl2::antispam::PatternFull& item) {
+bool tl2::details::AntispamPatternFullWriteJSON(std::ostream & s, const ::tl2::antispam::PatternFull& item) noexcept {
 	s << "{";
 	s << "\"type\":";
 	s << "\"" << AntispamPatternFull_tbl_tl_name[item.value.index()] << "\"";
@@ -295,7 +308,7 @@ bool tl2::details::AntispamPatternFullWriteJSON(std::ostream & s, const ::tl2::a
 	s << "}";
 	return true;
 }
-bool tl2::details::AntispamPatternFullReadBoxed(::basictl::tl_istream & s, ::tl2::antispam::PatternFull& item) {
+bool tl2::details::AntispamPatternFullReadBoxed(::basictl::tl_istream & s, ::tl2::antispam::PatternFull& item) noexcept {
 	uint32_t nat;
 	s.nat_read(nat);
 	switch (nat) {
@@ -312,7 +325,7 @@ bool tl2::details::AntispamPatternFullReadBoxed(::basictl::tl_istream & s, ::tl2
 	return true;
 }
 
-bool tl2::details::AntispamPatternFullWriteBoxed(::basictl::tl_ostream & s, const ::tl2::antispam::PatternFull& item) {
+bool tl2::details::AntispamPatternFullWriteBoxed(::basictl::tl_ostream & s, const ::tl2::antispam::PatternFull& item) noexcept{
 	s.nat_write(AntispamPatternFull_tbl_tl_tag[item.value.index()]);
 	switch (item.value.index()) {
 	case 0:
@@ -375,19 +388,19 @@ void tl2::antispam::PatternNotFound::write_boxed_or_throw(::basictl::tl_throwabl
 	s2.pass_data(s);
 }
 
-void tl2::details::AntispamPatternNotFoundReset(::tl2::antispam::PatternNotFound& item) {
+void tl2::details::AntispamPatternNotFoundReset(::tl2::antispam::PatternNotFound& item) noexcept {
 }
 
-bool tl2::details::AntispamPatternNotFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternNotFound& item) {
+bool tl2::details::AntispamPatternNotFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternNotFound& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::AntispamPatternNotFoundRead(::basictl::tl_istream & s, ::tl2::antispam::PatternNotFound& item) {
+bool tl2::details::AntispamPatternNotFoundRead(::basictl::tl_istream & s, ::tl2::antispam::PatternNotFound& item) noexcept {
 	return true;
 }
 
-bool tl2::details::AntispamPatternNotFoundWrite(::basictl::tl_ostream & s, const ::tl2::antispam::PatternNotFound& item) {
+bool tl2::details::AntispamPatternNotFoundWrite(::basictl::tl_ostream & s, const ::tl2::antispam::PatternNotFound& item) noexcept {
 	return true;
 }
 

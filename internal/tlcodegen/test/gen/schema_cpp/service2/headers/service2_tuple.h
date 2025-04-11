@@ -8,11 +8,11 @@
 
 namespace tl2 { namespace details { 
 
-void TupleDoubleReset(std::vector<double>& item);
+void TupleDoubleReset(std::vector<double>& item) noexcept;
 
-bool TupleDoubleWriteJSON(std::ostream& s, const std::vector<double>& item, uint32_t nat_n);
-bool TupleDoubleRead(::basictl::tl_istream & s, std::vector<double>& item, uint32_t nat_n);
-bool TupleDoubleWrite(::basictl::tl_ostream & s, const std::vector<double>& item, uint32_t nat_n);
+bool TupleDoubleWriteJSON(std::ostream& s, const std::vector<double>& item, uint32_t nat_n) noexcept;
+bool TupleDoubleRead(::basictl::tl_istream & s, std::vector<double>& item, uint32_t nat_n) noexcept; 
+bool TupleDoubleWrite(::basictl::tl_ostream & s, const std::vector<double>& item, uint32_t nat_n) noexcept;
 bool TupleDoubleReadBoxed(::basictl::tl_istream & s, std::vector<double>& item, uint32_t nat_n);
 bool TupleDoubleWriteBoxed(::basictl::tl_ostream & s, const std::vector<double>& item, uint32_t nat_n);
 
@@ -20,11 +20,11 @@ bool TupleDoubleWriteBoxed(::basictl::tl_ostream & s, const std::vector<double>&
 
 namespace tl2 { namespace details { 
 
-void TupleService2DeltaSetReset(std::vector<::tl2::service2::DeltaSet>& item);
+void TupleService2DeltaSetReset(std::vector<::tl2::service2::DeltaSet>& item) noexcept;
 
-bool TupleService2DeltaSetWriteJSON(std::ostream& s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
-bool TupleService2DeltaSetRead(::basictl::tl_istream & s, std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
-bool TupleService2DeltaSetWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
+bool TupleService2DeltaSetWriteJSON(std::ostream& s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept;
+bool TupleService2DeltaSetRead(::basictl::tl_istream & s, std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept; 
+bool TupleService2DeltaSetWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept;
 bool TupleService2DeltaSetReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
 bool TupleService2DeltaSetWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service2::DeltaSet>& item, uint32_t nat_tobjectIdLength, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
 
