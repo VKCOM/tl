@@ -26,11 +26,11 @@ bool BuiltinVectorService1ValueWrite(::basictl::tl_ostream & s, const std::vecto
 
 namespace tl2 { namespace details { 
 
-void Service1ValueReset(::tl2::service1::Value& item);
+void Service1ValueReset(::tl2::service1::Value& item) noexcept;
 
-bool Service1ValueWriteJSON(std::ostream & s, const ::tl2::service1::Value& item);
-bool Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Value& item);
-bool Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Value& item);
+bool Service1ValueWriteJSON(std::ostream & s, const ::tl2::service1::Value& item) noexcept;
+bool Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Value& item) noexcept;
+bool Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Value& item) noexcept;
 
 }} // namespace tl2::details
 

@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void DoubleReset(double& item);
+void DoubleReset(double& item) noexcept;
 
-bool DoubleWriteJSON(std::ostream& s, const double& item);
-bool DoubleRead(::basictl::tl_istream & s, double& item);
-bool DoubleWrite(::basictl::tl_ostream & s, const double& item);
+bool DoubleWriteJSON(std::ostream& s, const double& item) noexcept;
+bool DoubleRead(::basictl::tl_istream & s, double& item) noexcept; 
+bool DoubleWrite(::basictl::tl_ostream & s, const double& item) noexcept;
 bool DoubleReadBoxed(::basictl::tl_istream & s, double& item);
 bool DoubleWriteBoxed(::basictl::tl_ostream & s, const double& item);
 

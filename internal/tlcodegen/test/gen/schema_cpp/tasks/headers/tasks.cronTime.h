@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void TasksCronTimeReset(::tl2::tasks::CronTime& item);
+void TasksCronTimeReset(::tl2::tasks::CronTime& item) noexcept;
 
-bool TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::CronTime& item);
-bool TasksCronTimeRead(::basictl::tl_istream & s, ::tl2::tasks::CronTime& item);
-bool TasksCronTimeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTime& item);
+bool TasksCronTimeWriteJSON(std::ostream& s, const ::tl2::tasks::CronTime& item) noexcept;
+bool TasksCronTimeRead(::basictl::tl_istream & s, ::tl2::tasks::CronTime& item) noexcept; 
+bool TasksCronTimeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTime& item) noexcept;
 bool TasksCronTimeReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::CronTime& item);
 bool TasksCronTimeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::CronTime& item);
 

@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void BoxedTupleSlice1Reset(::tl2::BoxedTupleSlice1& item);
+void BoxedTupleSlice1Reset(::tl2::BoxedTupleSlice1& item) noexcept;
 
-bool BoxedTupleSlice1WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice1& item);
-bool BoxedTupleSlice1Read(::basictl::tl_istream & s, ::tl2::BoxedTupleSlice1& item);
-bool BoxedTupleSlice1Write(::basictl::tl_ostream & s, const ::tl2::BoxedTupleSlice1& item);
+bool BoxedTupleSlice1WriteJSON(std::ostream& s, const ::tl2::BoxedTupleSlice1& item) noexcept;
+bool BoxedTupleSlice1Read(::basictl::tl_istream & s, ::tl2::BoxedTupleSlice1& item) noexcept; 
+bool BoxedTupleSlice1Write(::basictl::tl_ostream & s, const ::tl2::BoxedTupleSlice1& item) noexcept;
 bool BoxedTupleSlice1ReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedTupleSlice1& item);
 bool BoxedTupleSlice1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::BoxedTupleSlice1& item);
 

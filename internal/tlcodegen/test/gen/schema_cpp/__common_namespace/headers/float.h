@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void FloatReset(float& item);
+void FloatReset(float& item) noexcept;
 
-bool FloatWriteJSON(std::ostream& s, const float& item);
-bool FloatRead(::basictl::tl_istream & s, float& item);
-bool FloatWrite(::basictl::tl_ostream & s, const float& item);
+bool FloatWriteJSON(std::ostream& s, const float& item) noexcept;
+bool FloatRead(::basictl::tl_istream & s, float& item) noexcept; 
+bool FloatWrite(::basictl::tl_ostream & s, const float& item) noexcept;
 bool FloatReadBoxed(::basictl::tl_istream & s, float& item);
 bool FloatWriteBoxed(::basictl::tl_ostream & s, const float& item);
 

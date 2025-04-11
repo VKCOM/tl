@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void UniqueGetReset(::tl2::unique::Get& item);
+void UniqueGetReset(::tl2::unique::Get& item) noexcept;
 
-bool UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item);
-bool UniqueGetRead(::basictl::tl_istream & s, ::tl2::unique::Get& item);
-bool UniqueGetWrite(::basictl::tl_ostream & s, const ::tl2::unique::Get& item);
+bool UniqueGetWriteJSON(std::ostream& s, const ::tl2::unique::Get& item) noexcept;
+bool UniqueGetRead(::basictl::tl_istream & s, ::tl2::unique::Get& item) noexcept; 
+bool UniqueGetWrite(::basictl::tl_ostream & s, const ::tl2::unique::Get& item) noexcept;
 bool UniqueGetReadBoxed(::basictl::tl_istream & s, ::tl2::unique::Get& item);
 bool UniqueGetWriteBoxed(::basictl::tl_ostream & s, const ::tl2::unique::Get& item);
 

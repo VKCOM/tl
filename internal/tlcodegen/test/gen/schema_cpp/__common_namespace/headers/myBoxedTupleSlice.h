@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void MyBoxedTupleSliceReset(::tl2::MyBoxedTupleSlice& item);
+void MyBoxedTupleSliceReset(::tl2::MyBoxedTupleSlice& item) noexcept;
 
-bool MyBoxedTupleSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedTupleSlice& item);
-bool MyBoxedTupleSliceRead(::basictl::tl_istream & s, ::tl2::MyBoxedTupleSlice& item);
-bool MyBoxedTupleSliceWrite(::basictl::tl_ostream & s, const ::tl2::MyBoxedTupleSlice& item);
+bool MyBoxedTupleSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedTupleSlice& item) noexcept;
+bool MyBoxedTupleSliceRead(::basictl::tl_istream & s, ::tl2::MyBoxedTupleSlice& item) noexcept; 
+bool MyBoxedTupleSliceWrite(::basictl::tl_ostream & s, const ::tl2::MyBoxedTupleSlice& item) noexcept;
 bool MyBoxedTupleSliceReadBoxed(::basictl::tl_istream & s, ::tl2::MyBoxedTupleSlice& item);
 bool MyBoxedTupleSliceWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyBoxedTupleSlice& item);
 

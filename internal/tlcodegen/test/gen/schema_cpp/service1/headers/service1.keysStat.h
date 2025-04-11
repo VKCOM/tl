@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1KeysStatReset(::tl2::service1::KeysStat& item);
+void Service1KeysStatReset(::tl2::service1::KeysStat& item) noexcept;
 
-bool Service1KeysStatWriteJSON(std::ostream& s, const ::tl2::service1::KeysStat& item);
-bool Service1KeysStatRead(::basictl::tl_istream & s, ::tl2::service1::KeysStat& item);
-bool Service1KeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::KeysStat& item);
+bool Service1KeysStatWriteJSON(std::ostream& s, const ::tl2::service1::KeysStat& item) noexcept;
+bool Service1KeysStatRead(::basictl::tl_istream & s, ::tl2::service1::KeysStat& item) noexcept; 
+bool Service1KeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::KeysStat& item) noexcept;
 bool Service1KeysStatReadBoxed(::basictl::tl_istream & s, ::tl2::service1::KeysStat& item);
 bool Service1KeysStatWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::KeysStat& item);
 

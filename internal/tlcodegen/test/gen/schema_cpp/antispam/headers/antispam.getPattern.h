@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void AntispamGetPatternReset(::tl2::antispam::GetPattern& item);
+void AntispamGetPatternReset(::tl2::antispam::GetPattern& item) noexcept;
 
-bool AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item);
-bool AntispamGetPatternRead(::basictl::tl_istream & s, ::tl2::antispam::GetPattern& item);
-bool AntispamGetPatternWrite(::basictl::tl_ostream & s, const ::tl2::antispam::GetPattern& item);
+bool AntispamGetPatternWriteJSON(std::ostream& s, const ::tl2::antispam::GetPattern& item) noexcept;
+bool AntispamGetPatternRead(::basictl::tl_istream & s, ::tl2::antispam::GetPattern& item) noexcept; 
+bool AntispamGetPatternWrite(::basictl::tl_ostream & s, const ::tl2::antispam::GetPattern& item) noexcept;
 bool AntispamGetPatternReadBoxed(::basictl::tl_istream & s, ::tl2::antispam::GetPattern& item);
 bool AntispamGetPatternWriteBoxed(::basictl::tl_ostream & s, const ::tl2::antispam::GetPattern& item);
 

@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void BenchmarksVruPositionReset(::tl2::benchmarks::Vruposition& item);
+void BenchmarksVruPositionReset(::tl2::benchmarks::Vruposition& item) noexcept;
 
-bool BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruposition& item);
-bool BenchmarksVruPositionRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruposition& item);
-bool BenchmarksVruPositionWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruposition& item);
+bool BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruposition& item) noexcept;
+bool BenchmarksVruPositionRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruposition& item) noexcept; 
+bool BenchmarksVruPositionWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruposition& item) noexcept;
 bool BenchmarksVruPositionReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::Vruposition& item);
 bool BenchmarksVruPositionWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruposition& item);
 

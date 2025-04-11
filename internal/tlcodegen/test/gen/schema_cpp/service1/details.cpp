@@ -34,10 +34,10 @@
 #include "headers/service1.longvalueWithTime.h"
 #include "headers/service1.longvalue.h"
 #include "headers/service1_dictionary.h"
-#include "headers/service1_dictionaryField.h"
 #include "../__common_namespace/headers/string.h"
 #include "../__common_namespace/headers/map.h"
 #include "../__common_namespace/headers/dictionaryField.h"
+#include "headers/service1_dictionaryField.h"
 #include "../__common_namespace/headers/Bool.h"
 
 
@@ -153,21 +153,21 @@ bool tl2::details::BuiltinVectorService1ValueWrite(::basictl::tl_ostream & s, co
 	return true;
 }
 
-void tl2::details::DictionaryDictionaryIntReset(std::map<std::string, std::map<std::string, int32_t>>& item) {
+void tl2::details::DictionaryDictionaryIntReset(std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::DictionaryDictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, std::map<std::string, int32_t>>& item) {
+bool tl2::details::DictionaryDictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::DictionaryDictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item) {
+bool tl2::details::DictionaryDictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::DictionaryDictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) {
+bool tl2::details::DictionaryDictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntWrite(s, item)) { return false; }
 	return true;
 }
@@ -180,53 +180,6 @@ bool tl2::details::DictionaryDictionaryIntReadBoxed(::basictl::tl_istream & s, s
 bool tl2::details::DictionaryDictionaryIntWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) {
 	if (!s.nat_write(0x1f4c618f)) { return false; }
 	return tl2::details::DictionaryDictionaryIntWrite(s, item);
-}
-
-void tl2::details::DictionaryFieldDictionaryIntReset(::tl2::DictionaryField<std::map<std::string, int32_t>>& item) {
-	item.key.clear();
-	item.value.clear();
-}
-
-bool tl2::details::DictionaryFieldDictionaryIntWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::map<std::string, int32_t>>& item) {
-	auto add_comma = false;
-	s << "{";
-	if (item.key.size() != 0) {
-		add_comma = true;
-		s << "\"key\":";
-		s << "\"" << item.key << "\"";
-	}
-	if (item.value.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		if (!::tl2::details::BuiltinVectorDictionaryFieldIntWriteJSON(s, item.value)) { return false; }
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryFieldDictionaryIntRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::map<std::string, int32_t>>& item) {
-	if (!s.string_read(item.key)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryFieldIntRead(s, item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryFieldDictionaryIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::map<std::string, int32_t>>& item) {
-	if (!s.string_write(item.key)) { return false;}
-	if (!::tl2::details::BuiltinVectorDictionaryFieldIntWrite(s, item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryFieldDictionaryIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::map<std::string, int32_t>>& item) {
-	if (!s.nat_read_exact_tag(0x239c1b62)) { return false; }
-	return tl2::details::DictionaryFieldDictionaryIntRead(s, item);
-}
-
-bool tl2::details::DictionaryFieldDictionaryIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::map<std::string, int32_t>>& item) {
-	if (!s.nat_write(0x239c1b62)) { return false; }
-	return tl2::details::DictionaryFieldDictionaryIntWrite(s, item);
 }
 
 bool tl2::service1::Add::write_json(std::ostream& s)const {
@@ -282,14 +235,14 @@ void tl2::service1::Add::write_boxed_or_throw(::basictl::tl_throwable_ostream & 
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1AddReset(::tl2::service1::Add& item) {
+void tl2::details::Service1AddReset(::tl2::service1::Add& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value.clear();
 }
 
-bool tl2::details::Service1AddWriteJSON(std::ostream& s, const ::tl2::service1::Add& item) {
+bool tl2::details::Service1AddWriteJSON(std::ostream& s, const ::tl2::service1::Add& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -325,7 +278,7 @@ bool tl2::details::Service1AddWriteJSON(std::ostream& s, const ::tl2::service1::
 	return true;
 }
 
-bool tl2::details::Service1AddRead(::basictl::tl_istream & s, ::tl2::service1::Add& item) {
+bool tl2::details::Service1AddRead(::basictl::tl_istream & s, ::tl2::service1::Add& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -333,7 +286,7 @@ bool tl2::details::Service1AddRead(::basictl::tl_istream & s, ::tl2::service1::A
 	return true;
 }
 
-bool tl2::details::Service1AddWrite(::basictl::tl_ostream & s, const ::tl2::service1::Add& item) {
+bool tl2::details::Service1AddWrite(::basictl::tl_ostream & s, const ::tl2::service1::Add& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -435,14 +388,14 @@ void tl2::service1::AddOrGet::write_boxed_or_throw(::basictl::tl_throwable_ostre
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1AddOrGetReset(::tl2::service1::AddOrGet& item) {
+void tl2::details::Service1AddOrGetReset(::tl2::service1::AddOrGet& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value.clear();
 }
 
-bool tl2::details::Service1AddOrGetWriteJSON(std::ostream& s, const ::tl2::service1::AddOrGet& item) {
+bool tl2::details::Service1AddOrGetWriteJSON(std::ostream& s, const ::tl2::service1::AddOrGet& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -478,7 +431,7 @@ bool tl2::details::Service1AddOrGetWriteJSON(std::ostream& s, const ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service1AddOrGetRead(::basictl::tl_istream & s, ::tl2::service1::AddOrGet& item) {
+bool tl2::details::Service1AddOrGetRead(::basictl::tl_istream & s, ::tl2::service1::AddOrGet& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -486,7 +439,7 @@ bool tl2::details::Service1AddOrGetRead(::basictl::tl_istream & s, ::tl2::servic
 	return true;
 }
 
-bool tl2::details::Service1AddOrGetWrite(::basictl::tl_ostream & s, const ::tl2::service1::AddOrGet& item) {
+bool tl2::details::Service1AddOrGetWrite(::basictl::tl_ostream & s, const ::tl2::service1::AddOrGet& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -588,14 +541,14 @@ void tl2::service1::AddOrIncr::write_boxed_or_throw(::basictl::tl_throwable_ostr
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1AddOrIncrReset(::tl2::service1::AddOrIncr& item) {
+void tl2::details::Service1AddOrIncrReset(::tl2::service1::AddOrIncr& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value = 0;
 }
 
-bool tl2::details::Service1AddOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::AddOrIncr& item) {
+bool tl2::details::Service1AddOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::AddOrIncr& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -631,7 +584,7 @@ bool tl2::details::Service1AddOrIncrWriteJSON(std::ostream& s, const ::tl2::serv
 	return true;
 }
 
-bool tl2::details::Service1AddOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::AddOrIncr& item) {
+bool tl2::details::Service1AddOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::AddOrIncr& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -639,7 +592,7 @@ bool tl2::details::Service1AddOrIncrRead(::basictl::tl_istream & s, ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service1AddOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::AddOrIncr& item) {
+bool tl2::details::Service1AddOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::AddOrIncr& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -741,14 +694,14 @@ void tl2::service1::Append::write_boxed_or_throw(::basictl::tl_throwable_ostream
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1AppendReset(::tl2::service1::Append& item) {
+void tl2::details::Service1AppendReset(::tl2::service1::Append& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.suffix.clear();
 }
 
-bool tl2::details::Service1AppendWriteJSON(std::ostream& s, const ::tl2::service1::Append& item) {
+bool tl2::details::Service1AppendWriteJSON(std::ostream& s, const ::tl2::service1::Append& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -784,7 +737,7 @@ bool tl2::details::Service1AppendWriteJSON(std::ostream& s, const ::tl2::service
 	return true;
 }
 
-bool tl2::details::Service1AppendRead(::basictl::tl_istream & s, ::tl2::service1::Append& item) {
+bool tl2::details::Service1AppendRead(::basictl::tl_istream & s, ::tl2::service1::Append& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -792,7 +745,7 @@ bool tl2::details::Service1AppendRead(::basictl::tl_istream & s, ::tl2::service1
 	return true;
 }
 
-bool tl2::details::Service1AppendWrite(::basictl::tl_ostream & s, const ::tl2::service1::Append& item) {
+bool tl2::details::Service1AppendWrite(::basictl::tl_ostream & s, const ::tl2::service1::Append& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -894,7 +847,7 @@ void tl2::service1::Cas::write_boxed_or_throw(::basictl::tl_throwable_ostream & 
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1CasReset(::tl2::service1::Cas& item) {
+void tl2::details::Service1CasReset(::tl2::service1::Cas& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
@@ -902,7 +855,7 @@ void tl2::details::Service1CasReset(::tl2::service1::Cas& item) {
 	item.newValue.clear();
 }
 
-bool tl2::details::Service1CasWriteJSON(std::ostream& s, const ::tl2::service1::Cas& item) {
+bool tl2::details::Service1CasWriteJSON(std::ostream& s, const ::tl2::service1::Cas& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -946,7 +899,7 @@ bool tl2::details::Service1CasWriteJSON(std::ostream& s, const ::tl2::service1::
 	return true;
 }
 
-bool tl2::details::Service1CasRead(::basictl::tl_istream & s, ::tl2::service1::Cas& item) {
+bool tl2::details::Service1CasRead(::basictl::tl_istream & s, ::tl2::service1::Cas& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -955,7 +908,7 @@ bool tl2::details::Service1CasRead(::basictl::tl_istream & s, ::tl2::service1::C
 	return true;
 }
 
-bool tl2::details::Service1CasWrite(::basictl::tl_ostream & s, const ::tl2::service1::Cas& item) {
+bool tl2::details::Service1CasWrite(::basictl::tl_ostream & s, const ::tl2::service1::Cas& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -1058,12 +1011,12 @@ void tl2::service1::Decr::write_boxed_or_throw(::basictl::tl_throwable_ostream &
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1DecrReset(::tl2::service1::Decr& item) {
+void tl2::details::Service1DecrReset(::tl2::service1::Decr& item) noexcept {
 	item.key.clear();
 	item.value = 0;
 }
 
-bool tl2::details::Service1DecrWriteJSON(std::ostream& s, const ::tl2::service1::Decr& item) {
+bool tl2::details::Service1DecrWriteJSON(std::ostream& s, const ::tl2::service1::Decr& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -1083,13 +1036,13 @@ bool tl2::details::Service1DecrWriteJSON(std::ostream& s, const ::tl2::service1:
 	return true;
 }
 
-bool tl2::details::Service1DecrRead(::basictl::tl_istream & s, ::tl2::service1::Decr& item) {
+bool tl2::details::Service1DecrRead(::basictl::tl_istream & s, ::tl2::service1::Decr& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.long_read(item.value)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1DecrWrite(::basictl::tl_ostream & s, const ::tl2::service1::Decr& item) {
+bool tl2::details::Service1DecrWrite(::basictl::tl_ostream & s, const ::tl2::service1::Decr& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.long_write(item.value)) { return false;}
 	return true;
@@ -1189,11 +1142,11 @@ void tl2::service1::Delete::write_boxed_or_throw(::basictl::tl_throwable_ostream
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1DeleteReset(::tl2::service1::Delete& item) {
+void tl2::details::Service1DeleteReset(::tl2::service1::Delete& item) noexcept {
 	item.key.clear();
 }
 
-bool tl2::details::Service1DeleteWriteJSON(std::ostream& s, const ::tl2::service1::Delete& item) {
+bool tl2::details::Service1DeleteWriteJSON(std::ostream& s, const ::tl2::service1::Delete& item) noexcept {
 	s << "{";
 	if (item.key.size() != 0) {
 		s << "\"key\":";
@@ -1203,12 +1156,12 @@ bool tl2::details::Service1DeleteWriteJSON(std::ostream& s, const ::tl2::service
 	return true;
 }
 
-bool tl2::details::Service1DeleteRead(::basictl::tl_istream & s, ::tl2::service1::Delete& item) {
+bool tl2::details::Service1DeleteRead(::basictl::tl_istream & s, ::tl2::service1::Delete& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1DeleteWrite(::basictl::tl_ostream & s, const ::tl2::service1::Delete& item) {
+bool tl2::details::Service1DeleteWrite(::basictl::tl_ostream & s, const ::tl2::service1::Delete& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	return true;
 }
@@ -1307,11 +1260,11 @@ void tl2::service1::DisableExpiration::write_boxed_or_throw(::basictl::tl_throwa
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1DisableExpirationReset(::tl2::service1::DisableExpiration& item) {
+void tl2::details::Service1DisableExpirationReset(::tl2::service1::DisableExpiration& item) noexcept {
 	item.prefix.clear();
 }
 
-bool tl2::details::Service1DisableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::DisableExpiration& item) {
+bool tl2::details::Service1DisableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::DisableExpiration& item) noexcept {
 	s << "{";
 	if (item.prefix.size() != 0) {
 		s << "\"prefix\":";
@@ -1321,12 +1274,12 @@ bool tl2::details::Service1DisableExpirationWriteJSON(std::ostream& s, const ::t
 	return true;
 }
 
-bool tl2::details::Service1DisableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::DisableExpiration& item) {
+bool tl2::details::Service1DisableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::DisableExpiration& item) noexcept {
 	if (!s.string_read(item.prefix)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1DisableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::DisableExpiration& item) {
+bool tl2::details::Service1DisableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::DisableExpiration& item) noexcept {
 	if (!s.string_write(item.prefix)) { return false;}
 	return true;
 }
@@ -1425,11 +1378,11 @@ void tl2::service1::DisableKeysStat::write_boxed_or_throw(::basictl::tl_throwabl
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1DisableKeysStatReset(::tl2::service1::DisableKeysStat& item) {
+void tl2::details::Service1DisableKeysStatReset(::tl2::service1::DisableKeysStat& item) noexcept {
 	item.period = 0;
 }
 
-bool tl2::details::Service1DisableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::DisableKeysStat& item) {
+bool tl2::details::Service1DisableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::DisableKeysStat& item) noexcept {
 	s << "{";
 	if (item.period != 0) {
 		s << "\"period\":";
@@ -1439,12 +1392,12 @@ bool tl2::details::Service1DisableKeysStatWriteJSON(std::ostream& s, const ::tl2
 	return true;
 }
 
-bool tl2::details::Service1DisableKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::DisableKeysStat& item) {
+bool tl2::details::Service1DisableKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::DisableKeysStat& item) noexcept {
 	if (!s.int_read(item.period)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1DisableKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::DisableKeysStat& item) {
+bool tl2::details::Service1DisableKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::DisableKeysStat& item) noexcept {
 	if (!s.int_write(item.period)) { return false;}
 	return true;
 }
@@ -1543,11 +1496,11 @@ void tl2::service1::EnableExpiration::write_boxed_or_throw(::basictl::tl_throwab
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1EnableExpirationReset(::tl2::service1::EnableExpiration& item) {
+void tl2::details::Service1EnableExpirationReset(::tl2::service1::EnableExpiration& item) noexcept {
 	item.prefix.clear();
 }
 
-bool tl2::details::Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item) {
+bool tl2::details::Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item) noexcept {
 	s << "{";
 	if (item.prefix.size() != 0) {
 		s << "\"prefix\":";
@@ -1557,12 +1510,12 @@ bool tl2::details::Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl
 	return true;
 }
 
-bool tl2::details::Service1EnableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item) {
+bool tl2::details::Service1EnableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item) noexcept {
 	if (!s.string_read(item.prefix)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1EnableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item) {
+bool tl2::details::Service1EnableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item) noexcept {
 	if (!s.string_write(item.prefix)) { return false;}
 	return true;
 }
@@ -1661,11 +1614,11 @@ void tl2::service1::EnableKeysStat::write_boxed_or_throw(::basictl::tl_throwable
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1EnableKeysStatReset(::tl2::service1::EnableKeysStat& item) {
+void tl2::details::Service1EnableKeysStatReset(::tl2::service1::EnableKeysStat& item) noexcept {
 	item.period = 0;
 }
 
-bool tl2::details::Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::EnableKeysStat& item) {
+bool tl2::details::Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::EnableKeysStat& item) noexcept {
 	s << "{";
 	if (item.period != 0) {
 		s << "\"period\":";
@@ -1675,12 +1628,12 @@ bool tl2::details::Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tl2:
 	return true;
 }
 
-bool tl2::details::Service1EnableKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::EnableKeysStat& item) {
+bool tl2::details::Service1EnableKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::EnableKeysStat& item) noexcept {
 	if (!s.int_read(item.period)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1EnableKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableKeysStat& item) {
+bool tl2::details::Service1EnableKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableKeysStat& item) noexcept {
 	if (!s.int_write(item.period)) { return false;}
 	return true;
 }
@@ -1779,11 +1732,11 @@ void tl2::service1::Exists::write_boxed_or_throw(::basictl::tl_throwable_ostream
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1ExistsReset(::tl2::service1::Exists& item) {
+void tl2::details::Service1ExistsReset(::tl2::service1::Exists& item) noexcept {
 	item.key.clear();
 }
 
-bool tl2::details::Service1ExistsWriteJSON(std::ostream& s, const ::tl2::service1::Exists& item) {
+bool tl2::details::Service1ExistsWriteJSON(std::ostream& s, const ::tl2::service1::Exists& item) noexcept {
 	s << "{";
 	if (item.key.size() != 0) {
 		s << "\"key\":";
@@ -1793,12 +1746,12 @@ bool tl2::details::Service1ExistsWriteJSON(std::ostream& s, const ::tl2::service
 	return true;
 }
 
-bool tl2::details::Service1ExistsRead(::basictl::tl_istream & s, ::tl2::service1::Exists& item) {
+bool tl2::details::Service1ExistsRead(::basictl::tl_istream & s, ::tl2::service1::Exists& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1ExistsWrite(::basictl::tl_ostream & s, const ::tl2::service1::Exists& item) {
+bool tl2::details::Service1ExistsWrite(::basictl::tl_ostream & s, const ::tl2::service1::Exists& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	return true;
 }
@@ -1897,11 +1850,11 @@ void tl2::service1::Get::write_boxed_or_throw(::basictl::tl_throwable_ostream & 
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetReset(::tl2::service1::Get& item) {
+void tl2::details::Service1GetReset(::tl2::service1::Get& item) noexcept {
 	item.key.clear();
 }
 
-bool tl2::details::Service1GetWriteJSON(std::ostream& s, const ::tl2::service1::Get& item) {
+bool tl2::details::Service1GetWriteJSON(std::ostream& s, const ::tl2::service1::Get& item) noexcept {
 	s << "{";
 	if (item.key.size() != 0) {
 		s << "\"key\":";
@@ -1911,12 +1864,12 @@ bool tl2::details::Service1GetWriteJSON(std::ostream& s, const ::tl2::service1::
 	return true;
 }
 
-bool tl2::details::Service1GetRead(::basictl::tl_istream & s, ::tl2::service1::Get& item) {
+bool tl2::details::Service1GetRead(::basictl::tl_istream & s, ::tl2::service1::Get& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetWrite(::basictl::tl_ostream & s, const ::tl2::service1::Get& item) {
+bool tl2::details::Service1GetWrite(::basictl::tl_ostream & s, const ::tl2::service1::Get& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	return true;
 }
@@ -2015,11 +1968,11 @@ void tl2::service1::GetExpireTime::write_boxed_or_throw(::basictl::tl_throwable_
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetExpireTimeReset(::tl2::service1::GetExpireTime& item) {
+void tl2::details::Service1GetExpireTimeReset(::tl2::service1::GetExpireTime& item) noexcept {
 	item.key.clear();
 }
 
-bool tl2::details::Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tl2::service1::GetExpireTime& item) {
+bool tl2::details::Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tl2::service1::GetExpireTime& item) noexcept {
 	s << "{";
 	if (item.key.size() != 0) {
 		s << "\"key\":";
@@ -2029,12 +1982,12 @@ bool tl2::details::Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::Service1GetExpireTimeRead(::basictl::tl_istream & s, ::tl2::service1::GetExpireTime& item) {
+bool tl2::details::Service1GetExpireTimeRead(::basictl::tl_istream & s, ::tl2::service1::GetExpireTime& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetExpireTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetExpireTime& item) {
+bool tl2::details::Service1GetExpireTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetExpireTime& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	return true;
 }
@@ -2133,11 +2086,11 @@ void tl2::service1::GetKeysStat::write_boxed_or_throw(::basictl::tl_throwable_os
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetKeysStatReset(::tl2::service1::GetKeysStat& item) {
+void tl2::details::Service1GetKeysStatReset(::tl2::service1::GetKeysStat& item) noexcept {
 	item.period = 0;
 }
 
-bool tl2::details::Service1GetKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStat& item) {
+bool tl2::details::Service1GetKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStat& item) noexcept {
 	s << "{";
 	if (item.period != 0) {
 		s << "\"period\":";
@@ -2147,12 +2100,12 @@ bool tl2::details::Service1GetKeysStatWriteJSON(std::ostream& s, const ::tl2::se
 	return true;
 }
 
-bool tl2::details::Service1GetKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::GetKeysStat& item) {
+bool tl2::details::Service1GetKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::GetKeysStat& item) noexcept {
 	if (!s.int_read(item.period)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetKeysStat& item) {
+bool tl2::details::Service1GetKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetKeysStat& item) noexcept {
 	if (!s.int_write(item.period)) { return false;}
 	return true;
 }
@@ -2251,19 +2204,19 @@ void tl2::service1::GetKeysStatPeriods::write_boxed_or_throw(::basictl::tl_throw
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetKeysStatPeriodsReset(::tl2::service1::GetKeysStatPeriods& item) {
+void tl2::details::Service1GetKeysStatPeriodsReset(::tl2::service1::GetKeysStatPeriods& item) noexcept {
 }
 
-bool tl2::details::Service1GetKeysStatPeriodsWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStatPeriods& item) {
+bool tl2::details::Service1GetKeysStatPeriodsWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStatPeriods& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::Service1GetKeysStatPeriodsRead(::basictl::tl_istream & s, ::tl2::service1::GetKeysStatPeriods& item) {
+bool tl2::details::Service1GetKeysStatPeriodsRead(::basictl::tl_istream & s, ::tl2::service1::GetKeysStatPeriods& item) noexcept {
 	return true;
 }
 
-bool tl2::details::Service1GetKeysStatPeriodsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetKeysStatPeriods& item) {
+bool tl2::details::Service1GetKeysStatPeriodsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetKeysStatPeriods& item) noexcept {
 	return true;
 }
 
@@ -2363,11 +2316,11 @@ void tl2::service1::GetWildcard::write_boxed_or_throw(::basictl::tl_throwable_os
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetWildcardReset(::tl2::service1::GetWildcard& item) {
+void tl2::details::Service1GetWildcardReset(::tl2::service1::GetWildcard& item) noexcept {
 	item.prefix.clear();
 }
 
-bool tl2::details::Service1GetWildcardWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcard& item) {
+bool tl2::details::Service1GetWildcardWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcard& item) noexcept {
 	s << "{";
 	if (item.prefix.size() != 0) {
 		s << "\"prefix\":";
@@ -2377,12 +2330,12 @@ bool tl2::details::Service1GetWildcardWriteJSON(std::ostream& s, const ::tl2::se
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcard& item) {
+bool tl2::details::Service1GetWildcardRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcard& item) noexcept {
 	if (!s.string_read(item.prefix)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcard& item) {
+bool tl2::details::Service1GetWildcardWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcard& item) noexcept {
 	if (!s.string_write(item.prefix)) { return false;}
 	return true;
 }
@@ -2483,11 +2436,11 @@ void tl2::service1::GetWildcardDict::write_boxed_or_throw(::basictl::tl_throwabl
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict& item) {
+void tl2::details::Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict& item) noexcept {
 	item.prefix.clear();
 }
 
-bool tl2::details::Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item) {
+bool tl2::details::Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item) noexcept {
 	s << "{";
 	if (item.prefix.size() != 0) {
 		s << "\"prefix\":";
@@ -2497,12 +2450,12 @@ bool tl2::details::Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardDictRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item) {
+bool tl2::details::Service1GetWildcardDictRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item) noexcept {
 	if (!s.string_read(item.prefix)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardDictWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item) {
+bool tl2::details::Service1GetWildcardDictWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item) noexcept {
 	if (!s.string_write(item.prefix)) { return false;}
 	return true;
 }
@@ -2603,11 +2556,11 @@ void tl2::service1::GetWildcardList::write_boxed_or_throw(::basictl::tl_throwabl
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetWildcardListReset(::tl2::service1::GetWildcardList& item) {
+void tl2::details::Service1GetWildcardListReset(::tl2::service1::GetWildcardList& item) noexcept {
 	item.prefix.clear();
 }
 
-bool tl2::details::Service1GetWildcardListWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardList& item) {
+bool tl2::details::Service1GetWildcardListWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardList& item) noexcept {
 	s << "{";
 	if (item.prefix.size() != 0) {
 		s << "\"prefix\":";
@@ -2617,12 +2570,12 @@ bool tl2::details::Service1GetWildcardListWriteJSON(std::ostream& s, const ::tl2
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardListRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardList& item) {
+bool tl2::details::Service1GetWildcardListRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardList& item) noexcept {
 	if (!s.string_read(item.prefix)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardListWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardList& item) {
+bool tl2::details::Service1GetWildcardListWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardList& item) noexcept {
 	if (!s.string_write(item.prefix)) { return false;}
 	return true;
 }
@@ -2723,11 +2676,11 @@ void tl2::service1::GetWildcardWithFlags::write_boxed_or_throw(::basictl::tl_thr
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1GetWildcardWithFlagsReset(::tl2::service1::GetWildcardWithFlags& item) {
+void tl2::details::Service1GetWildcardWithFlagsReset(::tl2::service1::GetWildcardWithFlags& item) noexcept {
 	item.prefix.clear();
 }
 
-bool tl2::details::Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardWithFlags& item) {
+bool tl2::details::Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardWithFlags& item) noexcept {
 	s << "{";
 	if (item.prefix.size() != 0) {
 		s << "\"prefix\":";
@@ -2737,12 +2690,12 @@ bool tl2::details::Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const 
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardWithFlagsRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item) {
+bool tl2::details::Service1GetWildcardWithFlagsRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item) noexcept {
 	if (!s.string_read(item.prefix)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1GetWildcardWithFlagsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardWithFlags& item) {
+bool tl2::details::Service1GetWildcardWithFlagsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardWithFlags& item) noexcept {
 	if (!s.string_write(item.prefix)) { return false;}
 	return true;
 }
@@ -2843,12 +2796,12 @@ void tl2::service1::Incr::write_boxed_or_throw(::basictl::tl_throwable_ostream &
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1IncrReset(::tl2::service1::Incr& item) {
+void tl2::details::Service1IncrReset(::tl2::service1::Incr& item) noexcept {
 	item.key.clear();
 	item.value = 0;
 }
 
-bool tl2::details::Service1IncrWriteJSON(std::ostream& s, const ::tl2::service1::Incr& item) {
+bool tl2::details::Service1IncrWriteJSON(std::ostream& s, const ::tl2::service1::Incr& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -2868,13 +2821,13 @@ bool tl2::details::Service1IncrWriteJSON(std::ostream& s, const ::tl2::service1:
 	return true;
 }
 
-bool tl2::details::Service1IncrRead(::basictl::tl_istream & s, ::tl2::service1::Incr& item) {
+bool tl2::details::Service1IncrRead(::basictl::tl_istream & s, ::tl2::service1::Incr& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.long_read(item.value)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1IncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::Incr& item) {
+bool tl2::details::Service1IncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::Incr& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.long_write(item.value)) { return false;}
 	return true;
@@ -2974,12 +2927,12 @@ void tl2::service1::KeysStat::write_boxed_or_throw(::basictl::tl_throwable_ostre
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1KeysStatReset(::tl2::service1::KeysStat& item) {
+void tl2::details::Service1KeysStatReset(::tl2::service1::KeysStat& item) noexcept {
 	item.start_time = 0;
 	item.keys_tops.clear();
 }
 
-bool tl2::details::Service1KeysStatWriteJSON(std::ostream& s, const ::tl2::service1::KeysStat& item) {
+bool tl2::details::Service1KeysStatWriteJSON(std::ostream& s, const ::tl2::service1::KeysStat& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.start_time != 0) {
@@ -2999,13 +2952,13 @@ bool tl2::details::Service1KeysStatWriteJSON(std::ostream& s, const ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service1KeysStatRead(::basictl::tl_istream & s, ::tl2::service1::KeysStat& item) {
+bool tl2::details::Service1KeysStatRead(::basictl::tl_istream & s, ::tl2::service1::KeysStat& item) noexcept {
 	if (!s.int_read(item.start_time)) { return false; }
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntRead(s, item.keys_tops)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1KeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::KeysStat& item) {
+bool tl2::details::Service1KeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::KeysStat& item) noexcept {
 	if (!s.int_write(item.start_time)) { return false;}
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntWrite(s, item.keys_tops)) { return false; }
 	return true;
@@ -3106,12 +3059,12 @@ void tl2::service1::Longvalue::write_boxed_or_throw(::basictl::tl_throwable_ostr
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1LongvalueReset(::tl2::service1::Longvalue& item) {
+void tl2::details::Service1LongvalueReset(::tl2::service1::Longvalue& item) noexcept {
 	item.value = 0;
 	item.flags = 0;
 }
 
-bool tl2::details::Service1LongvalueWriteJSON(std::ostream& s, const ::tl2::service1::Longvalue& item) {
+bool tl2::details::Service1LongvalueWriteJSON(std::ostream& s, const ::tl2::service1::Longvalue& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
@@ -3131,13 +3084,13 @@ bool tl2::details::Service1LongvalueWriteJSON(std::ostream& s, const ::tl2::serv
 	return true;
 }
 
-bool tl2::details::Service1LongvalueRead(::basictl::tl_istream & s, ::tl2::service1::Longvalue& item) {
+bool tl2::details::Service1LongvalueRead(::basictl::tl_istream & s, ::tl2::service1::Longvalue& item) noexcept {
 	if (!s.long_read(item.value)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1LongvalueWrite(::basictl::tl_ostream & s, const ::tl2::service1::Longvalue& item) {
+bool tl2::details::Service1LongvalueWrite(::basictl::tl_ostream & s, const ::tl2::service1::Longvalue& item) noexcept {
 	if (!s.long_write(item.value)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	return true;
@@ -3206,13 +3159,13 @@ void tl2::service1::LongvalueWithTime::write_boxed_or_throw(::basictl::tl_throwa
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1LongvalueWithTimeReset(::tl2::service1::LongvalueWithTime& item) {
+void tl2::details::Service1LongvalueWithTimeReset(::tl2::service1::LongvalueWithTime& item) noexcept {
 	item.value = 0;
 	item.flags = 0;
 	item.modificationTime = 0;
 }
 
-bool tl2::details::Service1LongvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::LongvalueWithTime& item) {
+bool tl2::details::Service1LongvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::LongvalueWithTime& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.value != 0) {
@@ -3240,14 +3193,14 @@ bool tl2::details::Service1LongvalueWithTimeWriteJSON(std::ostream& s, const ::t
 	return true;
 }
 
-bool tl2::details::Service1LongvalueWithTimeRead(::basictl::tl_istream & s, ::tl2::service1::LongvalueWithTime& item) {
+bool tl2::details::Service1LongvalueWithTimeRead(::basictl::tl_istream & s, ::tl2::service1::LongvalueWithTime& item) noexcept {
 	if (!s.long_read(item.value)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.modificationTime)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1LongvalueWithTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::LongvalueWithTime& item) {
+bool tl2::details::Service1LongvalueWithTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::LongvalueWithTime& item) noexcept {
 	if (!s.long_write(item.value)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.modificationTime)) { return false;}
@@ -3317,19 +3270,19 @@ void tl2::service1::Not_found::write_boxed_or_throw(::basictl::tl_throwable_ostr
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1NotFoundReset(::tl2::service1::Not_found& item) {
+void tl2::details::Service1NotFoundReset(::tl2::service1::Not_found& item) noexcept {
 }
 
-bool tl2::details::Service1NotFoundWriteJSON(std::ostream& s, const ::tl2::service1::Not_found& item) {
+bool tl2::details::Service1NotFoundWriteJSON(std::ostream& s, const ::tl2::service1::Not_found& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::Service1NotFoundRead(::basictl::tl_istream & s, ::tl2::service1::Not_found& item) {
+bool tl2::details::Service1NotFoundRead(::basictl::tl_istream & s, ::tl2::service1::Not_found& item) noexcept {
 	return true;
 }
 
-bool tl2::details::Service1NotFoundWrite(::basictl::tl_ostream & s, const ::tl2::service1::Not_found& item) {
+bool tl2::details::Service1NotFoundWrite(::basictl::tl_ostream & s, const ::tl2::service1::Not_found& item) noexcept {
 	return true;
 }
 
@@ -3396,14 +3349,14 @@ void tl2::service1::Replace::write_boxed_or_throw(::basictl::tl_throwable_ostrea
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1ReplaceReset(::tl2::service1::Replace& item) {
+void tl2::details::Service1ReplaceReset(::tl2::service1::Replace& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value.clear();
 }
 
-bool tl2::details::Service1ReplaceWriteJSON(std::ostream& s, const ::tl2::service1::Replace& item) {
+bool tl2::details::Service1ReplaceWriteJSON(std::ostream& s, const ::tl2::service1::Replace& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -3439,7 +3392,7 @@ bool tl2::details::Service1ReplaceWriteJSON(std::ostream& s, const ::tl2::servic
 	return true;
 }
 
-bool tl2::details::Service1ReplaceRead(::basictl::tl_istream & s, ::tl2::service1::Replace& item) {
+bool tl2::details::Service1ReplaceRead(::basictl::tl_istream & s, ::tl2::service1::Replace& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -3447,7 +3400,7 @@ bool tl2::details::Service1ReplaceRead(::basictl::tl_istream & s, ::tl2::service
 	return true;
 }
 
-bool tl2::details::Service1ReplaceWrite(::basictl::tl_ostream & s, const ::tl2::service1::Replace& item) {
+bool tl2::details::Service1ReplaceWrite(::basictl::tl_ostream & s, const ::tl2::service1::Replace& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -3549,14 +3502,14 @@ void tl2::service1::ReplaceOrIncr::write_boxed_or_throw(::basictl::tl_throwable_
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1ReplaceOrIncrReset(::tl2::service1::ReplaceOrIncr& item) {
+void tl2::details::Service1ReplaceOrIncrReset(::tl2::service1::ReplaceOrIncr& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value = 0;
 }
 
-bool tl2::details::Service1ReplaceOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::ReplaceOrIncr& item) {
+bool tl2::details::Service1ReplaceOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::ReplaceOrIncr& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -3592,7 +3545,7 @@ bool tl2::details::Service1ReplaceOrIncrWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::Service1ReplaceOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::ReplaceOrIncr& item) {
+bool tl2::details::Service1ReplaceOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::ReplaceOrIncr& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -3600,7 +3553,7 @@ bool tl2::details::Service1ReplaceOrIncrRead(::basictl::tl_istream & s, ::tl2::s
 	return true;
 }
 
-bool tl2::details::Service1ReplaceOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::ReplaceOrIncr& item) {
+bool tl2::details::Service1ReplaceOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::ReplaceOrIncr& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -3702,14 +3655,14 @@ void tl2::service1::Set::write_boxed_or_throw(::basictl::tl_throwable_ostream & 
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1SetReset(::tl2::service1::Set& item) {
+void tl2::details::Service1SetReset(::tl2::service1::Set& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value.clear();
 }
 
-bool tl2::details::Service1SetWriteJSON(std::ostream& s, const ::tl2::service1::Set& item) {
+bool tl2::details::Service1SetWriteJSON(std::ostream& s, const ::tl2::service1::Set& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -3745,7 +3698,7 @@ bool tl2::details::Service1SetWriteJSON(std::ostream& s, const ::tl2::service1::
 	return true;
 }
 
-bool tl2::details::Service1SetRead(::basictl::tl_istream & s, ::tl2::service1::Set& item) {
+bool tl2::details::Service1SetRead(::basictl::tl_istream & s, ::tl2::service1::Set& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -3753,7 +3706,7 @@ bool tl2::details::Service1SetRead(::basictl::tl_istream & s, ::tl2::service1::S
 	return true;
 }
 
-bool tl2::details::Service1SetWrite(::basictl::tl_ostream & s, const ::tl2::service1::Set& item) {
+bool tl2::details::Service1SetWrite(::basictl::tl_ostream & s, const ::tl2::service1::Set& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -3855,14 +3808,14 @@ void tl2::service1::SetOrIncr::write_boxed_or_throw(::basictl::tl_throwable_ostr
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1SetOrIncrReset(::tl2::service1::SetOrIncr& item) {
+void tl2::details::Service1SetOrIncrReset(::tl2::service1::SetOrIncr& item) noexcept {
 	item.key.clear();
 	item.flags = 0;
 	item.delay = 0;
 	item.value = 0;
 }
 
-bool tl2::details::Service1SetOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::SetOrIncr& item) {
+bool tl2::details::Service1SetOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::SetOrIncr& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -3898,7 +3851,7 @@ bool tl2::details::Service1SetOrIncrWriteJSON(std::ostream& s, const ::tl2::serv
 	return true;
 }
 
-bool tl2::details::Service1SetOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::SetOrIncr& item) {
+bool tl2::details::Service1SetOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::SetOrIncr& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
@@ -3906,7 +3859,7 @@ bool tl2::details::Service1SetOrIncrRead(::basictl::tl_istream & s, ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service1SetOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::SetOrIncr& item) {
+bool tl2::details::Service1SetOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::SetOrIncr& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
@@ -4008,12 +3961,12 @@ void tl2::service1::Strvalue::write_boxed_or_throw(::basictl::tl_throwable_ostre
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1StrvalueReset(::tl2::service1::Strvalue& item) {
+void tl2::details::Service1StrvalueReset(::tl2::service1::Strvalue& item) noexcept {
 	item.value.clear();
 	item.flags = 0;
 }
 
-bool tl2::details::Service1StrvalueWriteJSON(std::ostream& s, const ::tl2::service1::Strvalue& item) {
+bool tl2::details::Service1StrvalueWriteJSON(std::ostream& s, const ::tl2::service1::Strvalue& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
@@ -4033,13 +3986,13 @@ bool tl2::details::Service1StrvalueWriteJSON(std::ostream& s, const ::tl2::servi
 	return true;
 }
 
-bool tl2::details::Service1StrvalueRead(::basictl::tl_istream & s, ::tl2::service1::Strvalue& item) {
+bool tl2::details::Service1StrvalueRead(::basictl::tl_istream & s, ::tl2::service1::Strvalue& item) noexcept {
 	if (!s.string_read(item.value)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1StrvalueWrite(::basictl::tl_ostream & s, const ::tl2::service1::Strvalue& item) {
+bool tl2::details::Service1StrvalueWrite(::basictl::tl_ostream & s, const ::tl2::service1::Strvalue& item) noexcept {
 	if (!s.string_write(item.value)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	return true;
@@ -4108,13 +4061,13 @@ void tl2::service1::StrvalueWithTime::write_boxed_or_throw(::basictl::tl_throwab
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1StrvalueWithTimeReset(::tl2::service1::StrvalueWithTime& item) {
+void tl2::details::Service1StrvalueWithTimeReset(::tl2::service1::StrvalueWithTime& item) noexcept {
 	item.value.clear();
 	item.flags = 0;
 	item.modificationTime = 0;
 }
 
-bool tl2::details::Service1StrvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::StrvalueWithTime& item) {
+bool tl2::details::Service1StrvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::StrvalueWithTime& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.value.size() != 0) {
@@ -4142,14 +4095,14 @@ bool tl2::details::Service1StrvalueWithTimeWriteJSON(std::ostream& s, const ::tl
 	return true;
 }
 
-bool tl2::details::Service1StrvalueWithTimeRead(::basictl::tl_istream & s, ::tl2::service1::StrvalueWithTime& item) {
+bool tl2::details::Service1StrvalueWithTimeRead(::basictl::tl_istream & s, ::tl2::service1::StrvalueWithTime& item) noexcept {
 	if (!s.string_read(item.value)) { return false; }
 	if (!s.int_read(item.flags)) { return false; }
 	if (!s.int_read(item.modificationTime)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1StrvalueWithTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::StrvalueWithTime& item) {
+bool tl2::details::Service1StrvalueWithTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::StrvalueWithTime& item) noexcept {
 	if (!s.string_write(item.value)) { return false;}
 	if (!s.int_write(item.flags)) { return false;}
 	if (!s.int_write(item.modificationTime)) { return false;}
@@ -4219,12 +4172,12 @@ void tl2::service1::Touch::write_boxed_or_throw(::basictl::tl_throwable_ostream 
 	s2.pass_data(s);
 }
 
-void tl2::details::Service1TouchReset(::tl2::service1::Touch& item) {
+void tl2::details::Service1TouchReset(::tl2::service1::Touch& item) noexcept {
 	item.key.clear();
 	item.delay = 0;
 }
 
-bool tl2::details::Service1TouchWriteJSON(std::ostream& s, const ::tl2::service1::Touch& item) {
+bool tl2::details::Service1TouchWriteJSON(std::ostream& s, const ::tl2::service1::Touch& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -4244,13 +4197,13 @@ bool tl2::details::Service1TouchWriteJSON(std::ostream& s, const ::tl2::service1
 	return true;
 }
 
-bool tl2::details::Service1TouchRead(::basictl::tl_istream & s, ::tl2::service1::Touch& item) {
+bool tl2::details::Service1TouchRead(::basictl::tl_istream & s, ::tl2::service1::Touch& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.int_read(item.delay)) { return false; }
 	return true;
 }
 
-bool tl2::details::Service1TouchWrite(::basictl::tl_ostream & s, const ::tl2::service1::Touch& item) {
+bool tl2::details::Service1TouchWrite(::basictl::tl_ostream & s, const ::tl2::service1::Touch& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.int_write(item.delay)) { return false;}
 	return true;
@@ -4304,14 +4257,27 @@ bool tl2::service1::Value::write_json(std::ostream & s)const {
 	if (!::tl2::details::Service1ValueWriteJSON(s, *this)) { return false; }
 	return true;
 }
-bool tl2::service1::Value::read_boxed(::basictl::tl_istream & s) {
+bool tl2::service1::Value::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::Service1ValueReadBoxed(s, *this)) { return false; }
 	return true;
 }
-bool tl2::service1::Value::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::service1::Value::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::Service1ValueWriteBoxed(s, *this)) { return false; }
 	return true;
 }
+
+void tl2::service1::Value::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::service1::Value::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
 std::string_view tl2::service1::Value::tl_name() const {
 	return Service1Value_tbl_tl_name[value.index()];
 }
@@ -4320,11 +4286,11 @@ uint32_t tl2::service1::Value::tl_tag() const {
 }
 
 
-void tl2::details::Service1ValueReset(::tl2::service1::Value& item) {
+void tl2::details::Service1ValueReset(::tl2::service1::Value& item) noexcept{
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::Service1ValueWriteJSON(std::ostream & s, const ::tl2::service1::Value& item) {
+bool tl2::details::Service1ValueWriteJSON(std::ostream & s, const ::tl2::service1::Value& item) noexcept {
 	s << "{";
 	s << "\"type\":";
 	s << "\"" << Service1Value_tbl_tl_name[item.value.index()] << "\"";
@@ -4349,7 +4315,7 @@ bool tl2::details::Service1ValueWriteJSON(std::ostream & s, const ::tl2::service
 	s << "}";
 	return true;
 }
-bool tl2::details::Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Value& item) {
+bool tl2::details::Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Value& item) noexcept {
 	uint32_t nat;
 	s.nat_read(nat);
 	switch (nat) {
@@ -4378,7 +4344,7 @@ bool tl2::details::Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::serv
 	return true;
 }
 
-bool tl2::details::Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Value& item) {
+bool tl2::details::Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Value& item) noexcept{
 	s.nat_write(Service1Value_tbl_tl_tag[item.value.index()]);
 	switch (item.value.index()) {
 	case 1:
@@ -4429,21 +4395,21 @@ bool tl2::details::Service1ValueBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, 
 	return true;
 }
 
-void tl2::details::VectorDictionaryFieldDictionaryIntReset(std::map<std::string, std::map<std::string, int32_t>>& item) {
+void tl2::details::VectorDictionaryFieldDictionaryIntReset(std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::VectorDictionaryFieldDictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, std::map<std::string, int32_t>>& item) {
+bool tl2::details::VectorDictionaryFieldDictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::VectorDictionaryFieldDictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item) {
+bool tl2::details::VectorDictionaryFieldDictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::VectorDictionaryFieldDictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) {
+bool tl2::details::VectorDictionaryFieldDictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldDictionaryIntWrite(s, item)) { return false; }
 	return true;
 }

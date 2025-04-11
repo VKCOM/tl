@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item);
+void TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) noexcept;
 
-bool TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::tasks::FullFilledCron& item);
-bool TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item);
-bool TasksFullFilledCronWrite(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item);
+bool TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::tasks::FullFilledCron& item) noexcept;
+bool TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item) noexcept; 
+bool TasksFullFilledCronWrite(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item) noexcept;
 bool TasksFullFilledCronReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item);
 bool TasksFullFilledCronWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item);
 

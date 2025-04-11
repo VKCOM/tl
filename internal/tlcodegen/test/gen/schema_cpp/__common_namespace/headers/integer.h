@@ -16,11 +16,11 @@ bool BuiltinVectorIntegerWrite(::basictl::tl_ostream & s, const std::vector<::tl
 
 namespace tl2 { namespace details { 
 
-void IntegerReset(::tl2::Integer& item);
+void IntegerReset(::tl2::Integer& item) noexcept;
 
-bool IntegerWriteJSON(std::ostream& s, const ::tl2::Integer& item);
-bool IntegerRead(::basictl::tl_istream & s, ::tl2::Integer& item);
-bool IntegerWrite(::basictl::tl_ostream & s, const ::tl2::Integer& item);
+bool IntegerWriteJSON(std::ostream& s, const ::tl2::Integer& item) noexcept;
+bool IntegerRead(::basictl::tl_istream & s, ::tl2::Integer& item) noexcept; 
+bool IntegerWrite(::basictl::tl_ostream & s, const ::tl2::Integer& item) noexcept;
 bool IntegerReadBoxed(::basictl::tl_istream & s, ::tl2::Integer& item);
 bool IntegerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Integer& item);
 

@@ -18,11 +18,11 @@ bool BuiltinTuple2PairTupleIntTupleIntWrite(::basictl::tl_ostream & s, const std
 
 namespace tl2 { namespace details { 
 
-void PairTupleIntTupleIntReset(::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item);
+void PairTupleIntTupleIntReset(::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item) noexcept;
 
-bool PairTupleIntTupleIntWriteJSON(std::ostream& s, const ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y);
-bool PairTupleIntTupleIntRead(::basictl::tl_istream & s, ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y);
-bool PairTupleIntTupleIntWrite(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y);
+bool PairTupleIntTupleIntWriteJSON(std::ostream& s, const ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y) noexcept;
+bool PairTupleIntTupleIntRead(::basictl::tl_istream & s, ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y) noexcept; 
+bool PairTupleIntTupleIntWrite(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y) noexcept;
 bool PairTupleIntTupleIntReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y);
 bool PairTupleIntTupleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>& item, uint32_t nat_X, uint32_t nat_Y);
 
@@ -30,11 +30,11 @@ bool PairTupleIntTupleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair
 
 namespace tl2 { namespace details { 
 
-void PairTupleTupleInt2TupleTupleInt2Reset(::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item);
+void PairTupleTupleInt2TupleTupleInt2Reset(::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item) noexcept;
 
-bool PairTupleTupleInt2TupleTupleInt2WriteJSON(std::ostream& s, const ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y);
-bool PairTupleTupleInt2TupleTupleInt2Read(::basictl::tl_istream & s, ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y);
-bool PairTupleTupleInt2TupleTupleInt2Write(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y);
+bool PairTupleTupleInt2TupleTupleInt2WriteJSON(std::ostream& s, const ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y) noexcept;
+bool PairTupleTupleInt2TupleTupleInt2Read(::basictl::tl_istream & s, ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y) noexcept; 
+bool PairTupleTupleInt2TupleTupleInt2Write(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y) noexcept;
 bool PairTupleTupleInt2TupleTupleInt2ReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y);
 bool PairTupleTupleInt2TupleTupleInt2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<std::array<int32_t, 2>>, std::vector<std::array<int32_t, 2>>>& item, uint32_t nat_X, uint32_t nat_Y);
 
@@ -42,11 +42,11 @@ bool PairTupleTupleInt2TupleTupleInt2WriteBoxed(::basictl::tl_ostream & s, const
 
 namespace tl2 { namespace details { 
 
-void PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2Reset(::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item);
+void PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2Reset(::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item) noexcept;
 
-bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2WriteJSON(std::ostream& s, const ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn);
-bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2Read(::basictl::tl_istream & s, ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn);
-bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2Write(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn);
+bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2WriteJSON(std::ostream& s, const ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn) noexcept;
+bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2Read(::basictl::tl_istream & s, ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn) noexcept; 
+bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2Write(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn) noexcept;
 bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2ReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn);
 bool PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>>& item, uint32_t nat_XttXn, uint32_t nat_XttYn, uint32_t nat_Xn, uint32_t nat_YttXn, uint32_t nat_YttYn, uint32_t nat_Yn);
 

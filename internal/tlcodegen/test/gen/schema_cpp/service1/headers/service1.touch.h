@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1TouchReset(::tl2::service1::Touch& item);
+void Service1TouchReset(::tl2::service1::Touch& item) noexcept;
 
-bool Service1TouchWriteJSON(std::ostream& s, const ::tl2::service1::Touch& item);
-bool Service1TouchRead(::basictl::tl_istream & s, ::tl2::service1::Touch& item);
-bool Service1TouchWrite(::basictl::tl_ostream & s, const ::tl2::service1::Touch& item);
+bool Service1TouchWriteJSON(std::ostream& s, const ::tl2::service1::Touch& item) noexcept;
+bool Service1TouchRead(::basictl::tl_istream & s, ::tl2::service1::Touch& item) noexcept; 
+bool Service1TouchWrite(::basictl::tl_ostream & s, const ::tl2::service1::Touch& item) noexcept;
 bool Service1TouchReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Touch& item);
 bool Service1TouchWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Touch& item);
 

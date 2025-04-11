@@ -224,12 +224,12 @@ void tl2::cases_bytes::TestArray::write_boxed_or_throw(::basictl::tl_throwable_o
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item) {
+void tl2::details::CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item) noexcept {
 	item.n = 0;
 	item.arr.clear();
 }
 
-bool tl2::details::CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) {
+bool tl2::details::CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.n != 0) {
@@ -249,13 +249,13 @@ bool tl2::details::CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::ca
 	return true;
 }
 
-bool tl2::details::CasesBytesTestArrayRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item) {
+bool tl2::details::CasesBytesTestArrayRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item) noexcept {
 	if (!s.nat_read(item.n)) { return false; }
 	if (!::tl2::details::BuiltinTupleStringRead(s, item.arr, item.n)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestArrayWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item) {
+bool tl2::details::CasesBytesTestArrayWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item) noexcept {
 	if (!s.nat_write(item.n)) { return false;}
 	if (!::tl2::details::BuiltinTupleStringWrite(s, item.arr, item.n)) { return false; }
 	return true;
@@ -324,11 +324,11 @@ void tl2::cases_bytes::TestDictAny::write_boxed_or_throw(::basictl::tl_throwable
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestDictAnyReset(::tl2::cases_bytes::TestDictAny& item) {
+void tl2::details::CasesBytesTestDictAnyReset(::tl2::cases_bytes::TestDictAny& item) noexcept {
 	::tl2::details::DictionaryAnyDoubleIntReset(item.dict);
 }
 
-bool tl2::details::CasesBytesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictAny& item) {
+bool tl2::details::CasesBytesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictAny& item) noexcept {
 	s << "{";
 	if (item.dict.size() != 0) {
 		s << "\"dict\":";
@@ -338,12 +338,12 @@ bool tl2::details::CasesBytesTestDictAnyWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictAnyRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictAny& item) {
+bool tl2::details::CasesBytesTestDictAnyRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictAny& item) noexcept {
 	if (!::tl2::details::DictionaryAnyDoubleIntRead(s, item.dict)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictAnyWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictAny& item) {
+bool tl2::details::CasesBytesTestDictAnyWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictAny& item) noexcept {
 	if (!::tl2::details::DictionaryAnyDoubleIntWrite(s, item.dict)) { return false; }
 	return true;
 }
@@ -411,11 +411,11 @@ void tl2::cases_bytes::TestDictInt::write_boxed_or_throw(::basictl::tl_throwable
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestDictIntReset(::tl2::cases_bytes::TestDictInt& item) {
+void tl2::details::CasesBytesTestDictIntReset(::tl2::cases_bytes::TestDictInt& item) noexcept {
 	item.dict.clear();
 }
 
-bool tl2::details::CasesBytesTestDictIntWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictInt& item) {
+bool tl2::details::CasesBytesTestDictIntWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictInt& item) noexcept {
 	s << "{";
 	if (item.dict.size() != 0) {
 		s << "\"dict\":";
@@ -425,12 +425,12 @@ bool tl2::details::CasesBytesTestDictIntWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictIntRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictInt& item) {
+bool tl2::details::CasesBytesTestDictIntRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictInt& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntRead(s, item.dict)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictIntWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictInt& item) {
+bool tl2::details::CasesBytesTestDictIntWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictInt& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWrite(s, item.dict)) { return false; }
 	return true;
 }
@@ -498,11 +498,11 @@ void tl2::cases_bytes::TestDictString::write_boxed_or_throw(::basictl::tl_throwa
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestDictStringReset(::tl2::cases_bytes::TestDictString& item) {
+void tl2::details::CasesBytesTestDictStringReset(::tl2::cases_bytes::TestDictString& item) noexcept {
 	item.dict.clear();
 }
 
-bool tl2::details::CasesBytesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictString& item) {
+bool tl2::details::CasesBytesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictString& item) noexcept {
 	s << "{";
 	if (item.dict.size() != 0) {
 		s << "\"dict\":";
@@ -512,12 +512,12 @@ bool tl2::details::CasesBytesTestDictStringWriteJSON(std::ostream& s, const ::tl
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictStringRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictString& item) {
+bool tl2::details::CasesBytesTestDictStringRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictString& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldIntRead(s, item.dict)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictStringWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictString& item) {
+bool tl2::details::CasesBytesTestDictStringWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictString& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldIntWrite(s, item.dict)) { return false; }
 	return true;
 }
@@ -585,11 +585,11 @@ void tl2::cases_bytes::TestDictStringString::write_boxed_or_throw(::basictl::tl_
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestDictStringStringReset(::tl2::cases_bytes::TestDictStringString& item) {
+void tl2::details::CasesBytesTestDictStringStringReset(::tl2::cases_bytes::TestDictStringString& item) noexcept {
 	item.dict.clear();
 }
 
-bool tl2::details::CasesBytesTestDictStringStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictStringString& item) {
+bool tl2::details::CasesBytesTestDictStringStringWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestDictStringString& item) noexcept {
 	s << "{";
 	if (item.dict.size() != 0) {
 		s << "\"dict\":";
@@ -599,12 +599,12 @@ bool tl2::details::CasesBytesTestDictStringStringWriteJSON(std::ostream& s, cons
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictStringStringRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictStringString& item) {
+bool tl2::details::CasesBytesTestDictStringStringRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestDictStringString& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringRead(s, item.dict)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestDictStringStringWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictStringString& item) {
+bool tl2::details::CasesBytesTestDictStringStringWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestDictStringString& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWrite(s, item.dict)) { return false; }
 	return true;
 }
@@ -626,14 +626,27 @@ bool tl2::cases_bytes::TestEnum::write_json(std::ostream & s)const {
 	if (!::tl2::details::CasesBytesTestEnumWriteJSON(s, *this)) { return false; }
 	return true;
 }
-bool tl2::cases_bytes::TestEnum::read_boxed(::basictl::tl_istream & s) {
+bool tl2::cases_bytes::TestEnum::read_boxed(::basictl::tl_istream & s) noexcept {
 	if (!::tl2::details::CasesBytesTestEnumReadBoxed(s, *this)) { return false; }
 	return true;
 }
-bool tl2::cases_bytes::TestEnum::write_boxed(::basictl::tl_ostream & s)const {
+bool tl2::cases_bytes::TestEnum::write_boxed(::basictl::tl_ostream & s)const noexcept {
 	if (!::tl2::details::CasesBytesTestEnumWriteBoxed(s, *this)) { return false; }
 	return true;
 }
+
+void tl2::cases_bytes::TestEnum::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2);
+	s2.pass_data(s);
+}
+
+void tl2::cases_bytes::TestEnum::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2);
+	s2.pass_data(s);
+}
+
 std::string_view tl2::cases_bytes::TestEnum::tl_name() const {
 	return CasesBytesTestEnum_tbl_tl_name[value.index()];
 }
@@ -642,15 +655,15 @@ uint32_t tl2::cases_bytes::TestEnum::tl_tag() const {
 }
 
 
-void tl2::details::CasesBytesTestEnumReset(::tl2::cases_bytes::TestEnum& item) {
+void tl2::details::CasesBytesTestEnumReset(::tl2::cases_bytes::TestEnum& item) noexcept{
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::CasesBytesTestEnumWriteJSON(std::ostream & s, const ::tl2::cases_bytes::TestEnum& item) {
+bool tl2::details::CasesBytesTestEnumWriteJSON(std::ostream & s, const ::tl2::cases_bytes::TestEnum& item) noexcept {
 	s << "\"" << CasesBytesTestEnum_tbl_tl_name[item.value.index()] << "\"";
 	return true;
 }
-bool tl2::details::CasesBytesTestEnumReadBoxed(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum& item) {
+bool tl2::details::CasesBytesTestEnumReadBoxed(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum& item) noexcept {
 	uint32_t nat;
 	s.nat_read(nat);
 	switch (nat) {
@@ -669,7 +682,7 @@ bool tl2::details::CasesBytesTestEnumReadBoxed(::basictl::tl_istream & s, ::tl2:
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnumWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum& item) {
+bool tl2::details::CasesBytesTestEnumWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum& item) noexcept{
 	s.nat_write(CasesBytesTestEnum_tbl_tl_tag[item.value.index()]);
 	switch (item.value.index()) {
 	}
@@ -729,19 +742,19 @@ void tl2::cases_bytes::TestEnum1::write_boxed_or_throw(::basictl::tl_throwable_o
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestEnum1Reset(::tl2::cases_bytes::TestEnum1& item) {
+void tl2::details::CasesBytesTestEnum1Reset(::tl2::cases_bytes::TestEnum1& item) noexcept {
 }
 
-bool tl2::details::CasesBytesTestEnum1WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum1& item) {
+bool tl2::details::CasesBytesTestEnum1WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum1& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnum1Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum1& item) {
+bool tl2::details::CasesBytesTestEnum1Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum1& item) noexcept {
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnum1Write(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum1& item) {
+bool tl2::details::CasesBytesTestEnum1Write(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum1& item) noexcept {
 	return true;
 }
 
@@ -808,19 +821,19 @@ void tl2::cases_bytes::TestEnum2::write_boxed_or_throw(::basictl::tl_throwable_o
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestEnum2Reset(::tl2::cases_bytes::TestEnum2& item) {
+void tl2::details::CasesBytesTestEnum2Reset(::tl2::cases_bytes::TestEnum2& item) noexcept {
 }
 
-bool tl2::details::CasesBytesTestEnum2WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum2& item) {
+bool tl2::details::CasesBytesTestEnum2WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum2& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnum2Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum2& item) {
+bool tl2::details::CasesBytesTestEnum2Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum2& item) noexcept {
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnum2Write(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum2& item) {
+bool tl2::details::CasesBytesTestEnum2Write(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum2& item) noexcept {
 	return true;
 }
 
@@ -887,19 +900,19 @@ void tl2::cases_bytes::TestEnum3::write_boxed_or_throw(::basictl::tl_throwable_o
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestEnum3Reset(::tl2::cases_bytes::TestEnum3& item) {
+void tl2::details::CasesBytesTestEnum3Reset(::tl2::cases_bytes::TestEnum3& item) noexcept {
 }
 
-bool tl2::details::CasesBytesTestEnum3WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum3& item) {
+bool tl2::details::CasesBytesTestEnum3WriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnum3& item) noexcept {
 	s << "true";
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnum3Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum3& item) {
+bool tl2::details::CasesBytesTestEnum3Read(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnum3& item) noexcept {
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnum3Write(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum3& item) {
+bool tl2::details::CasesBytesTestEnum3Write(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnum3& item) noexcept {
 	return true;
 }
 
@@ -966,11 +979,11 @@ void tl2::cases_bytes::TestEnumContainer::write_boxed_or_throw(::basictl::tl_thr
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestEnumContainerReset(::tl2::cases_bytes::TestEnumContainer& item) {
+void tl2::details::CasesBytesTestEnumContainerReset(::tl2::cases_bytes::TestEnumContainer& item) noexcept {
 	::tl2::details::CasesTestEnumReset(item.value);
 }
 
-bool tl2::details::CasesBytesTestEnumContainerWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnumContainer& item) {
+bool tl2::details::CasesBytesTestEnumContainerWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestEnumContainer& item) noexcept {
 	s << "{";
 	s << "\"value\":";
 	if (!::tl2::details::CasesTestEnumWriteJSON(s, item.value)) { return false; }
@@ -978,12 +991,12 @@ bool tl2::details::CasesBytesTestEnumContainerWriteJSON(std::ostream& s, const :
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnumContainerRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnumContainer& item) {
+bool tl2::details::CasesBytesTestEnumContainerRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestEnumContainer& item) noexcept {
 	if (!::tl2::details::CasesTestEnumReadBoxed(s, item.value)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestEnumContainerWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnumContainer& item) {
+bool tl2::details::CasesBytesTestEnumContainerWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestEnumContainer& item) noexcept {
 	if (!::tl2::details::CasesTestEnumWriteBoxed(s, item.value)) { return false; }
 	return true;
 }
@@ -1051,11 +1064,11 @@ void tl2::cases_bytes::TestTuple::write_boxed_or_throw(::basictl::tl_throwable_o
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestTupleReset(::tl2::cases_bytes::TestTuple& item) {
+void tl2::details::CasesBytesTestTupleReset(::tl2::cases_bytes::TestTuple& item) noexcept {
 	::tl2::details::BuiltinTuple4StringReset(item.tpl);
 }
 
-bool tl2::details::CasesBytesTestTupleWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestTuple& item) {
+bool tl2::details::CasesBytesTestTupleWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestTuple& item) noexcept {
 	s << "{";
 	s << "\"tpl\":";
 	if (!::tl2::details::BuiltinTuple4StringWriteJSON(s, item.tpl)) { return false; }
@@ -1063,12 +1076,12 @@ bool tl2::details::CasesBytesTestTupleWriteJSON(std::ostream& s, const ::tl2::ca
 	return true;
 }
 
-bool tl2::details::CasesBytesTestTupleRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestTuple& item) {
+bool tl2::details::CasesBytesTestTupleRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestTuple& item) noexcept {
 	if (!::tl2::details::BuiltinTuple4StringRead(s, item.tpl)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestTupleWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestTuple& item) {
+bool tl2::details::CasesBytesTestTupleWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestTuple& item) noexcept {
 	if (!::tl2::details::BuiltinTuple4StringWrite(s, item.tpl)) { return false; }
 	return true;
 }
@@ -1136,11 +1149,11 @@ void tl2::cases_bytes::TestVector::write_boxed_or_throw(::basictl::tl_throwable_
 	s2.pass_data(s);
 }
 
-void tl2::details::CasesBytesTestVectorReset(::tl2::cases_bytes::TestVector& item) {
+void tl2::details::CasesBytesTestVectorReset(::tl2::cases_bytes::TestVector& item) noexcept {
 	item.arr.clear();
 }
 
-bool tl2::details::CasesBytesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestVector& item) {
+bool tl2::details::CasesBytesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestVector& item) noexcept {
 	s << "{";
 	if (item.arr.size() != 0) {
 		s << "\"arr\":";
@@ -1150,12 +1163,12 @@ bool tl2::details::CasesBytesTestVectorWriteJSON(std::ostream& s, const ::tl2::c
 	return true;
 }
 
-bool tl2::details::CasesBytesTestVectorRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestVector& item) {
+bool tl2::details::CasesBytesTestVectorRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestVector& item) noexcept {
 	if (!::tl2::details::BuiltinVectorStringRead(s, item.arr)) { return false; }
 	return true;
 }
 
-bool tl2::details::CasesBytesTestVectorWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestVector& item) {
+bool tl2::details::CasesBytesTestVectorWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestVector& item) noexcept {
 	if (!::tl2::details::BuiltinVectorStringWrite(s, item.arr)) { return false; }
 	return true;
 }
@@ -1170,12 +1183,12 @@ bool tl2::details::CasesBytesTestVectorWriteBoxed(::basictl::tl_ostream & s, con
 	return tl2::details::CasesBytesTestVectorWrite(s, item);
 }
 
-void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) {
+void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) noexcept {
 	item.key.clear();
 	item.value.clear();
 }
 
-bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) {
+bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) noexcept {
 	auto add_comma = false;
 	s << "{";
 	if (item.key.size() != 0) {
@@ -1195,13 +1208,13 @@ bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::
 	return true;
 }
 
-bool tl2::details::DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) {
+bool tl2::details::DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) noexcept {
 	if (!s.string_read(item.key)) { return false; }
 	if (!s.string_read(item.value)) { return false; }
 	return true;
 }
 
-bool tl2::details::DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) {
+bool tl2::details::DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) noexcept {
 	if (!s.string_write(item.key)) { return false;}
 	if (!s.string_write(item.value)) { return false;}
 	return true;
@@ -1217,21 +1230,21 @@ bool tl2::details::DictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, co
 	return tl2::details::DictionaryFieldStringWrite(s, item);
 }
 
-void tl2::details::DictionaryStringReset(std::map<std::string, std::string>& item) {
+void tl2::details::DictionaryStringReset(std::map<std::string, std::string>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::DictionaryStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item) {
+bool tl2::details::DictionaryStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::DictionaryStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) {
+bool tl2::details::DictionaryStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::DictionaryStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) {
+bool tl2::details::DictionaryStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWrite(s, item)) { return false; }
 	return true;
 }
@@ -1246,21 +1259,21 @@ bool tl2::details::DictionaryStringWriteBoxed(::basictl::tl_ostream & s, const s
 	return tl2::details::DictionaryStringWrite(s, item);
 }
 
-void tl2::details::TupleString4Reset(std::array<std::string, 4>& item) {
+void tl2::details::TupleString4Reset(std::array<std::string, 4>& item) noexcept {
 	::tl2::details::BuiltinTuple4StringReset(item);
 }
 
-bool tl2::details::TupleString4WriteJSON(std::ostream& s, const std::array<std::string, 4>& item) {
+bool tl2::details::TupleString4WriteJSON(std::ostream& s, const std::array<std::string, 4>& item) noexcept {
 	if (!::tl2::details::BuiltinTuple4StringWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::TupleString4Read(::basictl::tl_istream & s, std::array<std::string, 4>& item) {
+bool tl2::details::TupleString4Read(::basictl::tl_istream & s, std::array<std::string, 4>& item) noexcept {
 	if (!::tl2::details::BuiltinTuple4StringRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::TupleString4Write(::basictl::tl_ostream & s, const std::array<std::string, 4>& item) {
+bool tl2::details::TupleString4Write(::basictl::tl_ostream & s, const std::array<std::string, 4>& item) noexcept {
 	if (!::tl2::details::BuiltinTuple4StringWrite(s, item)) { return false; }
 	return true;
 }
@@ -1275,21 +1288,21 @@ bool tl2::details::TupleString4WriteBoxed(::basictl::tl_ostream & s, const std::
 	return tl2::details::TupleString4Write(s, item);
 }
 
-void tl2::details::VectorDictionaryFieldStringReset(std::map<std::string, std::string>& item) {
+void tl2::details::VectorDictionaryFieldStringReset(std::map<std::string, std::string>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item) {
+bool tl2::details::VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) {
+bool tl2::details::VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) {
+bool tl2::details::VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringWrite(s, item)) { return false; }
 	return true;
 }
@@ -1304,21 +1317,21 @@ bool tl2::details::VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream &
 	return tl2::details::VectorDictionaryFieldStringWrite(s, item);
 }
 
-void tl2::details::VectorStringReset(std::vector<std::string>& item) {
+void tl2::details::VectorStringReset(std::vector<std::string>& item) noexcept {
 	item.clear();
 }
 
-bool tl2::details::VectorStringWriteJSON(std::ostream& s, const std::vector<std::string>& item) {
+bool tl2::details::VectorStringWriteJSON(std::ostream& s, const std::vector<std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorStringWriteJSON(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::VectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item) {
+bool tl2::details::VectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorStringRead(s, item)) { return false; }
 	return true;
 }
 
-bool tl2::details::VectorStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item) {
+bool tl2::details::VectorStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item) noexcept {
 	if (!::tl2::details::BuiltinVectorStringWrite(s, item)) { return false; }
 	return true;
 }

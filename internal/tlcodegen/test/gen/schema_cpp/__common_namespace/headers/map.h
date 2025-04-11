@@ -16,11 +16,11 @@ bool BuiltinVectorMapStringStringWrite(::basictl::tl_ostream & s, const std::vec
 
 namespace tl2 { namespace details { 
 
-void MapStringStringReset(::tl2::Map<std::string, std::string>& item);
+void MapStringStringReset(::tl2::Map<std::string, std::string>& item) noexcept;
 
-bool MapStringStringWriteJSON(std::ostream& s, const ::tl2::Map<std::string, std::string>& item);
-bool MapStringStringRead(::basictl::tl_istream & s, ::tl2::Map<std::string, std::string>& item);
-bool MapStringStringWrite(::basictl::tl_ostream & s, const ::tl2::Map<std::string, std::string>& item);
+bool MapStringStringWriteJSON(std::ostream& s, const ::tl2::Map<std::string, std::string>& item) noexcept;
+bool MapStringStringRead(::basictl::tl_istream & s, ::tl2::Map<std::string, std::string>& item) noexcept; 
+bool MapStringStringWrite(::basictl::tl_ostream & s, const ::tl2::Map<std::string, std::string>& item) noexcept;
 bool MapStringStringReadBoxed(::basictl::tl_istream & s, ::tl2::Map<std::string, std::string>& item);
 bool MapStringStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Map<std::string, std::string>& item);
 

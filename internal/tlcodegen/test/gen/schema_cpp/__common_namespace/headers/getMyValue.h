@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void GetMyValueReset(::tl2::GetMyValue& item);
+void GetMyValueReset(::tl2::GetMyValue& item) noexcept;
 
-bool GetMyValueWriteJSON(std::ostream& s, const ::tl2::GetMyValue& item);
-bool GetMyValueRead(::basictl::tl_istream & s, ::tl2::GetMyValue& item);
-bool GetMyValueWrite(::basictl::tl_ostream & s, const ::tl2::GetMyValue& item);
+bool GetMyValueWriteJSON(std::ostream& s, const ::tl2::GetMyValue& item) noexcept;
+bool GetMyValueRead(::basictl::tl_istream & s, ::tl2::GetMyValue& item) noexcept; 
+bool GetMyValueWrite(::basictl::tl_ostream & s, const ::tl2::GetMyValue& item) noexcept;
 bool GetMyValueReadBoxed(::basictl::tl_istream & s, ::tl2::GetMyValue& item);
 bool GetMyValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::GetMyValue& item);
 

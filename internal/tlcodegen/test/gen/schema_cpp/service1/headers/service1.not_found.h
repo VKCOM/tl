@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service1NotFoundReset(::tl2::service1::Not_found& item);
+void Service1NotFoundReset(::tl2::service1::Not_found& item) noexcept;
 
-bool Service1NotFoundWriteJSON(std::ostream& s, const ::tl2::service1::Not_found& item);
-bool Service1NotFoundRead(::basictl::tl_istream & s, ::tl2::service1::Not_found& item);
-bool Service1NotFoundWrite(::basictl::tl_ostream & s, const ::tl2::service1::Not_found& item);
+bool Service1NotFoundWriteJSON(std::ostream& s, const ::tl2::service1::Not_found& item) noexcept;
+bool Service1NotFoundRead(::basictl::tl_istream & s, ::tl2::service1::Not_found& item) noexcept; 
+bool Service1NotFoundWrite(::basictl::tl_ostream & s, const ::tl2::service1::Not_found& item) noexcept;
 bool Service1NotFoundReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Not_found& item);
 bool Service1NotFoundWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Not_found& item);
 

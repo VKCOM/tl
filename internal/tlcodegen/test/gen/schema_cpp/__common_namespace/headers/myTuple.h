@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void MyTuple10Reset(::tl2::MyTuplen<10>& item);
+void MyTuple10Reset(::tl2::MyTuplen<10>& item) noexcept;
 
-bool MyTuple10WriteJSON(std::ostream& s, const ::tl2::MyTuplen<10>& item);
-bool MyTuple10Read(::basictl::tl_istream & s, ::tl2::MyTuplen<10>& item);
-bool MyTuple10Write(::basictl::tl_ostream & s, const ::tl2::MyTuplen<10>& item);
+bool MyTuple10WriteJSON(std::ostream& s, const ::tl2::MyTuplen<10>& item) noexcept;
+bool MyTuple10Read(::basictl::tl_istream & s, ::tl2::MyTuplen<10>& item) noexcept; 
+bool MyTuple10Write(::basictl::tl_ostream & s, const ::tl2::MyTuplen<10>& item) noexcept;
 bool MyTuple10ReadBoxed(::basictl::tl_istream & s, ::tl2::MyTuplen<10>& item);
 bool MyTuple10WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyTuplen<10>& item);
 

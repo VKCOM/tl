@@ -19,8 +19,11 @@ struct PatternFull {
 
 	bool write_json(std::ostream& s)const;
 
-	bool read_boxed(::basictl::tl_istream & s);
-	bool write_boxed(::basictl::tl_ostream & s)const;
+	bool read_boxed(::basictl::tl_istream & s) noexcept;
+	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
+	
+	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
+	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
 };
 
 }} // namespace tl2::antispam

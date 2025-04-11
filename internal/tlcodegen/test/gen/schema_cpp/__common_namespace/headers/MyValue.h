@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void MyValueReset(::tl2::MyValue& item);
+void MyValueReset(::tl2::MyValue& item) noexcept;
 
-bool MyValueWriteJSON(std::ostream & s, const ::tl2::MyValue& item);
-bool MyValueReadBoxed(::basictl::tl_istream & s, ::tl2::MyValue& item);
-bool MyValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyValue& item);
+bool MyValueWriteJSON(std::ostream & s, const ::tl2::MyValue& item) noexcept;
+bool MyValueReadBoxed(::basictl::tl_istream & s, ::tl2::MyValue& item) noexcept;
+bool MyValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyValue& item) noexcept;
 
 }} // namespace tl2::details
 

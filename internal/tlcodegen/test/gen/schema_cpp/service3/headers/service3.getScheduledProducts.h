@@ -8,11 +8,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service3GetScheduledProductsReset(::tl2::service3::GetScheduledProducts& item);
+void Service3GetScheduledProductsReset(::tl2::service3::GetScheduledProducts& item) noexcept;
 
-bool Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetScheduledProducts& item);
-bool Service3GetScheduledProductsRead(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item);
-bool Service3GetScheduledProductsWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetScheduledProducts& item);
+bool Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetScheduledProducts& item) noexcept;
+bool Service3GetScheduledProductsRead(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item) noexcept; 
+bool Service3GetScheduledProductsWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetScheduledProducts& item) noexcept;
 bool Service3GetScheduledProductsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item);
 bool Service3GetScheduledProductsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GetScheduledProducts& item);
 

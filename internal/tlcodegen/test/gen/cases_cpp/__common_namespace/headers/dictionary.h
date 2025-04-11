@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void DictionaryIntReset(std::map<std::string, int32_t>& item);
+void DictionaryIntReset(std::map<std::string, int32_t>& item) noexcept;
 
-bool DictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, int32_t>& item);
-bool DictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, int32_t>& item);
-bool DictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item);
+bool DictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, int32_t>& item) noexcept;
+bool DictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, int32_t>& item) noexcept; 
+bool DictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item) noexcept;
 bool DictionaryIntReadBoxed(::basictl::tl_istream & s, std::map<std::string, int32_t>& item);
 bool DictionaryIntWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item);
 

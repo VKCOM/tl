@@ -6,11 +6,11 @@
 
 namespace tl2 { namespace details { 
 
-void CasesTestInplaceStructArgs2Reset(::tl2::cases::TestInplaceStructArgs2& item);
+void CasesTestInplaceStructArgs2Reset(::tl2::cases::TestInplaceStructArgs2& item) noexcept;
 
-bool CasesTestInplaceStructArgs2WriteJSON(std::ostream& s, const ::tl2::cases::TestInplaceStructArgs2& item);
-bool CasesTestInplaceStructArgs2Read(::basictl::tl_istream & s, ::tl2::cases::TestInplaceStructArgs2& item);
-bool CasesTestInplaceStructArgs2Write(::basictl::tl_ostream & s, const ::tl2::cases::TestInplaceStructArgs2& item);
+bool CasesTestInplaceStructArgs2WriteJSON(std::ostream& s, const ::tl2::cases::TestInplaceStructArgs2& item) noexcept;
+bool CasesTestInplaceStructArgs2Read(::basictl::tl_istream & s, ::tl2::cases::TestInplaceStructArgs2& item) noexcept; 
+bool CasesTestInplaceStructArgs2Write(::basictl::tl_ostream & s, const ::tl2::cases::TestInplaceStructArgs2& item) noexcept;
 bool CasesTestInplaceStructArgs2ReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestInplaceStructArgs2& item);
 bool CasesTestInplaceStructArgs2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestInplaceStructArgs2& item);
 

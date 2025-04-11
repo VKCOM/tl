@@ -7,11 +7,11 @@
 
 namespace tl2 { namespace details { 
 
-void Service3RestoreAllProductsReset(::tl2::service3::RestoreAllProducts& item);
+void Service3RestoreAllProductsReset(::tl2::service3::RestoreAllProducts& item) noexcept;
 
-bool Service3RestoreAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreAllProducts& item);
-bool Service3RestoreAllProductsRead(::basictl::tl_istream & s, ::tl2::service3::RestoreAllProducts& item);
-bool Service3RestoreAllProductsWrite(::basictl::tl_ostream & s, const ::tl2::service3::RestoreAllProducts& item);
+bool Service3RestoreAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::RestoreAllProducts& item) noexcept;
+bool Service3RestoreAllProductsRead(::basictl::tl_istream & s, ::tl2::service3::RestoreAllProducts& item) noexcept; 
+bool Service3RestoreAllProductsWrite(::basictl::tl_ostream & s, const ::tl2::service3::RestoreAllProducts& item) noexcept;
 bool Service3RestoreAllProductsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::RestoreAllProducts& item);
 bool Service3RestoreAllProductsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::RestoreAllProducts& item);
 
