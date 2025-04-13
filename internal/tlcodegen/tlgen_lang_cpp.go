@@ -551,6 +551,48 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
+	//printDepsGraph(allTypes, edges)
+}
+
+func printDepsGraph(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) {
+	print("debug\n")
+
+	vertices := make([]*TypeRWWrapper, len(allTypes))
+	copy(vertices, allTypes)
+	slices.SortFunc(vertices, TypeComparator)
+
+	namespaces := make(map[string][]*TypeRWWrapper)
+	for _, from := range vertices {
+		namespaces[from.groupName] = append(namespaces[from.groupName], from)
+	}
+
+	namespacesNames := utils.Keys(namespaces)
+	sort.Strings(namespacesNames)
+
+	fmt.Printf("digraph G {\n")
+
+	for _, namespace := range namespacesNames {
+		fmt.Printf("\tsubgraph cluster_%[1]s {\n\t\tlabel = \"%[1]s\";\n\t\tcolor=lightgrey;\n\t\tstyle=filled;\n", namespace)
+		for _, from := range namespaces[namespace] {
+			color := "red"
+			if from.trw.IsWrappingType() {
+				color = "blue"
+			}
+			cppName := from.cppLocalName
+			if cppName == "" {
+				cppName = "__empty__"
+			}
+			fmt.Printf("\t\t%[1]s[color=\"%[2]s\", label=\"%[1]s,\\n%[3]s\", shape=box];\n", from.goGlobalName, color, cppName)
+		}
+		fmt.Printf("}\n")
+	}
+
+	for _, from := range vertices {
+		for _, to := range edges[from] {
+			fmt.Printf("\t%s->%s;\n", from.goGlobalName, to.goGlobalName)
+		}
+	}
+	fmt.Printf("}\n")
 }
 
 func changeTypeGroup(to *TypeRWWrapper, newGroup string, CommonGroup string, IndependentTypes string) {

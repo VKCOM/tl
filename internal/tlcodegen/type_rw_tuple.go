@@ -130,7 +130,8 @@ func (trw *TypeRWBrackets) IsBuiltinVector() bool {
 
 func (trw *TypeRWBrackets) IsWrappingType() bool {
 	if trw.IsBuiltinVector() {
-		return trw.element.t.trw.IsWrappingType()
+		return true
+		//return trw.element.t.trw.IsWrappingType()
 	}
 	return false
 }

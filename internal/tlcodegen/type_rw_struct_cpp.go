@@ -164,20 +164,15 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 
 		if trw.isTypeDef() {
 			field := trw.Fields[0]
-
-			//if !field.t.origTL[0].Builtin && len(trw.wr.arguments) != 0 {
 			typeRed := ti.FieldTypeReduction(&typeReduction, 0)
 			typeDependencies := field.t.ActualTypeDependencies(typeRed)
+
 			for _, typeRw := range typeDependencies {
 				if typeRw.cppLocalName != "" {
 					hppInc.ns[typeRw] = CppIncludeInfo{componentId: typeRw.typeComponent, namespace: typeRw.tlName.Namespace}
 				}
 			}
 			hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, field.t.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed)))
-			//} else {
-			//	fieldFullType := field.t.CPPTypeStringInNamespaceHalfResolved(bytesVersion, hppInc, field.halfResolved)
-			//	hpp.WriteString(fmt.Sprintf("using %s = %s;", trw.wr.cppLocalName, fieldFullType))
-			//}
 		} else {
 			hpp.WriteString("struct " + trw.wr.cppLocalName + " {\n")
 			for i, field := range trw.Fields {
