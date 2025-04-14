@@ -27,6 +27,7 @@
 #include "headers/service1.addOrIncr.h"
 #include "headers/service1.addOrGet.h"
 #include "headers/service1.add.h"
+#include "headers/service1_map.h"
 #include "../__common_namespace/headers/int.h"
 #include "headers/service1.strvalueWithTime.h"
 #include "headers/service1.strvalue.h"
@@ -35,9 +36,8 @@
 #include "headers/service1.longvalue.h"
 #include "headers/service1_dictionary.h"
 #include "../__common_namespace/headers/string.h"
-#include "../__common_namespace/headers/map.h"
-#include "../__common_namespace/headers/dictionaryField.h"
 #include "headers/service1_dictionaryField.h"
+#include "../__common_namespace/headers/dictionaryField.h"
 #include "../__common_namespace/headers/Bool.h"
 
 
@@ -116,6 +116,125 @@ bool tl2::details::BuiltinVectorDictionaryFieldDictionaryIntWrite(::basictl::tl_
 	return true;
 }
 
+void tl2::details::BuiltinVectorDictionaryFieldService1ValueReset(std::map<std::string, ::tl2::service1::Value>& item) {
+	item.clear(); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldService1ValueWriteJSON(std::ostream & s, const std::map<std::string, ::tl2::service1::Value>& item) {
+	s << "{";
+	size_t index = 0;
+	for(const auto & el : item) {
+		s << "\"" << el.first << "\"";
+		s << ":";
+		if (!::tl2::details::Service1ValueWriteJSON(s, el.second)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "}";
+	return true;
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldService1ValueRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::service1::Value>& item) {
+	uint32_t len = 0;
+	if (!s.nat_read(len)) { return false; }
+	item.clear();
+	for(uint32_t i = 0; i < len; i++) {
+		std::string key;
+		if (!s.string_read(key)) { return false; }
+		if (!::tl2::details::Service1ValueReadBoxed(s, item[key])) { return false; }
+	}
+	return true;
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldService1ValueWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::service1::Value>& item) {
+	if (!s.nat_write(item.size())) { return false; }
+	for(const auto & el : item) {
+		if (!s.string_write(el.first)) { return false;}
+		if (!::tl2::details::Service1ValueWriteBoxed(s, el.second)) { return false; }
+	}
+	return true;
+}
+
+void tl2::details::BuiltinVectorDictionaryFieldStringReset(std::map<std::string, std::string>& item) {
+	item.clear(); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldStringWriteJSON(std::ostream & s, const std::map<std::string, std::string>& item) {
+	s << "{";
+	size_t index = 0;
+	for(const auto & el : item) {
+		s << "\"" << el.first << "\"";
+		s << ":";
+		s << "\"" << el.second << "\"";
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "}";
+	return true;
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) {
+	uint32_t len = 0;
+	if (!s.nat_read(len)) { return false; }
+	item.clear();
+	for(uint32_t i = 0; i < len; i++) {
+		std::string key;
+		if (!s.string_read(key)) { return false; }
+		if (!s.string_read(item[key])) { return false; }
+	}
+	return true;
+}
+
+bool tl2::details::BuiltinVectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) {
+	if (!s.nat_write(item.size())) { return false; }
+	for(const auto & el : item) {
+		if (!s.string_write(el.first)) { return false;}
+		if (!s.string_write(el.second)) { return false;}
+	}
+	return true;
+}
+
+void tl2::details::BuiltinVectorMapStringStringReset(std::vector<::tl2::Map<std::string, std::string>>& item) {
+	item.resize(0); // TODO - unwrap
+}
+
+bool tl2::details::BuiltinVectorMapStringStringWriteJSON(std::ostream & s, const std::vector<::tl2::Map<std::string, std::string>>& item) {
+	s << "[";
+	size_t index = 0;
+	for(const auto & el : item) {
+		if (!::tl2::details::MapStringStringWriteJSON(s, el)) { return false; }
+		if (index != item.size() - 1) {
+			s << ",";
+		}
+		index++;
+	}
+	s << "]";
+	return true;
+}
+
+bool tl2::details::BuiltinVectorMapStringStringRead(::basictl::tl_istream & s, std::vector<::tl2::Map<std::string, std::string>>& item) {
+	uint32_t len = 0;
+	if (!s.nat_read(len)) { return false; }
+	// TODO - check length sanity
+	item.resize(len);
+	for(auto && el : item) {
+		if (!::tl2::details::MapStringStringRead(s, el)) { return false; }
+	}
+	return true;
+}
+
+bool tl2::details::BuiltinVectorMapStringStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Map<std::string, std::string>>& item) {
+	if (!s.nat_write(item.size())) { return false; }
+	for(const auto & el : item) {
+		if (!::tl2::details::MapStringStringWrite(s, el)) { return false; }
+	}
+	return true;
+}
+
 void tl2::details::BuiltinVectorService1ValueReset(std::vector<::tl2::service1::Value>& item) {
 	item.resize(0); // TODO - unwrap
 }
@@ -180,6 +299,53 @@ bool tl2::details::DictionaryDictionaryIntReadBoxed(::basictl::tl_istream & s, s
 bool tl2::details::DictionaryDictionaryIntWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) {
 	if (!s.nat_write(0x1f4c618f)) { return false; }
 	return tl2::details::DictionaryDictionaryIntWrite(s, item);
+}
+
+void tl2::details::MapStringStringReset(::tl2::Map<std::string, std::string>& item) noexcept {
+	item.key.clear();
+	item.value.clear();
+}
+
+bool tl2::details::MapStringStringWriteJSON(std::ostream& s, const ::tl2::Map<std::string, std::string>& item) noexcept {
+	auto add_comma = false;
+	s << "{";
+	if (item.key.size() != 0) {
+		add_comma = true;
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value.size() != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"value\":";
+		s << "\"" << item.value << "\"";
+	}
+	s << "}";
+	return true;
+}
+
+bool tl2::details::MapStringStringRead(::basictl::tl_istream & s, ::tl2::Map<std::string, std::string>& item) noexcept {
+	if (!s.string_read(item.key)) { return false; }
+	if (!s.string_read(item.value)) { return false; }
+	return true;
+}
+
+bool tl2::details::MapStringStringWrite(::basictl::tl_ostream & s, const ::tl2::Map<std::string, std::string>& item) noexcept {
+	if (!s.string_write(item.key)) { return false;}
+	if (!s.string_write(item.value)) { return false;}
+	return true;
+}
+
+bool tl2::details::MapStringStringReadBoxed(::basictl::tl_istream & s, ::tl2::Map<std::string, std::string>& item) {
+	if (!s.nat_read_exact_tag(0x79c473a4)) { return false; }
+	return tl2::details::MapStringStringRead(s, item);
+}
+
+bool tl2::details::MapStringStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Map<std::string, std::string>& item) {
+	if (!s.nat_write(0x79c473a4)) { return false; }
+	return tl2::details::MapStringStringWrite(s, item);
 }
 
 bool tl2::service1::Add::write_json(std::ostream& s)const {

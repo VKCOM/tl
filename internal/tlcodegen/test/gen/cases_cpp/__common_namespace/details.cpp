@@ -1,9 +1,6 @@
 #include "headers/vector.h"
-#include "headers/string.h"
-#include "headers/long.h"
 #include "headers/int64.h"
 #include "headers/int32.h"
-#include "headers/int.h"
 #include "headers/dictionaryField.h"
 #include "headers/dictionary.h"
 #include "headers/dictionaryAny.h"
@@ -401,35 +398,6 @@ bool tl2::details::DictionaryIntWriteBoxed(::basictl::tl_ostream & s, const std:
 	return tl2::details::DictionaryIntWrite(s, item);
 }
 
-void tl2::details::IntReset(int32_t& item) noexcept {
-	item = 0;
-}
-
-bool tl2::details::IntWriteJSON(std::ostream& s, const int32_t& item) noexcept {
-	s << item;
-	return true;
-}
-
-bool tl2::details::IntRead(::basictl::tl_istream & s, int32_t& item) noexcept {
-	if (!s.int_read(item)) { return false; }
-	return true;
-}
-
-bool tl2::details::IntWrite(::basictl::tl_ostream & s, const int32_t& item) noexcept {
-	if (!s.int_write(item)) { return false;}
-	return true;
-}
-
-bool tl2::details::IntReadBoxed(::basictl::tl_istream & s, int32_t& item) {
-	if (!s.nat_read_exact_tag(0xa8509bda)) { return false; }
-	return tl2::details::IntRead(s, item);
-}
-
-bool tl2::details::IntWriteBoxed(::basictl::tl_ostream & s, const int32_t& item) {
-	if (!s.nat_write(0xa8509bda)) { return false; }
-	return tl2::details::IntWrite(s, item);
-}
-
 void tl2::details::Int32Reset(::tl2::Int32& item) noexcept {
 	item = 0;
 }
@@ -486,64 +454,6 @@ bool tl2::details::Int64ReadBoxed(::basictl::tl_istream & s, ::tl2::Int64& item)
 bool tl2::details::Int64WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Int64& item) {
 	if (!s.nat_write(0xf5609de0)) { return false; }
 	return tl2::details::Int64Write(s, item);
-}
-
-void tl2::details::LongReset(int64_t& item) noexcept {
-	item = 0;
-}
-
-bool tl2::details::LongWriteJSON(std::ostream& s, const int64_t& item) noexcept {
-	s << item;
-	return true;
-}
-
-bool tl2::details::LongRead(::basictl::tl_istream & s, int64_t& item) noexcept {
-	if (!s.long_read(item)) { return false; }
-	return true;
-}
-
-bool tl2::details::LongWrite(::basictl::tl_ostream & s, const int64_t& item) noexcept {
-	if (!s.long_write(item)) { return false;}
-	return true;
-}
-
-bool tl2::details::LongReadBoxed(::basictl::tl_istream & s, int64_t& item) {
-	if (!s.nat_read_exact_tag(0x22076cba)) { return false; }
-	return tl2::details::LongRead(s, item);
-}
-
-bool tl2::details::LongWriteBoxed(::basictl::tl_ostream & s, const int64_t& item) {
-	if (!s.nat_write(0x22076cba)) { return false; }
-	return tl2::details::LongWrite(s, item);
-}
-
-void tl2::details::StringReset(std::string& item) noexcept {
-	item.clear();
-}
-
-bool tl2::details::StringWriteJSON(std::ostream& s, const std::string& item) noexcept {
-	s << "\"" << item << "\"";
-	return true;
-}
-
-bool tl2::details::StringRead(::basictl::tl_istream & s, std::string& item) noexcept {
-	if (!s.string_read(item)) { return false; }
-	return true;
-}
-
-bool tl2::details::StringWrite(::basictl::tl_ostream & s, const std::string& item) noexcept {
-	if (!s.string_write(item)) { return false;}
-	return true;
-}
-
-bool tl2::details::StringReadBoxed(::basictl::tl_istream & s, std::string& item) {
-	if (!s.nat_read_exact_tag(0xb5286e24)) { return false; }
-	return tl2::details::StringRead(s, item);
-}
-
-bool tl2::details::StringWriteBoxed(::basictl::tl_ostream & s, const std::string& item) {
-	if (!s.nat_write(0xb5286e24)) { return false; }
-	return tl2::details::StringWrite(s, item);
 }
 
 bool tl2::True::write_json(std::ostream& s)const {

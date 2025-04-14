@@ -3,18 +3,15 @@
 #include "../../basictl/io_streams.h"
 #include "../../basictl/io_throwable_streams.h"
 #include "../types/vector.h"
-#include "../../tasks/types/tasks.queueTypeInfo.h"
-#include "../../service6/types/service6.findWithBoundsResult.h"
-#include "../types/map.h"
 #include "../../service6/types/service6.findResultRow.h"
 #include "../../service6/types/service6.error.h"
 #include "../../service1/types/service1.Value.h"
 #include "../types/Either.h"
 #include "../types/string.h"
-#include "../types/long.h"
-#include "../types/integer.h"
-#include "../types/int.h"
 #include "../types/dictionaryField.h"
+#include "../types/long.h"
+#include "../types/int.h"
+#include "../types/integer.h"
 
 namespace tl2 { namespace details { 
 
@@ -25,42 +22,6 @@ bool VectorDictionaryFieldIntRead(::basictl::tl_istream & s, std::map<std::strin
 bool VectorDictionaryFieldIntWrite(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item) noexcept;
 bool VectorDictionaryFieldIntReadBoxed(::basictl::tl_istream & s, std::map<std::string, int32_t>& item);
 bool VectorDictionaryFieldIntWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, int32_t>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void VectorDictionaryFieldService1ValueReset(std::map<std::string, ::tl2::service1::Value>& item) noexcept;
-
-bool VectorDictionaryFieldService1ValueWriteJSON(std::ostream& s, const std::map<std::string, ::tl2::service1::Value>& item) noexcept;
-bool VectorDictionaryFieldService1ValueRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::service1::Value>& item) noexcept; 
-bool VectorDictionaryFieldService1ValueWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::service1::Value>& item) noexcept;
-bool VectorDictionaryFieldService1ValueReadBoxed(::basictl::tl_istream & s, std::map<std::string, ::tl2::service1::Value>& item);
-bool VectorDictionaryFieldService1ValueWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::service1::Value>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void VectorDictionaryFieldStringReset(std::map<std::string, std::string>& item) noexcept;
-
-bool VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item) noexcept;
-bool VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) noexcept; 
-bool VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) noexcept;
-bool VectorDictionaryFieldStringReadBoxed(::basictl::tl_istream & s, std::map<std::string, std::string>& item);
-bool VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void VectorEitherIntVectorService6FindWithBoundsResultReset(std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) noexcept;
-
-bool VectorEitherIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) noexcept;
-bool VectorEitherIntVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) noexcept; 
-bool VectorEitherIntVectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) noexcept;
-bool VectorEitherIntVectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item);
-bool VectorEitherIntVectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item);
 
 }} // namespace tl2::details
 
@@ -126,18 +87,6 @@ bool VectorLongBoxedWriteBoxed(::basictl::tl_ostream & s, const std::vector<int6
 
 namespace tl2 { namespace details { 
 
-void VectorMapStringStringReset(std::vector<::tl2::Map<std::string, std::string>>& item) noexcept;
-
-bool VectorMapStringStringWriteJSON(std::ostream& s, const std::vector<::tl2::Map<std::string, std::string>>& item) noexcept;
-bool VectorMapStringStringRead(::basictl::tl_istream & s, std::vector<::tl2::Map<std::string, std::string>>& item) noexcept; 
-bool VectorMapStringStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Map<std::string, std::string>>& item) noexcept;
-bool VectorMapStringStringReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::Map<std::string, std::string>>& item);
-bool VectorMapStringStringWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::Map<std::string, std::string>>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
 void VectorService1ValueReset(std::vector<::tl2::service1::Value>& item) noexcept;
 
 bool VectorService1ValueWriteJSON(std::ostream& s, const std::vector<::tl2::service1::Value>& item) noexcept;
@@ -162,18 +111,6 @@ bool VectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const std:
 
 namespace tl2 { namespace details { 
 
-void VectorService6FindWithBoundsResultReset(std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept;
-
-bool VectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept;
-bool VectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept; 
-bool VectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept;
-bool VectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item);
-bool VectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
 void VectorStringReset(std::vector<std::string>& item) noexcept;
 
 bool VectorStringWriteJSON(std::ostream& s, const std::vector<std::string>& item) noexcept;
@@ -181,18 +118,6 @@ bool VectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item)
 bool VectorStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item) noexcept;
 bool VectorStringReadBoxed(::basictl::tl_istream & s, std::vector<std::string>& item);
 bool VectorStringWriteBoxed(::basictl::tl_ostream & s, const std::vector<std::string>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void VectorTasksQueueTypeInfoReset(std::vector<::tl2::tasks::QueueTypeInfo>& item) noexcept;
-
-bool VectorTasksQueueTypeInfoWriteJSON(std::ostream& s, const std::vector<::tl2::tasks::QueueTypeInfo>& item) noexcept;
-bool VectorTasksQueueTypeInfoRead(::basictl::tl_istream & s, std::vector<::tl2::tasks::QueueTypeInfo>& item) noexcept; 
-bool VectorTasksQueueTypeInfoWrite(::basictl::tl_ostream & s, const std::vector<::tl2::tasks::QueueTypeInfo>& item) noexcept;
-bool VectorTasksQueueTypeInfoReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::tasks::QueueTypeInfo>& item);
-bool VectorTasksQueueTypeInfoWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::tasks::QueueTypeInfo>& item);
 
 }} // namespace tl2::details
 

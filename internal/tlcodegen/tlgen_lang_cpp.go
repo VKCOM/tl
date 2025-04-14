@@ -31,6 +31,11 @@ type TypeRWCPPData interface {
 	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
 }
 
+const NoNamespaceGroup = ""
+const CommonGroup = "__common_namespace"
+const IndependentTypes = CommonGroup
+const GhostTypes = "__ghosts"
+
 func cppStartNamespace(s *strings.Builder, ns []string) {
 	for _, n := range ns {
 		s.WriteString(fmt.Sprintf("namespace %s { ", n))
@@ -57,10 +62,13 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 	for _, t := range gen.generatedTypesList {
 		hpps[t.fileName] = append(hpps[t.fileName], t)
-		detailsHpps[t.hppDetailsFileName] = append(detailsHpps[t.hppDetailsFileName], t)
-		detailsCpps[t.cppDetailsFileName] = append(detailsCpps[t.cppDetailsFileName], t)
 
-		utils.PutPairToSetOfPairs(&groupsToDetails, t.groupName, t.cppDetailsFileName)
+		if t.groupName != GhostTypes {
+			detailsHpps[t.hppDetailsFileName] = append(detailsHpps[t.hppDetailsFileName], t)
+			detailsCpps[t.cppDetailsFileName] = append(detailsCpps[t.cppDetailsFileName], t)
+
+			utils.PutPairToSetOfPairs(&groupsToDetails, t.groupName, t.cppDetailsFileName)
+		}
 	}
 
 	for group, groupDetails := range groupsToDetails {
@@ -422,10 +430,6 @@ func createStreams(gen *Gen2, cppMake *strings.Builder) {
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
-	const NoNamespaceGroup = ""
-	const CommonGroup = "__common_namespace"
-	const IndependentTypes = CommonGroup
-
 	for _, t := range allTypes {
 		t.cppDetailsFileName = t.fileName
 		t.hppDetailsFileName = t.cppDetailsFileName
@@ -451,25 +455,18 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		allTypesWithoutGroupMap[t] = true
 	}
 
-	for _, t := range allTypes {
-		for _, dep := range t.trw.AllTypeDependencies(false, true) {
-			if dep.groupName == NoNamespaceGroup {
-				utils.PutPairToSetOfPairs(&allTypesWithoutGroupUsages, dep, t.groupName)
-				utils.PutPairToSetOfPairs(&reverseDepsEdges, dep, t)
-			}
-		}
-	}
-
 	// bfs
 	edges := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 	reverseEdges := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 
-	for _, from := range allTypes {
-		for _, to := range from.trw.AllTypeDependencies(false, true) {
-			if to.groupName == NoNamespaceGroup {
-				edges[from] = append(edges[from], to)
-				reverseEdges[to] = append(reverseEdges[to], from)
-			}
+	for _, t := range allTypes {
+		deps := t.trw.AllTypeDependencies(false, true)
+		for _, dep := range deps {
+			utils.PutPairToSetOfPairs(&allTypesWithoutGroupUsages, dep, t.groupName)
+			utils.PutPairToSetOfPairs(&reverseDepsEdges, dep, t)
+
+			edges[t] = append(edges[t], dep)
+			reverseEdges[dep] = append(reverseEdges[dep], t)
 		}
 	}
 
@@ -487,7 +484,11 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			front[t] = true
 		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
 			front[t] = true
-			t.groupName = IndependentTypes
+			if t.trw.IsWrappingType() {
+				t.groupName = GhostTypes
+			} else {
+				t.groupName = IndependentTypes
+			}
 		}
 	}
 
@@ -513,9 +514,18 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 					for _, from := range reverseEdges[to] {
 						groups[from.groupName] = true
 					}
-					if len(groups) == 1 {
+					if len(groups) == 1 || (len(groups) == 2 && groups[GhostTypes]) {
+						if len(groups) == 2 && groups[GhostTypes] {
+							delete(groups, GhostTypes)
+						}
 						newGroup := utils.SetToSlice(groups)[0]
-						changeTypeGroup(to, newGroup, CommonGroup, IndependentTypes)
+						oldGroup := to.groupName
+						to.groupName = newGroup
+						if to.groupName != CommonGroup && to.groupName != IndependentTypes && to.groupName != GhostTypes && oldGroup != newGroup {
+							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+						}
+						to.hppDetailsFileName = to.cppDetailsFileName
+						//changeTypeGroup(to, newGroup, CommonGroup, IndependentTypes)
 					} else if len(groups) > 1 {
 						to.groupName = CommonGroup
 					}
@@ -551,10 +561,12 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
-	//printDepsGraph(allTypes, edges)
+	//printDepsGraph(os.Stdout, allTypes, edges)
+	file, _ := os.Create("graphviz.dot")
+	printDepsGraph(file, allTypes, edges)
 }
 
-func printDepsGraph(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) {
+func printDepsGraph(out *os.File, allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) {
 	print("debug\n")
 
 	vertices := make([]*TypeRWWrapper, len(allTypes))
@@ -569,10 +581,10 @@ func printDepsGraph(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeR
 	namespacesNames := utils.Keys(namespaces)
 	sort.Strings(namespacesNames)
 
-	fmt.Printf("digraph G {\n")
+	_, _ = fmt.Fprintf(out, "digraph G {\n")
 
 	for _, namespace := range namespacesNames {
-		fmt.Printf("\tsubgraph cluster_%[1]s {\n\t\tlabel = \"%[1]s\";\n\t\tcolor=lightgrey;\n\t\tstyle=filled;\n", namespace)
+		_, _ = fmt.Fprintf(out, "\tsubgraph cluster_%[1]s {\n\t\tlabel = \"%[1]s\";\n\t\tcolor=lightgrey;\n\t\tstyle=filled;\n", namespace)
 		for _, from := range namespaces[namespace] {
 			color := "red"
 			if from.trw.IsWrappingType() {
@@ -582,17 +594,17 @@ func printDepsGraph(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeR
 			if cppName == "" {
 				cppName = "__empty__"
 			}
-			fmt.Printf("\t\t%[1]s[color=\"%[2]s\", label=\"%[1]s,\\n%[3]s\", shape=box];\n", from.goGlobalName, color, cppName)
+			_, _ = fmt.Fprintf(out, "\t\t%[1]s[color=\"%[2]s\", label=\"%[1]s,\\n%[3]s\", shape=box];\n", from.goGlobalName, color, cppName)
 		}
-		fmt.Printf("}\n")
+		_, _ = fmt.Fprintf(out, "}\n")
 	}
 
 	for _, from := range vertices {
 		for _, to := range edges[from] {
-			fmt.Printf("\t%s->%s;\n", from.goGlobalName, to.goGlobalName)
+			_, _ = fmt.Fprintf(out, "\t%s->%s;\n", from.goGlobalName, to.goGlobalName)
 		}
 	}
-	fmt.Printf("}\n")
+	_, _ = fmt.Fprintf(out, "}\n")
 }
 
 func changeTypeGroup(to *TypeRWWrapper, newGroup string, CommonGroup string, IndependentTypes string) {
