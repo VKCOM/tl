@@ -441,10 +441,10 @@ bool %[1]sRead(::basictl::tl_istream & s, std::map<%[5]s, %[2]s>& item%[4]s);
 bool %[1]sWrite(::basictl::tl_ostream & s, const std::map<%[5]s, %[2]s>& item%[4]s);
 `,
 			addBytes(trw.wr.goGlobalName, bytesVersion),
-			valueType.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+			valueType.t.CPPTypeStringInNamespace(bytesVersion, hppDetInc),
 			"",
 			formatNatArgsDeclCPP(trw.wr.NatParams),
-			keyValue.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+			keyValue.t.CPPTypeStringInNamespace(bytesVersion, hppDetInc),
 		))
 
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
@@ -494,7 +494,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>&
 }
 `,
 			addBytes(trw.wr.goGlobalName, bytesVersion), // 1
-			valueType.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
+			valueType.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc),
 			trw.size, // 3
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 			keyValue.t.trw.CPPTypeReadingCode(bytesVersion, "key",
@@ -517,7 +517,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>&
 			valueType.t.trw.CPPTypeWritingCode(bytesVersion, "el.second",
 				valueType.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
 				false),
-			keyValue.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}), // 13
+			keyValue.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc), // 13
 		))
 	}
 }

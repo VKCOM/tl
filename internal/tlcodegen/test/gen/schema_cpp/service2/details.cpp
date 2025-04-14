@@ -6,8 +6,8 @@
 #include "headers/service2.objectId.h"
 #include "headers/service2.counterSet.h"
 #include "../__common_namespace/headers/true.h"
-#include "../__common_namespace/headers/int.h"
 #include "headers/service2_double.h"
+#include "../__common_namespace/headers/int.h"
 
 
 void tl2::details::BuiltinTupleDoubleReset(std::vector<double>& item) {

@@ -3,7 +3,6 @@
 #include "../../basictl/io_streams.h"
 #include "../../basictl/io_throwable_streams.h"
 #include "../types/tuple.h"
-#include "../../service2/types/service2.counterSet.h"
 #include "../../service1/types/service1.Value.h"
 #include "../types/int.h"
 
@@ -28,18 +27,6 @@ bool TupleInt3Read(::basictl::tl_istream & s, std::array<int32_t, 3>& item) noex
 bool TupleInt3Write(::basictl::tl_ostream & s, const std::array<int32_t, 3>& item) noexcept;
 bool TupleInt3ReadBoxed(::basictl::tl_istream & s, std::array<int32_t, 3>& item);
 bool TupleInt3WriteBoxed(::basictl::tl_ostream & s, const std::array<int32_t, 3>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void TupleInt5Reset(std::array<int32_t, 5>& item) noexcept;
-
-bool TupleInt5WriteJSON(std::ostream& s, const std::array<int32_t, 5>& item) noexcept;
-bool TupleInt5Read(::basictl::tl_istream & s, std::array<int32_t, 5>& item) noexcept; 
-bool TupleInt5Write(::basictl::tl_ostream & s, const std::array<int32_t, 5>& item) noexcept;
-bool TupleInt5ReadBoxed(::basictl::tl_istream & s, std::array<int32_t, 5>& item);
-bool TupleInt5WriteBoxed(::basictl::tl_ostream & s, const std::array<int32_t, 5>& item);
 
 }} // namespace tl2::details
 
@@ -88,18 +75,6 @@ bool TupleService1Value3Read(::basictl::tl_istream & s, std::array<::tl2::servic
 bool TupleService1Value3Write(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item) noexcept;
 bool TupleService1Value3ReadBoxed(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item);
 bool TupleService1Value3WriteBoxed(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void TupleService2CounterSetReset(std::vector<::tl2::service2::CounterSet>& item) noexcept;
-
-bool TupleService2CounterSetWriteJSON(std::ostream& s, const std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept;
-bool TupleService2CounterSetRead(::basictl::tl_istream & s, std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept; 
-bool TupleService2CounterSetWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n) noexcept;
-bool TupleService2CounterSetReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
-bool TupleService2CounterSetWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum, uint32_t nat_n);
 
 }} // namespace tl2::details
 
