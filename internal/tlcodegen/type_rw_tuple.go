@@ -129,11 +129,11 @@ func (trw *TypeRWBrackets) IsBuiltinVector() bool {
 }
 
 func (trw *TypeRWBrackets) IsWrappingType() bool {
-	if trw.IsBuiltinVector() {
-		return true
-		//return trw.element.t.trw.IsWrappingType()
-	}
-	return false
+	return trw.IsBuiltinVector()
+	//if trw.IsBuiltinVector() {
+	//	return trw.element.t.trw.IsWrappingType()
+	//}
+	//return false
 }
 
 func (trw *TypeRWBrackets) ContainsUnion(visitedNodes map[*TypeRWWrapper]bool) bool {

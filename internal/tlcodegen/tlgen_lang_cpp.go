@@ -607,14 +607,6 @@ func printDepsGraph(out *os.File, allTypes []*TypeRWWrapper, edges map[*TypeRWWr
 	_, _ = fmt.Fprintf(out, "}\n")
 }
 
-func changeTypeGroup(to *TypeRWWrapper, newGroup string, CommonGroup string, IndependentTypes string) {
-	to.groupName = newGroup
-	if to.groupName != CommonGroup && to.groupName != IndependentTypes {
-		to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
-	}
-	to.hppDetailsFileName = to.cppDetailsFileName
-}
-
 func getCppDiff(base string, target string) string {
 	dir1, _ := filepath.Split(base)
 	dir2, file := filepath.Split(target)
