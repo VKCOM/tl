@@ -79,6 +79,7 @@ namespace basictl {
     bool tl_istream::set_error_string_padding() noexcept { return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding"); }
     bool tl_istream::set_error_expected_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag"); }
     bool tl_istream::set_error_union_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "union_tag"); };
+    bool tl_istream::set_error_unknown_scenario() noexcept { return set_error(tl_error_type::UNKNOWN_SCENARIO, "union_tag"); };
 
     void tl_istream::grow_buffer() noexcept {
         ptr = end_block;
@@ -248,6 +249,7 @@ namespace basictl {
     bool tl_ostream::set_error_bool_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "bool_tag"); }
     bool tl_ostream::set_error_expected_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag"); }
     bool tl_ostream::set_error_union_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "union_tag"); }
+    bool tl_ostream::set_error_unknown_scenario() noexcept { return set_error(tl_error_type::UNKNOWN_SCENARIO, "union_tag"); };
 
     void tl_ostream::grow_buffer() {
         ptr = end_block;

@@ -104,6 +104,7 @@ namespace basictl {
         bool set_error_string_padding() noexcept;
         bool set_error_expected_tag() noexcept;
         bool set_error_union_tag() noexcept;
+        bool set_error_unknown_scenario() noexcept;
     private:
         tl_input_connector* provider;
         std::optional<tl_stream_error> error;
@@ -194,6 +195,7 @@ namespace basictl {
         bool set_error_bool_tag() noexcept;
         bool set_error_expected_tag() noexcept;
         bool set_error_union_tag() noexcept;
+        bool set_error_unknown_scenario() noexcept;
     private:
         tl_output_connector* provider;
         std::optional<tl_stream_error> error;
