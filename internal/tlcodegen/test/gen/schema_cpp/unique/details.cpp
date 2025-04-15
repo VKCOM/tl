@@ -9,13 +9,13 @@ bool tl2::unique::Get::write_json(std::ostream& s)const {
 }
 
 bool tl2::unique::Get::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::UniqueGetRead(s, *this)) { return false; }
+	if (!::tl2::details::UniqueGetRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::unique::Get::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::UniqueGetWrite(s, *this)) { return false; }
+	if (!::tl2::details::UniqueGetWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -33,13 +33,13 @@ void tl2::unique::Get::write_or_throw(::basictl::tl_throwable_ostream & s)const 
 }
 
 bool tl2::unique::Get::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::UniqueGetReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::UniqueGetReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::unique::Get::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::UniqueGetWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::UniqueGetWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -127,13 +127,13 @@ bool tl2::unique::StringToInt::write_json(std::ostream& s)const {
 }
 
 bool tl2::unique::StringToInt::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::UniqueStringToIntRead(s, *this)) { return false; }
+	if (!::tl2::details::UniqueStringToIntRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::unique::StringToInt::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::UniqueStringToIntWrite(s, *this)) { return false; }
+	if (!::tl2::details::UniqueStringToIntWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -151,13 +151,13 @@ void tl2::unique::StringToInt::write_or_throw(::basictl::tl_throwable_ostream & 
 }
 
 bool tl2::unique::StringToInt::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::UniqueStringToIntReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::UniqueStringToIntReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::unique::StringToInt::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::UniqueStringToIntWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::UniqueStringToIntWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -209,7 +209,7 @@ bool tl2::details::UniqueStringToIntWriteBoxed(::basictl::tl_ostream & s, const 
 }
 
 bool tl2::details::UniqueStringToIntReadResult(::basictl::tl_istream & s, tl2::unique::StringToInt& item, int32_t& result) {
-	if (!s.nat_read_exact_tag(0xa8509bda)) { return false;}
+	if (!s.nat_read_exact_tag(0xa8509bda)) { return false; }
 	if (!s.int_read(result)) { return false; }
 	return true;
 }

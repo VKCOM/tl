@@ -10,13 +10,13 @@ bool tl2::antispam::GetPattern::write_json(std::ostream& s)const {
 }
 
 bool tl2::antispam::GetPattern::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamGetPatternRead(s, *this)) { return false; }
+	if (!::tl2::details::AntispamGetPatternRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::GetPattern::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamGetPatternWrite(s, *this)) { return false; }
+	if (!::tl2::details::AntispamGetPatternWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -34,13 +34,13 @@ void tl2::antispam::GetPattern::write_or_throw(::basictl::tl_throwable_ostream &
 }
 
 bool tl2::antispam::GetPattern::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamGetPatternReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamGetPatternReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::GetPattern::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamGetPatternWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamGetPatternWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -92,11 +92,11 @@ bool tl2::details::AntispamGetPatternWriteBoxed(::basictl::tl_ostream & s, const
 }
 
 bool tl2::details::AntispamGetPatternReadResult(::basictl::tl_istream & s, tl2::antispam::GetPattern& item, ::tl2::antispam::PatternFull& result) {
-	if (!::tl2::details::AntispamPatternFullReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::AntispamPatternFullReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::AntispamGetPatternWriteResult(::basictl::tl_ostream & s, tl2::antispam::GetPattern& item, ::tl2::antispam::PatternFull& result) {
-	if (!::tl2::details::AntispamPatternFullWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::AntispamPatternFullWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -128,13 +128,13 @@ bool tl2::antispam::PatternFound::write_json(std::ostream& s)const {
 }
 
 bool tl2::antispam::PatternFound::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamPatternFoundRead(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternFoundRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternFound::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamPatternFoundWrite(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternFoundWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -152,13 +152,13 @@ void tl2::antispam::PatternFound::write_or_throw(::basictl::tl_throwable_ostream
 }
 
 bool tl2::antispam::PatternFound::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamPatternFoundReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternFoundReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternFound::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamPatternFoundWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternFoundWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -263,11 +263,11 @@ bool tl2::antispam::PatternFull::write_json(std::ostream & s)const {
 	return true;
 }
 bool tl2::antispam::PatternFull::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamPatternFullReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternFullReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::antispam::PatternFull::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamPatternFullWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternFullWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -310,11 +310,11 @@ bool tl2::details::AntispamPatternFullWriteJSON(std::ostream & s, const ::tl2::a
 }
 bool tl2::details::AntispamPatternFullReadBoxed(::basictl::tl_istream & s, ::tl2::antispam::PatternFull& item) noexcept {
 	uint32_t nat;
-	s.nat_read(nat);
+	if (!s.nat_read(nat)) { return false; }
 	switch (nat) {
 	case 0xa7688492:
 		if (item.value.index() != 0) { item.value.emplace<0>(); }
-		if (!::tl2::details::AntispamPatternFoundRead(s, std::get<0>(item.value))) { return false; }
+		if (!::tl2::details::AntispamPatternFoundRead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 0x2c22e225:
 		if (item.value.index() != 1) { item.value.emplace<1>(); }
@@ -326,10 +326,10 @@ bool tl2::details::AntispamPatternFullReadBoxed(::basictl::tl_istream & s, ::tl2
 }
 
 bool tl2::details::AntispamPatternFullWriteBoxed(::basictl::tl_ostream & s, const ::tl2::antispam::PatternFull& item) noexcept{
-	s.nat_write(AntispamPatternFull_tbl_tl_tag[item.value.index()]);
+	if (!s.nat_write(AntispamPatternFull_tbl_tl_tag[item.value.index()])) { return false; }
 	switch (item.value.index()) {
 	case 0:
-		if (!::tl2::details::AntispamPatternFoundWrite(s, std::get<0>(item.value))) { return false; }
+		if (!::tl2::details::AntispamPatternFoundWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	}
 	return true;
@@ -341,13 +341,13 @@ bool tl2::antispam::PatternNotFound::write_json(std::ostream& s)const {
 }
 
 bool tl2::antispam::PatternNotFound::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamPatternNotFoundRead(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternNotFoundRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternNotFound::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamPatternNotFoundWrite(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternNotFoundWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -365,13 +365,13 @@ void tl2::antispam::PatternNotFound::write_or_throw(::basictl::tl_throwable_ostr
 }
 
 bool tl2::antispam::PatternNotFound::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AntispamPatternNotFoundReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternNotFoundReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::antispam::PatternNotFound::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AntispamPatternNotFoundWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::AntispamPatternNotFoundWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }

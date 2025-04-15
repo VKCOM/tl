@@ -307,10 +307,7 @@ void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
 }
 
 bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s) {
-	if (item.size() != nat_n) {
-		// TODO add exception
-		return false;
-	}
+	if (item.size() != nat_n) { return false; }
 	s << "[";
 	size_t index = 0;
 	for(const auto & el : item) {
@@ -334,8 +331,7 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) 
 }
 
 bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
-	if (item.size() != nat_n)
-		return s.set_error_sequence_length();
+	if (item.size() != nat_n) { return s.set_error_sequence_length(); }
 	for(const auto & el : item) {
 	%[6]s
 	}

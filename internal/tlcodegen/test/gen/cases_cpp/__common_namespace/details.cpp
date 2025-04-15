@@ -32,7 +32,7 @@ bool tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntRead(::basictl::tl_is
 	// TODO - check length sanity
 	item.resize(len);
 	for(auto && el : item) {
-		if (!::tl2::details::DictionaryFieldAnyDoubleIntRead(s, el)) { return false; }
+		if (!::tl2::details::DictionaryFieldAnyDoubleIntRead(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -40,7 +40,7 @@ bool tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntRead(::basictl::tl_is
 bool tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryFieldAnyDoubleIntWrite(s, el)) { return false; }
+		if (!::tl2::details::DictionaryFieldAnyDoubleIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -69,7 +69,7 @@ bool tl2::details::BuiltinVectorDictionaryFieldAnyIntIntRead(::basictl::tl_istre
 	// TODO - check length sanity
 	item.resize(len);
 	for(auto && el : item) {
-		if (!::tl2::details::DictionaryFieldAnyIntIntRead(s, el)) { return false; }
+		if (!::tl2::details::DictionaryFieldAnyIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -77,7 +77,7 @@ bool tl2::details::BuiltinVectorDictionaryFieldAnyIntIntRead(::basictl::tl_istre
 bool tl2::details::BuiltinVectorDictionaryFieldAnyIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryFieldAnyIntIntWrite(s, el)) { return false; }
+		if (!::tl2::details::DictionaryFieldAnyIntIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -462,13 +462,13 @@ bool tl2::True::write_json(std::ostream& s)const {
 }
 
 bool tl2::True::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::TrueRead(s, *this)) { return false; }
+	if (!::tl2::details::TrueRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::True::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::TrueWrite(s, *this)) { return false; }
+	if (!::tl2::details::TrueWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -486,13 +486,13 @@ void tl2::True::write_or_throw(::basictl::tl_throwable_ostream & s)const {
 }
 
 bool tl2::True::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::TrueReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::TrueReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::True::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::TrueWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::TrueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }

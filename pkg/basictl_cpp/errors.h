@@ -12,6 +12,7 @@ namespace basictl {
         INCORRECT_SEQUENCE_LENGTH,
         INCORRECT_STRING_PADDING,
         UNEXPECTED_TAG,
+        UNKNOWN_SCENARIO,
     };
 
     template <typename Type>

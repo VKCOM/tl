@@ -89,7 +89,7 @@ func (trw *TypeRWStruct) CPPTypeWritingCode(bytesVersion bool, val string, bare 
 		}
 		return prefix + trw.Fields[0].t.trw.CPPTypeWritingCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
 	}
-	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return s.set_error_unknown_scenario(); }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
@@ -97,11 +97,11 @@ func (trw *TypeRWStruct) CPPTypeReadingCode(bytesVersion bool, val string, bare 
 	if trw.isUnwrapType() {
 		prefix := ""
 		if !bare {
-			prefix = fmt.Sprintf("\tif (!s.nat_read_exact_tag(0x%08x)) { return false;}\n", trw.wr.tlTag)
+			prefix = fmt.Sprintf("\tif (!s.nat_read_exact_tag(0x%08x)) { return false; }\n", trw.wr.tlTag)
 		}
 		return prefix + trw.Fields[0].t.trw.CPPTypeReadingCode(bytesVersion, val, trw.Fields[0].Bare(), trw.replaceUnwrapArgs(natArgs), last)
 	}
-	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return s.set_error_unknown_scenario(); }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {

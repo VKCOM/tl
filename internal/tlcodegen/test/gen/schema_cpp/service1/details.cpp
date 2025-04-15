@@ -63,14 +63,14 @@ bool tl2::details::BuiltinTuple3Service1ValueWriteJSON(std::ostream &s, const st
 
 bool tl2::details::BuiltinTuple3Service1ValueRead(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item) {
 	for(auto && el : item) {
-		if (!::tl2::details::Service1ValueReadBoxed(s, el)) { return false; }
+		if (!::tl2::details::Service1ValueReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
 
 bool tl2::details::BuiltinTuple3Service1ValueWrite(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item) {
 	for(const auto & el : item) {
-		if (!::tl2::details::Service1ValueWriteBoxed(s, el)) { return false; }
+		if (!::tl2::details::Service1ValueWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -143,7 +143,7 @@ bool tl2::details::BuiltinVectorDictionaryFieldService1ValueRead(::basictl::tl_i
 	for(uint32_t i = 0; i < len; i++) {
 		std::string key;
 		if (!s.string_read(key)) { return false; }
-		if (!::tl2::details::Service1ValueReadBoxed(s, item[key])) { return false; }
+		if (!::tl2::details::Service1ValueReadBoxed(s, item[key])) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -152,7 +152,7 @@ bool tl2::details::BuiltinVectorDictionaryFieldService1ValueWrite(::basictl::tl_
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
 		if (!s.string_write(el.first)) { return false;}
-		if (!::tl2::details::Service1ValueWriteBoxed(s, el.second)) { return false; }
+		if (!::tl2::details::Service1ValueWriteBoxed(s, el.second)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -222,7 +222,7 @@ bool tl2::details::BuiltinVectorMapStringStringRead(::basictl::tl_istream & s, s
 	// TODO - check length sanity
 	item.resize(len);
 	for(auto && el : item) {
-		if (!::tl2::details::MapStringStringRead(s, el)) { return false; }
+		if (!::tl2::details::MapStringStringRead(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -230,7 +230,7 @@ bool tl2::details::BuiltinVectorMapStringStringRead(::basictl::tl_istream & s, s
 bool tl2::details::BuiltinVectorMapStringStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Map<std::string, std::string>>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::MapStringStringWrite(s, el)) { return false; }
+		if (!::tl2::details::MapStringStringWrite(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -259,7 +259,7 @@ bool tl2::details::BuiltinVectorService1ValueRead(::basictl::tl_istream & s, std
 	// TODO - check length sanity
 	item.resize(len);
 	for(auto && el : item) {
-		if (!::tl2::details::Service1ValueReadBoxed(s, el)) { return false; }
+		if (!::tl2::details::Service1ValueReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -267,7 +267,7 @@ bool tl2::details::BuiltinVectorService1ValueRead(::basictl::tl_istream & s, std
 bool tl2::details::BuiltinVectorService1ValueWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service1::Value>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::Service1ValueWriteBoxed(s, el)) { return false; }
+		if (!::tl2::details::Service1ValueWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -354,13 +354,13 @@ bool tl2::service1::Add::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Add::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AddRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Add::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AddWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -378,13 +378,13 @@ void tl2::service1::Add::write_or_throw(::basictl::tl_throwable_ostream & s)cons
 }
 
 bool tl2::service1::Add::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AddReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Add::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AddWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -507,13 +507,13 @@ bool tl2::service1::AddOrGet::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::AddOrGet::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AddOrGetRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrGetRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrGet::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AddOrGetWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrGetWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -531,13 +531,13 @@ void tl2::service1::AddOrGet::write_or_throw(::basictl::tl_throwable_ostream & s
 }
 
 bool tl2::service1::AddOrGet::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AddOrGetReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrGetReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrGet::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AddOrGetWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrGetWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -624,11 +624,11 @@ bool tl2::details::Service1AddOrGetWriteBoxed(::basictl::tl_ostream & s, const :
 }
 
 bool tl2::details::Service1AddOrGetReadResult(::basictl::tl_istream & s, tl2::service1::AddOrGet& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1AddOrGetWriteResult(::basictl::tl_ostream & s, tl2::service1::AddOrGet& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -660,13 +660,13 @@ bool tl2::service1::AddOrIncr::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::AddOrIncr::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AddOrIncrRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrIncrRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrIncr::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AddOrIncrWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrIncrWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -684,13 +684,13 @@ void tl2::service1::AddOrIncr::write_or_throw(::basictl::tl_throwable_ostream & 
 }
 
 bool tl2::service1::AddOrIncr::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AddOrIncrReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrIncrReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::AddOrIncr::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AddOrIncrWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AddOrIncrWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -777,11 +777,11 @@ bool tl2::details::Service1AddOrIncrWriteBoxed(::basictl::tl_ostream & s, const 
 }
 
 bool tl2::details::Service1AddOrIncrReadResult(::basictl::tl_istream & s, tl2::service1::AddOrIncr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1AddOrIncrWriteResult(::basictl::tl_ostream & s, tl2::service1::AddOrIncr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -813,13 +813,13 @@ bool tl2::service1::Append::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Append::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AppendRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1AppendRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Append::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AppendWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1AppendWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -837,13 +837,13 @@ void tl2::service1::Append::write_or_throw(::basictl::tl_throwable_ostream & s)c
 }
 
 bool tl2::service1::Append::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1AppendReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AppendReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Append::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1AppendWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1AppendWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -966,13 +966,13 @@ bool tl2::service1::Cas::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Cas::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1CasRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1CasRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Cas::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1CasWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1CasWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -990,13 +990,13 @@ void tl2::service1::Cas::write_or_throw(::basictl::tl_throwable_ostream & s)cons
 }
 
 bool tl2::service1::Cas::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1CasReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1CasReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Cas::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1CasWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1CasWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1130,13 +1130,13 @@ bool tl2::service1::Decr::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Decr::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DecrRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1DecrRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Decr::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DecrWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1DecrWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1154,13 +1154,13 @@ void tl2::service1::Decr::write_or_throw(::basictl::tl_throwable_ostream & s)con
 }
 
 bool tl2::service1::Decr::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DecrReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DecrReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Decr::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DecrWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DecrWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1225,11 +1225,11 @@ bool tl2::details::Service1DecrWriteBoxed(::basictl::tl_ostream & s, const ::tl2
 }
 
 bool tl2::details::Service1DecrReadResult(::basictl::tl_istream & s, tl2::service1::Decr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1DecrWriteResult(::basictl::tl_ostream & s, tl2::service1::Decr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -1261,13 +1261,13 @@ bool tl2::service1::Delete::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Delete::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DeleteRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1DeleteRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Delete::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DeleteWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1DeleteWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1285,13 +1285,13 @@ void tl2::service1::Delete::write_or_throw(::basictl::tl_throwable_ostream & s)c
 }
 
 bool tl2::service1::Delete::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DeleteReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DeleteReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Delete::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DeleteWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DeleteWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1379,13 +1379,13 @@ bool tl2::service1::DisableExpiration::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::DisableExpiration::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DisableExpirationRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableExpirationRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableExpiration::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DisableExpirationWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableExpirationWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1403,13 +1403,13 @@ void tl2::service1::DisableExpiration::write_or_throw(::basictl::tl_throwable_os
 }
 
 bool tl2::service1::DisableExpiration::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DisableExpirationReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableExpirationReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableExpiration::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DisableExpirationWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableExpirationWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1497,13 +1497,13 @@ bool tl2::service1::DisableKeysStat::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::DisableKeysStat::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DisableKeysStatRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableKeysStatRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableKeysStat::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DisableKeysStatWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableKeysStatWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1521,13 +1521,13 @@ void tl2::service1::DisableKeysStat::write_or_throw(::basictl::tl_throwable_ostr
 }
 
 bool tl2::service1::DisableKeysStat::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1DisableKeysStatReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableKeysStatReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::DisableKeysStat::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1DisableKeysStatWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1DisableKeysStatWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1615,13 +1615,13 @@ bool tl2::service1::EnableExpiration::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::EnableExpiration::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1EnableExpirationRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableExpirationRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableExpiration::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1EnableExpirationWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableExpirationWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1639,13 +1639,13 @@ void tl2::service1::EnableExpiration::write_or_throw(::basictl::tl_throwable_ost
 }
 
 bool tl2::service1::EnableExpiration::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1EnableExpirationReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableExpirationReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableExpiration::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1EnableExpirationWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableExpirationWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1733,13 +1733,13 @@ bool tl2::service1::EnableKeysStat::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::EnableKeysStat::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1EnableKeysStatRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableKeysStatRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableKeysStat::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1EnableKeysStatWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableKeysStatWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1757,13 +1757,13 @@ void tl2::service1::EnableKeysStat::write_or_throw(::basictl::tl_throwable_ostre
 }
 
 bool tl2::service1::EnableKeysStat::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1EnableKeysStatReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableKeysStatReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::EnableKeysStat::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1EnableKeysStatWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1EnableKeysStatWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1851,13 +1851,13 @@ bool tl2::service1::Exists::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Exists::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ExistsRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1ExistsRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Exists::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ExistsWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1ExistsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1875,13 +1875,13 @@ void tl2::service1::Exists::write_or_throw(::basictl::tl_throwable_ostream & s)c
 }
 
 bool tl2::service1::Exists::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ExistsReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ExistsReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Exists::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ExistsWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ExistsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1969,13 +1969,13 @@ bool tl2::service1::Get::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Get::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Get::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -1993,13 +1993,13 @@ void tl2::service1::Get::write_or_throw(::basictl::tl_throwable_ostream & s)cons
 }
 
 bool tl2::service1::Get::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Get::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2051,11 +2051,11 @@ bool tl2::details::Service1GetWriteBoxed(::basictl::tl_ostream & s, const ::tl2:
 }
 
 bool tl2::details::Service1GetReadResult(::basictl::tl_istream & s, tl2::service1::Get& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1GetWriteResult(::basictl::tl_ostream & s, tl2::service1::Get& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -2087,13 +2087,13 @@ bool tl2::service1::GetExpireTime::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetExpireTime::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetExpireTimeRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetExpireTimeRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetExpireTime::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetExpireTimeWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetExpireTimeWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2111,13 +2111,13 @@ void tl2::service1::GetExpireTime::write_or_throw(::basictl::tl_throwable_ostrea
 }
 
 bool tl2::service1::GetExpireTime::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetExpireTimeReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetExpireTimeReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetExpireTime::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetExpireTimeWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetExpireTimeWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2205,13 +2205,13 @@ bool tl2::service1::GetKeysStat::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetKeysStat::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetKeysStatRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStat::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetKeysStatWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2229,13 +2229,13 @@ void tl2::service1::GetKeysStat::write_or_throw(::basictl::tl_throwable_ostream 
 }
 
 bool tl2::service1::GetKeysStat::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetKeysStatReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStat::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetKeysStatWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2323,13 +2323,13 @@ bool tl2::service1::GetKeysStatPeriods::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetKeysStatPeriods::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetKeysStatPeriodsRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatPeriodsRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStatPeriods::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetKeysStatPeriodsWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatPeriodsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2347,13 +2347,13 @@ void tl2::service1::GetKeysStatPeriods::write_or_throw(::basictl::tl_throwable_o
 }
 
 bool tl2::service1::GetKeysStatPeriods::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetKeysStatPeriodsReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatPeriodsReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetKeysStatPeriods::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetKeysStatPeriodsWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetKeysStatPeriodsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2397,7 +2397,7 @@ bool tl2::details::Service1GetKeysStatPeriodsWriteBoxed(::basictl::tl_ostream & 
 }
 
 bool tl2::details::Service1GetKeysStatPeriodsReadResult(::basictl::tl_istream & s, tl2::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false;}
+	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, result)) { return false; }
 	return true;
 }
@@ -2435,13 +2435,13 @@ bool tl2::service1::GetWildcard::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetWildcard::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcard::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2459,13 +2459,13 @@ void tl2::service1::GetWildcard::write_or_throw(::basictl::tl_throwable_ostream 
 }
 
 bool tl2::service1::GetWildcard::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcard::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2517,7 +2517,7 @@ bool tl2::details::Service1GetWildcardWriteBoxed(::basictl::tl_ostream & s, cons
 }
 
 bool tl2::details::Service1GetWildcardReadResult(::basictl::tl_istream & s, tl2::service1::GetWildcard& item, std::vector<::tl2::Map<std::string, std::string>>& result) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false;}
+	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
 	if (!::tl2::details::BuiltinVectorMapStringStringRead(s, result)) { return false; }
 	return true;
 }
@@ -2555,13 +2555,13 @@ bool tl2::service1::GetWildcardDict::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetWildcardDict::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardDictRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardDictRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardDict::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardDictWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardDictWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2579,13 +2579,13 @@ void tl2::service1::GetWildcardDict::write_or_throw(::basictl::tl_throwable_ostr
 }
 
 bool tl2::service1::GetWildcardDict::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardDictReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardDictReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardDict::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardDictWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardDictWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2637,7 +2637,7 @@ bool tl2::details::Service1GetWildcardDictWriteBoxed(::basictl::tl_ostream & s, 
 }
 
 bool tl2::details::Service1GetWildcardDictReadResult(::basictl::tl_istream & s, tl2::service1::GetWildcardDict& item, std::map<std::string, std::string>& result) {
-	if (!s.nat_read_exact_tag(0x1f4c618f)) { return false;}
+	if (!s.nat_read_exact_tag(0x1f4c618f)) { return false; }
 	if (!::tl2::details::BuiltinVectorDictionaryFieldStringRead(s, result)) { return false; }
 	return true;
 }
@@ -2675,13 +2675,13 @@ bool tl2::service1::GetWildcardList::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetWildcardList::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardListRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardListRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardList::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardListWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardListWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2699,13 +2699,13 @@ void tl2::service1::GetWildcardList::write_or_throw(::basictl::tl_throwable_ostr
 }
 
 bool tl2::service1::GetWildcardList::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardListReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardListReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardList::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardListWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardListWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2757,7 +2757,7 @@ bool tl2::details::Service1GetWildcardListWriteBoxed(::basictl::tl_ostream & s, 
 }
 
 bool tl2::details::Service1GetWildcardListReadResult(::basictl::tl_istream & s, tl2::service1::GetWildcardList& item, std::vector<std::string>& result) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false;}
+	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
 	if (!::tl2::details::BuiltinVectorStringRead(s, result)) { return false; }
 	return true;
 }
@@ -2795,13 +2795,13 @@ bool tl2::service1::GetWildcardWithFlags::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::GetWildcardWithFlags::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardWithFlagsRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardWithFlagsRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardWithFlags::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardWithFlagsWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardWithFlagsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2819,13 +2819,13 @@ void tl2::service1::GetWildcardWithFlags::write_or_throw(::basictl::tl_throwable
 }
 
 bool tl2::service1::GetWildcardWithFlags::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1GetWildcardWithFlagsReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardWithFlagsReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::GetWildcardWithFlags::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1GetWildcardWithFlagsWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1GetWildcardWithFlagsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2877,7 +2877,7 @@ bool tl2::details::Service1GetWildcardWithFlagsWriteBoxed(::basictl::tl_ostream 
 }
 
 bool tl2::details::Service1GetWildcardWithFlagsReadResult(::basictl::tl_istream & s, tl2::service1::GetWildcardWithFlags& item, std::map<std::string, ::tl2::service1::Value>& result) {
-	if (!s.nat_read_exact_tag(0x1f4c618f)) { return false;}
+	if (!s.nat_read_exact_tag(0x1f4c618f)) { return false; }
 	if (!::tl2::details::BuiltinVectorDictionaryFieldService1ValueRead(s, result)) { return false; }
 	return true;
 }
@@ -2915,13 +2915,13 @@ bool tl2::service1::Incr::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Incr::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1IncrRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1IncrRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Incr::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1IncrWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1IncrWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -2939,13 +2939,13 @@ void tl2::service1::Incr::write_or_throw(::basictl::tl_throwable_ostream & s)con
 }
 
 bool tl2::service1::Incr::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1IncrReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1IncrReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Incr::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1IncrWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1IncrWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3010,11 +3010,11 @@ bool tl2::details::Service1IncrWriteBoxed(::basictl::tl_ostream & s, const ::tl2
 }
 
 bool tl2::details::Service1IncrReadResult(::basictl::tl_istream & s, tl2::service1::Incr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1IncrWriteResult(::basictl::tl_ostream & s, tl2::service1::Incr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -3046,13 +3046,13 @@ bool tl2::service1::KeysStat::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::KeysStat::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1KeysStatRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1KeysStatRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::KeysStat::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1KeysStatWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1KeysStatWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3070,13 +3070,13 @@ void tl2::service1::KeysStat::write_or_throw(::basictl::tl_throwable_ostream & s
 }
 
 bool tl2::service1::KeysStat::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1KeysStatReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1KeysStatReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::KeysStat::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1KeysStatWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1KeysStatWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3157,7 +3157,7 @@ bool tl2::details::Service1KeysStatMaybeReadBoxed(::basictl::tl_istream & s, std
 		if (!item) {
 			item.emplace();
 		}
-		if (!::tl2::details::Service1KeysStatRead(s, *item)) { return false; }
+		if (!::tl2::details::Service1KeysStatRead(s, *item)) { return s.set_error_unknown_scenario(); }
 		return true;
 	}
 	item.reset();
@@ -3167,7 +3167,7 @@ bool tl2::details::Service1KeysStatMaybeReadBoxed(::basictl::tl_istream & s, std
 bool tl2::details::Service1KeysStatMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::service1::KeysStat>& item) {
 	if (!s.nat_write(item ? 0x3f9c8ef8 : 0x27930a7b)) { return false; }
 	if (item) {
-		if (!::tl2::details::Service1KeysStatWrite(s, *item)) { return false; }
+		if (!::tl2::details::Service1KeysStatWrite(s, *item)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -3178,13 +3178,13 @@ bool tl2::service1::Longvalue::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Longvalue::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1LongvalueRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Longvalue::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1LongvalueWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3202,13 +3202,13 @@ void tl2::service1::Longvalue::write_or_throw(::basictl::tl_throwable_ostream & 
 }
 
 bool tl2::service1::Longvalue::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1LongvalueReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Longvalue::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1LongvalueWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3278,13 +3278,13 @@ bool tl2::service1::LongvalueWithTime::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::LongvalueWithTime::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1LongvalueWithTimeRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueWithTimeRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::LongvalueWithTime::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1LongvalueWithTimeWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueWithTimeWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3302,13 +3302,13 @@ void tl2::service1::LongvalueWithTime::write_or_throw(::basictl::tl_throwable_os
 }
 
 bool tl2::service1::LongvalueWithTime::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1LongvalueWithTimeReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueWithTimeReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::LongvalueWithTime::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1LongvalueWithTimeWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1LongvalueWithTimeWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3389,13 +3389,13 @@ bool tl2::service1::Not_found::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Not_found::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1NotFoundRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1NotFoundRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Not_found::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1NotFoundWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1NotFoundWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3413,13 +3413,13 @@ void tl2::service1::Not_found::write_or_throw(::basictl::tl_throwable_ostream & 
 }
 
 bool tl2::service1::Not_found::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1NotFoundReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1NotFoundReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Not_found::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1NotFoundWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1NotFoundWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3468,13 +3468,13 @@ bool tl2::service1::Replace::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Replace::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ReplaceRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Replace::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ReplaceWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3492,13 +3492,13 @@ void tl2::service1::Replace::write_or_throw(::basictl::tl_throwable_ostream & s)
 }
 
 bool tl2::service1::Replace::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ReplaceReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Replace::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ReplaceWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3621,13 +3621,13 @@ bool tl2::service1::ReplaceOrIncr::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::ReplaceOrIncr::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ReplaceOrIncrRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceOrIncrRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::ReplaceOrIncr::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ReplaceOrIncrWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceOrIncrWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3645,13 +3645,13 @@ void tl2::service1::ReplaceOrIncr::write_or_throw(::basictl::tl_throwable_ostrea
 }
 
 bool tl2::service1::ReplaceOrIncr::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ReplaceOrIncrReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceOrIncrReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::ReplaceOrIncr::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ReplaceOrIncrWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ReplaceOrIncrWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3738,11 +3738,11 @@ bool tl2::details::Service1ReplaceOrIncrWriteBoxed(::basictl::tl_ostream & s, co
 }
 
 bool tl2::details::Service1ReplaceOrIncrReadResult(::basictl::tl_istream & s, tl2::service1::ReplaceOrIncr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1ReplaceOrIncrWriteResult(::basictl::tl_ostream & s, tl2::service1::ReplaceOrIncr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -3774,13 +3774,13 @@ bool tl2::service1::Set::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Set::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1SetRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Set::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1SetWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3798,13 +3798,13 @@ void tl2::service1::Set::write_or_throw(::basictl::tl_throwable_ostream & s)cons
 }
 
 bool tl2::service1::Set::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1SetReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Set::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1SetWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3927,13 +3927,13 @@ bool tl2::service1::SetOrIncr::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::SetOrIncr::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1SetOrIncrRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetOrIncrRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::SetOrIncr::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1SetOrIncrWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetOrIncrWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -3951,13 +3951,13 @@ void tl2::service1::SetOrIncr::write_or_throw(::basictl::tl_throwable_ostream & 
 }
 
 bool tl2::service1::SetOrIncr::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1SetOrIncrReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetOrIncrReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::SetOrIncr::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1SetOrIncrWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1SetOrIncrWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4044,11 +4044,11 @@ bool tl2::details::Service1SetOrIncrWriteBoxed(::basictl::tl_ostream & s, const 
 }
 
 bool tl2::details::Service1SetOrIncrReadResult(::basictl::tl_istream & s, tl2::service1::SetOrIncr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::details::Service1SetOrIncrWriteResult(::basictl::tl_ostream & s, tl2::service1::SetOrIncr& item, ::tl2::service1::Value& result) {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, result)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -4080,13 +4080,13 @@ bool tl2::service1::Strvalue::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Strvalue::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1StrvalueRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Strvalue::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1StrvalueWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4104,13 +4104,13 @@ void tl2::service1::Strvalue::write_or_throw(::basictl::tl_throwable_ostream & s
 }
 
 bool tl2::service1::Strvalue::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1StrvalueReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Strvalue::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1StrvalueWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4180,13 +4180,13 @@ bool tl2::service1::StrvalueWithTime::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::StrvalueWithTime::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1StrvalueWithTimeRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueWithTimeRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::StrvalueWithTime::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1StrvalueWithTimeWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueWithTimeWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4204,13 +4204,13 @@ void tl2::service1::StrvalueWithTime::write_or_throw(::basictl::tl_throwable_ost
 }
 
 bool tl2::service1::StrvalueWithTime::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1StrvalueWithTimeReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueWithTimeReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::StrvalueWithTime::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1StrvalueWithTimeWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1StrvalueWithTimeWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4291,13 +4291,13 @@ bool tl2::service1::Touch::write_json(std::ostream& s)const {
 }
 
 bool tl2::service1::Touch::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1TouchRead(s, *this)) { return false; }
+	if (!::tl2::details::Service1TouchRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Touch::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1TouchWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service1TouchWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4315,13 +4315,13 @@ void tl2::service1::Touch::write_or_throw(::basictl::tl_throwable_ostream & s)co
 }
 
 bool tl2::service1::Touch::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1TouchReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1TouchReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service1::Touch::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1TouchWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1TouchWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -4424,11 +4424,11 @@ bool tl2::service1::Value::write_json(std::ostream & s)const {
 	return true;
 }
 bool tl2::service1::Value::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service1ValueReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ValueReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::service1::Value::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service1ValueWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service1ValueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -4483,26 +4483,26 @@ bool tl2::details::Service1ValueWriteJSON(std::ostream & s, const ::tl2::service
 }
 bool tl2::details::Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Value& item) noexcept {
 	uint32_t nat;
-	s.nat_read(nat);
+	if (!s.nat_read(nat)) { return false; }
 	switch (nat) {
 	case 0x1d670b96:
 		if (item.value.index() != 0) { item.value.emplace<0>(); }
 		break;
 	case 0x5faa0c52:
 		if (item.value.index() != 1) { item.value.emplace<1>(); }
-		if (!::tl2::details::Service1StrvalueRead(s, std::get<1>(item.value))) { return false; }
+		if (!::tl2::details::Service1StrvalueRead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 0x082e0945:
 		if (item.value.index() != 2) { item.value.emplace<2>(); }
-		if (!::tl2::details::Service1LongvalueRead(s, std::get<2>(item.value))) { return false; }
+		if (!::tl2::details::Service1LongvalueRead(s, std::get<2>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 0x98b1a484:
 		if (item.value.index() != 3) { item.value.emplace<3>(); }
-		if (!::tl2::details::Service1StrvalueWithTimeRead(s, std::get<3>(item.value))) { return false; }
+		if (!::tl2::details::Service1StrvalueWithTimeRead(s, std::get<3>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 0xa04606ec:
 		if (item.value.index() != 4) { item.value.emplace<4>(); }
-		if (!::tl2::details::Service1LongvalueWithTimeRead(s, std::get<4>(item.value))) { return false; }
+		if (!::tl2::details::Service1LongvalueWithTimeRead(s, std::get<4>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	default:
 		return s.set_error_union_tag();
@@ -4511,19 +4511,19 @@ bool tl2::details::Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::serv
 }
 
 bool tl2::details::Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Value& item) noexcept{
-	s.nat_write(Service1Value_tbl_tl_tag[item.value.index()]);
+	if (!s.nat_write(Service1Value_tbl_tl_tag[item.value.index()])) { return false; }
 	switch (item.value.index()) {
 	case 1:
-		if (!::tl2::details::Service1StrvalueWrite(s, std::get<1>(item.value))) { return false; }
+		if (!::tl2::details::Service1StrvalueWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 2:
-		if (!::tl2::details::Service1LongvalueWrite(s, std::get<2>(item.value))) { return false; }
+		if (!::tl2::details::Service1LongvalueWrite(s, std::get<2>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 3:
-		if (!::tl2::details::Service1StrvalueWithTimeWrite(s, std::get<3>(item.value))) { return false; }
+		if (!::tl2::details::Service1StrvalueWithTimeWrite(s, std::get<3>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 4:
-		if (!::tl2::details::Service1LongvalueWithTimeWrite(s, std::get<4>(item.value))) { return false; }
+		if (!::tl2::details::Service1LongvalueWithTimeWrite(s, std::get<4>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	}
 	return true;
@@ -4546,7 +4546,7 @@ bool tl2::details::Service1ValueBoxedMaybeReadBoxed(::basictl::tl_istream & s, s
 		if (!item) {
 			item.emplace();
 		}
-		if (!::tl2::details::Service1ValueReadBoxed(s, *item)) { return false; }
+		if (!::tl2::details::Service1ValueReadBoxed(s, *item)) { return s.set_error_unknown_scenario(); }
 		return true;
 	}
 	item.reset();
@@ -4556,7 +4556,7 @@ bool tl2::details::Service1ValueBoxedMaybeReadBoxed(::basictl::tl_istream & s, s
 bool tl2::details::Service1ValueBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::service1::Value>& item) {
 	if (!s.nat_write(item ? 0x3f9c8ef8 : 0x27930a7b)) { return false; }
 	if (item) {
-		if (!::tl2::details::Service1ValueWriteBoxed(s, *item)) { return false; }
+		if (!::tl2::details::Service1ValueWriteBoxed(s, *item)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }

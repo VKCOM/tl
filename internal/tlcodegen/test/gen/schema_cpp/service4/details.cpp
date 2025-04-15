@@ -10,13 +10,13 @@ bool tl2::service4::ModifiedNewsEntry::write_json(std::ostream& s)const {
 }
 
 bool tl2::service4::ModifiedNewsEntry::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service4ModifiedNewsEntryRead(s, *this)) { return false; }
+	if (!::tl2::details::Service4ModifiedNewsEntryRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service4::ModifiedNewsEntry::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service4ModifiedNewsEntryWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service4ModifiedNewsEntryWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -34,13 +34,13 @@ void tl2::service4::ModifiedNewsEntry::write_or_throw(::basictl::tl_throwable_os
 }
 
 bool tl2::service4::ModifiedNewsEntry::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service4ModifiedNewsEntryReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service4ModifiedNewsEntryReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service4::ModifiedNewsEntry::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service4ModifiedNewsEntryWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service4ModifiedNewsEntryWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -117,7 +117,7 @@ bool tl2::details::Service4ModifiedNewsEntryWriteJSON(std::ostream& s, const ::t
 }
 
 bool tl2::details::Service4ModifiedNewsEntryRead(::basictl::tl_istream & s, ::tl2::service4::ModifiedNewsEntry& item) noexcept {
-	if (!::tl2::details::Service4ObjectRead(s, item.object)) { return false; }
+	if (!::tl2::details::Service4ObjectRead(s, item.object)) { return s.set_error_unknown_scenario(); }
 	if (!s.int_read(item.creation_date)) { return false; }
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if ((item.fields_mask & (1<<0)) != 0) {
@@ -139,7 +139,7 @@ bool tl2::details::Service4ModifiedNewsEntryRead(::basictl::tl_istream & s, ::tl
 }
 
 bool tl2::details::Service4ModifiedNewsEntryWrite(::basictl::tl_ostream & s, const ::tl2::service4::ModifiedNewsEntry& item) noexcept {
-	if (!::tl2::details::Service4ObjectWrite(s, item.object)) { return false; }
+	if (!::tl2::details::Service4ObjectWrite(s, item.object)) { return s.set_error_unknown_scenario(); }
 	if (!s.int_write(item.creation_date)) { return false;}
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if ((item.fields_mask & (1<<0)) != 0) {
@@ -170,13 +170,13 @@ bool tl2::service4::Object::write_json(std::ostream& s)const {
 }
 
 bool tl2::service4::Object::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service4ObjectRead(s, *this)) { return false; }
+	if (!::tl2::details::Service4ObjectRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service4::Object::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service4ObjectWrite(s, *this)) { return false; }
+	if (!::tl2::details::Service4ObjectWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -194,13 +194,13 @@ void tl2::service4::Object::write_or_throw(::basictl::tl_throwable_ostream & s)c
 }
 
 bool tl2::service4::Object::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service4ObjectReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service4ObjectReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::service4::Object::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service4ObjectWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::Service4ObjectWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }

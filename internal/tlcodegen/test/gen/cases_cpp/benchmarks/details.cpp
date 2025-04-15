@@ -16,13 +16,13 @@ bool tl2::benchmarks::Vruhash::write_json(std::ostream& s)const {
 }
 
 bool tl2::benchmarks::Vruhash::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVruHashRead(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruHashRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::Vruhash::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVruHashWrite(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruHashWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -40,13 +40,13 @@ void tl2::benchmarks::Vruhash::write_or_throw(::basictl::tl_throwable_ostream & 
 }
 
 bool tl2::benchmarks::Vruhash::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVruHashReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruHashReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::Vruhash::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVruHashWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruHashWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -116,13 +116,13 @@ bool tl2::benchmarks::Vruposition::write_json(std::ostream& s)const {
 }
 
 bool tl2::benchmarks::Vruposition::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVruPositionRead(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruPositionRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::Vruposition::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVruPositionWrite(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruPositionWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -140,13 +140,13 @@ void tl2::benchmarks::Vruposition::write_or_throw(::basictl::tl_throwable_ostrea
 }
 
 bool tl2::benchmarks::Vruposition::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVruPositionReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruPositionReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::Vruposition::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVruPositionWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVruPositionWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -270,33 +270,33 @@ bool tl2::details::BenchmarksVruPositionWriteJSON(std::ostream& s, const ::tl2::
 bool tl2::details::BenchmarksVruPositionRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruposition& item) noexcept {
 	if (!s.nat_read(item.fields_mask)) { return false; }
 	if ((item.fields_mask & (1<<0)) != 0) {
-		if (!::tl2::details::TrueRead(s, item.commit_bit)) { return false; }
+		if (!::tl2::details::TrueRead(s, item.commit_bit)) { return s.set_error_unknown_scenario(); }
 	} else {
 			::tl2::details::TrueReset(item.commit_bit);
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-		if (!::tl2::details::TrueRead(s, item.meta_block)) { return false; }
+		if (!::tl2::details::TrueRead(s, item.meta_block)) { return s.set_error_unknown_scenario(); }
 	} else {
 			::tl2::details::TrueReset(item.meta_block);
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-		if (!::tl2::details::TrueRead(s, item.split_payload)) { return false; }
+		if (!::tl2::details::TrueRead(s, item.split_payload)) { return s.set_error_unknown_scenario(); }
 	} else {
 			::tl2::details::TrueReset(item.split_payload);
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
-		if (!::tl2::details::TrueRead(s, item.rotation_block)) { return false; }
+		if (!::tl2::details::TrueRead(s, item.rotation_block)) { return s.set_error_unknown_scenario(); }
 	} else {
 			::tl2::details::TrueReset(item.rotation_block);
 	}
 	if ((item.fields_mask & (1<<15)) != 0) {
-		if (!::tl2::details::TrueRead(s, item.canonical_hash)) { return false; }
+		if (!::tl2::details::TrueRead(s, item.canonical_hash)) { return s.set_error_unknown_scenario(); }
 	} else {
 			::tl2::details::TrueReset(item.canonical_hash);
 	}
 	if (!s.long_read(item.payload_offset)) { return false; }
 	if (!s.long_read(item.block_time_nano)) { return false; }
-	if (!::tl2::details::BenchmarksVruHashRead(s, item.hash)) { return false; }
+	if (!::tl2::details::BenchmarksVruHashRead(s, item.hash)) { return s.set_error_unknown_scenario(); }
 	if (!s.long_read(item.file_offset)) { return false; }
 	if ((item.fields_mask & (1<<14)) != 0) {
 		if (!s.long_read(item.seq_number)) { return false; }
@@ -309,23 +309,23 @@ bool tl2::details::BenchmarksVruPositionRead(::basictl::tl_istream & s, ::tl2::b
 bool tl2::details::BenchmarksVruPositionWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruposition& item) noexcept {
 	if (!s.nat_write(item.fields_mask)) { return false;}
 	if ((item.fields_mask & (1<<0)) != 0) {
-			if (!::tl2::details::TrueWrite(s, item.commit_bit)) { return false; }
+			if (!::tl2::details::TrueWrite(s, item.commit_bit)) { return s.set_error_unknown_scenario(); }
 	}
 	if ((item.fields_mask & (1<<1)) != 0) {
-			if (!::tl2::details::TrueWrite(s, item.meta_block)) { return false; }
+			if (!::tl2::details::TrueWrite(s, item.meta_block)) { return s.set_error_unknown_scenario(); }
 	}
 	if ((item.fields_mask & (1<<3)) != 0) {
-			if (!::tl2::details::TrueWrite(s, item.split_payload)) { return false; }
+			if (!::tl2::details::TrueWrite(s, item.split_payload)) { return s.set_error_unknown_scenario(); }
 	}
 	if ((item.fields_mask & (1<<5)) != 0) {
-			if (!::tl2::details::TrueWrite(s, item.rotation_block)) { return false; }
+			if (!::tl2::details::TrueWrite(s, item.rotation_block)) { return s.set_error_unknown_scenario(); }
 	}
 	if ((item.fields_mask & (1<<15)) != 0) {
-			if (!::tl2::details::TrueWrite(s, item.canonical_hash)) { return false; }
+			if (!::tl2::details::TrueWrite(s, item.canonical_hash)) { return s.set_error_unknown_scenario(); }
 	}
 	if (!s.long_write(item.payload_offset)) { return false;}
 	if (!s.long_write(item.block_time_nano)) { return false;}
-	if (!::tl2::details::BenchmarksVruHashWrite(s, item.hash)) { return false; }
+	if (!::tl2::details::BenchmarksVruHashWrite(s, item.hash)) { return s.set_error_unknown_scenario(); }
 	if (!s.long_write(item.file_offset)) { return false;}
 	if ((item.fields_mask & (1<<14)) != 0) {
 			if (!s.long_write(item.seq_number)) { return false;}
@@ -349,13 +349,13 @@ bool tl2::benchmarks::VrutoyPositions::write_json(std::ostream& s, uint32_t nat_
 }
 
 bool tl2::benchmarks::VrutoyPositions::read(::basictl::tl_istream & s, uint32_t nat_n) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, *this, nat_n)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, *this, nat_n)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoyPositions::write(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyPositionsWrite(s, *this, nat_n)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyPositionsWrite(s, *this, nat_n)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -373,13 +373,13 @@ void tl2::benchmarks::VrutoyPositions::write_or_throw(::basictl::tl_throwable_os
 }
 
 bool tl2::benchmarks::VrutoyPositions::read_boxed(::basictl::tl_istream & s, uint32_t nat_n) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyPositionsReadBoxed(s, *this, nat_n)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyPositionsReadBoxed(s, *this, nat_n)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoyPositions::write_boxed(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyPositionsWriteBoxed(s, *this, nat_n)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyPositionsWriteBoxed(s, *this, nat_n)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -436,13 +436,13 @@ bool tl2::benchmarks::VrutoyTopLevelContainer::write_json(std::ostream& s)const 
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainer::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerRead(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainer::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWrite(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -460,13 +460,13 @@ void tl2::benchmarks::VrutoyTopLevelContainer::write_or_throw(::basictl::tl_thro
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainer::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainer::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -496,12 +496,12 @@ bool tl2::details::BenchmarksVrutoyTopLevelContainerWriteJSON(std::ostream& s, c
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelContainer& item) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(s, item.value)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(s, item.value)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelContainer& item) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteBoxed(s, item.value)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteBoxed(s, item.value)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -521,13 +521,13 @@ bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_json(std::ost
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyRead(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWrite(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -545,13 +545,13 @@ void tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_or_throw(::ba
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -593,13 +593,13 @@ bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(std:
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept {
 	if (!s.nat_read(item.n)) { return false; }
-	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, item.value, item.n)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyPositionsRead(s, item.value, item.n)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelContainerWithDependencyWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept {
 	if (!s.nat_write(item.n)) { return false;}
-	if (!::tl2::details::BenchmarksVrutoyPositionsWrite(s, item.value, item.n)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyPositionsWrite(s, item.value, item.n)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -621,11 +621,11 @@ bool tl2::benchmarks::VrutoyTopLevelUnion::write_json(std::ostream & s)const {
 	return true;
 }
 bool tl2::benchmarks::VrutoyTopLevelUnion::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 bool tl2::benchmarks::VrutoyTopLevelUnion::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoyTopLevelUnionWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	return true;
 }
 
@@ -668,11 +668,11 @@ bool tl2::details::BenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, cons
 }
 bool tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelUnion& item) noexcept {
 	uint32_t nat;
-	s.nat_read(nat);
+	if (!s.nat_read(nat)) { return false; }
 	switch (nat) {
 	case 0xef556bee:
 		if (item.value.index() != 0) { item.value.emplace<0>(); }
-		if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigRead(s, std::get<0>(item.value))) { return false; }
+		if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigRead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	case 0xce27c770:
 		if (item.value.index() != 1) { item.value.emplace<1>(); }
@@ -684,10 +684,10 @@ bool tl2::details::BenchmarksVrutoyTopLevelUnionReadBoxed(::basictl::tl_istream 
 }
 
 bool tl2::details::BenchmarksVrutoyTopLevelUnionWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelUnion& item) noexcept{
-	s.nat_write(BenchmarksVrutoyTopLevelUnion_tbl_tl_tag[item.value.index()]);
+	if (!s.nat_write(BenchmarksVrutoyTopLevelUnion_tbl_tl_tag[item.value.index()])) { return false; }
 	switch (item.value.index()) {
 	case 0:
-		if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWrite(s, std::get<0>(item.value))) { return false; }
+		if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
 		break;
 	}
 	return true;
@@ -699,13 +699,13 @@ bool tl2::benchmarks::VrutoytopLevelUnionBig::write_json(std::ostream& s)const {
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionBig::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigRead(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionBig::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWrite(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -723,13 +723,13 @@ void tl2::benchmarks::VrutoytopLevelUnionBig::write_or_throw(::basictl::tl_throw
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionBig::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionBig::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionBigWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -786,13 +786,13 @@ bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_json(std::ostream& s)const
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyRead(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyRead(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWrite(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -810,13 +810,13 @@ void tl2::benchmarks::VrutoytopLevelUnionEmpty::write_or_throw(::basictl::tl_thr
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionEmpty::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyReadBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
 
 bool tl2::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(s, *this)) { return false; }
+	if (!::tl2::details::BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
 	s.last_release();
 	return true;
 }
@@ -864,10 +864,7 @@ void tl2::details::BuiltinTupleBenchmarksVruPositionReset(std::vector<::tl2::ben
 }
 
 bool tl2::details::BuiltinTupleBenchmarksVruPositionWriteJSON(std::ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item, uint32_t nat_n) {
-	if (item.size() != nat_n) {
-		// TODO add exception
-		return false;
-	}
+	if (item.size() != nat_n) { return false; }
 	s << "[";
 	size_t index = 0;
 	for(const auto & el : item) {
@@ -885,16 +882,15 @@ bool tl2::details::BuiltinTupleBenchmarksVruPositionRead(::basictl::tl_istream &
 	// TODO - check length sanity
 	item.resize(nat_n);
 	for(auto && el : item) {
-		if (!::tl2::details::BenchmarksVruPositionRead(s, el)) { return false; }
+		if (!::tl2::details::BenchmarksVruPositionRead(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
 
 bool tl2::details::BuiltinTupleBenchmarksVruPositionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item, uint32_t nat_n) {
-	if (item.size() != nat_n)
-		return s.set_error_sequence_length();
+	if (item.size() != nat_n) { return s.set_error_sequence_length(); }
 	for(const auto & el : item) {
-		if (!::tl2::details::BenchmarksVruPositionWrite(s, el)) { return false; }
+		if (!::tl2::details::BenchmarksVruPositionWrite(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -923,7 +919,7 @@ bool tl2::details::BuiltinVectorBenchmarksVruPositionRead(::basictl::tl_istream 
 	// TODO - check length sanity
 	item.resize(len);
 	for(auto && el : item) {
-		if (!::tl2::details::BenchmarksVruPositionRead(s, el)) { return false; }
+		if (!::tl2::details::BenchmarksVruPositionRead(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -931,7 +927,7 @@ bool tl2::details::BuiltinVectorBenchmarksVruPositionRead(::basictl::tl_istream 
 bool tl2::details::BuiltinVectorBenchmarksVruPositionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::BenchmarksVruPositionWrite(s, el)) { return false; }
+		if (!::tl2::details::BenchmarksVruPositionWrite(s, el)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
