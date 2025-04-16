@@ -35,7 +35,7 @@ func (item *RpcInvokeReqExtra) SetQuery(v bool) {
 		item.FieldsMask &^= 1 << 0
 	}
 }
-func (item RpcInvokeReqExtra) IsSetQuery() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *RpcInvokeReqExtra) IsSetQuery() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *RpcInvokeReqExtra) SetSort(v bool) {
 	if v {
@@ -44,7 +44,7 @@ func (item *RpcInvokeReqExtra) SetSort(v bool) {
 		item.FieldsMask &^= 1 << 1
 	}
 }
-func (item RpcInvokeReqExtra) IsSetSort() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *RpcInvokeReqExtra) IsSetSort() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *RpcInvokeReqExtra) SetSortReverse(v bool) {
 	if v {
@@ -53,7 +53,7 @@ func (item *RpcInvokeReqExtra) SetSortReverse(v bool) {
 		item.FieldsMask &^= 1 << 2
 	}
 }
-func (item RpcInvokeReqExtra) IsSetSortReverse() bool { return item.FieldsMask&(1<<2) != 0 }
+func (item *RpcInvokeReqExtra) IsSetSortReverse() bool { return item.FieldsMask&(1<<2) != 0 }
 
 func (item *RpcInvokeReqExtra) SetWaitBinlogPos(v int64) {
 	item.WaitBinlogPos = v
@@ -63,7 +63,7 @@ func (item *RpcInvokeReqExtra) ClearWaitBinlogPos() {
 	item.WaitBinlogPos = 0
 	item.FieldsMask &^= 1 << 16
 }
-func (item RpcInvokeReqExtra) IsSetWaitBinlogPos() bool { return item.FieldsMask&(1<<16) != 0 }
+func (item *RpcInvokeReqExtra) IsSetWaitBinlogPos() bool { return item.FieldsMask&(1<<16) != 0 }
 
 func (item *RpcInvokeReqExtra) SetStringForwardKeys(v []string) {
 	item.StringForwardKeys = v
@@ -73,7 +73,7 @@ func (item *RpcInvokeReqExtra) ClearStringForwardKeys() {
 	item.StringForwardKeys = item.StringForwardKeys[:0]
 	item.FieldsMask &^= 1 << 18
 }
-func (item RpcInvokeReqExtra) IsSetStringForwardKeys() bool { return item.FieldsMask&(1<<18) != 0 }
+func (item *RpcInvokeReqExtra) IsSetStringForwardKeys() bool { return item.FieldsMask&(1<<18) != 0 }
 
 func (item *RpcInvokeReqExtra) Reset() {
 	item.FieldsMask = 0

@@ -33,7 +33,7 @@ func (item *CasesTestBeforeReadBitValidation) ClearA() {
 	item.A = item.A[:0]
 	item.N &^= 1 << 0
 }
-func (item CasesTestBeforeReadBitValidation) IsSetA() bool { return item.N&(1<<0) != 0 }
+func (item *CasesTestBeforeReadBitValidation) IsSetA() bool { return item.N&(1<<0) != 0 }
 
 func (item *CasesTestBeforeReadBitValidation) SetB(v []int32) {
 	item.B = v
@@ -43,7 +43,7 @@ func (item *CasesTestBeforeReadBitValidation) ClearB() {
 	item.B = item.B[:0]
 	item.N &^= 1 << 1
 }
-func (item CasesTestBeforeReadBitValidation) IsSetB() bool { return item.N&(1<<1) != 0 }
+func (item *CasesTestBeforeReadBitValidation) IsSetB() bool { return item.N&(1<<1) != 0 }
 
 func (item *CasesTestBeforeReadBitValidation) Reset() {
 	item.N = 0
@@ -132,7 +132,7 @@ func (item *CasesTestBeforeReadBitValidation) WriteBoxed(w []byte) (_ []byte, er
 	return item.Write(w)
 }
 
-func (item CasesTestBeforeReadBitValidation) String() string {
+func (item *CasesTestBeforeReadBitValidation) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

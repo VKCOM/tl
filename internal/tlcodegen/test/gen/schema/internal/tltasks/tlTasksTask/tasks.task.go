@@ -38,7 +38,7 @@ func (item *TasksTask) ClearId() {
 	item.Id = 0
 	item.FieldsMask &^= 1 << 0
 }
-func (item TasksTask) IsSetId() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *TasksTask) IsSetId() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *TasksTask) SetRetries(v int32) {
 	item.Retries = v
@@ -48,7 +48,7 @@ func (item *TasksTask) ClearRetries() {
 	item.Retries = 0
 	item.FieldsMask &^= 1 << 1
 }
-func (item TasksTask) IsSetRetries() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *TasksTask) IsSetRetries() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *TasksTask) SetScheduledTime(v int32) {
 	item.ScheduledTime = v
@@ -58,7 +58,7 @@ func (item *TasksTask) ClearScheduledTime() {
 	item.ScheduledTime = 0
 	item.FieldsMask &^= 1 << 2
 }
-func (item TasksTask) IsSetScheduledTime() bool { return item.FieldsMask&(1<<2) != 0 }
+func (item *TasksTask) IsSetScheduledTime() bool { return item.FieldsMask&(1<<2) != 0 }
 
 func (item *TasksTask) SetDeadline(v int32) {
 	item.Deadline = v
@@ -68,7 +68,7 @@ func (item *TasksTask) ClearDeadline() {
 	item.Deadline = 0
 	item.FieldsMask &^= 1 << 3
 }
-func (item TasksTask) IsSetDeadline() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *TasksTask) IsSetDeadline() bool { return item.FieldsMask&(1<<3) != 0 }
 
 func (item *TasksTask) Reset() {
 	item.FieldsMask = 0

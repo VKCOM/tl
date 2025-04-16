@@ -70,7 +70,7 @@ func (item *CdUseCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CdUseCycle) String() string {
+func (item *CdUseCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 

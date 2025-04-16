@@ -88,7 +88,7 @@ func (item *CasesTestInplaceStructArgs2) WriteBoxed(w []byte) (_ []byte, err err
 	return item.Write(w)
 }
 
-func (item CasesTestInplaceStructArgs2) String() string {
+func (item *CasesTestInplaceStructArgs2) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

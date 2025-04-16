@@ -36,7 +36,7 @@ func (item *UseTrue) SetA(v bool) {
 		item.Fm &^= 1 << 0
 	}
 }
-func (item UseTrue) IsSetA() bool { return item.Fm&(1<<0) != 0 }
+func (item *UseTrue) IsSetA() bool { return item.Fm&(1<<0) != 0 }
 
 func (item *UseTrue) SetB(v bool) {
 	if v {
@@ -45,7 +45,7 @@ func (item *UseTrue) SetB(v bool) {
 		item.Fm &^= 1 << 1
 	}
 }
-func (item UseTrue) IsSetB() bool { return item.Fm&(1<<1) != 0 }
+func (item *UseTrue) IsSetB() bool { return item.Fm&(1<<1) != 0 }
 
 func (item *UseTrue) SetE(v bool) {
 	item.E = v
@@ -55,7 +55,7 @@ func (item *UseTrue) ClearE() {
 	item.E = false
 	item.Fm &^= 1 << 2
 }
-func (item UseTrue) IsSetE() bool { return item.Fm&(1<<2) != 0 }
+func (item *UseTrue) IsSetE() bool { return item.Fm&(1<<2) != 0 }
 
 func (item *UseTrue) Reset() {
 	item.Fm = 0
@@ -138,7 +138,7 @@ func (item *UseTrue) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item UseTrue) String() string {
+func (item *UseTrue) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -13,6 +13,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTaskWithId"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTime"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksFullFilledCron"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetAnyTask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueSize"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueTypes"
@@ -35,6 +36,7 @@ type (
 	CronTask          = tlTasksCronTask.TasksCronTask
 	CronTaskWithId    = tlTasksCronTaskWithId.TasksCronTaskWithId
 	CronTime          = tlTasksCronTime.TasksCronTime
+	FullFilledCron    = tlTasksFullFilledCron.TasksFullFilledCron
 	GetAnyTask        = tlTasksGetAnyTask.TasksGetAnyTask
 	GetQueueSize      = tlTasksGetQueueSize.TasksGetQueueSize
 	GetQueueTypes     = tlTasksGetQueueTypes.TasksGetQueueTypes

@@ -129,6 +129,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTaskWithId"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTime"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksFullFilledCron"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetAnyTask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueSize"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksGetQueueTypes"
@@ -311,8 +312,9 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject(0xc90cf28a, func() meta.Object { var ret tlTasksCronTask.TasksCronTask; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x3a958001, func() meta.Object { var ret tlTasksCronTaskWithId.TasksCronTaskWithId; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xd4177d7f, func() meta.Object { var ret tlTasksCronTime.TasksCronTime; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xd4177d7e, func() meta.Object { var ret tlTasksFullFilledCron.TasksFullFilledCron; return &ret })
 	meta.SetGlobalFactoryCreateForFunction(0x4a9c7dbb, func() meta.Object { var ret tlTasksGetAnyTask.TasksGetAnyTask; return &ret }, func() meta.Function { var ret tlTasksGetAnyTask.TasksGetAnyTask; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForFunction(0xd8fcda03, func() meta.Object { var ret tlTasksGetQueueSize.TasksGetQueueSize; return &ret }, func() meta.Function { var ret tlTasksGetQueueSize.TasksGetQueueSize; return &ret }, nil)
+	meta.SetGlobalFactoryCreateForFunction(0x6abbb057, func() meta.Object { var ret tlTasksGetQueueSize.TasksGetQueueSize; return &ret }, func() meta.Function { var ret tlTasksGetQueueSize.TasksGetQueueSize; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunction(0x5434457a, func() meta.Object { var ret tlTasksGetQueueTypes.TasksGetQueueTypes; return &ret }, func() meta.Function { var ret tlTasksGetQueueTypes.TasksGetQueueTypes; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunction(0x6a52b698, func() meta.Object { var ret tlTasksGetTaskFromQueue.TasksGetTaskFromQueue; return &ret }, func() meta.Function { var ret tlTasksGetTaskFromQueue.TasksGetTaskFromQueue; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForObject(0x38d38d3e, func() meta.Object { var ret tlTasksQueueTypeInfo.TasksQueueTypeInfo; return &ret })

@@ -30,7 +30,7 @@ func (item *ListService5Output) ClearHead() {
 	item.Head.Reset()
 	item.Flag &^= 1 << 0
 }
-func (item ListService5Output) IsSetHead() bool { return item.Flag&(1<<0) != 0 }
+func (item *ListService5Output) IsSetHead() bool { return item.Flag&(1<<0) != 0 }
 
 func (item *ListService5Output) SetTail(v ListService5Output) {
 	if item.Tail == nil {
@@ -46,7 +46,7 @@ func (item *ListService5Output) ClearTail() {
 	}
 	item.Flag &^= 1 << 0
 }
-func (item ListService5Output) IsSetTail() bool { return item.Flag&(1<<0) != 0 }
+func (item *ListService5Output) IsSetTail() bool { return item.Flag&(1<<0) != 0 }
 
 func (item *ListService5Output) Reset() {
 	item.Flag = 0
@@ -143,7 +143,7 @@ func (item *ListService5Output) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item ListService5Output) String() string {
+func (item *ListService5Output) String() string {
 	return string(item.WriteJSON(nil))
 }
 

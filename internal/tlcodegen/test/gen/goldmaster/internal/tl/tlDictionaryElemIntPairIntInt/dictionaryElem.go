@@ -69,7 +69,7 @@ func (item *DictionaryElemIntPairIntInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item DictionaryElemIntPairIntInt) String() string {
+func (item *DictionaryElemIntPairIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 

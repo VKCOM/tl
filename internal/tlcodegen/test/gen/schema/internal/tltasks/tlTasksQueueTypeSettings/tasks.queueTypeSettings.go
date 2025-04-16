@@ -40,7 +40,7 @@ func (item *TasksQueueTypeSettings) ClearIsEnabled() {
 	item.IsEnabled = false
 	item.FieldsMask &^= 1 << 0
 }
-func (item TasksQueueTypeSettings) IsSetIsEnabled() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *TasksQueueTypeSettings) IsSetIsEnabled() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *TasksQueueTypeSettings) SetIsPersistent(v bool) {
 	item.IsPersistent = v
@@ -50,7 +50,7 @@ func (item *TasksQueueTypeSettings) ClearIsPersistent() {
 	item.IsPersistent = false
 	item.FieldsMask &^= 1 << 1
 }
-func (item TasksQueueTypeSettings) IsSetIsPersistent() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *TasksQueueTypeSettings) IsSetIsPersistent() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *TasksQueueTypeSettings) SetPriority(v int32) {
 	item.Priority = v
@@ -60,7 +60,7 @@ func (item *TasksQueueTypeSettings) ClearPriority() {
 	item.Priority = 0
 	item.FieldsMask &^= 1 << 2
 }
-func (item TasksQueueTypeSettings) IsSetPriority() bool { return item.FieldsMask&(1<<2) != 0 }
+func (item *TasksQueueTypeSettings) IsSetPriority() bool { return item.FieldsMask&(1<<2) != 0 }
 
 func (item *TasksQueueTypeSettings) SetDefaultRetryTime(v int32) {
 	item.DefaultRetryTime = v
@@ -70,7 +70,7 @@ func (item *TasksQueueTypeSettings) ClearDefaultRetryTime() {
 	item.DefaultRetryTime = 0
 	item.FieldsMask &^= 1 << 3
 }
-func (item TasksQueueTypeSettings) IsSetDefaultRetryTime() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *TasksQueueTypeSettings) IsSetDefaultRetryTime() bool { return item.FieldsMask&(1<<3) != 0 }
 
 func (item *TasksQueueTypeSettings) SetDefaultRetryNum(v int32) {
 	item.DefaultRetryNum = v
@@ -80,7 +80,7 @@ func (item *TasksQueueTypeSettings) ClearDefaultRetryNum() {
 	item.DefaultRetryNum = 0
 	item.FieldsMask &^= 1 << 3
 }
-func (item TasksQueueTypeSettings) IsSetDefaultRetryNum() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *TasksQueueTypeSettings) IsSetDefaultRetryNum() bool { return item.FieldsMask&(1<<3) != 0 }
 
 func (item *TasksQueueTypeSettings) SetMoveToQueueTypeOnError(v string) {
 	item.MoveToQueueTypeOnError = v
@@ -90,7 +90,7 @@ func (item *TasksQueueTypeSettings) ClearMoveToQueueTypeOnError() {
 	item.MoveToQueueTypeOnError = ""
 	item.FieldsMask &^= 1 << 4
 }
-func (item TasksQueueTypeSettings) IsSetMoveToQueueTypeOnError() bool {
+func (item *TasksQueueTypeSettings) IsSetMoveToQueueTypeOnError() bool {
 	return item.FieldsMask&(1<<4) != 0
 }
 
@@ -102,7 +102,7 @@ func (item *TasksQueueTypeSettings) ClearIsBlocking() {
 	item.IsBlocking = false
 	item.FieldsMask &^= 1 << 5
 }
-func (item TasksQueueTypeSettings) IsSetIsBlocking() bool { return item.FieldsMask&(1<<5) != 0 }
+func (item *TasksQueueTypeSettings) IsSetIsBlocking() bool { return item.FieldsMask&(1<<5) != 0 }
 
 func (item *TasksQueueTypeSettings) SetTimelimit(v int32) {
 	item.Timelimit = v
@@ -112,7 +112,7 @@ func (item *TasksQueueTypeSettings) ClearTimelimit() {
 	item.Timelimit = 0
 	item.FieldsMask &^= 1 << 6
 }
-func (item TasksQueueTypeSettings) IsSetTimelimit() bool { return item.FieldsMask&(1<<6) != 0 }
+func (item *TasksQueueTypeSettings) IsSetTimelimit() bool { return item.FieldsMask&(1<<6) != 0 }
 
 func (item *TasksQueueTypeSettings) SetMaxQueueSize(v int32) {
 	item.MaxQueueSize = v
@@ -122,7 +122,7 @@ func (item *TasksQueueTypeSettings) ClearMaxQueueSize() {
 	item.MaxQueueSize = 0
 	item.FieldsMask &^= 1 << 7
 }
-func (item TasksQueueTypeSettings) IsSetMaxQueueSize() bool { return item.FieldsMask&(1<<7) != 0 }
+func (item *TasksQueueTypeSettings) IsSetMaxQueueSize() bool { return item.FieldsMask&(1<<7) != 0 }
 
 func (item *TasksQueueTypeSettings) Reset() {
 	item.FieldsMask = 0

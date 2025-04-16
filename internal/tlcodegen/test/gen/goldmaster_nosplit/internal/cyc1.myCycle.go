@@ -107,7 +107,7 @@ func (item *Cyc1MyCycle) ClearA() {
 	item.A.Reset()
 	item.FieldsMask &^= 1 << 0
 }
-func (item Cyc1MyCycle) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *Cyc1MyCycle) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *Cyc1MyCycle) Reset() {
 	item.FieldsMask = 0
@@ -172,7 +172,7 @@ func (item *Cyc1MyCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Cyc1MyCycle) String() string {
+func (item *Cyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 

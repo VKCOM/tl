@@ -68,7 +68,7 @@ func (item *PairFloatDouble) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairFloatDouble) String() string {
+func (item *PairFloatDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
 

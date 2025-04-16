@@ -210,7 +210,7 @@ func (item *Replace) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item Replace) String() string {
+func (item *Replace) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

@@ -35,7 +35,7 @@ func (item *Replace13ElemLong) ClearB(nat_n *uint32) {
 		*nat_n &^= 1 << 0
 	}
 }
-func (item Replace13ElemLong) IsSetB(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
+func (item *Replace13ElemLong) IsSetB(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
 
 func (item *Replace13ElemLong) SetC(v []int32, nat_k *uint32) {
 	item.C = v
@@ -49,7 +49,7 @@ func (item *Replace13ElemLong) ClearC(nat_k *uint32) {
 		*nat_k &^= 1 << 0
 	}
 }
-func (item Replace13ElemLong) IsSetC(nat_k uint32) bool { return nat_k&(1<<0) != 0 }
+func (item *Replace13ElemLong) IsSetC(nat_k uint32) bool { return nat_k&(1<<0) != 0 }
 
 func (item *Replace13ElemLong) Reset() {
 	item.B = item.B[:0]

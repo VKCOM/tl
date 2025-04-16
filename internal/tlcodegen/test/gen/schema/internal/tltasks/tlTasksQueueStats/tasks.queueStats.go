@@ -36,7 +36,7 @@ func (item *TasksQueueStats) ClearWaitingSize(nat_fields_mask *uint32) {
 		*nat_fields_mask &^= 1 << 0
 	}
 }
-func (item TasksQueueStats) IsSetWaitingSize(nat_fields_mask uint32) bool {
+func (item *TasksQueueStats) IsSetWaitingSize(nat_fields_mask uint32) bool {
 	return nat_fields_mask&(1<<0) != 0
 }
 
@@ -52,7 +52,7 @@ func (item *TasksQueueStats) ClearScheduledSize(nat_fields_mask *uint32) {
 		*nat_fields_mask &^= 1 << 1
 	}
 }
-func (item TasksQueueStats) IsSetScheduledSize(nat_fields_mask uint32) bool {
+func (item *TasksQueueStats) IsSetScheduledSize(nat_fields_mask uint32) bool {
 	return nat_fields_mask&(1<<1) != 0
 }
 
@@ -68,7 +68,7 @@ func (item *TasksQueueStats) ClearInProgressSize(nat_fields_mask *uint32) {
 		*nat_fields_mask &^= 1 << 2
 	}
 }
-func (item TasksQueueStats) IsSetInProgressSize(nat_fields_mask uint32) bool {
+func (item *TasksQueueStats) IsSetInProgressSize(nat_fields_mask uint32) bool {
 	return nat_fields_mask&(1<<2) != 0
 }
 

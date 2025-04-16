@@ -59,7 +59,7 @@ func (item *UseStr) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item UseStr) String() string {
+func (item *UseStr) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -176,7 +176,7 @@ func (item *UseStrBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item UseStrBytes) String() string {
+func (item *UseStrBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

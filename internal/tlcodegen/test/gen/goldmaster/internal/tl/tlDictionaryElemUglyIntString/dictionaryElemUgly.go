@@ -35,7 +35,7 @@ func (item *DictionaryElemUglyIntString) ClearKey(nat_f *uint32) {
 		*nat_f &^= 1 << 0
 	}
 }
-func (item DictionaryElemUglyIntString) IsSetKey(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
+func (item *DictionaryElemUglyIntString) IsSetKey(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
 
 func (item *DictionaryElemUglyIntString) SetValue(v string, nat_f *uint32) {
 	item.Value = v
@@ -49,7 +49,7 @@ func (item *DictionaryElemUglyIntString) ClearValue(nat_f *uint32) {
 		*nat_f &^= 1 << 1
 	}
 }
-func (item DictionaryElemUglyIntString) IsSetValue(nat_f uint32) bool { return nat_f&(1<<1) != 0 }
+func (item *DictionaryElemUglyIntString) IsSetValue(nat_f uint32) bool { return nat_f&(1<<1) != 0 }
 
 func (item *DictionaryElemUglyIntString) Reset() {
 	item.Key = 0

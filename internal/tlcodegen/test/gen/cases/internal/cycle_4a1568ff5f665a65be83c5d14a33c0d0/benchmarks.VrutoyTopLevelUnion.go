@@ -168,7 +168,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(newTypeNames bool, short
 	}
 }
 
-func (item BenchmarksVrutoyTopLevelUnion) String() string {
+func (item *BenchmarksVrutoyTopLevelUnion) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -235,7 +235,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item BenchmarksVrutoytopLevelUnionBig) String() string {
+func (item *BenchmarksVrutoytopLevelUnionBig) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -352,7 +352,7 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item BenchmarksVrutoytopLevelUnionEmpty) String() string {
+func (item *BenchmarksVrutoytopLevelUnionEmpty) String() string {
 	return string(item.WriteJSON(nil))
 }
 

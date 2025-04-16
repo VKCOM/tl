@@ -68,7 +68,7 @@ func (item *Cyc3MyCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Cyc3MyCycle) String() string {
+func (item *Cyc3MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -235,6 +235,6 @@ func (item *Cyc3MyCycleMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []by
 	return append(w, '}')
 }
 
-func (item Cyc3MyCycleMaybe) String() string {
+func (item *Cyc3MyCycleMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

@@ -102,7 +102,7 @@ func (item *NativeWrappers) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item NativeWrappers) String() string {
+func (item *NativeWrappers) String() string {
 	return string(item.WriteJSON(nil))
 }
 

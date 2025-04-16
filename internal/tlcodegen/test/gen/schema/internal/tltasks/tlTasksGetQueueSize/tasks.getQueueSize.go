@@ -21,15 +21,27 @@ type TasksGetQueueSize struct {
 	TypeName   string
 	QueueId    []int32
 	FieldsMask uint32
+	LocalDep   int32 // Conditional: item.FieldsMask.4
 }
 
 func (TasksGetQueueSize) TLName() string { return "tasks.getQueueSize" }
-func (TasksGetQueueSize) TLTag() uint32  { return 0xd8fcda03 }
+func (TasksGetQueueSize) TLTag() uint32  { return 0x6abbb057 }
+
+func (item *TasksGetQueueSize) SetLocalDep(v int32) {
+	item.LocalDep = v
+	item.FieldsMask |= 1 << 4
+}
+func (item *TasksGetQueueSize) ClearLocalDep() {
+	item.LocalDep = 0
+	item.FieldsMask &^= 1 << 4
+}
+func (item *TasksGetQueueSize) IsSetLocalDep() bool { return item.FieldsMask&(1<<4) != 0 }
 
 func (item *TasksGetQueueSize) Reset() {
 	item.TypeName = ""
 	item.QueueId = item.QueueId[:0]
 	item.FieldsMask = 0
+	item.LocalDep = 0
 }
 
 func (item *TasksGetQueueSize) Read(w []byte) (_ []byte, err error) {
@@ -39,7 +51,17 @@ func (item *TasksGetQueueSize) Read(w []byte) (_ []byte, err error) {
 	if w, err = tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.QueueId); err != nil {
 		return w, err
 	}
-	return basictl.NatRead(w, &item.FieldsMask)
+	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
+		return w, err
+	}
+	if item.FieldsMask&(1<<4) != 0 {
+		if w, err = basictl.IntRead(w, &item.LocalDep); err != nil {
+			return w, err
+		}
+	} else {
+		item.LocalDep = 0
+	}
+	return w, nil
 }
 
 // This method is general version of Write, use it instead!
@@ -51,11 +73,14 @@ func (item *TasksGetQueueSize) Write(w []byte) []byte {
 	w = basictl.StringWrite(w, item.TypeName)
 	w = tlBuiltinVectorInt.BuiltinVectorIntWrite(w, item.QueueId)
 	w = basictl.NatWrite(w, item.FieldsMask)
+	if item.FieldsMask&(1<<4) != 0 {
+		w = basictl.IntWrite(w, item.LocalDep)
+	}
 	return w
 }
 
 func (item *TasksGetQueueSize) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xd8fcda03); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x6abbb057); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -67,7 +92,7 @@ func (item *TasksGetQueueSize) WriteBoxedGeneral(w []byte) (_ []byte, err error)
 }
 
 func (item *TasksGetQueueSize) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xd8fcda03)
+	w = basictl.NatWrite(w, 0x6abbb057)
 	return item.Write(w)
 }
 
@@ -124,6 +149,33 @@ func (item *TasksGetQueueSize) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
+// Set field "waiting_size" in "tasks.queueStats" by changing fieldMask "fields_mask"
+func (item *TasksGetQueueSize) SetTasksQueueStatsWaitingSize(value bool) {
+	if value {
+		item.FieldsMask |= 1 << 0
+	} else {
+		item.FieldsMask &^= 1 << 0
+	}
+}
+
+// Set field "scheduled_size" in "tasks.queueStats" by changing fieldMask "fields_mask"
+func (item *TasksGetQueueSize) SetTasksQueueStatsScheduledSize(value bool) {
+	if value {
+		item.FieldsMask |= 1 << 1
+	} else {
+		item.FieldsMask &^= 1 << 1
+	}
+}
+
+// Set field "in_progress_size" in "tasks.queueStats" by changing fieldMask "fields_mask"
+func (item *TasksGetQueueSize) SetTasksQueueStatsInProgressSize(value bool) {
+	if value {
+		item.FieldsMask |= 1 << 2
+	} else {
+		item.FieldsMask &^= 1 << 2
+	}
+}
+
 func (item TasksGetQueueSize) String() string {
 	return string(item.WriteJSON(nil))
 }
@@ -132,6 +184,7 @@ func (item *TasksGetQueueSize) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 	var propTypeNamePresented bool
 	var propQueueIdPresented bool
 	var propFieldsMaskPresented bool
+	var propLocalDepPresented bool
 
 	if in != nil {
 		in.Delim('{')
@@ -166,6 +219,14 @@ func (item *TasksGetQueueSize) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 					return err
 				}
 				propFieldsMaskPresented = true
+			case "local_dep":
+				if propLocalDepPresented {
+					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueSize", "local_dep")
+				}
+				if err := internal.Json2ReadInt32(in, &item.LocalDep); err != nil {
+					return err
+				}
+				propLocalDepPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("tasks.getQueueSize", key)
 			}
@@ -184,6 +245,12 @@ func (item *TasksGetQueueSize) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 	}
 	if !propFieldsMaskPresented {
 		item.FieldsMask = 0
+	}
+	if !propLocalDepPresented {
+		item.LocalDep = 0
+	}
+	if propLocalDepPresented {
+		item.FieldsMask |= 1 << 4
 	}
 	return nil
 }
@@ -218,6 +285,11 @@ func (item *TasksGetQueueSize) WriteJSONOpt(newTypeNames bool, short bool, w []b
 	w = basictl.JSONWriteUint32(w, item.FieldsMask)
 	if (item.FieldsMask != 0) == false {
 		w = w[:backupIndexFieldsMask]
+	}
+	if item.FieldsMask&(1<<4) != 0 {
+		w = basictl.JSONAddCommaIfNeeded(w)
+		w = append(w, `"local_dep":`...)
+		w = basictl.JSONWriteInt32(w, item.LocalDep)
 	}
 	return append(w, '}')
 }

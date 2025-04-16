@@ -73,7 +73,7 @@ func (item *Cyc2MyCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Cyc2MyCycle) String() string {
+func (item *Cyc2MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 

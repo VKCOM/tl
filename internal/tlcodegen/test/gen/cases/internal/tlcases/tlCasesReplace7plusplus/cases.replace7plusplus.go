@@ -33,7 +33,7 @@ func (item *CasesReplace7plusplus) ClearA() {
 	item.A = item.A[:0]
 	item.N &^= 1 << 0
 }
-func (item CasesReplace7plusplus) IsSetA() bool { return item.N&(1<<0) != 0 }
+func (item *CasesReplace7plusplus) IsSetA() bool { return item.N&(1<<0) != 0 }
 
 func (item *CasesReplace7plusplus) Reset() {
 	item.N = 0
@@ -108,7 +108,7 @@ func (item *CasesReplace7plusplus) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item CasesReplace7plusplus) String() string {
+func (item *CasesReplace7plusplus) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

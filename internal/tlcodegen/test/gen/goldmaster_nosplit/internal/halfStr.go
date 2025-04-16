@@ -66,7 +66,7 @@ func (item *HalfStr) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item HalfStr) String() string {
+func (item *HalfStr) String() string {
 	return string(item.WriteJSON(nil))
 }
 

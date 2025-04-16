@@ -33,7 +33,7 @@ func (item *CasesTestLocalFieldmask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 0
 }
-func (item CasesTestLocalFieldmask) IsSetF2() bool { return item.F1&(1<<0) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF2() bool { return item.F1&(1<<0) != 0 }
 
 func (item *CasesTestLocalFieldmask) SetF3(v bool) {
 	if v {
@@ -42,7 +42,7 @@ func (item *CasesTestLocalFieldmask) SetF3(v bool) {
 		item.F2 &^= 1 << 1
 	}
 }
-func (item CasesTestLocalFieldmask) IsSetF3() bool { return item.F2&(1<<1) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF3() bool { return item.F2&(1<<1) != 0 }
 
 func (item *CasesTestLocalFieldmask) SetF4(v bool) {
 	if v {
@@ -51,7 +51,7 @@ func (item *CasesTestLocalFieldmask) SetF4(v bool) {
 		item.F2 &^= 1 << 1
 	}
 }
-func (item CasesTestLocalFieldmask) IsSetF4() bool { return item.F2&(1<<1) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF4() bool { return item.F2&(1<<1) != 0 }
 
 func (item *CasesTestLocalFieldmask) Reset() {
 	item.F1 = 0
@@ -121,7 +121,7 @@ func (item *CasesTestLocalFieldmask) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesTestLocalFieldmask) String() string {
+func (item *CasesTestLocalFieldmask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

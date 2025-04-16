@@ -35,7 +35,7 @@ func (item *MyNat) ClearA() {
 	}
 	item.FieldsMask &^= 1 << 0
 }
-func (item MyNat) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *MyNat) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *MyNat) Reset() {
 	item.FieldsMask = 0
@@ -116,7 +116,7 @@ func (item *MyNat) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item MyNat) String() string {
+func (item *MyNat) String() string {
 	return string(item.WriteJSON(nil))
 }
 

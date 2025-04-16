@@ -29,7 +29,7 @@ func (item *UsefulServiceGetUserEntity) ClearStageId() {
 	item.StageId = ""
 	item.FieldsMask &^= 1 << 0
 }
-func (item UsefulServiceGetUserEntity) IsSetStageId() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *UsefulServiceGetUserEntity) IsSetStageId() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *UsefulServiceGetUserEntity) Reset() {
 	item.FieldsMask = 0
@@ -147,7 +147,7 @@ func (item *UsefulServiceGetUserEntity) ReadResultJSONWriteResult(r []byte, w []
 	return r, w, err
 }
 
-func (item UsefulServiceGetUserEntity) String() string {
+func (item *UsefulServiceGetUserEntity) String() string {
 	return string(item.WriteJSON(nil))
 }
 

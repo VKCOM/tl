@@ -62,7 +62,7 @@ func (item *CasesBytesTestVector) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesBytesTestVector) String() string {
+func (item *CasesBytesTestVector) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -179,7 +179,7 @@ func (item *CasesBytesTestVectorBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesBytesTestVectorBytes) String() string {
+func (item *CasesBytesTestVectorBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

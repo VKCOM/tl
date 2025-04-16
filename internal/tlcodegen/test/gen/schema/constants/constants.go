@@ -152,8 +152,9 @@ const (
 	TasksCronTask                       = 0xc90cf28a // tasks.cronTask
 	TasksCronTaskWithId                 = 0x3a958001 // tasks.cronTaskWithId
 	TasksCronTime                       = 0xd4177d7f // tasks.cronTime
+	TasksFullFilledCron                 = 0xd4177d7e // tasks.fullFilledCron
 	TasksGetAnyTask                     = 0x4a9c7dbb // tasks.getAnyTask
-	TasksGetQueueSize                   = 0xd8fcda03 // tasks.getQueueSize
+	TasksGetQueueSize                   = 0x6abbb057 // tasks.getQueueSize
 	TasksGetQueueTypes                  = 0x5434457a // tasks.getQueueTypes
 	TasksGetTaskFromQueue               = 0x6a52b698 // tasks.getTaskFromQueue
 	TasksQueueStats                     = 0x1d942543 // tasks.queueStats

@@ -172,7 +172,7 @@ func (item *TLItem) WriteBoxedGeneral(w []byte) ([]byte, error) {
 	return basictl.NatWrite(w, item.tag), nil
 }
 func (item *TLItem) WriteBoxed(w []byte) []byte { return basictl.NatWrite(w, item.tag) }
-func (item TLItem) String() string {
+func (item *TLItem) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TLItem) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

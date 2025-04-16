@@ -32,7 +32,7 @@ func (item *Service5Params) ClearMaxExecutionSpeed() {
 	item.MaxExecutionSpeed = 0
 	item.FieldsMask &^= 1 << 0
 }
-func (item Service5Params) IsSetMaxExecutionSpeed() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *Service5Params) IsSetMaxExecutionSpeed() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *Service5Params) SetMaxExecutionSpeedBytes(v int32) {
 	item.MaxExecutionSpeedBytes = v
@@ -42,7 +42,7 @@ func (item *Service5Params) ClearMaxExecutionSpeedBytes() {
 	item.MaxExecutionSpeedBytes = 0
 	item.FieldsMask &^= 1 << 1
 }
-func (item Service5Params) IsSetMaxExecutionSpeedBytes() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *Service5Params) IsSetMaxExecutionSpeedBytes() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *Service5Params) Reset() {
 	item.FieldsMask = 0

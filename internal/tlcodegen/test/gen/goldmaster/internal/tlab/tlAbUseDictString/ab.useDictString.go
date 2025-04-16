@@ -70,7 +70,7 @@ func (item *AbUseDictString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item AbUseDictString) String() string {
+func (item *AbUseDictString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -213,7 +213,7 @@ func (item *AbUseDictStringBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item AbUseDictStringBytes) String() string {
+func (item *AbUseDictStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

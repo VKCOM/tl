@@ -37,7 +37,7 @@ func (item *CasesMyCycle1) ClearA() {
 	}
 	item.FieldsMask &^= 1 << 0
 }
-func (item CasesMyCycle1) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *CasesMyCycle1) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *CasesMyCycle1) Reset() {
 	item.FieldsMask = 0
@@ -118,7 +118,7 @@ func (item *CasesMyCycle1) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesMyCycle1) String() string {
+func (item *CasesMyCycle1) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -63,7 +63,7 @@ func (item *CasesBytesTestDictStringString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesBytesTestDictStringString) String() string {
+func (item *CasesBytesTestDictStringString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -180,7 +180,7 @@ func (item *CasesBytesTestDictStringStringBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesBytesTestDictStringStringBytes) String() string {
+func (item *CasesBytesTestDictStringStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

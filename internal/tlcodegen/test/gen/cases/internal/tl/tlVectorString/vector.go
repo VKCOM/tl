@@ -63,7 +63,7 @@ func (item *VectorString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorString) String() string {
+func (item *VectorString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -147,7 +147,7 @@ func (item *VectorStringBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorStringBytes) String() string {
+func (item *VectorStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -117,7 +117,7 @@ func (item *Replace11ElemLong) ClearB(nat_n *uint32) {
 		*nat_n &^= 1 << 0
 	}
 }
-func (item Replace11ElemLong) IsSetB(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
+func (item *Replace11ElemLong) IsSetB(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
 
 func (item *Replace11ElemLong) Reset() {
 	BuiltinTuple3PairBoxedIntLongReset(&item.B)

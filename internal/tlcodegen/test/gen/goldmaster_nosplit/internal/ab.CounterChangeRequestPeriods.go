@@ -185,7 +185,7 @@ func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(newTypeNames bool, short
 	}
 }
 
-func (item AbCounterChangeRequestPeriods) String() string {
+func (item *AbCounterChangeRequestPeriods) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -252,7 +252,7 @@ func (item *AbCounterChangeRequestPeriodsMany) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item AbCounterChangeRequestPeriodsMany) String() string {
+func (item *AbCounterChangeRequestPeriodsMany) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -375,7 +375,7 @@ func (item *AbCounterChangeRequestPeriodsOne) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item AbCounterChangeRequestPeriodsOne) String() string {
+func (item *AbCounterChangeRequestPeriodsOne) String() string {
 	return string(item.WriteJSON(nil))
 }
 

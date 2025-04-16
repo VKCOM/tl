@@ -116,7 +116,7 @@ func (item *Call3) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte
 	return r, w, err
 }
 
-func (item Call3) String() string {
+func (item *Call3) String() string {
 	return string(item.WriteJSON(nil))
 }
 

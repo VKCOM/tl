@@ -40,7 +40,7 @@ func (item *BenchmarksVruPosition) SetCommitBit(v bool) {
 		item.FieldsMask &^= 1 << 0
 	}
 }
-func (item BenchmarksVruPosition) IsSetCommitBit() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 	if v {
@@ -49,7 +49,7 @@ func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 		item.FieldsMask &^= 1 << 1
 	}
 }
-func (item BenchmarksVruPosition) IsSetMetaBlock() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 	if v {
@@ -58,7 +58,7 @@ func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 		item.FieldsMask &^= 1 << 3
 	}
 }
-func (item BenchmarksVruPosition) IsSetSplitPayload() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.FieldsMask&(1<<3) != 0 }
 
 func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 	if v {
@@ -67,7 +67,7 @@ func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 		item.FieldsMask &^= 1 << 5
 	}
 }
-func (item BenchmarksVruPosition) IsSetRotationBlock() bool { return item.FieldsMask&(1<<5) != 0 }
+func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.FieldsMask&(1<<5) != 0 }
 
 func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 	if v {
@@ -76,7 +76,7 @@ func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 		item.FieldsMask &^= 1 << 15
 	}
 }
-func (item BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.FieldsMask&(1<<15) != 0 }
+func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.FieldsMask&(1<<15) != 0 }
 
 func (item *BenchmarksVruPosition) SetSeqNumber(v int64) {
 	item.SeqNumber = v
@@ -86,7 +86,7 @@ func (item *BenchmarksVruPosition) ClearSeqNumber() {
 	item.SeqNumber = 0
 	item.FieldsMask &^= 1 << 14
 }
-func (item BenchmarksVruPosition) IsSetSeqNumber() bool { return item.FieldsMask&(1<<14) != 0 }
+func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.FieldsMask&(1<<14) != 0 }
 
 func (item *BenchmarksVruPosition) Reset() {
 	item.FieldsMask = 0
@@ -190,7 +190,7 @@ func (item *BenchmarksVruPosition) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item BenchmarksVruPosition) String() string {
+func (item *BenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -35,7 +35,7 @@ func (item *CasesTestRecursiveFieldmask) ClearF1() {
 	item.F1 = 0
 	item.F0 &^= 1 << 0
 }
-func (item CasesTestRecursiveFieldmask) IsSetF1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.F0&(1<<0) != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetF2(v uint32) {
 	item.F2 = v
@@ -45,7 +45,7 @@ func (item *CasesTestRecursiveFieldmask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 1
 }
-func (item CasesTestRecursiveFieldmask) IsSetF2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.F1&(1<<1) != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
 	if v {
@@ -54,7 +54,7 @@ func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
 		item.F0 &^= 1 << 0
 	}
 }
-func (item CasesTestRecursiveFieldmask) IsSetT1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT1() bool { return item.F0&(1<<0) != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
 	if v {
@@ -63,7 +63,7 @@ func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
 		item.F1 &^= 1 << 1
 	}
 }
-func (item CasesTestRecursiveFieldmask) IsSetT2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT2() bool { return item.F1&(1<<1) != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
 	if v {
@@ -72,7 +72,7 @@ func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
 		item.F2 &^= 1 << 2
 	}
 }
-func (item CasesTestRecursiveFieldmask) IsSetT3() bool { return item.F2&(1<<2) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT3() bool { return item.F2&(1<<2) != 0 }
 
 func (item *CasesTestRecursiveFieldmask) Reset() {
 	item.F0 = 0
@@ -163,7 +163,7 @@ func (item *CasesTestRecursiveFieldmask) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item CasesTestRecursiveFieldmask) String() string {
+func (item *CasesTestRecursiveFieldmask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

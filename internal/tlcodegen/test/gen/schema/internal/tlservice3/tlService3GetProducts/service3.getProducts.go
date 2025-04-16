@@ -154,6 +154,15 @@ func (item *Service3GetProducts) ReadResultJSONWriteResult(r []byte, w []byte) (
 	return r, w, err
 }
 
+// Set field "removed" in "service3.product" by changing fieldMask "mode"
+func (item *Service3GetProducts) SetService3ProductRemoved(value bool) {
+	if value {
+		item.Mode |= 1 << 0
+	} else {
+		item.Mode &^= 1 << 0
+	}
+}
+
 func (item Service3GetProducts) String() string {
 	return string(item.WriteJSON(nil))
 }
