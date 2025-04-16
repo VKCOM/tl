@@ -82,7 +82,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
 {%= struct_.functionCode(bytesVersion, directImports) %}
     {%- if len(struct_.wr.NatParams) == 0 -%}
 
-func (item *{%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatParams) %}) string {
+func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(struct_.wr.NatParams) %}) string {
     {%- if writeNeedsError -%}
     w, err := item.WriteJSON(nil{%s= natArgsCall %})
     if err != nil {

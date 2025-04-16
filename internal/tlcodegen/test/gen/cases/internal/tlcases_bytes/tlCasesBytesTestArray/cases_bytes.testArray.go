@@ -72,7 +72,7 @@ func (item *CasesBytesTestArray) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item *CasesBytesTestArray) String() string {
+func (item CasesBytesTestArray) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()
@@ -230,7 +230,7 @@ func (item *CasesBytesTestArrayBytes) WriteBoxed(w []byte) (_ []byte, err error)
 	return item.Write(w)
 }
 
-func (item *CasesBytesTestArrayBytes) String() string {
+func (item CasesBytesTestArrayBytes) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

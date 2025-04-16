@@ -118,7 +118,7 @@ func (item *BoxedString) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, 
 	return r, w, err
 }
 
-func (item *BoxedString) String() string {
+func (item BoxedString) String() string {
 	return string(item.WriteJSON(nil))
 }
 

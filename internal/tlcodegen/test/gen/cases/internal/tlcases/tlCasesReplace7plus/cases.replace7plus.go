@@ -108,7 +108,7 @@ func (item *CasesReplace7plus) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item *CasesReplace7plus) String() string {
+func (item CasesReplace7plus) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

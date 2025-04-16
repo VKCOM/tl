@@ -160,7 +160,7 @@ func (item AColor) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte 
 	return append(w, '"')
 }
 
-func (item *AColor) String() string {
+func (item AColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -254,7 +254,7 @@ func (item *AColorBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []by
 	return append(w, '}')
 }
 
-func (item *AColorBoxedMaybe) String() string {
+func (item AColorBoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -95,6 +95,6 @@ func (item *VectorIntMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	return append(w, '}')
 }
 
-func (item *VectorIntMaybe) String() string {
+func (item VectorIntMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

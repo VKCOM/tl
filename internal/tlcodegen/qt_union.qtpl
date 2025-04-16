@@ -380,7 +380,7 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(newTypeNames bool, short
 }
 
 {%- if len(union.wr.NatParams) == 0 -%}
-func (item *{%s= goName %}) String({%s= formatNatArgsDeclNoComma(union.wr.NatParams) %}) string {
+func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(union.wr.NatParams) %}) string {
     {%- if writeNeedsError -%}
     w, err := item.WriteJSON(nil{%s= natArgsCall %})
     if err != nil {

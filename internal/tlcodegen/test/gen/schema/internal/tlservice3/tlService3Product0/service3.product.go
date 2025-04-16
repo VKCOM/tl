@@ -100,7 +100,7 @@ func (item *Service3Product0) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service3Product0) String() string {
+func (item Service3Product0) String() string {
 	return string(item.WriteJSON(nil))
 }
 

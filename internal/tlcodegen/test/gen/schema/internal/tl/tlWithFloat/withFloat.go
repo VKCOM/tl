@@ -73,7 +73,7 @@ func (item *WithFloat) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *WithFloat) String() string {
+func (item WithFloat) String() string {
 	return string(item.WriteJSON(nil))
 }
 

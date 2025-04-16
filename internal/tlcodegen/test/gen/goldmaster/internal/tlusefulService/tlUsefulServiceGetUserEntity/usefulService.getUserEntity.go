@@ -150,7 +150,7 @@ func (item *UsefulServiceGetUserEntity) ReadResultJSONWriteResult(r []byte, w []
 	return r, w, err
 }
 
-func (item *UsefulServiceGetUserEntity) String() string {
+func (item UsefulServiceGetUserEntity) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -70,7 +70,7 @@ func (item *PairBoolAColor) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *PairBoolAColor) String() string {
+func (item PairBoolAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 

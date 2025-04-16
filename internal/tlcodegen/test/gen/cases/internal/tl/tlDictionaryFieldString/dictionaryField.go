@@ -68,7 +68,7 @@ func (item *DictionaryFieldString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryFieldString) String() string {
+func (item DictionaryFieldString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -211,7 +211,7 @@ func (item *DictionaryFieldStringBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryFieldStringBytes) String() string {
+func (item DictionaryFieldStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

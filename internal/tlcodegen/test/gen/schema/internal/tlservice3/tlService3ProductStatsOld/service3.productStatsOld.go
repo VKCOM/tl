@@ -81,7 +81,7 @@ func (item *Service3ProductStatsOld) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service3ProductStatsOld) String() string {
+func (item Service3ProductStatsOld) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -59,7 +59,7 @@ func (item *MyMcValueTuple) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyMcValueTuple) String() string {
+func (item MyMcValueTuple) String() string {
 	return string(item.WriteJSON(nil))
 }
 

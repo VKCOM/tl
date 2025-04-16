@@ -66,7 +66,7 @@ func (item *BenchObject) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *BenchObject) String() string {
+func (item BenchObject) String() string {
 	return string(item.WriteJSON(nil))
 }
 

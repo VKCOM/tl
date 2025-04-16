@@ -136,7 +136,7 @@ func (item *Service3DeleteGroupedProducts) ReadResultJSONWriteResult(r []byte, w
 	return r, w, err
 }
 
-func (item *Service3DeleteGroupedProducts) String() string {
+func (item Service3DeleteGroupedProducts) String() string {
 	return string(item.WriteJSON(nil))
 }
 

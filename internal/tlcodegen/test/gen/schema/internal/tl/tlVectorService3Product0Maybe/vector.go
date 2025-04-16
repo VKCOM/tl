@@ -88,6 +88,6 @@ func (item *VectorService3Product0Maybe) WriteJSONOpt(newTypeNames bool, short b
 	return append(w, '}')
 }
 
-func (item *VectorService3Product0Maybe) String() string {
+func (item VectorService3Product0Maybe) String() string {
 	return string(item.WriteJSON(nil))
 }

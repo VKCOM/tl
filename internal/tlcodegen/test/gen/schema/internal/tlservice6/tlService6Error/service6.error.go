@@ -57,7 +57,7 @@ func (item *Service6Error) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service6Error) String() string {
+func (item Service6Error) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -229,7 +229,7 @@ func (item *DictionaryElemStrangeString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemStrangeString) String() string {
+func (item DictionaryElemStrangeString) String() string {
 	return string(item.WriteJSON(nil))
 }
 

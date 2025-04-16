@@ -58,7 +58,7 @@ func (item *Pkg2T1) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Pkg2T1) String() string {
+func (item Pkg2T1) String() string {
 	return string(item.WriteJSON(nil))
 }
 

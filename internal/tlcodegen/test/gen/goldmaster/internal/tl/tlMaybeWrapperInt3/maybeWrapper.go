@@ -62,7 +62,7 @@ func (item *MaybeWrapperInt3) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MaybeWrapperInt3) String() string {
+func (item MaybeWrapperInt3) String() string {
 	return string(item.WriteJSON(nil))
 }
 

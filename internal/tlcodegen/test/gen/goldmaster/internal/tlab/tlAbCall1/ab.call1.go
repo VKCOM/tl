@@ -116,7 +116,7 @@ func (item *AbCall1) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []by
 	return r, w, err
 }
 
-func (item *AbCall1) String() string {
+func (item AbCall1) String() string {
 	return string(item.WriteJSON(nil))
 }
 

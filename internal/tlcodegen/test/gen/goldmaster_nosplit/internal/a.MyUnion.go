@@ -181,7 +181,7 @@ func (item *AMyUnion) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []by
 	}
 }
 
-func (item *AMyUnion) String() string {
+func (item AMyUnion) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -248,7 +248,7 @@ func (item *AUNionA) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AUNionA) String() string {
+func (item AUNionA) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -371,7 +371,7 @@ func (item *AuNionA) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AuNionA) String() string {
+func (item AuNionA) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -111,7 +111,7 @@ func (item *BoxedArray) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, [
 	return r, w, err
 }
 
-func (item *BoxedArray) String() string {
+func (item BoxedArray) String() string {
 	return string(item.WriteJSON(nil))
 }
 

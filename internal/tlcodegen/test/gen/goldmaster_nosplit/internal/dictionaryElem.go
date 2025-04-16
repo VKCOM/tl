@@ -848,7 +848,7 @@ func (item *DictionaryElemIntPairIntInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemIntPairIntInt) String() string {
+func (item DictionaryElemIntPairIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -987,7 +987,7 @@ func (item *DictionaryElemLongPairIntInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemLongPairIntInt) String() string {
+func (item DictionaryElemLongPairIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1126,7 +1126,7 @@ func (item *DictionaryElemPairBoolAColorInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemPairBoolAColorInt) String() string {
+func (item DictionaryElemPairBoolAColorInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1265,7 +1265,7 @@ func (item *DictionaryElemPairFloatDoubleInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemPairFloatDoubleInt) String() string {
+func (item DictionaryElemPairFloatDoubleInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1404,7 +1404,7 @@ func (item *DictionaryElemPairIntIntInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemPairIntIntInt) String() string {
+func (item DictionaryElemPairIntIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1543,7 +1543,7 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteBoxed(w []byte) [
 	return item.Write(w)
 }
 
-func (item *DictionaryElemPairIntPairMultiPointStringInt) String() string {
+func (item DictionaryElemPairIntPairMultiPointStringInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1682,7 +1682,7 @@ func (item *DictionaryElemStringPairIntInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *DictionaryElemStringPairIntInt) String() string {
+func (item DictionaryElemStringPairIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -764,7 +764,7 @@ func (item *TasksFullFilledCron) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TasksFullFilledCron) String() string {
+func (item TasksFullFilledCron) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -80,7 +80,7 @@ func (item *CasesTestOutFieldMaskContainer) WriteBoxed(w []byte) (_ []byte, err 
 	return item.Write(w)
 }
 
-func (item *CasesTestOutFieldMaskContainer) String() string {
+func (item CasesTestOutFieldMaskContainer) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

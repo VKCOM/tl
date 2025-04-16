@@ -70,7 +70,7 @@ func (item *CdTopLevel3) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CdTopLevel3) String() string {
+func (item CdTopLevel3) String() string {
 	return string(item.WriteJSON(nil))
 }
 

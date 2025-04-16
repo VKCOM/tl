@@ -112,7 +112,7 @@ func (item *GetMaybeIface) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte
 	return r, w, err
 }
 
-func (item *GetMaybeIface) String() string {
+func (item GetMaybeIface) String() string {
 	return string(item.WriteJSON(nil))
 }
 

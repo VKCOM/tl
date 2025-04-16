@@ -144,7 +144,7 @@ func (item *Service4ModifiedNewsEntry) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service4ModifiedNewsEntry) String() string {
+func (item Service4ModifiedNewsEntry) String() string {
 	return string(item.WriteJSON(nil))
 }
 

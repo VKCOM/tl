@@ -118,7 +118,7 @@ func (item *CasesMyCycle1) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesMyCycle1) String() string {
+func (item CasesMyCycle1) String() string {
 	return string(item.WriteJSON(nil))
 }
 

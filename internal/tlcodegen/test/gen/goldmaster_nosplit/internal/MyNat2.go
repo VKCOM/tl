@@ -181,7 +181,7 @@ func (item *MyNat2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte
 	}
 }
 
-func (item *MyNat2) String() string {
+func (item MyNat2) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -248,7 +248,7 @@ func (item *MyPlus) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyPlus) String() string {
+func (item MyPlus) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -359,7 +359,7 @@ func (item *MyZero) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyZero) String() string {
+func (item MyZero) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -121,7 +121,7 @@ func (item *CasesTestLocalFieldmask) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesTestLocalFieldmask) String() string {
+func (item CasesTestLocalFieldmask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

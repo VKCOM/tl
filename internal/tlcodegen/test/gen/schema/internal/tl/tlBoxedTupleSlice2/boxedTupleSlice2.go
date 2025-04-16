@@ -117,7 +117,7 @@ func (item *BoxedTupleSlice2) ReadResultJSONWriteResult(r []byte, w []byte) ([]b
 	return r, w, err
 }
 
-func (item *BoxedTupleSlice2) String() string {
+func (item BoxedTupleSlice2) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

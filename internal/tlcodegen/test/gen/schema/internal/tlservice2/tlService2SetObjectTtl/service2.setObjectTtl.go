@@ -126,7 +126,7 @@ func (item *Service2SetObjectTtl) ReadResultJSONWriteResult(r []byte, w []byte) 
 	return r, w, err
 }
 
-func (item *Service2SetObjectTtl) String() string {
+func (item Service2SetObjectTtl) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

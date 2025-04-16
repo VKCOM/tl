@@ -64,7 +64,7 @@ func (item *VectorDictionaryFieldInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorDictionaryFieldInt) String() string {
+func (item VectorDictionaryFieldInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -148,7 +148,7 @@ func (item *VectorDictionaryFieldIntBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorDictionaryFieldIntBytes) String() string {
+func (item VectorDictionaryFieldIntBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

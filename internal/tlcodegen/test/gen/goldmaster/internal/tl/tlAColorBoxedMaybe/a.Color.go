@@ -93,6 +93,6 @@ func (item *AColorBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []by
 	return append(w, '}')
 }
 
-func (item *AColorBoxedMaybe) String() string {
+func (item AColorBoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

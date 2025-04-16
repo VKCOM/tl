@@ -59,7 +59,7 @@ func (item *TupleService1Value3) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TupleService1Value3) String() string {
+func (item TupleService1Value3) String() string {
 	return string(item.WriteJSON(nil))
 }
 

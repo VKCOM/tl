@@ -129,7 +129,7 @@ func (item *Service1SetOrIncr) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
-func (item *Service1SetOrIncr) String() string {
+func (item Service1SetOrIncr) String() string {
 	return string(item.WriteJSON(nil))
 }
 

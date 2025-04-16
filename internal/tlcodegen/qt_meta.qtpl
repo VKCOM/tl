@@ -192,7 +192,7 @@ func (item *TLItem) Write(w []byte) []byte { return w }
 func (item *TLItem) ReadBoxed(w []byte) ([]byte, error) { return basictl.NatReadExactTag(w, item.tag) }
 func (item *TLItem) WriteBoxedGeneral(w []byte) ([]byte, error) { return basictl.NatWrite(w, item.tag), nil }
 func (item *TLItem) WriteBoxed(w []byte) []byte { return basictl.NatWrite(w, item.tag) }
-func (item *TLItem) String() string {
+func (item TLItem) String() string {
 	return string(item.WriteJSON(nil))
 }
 {%- if gen.options.GenerateLegacyJsonRead -%}

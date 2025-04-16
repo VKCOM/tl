@@ -69,7 +69,7 @@ func (item *PairIntPairMultiPointString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *PairIntPairMultiPointString) String() string {
+func (item PairIntPairMultiPointString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
