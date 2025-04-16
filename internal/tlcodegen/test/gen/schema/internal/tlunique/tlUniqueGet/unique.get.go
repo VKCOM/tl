@@ -111,7 +111,7 @@ func (item *UniqueGet) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []
 	return r, w, err
 }
 
-func (item UniqueGet) String() string {
+func (item *UniqueGet) String() string {
 	return string(item.WriteJSON(nil))
 }
 

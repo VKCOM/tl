@@ -114,7 +114,7 @@ func (item *GetFloat) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []b
 	return r, w, err
 }
 
-func (item GetFloat) String() string {
+func (item *GetFloat) String() string {
 	return string(item.WriteJSON(nil))
 }
 

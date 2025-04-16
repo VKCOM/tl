@@ -178,7 +178,7 @@ func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(newType
 	}
 }
 
-func (item EitherService6ErrorVectorService6FindResultRow) String() string {
+func (item *EitherService6ErrorVectorService6FindResultRow) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -241,7 +241,7 @@ func (item *LeftService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) [
 	return item.Write(w)
 }
 
-func (item LeftService6ErrorVectorService6FindResultRow) String() string {
+func (item *LeftService6ErrorVectorService6FindResultRow) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -356,7 +356,7 @@ func (item *RightService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte) 
 	return item.Write(w)
 }
 
-func (item RightService6ErrorVectorService6FindResultRow) String() string {
+func (item *RightService6ErrorVectorService6FindResultRow) String() string {
 	return string(item.WriteJSON(nil))
 }
 

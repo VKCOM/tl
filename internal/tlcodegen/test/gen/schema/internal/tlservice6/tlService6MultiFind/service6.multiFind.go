@@ -129,7 +129,7 @@ func (item *Service6MultiFind) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
-func (item Service6MultiFind) String() string {
+func (item *Service6MultiFind) String() string {
 	return string(item.WriteJSON(nil))
 }
 

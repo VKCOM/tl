@@ -167,7 +167,7 @@ func (item *TasksTask) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item TasksTask) String() string {
+func (item *TasksTask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

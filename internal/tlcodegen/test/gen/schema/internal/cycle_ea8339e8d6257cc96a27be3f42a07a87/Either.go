@@ -177,7 +177,7 @@ func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(newTypeNam
 	}
 }
 
-func (item EitherIntVectorService6FindWithBoundsResult) String() string {
+func (item *EitherIntVectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -240,7 +240,7 @@ func (item *LeftIntVectorService6FindWithBoundsResult) WriteBoxed(w []byte) []by
 	return item.Write(w)
 }
 
-func (item LeftIntVectorService6FindWithBoundsResult) String() string {
+func (item *LeftIntVectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -359,7 +359,7 @@ func (item *RightIntVectorService6FindWithBoundsResult) WriteBoxed(w []byte) []b
 	return item.Write(w)
 }
 
-func (item RightIntVectorService6FindWithBoundsResult) String() string {
+func (item *RightIntVectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
 

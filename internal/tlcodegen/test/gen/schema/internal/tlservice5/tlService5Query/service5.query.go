@@ -118,7 +118,7 @@ func (item *Service5Query) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte
 	return r, w, err
 }
 
-func (item Service5Query) String() string {
+func (item *Service5Query) String() string {
 	return string(item.WriteJSON(nil))
 }
 

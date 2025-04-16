@@ -118,7 +118,7 @@ func (item *TasksGetTaskFromQueue) ReadResultJSONWriteResult(r []byte, w []byte)
 	return r, w, err
 }
 
-func (item TasksGetTaskFromQueue) String() string {
+func (item *TasksGetTaskFromQueue) String() string {
 	return string(item.WriteJSON(nil))
 }
 

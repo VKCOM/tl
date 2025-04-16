@@ -149,7 +149,7 @@ func (item *Service2Set) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, 
 	return r, w, err
 }
 
-func (item Service2Set) String() string {
+func (item *Service2Set) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

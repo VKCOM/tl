@@ -85,6 +85,6 @@ func (item *Service1KeysStatMaybe) WriteJSONOpt(newTypeNames bool, short bool, w
 	return append(w, '}')
 }
 
-func (item Service1KeysStatMaybe) String() string {
+func (item *Service1KeysStatMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

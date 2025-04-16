@@ -129,7 +129,7 @@ func (item *Service1Set) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, 
 	return r, w, err
 }
 
-func (item Service1Set) String() string {
+func (item *Service1Set) String() string {
 	return string(item.WriteJSON(nil))
 }
 

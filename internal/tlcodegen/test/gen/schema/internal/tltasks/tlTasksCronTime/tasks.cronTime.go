@@ -193,7 +193,7 @@ func (item *TasksCronTime) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item TasksCronTime) String() string {
+func (item *TasksCronTime) String() string {
 	return string(item.WriteJSON(nil))
 }
 

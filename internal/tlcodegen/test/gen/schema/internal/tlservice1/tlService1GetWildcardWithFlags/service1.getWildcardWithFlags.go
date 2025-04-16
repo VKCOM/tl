@@ -116,7 +116,7 @@ func (item *Service1GetWildcardWithFlags) ReadResultJSONWriteResult(r []byte, w 
 	return r, w, err
 }
 
-func (item Service1GetWildcardWithFlags) String() string {
+func (item *Service1GetWildcardWithFlags) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -130,7 +130,7 @@ func (item *GetArrays) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []
 	return r, w, err
 }
 
-func (item GetArrays) String() string {
+func (item *GetArrays) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

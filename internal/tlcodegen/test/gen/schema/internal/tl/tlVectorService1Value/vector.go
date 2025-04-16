@@ -59,7 +59,7 @@ func (item *VectorService1Value) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorService1Value) String() string {
+func (item *VectorService1Value) String() string {
 	return string(item.WriteJSON(nil))
 }
 

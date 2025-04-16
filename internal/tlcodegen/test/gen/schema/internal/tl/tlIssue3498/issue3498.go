@@ -63,7 +63,7 @@ func (item *Issue3498) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Issue3498) String() string {
+func (item *Issue3498) String() string {
 	return string(item.WriteJSON(nil))
 }
 

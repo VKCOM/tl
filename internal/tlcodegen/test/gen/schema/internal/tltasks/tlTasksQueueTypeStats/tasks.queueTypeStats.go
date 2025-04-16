@@ -148,7 +148,7 @@ func (item *TasksQueueTypeStats) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item TasksQueueTypeStats) String() string {
+func (item *TasksQueueTypeStats) String() string {
 	return string(item.WriteJSON(nil))
 }
 

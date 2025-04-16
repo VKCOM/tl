@@ -70,7 +70,7 @@ func (item *Service4Object) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service4Object) String() string {
+func (item *Service4Object) String() string {
 	return string(item.WriteJSON(nil))
 }
 

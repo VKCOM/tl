@@ -119,7 +119,7 @@ func (item *BoxedVector32BoxedElem) ReadResultJSONWriteResult(r []byte, w []byte
 	return r, w, err
 }
 
-func (item BoxedVector32BoxedElem) String() string {
+func (item *BoxedVector32BoxedElem) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -59,7 +59,7 @@ func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteBoxed(w [
 	return item.Write(w)
 }
 
-func (item VectorEitherService6ErrorVectorService6FindResultRow) String() string {
+func (item *VectorEitherService6ErrorVectorService6FindResultRow) String() string {
 	return string(item.WriteJSON(nil))
 }
 

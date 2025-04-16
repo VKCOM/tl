@@ -176,7 +176,7 @@ func (item *TasksGetQueueSize) SetTasksQueueStatsInProgressSize(value bool) {
 	}
 }
 
-func (item TasksGetQueueSize) String() string {
+func (item *TasksGetQueueSize) String() string {
 	return string(item.WriteJSON(nil))
 }
 

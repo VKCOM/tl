@@ -64,7 +64,7 @@ func (item *Service1KeysStat) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service1KeysStat) String() string {
+func (item *Service1KeysStat) String() string {
 	return string(item.WriteJSON(nil))
 }
 
