@@ -431,12 +431,15 @@ tl_items::tl_items() {
 	auto item3558309247 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xd4177d7f,.annotations=0x0,.name="tasks.cronTime",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["tasks.cronTime"] = item3558309247;
 	(this->items_by_tag)[0xd4177d7f] = item3558309247;
+	auto item3558309246 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xd4177d7e,.annotations=0x0,.name="tasks.fullFilledCron",.create_object=no_object_generator,.create_function=no_function_generator});
+	(this->items)["tasks.fullFilledCron"] = item3558309246;
+	(this->items_by_tag)[0xd4177d7e] = item3558309246;
 	auto item1251769787 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0x4a9c7dbb,.annotations=0x1,.name="tasks.getAnyTask",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["tasks.getAnyTask"] = item1251769787;
 	(this->items_by_tag)[0x4a9c7dbb] = item1251769787;
-	auto item3640449539 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xd8fcda03,.annotations=0x1,.name="tasks.getQueueSize",.create_object=no_object_generator,.create_function=no_function_generator});
-	(this->items)["tasks.getQueueSize"] = item3640449539;
-	(this->items_by_tag)[0xd8fcda03] = item3640449539;
+	auto item1790685271 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0x6abbb057,.annotations=0x1,.name="tasks.getQueueSize",.create_object=no_object_generator,.create_function=no_function_generator});
+	(this->items)["tasks.getQueueSize"] = item1790685271;
+	(this->items_by_tag)[0x6abbb057] = item1790685271;
 	auto item1412711802 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0x5434457a,.annotations=0x1,.name="tasks.getQueueTypes",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["tasks.getQueueTypes"] = item1412711802;
 	(this->items_by_tag)[0x5434457a] = item1412711802;
