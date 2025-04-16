@@ -193,7 +193,7 @@ func (item *TlsArray) UnmarshalJSON(b []byte) error {
 }
 
 var _TlsTypeExpr = [3]UnionElement{
-	{TLTag: 0x142ceae, TLName: "tls.typeVar", TLString: "tls.typeVar#0142ceae"},
+	{TLTag: 0x0142ceae, TLName: "tls.typeVar", TLString: "tls.typeVar#0142ceae"},
 	{TLTag: 0xd9fb20de, TLName: "tls.array", TLString: "tls.array#d9fb20de"},
 	{TLTag: 0xc1863d08, TLName: "tls.typeExpr", TLString: "tls.typeExpr#c1863d08"},
 }
@@ -270,7 +270,7 @@ func (item *TlsTypeExpr) ReadBoxed(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	switch tag {
-	case 0x142ceae:
+	case 0x0142ceae:
 		item.index = 0
 		return item.valueTypeVar.Read(w)
 	case 0xd9fb20de:
@@ -642,7 +642,7 @@ type TlsTypeVar struct {
 }
 
 func (TlsTypeVar) TLName() string { return "tls.typeVar" }
-func (TlsTypeVar) TLTag() uint32  { return 0x142ceae }
+func (TlsTypeVar) TLTag() uint32  { return 0x0142ceae }
 
 func (item *TlsTypeVar) Reset() {
 	item.VarNum = 0
@@ -668,7 +668,7 @@ func (item *TlsTypeVar) Write(w []byte) []byte {
 }
 
 func (item *TlsTypeVar) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x142ceae); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x0142ceae); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -680,7 +680,7 @@ func (item *TlsTypeVar) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *TlsTypeVar) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x142ceae)
+	w = basictl.NatWrite(w, 0x0142ceae)
 	return item.Write(w)
 }
 

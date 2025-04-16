@@ -37,7 +37,9 @@ func (item *Service4ModifiedNewsEntry) ClearRestorationDate() {
 	item.RestorationDate = 0
 	item.FieldsMask &^= 1 << 0
 }
-func (item Service4ModifiedNewsEntry) IsSetRestorationDate() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *Service4ModifiedNewsEntry) IsSetRestorationDate() bool {
+	return item.FieldsMask&(1<<0) != 0
+}
 
 func (item *Service4ModifiedNewsEntry) SetDeletionDate(v int32) {
 	item.DeletionDate = v
@@ -47,7 +49,7 @@ func (item *Service4ModifiedNewsEntry) ClearDeletionDate() {
 	item.DeletionDate = 0
 	item.FieldsMask &^= 1 << 1
 }
-func (item Service4ModifiedNewsEntry) IsSetDeletionDate() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *Service4ModifiedNewsEntry) IsSetDeletionDate() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *Service4ModifiedNewsEntry) SetHiddenByPrivacy(v bool) {
 	item.HiddenByPrivacy = v
@@ -57,7 +59,7 @@ func (item *Service4ModifiedNewsEntry) ClearHiddenByPrivacy() {
 	item.HiddenByPrivacy = false
 	item.FieldsMask &^= 1 << 16
 }
-func (item Service4ModifiedNewsEntry) IsSetHiddenByPrivacy() bool {
+func (item *Service4ModifiedNewsEntry) IsSetHiddenByPrivacy() bool {
 	return item.FieldsMask&(1<<16) != 0
 }
 

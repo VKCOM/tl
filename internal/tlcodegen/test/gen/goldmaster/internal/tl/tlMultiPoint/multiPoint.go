@@ -104,7 +104,7 @@ func (item *MultiPoint) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item MultiPoint) String() string {
+func (item *MultiPoint) String() string {
 	return string(item.WriteJSON(nil))
 }
 

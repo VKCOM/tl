@@ -44,7 +44,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF10() {
 	item.F10 = 0
 	item.Local &^= 1 << 0
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF10() bool { return item.Local&(1<<0) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF10() bool { return item.Local&(1<<0) != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF11(v bool) {
 	if v {
@@ -53,7 +53,7 @@ func (item *CasesTestAllPossibleFieldConfigs) SetF11(v bool) {
 		item.Local &^= 1 << 1
 	}
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF11() bool { return item.Local&(1<<1) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF11() bool { return item.Local&(1<<1) != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF12(v []int32) {
 	item.F12 = v
@@ -63,7 +63,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF12() {
 	item.F12 = item.F12[:0]
 	item.Local &^= 1 << 2
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF12() bool { return item.Local&(1<<2) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF12() bool { return item.Local&(1<<2) != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF13(v []int32) {
 	item.F13 = v
@@ -73,7 +73,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF13() {
 	item.F13 = item.F13[:0]
 	item.Local &^= 1 << 3
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.Local&(1<<3) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.Local&(1<<3) != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF20(v int32, nat_outer *uint32) {
 	item.F20 = v
@@ -87,7 +87,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF20(nat_outer *uint32) {
 		*nat_outer &^= 1 << 0
 	}
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF20(nat_outer uint32) bool {
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF20(nat_outer uint32) bool {
 	return nat_outer&(1<<0) != 0
 }
 
@@ -100,7 +100,7 @@ func (item *CasesTestAllPossibleFieldConfigs) SetF21(v bool, nat_outer *uint32) 
 		}
 	}
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF21(nat_outer uint32) bool {
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF21(nat_outer uint32) bool {
 	return nat_outer&(1<<1) != 0
 }
 
@@ -116,7 +116,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF22(nat_outer *uint32) {
 		*nat_outer &^= 1 << 2
 	}
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF22(nat_outer uint32) bool {
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF22(nat_outer uint32) bool {
 	return nat_outer&(1<<2) != 0
 }
 
@@ -132,7 +132,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF23(nat_outer *uint32) {
 		*nat_outer &^= 1 << 3
 	}
 }
-func (item CasesTestAllPossibleFieldConfigs) IsSetF23(nat_outer uint32) bool {
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF23(nat_outer uint32) bool {
 	return nat_outer&(1<<3) != 0
 }
 

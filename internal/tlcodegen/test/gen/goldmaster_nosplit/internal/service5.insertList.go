@@ -28,7 +28,7 @@ func (item *Service5InsertList) SetPersistent(v bool) {
 		item.Flags &^= 1 << 0
 	}
 }
-func (item Service5InsertList) IsSetPersistent() bool { return item.Flags&(1<<0) != 0 }
+func (item *Service5InsertList) IsSetPersistent() bool { return item.Flags&(1<<0) != 0 }
 
 func (item *Service5InsertList) Reset() {
 	item.Flags = 0
@@ -130,7 +130,7 @@ func (item *Service5InsertList) ReadResultJSONWriteResult(r []byte, w []byte) ([
 	return r, w, err
 }
 
-func (item Service5InsertList) String() string {
+func (item *Service5InsertList) String() string {
 	return string(item.WriteJSON(nil))
 }
 

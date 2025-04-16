@@ -358,7 +358,7 @@ func (item *PairBoolAColor) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairBoolAColor) String() string {
+func (item *PairBoolAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -497,7 +497,7 @@ func (item *PairFloatDouble) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairFloatDouble) String() string {
+func (item *PairFloatDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -640,7 +640,7 @@ func (item *PairIntInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairIntInt) String() string {
+func (item *PairIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -783,7 +783,7 @@ func (item *PairIntLong) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairIntLong) String() string {
+func (item *PairIntLong) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -926,7 +926,7 @@ func (item *PairIntPairMultiPointString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairIntPairMultiPointString) String() string {
+func (item *PairIntPairMultiPointString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1065,7 +1065,7 @@ func (item *PairMultiPointString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item PairMultiPointString) String() string {
+func (item *PairMultiPointString) String() string {
 	return string(item.WriteJSON(nil))
 }
 

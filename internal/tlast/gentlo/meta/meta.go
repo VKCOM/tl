@@ -90,13 +90,50 @@ func CreateObjectFromName(name string) Object {
 	return nil
 }
 
+func CreateFunctionBytes(tag uint32) Function {
+	if item := FactoryItemByTLTag(tag); item != nil && item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	return nil
+}
+
+func CreateObjectBytes(tag uint32) Object {
+	if item := FactoryItemByTLTag(tag); item != nil && item.createObjectBytes != nil {
+		return item.createObjectBytes()
+	}
+	return nil
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateFunctionFromNameBytes(name string) Function {
+	if item := FactoryItemByTLName(name); item != nil && item.createFunctionBytes != nil {
+		return item.createFunctionBytes()
+	}
+	return nil
+}
+
+// name can be in any of 3 forms "ch_proxy.insert#7cf362ba", "ch_proxy.insert" or "#7cf362ba"
+func CreateObjectFromNameBytes(name string) Object {
+	if item := FactoryItemByTLName(name); item != nil && item.createObjectBytes != nil {
+		return item.createObjectBytes()
+	}
+	return nil
+}
+
 type TLItem struct {
-	tag                uint32
-	annotations        uint32
-	tlName             string
-	createFunction     func() Function
-	createFunctionLong func() Function
-	createObject       func() Object
+	tag         uint32
+	annotations uint32
+	tlName      string
+
+	resultTypeContainsUnionTypes    bool
+	argumentsTypesContainUnionTypes bool
+
+	createFunction          func() Function
+	createFunctionLong      func() Function
+	createObject            func() Object
+	createFunctionBytes     func() Function
+	createFunctionLongBytes func() Function
+	createObjectBytes       func() Object
 }
 
 func (item TLItem) TLTag() uint32            { return item.tag }
@@ -104,6 +141,9 @@ func (item TLItem) TLName() string           { return item.tlName }
 func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
+
+func (item TLItem) HasUnionTypesInResult() bool    { return item.resultTypeContainsUnionTypes }
+func (item TLItem) HasUnionTypesInArguments() bool { return item.argumentsTypesContainUnionTypes }
 
 // For transcoding short-long version during Long ID transition
 func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLong != nil }
@@ -193,6 +233,40 @@ func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
 	item.createObject = func() Object { return item }
 }
 
+func SetGlobalFactoryCreateForFunctionBytes(itemTag uint32, createObject func() Object, createFunction func() Function, createFunctionLong func() Function) {
+	item := itemsByTag[itemTag]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find function tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = createObject
+	item.createFunctionBytes = createFunction
+	item.createFunctionLongBytes = createFunctionLong
+}
+
+func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Object) {
+	item := itemsByTag[itemTag]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = createObject
+}
+
+func SetGlobalFactoryCreateForEnumElementBytes(itemTag uint32) {
+	item := itemsByTag[itemTag]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find enum tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = func() Object { return item }
+}
+
+func pleaseImportFactoryBytesObject() Object {
+	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
+}
+
+func pleaseImportFactoryBytesFunction() Function {
+	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory_bytes' instead of 'gen/meta'.")
+}
+
 func pleaseImportFactoryObject() Object {
 	panic("factory functions are not linked to reduce code bloat, please import 'gen/factory' instead of 'gen/meta'.")
 }
@@ -207,6 +281,7 @@ func fillObject(n1 string, n2 string, item *TLItem) {
 	itemsByName[n1] = item
 	itemsByName[n2] = item
 	item.createObject = pleaseImportFactoryObject
+	item.createObjectBytes = pleaseImportFactoryBytesObject
 	// code below is as fast, but allocates some extra strings which are already in binary const segment due to JSON code
 	// itemsByName[fmt.Sprintf("%s#%08x", item.tlName, item.tag)] = item
 	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
@@ -215,24 +290,25 @@ func fillObject(n1 string, n2 string, item *TLItem) {
 func fillFunction(n1 string, n2 string, item *TLItem) {
 	fillObject(n1, n2, item)
 	item.createFunction = pleaseImportFactoryFunction
+	item.createFunctionBytes = pleaseImportFactoryBytesFunction
 }
 
 func init() {
-	fillObject("tls.arg#29dfe61b", "#29dfe61b", &TLItem{tag: 0x29dfe61b, annotations: 0x0, tlName: "tls.arg"})
-	fillObject("tls.array#d9fb20de", "#d9fb20de", &TLItem{tag: 0xd9fb20de, annotations: 0x0, tlName: "tls.array"})
-	fillObject("tls.combinator#5c0a1ed5", "#5c0a1ed5", &TLItem{tag: 0x5c0a1ed5, annotations: 0x0, tlName: "tls.combinator"})
-	fillObject("tls.combinatorLeft#4c12c6d9", "#4c12c6d9", &TLItem{tag: 0x4c12c6d9, annotations: 0x0, tlName: "tls.combinatorLeft"})
-	fillObject("tls.combinatorLeftBuiltin#cd211f63", "#cd211f63", &TLItem{tag: 0xcd211f63, annotations: 0x0, tlName: "tls.combinatorLeftBuiltin"})
-	fillObject("tls.combinatorRight#2c064372", "#2c064372", &TLItem{tag: 0x2c064372, annotations: 0x0, tlName: "tls.combinatorRight"})
-	fillObject("tls.combinator_v4#e91692d5", "#e91692d5", &TLItem{tag: 0xe91692d5, annotations: 0x0, tlName: "tls.combinator_v4"})
-	fillObject("tls.exprNat#dcb49bd8", "#dcb49bd8", &TLItem{tag: 0xdcb49bd8, annotations: 0x0, tlName: "tls.exprNat"})
-	fillObject("tls.exprType#ecc9da78", "#ecc9da78", &TLItem{tag: 0xecc9da78, annotations: 0x0, tlName: "tls.exprType"})
-	fillObject("tls.natConst#8ce940b1", "#8ce940b1", &TLItem{tag: 0x8ce940b1, annotations: 0x0, tlName: "tls.natConst"})
-	fillObject("tls.natVar#4e8a14f0", "#4e8a14f0", &TLItem{tag: 0x4e8a14f0, annotations: 0x0, tlName: "tls.natVar"})
-	fillObject("tls.schema_v2#3a2f9be2", "#3a2f9be2", &TLItem{tag: 0x3a2f9be2, annotations: 0x0, tlName: "tls.schema_v2"})
-	fillObject("tls.schema_v3#e4a8604b", "#e4a8604b", &TLItem{tag: 0xe4a8604b, annotations: 0x0, tlName: "tls.schema_v3"})
-	fillObject("tls.schema_v4#90ac88d7", "#90ac88d7", &TLItem{tag: 0x90ac88d7, annotations: 0x0, tlName: "tls.schema_v4"})
-	fillObject("tls.type#12eb4386", "#12eb4386", &TLItem{tag: 0x12eb4386, annotations: 0x0, tlName: "tls.type"})
-	fillObject("tls.typeExpr#c1863d08", "#c1863d08", &TLItem{tag: 0xc1863d08, annotations: 0x0, tlName: "tls.typeExpr"})
-	fillObject("tls.typeVar#0142ceae", "#0142ceae", &TLItem{tag: 0x142ceae, annotations: 0x0, tlName: "tls.typeVar"})
+	fillObject("tls.arg#29dfe61b", "#29dfe61b", &TLItem{tag: 0x29dfe61b, annotations: 0x0, tlName: "tls.arg", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.array#d9fb20de", "#d9fb20de", &TLItem{tag: 0xd9fb20de, annotations: 0x0, tlName: "tls.array", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinator#5c0a1ed5", "#5c0a1ed5", &TLItem{tag: 0x5c0a1ed5, annotations: 0x0, tlName: "tls.combinator", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinatorLeft#4c12c6d9", "#4c12c6d9", &TLItem{tag: 0x4c12c6d9, annotations: 0x0, tlName: "tls.combinatorLeft", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinatorLeftBuiltin#cd211f63", "#cd211f63", &TLItem{tag: 0xcd211f63, annotations: 0x0, tlName: "tls.combinatorLeftBuiltin", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinatorRight#2c064372", "#2c064372", &TLItem{tag: 0x2c064372, annotations: 0x0, tlName: "tls.combinatorRight", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinator_v4#e91692d5", "#e91692d5", &TLItem{tag: 0xe91692d5, annotations: 0x0, tlName: "tls.combinator_v4", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.exprNat#dcb49bd8", "#dcb49bd8", &TLItem{tag: 0xdcb49bd8, annotations: 0x0, tlName: "tls.exprNat", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.exprType#ecc9da78", "#ecc9da78", &TLItem{tag: 0xecc9da78, annotations: 0x0, tlName: "tls.exprType", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.natConst#8ce940b1", "#8ce940b1", &TLItem{tag: 0x8ce940b1, annotations: 0x0, tlName: "tls.natConst", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.natVar#4e8a14f0", "#4e8a14f0", &TLItem{tag: 0x4e8a14f0, annotations: 0x0, tlName: "tls.natVar", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.schema_v2#3a2f9be2", "#3a2f9be2", &TLItem{tag: 0x3a2f9be2, annotations: 0x0, tlName: "tls.schema_v2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.schema_v3#e4a8604b", "#e4a8604b", &TLItem{tag: 0xe4a8604b, annotations: 0x0, tlName: "tls.schema_v3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.schema_v4#90ac88d7", "#90ac88d7", &TLItem{tag: 0x90ac88d7, annotations: 0x0, tlName: "tls.schema_v4", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.type#12eb4386", "#12eb4386", &TLItem{tag: 0x12eb4386, annotations: 0x0, tlName: "tls.type", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.typeExpr#c1863d08", "#c1863d08", &TLItem{tag: 0xc1863d08, annotations: 0x0, tlName: "tls.typeExpr", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.typeVar#0142ceae", "#0142ceae", &TLItem{tag: 0x0142ceae, annotations: 0x0, tlName: "tls.typeVar", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 }

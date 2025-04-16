@@ -159,7 +159,7 @@ func (item *UseDictUgly) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item UseDictUgly) String() string {
+func (item *UseDictUgly) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

@@ -200,7 +200,7 @@ func (item *CycleTuple) ClearA() {
 	}
 	item.N &^= 1 << 0
 }
-func (item CycleTuple) IsSetA() bool { return item.N&(1<<0) != 0 }
+func (item *CycleTuple) IsSetA() bool { return item.N&(1<<0) != 0 }
 
 func (item *CycleTuple) SetC(v [3]int32) {
 	item.C = v
@@ -210,7 +210,7 @@ func (item *CycleTuple) ClearC() {
 	tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.C)
 	item.N &^= 1 << 2
 }
-func (item CycleTuple) IsSetC() bool { return item.N&(1<<2) != 0 }
+func (item *CycleTuple) IsSetC() bool { return item.N&(1<<2) != 0 }
 
 func (item *CycleTuple) Reset() {
 	item.N = 0
@@ -329,7 +329,7 @@ func (item *CycleTuple) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item CycleTuple) String() string {
+func (item *CycleTuple) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

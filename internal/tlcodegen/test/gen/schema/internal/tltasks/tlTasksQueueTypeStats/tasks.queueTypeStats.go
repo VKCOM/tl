@@ -34,7 +34,7 @@ func (item *TasksQueueTypeStats) ClearWaitingSize() {
 	item.WaitingSize = 0
 	item.FieldsMask &^= 1 << 0
 }
-func (item TasksQueueTypeStats) IsSetWaitingSize() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *TasksQueueTypeStats) IsSetWaitingSize() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *TasksQueueTypeStats) SetScheduledSize(v int64) {
 	item.ScheduledSize = v
@@ -44,7 +44,7 @@ func (item *TasksQueueTypeStats) ClearScheduledSize() {
 	item.ScheduledSize = 0
 	item.FieldsMask &^= 1 << 1
 }
-func (item TasksQueueTypeStats) IsSetScheduledSize() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *TasksQueueTypeStats) IsSetScheduledSize() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *TasksQueueTypeStats) SetInProgressSize(v int64) {
 	item.InProgressSize = v
@@ -54,7 +54,7 @@ func (item *TasksQueueTypeStats) ClearInProgressSize() {
 	item.InProgressSize = 0
 	item.FieldsMask &^= 1 << 2
 }
-func (item TasksQueueTypeStats) IsSetInProgressSize() bool { return item.FieldsMask&(1<<2) != 0 }
+func (item *TasksQueueTypeStats) IsSetInProgressSize() bool { return item.FieldsMask&(1<<2) != 0 }
 
 func (item *TasksQueueTypeStats) SetNumQueues(v int32) {
 	item.NumQueues = v
@@ -64,7 +64,7 @@ func (item *TasksQueueTypeStats) ClearNumQueues() {
 	item.NumQueues = 0
 	item.FieldsMask &^= 1 << 3
 }
-func (item TasksQueueTypeStats) IsSetNumQueues() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *TasksQueueTypeStats) IsSetNumQueues() bool { return item.FieldsMask&(1<<3) != 0 }
 
 func (item *TasksQueueTypeStats) Reset() {
 	item.FieldsMask = 0

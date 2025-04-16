@@ -97,6 +97,6 @@ func (item *TupleInt3BoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w [
 	return append(w, '}')
 }
 
-func (item TupleInt3BoxedMaybe) String() string {
+func (item *TupleInt3BoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

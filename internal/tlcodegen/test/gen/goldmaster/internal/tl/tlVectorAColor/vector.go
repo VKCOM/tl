@@ -64,7 +64,7 @@ func (item *VectorAColor) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorAColor) String() string {
+func (item *VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 

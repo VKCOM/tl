@@ -37,7 +37,7 @@ func (item *CasesTestOutFieldMask) ClearF1(nat_f *uint32) {
 		*nat_f &^= 1 << 0
 	}
 }
-func (item CasesTestOutFieldMask) IsSetF1(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
+func (item *CasesTestOutFieldMask) IsSetF1(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
 
 func (item *CasesTestOutFieldMask) SetF2(v bool, nat_f *uint32) {
 	if nat_f != nil {
@@ -48,7 +48,7 @@ func (item *CasesTestOutFieldMask) SetF2(v bool, nat_f *uint32) {
 		}
 	}
 }
-func (item CasesTestOutFieldMask) IsSetF2(nat_f uint32) bool { return nat_f&(1<<3) != 0 }
+func (item *CasesTestOutFieldMask) IsSetF2(nat_f uint32) bool { return nat_f&(1<<3) != 0 }
 
 func (item *CasesTestOutFieldMask) Reset() {
 	item.F1 = 0

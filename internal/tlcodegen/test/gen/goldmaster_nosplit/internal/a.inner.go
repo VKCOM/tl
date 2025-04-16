@@ -171,7 +171,7 @@ func (item *AInner3) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item AInner3) String() string {
+func (item *AInner3) String() string {
 	return string(item.WriteJSON(nil))
 }
 

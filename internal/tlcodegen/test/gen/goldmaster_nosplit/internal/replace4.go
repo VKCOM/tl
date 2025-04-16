@@ -171,7 +171,7 @@ func (item *Replace43) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Replace43) String() string {
+func (item *Replace43) String() string {
 	return string(item.WriteJSON(nil))
 }
 

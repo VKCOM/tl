@@ -31,7 +31,7 @@ func (item *Replace12Elem) ClearA(nat_n *uint32) {
 		*nat_n &^= 1 << 0
 	}
 }
-func (item Replace12Elem) IsSetA(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
+func (item *Replace12Elem) IsSetA(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
 
 func (item *Replace12Elem) Reset() {
 	item.A = 0

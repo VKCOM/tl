@@ -59,7 +59,7 @@ func (item *Service5EmptyOutput) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service5EmptyOutput) String() string {
+func (item *Service5EmptyOutput) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -251,7 +251,7 @@ func (item *Service5Output) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	}
 }
 
-func (item Service5Output) String() string {
+func (item *Service5Output) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -325,7 +325,7 @@ func (item *Service5StringOutput) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service5StringOutput) String() string {
+func (item *Service5StringOutput) String() string {
 	return string(item.WriteJSON(nil))
 }
 

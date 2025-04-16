@@ -74,7 +74,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteBoxed(w []byte
 	return item.Write(w)
 }
 
-func (item BenchmarksVrutoyTopLevelContainerWithDependency) String() string {
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

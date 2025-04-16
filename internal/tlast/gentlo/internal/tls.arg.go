@@ -111,7 +111,7 @@ func (item *TlsArg) ClearVarNum() {
 	item.VarNum = 0
 	item.Flags &^= 1 << 1
 }
-func (item TlsArg) IsSetVarNum() bool { return item.Flags&(1<<1) != 0 }
+func (item *TlsArg) IsSetVarNum() bool { return item.Flags&(1<<1) != 0 }
 
 func (item *TlsArg) SetExistVarNum(v int32) {
 	item.ExistVarNum = v
@@ -121,7 +121,7 @@ func (item *TlsArg) ClearExistVarNum() {
 	item.ExistVarNum = 0
 	item.Flags &^= 1 << 2
 }
-func (item TlsArg) IsSetExistVarNum() bool { return item.Flags&(1<<2) != 0 }
+func (item *TlsArg) IsSetExistVarNum() bool { return item.Flags&(1<<2) != 0 }
 
 func (item *TlsArg) SetExistVarBit(v int32) {
 	item.ExistVarBit = v
@@ -131,7 +131,7 @@ func (item *TlsArg) ClearExistVarBit() {
 	item.ExistVarBit = 0
 	item.Flags &^= 1 << 2
 }
-func (item TlsArg) IsSetExistVarBit() bool { return item.Flags&(1<<2) != 0 }
+func (item *TlsArg) IsSetExistVarBit() bool { return item.Flags&(1<<2) != 0 }
 
 func (item *TlsArg) Reset() {
 	item.Id = ""

@@ -66,7 +66,7 @@ func (item *AbTopLevel1) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item AbTopLevel1) String() string {
+func (item *AbTopLevel1) String() string {
 	return string(item.WriteJSON(nil))
 }
 

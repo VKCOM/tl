@@ -41,7 +41,7 @@ func (item *Service3Product) ClearRemoved(nat_mode *uint32) {
 		*nat_mode &^= 1 << 0
 	}
 }
-func (item Service3Product) IsSetRemoved(nat_mode uint32) bool { return nat_mode&(1<<0) != 0 }
+func (item *Service3Product) IsSetRemoved(nat_mode uint32) bool { return nat_mode&(1<<0) != 0 }
 
 func (item *Service3Product) Reset() {
 	item.Type = 0

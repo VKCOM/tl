@@ -37,7 +37,7 @@ func (item *TasksCronTime) ClearSeconds() {
 	item.Seconds = item.Seconds[:0]
 	item.FieldsMask &^= 1 << 0
 }
-func (item TasksCronTime) IsSetSeconds() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *TasksCronTime) IsSetSeconds() bool { return item.FieldsMask&(1<<0) != 0 }
 
 func (item *TasksCronTime) SetMinutes(v []int32) {
 	item.Minutes = v
@@ -47,7 +47,7 @@ func (item *TasksCronTime) ClearMinutes() {
 	item.Minutes = item.Minutes[:0]
 	item.FieldsMask &^= 1 << 1
 }
-func (item TasksCronTime) IsSetMinutes() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *TasksCronTime) IsSetMinutes() bool { return item.FieldsMask&(1<<1) != 0 }
 
 func (item *TasksCronTime) SetHours(v []int32) {
 	item.Hours = v
@@ -57,7 +57,7 @@ func (item *TasksCronTime) ClearHours() {
 	item.Hours = item.Hours[:0]
 	item.FieldsMask &^= 1 << 2
 }
-func (item TasksCronTime) IsSetHours() bool { return item.FieldsMask&(1<<2) != 0 }
+func (item *TasksCronTime) IsSetHours() bool { return item.FieldsMask&(1<<2) != 0 }
 
 func (item *TasksCronTime) SetDaysOfWeek(v []int32) {
 	item.DaysOfWeek = v
@@ -67,7 +67,7 @@ func (item *TasksCronTime) ClearDaysOfWeek() {
 	item.DaysOfWeek = item.DaysOfWeek[:0]
 	item.FieldsMask &^= 1 << 3
 }
-func (item TasksCronTime) IsSetDaysOfWeek() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *TasksCronTime) IsSetDaysOfWeek() bool { return item.FieldsMask&(1<<3) != 0 }
 
 func (item *TasksCronTime) SetDays(v []int32) {
 	item.Days = v
@@ -77,7 +77,7 @@ func (item *TasksCronTime) ClearDays() {
 	item.Days = item.Days[:0]
 	item.FieldsMask &^= 1 << 4
 }
-func (item TasksCronTime) IsSetDays() bool { return item.FieldsMask&(1<<4) != 0 }
+func (item *TasksCronTime) IsSetDays() bool { return item.FieldsMask&(1<<4) != 0 }
 
 func (item *TasksCronTime) SetMonths(v []int32) {
 	item.Months = v
@@ -87,7 +87,7 @@ func (item *TasksCronTime) ClearMonths() {
 	item.Months = item.Months[:0]
 	item.FieldsMask &^= 1 << 5
 }
-func (item TasksCronTime) IsSetMonths() bool { return item.FieldsMask&(1<<5) != 0 }
+func (item *TasksCronTime) IsSetMonths() bool { return item.FieldsMask&(1<<5) != 0 }
 
 func (item *TasksCronTime) Reset() {
 	item.FieldsMask = 0

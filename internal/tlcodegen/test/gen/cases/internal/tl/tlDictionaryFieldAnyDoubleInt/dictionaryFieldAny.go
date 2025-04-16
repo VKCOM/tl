@@ -68,7 +68,7 @@ func (item *DictionaryFieldAnyDoubleInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item DictionaryFieldAnyDoubleInt) String() string {
+func (item *DictionaryFieldAnyDoubleInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 

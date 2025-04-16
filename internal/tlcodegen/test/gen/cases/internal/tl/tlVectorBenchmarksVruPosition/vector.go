@@ -64,7 +64,7 @@ func (item *VectorBenchmarksVruPosition) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorBenchmarksVruPosition) String() string {
+func (item *VectorBenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
 
