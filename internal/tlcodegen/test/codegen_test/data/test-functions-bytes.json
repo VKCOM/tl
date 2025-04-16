@@ -130,7 +130,7 @@
           0
         ]
       },
-      "ExpectedOutput": "d8fcda03 61206107 61206120 00000001 00000000 00000000"
+      "ExpectedOutput": "6abbb057 61206107 61206120 00000001 00000000 00000000"
     },
     {
       "TestName": "tasks.getQueueSize1",
@@ -138,7 +138,7 @@
       "TestingObjectData": {
         "fields_mask": 1
       },
-      "ExpectedOutput": "d8fcda03 00000000 00000000 00000001"
+      "ExpectedOutput": "6abbb057 00000000 00000000 00000001"
     },
     {
       "TestName": "tasks.getQueueSize2",
@@ -146,7 +146,7 @@
       "TestingObjectData": {
         "fields_mask": 7
       },
-      "ExpectedOutput": "d8fcda03 00000000 00000000 00000007"
+      "ExpectedOutput": "6abbb057 00000000 00000000 00000007"
     },
     {
       "TestName": "boxedVector32_0",

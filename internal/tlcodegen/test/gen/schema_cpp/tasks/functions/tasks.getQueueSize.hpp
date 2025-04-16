@@ -9,9 +9,10 @@ struct GetQueueSize {
 	std::string type_name;
 	std::vector<int32_t> queue_id;
 	uint32_t fields_mask = 0;
+	int32_t local_dep = 0;
 
 	std::string_view tl_name() const { return "tasks.getQueueSize"; }
-	uint32_t tl_tag() const { return 0xd8fcda03; }
+	uint32_t tl_tag() const { return 0x6abbb057; }
 
 	bool write_json(std::ostream& s)const;
 

@@ -8,6 +8,7 @@
 #include "headers/tasks.getQueueTypes.hpp"
 #include "headers/tasks.getQueueSize.hpp"
 #include "headers/tasks.getAnyTask.hpp"
+#include "headers/tasks.fullFilledCron.hpp"
 #include "headers/tasks.cronTaskWithId.hpp"
 #include "headers/tasks.cronTask.hpp"
 #include "headers/tasks.cronTime.hpp"
@@ -489,6 +490,611 @@ bool tl2::details::TasksCronTimeWriteBoxed(::basictl::tl_ostream & s, const ::tl
 	return tl2::details::TasksCronTimeWrite(s, item);
 }
 
+bool tl2::tasks::FullFilledCron::write_json(std::ostream& s)const {
+	if (!::tl2::details::TasksFullFilledCronWriteJSON(s, *this)) { return false; }
+	return true;
+}
+
+bool tl2::tasks::FullFilledCron::read(::basictl::tl_istream & s) {
+	if (!::tl2::details::TasksFullFilledCronRead(s, *this)) { return false; }
+	return true;
+}
+
+bool tl2::tasks::FullFilledCron::write(::basictl::tl_ostream & s)const {
+	if (!::tl2::details::TasksFullFilledCronWrite(s, *this)) { return false; }
+	return true;
+}
+
+bool tl2::tasks::FullFilledCron::read_boxed(::basictl::tl_istream & s) {
+	if (!::tl2::details::TasksFullFilledCronReadBoxed(s, *this)) { return false; }
+	return true;
+}
+
+bool tl2::tasks::FullFilledCron::write_boxed(::basictl::tl_ostream & s)const {
+	if (!::tl2::details::TasksFullFilledCronWriteBoxed(s, *this)) { return false; }
+	return true;
+}
+
+void tl2::details::TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) {
+	item.fields_mask = 0;
+	item.a0 = 0;
+	item.a1 = 0;
+	item.a2 = 0;
+	item.a3 = 0;
+	item.a4 = 0;
+	item.a5 = 0;
+	item.a6 = 0;
+	item.a7 = 0;
+	item.a8 = 0;
+	item.a9 = 0;
+	item.a10 = 0;
+	item.a11 = 0;
+	item.a12 = 0;
+	item.a13 = 0;
+	item.a14 = 0;
+	item.a15 = 0;
+	item.a16 = 0;
+	item.a17 = 0;
+	item.a18 = 0;
+	item.a19 = 0;
+	item.a20 = 0;
+	item.a21 = 0;
+	item.a22 = 0;
+	item.a23 = 0;
+	item.a24 = 0;
+	item.a25 = 0;
+	item.a26 = 0;
+	item.a27 = 0;
+	item.a28 = 0;
+	item.a29 = 0;
+	item.a30 = 0;
+	item.a31 = 0;
+}
+
+bool tl2::details::TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::tasks::FullFilledCron& item) {
+	auto add_comma = false;
+	s << "{";
+	if (item.fields_mask != 0) {
+		add_comma = true;
+		s << "\"fields_mask\":";
+		s << item.fields_mask;
+	}
+	if ((item.fields_mask & (1<<0)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a0\":";
+		s << item.a0;
+	}
+	if ((item.fields_mask & (1<<1)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a1\":";
+		s << item.a1;
+	}
+	if ((item.fields_mask & (1<<2)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a2\":";
+		s << item.a2;
+	}
+	if ((item.fields_mask & (1<<3)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a3\":";
+		s << item.a3;
+	}
+	if ((item.fields_mask & (1<<4)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a4\":";
+		s << item.a4;
+	}
+	if ((item.fields_mask & (1<<5)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a5\":";
+		s << item.a5;
+	}
+	if ((item.fields_mask & (1<<6)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a6\":";
+		s << item.a6;
+	}
+	if ((item.fields_mask & (1<<7)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a7\":";
+		s << item.a7;
+	}
+	if ((item.fields_mask & (1<<8)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a8\":";
+		s << item.a8;
+	}
+	if ((item.fields_mask & (1<<9)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a9\":";
+		s << item.a9;
+	}
+	if ((item.fields_mask & (1<<10)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a10\":";
+		s << item.a10;
+	}
+	if ((item.fields_mask & (1<<11)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a11\":";
+		s << item.a11;
+	}
+	if ((item.fields_mask & (1<<12)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a12\":";
+		s << item.a12;
+	}
+	if ((item.fields_mask & (1<<13)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a13\":";
+		s << item.a13;
+	}
+	if ((item.fields_mask & (1<<14)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a14\":";
+		s << item.a14;
+	}
+	if ((item.fields_mask & (1<<15)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a15\":";
+		s << item.a15;
+	}
+	if ((item.fields_mask & (1<<16)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a16\":";
+		s << item.a16;
+	}
+	if ((item.fields_mask & (1<<17)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a17\":";
+		s << item.a17;
+	}
+	if ((item.fields_mask & (1<<18)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a18\":";
+		s << item.a18;
+	}
+	if ((item.fields_mask & (1<<19)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a19\":";
+		s << item.a19;
+	}
+	if ((item.fields_mask & (1<<20)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a20\":";
+		s << item.a20;
+	}
+	if ((item.fields_mask & (1<<21)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a21\":";
+		s << item.a21;
+	}
+	if ((item.fields_mask & (1<<22)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a22\":";
+		s << item.a22;
+	}
+	if ((item.fields_mask & (1<<23)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a23\":";
+		s << item.a23;
+	}
+	if ((item.fields_mask & (1<<24)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a24\":";
+		s << item.a24;
+	}
+	if ((item.fields_mask & (1<<25)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a25\":";
+		s << item.a25;
+	}
+	if ((item.fields_mask & (1<<26)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a26\":";
+		s << item.a26;
+	}
+	if ((item.fields_mask & (1<<27)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a27\":";
+		s << item.a27;
+	}
+	if ((item.fields_mask & (1<<28)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a28\":";
+		s << item.a28;
+	}
+	if ((item.fields_mask & (1<<29)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a29\":";
+		s << item.a29;
+	}
+	if ((item.fields_mask & (1<<30)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a30\":";
+		s << item.a30;
+	}
+	if ((item.fields_mask & (1<<31)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"a31\":";
+		s << item.a31;
+	}
+	s << "}";
+	return true;
+}
+
+bool tl2::details::TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item) {
+	if (!s.nat_read(item.fields_mask)) { return false; }
+	if ((item.fields_mask & (1<<0)) != 0) {
+		if (!s.int_read(item.a0)) { return false; }
+	} else {
+			item.a0 = 0;
+	}
+	if ((item.fields_mask & (1<<1)) != 0) {
+		if (!s.int_read(item.a1)) { return false; }
+	} else {
+			item.a1 = 0;
+	}
+	if ((item.fields_mask & (1<<2)) != 0) {
+		if (!s.int_read(item.a2)) { return false; }
+	} else {
+			item.a2 = 0;
+	}
+	if ((item.fields_mask & (1<<3)) != 0) {
+		if (!s.int_read(item.a3)) { return false; }
+	} else {
+			item.a3 = 0;
+	}
+	if ((item.fields_mask & (1<<4)) != 0) {
+		if (!s.int_read(item.a4)) { return false; }
+	} else {
+			item.a4 = 0;
+	}
+	if ((item.fields_mask & (1<<5)) != 0) {
+		if (!s.int_read(item.a5)) { return false; }
+	} else {
+			item.a5 = 0;
+	}
+	if ((item.fields_mask & (1<<6)) != 0) {
+		if (!s.int_read(item.a6)) { return false; }
+	} else {
+			item.a6 = 0;
+	}
+	if ((item.fields_mask & (1<<7)) != 0) {
+		if (!s.int_read(item.a7)) { return false; }
+	} else {
+			item.a7 = 0;
+	}
+	if ((item.fields_mask & (1<<8)) != 0) {
+		if (!s.int_read(item.a8)) { return false; }
+	} else {
+			item.a8 = 0;
+	}
+	if ((item.fields_mask & (1<<9)) != 0) {
+		if (!s.int_read(item.a9)) { return false; }
+	} else {
+			item.a9 = 0;
+	}
+	if ((item.fields_mask & (1<<10)) != 0) {
+		if (!s.int_read(item.a10)) { return false; }
+	} else {
+			item.a10 = 0;
+	}
+	if ((item.fields_mask & (1<<11)) != 0) {
+		if (!s.int_read(item.a11)) { return false; }
+	} else {
+			item.a11 = 0;
+	}
+	if ((item.fields_mask & (1<<12)) != 0) {
+		if (!s.int_read(item.a12)) { return false; }
+	} else {
+			item.a12 = 0;
+	}
+	if ((item.fields_mask & (1<<13)) != 0) {
+		if (!s.int_read(item.a13)) { return false; }
+	} else {
+			item.a13 = 0;
+	}
+	if ((item.fields_mask & (1<<14)) != 0) {
+		if (!s.int_read(item.a14)) { return false; }
+	} else {
+			item.a14 = 0;
+	}
+	if ((item.fields_mask & (1<<15)) != 0) {
+		if (!s.int_read(item.a15)) { return false; }
+	} else {
+			item.a15 = 0;
+	}
+	if ((item.fields_mask & (1<<16)) != 0) {
+		if (!s.int_read(item.a16)) { return false; }
+	} else {
+			item.a16 = 0;
+	}
+	if ((item.fields_mask & (1<<17)) != 0) {
+		if (!s.int_read(item.a17)) { return false; }
+	} else {
+			item.a17 = 0;
+	}
+	if ((item.fields_mask & (1<<18)) != 0) {
+		if (!s.int_read(item.a18)) { return false; }
+	} else {
+			item.a18 = 0;
+	}
+	if ((item.fields_mask & (1<<19)) != 0) {
+		if (!s.int_read(item.a19)) { return false; }
+	} else {
+			item.a19 = 0;
+	}
+	if ((item.fields_mask & (1<<20)) != 0) {
+		if (!s.int_read(item.a20)) { return false; }
+	} else {
+			item.a20 = 0;
+	}
+	if ((item.fields_mask & (1<<21)) != 0) {
+		if (!s.int_read(item.a21)) { return false; }
+	} else {
+			item.a21 = 0;
+	}
+	if ((item.fields_mask & (1<<22)) != 0) {
+		if (!s.int_read(item.a22)) { return false; }
+	} else {
+			item.a22 = 0;
+	}
+	if ((item.fields_mask & (1<<23)) != 0) {
+		if (!s.int_read(item.a23)) { return false; }
+	} else {
+			item.a23 = 0;
+	}
+	if ((item.fields_mask & (1<<24)) != 0) {
+		if (!s.int_read(item.a24)) { return false; }
+	} else {
+			item.a24 = 0;
+	}
+	if ((item.fields_mask & (1<<25)) != 0) {
+		if (!s.int_read(item.a25)) { return false; }
+	} else {
+			item.a25 = 0;
+	}
+	if ((item.fields_mask & (1<<26)) != 0) {
+		if (!s.int_read(item.a26)) { return false; }
+	} else {
+			item.a26 = 0;
+	}
+	if ((item.fields_mask & (1<<27)) != 0) {
+		if (!s.int_read(item.a27)) { return false; }
+	} else {
+			item.a27 = 0;
+	}
+	if ((item.fields_mask & (1<<28)) != 0) {
+		if (!s.int_read(item.a28)) { return false; }
+	} else {
+			item.a28 = 0;
+	}
+	if ((item.fields_mask & (1<<29)) != 0) {
+		if (!s.int_read(item.a29)) { return false; }
+	} else {
+			item.a29 = 0;
+	}
+	if ((item.fields_mask & (1<<30)) != 0) {
+		if (!s.int_read(item.a30)) { return false; }
+	} else {
+			item.a30 = 0;
+	}
+	if ((item.fields_mask & (1<<31)) != 0) {
+		if (!s.int_read(item.a31)) { return false; }
+	} else {
+			item.a31 = 0;
+	}
+	return true;
+}
+
+bool tl2::details::TasksFullFilledCronWrite(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item) {
+	if (!s.nat_write(item.fields_mask)) { return false;}
+	if ((item.fields_mask & (1<<0)) != 0) {
+			if (!s.int_write(item.a0)) { return false;}
+	}
+	if ((item.fields_mask & (1<<1)) != 0) {
+			if (!s.int_write(item.a1)) { return false;}
+	}
+	if ((item.fields_mask & (1<<2)) != 0) {
+			if (!s.int_write(item.a2)) { return false;}
+	}
+	if ((item.fields_mask & (1<<3)) != 0) {
+			if (!s.int_write(item.a3)) { return false;}
+	}
+	if ((item.fields_mask & (1<<4)) != 0) {
+			if (!s.int_write(item.a4)) { return false;}
+	}
+	if ((item.fields_mask & (1<<5)) != 0) {
+			if (!s.int_write(item.a5)) { return false;}
+	}
+	if ((item.fields_mask & (1<<6)) != 0) {
+			if (!s.int_write(item.a6)) { return false;}
+	}
+	if ((item.fields_mask & (1<<7)) != 0) {
+			if (!s.int_write(item.a7)) { return false;}
+	}
+	if ((item.fields_mask & (1<<8)) != 0) {
+			if (!s.int_write(item.a8)) { return false;}
+	}
+	if ((item.fields_mask & (1<<9)) != 0) {
+			if (!s.int_write(item.a9)) { return false;}
+	}
+	if ((item.fields_mask & (1<<10)) != 0) {
+			if (!s.int_write(item.a10)) { return false;}
+	}
+	if ((item.fields_mask & (1<<11)) != 0) {
+			if (!s.int_write(item.a11)) { return false;}
+	}
+	if ((item.fields_mask & (1<<12)) != 0) {
+			if (!s.int_write(item.a12)) { return false;}
+	}
+	if ((item.fields_mask & (1<<13)) != 0) {
+			if (!s.int_write(item.a13)) { return false;}
+	}
+	if ((item.fields_mask & (1<<14)) != 0) {
+			if (!s.int_write(item.a14)) { return false;}
+	}
+	if ((item.fields_mask & (1<<15)) != 0) {
+			if (!s.int_write(item.a15)) { return false;}
+	}
+	if ((item.fields_mask & (1<<16)) != 0) {
+			if (!s.int_write(item.a16)) { return false;}
+	}
+	if ((item.fields_mask & (1<<17)) != 0) {
+			if (!s.int_write(item.a17)) { return false;}
+	}
+	if ((item.fields_mask & (1<<18)) != 0) {
+			if (!s.int_write(item.a18)) { return false;}
+	}
+	if ((item.fields_mask & (1<<19)) != 0) {
+			if (!s.int_write(item.a19)) { return false;}
+	}
+	if ((item.fields_mask & (1<<20)) != 0) {
+			if (!s.int_write(item.a20)) { return false;}
+	}
+	if ((item.fields_mask & (1<<21)) != 0) {
+			if (!s.int_write(item.a21)) { return false;}
+	}
+	if ((item.fields_mask & (1<<22)) != 0) {
+			if (!s.int_write(item.a22)) { return false;}
+	}
+	if ((item.fields_mask & (1<<23)) != 0) {
+			if (!s.int_write(item.a23)) { return false;}
+	}
+	if ((item.fields_mask & (1<<24)) != 0) {
+			if (!s.int_write(item.a24)) { return false;}
+	}
+	if ((item.fields_mask & (1<<25)) != 0) {
+			if (!s.int_write(item.a25)) { return false;}
+	}
+	if ((item.fields_mask & (1<<26)) != 0) {
+			if (!s.int_write(item.a26)) { return false;}
+	}
+	if ((item.fields_mask & (1<<27)) != 0) {
+			if (!s.int_write(item.a27)) { return false;}
+	}
+	if ((item.fields_mask & (1<<28)) != 0) {
+			if (!s.int_write(item.a28)) { return false;}
+	}
+	if ((item.fields_mask & (1<<29)) != 0) {
+			if (!s.int_write(item.a29)) { return false;}
+	}
+	if ((item.fields_mask & (1<<30)) != 0) {
+			if (!s.int_write(item.a30)) { return false;}
+	}
+	if ((item.fields_mask & (1<<31)) != 0) {
+			if (!s.int_write(item.a31)) { return false;}
+	}
+	return true;
+}
+
+bool tl2::details::TasksFullFilledCronReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item) {
+	if (!s.nat_read_exact_tag(0xd4177d7e)) { return false; }
+	return tl2::details::TasksFullFilledCronRead(s, item);
+}
+
+bool tl2::details::TasksFullFilledCronWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item) {
+	if (!s.nat_write(0xd4177d7e)) { return false; }
+	return tl2::details::TasksFullFilledCronWrite(s, item);
+}
+
 bool tl2::tasks::GetAnyTask::write_json(std::ostream& s)const {
 	if (!::tl2::details::TasksGetAnyTaskWriteJSON(s, *this)) { return false; }
 	return true;
@@ -585,6 +1191,7 @@ void tl2::details::TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) {
 	item.type_name.clear();
 	item.queue_id.clear();
 	item.fields_mask = 0;
+	item.local_dep = 0;
 }
 
 bool tl2::details::TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item) {
@@ -611,6 +1218,14 @@ bool tl2::details::TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::task
 		s << "\"fields_mask\":";
 		s << item.fields_mask;
 	}
+	if ((item.fields_mask & (1<<4)) != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"local_dep\":";
+		s << item.local_dep;
+	}
 	s << "}";
 	return true;
 }
@@ -619,6 +1234,11 @@ bool tl2::details::TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks
 	if (!s.string_read(item.type_name)) { return false; }
 	if (!::tl2::details::BuiltinVectorIntRead(s, item.queue_id)) { return false; }
 	if (!s.nat_read(item.fields_mask)) { return false; }
+	if ((item.fields_mask & (1<<4)) != 0) {
+		if (!s.int_read(item.local_dep)) { return false; }
+	} else {
+			item.local_dep = 0;
+	}
 	return true;
 }
 
@@ -626,16 +1246,19 @@ bool tl2::details::TasksGetQueueSizeWrite(::basictl::tl_ostream & s, const ::tl2
 	if (!s.string_write(item.type_name)) { return false;}
 	if (!::tl2::details::BuiltinVectorIntWrite(s, item.queue_id)) { return false; }
 	if (!s.nat_write(item.fields_mask)) { return false;}
+	if ((item.fields_mask & (1<<4)) != 0) {
+			if (!s.int_write(item.local_dep)) { return false;}
+	}
 	return true;
 }
 
 bool tl2::details::TasksGetQueueSizeReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item) {
-	if (!s.nat_read_exact_tag(0xd8fcda03)) { return false; }
+	if (!s.nat_read_exact_tag(0x6abbb057)) { return false; }
 	return tl2::details::TasksGetQueueSizeRead(s, item);
 }
 
 bool tl2::details::TasksGetQueueSizeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item) {
-	if (!s.nat_write(0xd8fcda03)) { return false; }
+	if (!s.nat_write(0x6abbb057)) { return false; }
 	return tl2::details::TasksGetQueueSizeWrite(s, item);
 }
 

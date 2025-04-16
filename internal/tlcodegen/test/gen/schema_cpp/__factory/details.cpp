@@ -16,6 +16,7 @@
 #include "../tasks/functions/tasks.getQueueTypes.hpp"
 #include "../tasks/functions/tasks.getQueueSize.hpp"
 #include "../tasks/functions/tasks.getAnyTask.hpp"
+#include "../tasks/types/tasks.fullFilledCron.hpp"
 #include "../tasks/types/tasks.cronTaskWithId.hpp"
 #include "../tasks/types/tasks.cronTask.hpp"
 #include "../tasks/types/tasks.cronTime.hpp"
@@ -2868,6 +2869,22 @@ void tl2::factory::set_all_factories() {
     };
 	tl2::meta::set_create_object_by_name("tasks.cronTime", []() -> std::unique_ptr<tl2::meta::tl_object> {
         return std::make_unique<tl2_tasks_CronTime_tl_object>();
+	});
+
+	struct tl2_tasks_FullFilledCron_tl_object : public tl2::meta::tl_object {
+        tl2::tasks::FullFilledCron object;
+
+        bool read(basictl::tl_istream &s) override {return object.read(s);}
+        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+        
+		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
+        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    };
+	tl2::meta::set_create_object_by_name("tasks.fullFilledCron", []() -> std::unique_ptr<tl2::meta::tl_object> {
+        return std::make_unique<tl2_tasks_FullFilledCron_tl_object>();
 	});
 
 	struct tl2_tasks_GetAnyTask_tl_function : public tl2::meta::tl_function {
