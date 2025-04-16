@@ -131,7 +131,7 @@ func (item *{%s= goName %}) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 }
     {%- if len(maybe.wr.NatParams) == 0 -%}
 
-func (item *{%s= goName %}) String({%s= formatNatArgsDeclNoComma(maybe.wr.NatParams) %}) string {
+func (item {%s= goName %}) String({%s= formatNatArgsDeclNoComma(maybe.wr.NatParams) %}) string {
     {%- if writeElementNeedsError -%}
     w, err := item.WriteJSON(nil{%s= natArgsCall %})
     if err != nil {

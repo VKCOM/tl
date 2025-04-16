@@ -79,7 +79,7 @@ func (item *Service3Limits) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Service3Limits) String() string {
+func (item Service3Limits) String() string {
 	return string(item.WriteJSON(nil))
 }
 

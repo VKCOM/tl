@@ -183,7 +183,7 @@ func (item *CasesTestUnion) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	}
 }
 
-func (item *CasesTestUnion) String() string {
+func (item CasesTestUnion) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -250,7 +250,7 @@ func (item *CasesTestUnion1) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesTestUnion1) String() string {
+func (item CasesTestUnion1) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -373,7 +373,7 @@ func (item *CasesTestUnion2) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesTestUnion2) String() string {
+func (item CasesTestUnion2) String() string {
 	return string(item.WriteJSON(nil))
 }
 

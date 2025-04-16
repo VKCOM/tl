@@ -68,7 +68,7 @@ func (item *PairIntLong) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *PairIntLong) String() string {
+func (item PairIntLong) String() string {
 	return string(item.WriteJSON(nil))
 }
 

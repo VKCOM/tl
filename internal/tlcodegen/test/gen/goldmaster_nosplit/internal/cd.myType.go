@@ -59,7 +59,7 @@ func (item *CdMyType) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CdMyType) String() string {
+func (item CdMyType) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -207,6 +207,6 @@ func (item *CdMyTypeMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte)
 	return append(w, '}')
 }
 
-func (item *CdMyTypeMaybe) String() string {
+func (item CdMyTypeMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

@@ -111,7 +111,7 @@ func (item *Service1GetKeysStat) ReadResultJSONWriteResult(r []byte, w []byte) (
 	return r, w, err
 }
 
-func (item *Service1GetKeysStat) String() string {
+func (item Service1GetKeysStat) String() string {
 	return string(item.WriteJSON(nil))
 }
 

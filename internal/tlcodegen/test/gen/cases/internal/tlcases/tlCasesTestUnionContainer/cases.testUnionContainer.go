@@ -62,7 +62,7 @@ func (item *CasesTestUnionContainer) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesTestUnionContainer) String() string {
+func (item CasesTestUnionContainer) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -130,7 +130,7 @@ func (item *Service5InsertList) ReadResultJSONWriteResult(r []byte, w []byte) ([
 	return r, w, err
 }
 
-func (item *Service5InsertList) String() string {
+func (item Service5InsertList) String() string {
 	return string(item.WriteJSON(nil))
 }
 

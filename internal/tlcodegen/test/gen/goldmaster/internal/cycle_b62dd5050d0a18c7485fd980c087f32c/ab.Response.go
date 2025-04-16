@@ -68,7 +68,7 @@ func (item *AbAlias) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AbAlias) String() string {
+func (item AbAlias) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -157,7 +157,7 @@ func (item *AbCode) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AbCode) String() string {
+func (item AbCode) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -272,7 +272,7 @@ func (item *AbEmpty) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AbEmpty) String() string {
+func (item AbEmpty) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -566,7 +566,7 @@ func (item *AbResponse) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []
 	}
 }
 
-func (item *AbResponse) String() string {
+func (item AbResponse) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -823,7 +823,7 @@ func (item *AbResponseBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byt
 	}
 }
 
-func (item *AbResponseBytes) String() string {
+func (item AbResponseBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -897,7 +897,7 @@ func (item *CdResponse) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CdResponse) String() string {
+func (item CdResponse) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1046,7 +1046,7 @@ func (item *CdResponseBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CdResponseBytes) String() string {
+func (item CdResponseBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

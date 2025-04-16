@@ -58,7 +58,7 @@ func (item *MyDictOfInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyDictOfInt) String() string {
+func (item MyDictOfInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 

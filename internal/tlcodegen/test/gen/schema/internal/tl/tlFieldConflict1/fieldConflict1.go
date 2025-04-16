@@ -63,7 +63,7 @@ func (item *FieldConflict1) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *FieldConflict1) String() string {
+func (item FieldConflict1) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -122,7 +122,7 @@ func (item *TasksGetQueueTypes) ReadResultJSONWriteResult(r []byte, w []byte) ([
 	return r, w, err
 }
 
-func (item *TasksGetQueueTypes) String() string {
+func (item TasksGetQueueTypes) String() string {
 	return string(item.WriteJSON(nil))
 }
 

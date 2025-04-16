@@ -112,7 +112,7 @@ func (item *AbCall11) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []b
 	return r, w, err
 }
 
-func (item *AbCall11) String() string {
+func (item AbCall11) String() string {
 	return string(item.WriteJSON(nil))
 }
 

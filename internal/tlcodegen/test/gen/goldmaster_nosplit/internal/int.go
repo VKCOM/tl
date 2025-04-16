@@ -831,7 +831,7 @@ func (item *Int) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Int) String() string {
+func (item Int) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -951,7 +951,7 @@ func (item *IntBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte)
 	return append(w, '}')
 }
 
-func (item *IntBoxedMaybe) String() string {
+func (item IntBoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1034,6 +1034,6 @@ func (item *IntMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []by
 	return append(w, '}')
 }
 
-func (item *IntMaybe) String() string {
+func (item IntMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

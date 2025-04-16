@@ -163,7 +163,7 @@ func (item *CasesTestRecursiveFieldmask) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesTestRecursiveFieldmask) String() string {
+func (item CasesTestRecursiveFieldmask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -133,7 +133,7 @@ func (item *Service5LongInsert) ReadResultJSONWriteResult(r []byte, w []byte) ([
 	return r, w, err
 }
 
-func (item *Service5LongInsert) String() string {
+func (item Service5LongInsert) String() string {
 	return string(item.WriteJSON(nil))
 }
 

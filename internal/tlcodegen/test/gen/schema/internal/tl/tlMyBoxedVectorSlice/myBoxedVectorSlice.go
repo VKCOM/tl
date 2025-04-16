@@ -62,7 +62,7 @@ func (item *MyBoxedVectorSlice) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyBoxedVectorSlice) String() string {
+func (item MyBoxedVectorSlice) String() string {
 	return string(item.WriteJSON(nil))
 }
 

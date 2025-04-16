@@ -135,7 +135,7 @@ func (item *RpcInvokeReqExtra) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *RpcInvokeReqExtra) String() string {
+func (item RpcInvokeReqExtra) String() string {
 	return string(item.WriteJSON(nil))
 }
 

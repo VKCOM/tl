@@ -60,7 +60,7 @@ func (item *MyInt64) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyInt64) String() string {
+func (item MyInt64) String() string {
 	return string(item.WriteJSON(nil))
 }
 

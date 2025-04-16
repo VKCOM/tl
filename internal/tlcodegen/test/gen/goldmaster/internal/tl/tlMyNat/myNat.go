@@ -118,7 +118,7 @@ func (item *MyNat) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyNat) String() string {
+func (item MyNat) String() string {
 	return string(item.WriteJSON(nil))
 }
 

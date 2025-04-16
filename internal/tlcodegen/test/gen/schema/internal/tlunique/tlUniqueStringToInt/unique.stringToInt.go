@@ -114,7 +114,7 @@ func (item *UniqueStringToInt) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
-func (item *UniqueStringToInt) String() string {
+func (item UniqueStringToInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 

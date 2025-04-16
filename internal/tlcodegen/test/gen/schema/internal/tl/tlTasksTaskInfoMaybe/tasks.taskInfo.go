@@ -85,6 +85,6 @@ func (item *TasksTaskInfoMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []
 	return append(w, '}')
 }
 
-func (item *TasksTaskInfoMaybe) String() string {
+func (item TasksTaskInfoMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

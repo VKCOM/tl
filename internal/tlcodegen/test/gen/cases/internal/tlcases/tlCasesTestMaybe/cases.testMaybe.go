@@ -62,7 +62,7 @@ func (item *CasesTestMaybe) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *CasesTestMaybe) String() string {
+func (item CasesTestMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 

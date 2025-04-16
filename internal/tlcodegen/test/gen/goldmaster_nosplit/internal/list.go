@@ -143,7 +143,7 @@ func (item *ListService5Output) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *ListService5Output) String() string {
+func (item ListService5Output) String() string {
 	return string(item.WriteJSON(nil))
 }
 

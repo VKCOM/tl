@@ -131,7 +131,7 @@ func (item TasksTaskStatus) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	return append(w, '"')
 }
 
-func (item *TasksTaskStatus) String() string {
+func (item TasksTaskStatus) String() string {
 	return string(item.WriteJSON(nil))
 }
 

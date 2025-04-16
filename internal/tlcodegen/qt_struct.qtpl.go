@@ -201,7 +201,7 @@ func (item *`)
 `)
 	if len(struct_.wr.NatParams) == 0 {
 		qw422016.N().S(`
-func (item *`)
+func (item `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) String(`)
 		qw422016.N().S(formatNatArgsDeclNoComma(struct_.wr.NatParams))

@@ -190,7 +190,7 @@ func (item *BenchmarksVruPosition) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *BenchmarksVruPosition) String() string {
+func (item BenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -111,7 +111,7 @@ func (item *AntispamGetPattern) ReadResultJSONWriteResult(r []byte, w []byte) ([
 	return r, w, err
 }
 
-func (item *AntispamGetPattern) String() string {
+func (item AntispamGetPattern) String() string {
 	return string(item.WriteJSON(nil))
 }
 

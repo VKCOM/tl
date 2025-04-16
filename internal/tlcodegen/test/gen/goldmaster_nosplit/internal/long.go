@@ -143,7 +143,7 @@ func (item *Long) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Long) String() string {
+func (item Long) String() string {
 	return string(item.WriteJSON(nil))
 }
 

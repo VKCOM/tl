@@ -60,7 +60,7 @@ func (item *VectorAColor) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorAColor) String() string {
+func (item VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -144,7 +144,7 @@ func (item *VectorCyc1MyCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorCyc1MyCycle) String() string {
+func (item VectorCyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -228,7 +228,7 @@ func (item *VectorDictionaryFieldString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorDictionaryFieldString) String() string {
+func (item VectorDictionaryFieldString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -312,7 +312,7 @@ func (item *VectorDictionaryFieldStringBytes) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorDictionaryFieldStringBytes) String() string {
+func (item VectorDictionaryFieldStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -466,7 +466,7 @@ func (item *VectorInt) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorInt) String() string {
+func (item VectorInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -586,7 +586,7 @@ func (item *VectorIntBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w [
 	return append(w, '}')
 }
 
-func (item *VectorIntBoxedMaybe) String() string {
+func (item VectorIntBoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -669,6 +669,6 @@ func (item *VectorIntMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	return append(w, '}')
 }
 
-func (item *VectorIntMaybe) String() string {
+func (item VectorIntMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

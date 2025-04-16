@@ -94,6 +94,6 @@ func (item *IntMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []by
 	return append(w, '}')
 }
 
-func (item *IntMaybe) String() string {
+func (item IntMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

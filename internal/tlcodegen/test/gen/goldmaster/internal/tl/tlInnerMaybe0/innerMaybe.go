@@ -62,7 +62,7 @@ func (item *InnerMaybe0) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *InnerMaybe0) String() string {
+func (item InnerMaybe0) String() string {
 	return string(item.WriteJSON(nil))
 }
 

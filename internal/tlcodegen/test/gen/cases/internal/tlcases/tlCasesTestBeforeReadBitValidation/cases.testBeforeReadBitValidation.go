@@ -132,7 +132,7 @@ func (item *CasesTestBeforeReadBitValidation) WriteBoxed(w []byte) (_ []byte, er
 	return item.Write(w)
 }
 
-func (item *CasesTestBeforeReadBitValidation) String() string {
+func (item CasesTestBeforeReadBitValidation) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

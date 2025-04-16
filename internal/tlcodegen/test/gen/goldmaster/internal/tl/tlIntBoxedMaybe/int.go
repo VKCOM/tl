@@ -98,6 +98,6 @@ func (item *IntBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte)
 	return append(w, '}')
 }
 
-func (item *IntBoxedMaybe) String() string {
+func (item IntBoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

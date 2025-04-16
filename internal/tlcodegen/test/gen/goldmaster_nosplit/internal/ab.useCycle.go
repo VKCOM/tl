@@ -66,7 +66,7 @@ func (item *AbUseCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AbUseCycle) String() string {
+func (item AbUseCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -804,7 +804,7 @@ func (item `)
 
 `)
 	if len(union.wr.NatParams) == 0 {
-		qw422016.N().S(`func (item *`)
+		qw422016.N().S(`func (item `)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) String(`)
 		qw422016.N().S(formatNatArgsDeclNoComma(union.wr.NatParams))

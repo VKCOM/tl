@@ -111,7 +111,7 @@ func (item *Service1GetExpireTime) ReadResultJSONWriteResult(r []byte, w []byte)
 	return r, w, err
 }
 
-func (item *Service1GetExpireTime) String() string {
+func (item Service1GetExpireTime) String() string {
 	return string(item.WriteJSON(nil))
 }
 

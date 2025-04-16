@@ -93,6 +93,6 @@ func (item *AbMyTypeMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte)
 	return append(w, '}')
 }
 
-func (item *AbMyTypeMaybe) String() string {
+func (item AbMyTypeMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

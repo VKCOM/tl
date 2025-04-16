@@ -87,7 +87,7 @@ func (item *AntispamPatternFound) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AntispamPatternFound) String() string {
+func (item AntispamPatternFound) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -370,7 +370,7 @@ func (item *AntispamPatternFull) WriteJSONOpt(newTypeNames bool, short bool, w [
 	}
 }
 
-func (item *AntispamPatternFull) String() string {
+func (item AntispamPatternFull) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -427,7 +427,7 @@ func (item *AntispamPatternNotFound) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AntispamPatternNotFound) String() string {
+func (item AntispamPatternNotFound) String() string {
 	return string(item.WriteJSON(nil))
 }
 

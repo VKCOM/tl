@@ -70,7 +70,7 @@ func (item *NonOptNat) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item *NonOptNat) String() string {
+func (item NonOptNat) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

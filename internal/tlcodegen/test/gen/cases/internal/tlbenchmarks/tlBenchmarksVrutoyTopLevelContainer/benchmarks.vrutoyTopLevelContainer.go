@@ -62,7 +62,7 @@ func (item *BenchmarksVrutoyTopLevelContainer) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *BenchmarksVrutoyTopLevelContainer) String() string {
+func (item BenchmarksVrutoyTopLevelContainer) String() string {
 	return string(item.WriteJSON(nil))
 }
 

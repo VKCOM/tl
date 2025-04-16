@@ -129,7 +129,7 @@ func (item *Service3DeleteAllProducts) ReadResultJSONWriteResult(r []byte, w []b
 	return r, w, err
 }
 
-func (item *Service3DeleteAllProducts) String() string {
+func (item Service3DeleteAllProducts) String() string {
 	return string(item.WriteJSON(nil))
 }
 

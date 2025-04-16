@@ -117,7 +117,7 @@ func (item *Service6MultiFindWithBounds) ReadResultJSONWriteResult(r []byte, w [
 	return r, w, err
 }
 
-func (item *Service6MultiFindWithBounds) String() string {
+func (item Service6MultiFindWithBounds) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -157,7 +157,7 @@ func (item *TreeStatsObjectLimitValue) WriteJSONOpt(newTypeNames bool, short boo
 	}
 }
 
-func (item *TreeStatsObjectLimitValue) String() string {
+func (item TreeStatsObjectLimitValue) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -220,7 +220,7 @@ func (item *TreeStatsObjectLimitValueDouble) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TreeStatsObjectLimitValueDouble) String() string {
+func (item TreeStatsObjectLimitValueDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -299,7 +299,7 @@ func (item *TreeStatsObjectLimitValueLong) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TreeStatsObjectLimitValueLong) String() string {
+func (item TreeStatsObjectLimitValueLong) String() string {
 	return string(item.WriteJSON(nil))
 }
 

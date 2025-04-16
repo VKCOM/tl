@@ -85,6 +85,6 @@ func (item *MyTuple10Maybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	return append(w, '}')
 }
 
-func (item *MyTuple10Maybe) String() string {
+func (item MyTuple10Maybe) String() string {
 	return string(item.WriteJSON(nil))
 }

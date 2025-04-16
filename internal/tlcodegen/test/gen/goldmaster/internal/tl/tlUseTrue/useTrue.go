@@ -138,7 +138,7 @@ func (item *UseTrue) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *UseTrue) String() string {
+func (item UseTrue) String() string {
 	return string(item.WriteJSON(nil))
 }
 

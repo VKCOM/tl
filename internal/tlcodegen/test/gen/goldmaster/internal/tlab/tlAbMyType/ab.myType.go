@@ -61,7 +61,7 @@ func (item *AbMyType) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *AbMyType) String() string {
+func (item AbMyType) String() string {
 	return string(item.WriteJSON(nil))
 }
 

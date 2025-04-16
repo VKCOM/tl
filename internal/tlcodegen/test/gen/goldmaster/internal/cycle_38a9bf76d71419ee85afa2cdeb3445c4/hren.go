@@ -73,7 +73,7 @@ func (item *Hren) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *Hren) String() string {
+func (item Hren) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -227,6 +227,6 @@ func (item *HrenMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []b
 	return append(w, '}')
 }
 
-func (item *HrenMaybe) String() string {
+func (item HrenMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }

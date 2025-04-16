@@ -58,7 +58,7 @@ func (item *MyAnonMcValue) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *MyAnonMcValue) String() string {
+func (item MyAnonMcValue) String() string {
 	return string(item.WriteJSON(nil))
 }
 

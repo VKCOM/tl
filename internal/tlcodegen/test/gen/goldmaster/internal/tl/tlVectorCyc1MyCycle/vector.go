@@ -63,7 +63,7 @@ func (item *VectorCyc1MyCycle) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *VectorCyc1MyCycle) String() string {
+func (item VectorCyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 

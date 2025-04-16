@@ -88,7 +88,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteBoxed(w []byte) (_ [
 	return item.Write(w)
 }
 
-func (item *CasesTestAllPossibleFieldConfigsContainer) String() string {
+func (item CasesTestAllPossibleFieldConfigsContainer) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

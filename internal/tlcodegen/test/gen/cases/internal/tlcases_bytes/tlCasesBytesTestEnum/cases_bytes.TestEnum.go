@@ -130,7 +130,7 @@ func (item CasesBytesTestEnum) WriteJSONOpt(newTypeNames bool, short bool, w []b
 	return append(w, '"')
 }
 
-func (item *CasesBytesTestEnum) String() string {
+func (item CasesBytesTestEnum) String() string {
 	return string(item.WriteJSON(nil))
 }
 

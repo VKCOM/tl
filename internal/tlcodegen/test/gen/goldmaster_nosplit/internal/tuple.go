@@ -132,7 +132,7 @@ func (item *TupleCycleTuple2) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item *TupleCycleTuple2) String() string {
+func (item TupleCycleTuple2) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()
@@ -294,7 +294,7 @@ func (item *TupleInt0) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TupleInt0) String() string {
+func (item TupleInt0) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -408,7 +408,7 @@ func (item *TupleInt0Maybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	return append(w, '}')
 }
 
-func (item *TupleInt0Maybe) String() string {
+func (item TupleInt0Maybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -459,7 +459,7 @@ func (item *TupleInt3) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TupleInt3) String() string {
+func (item TupleInt3) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -577,7 +577,7 @@ func (item *TupleInt3BoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w [
 	return append(w, '}')
 }
 
-func (item *TupleInt3BoxedMaybe) String() string {
+func (item TupleInt3BoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -658,7 +658,7 @@ func (item *TupleInt3Maybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	return append(w, '}')
 }
 
-func (item *TupleInt3Maybe) String() string {
+func (item TupleInt3Maybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -709,7 +709,7 @@ func (item *TupleIntBoxed0) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TupleIntBoxed0) String() string {
+func (item TupleIntBoxed0) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -827,7 +827,7 @@ func (item *TupleIntBoxed0BoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool
 	return append(w, '}')
 }
 
-func (item *TupleIntBoxed0BoxedMaybe) String() string {
+func (item TupleIntBoxed0BoxedMaybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -878,7 +878,7 @@ func (item *TupleIntBoxed3) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item *TupleIntBoxed3) String() string {
+func (item TupleIntBoxed3) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -992,7 +992,7 @@ func (item *TupleIntBoxed3Maybe) WriteJSONOpt(newTypeNames bool, short bool, w [
 	return append(w, '}')
 }
 
-func (item *TupleIntBoxed3Maybe) String() string {
+func (item TupleIntBoxed3Maybe) String() string {
 	return string(item.WriteJSON(nil))
 }
 

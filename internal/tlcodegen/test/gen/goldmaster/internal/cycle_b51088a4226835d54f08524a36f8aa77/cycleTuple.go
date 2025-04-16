@@ -329,7 +329,7 @@ func (item *CycleTuple) WriteBoxed(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
 
-func (item *CycleTuple) String() string {
+func (item CycleTuple) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()
