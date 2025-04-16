@@ -165,7 +165,7 @@ func (item *Service2AddOrIncrMany) ReadResultJSONWriteResult(r []byte, w []byte)
 	return r, w, err
 }
 
-func (item Service2AddOrIncrMany) String() string {
+func (item *Service2AddOrIncrMany) String() string {
 	w, err := item.WriteJSON(nil)
 	if err != nil {
 		return err.Error()

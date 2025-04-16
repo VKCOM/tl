@@ -111,7 +111,7 @@ func (item *Service1DisableExpiration) ReadResultJSONWriteResult(r []byte, w []b
 	return r, w, err
 }
 
-func (item Service1DisableExpiration) String() string {
+func (item *Service1DisableExpiration) String() string {
 	return string(item.WriteJSON(nil))
 }
 

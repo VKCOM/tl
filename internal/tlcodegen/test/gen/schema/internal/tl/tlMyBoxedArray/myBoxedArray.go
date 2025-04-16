@@ -62,7 +62,7 @@ func (item *MyBoxedArray) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item MyBoxedArray) String() string {
+func (item *MyBoxedArray) String() string {
 	return string(item.WriteJSON(nil))
 }
 

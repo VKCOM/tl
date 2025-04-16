@@ -59,7 +59,7 @@ func (item *VectorService6FindWithBoundsResult) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorService6FindWithBoundsResult) String() string {
+func (item *VectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
 

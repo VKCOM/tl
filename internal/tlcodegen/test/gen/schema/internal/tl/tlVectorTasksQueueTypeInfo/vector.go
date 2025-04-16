@@ -59,7 +59,7 @@ func (item *VectorTasksQueueTypeInfo) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorTasksQueueTypeInfo) String() string {
+func (item *VectorTasksQueueTypeInfo) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -63,7 +63,7 @@ func (item *MapStringString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item MapStringString) String() string {
+func (item *MapStringString) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -58,7 +58,7 @@ func (item *VectorDictionaryFieldString) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorDictionaryFieldString) String() string {
+func (item *VectorDictionaryFieldString) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -58,7 +58,7 @@ func (item *VectorIntBoxed) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item VectorIntBoxed) String() string {
+func (item *VectorIntBoxed) String() string {
 	return string(item.WriteJSON(nil))
 }
 

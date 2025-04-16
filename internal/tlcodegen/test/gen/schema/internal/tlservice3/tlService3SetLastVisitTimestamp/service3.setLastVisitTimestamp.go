@@ -117,7 +117,7 @@ func (item *Service3SetLastVisitTimestamp) ReadResultJSONWriteResult(r []byte, w
 	return r, w, err
 }
 
-func (item Service3SetLastVisitTimestamp) String() string {
+func (item *Service3SetLastVisitTimestamp) String() string {
 	return string(item.WriteJSON(nil))
 }
 

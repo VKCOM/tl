@@ -105,7 +105,7 @@ func (item *TasksGetAnyTask) ReadResultJSONWriteResult(r []byte, w []byte) ([]by
 	return r, w, err
 }
 
-func (item TasksGetAnyTask) String() string {
+func (item *TasksGetAnyTask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

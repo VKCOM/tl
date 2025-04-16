@@ -112,7 +112,7 @@ func (item *Service3SetLimits) ReadResultJSONWriteResult(r []byte, w []byte) ([]
 	return r, w, err
 }
 
-func (item Service3SetLimits) String() string {
+func (item *Service3SetLimits) String() string {
 	return string(item.WriteJSON(nil))
 }
 

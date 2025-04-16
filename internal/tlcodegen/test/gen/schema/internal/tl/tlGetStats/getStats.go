@@ -111,7 +111,7 @@ func (item *GetStats) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []b
 	return r, w, err
 }
 
-func (item GetStats) String() string {
+func (item *GetStats) String() string {
 	return string(item.WriteJSON(nil))
 }
 

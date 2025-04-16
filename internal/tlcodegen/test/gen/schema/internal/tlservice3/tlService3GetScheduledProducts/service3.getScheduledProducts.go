@@ -118,7 +118,7 @@ func (item *Service3GetScheduledProducts) ReadResultJSONWriteResult(r []byte, w 
 	return r, w, err
 }
 
-func (item Service3GetScheduledProducts) String() string {
+func (item *Service3GetScheduledProducts) String() string {
 	return string(item.WriteJSON(nil))
 }
 

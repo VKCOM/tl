@@ -111,7 +111,7 @@ func (item *Service1Delete) ReadResultJSONWriteResult(r []byte, w []byte) ([]byt
 	return r, w, err
 }
 
-func (item Service1Delete) String() string {
+func (item *Service1Delete) String() string {
 	return string(item.WriteJSON(nil))
 }
 

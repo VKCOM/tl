@@ -57,7 +57,7 @@ func (item *Service6FindResultRow) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service6FindResultRow) String() string {
+func (item *Service6FindResultRow) String() string {
 	return string(item.WriteJSON(nil))
 }
 

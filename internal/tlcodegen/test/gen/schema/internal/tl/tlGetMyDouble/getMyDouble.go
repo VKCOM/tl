@@ -111,7 +111,7 @@ func (item *GetMyDouble) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, 
 	return r, w, err
 }
 
-func (item GetMyDouble) String() string {
+func (item *GetMyDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
 

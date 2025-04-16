@@ -78,7 +78,7 @@ func (item *TasksCronTask) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item TasksCronTask) String() string {
+func (item *TasksCronTask) String() string {
 	return string(item.WriteJSON(nil))
 }
 

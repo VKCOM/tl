@@ -104,7 +104,7 @@ func (item *Service5Params) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service5Params) String() string {
+func (item *Service5Params) String() string {
 	return string(item.WriteJSON(nil))
 }
 

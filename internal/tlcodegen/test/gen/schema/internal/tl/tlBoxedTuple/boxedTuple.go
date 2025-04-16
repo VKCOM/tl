@@ -119,7 +119,7 @@ func (item *BoxedTuple) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, [
 	return r, w, err
 }
 
-func (item BoxedTuple) String() string {
+func (item *BoxedTuple) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -163,7 +163,7 @@ func (item *Service3GetProducts) SetService3ProductRemoved(value bool) {
 	}
 }
 
-func (item Service3GetProducts) String() string {
+func (item *Service3GetProducts) String() string {
 	return string(item.WriteJSON(nil))
 }
 

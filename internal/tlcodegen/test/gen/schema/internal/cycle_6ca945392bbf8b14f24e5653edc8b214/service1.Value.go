@@ -69,7 +69,7 @@ func (item *Service1Longvalue) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service1Longvalue) String() string {
+func (item *Service1Longvalue) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -219,7 +219,7 @@ func (item *Service1LongvalueWithTime) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service1LongvalueWithTime) String() string {
+func (item *Service1LongvalueWithTime) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -370,7 +370,7 @@ func (item *Service1NotFound) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service1NotFound) String() string {
+func (item *Service1NotFound) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -469,7 +469,7 @@ func (item *Service1Strvalue) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service1Strvalue) String() string {
+func (item *Service1Strvalue) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -619,7 +619,7 @@ func (item *Service1StrvalueWithTime) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service1StrvalueWithTime) String() string {
+func (item *Service1StrvalueWithTime) String() string {
 	return string(item.WriteJSON(nil))
 }
 
@@ -1005,7 +1005,7 @@ func (item *Service1Value) WriteJSONOpt(newTypeNames bool, short bool, w []byte)
 	}
 }
 
-func (item Service1Value) String() string {
+func (item *Service1Value) String() string {
 	return string(item.WriteJSON(nil))
 }
 

@@ -111,7 +111,7 @@ func (item *GetMyDictOfInt) ReadResultJSONWriteResult(r []byte, w []byte) ([]byt
 	return r, w, err
 }
 
-func (item GetMyDictOfInt) String() string {
+func (item *GetMyDictOfInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 

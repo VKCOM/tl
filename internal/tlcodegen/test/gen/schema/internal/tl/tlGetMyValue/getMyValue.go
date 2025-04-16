@@ -111,7 +111,7 @@ func (item *GetMyValue) ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, [
 	return r, w, err
 }
 
-func (item GetMyValue) String() string {
+func (item *GetMyValue) String() string {
 	return string(item.WriteJSON(nil))
 }
 

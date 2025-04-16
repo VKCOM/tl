@@ -63,7 +63,7 @@ func (item *Service3GroupSizeLimit) WriteBoxed(w []byte) []byte {
 	return item.Write(w)
 }
 
-func (item Service3GroupSizeLimit) String() string {
+func (item *Service3GroupSizeLimit) String() string {
 	return string(item.WriteJSON(nil))
 }
 
