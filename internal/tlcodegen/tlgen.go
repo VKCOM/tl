@@ -312,6 +312,8 @@ type Gen2Options struct {
 	PrintDiff         bool
 	ErrorWriter       io.Writer // all Errors and warnings should be redirected to this io.Writer, by default it is os.Stderr
 	SplitInternal     bool
+	AddMetaData       bool
+	AddFactoryData    bool
 
 	// Linter
 	Schema2Compare string
@@ -338,8 +340,6 @@ type Gen2Options struct {
 
 	// PHP
 	AddFunctionBodies            bool
-	AddMetaData                  bool
-	AddFactoryData               bool
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
 	InplaceSimpleStructs         bool

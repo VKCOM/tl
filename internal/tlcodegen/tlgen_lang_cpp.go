@@ -322,11 +322,8 @@ main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 `)
 	cppMake.WriteString("\n")
-	cppMake.WriteString("# compile meta sources such as meta data collection and objects factories\n")
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
-
-	cppMake.WriteString("\n")
 
 	createStreams(gen, &cppMake)
 
@@ -647,6 +644,9 @@ func getCppDiff(base string, target string) string {
 }
 
 func createMeta(gen *Gen2, make *strings.Builder) error {
+	if !gen.options.AddMetaData {
+		return nil
+	}
 	meta := strings.Builder{}
 	metaDetails := strings.Builder{}
 
@@ -797,16 +797,21 @@ tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 		return err
 	}
 
+	make.WriteString("# compile meta data collection\n")
 	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s
 	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c %[2]s
 `,
 		filepathName,
 		filepathDetailsName,
 	))
+	make.WriteString("\n")
 	return nil
 }
 
 func createFactory(gen *Gen2, createdHpps map[string]bool, make *strings.Builder) error {
+	if !gen.options.AddFactoryData {
+		return nil
+	}
 	factory := strings.Builder{}
 	factoryDetails := strings.Builder{}
 
@@ -941,6 +946,7 @@ void tl2::factory::set_all_factories() {
 		return err
 	}
 
+	make.WriteString("# compile objects factories\n")
 	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s
 	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c %[2]s
 `,
@@ -948,6 +954,7 @@ void tl2::factory::set_all_factories() {
 		filepathNameDetails,
 		factoryFileDependencies.String(),
 	))
+	make.WriteString("\n")
 
 	return nil
 }

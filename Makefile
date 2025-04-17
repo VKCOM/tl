@@ -137,8 +137,9 @@ cpp_build:
 
 cpp_template_gen: build
 	@./target/bin/tlgen -language=cpp -v \
+		--cpp-generate-meta=true \
+		--cpp-generate-factory=true \
 		--outdir=./$(GEN_PATH)/$(OUTPUT_PATH) \
-		--basicPkgPath=$(BASIC_TL_PATH) \
 		./$(TLS_PATH)/$(TL_FILE); \
 
 .PHONY: cpp_gen
