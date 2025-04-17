@@ -1,9 +1,11 @@
 #ifndef BASICTL_CPP_IO_THROWABLE_STREAMS_H
 #define BASICTL_CPP_IO_THROWABLE_STREAMS_H
 
+/** TLGEN: CPP INCLUDES */
 #include "dependencies.h"
 #include "constants.h"
 #include "io_connectors.h"
+/** TLGEN: CPP INCLUDES END */
 
 namespace basictl {
     class tl_istream;

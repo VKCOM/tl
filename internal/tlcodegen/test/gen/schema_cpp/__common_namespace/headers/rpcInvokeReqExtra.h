@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../types/rpcInvokeReqExtra.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/rpcInvokeReqExtra.h"
 
 namespace tl2 { namespace details { 
 

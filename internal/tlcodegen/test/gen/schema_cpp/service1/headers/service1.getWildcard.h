@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/service1.getWildcard.h"
-#include "../../__common_namespace/types/map.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service1/functions/service1.getWildcard.h"
+#include "__common_namespace/types/map.h"
 
 namespace tl2 { namespace details { 
 

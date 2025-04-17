@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/boxedTupleSlice2.h"
-#include "../types/myBoxedTupleSlice.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/functions/boxedTupleSlice2.h"
+#include "__common_namespace/types/myBoxedTupleSlice.h"
 
 namespace tl2 { namespace details { 
 

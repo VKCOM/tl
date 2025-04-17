@@ -1,11 +1,11 @@
-#include "headers/vector.h"
-#include "headers/int64.h"
-#include "headers/int32.h"
-#include "headers/dictionaryField.h"
-#include "headers/dictionary.h"
-#include "headers/dictionaryAny.h"
-#include "headers/dictionaryFieldAny.h"
-#include "headers/true.h"
+#include "__common_namespace/headers/vector.h"
+#include "__common_namespace/headers/int64.h"
+#include "__common_namespace/headers/int32.h"
+#include "__common_namespace/headers/dictionaryField.h"
+#include "__common_namespace/headers/dictionary.h"
+#include "__common_namespace/headers/dictionaryAny.h"
+#include "__common_namespace/headers/dictionaryFieldAny.h"
+#include "__common_namespace/headers/true.h"
 
 
 void tl2::details::BuiltinVectorDictionaryFieldAnyDoubleIntReset(std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item) {

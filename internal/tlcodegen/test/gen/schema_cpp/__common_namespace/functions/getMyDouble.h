@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../types/myDouble.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/myDouble.h"
 
 
 namespace tl2 { 

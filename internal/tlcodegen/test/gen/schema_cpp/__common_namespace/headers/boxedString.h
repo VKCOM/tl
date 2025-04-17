@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/boxedString.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/functions/boxedString.h"
 
 namespace tl2 { namespace details { 
 

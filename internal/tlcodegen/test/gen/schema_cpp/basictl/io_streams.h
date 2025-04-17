@@ -2,9 +2,9 @@
 #ifndef BASICTL_CPP_IO_STREAMS_H
 #define BASICTL_CPP_IO_STREAMS_H
 
-#include "dependencies.h"
-#include "constants.h"
-#include "io_connectors.h"
+#include "basictl/dependencies.h"
+#include "basictl/constants.h"
+#include "basictl/io_connectors.h"
 
 namespace basictl {
     class tl_throwable_istream;

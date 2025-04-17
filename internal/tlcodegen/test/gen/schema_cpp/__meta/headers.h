@@ -5,8 +5,8 @@
 #include <string>
 #include <functional>
 
-#include "../basictl/io_streams.h"
-#include "../basictl/io_streams.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_streams.h"
 
 namespace tl2 {
     namespace meta {

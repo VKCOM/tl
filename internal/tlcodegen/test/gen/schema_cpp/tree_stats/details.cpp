@@ -1,6 +1,6 @@
-#include "headers/tree_stats.ObjectLimitValue.h"
-#include "headers/tree_stats.objectLimitValueLong.h"
-#include "headers/tree_stats.objectLimitValueDouble.h"
+#include "tree_stats/headers/tree_stats.ObjectLimitValue.h"
+#include "tree_stats/headers/tree_stats.objectLimitValueLong.h"
+#include "tree_stats/headers/tree_stats.objectLimitValueDouble.h"
 
 
 static const std::string_view TreeStatsObjectLimitValue_tbl_tl_name[]{"tree_stats.objectLimitValueLong", "tree_stats.objectLimitValueDouble"};

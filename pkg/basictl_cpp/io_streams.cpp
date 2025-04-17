@@ -1,5 +1,7 @@
+/** TLGEN: CPP INCLUDES */
 #include "io_streams.h"
 #include "io_throwable_streams.h"
+/** TLGEN: CPP INCLUDES END */
 
 namespace basictl {
     tl_istream::tl_istream(tl_input_connector &provider) : provider(&provider) {}

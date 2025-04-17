@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../../__common_namespace/types/vector.h"
-#include "../types/service3.productStatsOld.h"
-#include "../types/service3.product.h"
-#include "../types/service3.groupSizeLimit.h"
-#include "../types/service3.groupCountLimit.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/vector.h"
+#include "service3/types/service3.productStatsOld.h"
+#include "service3/types/service3.product.h"
+#include "service3/types/service3.groupSizeLimit.h"
+#include "service3/types/service3.groupCountLimit.h"
 
 namespace tl2 { namespace details { 
 

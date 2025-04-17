@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "benchmarks.vruposition.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "benchmarks/types/benchmarks.vruposition.h"
 
 
 namespace tl2 { namespace benchmarks { 

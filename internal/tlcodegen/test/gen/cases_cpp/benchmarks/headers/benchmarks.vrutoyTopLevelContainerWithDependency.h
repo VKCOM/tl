@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../types/benchmarks.vrutoyTopLevelContainerWithDependency.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "benchmarks/types/benchmarks.vrutoyTopLevelContainerWithDependency.h"
 
 namespace tl2 { namespace details { 
 

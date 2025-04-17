@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/unique.stringToInt.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "unique/functions/unique.stringToInt.h"
 
 namespace tl2 { namespace details { 
 

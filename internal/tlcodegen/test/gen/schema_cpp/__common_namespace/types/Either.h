@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "right.h"
-#include "left.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/right.h"
+#include "__common_namespace/types/left.h"
 
 
 namespace tl2 { 

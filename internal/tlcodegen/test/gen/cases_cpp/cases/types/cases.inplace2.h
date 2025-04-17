@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "cases.inplace3.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "cases/types/cases.inplace3.h"
 
 
 namespace tl2 { namespace cases { 

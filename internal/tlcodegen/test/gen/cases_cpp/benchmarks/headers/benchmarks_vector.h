@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../../__common_namespace/types/vector.h"
-#include "../types/benchmarks.vruposition.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/vector.h"
+#include "benchmarks/types/benchmarks.vruposition.h"
 
 namespace tl2 { namespace details { 
 

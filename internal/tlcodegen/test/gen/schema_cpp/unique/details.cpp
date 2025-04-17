@@ -1,6 +1,6 @@
-#include "headers/unique.stringToInt.h"
-#include "headers/unique.get.h"
-#include "../__common_namespace/headers/int.h"
+#include "unique/headers/unique.stringToInt.h"
+#include "unique/headers/unique.get.h"
+#include "__common_namespace/headers/int.h"
 
 
 bool tl2::unique::Get::write_json(std::ostream& s)const {

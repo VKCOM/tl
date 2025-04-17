@@ -2,7 +2,7 @@
 #ifndef BASICTL_CPP_STRING_IO_H
 #define BASICTL_CPP_STRING_IO_H
 
-#include "../io_connectors.h"
+#include "basictl/io_connectors.h"
 
 namespace basictl {
     class tl_istream_string : public tl_input_connector {

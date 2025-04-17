@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/tasks.addTask.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "tasks/functions/tasks.addTask.h"
 
 namespace tl2 { namespace details { 
 

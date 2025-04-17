@@ -3,7 +3,10 @@
 
 #include <variant>
 #include <span>
+
+/** TLGEN: CPP INCLUDES */
 #include "errors.h"
+/** TLGEN: CPP INCLUDES END */
 
 namespace basictl {
     template<typename Type>

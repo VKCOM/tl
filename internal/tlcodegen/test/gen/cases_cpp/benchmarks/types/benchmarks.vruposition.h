@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../__common_namespace/types/true.h"
-#include "benchmarks.vruhash.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/true.h"
+#include "benchmarks/types/benchmarks.vruhash.h"
 
 
 namespace tl2 { namespace benchmarks { 

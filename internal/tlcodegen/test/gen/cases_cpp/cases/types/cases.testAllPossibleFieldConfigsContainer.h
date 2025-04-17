@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "cases.testAllPossibleFieldConfigs.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "cases/types/cases.testAllPossibleFieldConfigs.h"
 
 
 namespace tl2 { namespace cases { 
