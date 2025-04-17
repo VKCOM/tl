@@ -290,7 +290,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
 		if gen.options.SplitInternal {
-			if err := gen.addCodeFile(namespaceFilePath, cppMake1Namespace.String()); err != nil {
+			if err := gen.addCodeFile(namespaceFilePath, gen.copyrightText+cppMake1Namespace.String()); err != nil {
 				return err
 			}
 		}
@@ -438,7 +438,7 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 		} else {
 			code.Write(data)
 		}
-		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), code.String()); err != nil {
+		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), gen.copyrightText+code.String()); err != nil {
 			return err
 		}
 	}
@@ -707,7 +707,7 @@ namespace tl2 {
     }
 }`,
 		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath),
-		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
+		filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
 
 	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
 	metaDetails.WriteString(fmt.Sprintf(`
