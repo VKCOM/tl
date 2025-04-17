@@ -8,9 +8,11 @@ all: main.o __build/io_streams.o __build/io_throwable_streams.o __build/__common
 main.o: main.cpp
 	$(CC) $(CFLAGS) -c main.cpp
 
-# compile meta sources such as meta data collection and objects factories
+# compile meta data collection
 __build/__meta.o: __meta/headers.h __meta/details.cpp
 	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c __meta/details.cpp
+
+# compile objects factories
 __build/__factory.o: __factory/headers.h __factory/details.cpp cases/types/cases.testVector.h cases/types/cases.testUnionContainer.h cases/types/cases.testUnion2.h cases/types/cases.testUnion1.h cases/types/cases.testTuple.h cases/types/cases.testRecursiveFieldMask.h cases/types/cases.testOutFieldMaskContainer.h cases/types/cases.testMaybe.h cases/types/cases.testLocalFieldmask.h cases/types/cases.testInplaceStructArgs2.h cases/types/cases.testInplaceStructArgs.h cases/types/cases.testEnumContainer.h cases/types/cases.testDictString.h cases/types/cases.testDictInt.h cases/types/cases.testDictAny.h cases/types/cases.testBeforeReadBitValidation.h cases/types/cases.testArray.h cases/types/cases.testAllPossibleFieldConfigsContainer.h cases/types/cases.replace7plusplus.h cases/types/cases.replace7plus.h cases/types/cases.replace7.h cases/types/cases.myCycle1.h cases/types/cases.myCycle2.h cases/types/cases.myCycle3.h cases_bytes/types/cases_bytes.testVector.h cases_bytes/types/cases_bytes.testTuple.h cases_bytes/types/cases_bytes.testEnumContainer.h cases/types/cases.TestEnumItems.h cases_bytes/types/cases_bytes.TestEnumItems.h cases_bytes/types/cases_bytes.testDictStringString.h cases_bytes/types/cases_bytes.testDictString.h cases_bytes/types/cases_bytes.testDictInt.h cases_bytes/types/cases_bytes.testDictAny.h cases_bytes/types/cases_bytes.testArray.h benchmarks/types/benchmarks.vrutoyTopLevelContainerWithDependency.h benchmarks/types/benchmarks.vrutoyTopLevelContainer.h benchmarks/types/benchmarks.vrutoytopLevelUnionEmpty.h benchmarks/types/benchmarks.vrutoytopLevelUnionBig.h benchmarks/types/benchmarks.vruposition.h __common_namespace/types/true.h benchmarks/types/benchmarks.vruhash.h
 	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c __factory/details.cpp
 
