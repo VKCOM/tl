@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/service3.restoreGroupedProducts.h"
-#include "../../__common_namespace/types/Bool.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service3/functions/service3.restoreGroupedProducts.h"
+#include "__common_namespace/types/Bool.h"
 
 namespace tl2 { namespace details { 
 

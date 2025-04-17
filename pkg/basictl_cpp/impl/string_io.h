@@ -1,7 +1,9 @@
 #ifndef BASICTL_CPP_STRING_IO_H
 #define BASICTL_CPP_STRING_IO_H
 
+/** TLGEN: CPP INCLUDES */
 #include "../io_connectors.h"
+/** TLGEN: CPP INCLUDES END */
 
 namespace basictl {
     class tl_istream_string : public tl_input_connector {

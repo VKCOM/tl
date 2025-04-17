@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../../__common_namespace/types/tuple.h"
-#include "../types/service2.deltaSet.h"
-#include "../../__common_namespace/types/double.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/tuple.h"
+#include "service2/types/service2.deltaSet.h"
+#include "__common_namespace/types/double.h"
 
 namespace tl2 { namespace details { 
 

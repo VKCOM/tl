@@ -82,6 +82,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// C++
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
 		`c++ root namespace, separated by '::' if more than 1 element`)
+	flag.StringVar(&opt.RootCPP, "cpp-root", "",
+		`c++ root package`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,

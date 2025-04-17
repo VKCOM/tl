@@ -1,17 +1,17 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../types/vector.h"
-#include "../../service6/types/service6.findResultRow.h"
-#include "../../service6/types/service6.error.h"
-#include "../../service1/types/service1.Value.h"
-#include "../types/Either.h"
-#include "../types/string.h"
-#include "../types/dictionaryField.h"
-#include "../types/long.h"
-#include "../types/int.h"
-#include "../types/integer.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/types/vector.h"
+#include "service6/types/service6.findResultRow.h"
+#include "service6/types/service6.error.h"
+#include "service1/types/service1.Value.h"
+#include "__common_namespace/types/Either.h"
+#include "__common_namespace/types/string.h"
+#include "__common_namespace/types/dictionaryField.h"
+#include "__common_namespace/types/long.h"
+#include "__common_namespace/types/int.h"
+#include "__common_namespace/types/integer.h"
 
 namespace tl2 { namespace details { 
 

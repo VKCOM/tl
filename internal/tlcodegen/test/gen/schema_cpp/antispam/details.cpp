@@ -1,7 +1,7 @@
-#include "headers/antispam.PatternFull.h"
-#include "headers/antispam.patternNotFound.h"
-#include "headers/antispam.patternFound.h"
-#include "headers/antispam.getPattern.h"
+#include "antispam/headers/antispam.PatternFull.h"
+#include "antispam/headers/antispam.patternNotFound.h"
+#include "antispam/headers/antispam.patternFound.h"
+#include "antispam/headers/antispam.getPattern.h"
 
 
 bool tl2::antispam::GetPattern::write_json(std::ostream& s)const {

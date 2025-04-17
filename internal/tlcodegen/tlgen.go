@@ -332,6 +332,7 @@ type Gen2Options struct {
 	UseCheckLengthSanity   bool
 
 	// C++
+	RootCPP          string
 	RootCPPNamespace string
 	SeparateFiles    bool
 

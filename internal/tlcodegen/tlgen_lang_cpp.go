@@ -7,6 +7,7 @@
 package tlcodegen
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
@@ -30,11 +31,6 @@ type TypeRWCPPData interface {
 	CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string
 	CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool)
 }
-
-const NoNamespaceGroup = ""
-const CommonGroup = "__common_namespace"
-const IndependentTypes = CommonGroup
-const GhostTypes = "__ghosts"
 
 func cppStartNamespace(s *strings.Builder, ns []string) {
 	for _, n := range ns {
@@ -126,10 +122,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
 		{
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
-			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
@@ -172,11 +169,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 		hppDet.WriteString("#pragma once\n\n")
 
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicCPPTLIOThrowableStreamsPath)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
 
 		if createdHpps[specs[0].fileName] {
-			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
+			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, specs[0].fileName+hppExt)))
 		}
 		includes := hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName })
 		for _, n := range includes {
@@ -186,7 +183,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			if !createdHpps[n] {
 				continue
 			}
-			includePath := getCppDiff(filepathName, n+hppExt)
+			includePath := filepath.Join(gen.options.RootCPP, n+hppExt)
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", includePath))
 		}
 		hppDet.WriteString("\n")
@@ -236,7 +233,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			if !createdDetailsHpps[n] {
 				continue
 			}
-			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
+			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, n+hppExt)))
 		}
 		cppDet.WriteString("\n")
 
@@ -268,7 +265,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		var cppMake1Namespace strings.Builder
 
 		for _, n := range namespaceDeps {
-			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(namespaceFilePath, n+cppExt)))
+			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, n+cppExt)))
 			cppMake1UsedFiles.WriteString(getCppDiff(MakefilePath, n+cppExt))
 
 			usedTypes := detailsCpps[n]
@@ -289,7 +286,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		}
 
 		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
-		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o %s -c %s\n", buildFilePath, namespaceFilePath))
+		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -I. -o %s -c %s\n", buildFilePath, namespaceFilePath))
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
 		if gen.options.SplitInternal {
@@ -369,35 +366,12 @@ main.o: main.cpp
 	// if gen.options.Verbose {
 	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
 	// }
-	{
-		basictlCppFolder := "pkg/basictl_cpp"
-		exportingFiles := []string{
-			"constants.h",
-			"errors.h",
-			"io_connectors.h",
-			"io_streams.cpp",
-			"io_streams.h",
-			"io_throwable_streams.cpp",
-			"io_throwable_streams.h",
-			"impl/string_io.h",
-			"impl/string_io.cpp",
-			"dependencies.h",
-		}
 
-		for _, file := range exportingFiles {
-			data, err := os.ReadFile(filepath.Join(basictlCppFolder, file))
-			if err != nil {
-				return err
-			}
-			code := strings.Builder{}
-			code.Write([]byte(HeaderComment))
-			code.Write([]byte("\n"))
-			code.Write(data)
-			if err := gen.addCodeFile(filepath.Join(basicTLPackage, file), code.String()); err != nil {
-				return err
-			}
-		}
+	err := gen.addCPPBasicTLFiles()
+	if err != nil {
+		return err
 	}
+
 	// if gen.options.Verbose {
 	//	log.Printf("formating generated code...")
 	// }
@@ -413,20 +387,78 @@ main.o: main.cpp
 	return nil
 }
 
+func (gen *Gen2) addCPPBasicTLFiles() error {
+	exportingFiles := []string{
+		"constants.h",
+		"errors.h",
+		"io_connectors.h",
+		"io_streams.cpp",
+		"io_streams.h",
+		"io_throwable_streams.cpp",
+		"io_throwable_streams.h",
+		"impl/string_io.h",
+		"impl/string_io.cpp",
+		"dependencies.h",
+	}
+
+	for _, file := range exportingFiles {
+		data, err := os.ReadFile(filepath.Join(basictlCppFolder, file))
+		if err != nil {
+			return err
+		}
+		code := strings.Builder{}
+		code.Write([]byte(HeaderComment))
+		code.Write([]byte("\n"))
+
+		includesStart := bytes.Index(data, []byte(basictlCppIncludeStart))
+		includesEnd := bytes.Index(data, []byte(basictlCppIncludeEnd))
+
+		if includesStart != -1 && includesEnd == -1 {
+			return fmt.Errorf("can't locate include block")
+		}
+
+		if includesStart != -1 {
+			code.Write(data[:includesStart])
+
+			includes := data[includesStart+len(basictlCppIncludeStart) : includesEnd]
+			for _, include := range bytes.Split(includes, []byte("\n")) {
+				if len(include) != 0 {
+					parts := bytes.Split(include, []byte("\""))
+					code.Write(parts[0])
+					code.Write([]byte("\""))
+					code.Write([]byte(filepath.Join(gen.options.RootCPP, basictlPackage, filepath.Dir(file), string(parts[1]))))
+					code.Write([]byte("\""))
+					code.Write(parts[2])
+
+					code.Write([]byte("\n"))
+				}
+			}
+
+			code.Write(data[includesEnd+len(basictlCppIncludeEnd):])
+		} else {
+			code.Write(data)
+		}
+		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), code.String()); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func createStreams(gen *Gen2, cppMake *strings.Builder) {
 	cppMake.WriteString("# compile streams which are used to work with io\n")
 	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c basictl/io_streams.cpp\n")
 
 	cppMake.WriteString("\n")
 
 	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
 
 	cppMake.WriteString("\n")
 
 	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
@@ -673,9 +705,11 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, basicCPPTLIOStreamsPath), getCppDiff(filepathName, basicCPPTLIOStreamsPath)))
+}`,
+		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath),
+		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, basicCPPTLIOStreamsPath)))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -732,7 +766,7 @@ void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::
     throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
 
-tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
+tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -764,7 +798,7 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 	}
 
 	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s
-	$(CC) $(CFLAGS) -o __build/__meta.o -c %[2]s
+	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c %[2]s
 `,
 		filepathName,
 		filepathDetailsName,
@@ -886,8 +920,8 @@ void tl2::factory::set_all_factories() {
 `)
 	suffix := factoryDetails.String()
 	factoryDetails.Reset()
-	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathNameDetails, filepath.Join("__meta", "headers"+hppExt))))
-	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathNameDetails, filepathName)))
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, filepath.Join("__meta", "headers"+hppExt))))
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", filepath.Join(gen.options.RootCPP, filepathName)))
 
 	factoryFileDependencies := strings.Builder{}
 
@@ -895,7 +929,7 @@ void tl2::factory::set_all_factories() {
 		if !createdHpps[headerFile] {
 			continue
 		}
-		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
 		factoryFileDependencies.WriteString(" " + headerFile + hppExt)
 	}
 	factoryDetails.WriteString(suffix)
@@ -908,7 +942,7 @@ void tl2::factory::set_all_factories() {
 	}
 
 	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s
-	$(CC) $(CFLAGS) -o __build/__factory.o -c %[2]s
+	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c %[2]s
 `,
 		filepathName,
 		filepathNameDetails,

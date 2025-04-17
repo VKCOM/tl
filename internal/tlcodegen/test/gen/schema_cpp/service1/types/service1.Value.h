@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "service1.strvalueWithTime.h"
-#include "service1.strvalue.h"
-#include "service1.not_found.h"
-#include "service1.longvalueWithTime.h"
-#include "service1.longvalue.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service1/types/service1.strvalueWithTime.h"
+#include "service1/types/service1.strvalue.h"
+#include "service1/types/service1.not_found.h"
+#include "service1/types/service1.longvalueWithTime.h"
+#include "service1/types/service1.longvalue.h"
 
 
 namespace tl2 { namespace service1 { 

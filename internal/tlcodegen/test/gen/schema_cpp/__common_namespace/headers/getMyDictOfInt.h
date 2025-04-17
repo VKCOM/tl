@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/getMyDictOfInt.h"
-#include "../types/myDictOfInt.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/functions/getMyDictOfInt.h"
+#include "__common_namespace/types/myDictOfInt.h"
 
 namespace tl2 { namespace details { 
 

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "tree_stats.objectLimitValueLong.h"
-#include "tree_stats.objectLimitValueDouble.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "tree_stats/types/tree_stats.objectLimitValueLong.h"
+#include "tree_stats/types/tree_stats.objectLimitValueDouble.h"
 
 
 namespace tl2 { namespace tree_stats { 

@@ -1,6 +1,6 @@
-#include "headers/pkg2.t2.h"
-#include "headers/pkg2.t1.h"
-#include "headers/pkg2.foo.h"
+#include "pkg2/headers/pkg2.t2.h"
+#include "pkg2/headers/pkg2.t1.h"
+#include "pkg2/headers/pkg2.foo.h"
 
 
 bool tl2::pkg2::Foo::write_json(std::ostream& s)const {

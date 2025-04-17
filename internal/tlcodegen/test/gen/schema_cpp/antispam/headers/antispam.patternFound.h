@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../types/antispam.patternFound.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "antispam/types/antispam.patternFound.h"
 
 namespace tl2 { namespace details { 
 

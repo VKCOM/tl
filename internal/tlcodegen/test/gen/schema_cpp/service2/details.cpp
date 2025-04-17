@@ -1,13 +1,13 @@
-#include "headers/service2_tuple.h"
-#include "headers/service2.setObjectTtl.h"
-#include "headers/service2.set.h"
-#include "headers/service2.addOrIncrMany.h"
-#include "headers/service2.deltaSet.h"
-#include "headers/service2.objectId.h"
-#include "headers/service2.counterSet.h"
-#include "../__common_namespace/headers/true.h"
-#include "headers/service2_double.h"
-#include "../__common_namespace/headers/int.h"
+#include "service2/headers/service2_tuple.h"
+#include "service2/headers/service2.setObjectTtl.h"
+#include "service2/headers/service2.set.h"
+#include "service2/headers/service2.addOrIncrMany.h"
+#include "service2/headers/service2.deltaSet.h"
+#include "service2/headers/service2.objectId.h"
+#include "service2/headers/service2.counterSet.h"
+#include "__common_namespace/headers/true.h"
+#include "service2/headers/service2_double.h"
+#include "__common_namespace/headers/int.h"
 
 
 void tl2::details::BuiltinTupleDoubleReset(std::vector<double>& item) {

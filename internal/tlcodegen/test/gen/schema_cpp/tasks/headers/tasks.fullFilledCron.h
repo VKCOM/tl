@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../types/tasks.fullFilledCron.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "tasks/types/tasks.fullFilledCron.h"
 
 namespace tl2 { namespace details { 
 

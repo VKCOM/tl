@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/service3.getLimits.h"
-#include "../types/service3.limits.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service3/functions/service3.getLimits.h"
+#include "service3/types/service3.limits.h"
 
 namespace tl2 { namespace details { 
 

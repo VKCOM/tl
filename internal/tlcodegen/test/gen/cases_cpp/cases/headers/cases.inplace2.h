@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../types/cases.inplace2.h"
-#include "../../__common_namespace/types/pair.h"
-#include "../../__common_namespace/types/int.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "cases/types/cases.inplace2.h"
+#include "__common_namespace/types/pair.h"
+#include "__common_namespace/types/int.h"
 
 namespace tl2 { namespace details { 
 

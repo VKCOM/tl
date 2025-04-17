@@ -1,8 +1,8 @@
-#include "../basictl/io_streams.h"
+#include "basictl/io_streams.h"
 
 #include <map>
 
-#include "headers.h"
+#include "__meta/headers.h"
 
 namespace {
 	struct tl_items {

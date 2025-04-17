@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/service6.multiFindWithBounds.h"
-#include "../types/service6.findWithBoundsResult.h"
-#include "../../__common_namespace/types/Either.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service6/functions/service6.multiFindWithBounds.h"
+#include "service6/types/service6.findWithBoundsResult.h"
+#include "__common_namespace/types/Either.h"
 
 namespace tl2 { namespace details { 
 

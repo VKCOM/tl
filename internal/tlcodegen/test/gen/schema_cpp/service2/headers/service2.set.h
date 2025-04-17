@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/service2.set.h"
-#include "../../__common_namespace/types/true.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service2/functions/service2.set.h"
+#include "__common_namespace/types/true.h"
 
 namespace tl2 { namespace details { 
 

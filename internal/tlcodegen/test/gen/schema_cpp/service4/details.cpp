@@ -1,7 +1,7 @@
-#include "headers/service4.modifiedNewsEntry.h"
-#include "headers/service4.object.h"
-#include "../__common_namespace/headers/Bool.h"
-#include "../__common_namespace/headers/int.h"
+#include "service4/headers/service4.modifiedNewsEntry.h"
+#include "service4/headers/service4.object.h"
+#include "__common_namespace/headers/Bool.h"
+#include "__common_namespace/headers/int.h"
 
 
 bool tl2::service4::ModifiedNewsEntry::write_json(std::ostream& s)const {

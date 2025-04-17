@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "benchmarks.VrutoyTopLevelUnion.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "benchmarks/types/benchmarks.VrutoyTopLevelUnion.h"
 
 
 namespace tl2 { namespace benchmarks { 

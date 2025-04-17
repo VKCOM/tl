@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "cases.testUnion2.h"
-#include "cases.testUnion1.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "cases/types/cases.testUnion2.h"
+#include "cases/types/cases.testUnion1.h"
 
 
 namespace tl2 { namespace cases { 

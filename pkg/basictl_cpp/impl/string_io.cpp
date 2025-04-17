@@ -1,4 +1,6 @@
+/** TLGEN: CPP INCLUDES */
 #include "string_io.h"
+/** TLGEN: CPP INCLUDES END */
 
 namespace basictl {
     tl_connector_result<std::span<const std::byte>> tl_istream_string::get_buffer() noexcept {

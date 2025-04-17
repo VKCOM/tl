@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "antispam.patternNotFound.h"
-#include "antispam.patternFound.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "antispam/types/antispam.patternNotFound.h"
+#include "antispam/types/antispam.patternFound.h"
 
 
 namespace tl2 { namespace antispam { 

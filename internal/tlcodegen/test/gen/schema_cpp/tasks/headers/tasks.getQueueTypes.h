@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/tasks.getQueueTypes.h"
-#include "../types/tasks.queueTypeInfo.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "tasks/functions/tasks.getQueueTypes.h"
+#include "tasks/types/tasks.queueTypeInfo.h"
 
 namespace tl2 { namespace details { 
 

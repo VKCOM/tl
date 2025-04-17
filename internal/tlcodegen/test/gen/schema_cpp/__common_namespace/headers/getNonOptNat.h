@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "../../basictl/io_throwable_streams.h"
-#include "../functions/getNonOptNat.h"
-#include "../types/int.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "__common_namespace/functions/getNonOptNat.h"
+#include "__common_namespace/types/int.h"
 
 namespace tl2 { namespace details { 
 

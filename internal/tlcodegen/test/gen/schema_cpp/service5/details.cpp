@@ -1,10 +1,10 @@
-#include "headers/service5.query.h"
-#include "headers/service5.performQuery.h"
-#include "headers/service5.params.h"
-#include "headers/service5.Output.h"
-#include "headers/service5.stringOutput.h"
-#include "headers/service5.insert.h"
-#include "headers/service5.emptyOutput.h"
+#include "service5/headers/service5.query.h"
+#include "service5/headers/service5.performQuery.h"
+#include "service5/headers/service5.params.h"
+#include "service5/headers/service5.Output.h"
+#include "service5/headers/service5.stringOutput.h"
+#include "service5/headers/service5.insert.h"
+#include "service5/headers/service5.emptyOutput.h"
 
 
 bool tl2::service5::EmptyOutput::write_json(std::ostream& s)const {

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../../basictl/io_streams.h"
-#include "service3.groupSizeLimit.h"
-#include "service3.groupCountLimit.h"
+#include "basictl/io_streams.h"
+#include "basictl/io_throwable_streams.h"
+#include "service3/types/service3.groupSizeLimit.h"
+#include "service3/types/service3.groupCountLimit.h"
 
 
 namespace tl2 { namespace service3 { 
