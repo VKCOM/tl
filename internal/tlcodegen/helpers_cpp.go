@@ -6,6 +6,8 @@
 
 package tlcodegen
 
+import "strings"
+
 const basicCPPTLIOStreamsPath = "basictl/io_streams.h"
 const basicCPPTLIOThrowableStreamsPath = "basictl/io_throwable_streams.h"
 
@@ -15,8 +17,15 @@ const basictlCppIncludeStart = "/** TLGEN: CPP INCLUDES */\n"
 const basictlCppIncludeEnd = "/** TLGEN: CPP INCLUDES END */\n"
 
 const NoNamespaceGroup = ""
-const CommonGroup = "__common_namespace"
+const SpecialGroupPrefix = "__"
+
+const CommonGroup = SpecialGroupPrefix + "common_namespace"
 const IndependentTypes = CommonGroup
-const GhostTypes = "__ghosts"
+const GhostTypes = SpecialGroupPrefix + "ghosts"
 
 const CppPrintGraphvizRepresentation = false
+const CppPrintNamespaceDependencies = false
+
+func cppIsSpecialNamespace(namespace string) bool {
+	return namespace == NoNamespaceGroup || strings.HasPrefix(namespace, SpecialGroupPrefix)
+}

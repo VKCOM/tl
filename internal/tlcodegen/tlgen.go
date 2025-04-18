@@ -334,9 +334,10 @@ type Gen2Options struct {
 	UseCheckLengthSanity   bool
 
 	// C++
-	RootCPP          string
-	RootCPPNamespace string
-	SeparateFiles    bool
+	RootCPP            string
+	RootCPPNamespace   string
+	SeparateFiles      bool
+	LocalizeNamespaces bool
 
 	// PHP
 	AddFunctionBodies            bool
