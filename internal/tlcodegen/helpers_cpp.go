@@ -9,12 +9,14 @@ package tlcodegen
 const basicCPPTLIOStreamsPath = "basictl/io_streams.h"
 const basicCPPTLIOThrowableStreamsPath = "basictl/io_throwable_streams.h"
 
+const basictlCppFolder = "pkg/basictl_cpp"
+const basictlPackage = "basictl"
+const basictlCppIncludeStart = "/** TLGEN: CPP INCLUDES */\n"
+const basictlCppIncludeEnd = "/** TLGEN: CPP INCLUDES END */\n"
+
 const NoNamespaceGroup = ""
 const CommonGroup = "__common_namespace"
 const IndependentTypes = CommonGroup
 const GhostTypes = "__ghosts"
 
-const basictlCppFolder = "pkg/basictl_cpp"
-const basictlPackage = "basictl"
-const basictlCppIncludeStart = "/** TLGEN: CPP INCLUDES */\n"
-const basictlCppIncludeEnd = "/** TLGEN: CPP INCLUDES END */\n"
+const CppPrintGraphvizRepresentation = false

@@ -590,9 +590,11 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
-	//printDepsGraph(os.Stdout, allTypes, edges)
-	file, _ := os.Create("graphviz.dot")
-	printDepsGraph(file, allTypes, edges)
+	if CppPrintGraphvizRepresentation {
+		//printDepsGraph(os.Stdout, allTypes, edges)
+		file, _ := os.Create("graphviz.dot")
+		printDepsGraph(file, allTypes, edges)
+	}
 }
 
 func printDepsGraph(out *os.File, allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) {
