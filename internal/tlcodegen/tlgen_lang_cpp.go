@@ -49,7 +49,12 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
 
-	gen.decideCppCodeDestinations(gen.generatedTypesList)
+	deps := gen.decideCppCodeDestinations(gen.generatedTypesList)
+
+	err := gen.createDependencies(deps)
+	if err != nil {
+		return err
+	}
 
 	hpps := make(map[string][]*TypeRWWrapper)
 	detailsHpps := make(map[string][]*TypeRWWrapper)
@@ -331,16 +336,16 @@ main.o: main.cpp
 
 	cppMake.WriteString("# compile individual namespaces\n")
 	cppMake.WriteString(cppMake1.String())
-	//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
-	//	return err
-	//}
-	if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
-		return err
-	}
-	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
-		return err
-	}
 	if err := gen.addCodeFile("__build/info.txt", ".o files here!"); err != nil {
+		//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
+		//	return err
+		//}
+		if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
+			return err
+		}
+		if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
+			return err
+		}
 		return err
 	}
 	// if gen.options.Verbose {
@@ -364,7 +369,7 @@ main.o: main.cpp
 	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
 	// }
 
-	err := gen.addCPPBasicTLFiles()
+	err = gen.addCPPBasicTLFiles()
 	if err != nil {
 		return err
 	}
@@ -381,6 +386,72 @@ main.o: main.cpp
 	//	}
 	//	gen.Code[filepathName] = string(formattedCode)
 	// }
+	return nil
+}
+
+func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) error {
+	deps := make(map[string]map[string]bool)
+
+	for ns, _ := range directDeps {
+		visited := make(map[string]bool)
+		stack := make([]string, 0)
+
+		stack = append(stack, ns)
+
+		for len(stack) > 0 {
+			current := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+
+			if visited[current] {
+				continue
+			}
+			visited[current] = true
+
+			for dep, _ := range directDeps[current] {
+				if len(deps[ns]) == 0 {
+					deps[ns] = make(map[string]bool)
+				}
+				stack = append(stack, dep)
+				deps[ns][dep] = true
+			}
+		}
+	}
+
+	depsList := utils.Keys(deps)
+	sort.Strings(depsList)
+
+	for _, ns := range depsList {
+		if cppIsSpecialNamespace(ns) && ns != CommonGroup {
+			continue
+		}
+		nsDeps := utils.Keys(deps[ns])
+		sort.Strings(nsDeps)
+
+		code := strings.Builder{}
+
+		code.WriteString("{\n")
+		code.WriteString("\t\"dependencies\":[")
+
+		wasFirst := false
+		for _, dep := range nsDeps {
+			if (cppIsSpecialNamespace(dep) && dep != CommonGroup) || dep == ns {
+				continue
+			}
+			if wasFirst {
+				code.WriteString(", ")
+			}
+			code.WriteString(fmt.Sprintf("\"%s\"", dep))
+			wasFirst = true
+		}
+
+		code.WriteString("]\n")
+		code.WriteString("}")
+
+		// это отсылка на никиту с.
+		if err := gen.addCodeFile(filepath.Join(gen.options.RootCPP, ns, "info.json"), code.String()); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -458,7 +529,7 @@ func createStreams(gen *Gen2, cppMake *strings.Builder) {
 	cppMake.WriteString("\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
 }
 
-func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
+func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
 	for _, t := range allTypes {
 		t.cppDetailsFileName = t.fileName
 		t.hppDetailsFileName = t.cppDetailsFileName
@@ -513,10 +584,10 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			front[t] = true
 		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
 			front[t] = true
-			if t.trw.IsWrappingType() {
+			if t.trw.IsWrappingType() || strings.HasPrefix(strings.ToLower(t.cppLocalName), strings.ToLower("DictionaryField")) {
 				t.groupName = GhostTypes
 			} else {
-				t.groupName = IndependentTypes
+				gen.decideGroupInConflict(t, edges, nil)
 			}
 		}
 	}
@@ -554,9 +625,15 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
 						}
 						to.hppDetailsFileName = to.cppDetailsFileName
-						//changeTypeGroup(to, newGroup, CommonGroup, IndependentTypes)
 					} else if len(groups) > 1 {
-						to.groupName = CommonGroup
+						if gen.options.LocalizeNamespaces {
+							currentGroup := to.groupName
+							if cppIsSpecialNamespace(currentGroup) {
+								gen.decideGroupInConflict(to, edges, groups)
+							}
+						} else {
+							to.groupName = CommonGroup
+						}
 					}
 				}
 			}
@@ -591,9 +668,49 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 	}
 
 	if CppPrintGraphvizRepresentation {
-		//printDepsGraph(os.Stdout, allTypes, edges)
-		file, _ := os.Create("graphviz.dot")
+		file := os.Stdout
+		//file, _ := os.Create("graphviz.dot")
 		printDepsGraph(file, allTypes, edges)
+	}
+
+	deps := getNamespacesDependencies(allTypes, edges)
+
+	if CppPrintNamespaceDependencies {
+		nss := utils.Keys(deps)
+		sort.Strings(nss)
+
+		for _, ns := range nss {
+			nsDeps := utils.Keys(deps[ns])
+			sort.Strings(nsDeps)
+
+			fmt.Printf("%s (%d):", ns, len(nsDeps))
+
+			for _, dep := range nsDeps {
+				fmt.Printf(" %s", dep)
+			}
+			fmt.Printf("\n")
+		}
+	}
+
+	return deps
+}
+
+func (gen *Gen2) decideGroupInConflict(to *TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper, groups map[string]bool) {
+	deps := getSpeculativeGroupDependencies(to, &edges)
+	deps = utils.FilterSlice(deps, func(group string) bool {
+		return !cppIsSpecialNamespace(group)
+	})
+	groupsList := utils.SetToSlice(groups)
+	sort.Strings(groupsList)
+
+	//fmt.Printf("%s : <-%s, ->%s\n", to.goGlobalName, groupsList, deps)
+
+	if len(deps) == 0 {
+		to.groupName = CommonGroup
+	} else {
+		to.groupName = deps[0]
+		to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+		to.hppDetailsFileName = to.cppDetailsFileName
 	}
 }
 
@@ -636,6 +753,49 @@ func printDepsGraph(out *os.File, allTypes []*TypeRWWrapper, edges map[*TypeRWWr
 		}
 	}
 	_, _ = fmt.Fprintf(out, "}\n")
+}
+
+func getNamespacesDependencies(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) map[string]map[string]bool {
+	result := make(map[string]map[string]bool)
+
+	for _, exactType := range allTypes {
+		for _, dep := range edges[exactType] {
+			if len(result[exactType.groupName]) == 0 {
+				result[exactType.groupName] = make(map[string]bool)
+			}
+			result[exactType.groupName][dep.groupName] = true
+		}
+	}
+
+	return result
+}
+
+func getSpeculativeGroupDependencies(start *TypeRWWrapper, edges *map[*TypeRWWrapper][]*TypeRWWrapper) []string {
+	result := make(map[string]bool)
+	visited := make(map[*TypeRWWrapper]bool)
+
+	stack := make([]*TypeRWWrapper, 0)
+	stack = append(stack, start)
+
+	for len(stack) > 0 {
+		current := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		if visited[current] {
+			continue
+		}
+		visited[current] = true
+		result[current.groupName] = true
+
+		for _, next := range (*edges)[current] {
+			stack = append(stack, next)
+		}
+	}
+
+	keys := utils.Keys(result)
+	sort.Strings(keys)
+
+	return keys
 }
 
 func getCppDiff(base string, target string) string {
