@@ -43,7 +43,24 @@ func (d *Deconflicter) deconflictName(s string) string {
 	return s
 }
 
-var bannedCppFieldNames = []string{"and", "or", "friend", "xor", "operator", "errno", "class", "short", "default", "signed"}
+var bannedCppFieldNames = []string{
+	"and",
+	"or",
+	"friend",
+	"xor",
+	"operator",
+	"errno",
+	"class",
+	"short",
+	"default",
+	"signed",
+	"new",
+	"private",
+	"public",
+	"protected",
+	"struct",
+	"return",
+}
 
 func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
 	d.deconflictName("int")
