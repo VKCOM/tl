@@ -43,7 +43,24 @@ func (d *Deconflicter) deconflictName(s string) string {
 	return s
 }
 
-var bannedCppFieldNames = []string{"and", "or", "friend", "xor", "operator", "errno", "class", "short", "default", "signed"}
+var bannedCppFieldNames = []string{
+	"and",
+	"or",
+	"friend",
+	"xor",
+	"operator",
+	"errno",
+	"class",
+	"short",
+	"default",
+	"signed",
+	"new",
+	"private",
+	"public",
+	"protected",
+	"struct",
+	"return",
+}
 
 func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
 	d.deconflictName("int")
@@ -216,9 +233,9 @@ func (w *TypeRWWrapper) ActualTypeDependencies(evalType EvaluatedType) (res []*T
 	r := make(map[*TypeRWWrapper]bool)
 	w.actualTypeDependenciesRecur(evalType, &r)
 	for arg := range r {
-		if br, isBr := arg.trw.(*TypeRWBrackets); isBr && br.IsBuiltinVector() {
-			continue
-		}
+		//if br, isBr := arg.trw.(*TypeRWBrackets); isBr && br.IsBuiltinVector() {
+		//	continue
+		//}
 		res = append(res, arg)
 	}
 	slices.SortFunc(res, TypeComparator)
@@ -232,6 +249,27 @@ func (w *TypeRWWrapper) actualTypeDependenciesRecur(evalType EvaluatedType, used
 	if str, isStr := w.trw.(*TypeRWStruct); isStr && str.IsWrappingType() {
 		eval := str.wr.gen.typesInfo.FieldTypeReduction(evalType.Type, 0)
 		str.Fields[0].t.actualTypeDependenciesRecur(eval, used)
+		return
+	}
+	if br, isBr := w.trw.(*TypeRWBrackets); isBr && br.dictLike && len(br.element.t.origTL[0].TemplateArguments) == 1 {
+		pairType := br.element.t.trw.(*TypeRWStruct)
+		pairEvalType := evalType.Type.Arguments[0]
+
+		if pairEvalType.Type != nil {
+			keyValue := pairType.Fields[0]
+			valueType := pairType.Fields[1]
+
+			evalKey := br.wr.gen.typesInfo.FieldTypeReduction(pairEvalType.Type, 0)
+			evalValue := br.wr.gen.typesInfo.FieldTypeReduction(pairEvalType.Type, 1)
+
+			keyValue.t.actualTypeDependenciesRecur(evalKey, used)
+			valueType.t.actualTypeDependenciesRecur(evalValue, used)
+
+			// add dep from builtin_vector
+			if !(*used)[w] {
+				(*used)[w] = true
+			}
+		}
 		return
 	}
 	if !(*used)[w] {

@@ -135,11 +135,11 @@ class cases_testBeforeReadBitValidation implements TL\Readable, TL\Writeable {
   public function calculateN() {
     $mask = 0;
 
-    if (!is_null($this->a)) {
+    if ($this->a !== null) {
       $mask |= self::BIT_A_0;
     }
 
-    if (!is_null($this->b)) {
+    if ($this->b !== null) {
       $mask |= self::BIT_B_1;
     }
 

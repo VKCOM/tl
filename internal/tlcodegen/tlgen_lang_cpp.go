@@ -7,9 +7,11 @@
 package tlcodegen
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -42,12 +44,15 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 }
 
 func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
-	const basicTLFilepathName = "a_tlgen_helpers_code" + hppExt // TODO decollision
-
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
 
-	gen.decideCppCodeDestinations(gen.generatedTypesList)
+	deps := gen.decideCppCodeDestinations(gen.generatedTypesList)
+
+	err := gen.createDependencies(deps)
+	if err != nil {
+		return err
+	}
 
 	hpps := make(map[string][]*TypeRWWrapper)
 	detailsHpps := make(map[string][]*TypeRWWrapper)
@@ -56,10 +61,13 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 
 	for _, t := range gen.generatedTypesList {
 		hpps[t.fileName] = append(hpps[t.fileName], t)
-		detailsHpps[t.hppDetailsFileName] = append(detailsHpps[t.hppDetailsFileName], t)
-		detailsCpps[t.cppDetailsFileName] = append(detailsCpps[t.cppDetailsFileName], t)
 
-		utils.PutPairToSetOfPairs(&groupsToDetails, t.groupName, t.cppDetailsFileName)
+		if t.groupName != GhostTypes {
+			detailsHpps[t.hppDetailsFileName] = append(detailsHpps[t.hppDetailsFileName], t)
+			detailsCpps[t.cppDetailsFileName] = append(detailsCpps[t.cppDetailsFileName], t)
+
+			utils.PutPairToSetOfPairs(&groupsToDetails, t.groupName, t.cppDetailsFileName)
+		}
 	}
 
 	for group, groupDetails := range groupsToDetails {
@@ -117,10 +125,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hpp.Reset()
 		hpp.WriteString("#pragma once\n\n")
 		{
-			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
+			hpp.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
 		}
 		for _, headerFile := range hppInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
-			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+			hpp.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
 		}
 		hpp.WriteString("\n\n")
 		hpp.WriteString(hppStr)
@@ -162,9 +171,12 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		hppDet.Reset()
 
 		hppDet.WriteString("#pragma once\n\n")
-		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, basicTLFilepathName)))
+
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
+		hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
+
 		if createdHpps[specs[0].fileName] {
-			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, specs[0].fileName+hppExt)))
+			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, specs[0].fileName+hppExt)))
 		}
 		includes := hppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName })
 		for _, n := range includes {
@@ -174,7 +186,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			if !createdHpps[n] {
 				continue
 			}
-			includePath := getCppDiff(filepathName, n+hppExt)
+			includePath := filepath.Join(gen.options.RootCPP, n+hppExt)
 			hppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", includePath))
 		}
 		hppDet.WriteString("\n")
@@ -224,7 +236,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 			if !createdDetailsHpps[n] {
 				continue
 			}
-			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathName, n+hppExt)))
+			cppDet.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, n+hppExt)))
 		}
 		cppDet.WriteString("\n")
 
@@ -256,7 +268,7 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		var cppMake1Namespace strings.Builder
 
 		for _, n := range namespaceDeps {
-			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(namespaceFilePath, n+cppExt)))
+			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, n+cppExt)))
 			cppMake1UsedFiles.WriteString(getCppDiff(MakefilePath, n+cppExt))
 
 			usedTypes := detailsCpps[n]
@@ -277,11 +289,11 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 		}
 
 		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
-		cppMake1.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o %s -c %s\n", buildFilePath, namespaceFilePath))
+		cppMake1.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o %s -c %s\n", buildFilePath, namespaceFilePath))
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
 		if gen.options.SplitInternal {
-			if err := gen.addCodeFile(namespaceFilePath, cppMake1Namespace.String()); err != nil {
+			if err := gen.addCodeFile(namespaceFilePath, gen.copyrightText+cppMake1Namespace.String()); err != nil {
 				return err
 			}
 		}
@@ -290,71 +302,50 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	metaMake := strings.Builder{}
 	factoryMake := strings.Builder{}
 
-	_ = createMeta(gen, &metaMake)
-	_ = createFactory(gen, createdHpps, &factoryMake)
+	if err := createMeta(gen, &metaMake); err != nil {
+		return err
+	}
+	if err := createFactory(gen, createdHpps, &factoryMake); err != nil {
+		return err
+	}
 
 	cppMake.WriteString(`
 CC = g++
-CFLAGS = -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
 `)
+	cppMake.WriteString("# compile all object files together\n")
 	cppMake.WriteString("all: ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
-	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
-	cppMake.WriteString("main.o ")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -o all ")
+	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
 main.o: main.cpp
+	@mkdir -p __build
 	$(CC) $(CFLAGS) -c main.cpp
 `)
+	cppMake.WriteString("\n")
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
+
+	createStreams(gen, &cppMake)
+
 	cppMake.WriteString("\n")
 
+	cppMake.WriteString("# compile individual namespaces\n")
 	cppMake.WriteString(cppMake1.String())
-	//if err := gen.addCodeFile("all.cpp", cppAll.String()); err != nil {
-	//	return err
-	//}
+
 	if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
 		return err
 	}
 	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
 		return err
 	}
-	if err := gen.addCodeFile("__build/info.txt", ".o files here!"); err != nil {
+	if err = gen.addCPPBasicTLFiles(); err != nil {
 		return err
 	}
-	// if gen.options.Verbose {
-	//	log.Printf("generation of serialization code finished, %d constructors processed, %d types generated", len(gen.allConstructors), typesCounter)
-	//	if len(generateByteVersions) != 0 {
-	//		log.Printf("    also generated byte-optimized versions of %d types by the following filter: %s", typesCounterBytes, strings.Join(generateByteVersions, ", "))
-	//	}
-	// }
-	// if gen.options.GenerateRPCCode {
-	//	for name, namespace := range gen.Namespaces {
-	//		filepathName := filepath.Join(gen.GlobalPackageName+name, gen.GlobalPackageName+name+".go")
-	//		// TODO - if no functions and no aliases, do not write namespace file at all
-	//		code := gen.GenerateNamespacesCode(name, namespace)
-	//		if _, ok := gen.Code[filepathName]; ok {
-	//			return fmt.Errorf("generator %sinternal error%s: source file %q is generated twice", tlast.ColorRed, tlast.ColorReset, filepathName)
-	//		}
-	//		gen.Code[filepathName] = code
-	//	}
-	// }
-	// if gen.options.Verbose {
-	//	log.Printf("generation of RPC code finished, %d namespaces generated", len(gen.Namespaces))
-	// }
-	{
-		//	filepathName := filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+".go") // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-		//	gen.Code[filepathName] = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
-		//	filepathName = "factory.go"
-		//	gen.Code[filepathName] = gen.GenerateFactory()
-		code := fmt.Sprintf(basicCPPTLCodeHeader, HeaderComment, BasicTLCPPNamespaceName) + basicCPPTLCodeBody +
-			fmt.Sprintf(basicCPPTLCodeFooter, BasicTLCPPNamespaceName)
-		if err := gen.addCodeFile(basicTLFilepathName, code); err != nil {
-			return err
-		}
-	}
+
 	// if gen.options.Verbose {
 	//	log.Printf("formating generated code...")
 	// }
@@ -370,11 +361,147 @@ main.o: main.cpp
 	return nil
 }
 
-func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
-	const NoNamespaceGroup = ""
-	const CommonGroup = "__common_namespace"
-	const IndependentTypes = CommonGroup
+func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) error {
+	deps := make(map[string]map[string]bool)
 
+	for ns := range directDeps {
+		visited := make(map[string]bool)
+		stack := make([]string, 0)
+
+		stack = append(stack, ns)
+
+		for len(stack) > 0 {
+			current := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+
+			if visited[current] {
+				continue
+			}
+			visited[current] = true
+
+			for dep := range directDeps[current] {
+				if len(deps[ns]) == 0 {
+					deps[ns] = make(map[string]bool)
+				}
+				stack = append(stack, dep)
+				deps[ns][dep] = true
+			}
+		}
+	}
+
+	depsList := utils.Keys(deps)
+	sort.Strings(depsList)
+
+	for _, ns := range depsList {
+		if cppIsSpecialNamespace(ns) && ns != CommonGroup {
+			continue
+		}
+		nsDeps := utils.Keys(deps[ns])
+		sort.Strings(nsDeps)
+
+		code := strings.Builder{}
+
+		code.WriteString("{\n")
+		code.WriteString("\t\"dependencies\":[")
+
+		wasFirst := false
+		for _, dep := range nsDeps {
+			if (cppIsSpecialNamespace(dep) && dep != CommonGroup) || dep == ns {
+				continue
+			}
+			if wasFirst {
+				code.WriteString(", ")
+			}
+			code.WriteString(fmt.Sprintf("\"%s\"", dep))
+			wasFirst = true
+		}
+
+		code.WriteString("]\n")
+		code.WriteString("}")
+
+		// это отсылка на никиту с.
+		if err := gen.addCodeFile(filepath.Join(gen.options.RootCPP, ns, "info.json"), code.String()); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (gen *Gen2) addCPPBasicTLFiles() error {
+	exportingFiles := []string{
+		"constants.h",
+		"errors.h",
+		"io_connectors.h",
+		"io_streams.cpp",
+		"io_streams.h",
+		"io_throwable_streams.cpp",
+		"io_throwable_streams.h",
+		"impl/string_io.h",
+		"impl/string_io.cpp",
+		"dependencies.h",
+	}
+
+	for _, file := range exportingFiles {
+		data, err := os.ReadFile(filepath.Join(basictlCppFolder, file))
+		if err != nil {
+			return err
+		}
+		code := strings.Builder{}
+		code.Write([]byte(HeaderComment))
+		code.Write([]byte("\n"))
+
+		includesStart := bytes.Index(data, []byte(basictlCppIncludeStart))
+		includesEnd := bytes.Index(data, []byte(basictlCppIncludeEnd))
+
+		if includesStart != -1 && includesEnd == -1 {
+			return fmt.Errorf("can't locate include block")
+		}
+
+		if includesStart != -1 {
+			code.Write(data[:includesStart])
+
+			includes := data[includesStart+len(basictlCppIncludeStart) : includesEnd]
+			for _, include := range bytes.Split(includes, []byte("\n")) {
+				if len(include) != 0 {
+					parts := bytes.Split(include, []byte("\""))
+					code.Write(parts[0])
+					code.Write([]byte("\""))
+					code.Write([]byte(filepath.Join(gen.options.RootCPP, basictlPackage, filepath.Dir(file), string(parts[1]))))
+					code.Write([]byte("\""))
+					code.Write(parts[2])
+
+					code.Write([]byte("\n"))
+				}
+			}
+
+			code.Write(data[includesEnd+len(basictlCppIncludeEnd):])
+		} else {
+			code.Write(data)
+		}
+		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), gen.copyrightText+code.String()); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func createStreams(gen *Gen2, cppMake *strings.Builder) {
+	cppMake.WriteString("# compile streams which are used to work with io\n")
+	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+
+	cppMake.WriteString("\n")
+
+	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+}
+
+func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
 	for _, t := range allTypes {
 		t.cppDetailsFileName = t.fileName
 		t.hppDetailsFileName = t.cppDetailsFileName
@@ -400,25 +527,18 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		allTypesWithoutGroupMap[t] = true
 	}
 
-	for _, t := range allTypes {
-		for _, dep := range t.trw.AllTypeDependencies(false, true) {
-			if dep.groupName == NoNamespaceGroup {
-				utils.PutPairToSetOfPairs(&allTypesWithoutGroupUsages, dep, t.groupName)
-				utils.PutPairToSetOfPairs(&reverseDepsEdges, dep, t)
-			}
-		}
-	}
-
 	// bfs
 	edges := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 	reverseEdges := make(map[*TypeRWWrapper][]*TypeRWWrapper)
 
-	for _, from := range allTypes {
-		for _, to := range from.trw.AllTypeDependencies(false, true) {
-			if to.groupName == NoNamespaceGroup {
-				edges[from] = append(edges[from], to)
-				reverseEdges[to] = append(reverseEdges[to], from)
-			}
+	for _, t := range allTypes {
+		deps := t.trw.AllTypeDependencies(false, true)
+		for _, dep := range deps {
+			utils.PutPairToSetOfPairs(&allTypesWithoutGroupUsages, dep, t.groupName)
+			utils.PutPairToSetOfPairs(&reverseDepsEdges, dep, t)
+
+			edges[t] = append(edges[t], dep)
+			reverseEdges[dep] = append(reverseEdges[dep], t)
 		}
 	}
 
@@ -436,7 +556,11 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 			front[t] = true
 		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
 			front[t] = true
-			t.groupName = IndependentTypes
+			if t.trw.IsWrappingType() || strings.HasPrefix(strings.ToLower(t.cppLocalName), strings.ToLower("DictionaryField")) {
+				t.groupName = GhostTypes
+			} else {
+				gen.decideGroupInConflict(t, edges, nil)
+			}
 		}
 	}
 
@@ -462,14 +586,26 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 					for _, from := range reverseEdges[to] {
 						groups[from.groupName] = true
 					}
-					if len(groups) == 1 {
-						to.groupName = utils.SetToSlice(groups)[0]
-						if to.groupName != CommonGroup && to.groupName != IndependentTypes {
+					if len(groups) == 1 || (len(groups) == 2 && groups[GhostTypes]) {
+						if len(groups) == 2 && groups[GhostTypes] {
+							delete(groups, GhostTypes)
+						}
+						newGroup := utils.SetToSlice(groups)[0]
+						oldGroup := to.groupName
+						to.groupName = newGroup
+						if to.groupName != CommonGroup && to.groupName != IndependentTypes && to.groupName != GhostTypes && oldGroup != newGroup {
 							to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
 						}
 						to.hppDetailsFileName = to.cppDetailsFileName
 					} else if len(groups) > 1 {
-						to.groupName = CommonGroup
+						//if gen.options.LocalizeNamespaces {
+						currentGroup := to.groupName
+						if cppIsSpecialNamespace(currentGroup) {
+							gen.decideGroupInConflict(to, edges, groups)
+						}
+						//} else {
+						//	to.groupName = CommonGroup
+						//}
 					}
 				}
 			}
@@ -491,7 +627,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 
 	for _, t := range allTypes {
 		typeGroup := t.tlName.Namespace
-		if typeGroup == "" {
+		if typeGroup == NoNamespaceGroup {
 			typeGroup = CommonGroup
 		}
 		if strct, isStruct := t.trw.(*TypeRWStruct); isStruct && strct.ResultType != nil {
@@ -503,6 +639,133 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) {
 		t.cppDetailsFileName = filepath.Join(t.groupName, "details")
 	}
 
+	if CppPrintGraphvizRepresentation {
+		file := os.Stdout
+		//file, _ := os.Create("graphviz.dot")
+		printDepsGraph(file, allTypes, edges)
+	}
+
+	deps := getNamespacesDependencies(allTypes, edges)
+
+	if CppPrintNamespaceDependencies {
+		nss := utils.Keys(deps)
+		sort.Strings(nss)
+
+		for _, ns := range nss {
+			nsDeps := utils.Keys(deps[ns])
+			sort.Strings(nsDeps)
+
+			fmt.Printf("%s (%d):", ns, len(nsDeps))
+
+			for _, dep := range nsDeps {
+				fmt.Printf(" %s", dep)
+			}
+			fmt.Printf("\n")
+		}
+	}
+
+	return deps
+}
+
+func (gen *Gen2) decideGroupInConflict(to *TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper, groups map[string]bool) {
+	deps := getSpeculativeGroupDependencies(to, &edges)
+	deps = utils.FilterSlice(deps, func(group string) bool {
+		return !cppIsSpecialNamespace(group)
+	})
+	groupsList := utils.SetToSlice(groups)
+	sort.Strings(groupsList)
+
+	//fmt.Printf("%s : <-%s, ->%s\n", to.goGlobalName, groupsList, deps)
+
+	if len(deps) == 0 {
+		to.groupName = CommonGroup
+	} else {
+		to.groupName = deps[0]
+		to.cppDetailsFileName = to.groupName + "_" + to.cppDetailsFileName
+		to.hppDetailsFileName = to.cppDetailsFileName
+	}
+}
+
+func printDepsGraph(out *os.File, allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) {
+	print("debug\n")
+
+	vertices := make([]*TypeRWWrapper, len(allTypes))
+	copy(vertices, allTypes)
+	slices.SortFunc(vertices, TypeComparator)
+
+	namespaces := make(map[string][]*TypeRWWrapper)
+	for _, from := range vertices {
+		namespaces[from.groupName] = append(namespaces[from.groupName], from)
+	}
+
+	namespacesNames := utils.Keys(namespaces)
+	sort.Strings(namespacesNames)
+
+	_, _ = fmt.Fprintf(out, "digraph G {\n")
+
+	for _, namespace := range namespacesNames {
+		_, _ = fmt.Fprintf(out, "\tsubgraph cluster_%[1]s {\n\t\tlabel = \"%[1]s\";\n\t\tcolor=lightgrey;\n\t\tstyle=filled;\n", namespace)
+		for _, from := range namespaces[namespace] {
+			color := "red"
+			if from.trw.IsWrappingType() {
+				color = "blue"
+			}
+			cppName := from.cppLocalName
+			if cppName == "" {
+				cppName = "__empty__"
+			}
+			_, _ = fmt.Fprintf(out, "\t\t%[1]s[color=\"%[2]s\", label=\"%[1]s,\\n%[3]s\", shape=box];\n", from.goGlobalName, color, cppName)
+		}
+		_, _ = fmt.Fprintf(out, "}\n")
+	}
+
+	for _, from := range vertices {
+		for _, to := range edges[from] {
+			_, _ = fmt.Fprintf(out, "\t%s->%s;\n", from.goGlobalName, to.goGlobalName)
+		}
+	}
+	_, _ = fmt.Fprintf(out, "}\n")
+}
+
+func getNamespacesDependencies(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) map[string]map[string]bool {
+	result := make(map[string]map[string]bool)
+
+	for _, exactType := range allTypes {
+		for _, dep := range edges[exactType] {
+			if len(result[exactType.groupName]) == 0 {
+				result[exactType.groupName] = make(map[string]bool)
+			}
+			result[exactType.groupName][dep.groupName] = true
+		}
+	}
+
+	return result
+}
+
+func getSpeculativeGroupDependencies(start *TypeRWWrapper, edges *map[*TypeRWWrapper][]*TypeRWWrapper) []string {
+	result := make(map[string]bool)
+	visited := make(map[*TypeRWWrapper]bool)
+
+	stack := make([]*TypeRWWrapper, 0)
+	stack = append(stack, start)
+
+	for len(stack) > 0 {
+		current := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		if visited[current] {
+			continue
+		}
+		visited[current] = true
+		result[current.groupName] = true
+
+		stack = append(stack, (*edges)[current]...)
+	}
+
+	keys := utils.Keys(result)
+	sort.Strings(keys)
+
+	return keys
 }
 
 func getCppDiff(base string, target string) string {
@@ -513,6 +776,9 @@ func getCppDiff(base string, target string) string {
 }
 
 func createMeta(gen *Gen2, make *strings.Builder) error {
+	if !gen.options.AddMetaData {
+		return nil
+	}
 	meta := strings.Builder{}
 	metaDetails := strings.Builder{}
 
@@ -526,7 +792,8 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 #include <string>
 #include <functional>
 
-#include "%s"
+#include "%[1]s"
+#include "%[2]s"
 
 namespace tl2 {
     namespace meta {
@@ -534,8 +801,14 @@ namespace tl2 {
             virtual bool read(::basictl::tl_istream &s) = 0;
             virtual bool write(::basictl::tl_ostream &s) = 0;
 
+			virtual void read_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_or_throw(::basictl::tl_throwable_ostream &s) = 0;
+
             virtual bool read_boxed(::basictl::tl_istream &s) = 0;
             virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+
+			virtual void read_boxed_or_throw(::basictl::tl_throwable_istream &s) = 0;
+            virtual void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) = 0;
 			
 			virtual bool write_json(std::ostream &s) = 0;
 
@@ -564,9 +837,11 @@ namespace tl2 {
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
         
     }
-}`, getCppDiff(filepathName, "a_tlgen_helpers_code.hpp")))
+}`,
+		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath),
+		filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
 
-	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathDetailsName, "a_tlgen_helpers_code.hpp")))
+	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
@@ -623,7 +898,7 @@ void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::
     throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
 
-tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
+tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -654,17 +929,21 @@ tl_items::tl_items() {`, getCppDiff(filepathDetailsName, filepathName)))
 		return err
 	}
 
-	make.WriteString(fmt.Sprintf(`
-__build/__meta.o: %[1]s %[2]s
-	$(CC) $(CFLAGS) -o __build/__meta.o -c %[2]s
+	make.WriteString("# compile meta data collection\n")
+	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s __build
+	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c %[2]s
 `,
 		filepathName,
 		filepathDetailsName,
 	))
+	make.WriteString("\n")
 	return nil
 }
 
 func createFactory(gen *Gen2, createdHpps map[string]bool, make *strings.Builder) error {
+	if !gen.options.AddFactoryData {
+		return nil
+	}
 	factory := strings.Builder{}
 	factoryDetails := strings.Builder{}
 
@@ -711,9 +990,15 @@ void tl2::factory::set_all_factories() {
 
         bool read(basictl::tl_istream &s) override {return object.read(s);}
         bool write(basictl::tl_ostream &s) override {return object.write(s);}
+
+		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
+		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
         
 		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
         bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
+		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
 		
 		bool write_json(std::ostream &s) override {return object.write_json(s);}
 `,
@@ -772,8 +1057,8 @@ void tl2::factory::set_all_factories() {
 `)
 	suffix := factoryDetails.String()
 	factoryDetails.Reset()
-	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", getCppDiff(filepathNameDetails, filepath.Join("__meta", "headers"+hppExt))))
-	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", getCppDiff(filepathNameDetails, filepathName)))
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, filepath.Join("__meta", "headers"+hppExt))))
+	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", filepath.Join(gen.options.RootCPP, filepathName)))
 
 	factoryFileDependencies := strings.Builder{}
 
@@ -781,7 +1066,7 @@ void tl2::factory::set_all_factories() {
 		if !createdHpps[headerFile] {
 			continue
 		}
-		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", getCppDiff(filepathName, headerFile), hppExt))
+		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
 		factoryFileDependencies.WriteString(" " + headerFile + hppExt)
 	}
 	factoryDetails.WriteString(suffix)
@@ -793,14 +1078,15 @@ void tl2::factory::set_all_factories() {
 		return err
 	}
 
-	make.WriteString(fmt.Sprintf(`
-__build/__factory.o: %[1]s %[2]s%[3]s
-	$(CC) $(CFLAGS) -o __build/__factory.o -c %[2]s
+	make.WriteString("# compile objects factories\n")
+	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s __build
+	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c %[2]s
 `,
 		filepathName,
 		filepathNameDetails,
 		factoryFileDependencies.String(),
 	))
+	make.WriteString("\n")
 
 	return nil
 }

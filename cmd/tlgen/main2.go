@@ -82,6 +82,14 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// C++
 	flag.StringVar(&opt.RootCPPNamespace, "cpp-namespace", "",
 		`c++ root namespace, separated by '::' if more than 1 element`)
+	flag.StringVar(&opt.RootCPP, "cpp-root", "",
+		`c++ root package`)
+	flag.BoolVar(&opt.AddMetaData, "cpp-generate-meta", false,
+		`whether to generate methods to get meta information about tl objects`)
+	flag.BoolVar(&opt.AddFactoryData, "cpp-generate-factory", false,
+		`whether to generate factory of tl objects`)
+	//flag.BoolVar(&opt.LocalizeNamespaces, "cpp-localize-namespaces", false,
+	//	`whether to generate code such way that each namespace can be compiled independent (some code might be duplicated)`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
@@ -98,8 +106,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to avoid generation of structs with no arguments and only 1 field`)
 
 	if opt.AddFactoryData {
+		opt.AddMetaData = true
 		opt.AddFunctionBodies = true
 	}
+
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
 		"whether to serialize TL schema in binary form")

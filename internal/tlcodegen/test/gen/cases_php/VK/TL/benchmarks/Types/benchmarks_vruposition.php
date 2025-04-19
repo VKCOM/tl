@@ -228,7 +228,7 @@ class benchmarks_vruposition implements TL\Readable, TL\Writeable {
       $mask |= self::BIT_ROTATION_BLOCK_5;
     }
 
-    if (!is_null($this->seq_number)) {
+    if ($this->seq_number !== null) {
       $mask |= self::BIT_SEQ_NUMBER_14;
     }
 

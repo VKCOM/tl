@@ -121,7 +121,7 @@ class cases_testLocalFieldmask implements TL\Readable, TL\Writeable {
   public function calculateF1() {
     $mask = 0;
 
-    if (!is_null($this->f2)) {
+    if ($this->f2 !== null) {
       $mask |= self::BIT_F2_0;
     }
 

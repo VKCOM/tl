@@ -53,7 +53,7 @@ func (trw *TypeRWUnion) CPPTypeResettingCode(bytesVersion bool, val string) stri
 
 func (trw *TypeRWUnion) CPPTypeWritingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sWrite%s(s, %s%s)) { return s.set_error_unknown_scenario(); }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
@@ -63,7 +63,7 @@ func (trw *TypeRWUnion) CPPTypeWritingJsonCode(bytesVersion bool, val string, ba
 
 func (trw *TypeRWUnion) CPPTypeReadingCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return false; }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
+	return fmt.Sprintf("\tif (!::%s::%sRead%s(s, %s%s)) { return s.set_error_unknown_scenario(); }", trw.wr.gen.DetailsCPPNamespace, goGlobalName, addBare(bare), val, joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
@@ -126,8 +126,11 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 			hpp.WriteString(fmt.Sprintf(`
 	bool write_json(std::ostream& s%[1]s)const;
 
-	bool read_boxed(::basictl::tl_istream & s%[1]s);
-	bool write_boxed(::basictl::tl_ostream & s%[1]s)const;
+	bool read_boxed(::basictl::tl_istream & s%[1]s) noexcept;
+	bool write_boxed(::basictl::tl_ostream & s%[1]s)const noexcept;
+	
+	void read_boxed_or_throw(::basictl::tl_throwable_istream & s%[1]s);
+	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const;
 `,
 				formatNatArgsDeclCPP(trw.wr.NatParams),
 				trw.CPPTypeResettingCode(bytesVersion, "*this"),
@@ -147,11 +150,11 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 
 		cppStartNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 		hppDet.WriteString(fmt.Sprintf(`
-void %[1]sReset(%[2]s& item);
+void %[1]sReset(%[2]s& item) noexcept;
 
-bool %[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s);
-bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+bool %[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) noexcept;
+bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept;
+bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept;
 `, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
@@ -170,14 +173,27 @@ bool %[5]s::write_json(std::ostream & s%[1]s)const {
 %[7]s
 	return true;
 }
-bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) {
+bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) noexcept {
 %[3]s
 	return true;
 }
-bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const {
+bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const noexcept {
 %[4]s
 	return true;
 }
+
+void %[5]s::read_boxed_or_throw(::basictl::tl_throwable_istream & s%[1]s) {
+	::basictl::tl_istream s2(s);
+	this->read_boxed(s2%[8]s);
+	s2.pass_data(s);
+}
+
+void %[5]s::write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const {
+	::basictl::tl_ostream s2(s);
+	this->write_boxed(s2%[8]s);
+	s2.pass_data(s);
+}
+
 std::string_view %[5]s::tl_name() const {
 	return %[6]s_tbl_tl_name[value.index()];
 }
@@ -192,20 +208,22 @@ uint32_t %[5]s::tl_tag() const {
 				trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 				myFullTypeNoPrefix,
 				goGlobalName,
-				trw.CPPTypeWritingJsonCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
+				trw.CPPTypeWritingJsonCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+				formatNatArgsCallCPP(trw.wr.NatParams),
+			))
 		}
 		cppDet.WriteString(fmt.Sprintf(`
-void %[7]s::%[1]sReset(%[2]s& item) {
+void %[7]s::%[1]sReset(%[2]s& item) noexcept{
 	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool %[7]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) {
+bool %[7]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) noexcept {
 %[8]s
 	return true;
 }
-bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
+bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept {
 	uint32_t nat;
-	s.nat_read(nat);
+	if (!s.nat_read(nat)) { return false; }
 	switch (nat) {
 %[5]s	default:
 		return s.set_error_union_tag();
@@ -213,8 +231,8 @@ bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	return true;
 }
 
-bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
-	s.nat_write(%[1]s_tbl_tl_tag[item.value.index()]);
+bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept{
+	if (!s.nat_write(%[1]s_tbl_tl_tag[item.value.index()])) { return false; }
 	switch (item.value.index()) {
 %[6]s	}
 	return true;
@@ -263,170 +281,6 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			))
 	*/
 }
-
-/*
-func (union *TypeRWUnion) GenerateFields(bytesVersion bool) string {
-	var s strings.Builder
-	for _, field := range union.Fields {
-		if !field.t.IsTrueType() {
-			s.WriteString(fmt.Sprintf("value%s %s%s\n", field.goName, ifString(field.recursive, "*", ""), field.t.trw.TypeString(bytesVersion)))
-		}
-	}
-	s.WriteString("index int\n")
-	return s.String()
-}
-
-func (union *TypeRWUnion) GenerateConstructorsBehavior(bytesVersion bool) string {
-	var s strings.Builder
-	for i, typ := range union.Fields {
-		s.WriteString(fmt.Sprintf("%[3]s%[4]s%[5]s\n",
-			addBytes(union.goGlobalName, bytesVersion), typ.t.trw.TypeString(bytesVersion), union.As(bytesVersion, i, typ), union.ResetTo(bytesVersion, i, typ), union.Set(bytesVersion, i, typ)))
-	}
-	return s.String()
-}
-
-func (union *TypeRWUnion) As(bytesVersion bool, i int, field Field) string {
-	var s strings.Builder
-	s.WriteString(fmt.Sprintf(`func (item %s) Is%s() bool { return item.index == %d }
-`,
-		addBytes(union.goGlobalName, bytesVersion), field.goName, i))
-	if field.t.IsTrueType() {
-		if !union.IsEnum {
-			s.WriteString(fmt.Sprintf(`func (item *%[1]s) As%[5]s() (%[2]s, bool) {
-	var value %[3]s
-	return value, item.index == %[4]d }
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName))
-		}
-	} else {
-		s.WriteString(fmt.Sprintf(`func (item *%[1]s) As%[4]s() (*%[2]s, bool) {
-if item.index != %[3]d {
-	return nil, false
-}
-	return %[5]sitem.value%[4]s, true }
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName, ifString(field.recursive, "", "&")))
-	}
-	return s.String()
-}
-
-func (union *TypeRWUnion) ResetTo(bytesVersion bool, i int, field Field) string {
-	if union.IsEnum {
-		return ""
-	}
-	if field.t.IsTrueType() {
-		return fmt.Sprintf(`func (item *%[1]s) ResetTo%[4]s() { item.index = %[3]d }
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName)
-	}
-	if field.recursive {
-		return fmt.Sprintf(`func (item *%[1]s) ResetTo%[4]s() *%[2]s {
-	item.index = %[3]d
-	if item.value%[4]s == nil {
-		var value %[2]s
-		item.value%[4]s = &value
-	} else {
-		%[5]s
-	}
-	return item.value%[4]s }
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName,
-			field.t.trw.TypeResettingCode(bytesVersion, "item.value"+field.goName, true))
-	}
-	return fmt.Sprintf(`func (item *%[1]s) ResetTo%[4]s() *%[2]s {
-	item.index = %[3]d
-	%[5]s
-	return &item.value%[4]s }
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName,
-		field.t.trw.TypeResettingCode(bytesVersion, "item.value"+field.goName, false))
-}
-
-func (union *TypeRWUnion) Set(bytesVersion bool, i int, field Field) string {
-	if field.t.IsTrueType() {
-		return fmt.Sprintf(`func (item *%s) Set%s() { item.index = %d }
-`, addBytes(union.goGlobalName, bytesVersion), field.goName, i)
-	}
-	if field.recursive {
-		return fmt.Sprintf(`func (item *%[1]s) Set%[4]s(value %[2]s) {
-	item.index = %[3]d
-	if item.value%[4]s == nil {
-		item.value%[4]s = &value
-	} else {
-		*item.value%[4]s = value
-	}
-}
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName)
-	}
-	return fmt.Sprintf(`func (item *%[1]s) Set%[4]s(value %[2]s) {
-	item.index = %[3]d
-	item.value%[4]s = value
-}
-`, addBytes(union.goGlobalName, bytesVersion), field.t.trw.TypeString(bytesVersion), i, field.goName)
-}
-
-func (union *TypeRWUnion) GenerateReadBoxed(bytesVersion bool) string {
-	var s strings.Builder
-	s.WriteString(`var tag uint32
-if err := basictl.NatRead(r, &tag); err != nil {
-	return err
-}
-switch tag {
-`)
-	for i, field := range union.Fields {
-		s.WriteString(fmt.Sprintf("case %#x:\nitem.index = %d", field.t.tlTag, i))
-		if field.t.IsTrueType() {
-			s.WriteString("\nreturn nil\n")
-			continue
-		}
-		setRecursiveText := ifString(field.recursive, fmt.Sprintf(`
-		if item.value%[2]s == nil {
-			var value %[1]s
-			item.value%[2]s = &value
-		}`, field.t.trw.TypeString(bytesVersion), field.goName), "")
-		s.WriteString(fmt.Sprintf("%s\n%s\n", setRecursiveText, field.t.trw.TypeReadingCode(bytesVersion, fmt.Sprintf("item.value%s", field.goName),
-			true, union.Fields[0].t.NatParams, // union arg names are from first field, see same comment in generateType
-			false, true)))
-	}
-	s.WriteString(fmt.Sprintf("default:\nreturn internal.ErrorInvalidUnionTag(\"%s\", tag)}", union.Fields[0].t.tlName))
-	return s.String()
-}
-
-func (union *TypeRWUnion) GenerateWriteBoxed(bytesVersion bool) string {
-	if union.IsEnum {
-		return "; return nil"
-	}
-	var s strings.Builder
-	s.WriteString("\nswitch item.index {\n")
-	for i, field := range union.Fields {
-		if field.t.IsTrueType() {
-			s.WriteString(fmt.Sprintf("case %d: return nil\n", i))
-		} else {
-			s.WriteString(fmt.Sprintf("case %d:\n%s\n", i, field.t.trw.TypeWritingCode(bytesVersion,
-				fmt.Sprintf("item.value%s", field.goName),
-				true, union.Fields[0].t.NatParams, // union arg names are from first field, see same comment in generateType
-				false, true)))
-		}
-	}
-	s.WriteString("default: // Impossible due to panic above\nreturn nil\n}")
-	return s.String()
-}
-
-func (union *TypeRWUnion) generateEnumAlias(bytesVersion bool) string {
-	goName := addBytes(union.goGlobalName, false)
-	var s strings.Builder
-	if bytesVersion {
-		return s.String()
-	}
-	s.WriteString(fmt.Sprintf("var _%s = [%d]internal.UnionElement{\n", goName, len(union.Fields)))
-	for _, x := range union.Fields {
-		s.WriteString(fmt.Sprintf(`{tlTag:%#x, tlName:"%s", tlString:"%s#%08x"},
-`, x.t.tlTag, x.t.tlName, x.t.tlName, x.t.tlTag))
-	}
-	s.WriteString("}\n\n")
-	if union.IsEnum {
-		for i, x := range union.Fields {
-			s.WriteString(fmt.Sprintf("func %s() %s { return %s{index:%d} }\n", x.t.trw.TypeString(false), goName, goName, i))
-		}
-	}
-	return s.String()
-}
-*/
 
 func (trw *TypeRWUnion) CPPAllTags(bytesVersion bool) string {
 	var s strings.Builder
