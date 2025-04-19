@@ -4,7 +4,6 @@
 #include "basictl/io_streams.h"
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/tuple.h"
-#include "service1/types/service1.Value.h"
 #include "__common_namespace/types/int.h"
 
 namespace tl2 { namespace details { 
@@ -64,18 +63,6 @@ bool TupleIntBoxed2Read(::basictl::tl_istream & s, std::array<int32_t, 2>& item)
 bool TupleIntBoxed2Write(::basictl::tl_ostream & s, const std::array<int32_t, 2>& item) noexcept;
 bool TupleIntBoxed2ReadBoxed(::basictl::tl_istream & s, std::array<int32_t, 2>& item);
 bool TupleIntBoxed2WriteBoxed(::basictl::tl_ostream & s, const std::array<int32_t, 2>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void TupleService1Value3Reset(std::array<::tl2::service1::Value, 3>& item) noexcept;
-
-bool TupleService1Value3WriteJSON(std::ostream& s, const std::array<::tl2::service1::Value, 3>& item) noexcept;
-bool TupleService1Value3Read(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item) noexcept; 
-bool TupleService1Value3Write(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item) noexcept;
-bool TupleService1Value3ReadBoxed(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item);
-bool TupleService1Value3WriteBoxed(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item);
 
 }} // namespace tl2::details
 
