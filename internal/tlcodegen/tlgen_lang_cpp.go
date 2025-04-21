@@ -344,11 +344,11 @@ main.o: main.cpp
 		currentDeps := utils.Keys(finalDeps[ns.Namespace])
 		sort.Strings(currentDeps)
 
-		oDeps.WriteString(fmt.Sprintf("main.o"))
+		oDeps.WriteString("main.o")
 		oDeps.WriteString(fmt.Sprintf(" __build/%s.o", ns.Namespace))
 
-		oDeps.WriteString(fmt.Sprintf(" __build/io_streams.o"))
-		oDeps.WriteString(fmt.Sprintf(" __build/io_throwable_streams.o"))
+		oDeps.WriteString(" __build/io_streams.o")
+		oDeps.WriteString(" __build/io_throwable_streams.o")
 
 		for _, dep := range currentDeps {
 			if dep == ns.Namespace {
