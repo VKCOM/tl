@@ -31,7 +31,7 @@ __build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp
 
-# compile individual namespaces
+# create object files for individual namespaces
 __build/__common_namespace.o: __common_namespace/details.cpp __common_namespace/details.cpp __common_namespace/headers/Bool.h __common_namespace/headers/MyValue.h __common_namespace/headers/benchObject.h __common_namespace/headers/boxedArray.h __common_namespace/headers/boxedInt.h __common_namespace/headers/boxedString.h __common_namespace/headers/boxedTuple.h __common_namespace/headers/boxedTupleSlice1.h __common_namespace/headers/boxedTupleSlice2.h __common_namespace/headers/boxedTupleSlice3.h __common_namespace/headers/boxedVector32.h __common_namespace/headers/boxedVector32BoxedElem.h __common_namespace/headers/boxedVector64.h __common_namespace/headers/dictionary.h __common_namespace/headers/dictionaryField.h __common_namespace/headers/double.h __common_namespace/headers/fieldConflict1.h __common_namespace/headers/fieldConflict2.h __common_namespace/headers/fieldConflict3.h __common_namespace/headers/fieldConflict4.h __common_namespace/headers/float.h __common_namespace/headers/getDouble.h __common_namespace/headers/getFloat.h __common_namespace/headers/getMyDictOfInt.h __common_namespace/headers/getMyDouble.h __common_namespace/headers/getMyValue.h __common_namespace/headers/getNonOptNat.h __common_namespace/headers/get_arrays.h __common_namespace/headers/int.h __common_namespace/headers/integer.h __common_namespace/headers/long.h __common_namespace/headers/myBoxedArray.h __common_namespace/headers/myBoxedTupleSlice.h __common_namespace/headers/myBoxedVectorSlice.h __common_namespace/headers/myDictOfInt.h __common_namespace/headers/myDouble.h __common_namespace/headers/myInt.h __common_namespace/headers/myMaybe1.h __common_namespace/headers/myMaybe2.h __common_namespace/headers/myString.h __common_namespace/headers/myTuple.h __common_namespace/headers/myTwoDicts.h __common_namespace/headers/nonOptNat.h __common_namespace/headers/rpcInvokeReqExtra.h __common_namespace/headers/statOne.h __common_namespace/headers/string.h __common_namespace/headers/true.h __common_namespace/headers/tuple.h __common_namespace/headers/vector.h __common_namespace/headers/withFloat.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/__common_namespace.o -c __common_namespace/details.cpp
@@ -68,3 +68,54 @@ __build/tree_stats.o: tree_stats/details.cpp tree_stats/details.cpp tree_stats/h
 __build/unique.o: unique/details.cpp unique/details.cpp unique/headers/unique.get.h unique/headers/unique.stringToInt.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/unique.o -c unique/details.cpp
+# compile individual namespaces
+__compile/__common_namespace: main.o __build/__common_namespace.o __build/io_streams.o __build/io_throwable_streams.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/__common_namespace main.o __build/__common_namespace.o __build/io_streams.o __build/io_throwable_streams.o
+
+__compile/antispam: main.o __build/antispam.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/antispam main.o __build/antispam.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/pkg2: main.o __build/pkg2.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/pkg2 main.o __build/pkg2.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/service1: main.o __build/service1.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/service1 main.o __build/service1.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/service2: main.o __build/service2.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/service2 main.o __build/service2.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/service3: main.o __build/service3.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/service3 main.o __build/service3.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/service4: main.o __build/service4.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/service4 main.o __build/service4.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/service5: main.o __build/service5.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/service5 main.o __build/service5.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/service6: main.o __build/service6.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/service6 main.o __build/service6.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/tasks: main.o __build/tasks.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/tasks main.o __build/tasks.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/tree_stats: main.o __build/tree_stats.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/tree_stats main.o __build/tree_stats.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/unique: main.o __build/unique.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/unique main.o __build/unique.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+# compile all namespaces (for test purposes)
+compile-all: __compile/__common_namespace __compile/antispam __compile/pkg2 __compile/service1 __compile/service2 __compile/service3 __compile/service4 __compile/service5 __compile/service6 __compile/tasks __compile/tree_stats __compile/unique

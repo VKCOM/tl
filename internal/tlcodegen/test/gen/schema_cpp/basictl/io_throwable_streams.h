@@ -12,30 +12,36 @@ namespace basictl {
 
     class tl_throwable_istream {
     public:
-        explicit tl_throwable_istream(tl_input_connector& provider);
-        tl_throwable_istream(const tl_throwable_istream&) = delete;
-        tl_throwable_istream& operator=(const tl_throwable_istream&) = delete;
+        explicit tl_throwable_istream(tl_input_connector &provider);
 
-        tl_throwable_istream(tl_throwable_istream&&) = delete;
-        tl_throwable_istream& operator=(tl_throwable_istream&&) = delete;
+        tl_throwable_istream(const tl_throwable_istream &) = delete;
+
+        tl_throwable_istream &operator=(const tl_throwable_istream &) = delete;
+
+        tl_throwable_istream(tl_throwable_istream &&) = delete;
+
+        tl_throwable_istream &operator=(tl_throwable_istream &&) = delete;
 
         ~tl_throwable_istream() { last_release(); };
 
         friend class tl_istream;
-        void pass_data(tl_istream& to) noexcept;
+
+        void pass_data(tl_istream &to) noexcept;
 
         uint32_t nat_read() {
             uint32_t result;
             nat_read(result);
             return result;
         }
-        void nat_read(uint32_t& value) {
+
+        void nat_read(uint32_t &value) {
             if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
                 return fetch_data2(&value, TL_UINT32_SIZE);
             }
             std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_UINT32_SIZE);
             ptr += TL_UINT32_SIZE;
         }
+
         void nat_read_exact_tag(uint32_t tag) {
             uint32_t actual_tag = 0;
             nat_read(actual_tag);
@@ -49,7 +55,8 @@ namespace basictl {
             int_read(result);
             return result;
         }
-        void int_read(int32_t& value) {
+
+        void int_read(int32_t &value) {
             if (ptr + TL_INT32_SIZE > end_block) [[unlikely]] {
                 return fetch_data2(&value, TL_INT32_SIZE);
             }
@@ -62,7 +69,8 @@ namespace basictl {
             long_read(result);
             return result;
         }
-        void long_read(int64_t& value) {
+
+        void long_read(int64_t &value) {
             if (ptr + TL_INT64_SIZE > end_block) [[unlikely]] {
                 return fetch_data2(&value, TL_INT64_SIZE);
             }
@@ -75,7 +83,8 @@ namespace basictl {
             float_read(result);
             return result;
         }
-        void float_read(float& value) {
+
+        void float_read(float &value) {
             if (ptr + TL_FLOAT32_SIZE > end_block) [[unlikely]] {
                 return fetch_data2(&value, TL_FLOAT32_SIZE);
             }
@@ -88,7 +97,8 @@ namespace basictl {
             double_read(result);
             return result;
         }
-        void double_read(double& value) {
+
+        void double_read(double &value) {
             if (ptr + TL_FLOAT64_SIZE > end_block) [[unlikely]] {
                 return fetch_data2(&value, TL_FLOAT64_SIZE);
             }
@@ -101,6 +111,7 @@ namespace basictl {
             bool_read(result, f, t);
             return result;
         }
+
         void bool_read(bool &value, uint32_t f, uint32_t t) {
             uint32_t tag = 0;
             nat_read(tag);
@@ -114,23 +125,27 @@ namespace basictl {
             value = false;
         }
 
-        void string_read(std::string& value);
+        void string_read(std::string &value);
 
         void last_release() noexcept;
-    private:
-        tl_input_connector* provider;
 
-        const std::byte* start_block{};
-        const std::byte* ptr{};
-        const std::byte* end_block{};
+    private:
+        tl_input_connector *provider;
+
+        const std::byte *start_block{};
+        const std::byte *ptr{};
+        const std::byte *end_block{};
 
         void grow_buffer();
 
         void ensure_byte();
 
-        void fetch_data(void* vdata, size_t size);
-        void fetch_data2(void* vdata, size_t size);
-        void fetch_data_append(std::string& value, size_t size);
+        void fetch_data(void *vdata, size_t size);
+
+        void fetch_data2(void *vdata, size_t size);
+
+        void fetch_data_append(std::string &value, size_t size);
+
         void fetch_pad(size_t len);
     };
 
@@ -138,17 +153,21 @@ namespace basictl {
 
     class tl_throwable_ostream { // TODO - prohibit copy/move
     public:
-        explicit tl_throwable_ostream(tl_output_connector& provider);
-        tl_throwable_ostream(const tl_throwable_ostream&) = delete;
-        tl_throwable_ostream& operator=(const tl_throwable_ostream&) = delete;
+        explicit tl_throwable_ostream(tl_output_connector &provider);
 
-        tl_throwable_ostream(tl_throwable_ostream&&) = delete;
-        tl_throwable_ostream& operator=(tl_throwable_ostream&&) = delete;
+        tl_throwable_ostream(const tl_throwable_ostream &) = delete;
+
+        tl_throwable_ostream &operator=(const tl_throwable_ostream &) = delete;
+
+        tl_throwable_ostream(tl_throwable_ostream &&) = delete;
+
+        tl_throwable_ostream &operator=(tl_throwable_ostream &&) = delete;
 
         ~tl_throwable_ostream() { last_release(); };
 
         friend class tl_ostream;
-        void pass_data(tl_ostream& to) noexcept;
+
+        void pass_data(tl_ostream &to) noexcept;
 
         void nat_write(uint32_t value) {
             if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
@@ -157,6 +176,7 @@ namespace basictl {
             std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_UINT32_SIZE);
             ptr += TL_UINT32_SIZE;
         };
+
         void int_write(int32_t value) {
             if (ptr + TL_INT32_SIZE > end_block) [[unlikely]] {
                 return store_data2(&value, TL_INT32_SIZE);
@@ -164,6 +184,7 @@ namespace basictl {
             std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_INT32_SIZE);
             ptr += TL_INT32_SIZE;
         };
+
         void long_write(int64_t value) {
             if (ptr + TL_INT64_SIZE > end_block) [[unlikely]] {
                 return store_data2(&value, TL_INT64_SIZE);
@@ -171,6 +192,7 @@ namespace basictl {
             std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_INT64_SIZE);
             ptr += TL_INT64_SIZE;
         };
+
         void float_write(float value) {
             if (ptr + TL_FLOAT32_SIZE > end_block) [[unlikely]] {
                 return store_data2(&value, TL_FLOAT32_SIZE);
@@ -178,6 +200,7 @@ namespace basictl {
             std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_FLOAT32_SIZE);
             ptr += TL_FLOAT32_SIZE;
         };
+
         void double_write(double value) {
             if (ptr + TL_FLOAT64_SIZE > end_block) [[unlikely]] {
                 return store_data2(&value, TL_FLOAT64_SIZE);
@@ -185,20 +208,24 @@ namespace basictl {
             std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_FLOAT64_SIZE);
             ptr += TL_FLOAT64_SIZE;
         };
-        void string_write(const std::string& value);
+
+        void string_write(const std::string &value);
 
         void last_release() noexcept;
 
     private:
-        tl_output_connector* provider;
+        tl_output_connector *provider;
 
-        std::byte* start_block{};
-        std::byte* ptr{};
-        std::byte* end_block{};
+        std::byte *start_block{};
+        std::byte *ptr{};
+        std::byte *end_block{};
 
         void grow_buffer();
-        void store_data(const void* vdata, size_t size);
-        void store_data2(const void* vdata, size_t size);
+
+        void store_data(const void *vdata, size_t size);
+
+        void store_data2(const void *vdata, size_t size);
+
         void store_pad(size_t size);
     };
 }

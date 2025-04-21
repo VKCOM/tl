@@ -10,35 +10,28 @@
 
 namespace basictl {
     template<typename Type>
-    class tl_connector_result
-    {
+    class tl_connector_result {
     public:
 
         explicit tl_connector_result(Type buffer)
-                : result_(buffer)
-        {}
+                : result_(buffer) {}
 
         explicit tl_connector_result(tl_connector_error error)
-                : result_(std::move(error))
-        {}
+                : result_(std::move(error)) {}
 
-        explicit operator bool() const noexcept
-        {
+        explicit operator bool() const noexcept {
             return std::holds_alternative<Type>(result_);
         }
 
-        Type value() const noexcept
-        {
+        Type value() const noexcept {
             return std::get<Type>(result_);
         }
 
-        [[nodiscard]] const tl_connector_error & error() const & noexcept
-        {
+        [[nodiscard]] const tl_connector_error &error() const & noexcept {
             return std::get<tl_connector_error>(result_);
         }
 
-        tl_connector_error error() && noexcept
-        {
+        tl_connector_error error() && noexcept {
             return std::get<tl_connector_error>(std::move(result_));
         }
 
@@ -49,14 +42,18 @@ namespace basictl {
     class tl_input_connector {
     public:
         virtual ~tl_input_connector() = default;
+
         virtual tl_connector_result<std::span<const std::byte>> get_buffer() noexcept = 0;
+
         virtual void release_buffer(size_t size) noexcept = 0;
     };
 
     class tl_output_connector {
     public:
         virtual ~tl_output_connector() = default;
+
         virtual tl_connector_result<std::span<std::byte>> get_buffer() noexcept = 0;
+
         virtual void release_buffer(size_t size) noexcept = 0;
     };
 }

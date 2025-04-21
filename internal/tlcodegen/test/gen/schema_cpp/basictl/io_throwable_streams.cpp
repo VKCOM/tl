@@ -36,9 +36,9 @@ namespace basictl {
         if ((x & ~(0xFFFFFFFFU >> (8 * pad))) != 0) [[unlikely]] {
             throw tl_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
         }
-        value.assign(reinterpret_cast<const char*>(ptr + 1), len);
+        value.assign(reinterpret_cast<const char *>(ptr + 1), len);
         ptr += fullLen;
-   }
+    }
 
     void tl_throwable_istream::last_release() noexcept {
         provider->release_buffer(ptr - start_block);
@@ -92,9 +92,9 @@ namespace basictl {
     }
 
     void tl_throwable_istream::fetch_data_append(std::string &value, size_t size) {
-        for (;ptr + size > end_block;) [[unlikely]] {
+        for (; ptr + size > end_block;) [[unlikely]] {
             // assert(ptr <= end)
-            value.append(reinterpret_cast<const char*>(ptr), end_block - ptr);
+            value.append(reinterpret_cast<const char *>(ptr), end_block - ptr);
             size -= end_block - ptr;
             grow_buffer();
             // assert(ptr <= end)
@@ -102,7 +102,7 @@ namespace basictl {
                 throw tl_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
-        value.append(reinterpret_cast<const char*>(ptr), size);
+        value.append(reinterpret_cast<const char *>(ptr), size);
         ptr += size;
     }
 
@@ -114,14 +114,14 @@ namespace basictl {
         }
     }
 
-    void tl_throwable_istream::pass_data(tl_istream& to) noexcept {
+    void tl_throwable_istream::pass_data(tl_istream &to) noexcept {
         to.provider = provider;
         to.ptr = ptr;
         to.start_block = start_block;
         to.end_block = end_block;
     }
 
-    tl_throwable_ostream::tl_throwable_ostream(tl_output_connector& provider) {
+    tl_throwable_ostream::tl_throwable_ostream(tl_output_connector &provider) {
         this->provider = &provider;
     }
 
@@ -129,7 +129,7 @@ namespace basictl {
         auto len = value.size();
         if (len > TL_MAX_TINY_STRING_LEN) [[unlikely]] {
             if (len > TL_BIG_STRING_LEN) [[unlikely]] {
-                throw tl_error (tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t p = (len << 8U) | TL_BIG_STRING_MARKER;
             store_data(&p, 4);
@@ -152,7 +152,7 @@ namespace basictl {
         *ptr = static_cast<std::byte>(len);
         std::memcpy(ptr + 1, value.data(), len);
         ptr += fullLen;
-   }
+    }
 
     void tl_throwable_ostream::last_release() noexcept {
         provider->release_buffer(ptr - start_block);
@@ -216,7 +216,7 @@ namespace basictl {
         }
     }
 
-    void tl_throwable_ostream::pass_data(tl_ostream& to) noexcept {
+    void tl_throwable_ostream::pass_data(tl_ostream &to) noexcept {
         to.provider = provider;
         to.ptr = ptr;
         to.start_block = start_block;
