@@ -1593,8 +1593,13 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	}
 	for filepathName := range relativeFiles {
 		f := filepath.Join(outdir, filepathName)
-		if strings.HasSuffix(f, ".o") {
-			continue
+		if gen.options.Language == "cpp" {
+			if strings.HasSuffix(f, ".o") {
+				continue
+			}
+			if strings.Contains(f, "__compile") {
+				continue
+			}
 		}
 		deleted++
 		if err := os.Remove(f); err != nil {
