@@ -17,14 +17,11 @@ namespace basictl {
         UNKNOWN_SCENARIO,
     };
 
-    template <typename Type>
-    class basic_error final : public std::exception
-    {
+    template<typename Type>
+    class basic_error final : public std::exception {
     public:
         basic_error(Type type, std::string message)
-                : type_(type)
-                , message_(std::move(message))
-        {}
+                : type_(type), message_(std::move(message)) {}
 
         [[nodiscard]] Type type() const noexcept {
             return type_;
@@ -34,7 +31,7 @@ namespace basictl {
             return message_;
         }
 
-        [[nodiscard]] const char * what() const noexcept override {
+        [[nodiscard]] const char *what() const noexcept override {
             return message_.c_str();
         }
 

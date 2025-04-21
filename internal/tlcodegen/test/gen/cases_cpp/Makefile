@@ -31,7 +31,7 @@ __build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp
 
-# compile individual namespaces
+# create object files for individual namespaces
 __build/__common_namespace.o: __common_namespace/details.cpp __common_namespace/details.cpp __common_namespace/headers/dictionary.h __common_namespace/headers/dictionaryAny.h __common_namespace/headers/dictionaryField.h __common_namespace/headers/dictionaryFieldAny.h __common_namespace/headers/int32.h __common_namespace/headers/int64.h __common_namespace/headers/true.h __common_namespace/headers/vector.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/__common_namespace.o -c __common_namespace/details.cpp
@@ -44,3 +44,22 @@ __build/cases.o: cases/details.cpp cases/details.cpp cases/headers/cases.TestEnu
 __build/cases_bytes.o: cases_bytes/details.cpp cases_bytes/details.cpp cases_bytes/headers/cases_bytes.TestEnum.h cases_bytes/headers/cases_bytes.TestEnumItems.h cases_bytes/headers/cases_bytes.testArray.h cases_bytes/headers/cases_bytes.testDictAny.h cases_bytes/headers/cases_bytes.testDictInt.h cases_bytes/headers/cases_bytes.testDictString.h cases_bytes/headers/cases_bytes.testDictStringString.h cases_bytes/headers/cases_bytes.testEnumContainer.h cases_bytes/headers/cases_bytes.testTuple.h cases_bytes/headers/cases_bytes.testVector.h cases_bytes/headers/cases_bytes_dictionary.h cases_bytes/headers/cases_bytes_dictionaryField.h cases_bytes/headers/cases_bytes_string.h cases_bytes/headers/cases_bytes_tuple.h cases_bytes/headers/cases_bytes_vector.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/cases_bytes.o -c cases_bytes/details.cpp
+# compile individual namespaces
+__compile/__common_namespace: main.o __build/__common_namespace.o __build/io_streams.o __build/io_throwable_streams.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/__common_namespace main.o __build/__common_namespace.o __build/io_streams.o __build/io_throwable_streams.o
+
+__compile/benchmarks: main.o __build/benchmarks.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/benchmarks main.o __build/benchmarks.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/cases: main.o __build/cases.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/cases main.o __build/cases.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
+
+__compile/cases_bytes: main.o __build/cases_bytes.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/cases.o
+	@mkdir -p __compile
+	$(CC) $(CFLAGS) -o __compile/cases_bytes main.o __build/cases_bytes.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/cases.o
+
+# compile all namespaces (for test purposes)
+compile-all: __compile/__common_namespace __compile/benchmarks __compile/cases __compile/cases_bytes

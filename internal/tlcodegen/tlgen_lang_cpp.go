@@ -47,9 +47,9 @@ func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
 
-	deps := gen.decideCppCodeDestinations(gen.generatedTypesList)
+	_deps := gen.decideCppCodeDestinations(gen.generatedTypesList)
 
-	err := gen.createDependencies(deps)
+	finalDeps, err := gen.createDependencies(_deps)
 	if err != nil {
 		return err
 	}
@@ -317,7 +317,8 @@ CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type 
 	cppMake.WriteString("all: ")
 	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -o all ")
+	cppMake.WriteString("\t@mkdir -p __build\n")
+	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
 	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
@@ -333,8 +334,40 @@ main.o: main.cpp
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("# compile individual namespaces\n")
+	cppMake.WriteString("# create object files for individual namespaces\n")
 	cppMake.WriteString(cppMake1.String())
+
+	cppMake.WriteString("# compile individual namespaces\n")
+	for _, ns := range cppAllInc.splitByNamespaces() {
+		oDeps := strings.Builder{}
+
+		currentDeps := utils.Keys(finalDeps[ns.Namespace])
+		sort.Strings(currentDeps)
+
+		oDeps.WriteString(fmt.Sprintf("main.o"))
+		oDeps.WriteString(fmt.Sprintf(" __build/%s.o", ns.Namespace))
+
+		oDeps.WriteString(fmt.Sprintf(" __build/io_streams.o"))
+		oDeps.WriteString(fmt.Sprintf(" __build/io_throwable_streams.o"))
+
+		for _, dep := range currentDeps {
+			if dep == ns.Namespace {
+				continue
+			}
+			oDeps.WriteString(fmt.Sprintf(" __build/%s.o", dep))
+		}
+
+		cppMake.WriteString(fmt.Sprintf("__compile/%[1]s: %[2]s\n", ns.Namespace, oDeps.String()))
+		cppMake.WriteString("\t@mkdir -p __compile\n")
+		cppMake.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o __compile/%[1]s %[2]s\n\n", ns.Namespace, oDeps.String()))
+	}
+
+	cppMake.WriteString("# compile all namespaces (for test purposes)\n")
+	cppMake.WriteString("compile-all:")
+	for _, ns := range cppAllInc.splitByNamespaces() {
+		cppMake.WriteString(fmt.Sprintf(" __compile/%s", ns.Namespace))
+	}
+	cppMake.WriteString("\n")
 
 	if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
 		return err
@@ -361,7 +394,7 @@ main.o: main.cpp
 	return nil
 }
 
-func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) error {
+func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[string]map[string]bool, error) {
 	deps := make(map[string]map[string]bool)
 
 	for ns := range directDeps {
@@ -402,6 +435,11 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) error
 		code := strings.Builder{}
 
 		code.WriteString("{\n")
+
+		code.WriteString("\t\"io\": [")
+		code.WriteString("\"basictl/io_streams.cpp\", \"basictl/io_throwable_streams.cpp\"")
+		code.WriteString("],\n")
+
 		code.WriteString("\t\"dependencies\":[")
 
 		wasFirst := false
@@ -419,12 +457,15 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) error
 		code.WriteString("]\n")
 		code.WriteString("}")
 
+		if ns == CommonGroup && wasFirst {
+			return nil, fmt.Errorf("tlgen bug: %s is not independent", CommonGroup)
+		}
 		// это отсылка на никиту с.
 		if err := gen.addCodeFile(filepath.Join(gen.options.RootCPP, ns, "info.json"), code.String()); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return deps, nil
 }
 
 func (gen *Gen2) addCPPBasicTLFiles() error {

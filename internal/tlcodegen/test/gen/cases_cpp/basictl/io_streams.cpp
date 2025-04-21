@@ -5,7 +5,8 @@
 
 namespace basictl {
     tl_istream::tl_istream(tl_input_connector &provider) : provider(&provider) {}
-    tl_istream::tl_istream(tl_throwable_istream& from) : provider(nullptr) {
+
+    tl_istream::tl_istream(tl_throwable_istream &from) : provider(nullptr) {
         from.pass_data(*this);
     }
 
@@ -51,7 +52,7 @@ namespace basictl {
         if ((x & ~(0xFFFFFFFFU >> (8 * pad))) != 0) [[unlikely]] {
             return set_error_string_padding();
         }
-        value.assign(reinterpret_cast<const char*>(ptr + 1), len);
+        value.assign(reinterpret_cast<const char *>(ptr + 1), len);
         ptr += fullLen;
         return true;
     }
@@ -77,11 +78,24 @@ namespace basictl {
     }
 
     bool tl_istream::set_error_eof() noexcept { return set_error(tl_error_type::STREAM_EOF, "EOF"); }
-    bool tl_istream::set_error_sequence_length() noexcept { return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length"); }
-    bool tl_istream::set_error_string_padding() noexcept { return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding"); }
-    bool tl_istream::set_error_expected_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag"); }
+
+    bool tl_istream::set_error_sequence_length() noexcept {
+        return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length");
+    }
+
+    bool tl_istream::set_error_string_padding() noexcept {
+        return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding");
+    }
+
+    bool tl_istream::set_error_expected_tag() noexcept {
+        return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag");
+    }
+
     bool tl_istream::set_error_union_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "union_tag"); };
-    bool tl_istream::set_error_unknown_scenario() noexcept { return set_error(tl_error_type::UNKNOWN_SCENARIO, "union_tag"); };
+
+    bool tl_istream::set_error_unknown_scenario() noexcept {
+        return set_error(tl_error_type::UNKNOWN_SCENARIO, "union_tag");
+    };
 
     void tl_istream::grow_buffer() noexcept {
         ptr = end_block;
@@ -133,9 +147,9 @@ namespace basictl {
     }
 
     bool tl_istream::fetch_data_append(std::string &value, size_t size) noexcept {
-        for (;ptr + size > end_block;) [[unlikely]] {
+        for (; ptr + size > end_block;) [[unlikely]] {
             // assert(ptr <= end)
-            value.append(reinterpret_cast<const char*>(ptr), end_block - ptr);
+            value.append(reinterpret_cast<const char *>(ptr), end_block - ptr);
             size -= end_block - ptr;
             grow_buffer();
             // assert(ptr <= end)
@@ -143,7 +157,7 @@ namespace basictl {
                 return set_error_eof();
             }
         }
-        value.append(reinterpret_cast<const char*>(ptr), size);
+        value.append(reinterpret_cast<const char *>(ptr), size);
         ptr += size;
         return true;
     }
@@ -159,15 +173,18 @@ namespace basictl {
         return true;
     }
 
-    std::exception static exception_from_tl_stream_error(tl_stream_error & error) {
+    std::exception static exception_from_tl_stream_error(tl_stream_error &error) {
         switch (error.index()) {
-            case 0: return std::get<0>(error);
-            case 1: return std::get<1>(error);
-            default: return {};
+            case 0:
+                return std::get<0>(error);
+            case 1:
+                return std::get<1>(error);
+            default:
+                return {};
         }
     }
 
-    void tl_istream::pass_data(tl_throwable_istream& to) {
+    void tl_istream::pass_data(tl_throwable_istream &to) {
         to.provider = provider;
         to.ptr = ptr;
         to.start_block = start_block;
@@ -178,8 +195,9 @@ namespace basictl {
         }
     }
 
-    tl_ostream::tl_ostream(tl_output_connector &provider): provider(&provider) {}
-    tl_ostream::tl_ostream(tl_throwable_ostream& from) : provider(nullptr) {
+    tl_ostream::tl_ostream(tl_output_connector &provider) : provider(&provider) {}
+
+    tl_ostream::tl_ostream(tl_throwable_ostream &from) : provider(nullptr) {
         from.pass_data(*this);
     }
 
@@ -246,12 +264,26 @@ namespace basictl {
     }
 
     bool tl_ostream::set_error_eof() noexcept { return set_error(tl_error_type::STREAM_EOF, "EOF"); }
-    bool tl_ostream::set_error_sequence_length() noexcept { return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length"); }
-    bool tl_ostream::set_error_string_padding() noexcept { return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding"); }
+
+    bool tl_ostream::set_error_sequence_length() noexcept {
+        return set_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "sequence_length");
+    }
+
+    bool tl_ostream::set_error_string_padding() noexcept {
+        return set_error(tl_error_type::INCORRECT_STRING_PADDING, "string_padding");
+    }
+
     bool tl_ostream::set_error_bool_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "bool_tag"); }
-    bool tl_ostream::set_error_expected_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag"); }
+
+    bool tl_ostream::set_error_expected_tag() noexcept {
+        return set_error(tl_error_type::UNEXPECTED_TAG, "expected_tag");
+    }
+
     bool tl_ostream::set_error_union_tag() noexcept { return set_error(tl_error_type::UNEXPECTED_TAG, "union_tag"); }
-    bool tl_ostream::set_error_unknown_scenario() noexcept { return set_error(tl_error_type::UNKNOWN_SCENARIO, "union_tag"); };
+
+    bool tl_ostream::set_error_unknown_scenario() noexcept {
+        return set_error(tl_error_type::UNKNOWN_SCENARIO, "union_tag");
+    };
 
     void tl_ostream::grow_buffer() {
         ptr = end_block;
@@ -312,7 +344,7 @@ namespace basictl {
         return true;
     }
 
-    void tl_ostream::pass_data(tl_throwable_ostream& to) {
+    void tl_ostream::pass_data(tl_throwable_ostream &to) {
         to.provider = provider;
         to.ptr = ptr;
         to.start_block = start_block;
