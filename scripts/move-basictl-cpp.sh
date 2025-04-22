@@ -55,4 +55,11 @@ done
 printf "\treturn m\n" >> $GENERATED_FILE
 printf "}\n" >> $GENERATED_FILE
 
-git diff
+diff="$(git diff)"
+if [[ $diff ]]; then
+    echo "There is some diff:"
+    echo "$diff"
+    exit 1
+else
+  echo "norm"
+fi
