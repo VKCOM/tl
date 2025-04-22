@@ -23,8 +23,3 @@ jobs:
       - uses: dominikh/staticcheck-action@v1.3.0
         with:
           install-go: false
-
-      - name: Codegen helpers_cpp
-        script:
-          - cd scripts
-          - ./move-basictl-cpp.sh
