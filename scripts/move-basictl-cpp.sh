@@ -54,3 +54,5 @@ done
 
 printf "\treturn m\n" >> $GENERATED_FILE
 printf "}\n" >> $GENERATED_FILE
+
+git diff
