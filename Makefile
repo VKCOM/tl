@@ -131,6 +131,11 @@ qtpl:
 		qtc -dir=./internal -skipLineComments; \
 	fi
 
+.PHONY: cpp_move_basictl
+cpp_move_basictl:
+	@cd scripts && \
+	bash move-basictl-cpp.sh
+
 .PHONY: cpp_build
 cpp_build:
 	g++ -o $(GEN_PATH)/test_cpp $(GEN_PATH)/test_cpp.cpp $(GEN_PATH)/cpp/all.cpp -std=c++17 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
