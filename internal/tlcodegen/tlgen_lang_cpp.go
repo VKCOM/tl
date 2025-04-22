@@ -469,24 +469,12 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 }
 
 func (gen *Gen2) addCPPBasicTLFiles() error {
-	exportingFiles := []string{
-		"constants.h",
-		"errors.h",
-		"io_connectors.h",
-		"io_streams.cpp",
-		"io_streams.h",
-		"io_throwable_streams.cpp",
-		"io_throwable_streams.h",
-		"impl/string_io.h",
-		"impl/string_io.cpp",
-		"dependencies.h",
-	}
+	exportingFiles := CppCopingStreamFiles()
+	exportingFilesSources := CppCopingStreamFilesText()
 
 	for _, file := range exportingFiles {
-		data, err := os.ReadFile(filepath.Join(basictlCppFolder, file))
-		if err != nil {
-			return err
-		}
+		data := []byte(exportingFilesSources[file])
+
 		code := strings.Builder{}
 		code.Write([]byte(HeaderComment))
 		code.Write([]byte("\n"))
