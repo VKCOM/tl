@@ -11,7 +11,7 @@ package tlcodegen
 
 func CppCopingStreamFiles() []string {
 	values := []string{
-		"constants.h2",
+		"constants.h",
 		"errors.h",
 		"io_connectors.h",
 		"io_streams.cpp",

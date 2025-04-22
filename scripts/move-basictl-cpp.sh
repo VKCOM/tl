@@ -61,5 +61,5 @@ if [[ $diff ]]; then
     echo "$diff"
     exit 1
 else
-  echo "norm"
+  echo "helpers_cpp_generated is synchronized with files in pkg/basictl_cpp"
 fi
