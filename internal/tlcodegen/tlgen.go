@@ -150,6 +150,13 @@ func (n *InternalNamespace) Prefix(directImports *DirectImports, in *InternalNam
 	return n.Name + "."
 }
 
+func (n *InternalNamespace) AddPrefix(in *InternalNamespace) string {
+	if n == in {
+		return ""
+	}
+	return n.Name + "."
+}
+
 func (n *InternalNamespace) ImportsSingleNamedNamespace() (empty bool, name string) {
 	for nn := range n.Namespaces {
 		if nn == "" {
@@ -314,6 +321,9 @@ type Gen2Options struct {
 	SplitInternal     bool
 	AddMetaData       bool
 	AddFactoryData    bool
+
+	// TL2
+	GenerateTL2 bool
 
 	// Linter
 	Schema2Compare string

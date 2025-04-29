@@ -534,6 +534,27 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 
 		qw422016.N().S(`
 `)
+		if struct_.wr.gen.options.GenerateTL2 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) CalculateLayout(sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) []int {
+`)
+			if field.t.trw.doesCalculateLayoutUseObject() {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(fieldTypeString)
+				qw422016.N().S(`)(item)
+`)
+			}
+			qw422016.N().S(`    `)
+			qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
+    return sizes
+}
+
+`)
+		}
 		if struct_.wr.gen.options.GenerateLegacyJsonRead {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
@@ -682,6 +703,106 @@ func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytes
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 
+	if struct_.wr.gen.options.GenerateTL2 {
+		qw422016.N().S(`
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) CalculateLayout(sizes []int`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
+    sizes = append(sizes, 0)
+    lastUsedBit := -1
+`)
+		if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
+			qw422016.N().S(`
+    // add constructor No for union type in case of non first option
+    lastUsedBit = 0
+    sizes[sizePosition] += basictl.TL2CalculateSize(`)
+			qw422016.N().D(struct_.wr.unionIndex)
+			qw422016.N().S(`)
+`)
+		}
+		for fieldIndex, field := range struct_.Fields {
+			if field.t.IsTrueType() && field.fieldMask == nil {
+				continue
+			}
+			qw422016.N().S(`
+    // calculate layout for item.`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`
+`)
+			if fieldIndex == 0 {
+				qw422016.N().S(`    currentPosition := len(sizes)
+`)
+			} else {
+				qw422016.N().S(`    currentPosition = len(sizes)
+`)
+			}
+			if field.fieldMask != nil {
+				qw422016.N().S(`    if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+`)
+			}
+			if field.t.IsTrueType() {
+				qw422016.N().S(`    lastUsedBit = `)
+				qw422016.N().D(fieldIndex + 1)
+				qw422016.N().S(`
+`)
+			} else {
+				emptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
+
+				if emptyCondition != "" {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(emptyCondition)
+					qw422016.N().S(` {
+        sizes = append(sizes, 0)
+    } else {
+`)
+				}
+				qw422016.N().S(`    `)
+				qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask != nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(`
+`)
+				if emptyCondition != "" {
+					qw422016.N().S(`    }
+`)
+				}
+				qw422016.N().S(`    if sizes[currentPosition] != 0 {
+        lastUsedBit = `)
+				qw422016.N().D(fieldIndex + 1)
+				qw422016.N().S(`
+        sizes[sizePosition] += sizes[currentPosition]
+`)
+				if field.t.trw.isSizeWrittenInData() {
+					qw422016.N().S(`        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+`)
+				}
+				qw422016.N().S(`    } else {
+        sizes = sizes[:currentPosition + 1]
+    }
+`)
+			}
+			if field.fieldMask != nil {
+				qw422016.N().S(`    }
+`)
+			}
+		}
+		qw422016.N().S(`
+    // append byte for each section until last mentioned field
+    if lastUsedBit != -1 {
+        sizes[sizePosition] += lastUsedBit / 8 + 1
+    } else {
+        // remove unused values
+        sizes = sizes[:sizePosition + 1]
+    }
+    return sizes
+}
+`)
+	}
 	if struct_.wr.gen.options.GenerateLegacyJsonRead {
 		qw422016.N().S(`
 func (item *`)

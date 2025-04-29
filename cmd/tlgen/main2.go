@@ -47,6 +47,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.BoolVar(&opt.SplitInternal, "split-internal", false,
 		"generated code will be split into independent packages (in a simple word: speeds up compilation)")
 
+	// General TL2
+	flag.BoolVar(&opt.GenerateTL2, "tl2-generate", false,
+		"generate code for tl2 methods (currently work only for golang)")
+
 	// Linter
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
 		`path to old version TL schema to compare on backward compatibility`)

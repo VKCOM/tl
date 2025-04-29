@@ -60,6 +60,26 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
     {%- endif -%}
 }
 
+{%- if maybe.wr.gen.options.GenerateTL2 -%}
+func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+    sizePosition := len(sizes)
+    sizes = append(sizes, 0)
+    if item.Ok {
+        sizes[sizePosition] += 1
+        sizes[sizePosition] += basictl.TL2CalculateSize(1)
+        currentPosition := len(sizes)
+        {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value%s", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+        if sizes[currentPosition] != 0 {
+            sizes[sizePosition] += sizes[currentPosition]
+        {%- if maybe.element.t.trw.isSizeWrittenInData() -%}
+            sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+        {%- endif -%}
+        }
+    }
+    return sizes
+}
+
+{%- endif -%}
 {%- if maybe.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
   _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe("{%= maybe.wr.tlName.String() %}", j)
