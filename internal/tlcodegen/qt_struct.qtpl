@@ -246,6 +246,16 @@ func (item *{%s= goName %}) {%s= isSetName %}() bool { return {%s= natArgUse %} 
             fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
 
+        {%- if struct_.wr.gen.options.GenerateTL2 -%}
+func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+    {%- if field.t.trw.doesCalculateLayoutUseObject() -%}
+    ptr := (*{%s= fieldTypeString %})(item)
+    {%- endif -%}
+    {%s= field.t.CalculateLayout(bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    return sizes
+}
+
+        {%- endif -%}
         {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
     ptr := (*{%s= fieldTypeString %})(item)
@@ -262,11 +272,11 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 
 // This method is general version of WriteJSON, use it instead!
 func (item *{%s= goName %}) WriteJSONGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    {%- if writeNeedsError -%}
+        {%- if writeNeedsError -%}
     return item.WriteJSON(w{%s= natArgsCall %})
-    {%- else -%}
+        {%- else -%}
     return item.WriteJSON(w{%s= natArgsCall %}), nil
-    {%- endif -%}
+        {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -276,11 +286,11 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 func (item *{%s= goName %}) WriteJSONOpt(newTypeNames bool, short bool, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     ptr := (*{%s= fieldTypeString %})(item)
     {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true, writeNeedsError) %}
-    {%- if writeNeedsError -%}
+        {%- if writeNeedsError -%}
     return w, nil
-    {%- else -%}
+        {%- else -%}
     return w
-    {%- endif -%}
+        {%- endif -%}
 }
     {%- else -%}
         {%- code
@@ -314,6 +324,70 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
     -%}
+{%- if struct_.wr.gen.options.GenerateTL2 -%}
+
+func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+    sizePosition := len(sizes)
+    sizes = append(sizes, 0)
+    lastUsedBit := -1
+    {%- if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 -%}
+
+    // add constructor No for union type in case of non first option
+    lastUsedBit = 0
+    sizes[sizePosition] += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
+    {%- endif -%}
+    {%- for fieldIndex, field := range struct_.Fields -%}
+        {%- if field.t.IsTrueType() && field.fieldMask == nil -%}
+        {%- continue -%}
+        {%- endif -%}
+
+    // calculate layout for item.{%s= field.goName %}
+        {%- if fieldIndex == 0 -%}
+    currentPosition := len(sizes)
+        {%- else -%}
+    currentPosition = len(sizes)
+        {%- endif -%}
+        {%- if field.fieldMask != nil -%}
+    if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
+        {%- endif -%}
+        {%- if field.t.IsTrueType() -%}
+    lastUsedBit = {%d= fieldIndex + 1 %}
+        {%- else -%}
+    {%- code emptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive) -%}
+    {%- if emptyCondition != "" -%}
+    if {%s= emptyCondition %} {
+        sizes = append(sizes, 0)
+    } else {
+    {%- endif -%}
+    {%s= field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask != nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    {%- if emptyCondition != "" -%}
+    }
+    {%- endif -%}
+    if sizes[currentPosition] != 0 {
+        lastUsedBit = {%d= fieldIndex + 1 %}
+        sizes[sizePosition] += sizes[currentPosition]
+            {%- if field.t.trw.isSizeWrittenInData() -%}
+        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+            {%- endif -%}
+    } else {
+        sizes = sizes[:currentPosition + 1]
+    }
+        {%- endif -%}
+        {%- if field.fieldMask != nil -%}
+    }
+        {%- endif -%}
+    {%- endfor -%}
+
+    // append byte for each section until last mentioned field
+    if lastUsedBit != -1 {
+        sizes[sizePosition] += lastUsedBit / 8 + 1
+    } else {
+        // remove unused values
+        sizes = sizes[:sizePosition + 1]
+    }
+    return sizes
+}
+{%- endif -%}
 {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
 
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {

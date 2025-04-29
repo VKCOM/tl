@@ -1108,6 +1108,8 @@ type TypeRW interface {
 
 	TypeRWCPPData
 	TypeRWPHPData
+
+	TypeRWTL2
 }
 
 type Field struct {

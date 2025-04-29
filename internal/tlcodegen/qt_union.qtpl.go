@@ -241,7 +241,55 @@ func (item `)
 		}
 	}
 	qw422016.N().S(`}
-
+`)
+	if union.wr.gen.options.GenerateTL2 {
+		qw422016.N().S(`
+func (item `)
+		qw422016.N().S(asterisk)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) CalculateLayout(sizes []int`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) []int {
+`)
+		if union.IsEnum {
+			qw422016.N().S(`    switch item.index {
+    case 0:
+        sizes = append(sizes, 0)
+    default:
+        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
+    }
+`)
+		} else {
+			qw422016.N().S(`    switch item.index {
+`)
+			for i, field := range union.Fields {
+				qw422016.N().S(`    case `)
+				qw422016.N().D(i)
+				qw422016.N().S(`:
+`)
+				if field.t.IsTrueType() {
+					if i == 0 {
+						qw422016.N().S(`        sizes = append(sizes, 0)
+`)
+					} else {
+						qw422016.N().S(`        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
+`)
+					}
+				} else {
+					qw422016.N().S(`        `)
+					qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, union.wr.NatParams))
+					qw422016.N().S(`
+`)
+				}
+			}
+			qw422016.N().S(`    }
+`)
+		}
+		qw422016.N().S(`    return sizes
+}
+`)
+	}
+	qw422016.N().S(`
 `)
 	if union.wr.gen.options.GenerateLegacyJsonRead {
 		qw422016.N().S(`func (item *`)

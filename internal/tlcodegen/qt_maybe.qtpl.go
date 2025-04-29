@@ -128,6 +128,35 @@ func (item *`)
 	qw422016.N().S(`}
 
 `)
+	if maybe.wr.gen.options.GenerateTL2 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) CalculateLayout(sizes []int`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
+    sizes = append(sizes, 0)
+    if item.Ok {
+        sizes[sizePosition] += 1
+        sizes[sizePosition] += basictl.TL2CalculateSize(1)
+        currentPosition := len(sizes)
+        `)
+		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value%s", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(`
+        if sizes[currentPosition] != 0 {
+            sizes[sizePosition] += sizes[currentPosition]
+`)
+		if maybe.element.t.trw.isSizeWrittenInData() {
+			qw422016.N().S(`            sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+`)
+		}
+		qw422016.N().S(`        }
+    }
+    return sizes
+}
+
+`)
+	}
 	if maybe.wr.gen.options.GenerateLegacyJsonRead {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)

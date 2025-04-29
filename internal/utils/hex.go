@@ -22,6 +22,18 @@ func SprintHexDump(data []byte) string {
 	return strings.TrimSpace(buf.String())
 }
 
+func SprintHexDumpTL2(data []byte) string {
+	var buf bytes.Buffer
+	buf.Grow(len(data) + len(data))
+	for i := 0; i < len(data); i += 1 {
+		// Печатаем октеты в обратном порядке, чтобы они совпадали
+		// с константами из `constant.go`.
+		_, _ = fmt.Fprintf(&buf, "%02x ",
+			data[i+0])
+	}
+	return strings.TrimSpace(buf.String())
+}
+
 func ParseHexToBytes(data string) []byte {
 	var result []byte
 	for _, octet := range strings.Split(data, " ") {
@@ -33,6 +45,15 @@ func ParseHexToBytes(data string) []byte {
 		result = append(result, b2...)
 		result = append(result, b3...)
 		result = append(result, b4...)
+	}
+	return result
+}
+
+func ParseHexToBytesTL2(data string) []byte {
+	var result []byte
+	for _, octet := range strings.Split(data, " ") {
+		b1, _ := hex.DecodeString(octet)
+		result = append(result, b1...)
 	}
 	return result
 }

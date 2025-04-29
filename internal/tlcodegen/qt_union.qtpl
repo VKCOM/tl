@@ -117,6 +117,35 @@ func (item {%s= asterisk %}{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %
         {%- endif -%}
     {%- endif -%}
 }
+{%- if union.wr.gen.options.GenerateTL2 -%}
+
+func (item {%s= asterisk %}{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+    {%- if union.IsEnum -%}
+    switch item.index {
+    case 0:
+        sizes = append(sizes, 0)
+    default:
+        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
+    }
+    {%- else -%}
+    switch item.index {
+    {%- for i, field := range union.Fields -%}
+    case {%d i %}:
+        {%- if field.t.IsTrueType() -%}
+            {%- if i == 0 -%}
+        sizes = append(sizes, 0)
+            {%- else -%}
+        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
+            {%- endif -%}
+        {%- else -%}
+        {%s= field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, union.wr.NatParams) %}
+        {%- endif -%}
+    {%- endfor -%}
+    }
+    {%- endif -%}
+    return sizes
+}
+{%- endif -%}
 
 {%- if union.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
