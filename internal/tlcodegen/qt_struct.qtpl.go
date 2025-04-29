@@ -753,38 +753,48 @@ func (item *`)
 				qw422016.N().S(`
 `)
 			} else {
-				emptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
+				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
 
-				if emptyCondition != "" {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(emptyCondition)
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`            if `)
+					qw422016.N().S(nonEmptyCondition)
 					qw422016.N().S(` {
-        sizes = append(sizes, 0)
-    } else {
 `)
 				}
 				qw422016.N().S(`    `)
-				qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask != nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
 `)
-				if emptyCondition != "" {
-					qw422016.N().S(`    }
-`)
-				}
-				qw422016.N().S(`    if sizes[currentPosition] != 0 {
+				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+					qw422016.N().S(`    if sizes[currentPosition] != 0 {
         lastUsedBit = `)
-				qw422016.N().D(fieldIndex + 1)
-				qw422016.N().S(`
+					qw422016.N().D(fieldIndex + 1)
+					qw422016.N().S(`
         sizes[sizePosition] += sizes[currentPosition]
 `)
-				if field.t.trw.isSizeWrittenInData() {
-					qw422016.N().S(`        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+					if field.t.trw.isSizeWrittenInData() {
+						qw422016.N().S(`        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 `)
-				}
-				qw422016.N().S(`    } else {
+					}
+					qw422016.N().S(`    } else {
         sizes = sizes[:currentPosition + 1]
     }
 `)
+				} else {
+					qw422016.N().S(`        lastUsedBit = `)
+					qw422016.N().D(fieldIndex + 1)
+					qw422016.N().S(`
+        sizes[sizePosition] += sizes[currentPosition]
+`)
+					if field.t.trw.isSizeWrittenInData() {
+						qw422016.N().S(`        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+`)
+					}
+				}
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`            }
+`)
+				}
 			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`    }

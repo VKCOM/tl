@@ -19,6 +19,39 @@ func (trw *TypeRWStruct) calculateLayout(
 	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), joinWithCommas(natArgs))
 }
 
+func (trw *TypeRWStruct) writeTL2Call(
+	bytesVersion bool,
+	targetSizes string,
+	targetBytes string,
+	targetObject string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+	natArgs []string) string {
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
+	}
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.WriteTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	}
+	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
+		targetSizes,
+		addAsteriskAndBrackets(refObject, targetObject),
+		joinWithCommas(natArgs),
+		targetBytes,
+	)
+}
+
+func (trw *TypeRWStruct) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return false
+	}
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.trw.doesZeroSizeMeanEmpty(canDependOnLocalBit)
+	}
+	return true
+}
+
 func (trw *TypeRWStruct) doesCalculateLayoutUseObject() bool {
 	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 		return false
