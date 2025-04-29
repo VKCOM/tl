@@ -13,6 +13,28 @@ func (trw *TypeRWMaybe) calculateLayout(
 	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsterisk(refObject, targetObject), joinWithCommas(natArgs))
 }
 
+func (trw *TypeRWMaybe) writeTL2Call(
+	bytesVersion bool,
+	targetSizes string,
+	targetBytes string,
+	targetObject string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+	natArgs []string,
+) string {
+	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
+		targetSizes,
+		addAsterisk(refObject, targetObject),
+		joinWithCommas(natArgs),
+		targetBytes,
+	)
+}
+
+func (trw *TypeRWMaybe) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
+	return true
+}
+
 func (trw *TypeRWMaybe) doesCalculateLayoutUseObject() bool {
 	return true
 }

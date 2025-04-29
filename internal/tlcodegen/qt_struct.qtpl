@@ -353,25 +353,31 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- if field.t.IsTrueType() -%}
     lastUsedBit = {%d= fieldIndex + 1 %}
         {%- else -%}
-    {%- code emptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive) -%}
-    {%- if emptyCondition != "" -%}
-    if {%s= emptyCondition %} {
-        sizes = append(sizes, 0)
-    } else {
-    {%- endif -%}
-    {%s= field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask != nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
-    {%- if emptyCondition != "" -%}
-    }
-    {%- endif -%}
+            {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive) -%}
+            {%- if nonEmptyCondition != "" -%}
+            if {%s= nonEmptyCondition %} {
+            {%- endif -%}
+    {%s= field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+                {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
     if sizes[currentPosition] != 0 {
         lastUsedBit = {%d= fieldIndex + 1 %}
         sizes[sizePosition] += sizes[currentPosition]
-            {%- if field.t.trw.isSizeWrittenInData() -%}
+                    {%- if field.t.trw.isSizeWrittenInData() -%}
         sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-            {%- endif -%}
+                    {%- endif -%}
     } else {
         sizes = sizes[:currentPosition + 1]
     }
+                {%- else -%}
+        lastUsedBit = {%d= fieldIndex + 1 %}
+        sizes[sizePosition] += sizes[currentPosition]
+                    {%- if field.t.trw.isSizeWrittenInData() -%}
+        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+                    {%- endif -%}
+                {%- endif -%}
+            {%- if nonEmptyCondition != "" -%}
+            }
+            {%- endif -%}
         {%- endif -%}
         {%- if field.fieldMask != nil -%}
     }

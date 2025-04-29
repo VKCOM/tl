@@ -20,6 +20,34 @@ func (trw *TypeRWBool) calculateLayout(
 	return fmt.Sprintf("%[1]s = append(%[1]s, 1)", targetSizes)
 }
 
+func (trw *TypeRWBool) writeTL2Call(
+	bytesVersion bool,
+	targetSizes string,
+	targetBytes string,
+	targetObject string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+	natArgs []string,
+) string {
+	if canDependOnLocalBit {
+		return fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
+	}
+	return fmt.Sprintf(`%[1]s = %[1]s[1:]
+if %[2]s {
+	%[3]s = append(%[3]s, 1)
+} else {
+	%[3]s = append(%[3]s, 0)
+}`,
+		targetSizes,
+		targetObject,
+		targetBytes)
+}
+
+func (trw *TypeRWBool) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
+	return !canDependOnLocalBit
+}
+
 func (trw *TypeRWBool) doesCalculateLayoutUseObject() bool {
 	return false
 }
