@@ -351,6 +351,67 @@ func (item `)
 }
 `)
 		}
+		qw422016.N().S(`
+func (item `)
+		qw422016.N().S(asterisk)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadTL2(r []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
+`)
+		if union.IsEnum {
+			qw422016.N().S(`    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    if currentSize == 0 {
+        item.index = 0
+    } else {
+        var block byte
+        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+        if block != 1 {
+            return r, basictl.TL2UnexpectedByteError(block, 1)
+        }
+        if r, err = basictl.TL2ReadSize(r, &item.index); err != nil { return r, err }
+    }
+`)
+		} else {
+			qw422016.N().S(`    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    if currentSize == 0 {
+        item.index = 0
+    } else {
+        var block byte
+        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+        if (block & 1) == 0 {
+            return r, basictl.TL2UnexpectedByteError(block, block | 1)
+        }
+        if r, err = basictl.TL2ReadSize(r, &item.index); err != nil { return r, err }
+    }
+
+    switch item.index {
+`)
+			for i, field := range union.Fields {
+				qw422016.N().S(`    case `)
+				qw422016.N().D(i)
+				qw422016.N().S(`:
+`)
+				if field.t.IsTrueType() {
+					qw422016.N().S(`        return r, nil
+`)
+				} else {
+					qw422016.N().S(`        r = saveR
+        `)
+					qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, union.wr.NatParams))
+					qw422016.N().S(`
+`)
+				}
+			}
+			qw422016.N().S(`    }
+`)
+		}
+		qw422016.N().S(`    return r, nil
+}
+`)
 	}
 	qw422016.N().S(`
 `)

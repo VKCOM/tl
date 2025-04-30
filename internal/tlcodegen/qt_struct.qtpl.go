@@ -896,7 +896,7 @@ func (item *`)
 				continue
 			}
 			qw422016.N().S(`
-    // calculate layout for item.`)
+    // write item.`)
 			qw422016.N().S(field.goName)
 			qw422016.N().S(`
 `)
@@ -938,7 +938,6 @@ func (item *`)
     `)
 				qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
-
 `)
 				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
 					qw422016.N().S(`    } else {

@@ -26,6 +26,18 @@ type TypeRWTL2 interface {
 	) string
 
 	doesWriteTL2UseObject(canDependOnLocalBit bool) bool
+
+	readTL2Call(
+		bytesVersion bool,
+		targetBytes string,
+		targetObject string,
+		canDependOnLocalBit bool,
+		ins *InternalNamespace,
+		refObject bool,
+		natArgs []string,
+	) string
+
+	doesReadTL2UseObject(canDependOnLocalBit bool) bool
 }
 
 func (w *TypeRWWrapper) CalculateLayout(
@@ -53,4 +65,17 @@ func (w *TypeRWWrapper) WriteTL2Call(
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.writeTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+}
+
+func (w *TypeRWWrapper) ReadTL2Call(
+	bytesVersion bool,
+	targetBytes string,
+	targetObject string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+	natArgs []string,
+) string {
+	bytesVersion = bytesVersion && w.hasBytesVersion
+	return w.trw.readTL2Call(bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
 }
