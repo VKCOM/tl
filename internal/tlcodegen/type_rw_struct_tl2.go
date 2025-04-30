@@ -65,3 +65,13 @@ func (trw *TypeRWStruct) doesCalculateLayoutUseObject() bool {
 func (trw *TypeRWStruct) isSizeWrittenInData() bool {
 	return !(trw.wr.IsTrueType() && trw.wr.unionParent == nil)
 }
+
+func (trw *TypeRWStruct) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return false
+	}
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.trw.doesWriteTL2UseObject(canDependOnLocalBit)
+	}
+	return true
+}

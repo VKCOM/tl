@@ -255,6 +255,14 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     return sizes
 }
 
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+    {%- if field.t.trw.doesWriteTL2UseObject(false) -%}
+    ptr := (*{%s= fieldTypeString %})(item)
+    {%- endif -%}
+    {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    return w, sizes
+}
+
         {%- endif -%}
         {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
@@ -355,7 +363,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- else -%}
             {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive) -%}
             {%- if nonEmptyCondition != "" -%}
-            if {%s= nonEmptyCondition %} {
+    if {%s= nonEmptyCondition %} {
             {%- endif -%}
     {%s= field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
                 {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
@@ -376,7 +384,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
                     {%- endif -%}
                 {%- endif -%}
             {%- if nonEmptyCondition != "" -%}
-            }
+    }
             {%- endif -%}
         {%- endif -%}
         {%- if field.fieldMask != nil -%}
@@ -392,6 +400,81 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         sizes = sizes[:sizePosition + 1]
     }
     return sizes
+}
+
+
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    serializedSize := 0
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    {%- if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) -%}
+    currentBlockPosition := len(w)
+    {%- endif -%}
+    w = append(w, 0)
+    serializedSize += 1
+    {%- if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 -%}
+
+    // add constructor No for union type in case of non first option
+    w[currentBlockPosition] |= (1 << 0)
+
+    w = basictl.TL2WriteSize(w, {%d= struct_.wr.unionIndex %})
+    serializedSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
+    {%- endif -%}
+    {%- for fieldIndex, field := range struct_.Fields -%}
+        {%- if (fieldIndex + 1) % 8 == 0 -%}
+
+        // add byte for fields with index {%v= (fieldIndex + 1) %}..{%v= (fieldIndex + 8) %}
+        if serializedSize != currentSize {
+            currentBlockPosition = len(w)
+            w = append(w, 0)
+            serializedSize += 1
+        } else {
+            return w, sizes
+        }
+        {%- endif -%}
+        {%- if field.t.IsTrueType() && field.fieldMask == nil -%}
+        {%- continue -%}
+        {%- endif -%}
+
+    // calculate layout for item.{%s= field.goName %}
+        {%- if field.fieldMask != nil -%}
+    if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
+        {%- endif -%}
+        {%- if field.t.IsTrueType() -%}
+    w[currentBlockPosition] |= (1 << {%v (fieldIndex + 1) % 8 %})
+        {%- else -%}
+            {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive) -%}
+            {%- if nonEmptyCondition != "" -%}
+    if {%s= nonEmptyCondition %} {
+            {%- endif -%}
+    serializedSize += sizes[0]
+            {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
+    if sizes[0] != 0 {
+            {%- endif -%}
+    w[currentBlockPosition] |= (1 << {%v (fieldIndex + 1) % 8 %})
+    {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+            {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
+    } else {
+        sizes = sizes[1:]
+    }
+            {%- endif -%}
+            {%- if nonEmptyCondition != "" -%}
+    }
+            {%- endif -%}
+        {%- endif -%}
+        {%- if field.fieldMask != nil -%}
+    }
+        {%- endif -%}
+    {%- endfor -%}
+
+    return w, sizes
 }
 {%- endif -%}
 {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}

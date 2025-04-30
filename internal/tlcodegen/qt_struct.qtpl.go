@@ -553,6 +553,24 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
     return sizes
 }
 
+func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) ([]byte, []int) {
+`)
+			if field.t.trw.doesWriteTL2UseObject(false) {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(fieldTypeString)
+				qw422016.N().S(`)(item)
+`)
+			}
+			qw422016.N().S(`    `)
+			qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
+    return w, sizes
+}
+
 `)
 		}
 		if struct_.wr.gen.options.GenerateLegacyJsonRead {
@@ -756,7 +774,7 @@ func (item *`)
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
 
 				if nonEmptyCondition != "" {
-					qw422016.N().S(`            if `)
+					qw422016.N().S(`    if `)
 					qw422016.N().S(nonEmptyCondition)
 					qw422016.N().S(` {
 `)
@@ -792,7 +810,7 @@ func (item *`)
 					}
 				}
 				if nonEmptyCondition != "" {
-					qw422016.N().S(`            }
+					qw422016.N().S(`    }
 `)
 				}
 			}
@@ -810,6 +828,123 @@ func (item *`)
         sizes = sizes[:sizePosition + 1]
     }
     return sizes
+}
+
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    serializedSize := 0
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+`)
+		if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
+			qw422016.N().S(`    currentBlockPosition := len(w)
+`)
+		}
+		qw422016.N().S(`    w = append(w, 0)
+    serializedSize += 1
+`)
+		if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
+			qw422016.N().S(`
+    // add constructor No for union type in case of non first option
+    w[currentBlockPosition] |= (1 << 0)
+
+    w = basictl.TL2WriteSize(w, `)
+			qw422016.N().D(struct_.wr.unionIndex)
+			qw422016.N().S(`)
+    serializedSize += basictl.TL2CalculateSize(`)
+			qw422016.N().D(struct_.wr.unionIndex)
+			qw422016.N().S(`)
+`)
+		}
+		for fieldIndex, field := range struct_.Fields {
+			if (fieldIndex+1)%8 == 0 {
+				qw422016.N().S(`
+        // add byte for fields with index `)
+				qw422016.N().V((fieldIndex + 1))
+				qw422016.N().S(`..`)
+				qw422016.N().V((fieldIndex + 8))
+				qw422016.N().S(`
+        if serializedSize != currentSize {
+            currentBlockPosition = len(w)
+            w = append(w, 0)
+            serializedSize += 1
+        } else {
+            return w, sizes
+        }
+`)
+			}
+			if field.t.IsTrueType() && field.fieldMask == nil {
+				continue
+			}
+			qw422016.N().S(`
+    // calculate layout for item.`)
+			qw422016.N().S(field.goName)
+			qw422016.N().S(`
+`)
+			if field.fieldMask != nil {
+				qw422016.N().S(`    if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+`)
+			}
+			if field.t.IsTrueType() {
+				qw422016.N().S(`    w[currentBlockPosition] |= (1 << `)
+				qw422016.E().V((fieldIndex + 1) % 8)
+				qw422016.N().S(`)
+`)
+			} else {
+				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
+
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(nonEmptyCondition)
+					qw422016.N().S(` {
+`)
+				}
+				qw422016.N().S(`    serializedSize += sizes[0]
+`)
+				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+					qw422016.N().S(`    if sizes[0] != 0 {
+`)
+				}
+				qw422016.N().S(`    w[currentBlockPosition] |= (1 << `)
+				qw422016.E().V((fieldIndex + 1) % 8)
+				qw422016.N().S(`)
+    `)
+				qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(`
+`)
+				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+					qw422016.N().S(`    } else {
+        sizes = sizes[1:]
+    }
+`)
+				}
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`    }
+`)
+				}
+			}
+			if field.fieldMask != nil {
+				qw422016.N().S(`    }
+`)
+			}
+		}
+		qw422016.N().S(`
+    return w, sizes
 }
 `)
 	}

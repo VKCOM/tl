@@ -86,6 +86,26 @@ func {%s= goName %}CalculateLayout(sizes []int,vec *{%s= typeString %}{%s= value
     }
     return sizes
 }
+
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %}{%s= valueNatArgsDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    for i := 0; i < len(*vec); i++ {
+        {%- if tuple.dictKeyField.t.trw.doesWriteTL2UseObject(false) || tuple.dictValueField.t.trw.doesWriteTL2UseObject(false) -%}
+        elem := (*vec)[i]
+        {%- endif -%}
+        {%s= tuple.dictKeyField.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem.Key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.dictValueField.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+    }
+    return w, sizes
+}
+
 {%- endif -%}
 
                 {%- if tuple.dictKeyString -%}
@@ -364,6 +384,38 @@ func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s
     }
     return sizes
 }
+
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    keys := make([]{%s= keyTypeString %}, 0, len(*m))
+    for k := range *m {
+        keys = append(keys, k)
+    }
+{%- if tuple.dictKeyString -%}
+    sort.Strings(keys)
+{%- else -%}
+    sort.Slice(keys, func(i, j int) bool {
+        return keys[i] < keys[j]
+    })
+{%- endif -%}
+
+    for i := 0; i < len(keys); i++ {
+        {%- if tuple.dictKeyField.t.trw.doesWriteTL2UseObject(false) || tuple.dictValueField.t.trw.doesWriteTL2UseObject(false) -%}
+        key := keys[i]
+        {%- endif -%}
+        {%s= tuple.dictKeyField.t.WriteTL2Call(bytesVersion, "sizes", "w", "key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.dictValueField.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*m)[key]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+    }
+
+    return w, sizes
+}
 {%- endif -%}
 
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
@@ -573,6 +625,25 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
     }
     return sizes
 }
+
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    for i := 0; i < len(*vec); i++ {
+        {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
+        elem := (*vec)[i]
+        {%- endif -%}
+        {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+    }
+    return w, sizes
+}
+
 {%- endif -%}
 
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
@@ -692,6 +763,25 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
     }
     return sizes
 }
+
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    for i := 0; i < len(*vec); i++ {
+        {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
+        elem := (*vec)[i]
+        {%- endif -%}
+        {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+    }
+    return w, sizes
+}
+
 {%- endif -%}
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
 func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
@@ -808,6 +898,24 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- endif -%}
     }
     return sizes
+}
+
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    for i := 0; i < len(*vec); i++ {
+        {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
+        elem := (*vec)[i]
+        {%- endif -%}
+        {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+    }
+    return w, sizes
 }
 {%- endif -%}
 

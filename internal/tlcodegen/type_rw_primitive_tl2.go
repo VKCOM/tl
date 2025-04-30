@@ -38,24 +38,28 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 	method := ""
 	switch trw.goType {
 	case "int32":
-		method = "IntWrite"
+		method = "basictl.IntWrite"
 	case "uint32":
-		method = "NatWrite"
+		method = "basictl.NatWrite"
 	case "int64":
-		method = "LongWrite"
+		method = "basictl.LongWrite"
 	case "string":
-		method = "StringWriteTL2"
+		if bytesVersion {
+			method = "basictl.StringBytesWriteTL2"
+		} else {
+			method = "basictl.StringWriteTL2"
+		}
 	case "float32":
-		method = "FloatWrite"
+		method = "basictl.FloatWrite"
 	case "float64":
-		method = "DoubleWrite"
+		method = "basictl.DoubleWrite"
 	}
 	return fmt.Sprintf(`%[1]s = %[1]s[1:]
-%[1]s = %[2]s(%[1]s, %[4]s)`,
+%[3]s = %[2]s(%[3]s, %[4]s)`,
 		targetSizes,
 		method,
 		targetBytes,
-		targetObject,
+		addAsterisk(refObject, targetObject),
 	)
 }
 
@@ -69,4 +73,8 @@ func (trw *TypeRWPrimitive) doesCalculateLayoutUseObject() bool {
 
 func (trw *TypeRWPrimitive) isSizeWrittenInData() bool {
 	return trw.goType == "string"
+}
+
+func (trw *TypeRWPrimitive) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	return true
 }
