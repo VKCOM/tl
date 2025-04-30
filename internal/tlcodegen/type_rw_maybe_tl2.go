@@ -31,6 +31,23 @@ func (trw *TypeRWMaybe) writeTL2Call(
 	)
 }
 
+func (trw *TypeRWMaybe) readTL2Call(
+	bytesVersion bool,
+	targetBytes string,
+	targetObject string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+	natArgs []string,
+) string {
+	return fmt.Sprintf("if %[4]s, err = %[2]s.ReadTL2(%[4]s%[3]s); err != nil { return %[4]s, err }",
+		"",
+		addAsterisk(refObject, targetObject),
+		joinWithCommas(natArgs),
+		targetBytes,
+	)
+}
+
 func (trw *TypeRWMaybe) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return true
 }
@@ -44,5 +61,9 @@ func (trw *TypeRWMaybe) isSizeWrittenInData() bool {
 }
 
 func (trw *TypeRWMaybe) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	return true
+}
+
+func (trw *TypeRWMaybe) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
 }

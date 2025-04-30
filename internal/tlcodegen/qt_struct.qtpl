@@ -448,7 +448,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         {%- continue -%}
         {%- endif -%}
 
-    // calculate layout for item.{%s= field.goName %}
+    // write item.{%s= field.goName %}
         {%- if field.fieldMask != nil -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
@@ -468,7 +468,6 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
             {%- endif -%}
     w[currentBlockPosition] |= (1 << {%v (fieldIndex + 1) % 8 %})
     {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
-
             {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
     } else {
         sizes = sizes[1:]

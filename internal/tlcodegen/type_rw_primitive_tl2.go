@@ -63,6 +63,42 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 	)
 }
 
+func (trw *TypeRWPrimitive) readTL2Call(
+	bytesVersion bool,
+	targetBytes string,
+	targetObject string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+	natArgs []string,
+) string {
+	method := ""
+	switch trw.goType {
+	case "int32":
+		method = "basictl.IntRead"
+	case "uint32":
+		method = "basictl.NatRead"
+	case "int64":
+		method = "basictl.LongRead"
+	case "string":
+		if bytesVersion {
+			method = "basictl.StringBytesRead"
+		} else {
+			method = "basictl.StringRead"
+		}
+	case "float32":
+		method = "basictl.FloatRead"
+	case "float64":
+		method = "basictl.DoubleRead"
+	}
+	return fmt.Sprintf(`if %[3]s, err = %[2]s(%[3]s, %[4]s); err != nil { return %[3]s, err }`,
+		"",
+		method,
+		targetBytes,
+		addAsterisk(refObject, targetObject),
+	)
+}
+
 func (trw *TypeRWPrimitive) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return true
 }
@@ -76,5 +112,9 @@ func (trw *TypeRWPrimitive) isSizeWrittenInData() bool {
 }
 
 func (trw *TypeRWPrimitive) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	return true
+}
+
+func (trw *TypeRWPrimitive) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
 }
