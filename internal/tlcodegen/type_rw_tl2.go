@@ -24,6 +24,8 @@ type TypeRWTL2 interface {
 		refObject bool,
 		natArgs []string,
 	) string
+
+	doesWriteTL2UseObject(canDependOnLocalBit bool) bool
 }
 
 func (w *TypeRWWrapper) CalculateLayout(

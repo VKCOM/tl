@@ -73,3 +73,15 @@ func TL2CalculateSize(l int) int {
 		return 8
 	}
 }
+
+func StringWriteTL2(w []byte, v string) []byte {
+	w = TL2WriteSize(w, len(v))
+	w = append(w, v...)
+	return w
+}
+
+func StringBytesWriteTL2(w []byte, v []byte) []byte {
+	w = TL2WriteSize(w, len(v))
+	w = append(w, v...)
+	return w
+}

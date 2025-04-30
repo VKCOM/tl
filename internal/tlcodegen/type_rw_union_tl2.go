@@ -42,3 +42,7 @@ func (trw *TypeRWUnion) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 func (trw *TypeRWUnion) isSizeWrittenInData() bool {
 	return true
 }
+
+func (trw *TypeRWUnion) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	return true
+}

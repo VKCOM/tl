@@ -23,7 +23,7 @@ func (trw *TypeRWBrackets) writeTL2Call(
 	refObject bool,
 	natArgs []string,
 ) string {
-	return fmt.Sprintf("%[6]s, %[1]s = %[5]s%[4]sInternalWriteTL2(%[1]s, %[6]s, %[2]s%[3]s)",
+	return fmt.Sprintf("%[6]s, %[1]s = %[5]s%[4]sInternalWriteTL2(%[6]s, %[1]s, %[2]s%[3]s)",
 		targetSizes,
 		addAmpersand(refObject, targetObject),
 		joinWithCommas(natArgs),
@@ -42,5 +42,9 @@ func (trw *TypeRWBrackets) doesCalculateLayoutUseObject() bool {
 }
 
 func (trw *TypeRWBrackets) isSizeWrittenInData() bool {
+	return true
+}
+
+func (trw *TypeRWBrackets) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
 }

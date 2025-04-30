@@ -145,6 +145,43 @@ func (item {%s= asterisk %}{%s= goName %}) CalculateLayout(sizes []int{%s= natAr
     {%- endif -%}
     return sizes
 }
+
+func (item {%s= asterisk %}{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+    {%- if union.IsEnum -%}
+    switch item.index {
+    case 0:
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, 0)
+    default:
+        currentSize := sizes[0]
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, currentSize)
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, item.index)
+    }
+    {%- else -%}
+    switch item.index {
+    {%- for i, field := range union.Fields -%}
+    case {%d i %}:
+        {%- if field.t.IsTrueType() -%}
+            {%- if i == 0 -%}
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, 0)
+            {%- else -%}
+        currentSize := sizes[0]
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, currentSize)
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, item.index)
+            {%- endif -%}
+        {%- else -%}
+        {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, union.wr.NatParams) %}
+        {%- endif -%}
+    {%- endfor -%}
+    }
+    {%- endif -%}
+    return w, sizes
+}
 {%- endif -%}
 
 {%- if union.wr.gen.options.GenerateLegacyJsonRead -%}

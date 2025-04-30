@@ -141,7 +141,7 @@ func (item *`)
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
         currentPosition := len(sizes)
         `)
-		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value%s", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
 		qw422016.N().S(`
         if sizes[currentPosition] != 0 {
             sizes[sizePosition] += sizes[currentPosition]
@@ -153,6 +153,29 @@ func (item *`)
 		qw422016.N().S(`        }
     }
     return sizes
+}
+
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    if item.Ok {
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, 1)
+        `)
+		qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(`
+    }
+    return w, sizes
 }
 
 `)

@@ -287,6 +287,60 @@ func (item `)
 		}
 		qw422016.N().S(`    return sizes
 }
+
+func (item `)
+		qw422016.N().S(asterisk)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) ([]byte, []int) {
+`)
+		if union.IsEnum {
+			qw422016.N().S(`    switch item.index {
+    case 0:
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, 0)
+    default:
+        currentSize := sizes[0]
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, currentSize)
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, item.index)
+    }
+`)
+		} else {
+			qw422016.N().S(`    switch item.index {
+`)
+			for i, field := range union.Fields {
+				qw422016.N().S(`    case `)
+				qw422016.N().D(i)
+				qw422016.N().S(`:
+`)
+				if field.t.IsTrueType() {
+					if i == 0 {
+						qw422016.N().S(`        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, 0)
+`)
+					} else {
+						qw422016.N().S(`        currentSize := sizes[0]
+        sizes = sizes[1:]
+        w = basictl.TL2WriteSize(w, currentSize)
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, item.index)
+`)
+					}
+				} else {
+					qw422016.N().S(`        `)
+					qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, union.wr.NatParams))
+					qw422016.N().S(`
+`)
+				}
+			}
+			qw422016.N().S(`    }
+`)
+		}
+		qw422016.N().S(`    return w, sizes
+}
 `)
 	}
 	qw422016.N().S(`

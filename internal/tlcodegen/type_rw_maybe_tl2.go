@@ -42,3 +42,7 @@ func (trw *TypeRWMaybe) doesCalculateLayoutUseObject() bool {
 func (trw *TypeRWMaybe) isSizeWrittenInData() bool {
 	return trw.element.t.trw.isSizeWrittenInData()
 }
+
+func (trw *TypeRWMaybe) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	return true
+}

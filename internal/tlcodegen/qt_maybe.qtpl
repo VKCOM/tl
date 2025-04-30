@@ -68,7 +68,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
         currentPosition := len(sizes)
-        {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value%s", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+        {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
         if sizes[currentPosition] != 0 {
             sizes[sizePosition] += sizes[currentPosition]
         {%- if maybe.element.t.trw.isSizeWrittenInData() -%}
@@ -77,6 +77,23 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         }
     }
     return sizes
+}
+
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+    currentSize := sizes[0]
+    sizes = sizes[1:]
+
+    w = basictl.TL2WriteSize(w, currentSize)
+    if currentSize == 0 {
+        return w, sizes
+    }
+
+    if item.Ok {
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, 1)
+        {%s= maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+    }
+    return w, sizes
 }
 
 {%- endif -%}

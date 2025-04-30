@@ -55,3 +55,7 @@ func (trw *TypeRWBool) doesCalculateLayoutUseObject() bool {
 func (trw *TypeRWBool) isSizeWrittenInData() bool {
 	return false
 }
+
+func (trw *TypeRWBool) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
+	return !canDependOnLocalBit
+}
