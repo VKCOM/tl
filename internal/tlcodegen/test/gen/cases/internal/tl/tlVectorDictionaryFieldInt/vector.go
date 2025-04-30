@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -68,6 +68,22 @@ func (item VectorDictionaryFieldInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *VectorDictionaryFieldInt) CalculateLayout(sizes []int) []int {
+	ptr := (*map[string]int32)(item)
+	sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorDictionaryFieldInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*map[string]int32)(item)
+	w, sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorDictionaryFieldInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *VectorDictionaryFieldInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*map[string]int32)(item)
 	if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -152,6 +168,22 @@ func (item VectorDictionaryFieldIntBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *VectorDictionaryFieldIntBytes) CalculateLayout(sizes []int) []int {
+	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
+	sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorDictionaryFieldIntBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
+	w, sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorDictionaryFieldIntBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *VectorDictionaryFieldIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
 	if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesReadJSON(legacyTypeNames, in, ptr); err != nil {

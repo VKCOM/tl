@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -81,6 +81,35 @@ func (item *CasesBytesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error
 func (item CasesBytesTestEnum) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _CasesBytesTestEnum[item.index].TLTag)
 	return w
+}
+
+func (item CasesBytesTestEnum) CalculateLayout(sizes []int) []int {
+	switch item.index {
+	case 0:
+		sizes = append(sizes, 0)
+	default:
+		sizes = append(sizes, 1+basictl.TL2CalculateSize(item.index))
+	}
+	return sizes
+}
+
+func (item CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, 0)
+	default:
+		currentSize := sizes[0]
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, currentSize)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, item.index)
+	}
+	return w, sizes
+}
+func (item *CasesBytesTestEnum) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

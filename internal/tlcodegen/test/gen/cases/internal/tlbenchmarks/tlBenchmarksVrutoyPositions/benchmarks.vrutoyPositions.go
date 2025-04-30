@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -63,6 +63,65 @@ func (item *BenchmarksVrutoyPositions) WriteBoxedGeneral(w []byte, nat_n uint32)
 func (item *BenchmarksVrutoyPositions) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xb6003de0)
 	return item.Write(w, nat_n)
+}
+
+func (item *BenchmarksVrutoyPositions) CalculateLayout(sizes []int, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.NextPositions
+	currentPosition := len(sizes)
+	if len(item.NextPositions) != 0 {
+		sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions, nat_n)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *BenchmarksVrutoyPositions) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.NextPositions
+	if len(item.NextPositions) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 1)
+			w, sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions, nat_n)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
 }
 
 func (item *BenchmarksVrutoyPositions) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32) error {

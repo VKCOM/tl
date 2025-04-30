@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -98,6 +98,95 @@ func (item *CasesMyCycle2) WriteBoxed(w []byte) []byte {
 
 func (item CasesMyCycle2) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesMyCycle2) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.FieldsMask
+	currentPosition := len(sizes)
+	if item.FieldsMask != 0 {
+		sizes = append(sizes, 4)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.A
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<0) != 0 {
+		sizes = item.A.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 2
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesMyCycle2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.FieldsMask
+	if item.FieldsMask != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 1)
+			sizes = sizes[1:]
+			w = basictl.NatWrite(w, item.FieldsMask)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// calculate layout for item.A
+	if item.FieldsMask&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 2)
+			w, sizes = item.A.InternalWriteTL2(w, sizes)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *CasesMyCycle2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesMyCycle2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

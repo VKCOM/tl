@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -68,6 +68,22 @@ func (item VectorBenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *VectorBenchmarksVruPosition) CalculateLayout(sizes []int) []int {
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorBenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorBenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *VectorBenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
 	if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames, in, ptr); err != nil {

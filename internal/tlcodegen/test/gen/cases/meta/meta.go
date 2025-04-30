@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -36,6 +36,8 @@ type Object interface {
 
 	ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it (this method is general version of WriteBoxed, use it only when you are working with interface)
+
+	WriteTL2(w []byte, sizes []int) ([]byte, []int)
 }
 
 type Function interface {
@@ -202,6 +204,9 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *TLItem) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	return w, sizes
+}
 func FactoryItemByTLTag(tag uint32) *TLItem {
 	return itemsByTag[tag]
 }
@@ -324,6 +329,7 @@ func init() {
 	fillObject("cases.replace7#6ccce4be", "#6ccce4be", &TLItem{tag: 0x6ccce4be, annotations: 0x0, tlName: "cases.replace7", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.replace7plus#197858f5", "#197858f5", &TLItem{tag: 0x197858f5, annotations: 0x0, tlName: "cases.replace7plus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.replace7plusplus#abc39b68", "#abc39b68", &TLItem{tag: 0xabc39b68, annotations: 0x0, tlName: "cases.replace7plusplus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("casesTL2.testObject#11e6908a", "#11e6908a", &TLItem{tag: 0x11e6908a, annotations: 0x0, tlName: "casesTL2.testObject", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testAllPossibleFieldConfigsContainer#e3fae936", "#e3fae936", &TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testArray#a888030d", "#a888030d", &TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testBeforeReadBitValidation#9b2396db", "#9b2396db", &TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

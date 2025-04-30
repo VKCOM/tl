@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -79,6 +79,55 @@ func BuiltinVectorDictionaryFieldIntWrite(w []byte, m map[string]int32) []byte {
 		w = elem.Write(w)
 	}
 	return w
+}
+
+func BuiltinVectorDictionaryFieldIntCalculateLayout(sizes []int, m *map[string]int32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+		currentPosition := len(sizes)
+		sizes = append(sizes, len(key))
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentPosition = len(sizes)
+		sizes = append(sizes, 4)
+		sizes[sizePosition] += sizes[currentPosition]
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryFieldIntInternalWriteTL2(w []byte, sizes []int, m *map[string]int32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+		sizes = sizes[1:]
+		w = basictl.StringWriteTL2(w, key)
+		sizes = sizes[1:]
+		w = basictl.IntWrite(w, (*m)[key])
+	}
+
+	return w, sizes
 }
 
 func BuiltinVectorDictionaryFieldIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]int32) error {
@@ -169,6 +218,41 @@ func BuiltinVectorDictionaryFieldIntBytesWrite(w []byte, vec []tlDictionaryField
 		w = elem.Write(w)
 	}
 	return w
+}
+
+func BuiltinVectorDictionaryFieldIntBytesCalculateLayout(sizes []int, vec *[]tlDictionaryFieldInt.DictionaryFieldIntBytes) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = append(sizes, len(elem.Key))
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentPosition = len(sizes)
+		sizes = append(sizes, 4)
+		sizes[sizePosition] += sizes[currentPosition]
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryFieldIntBytesInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryFieldInt.DictionaryFieldIntBytes) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		sizes = sizes[1:]
+		w = basictl.StringBytesWriteTL2(w, elem.Key)
+		sizes = sizes[1:]
+		w = basictl.IntWrite(w, elem.Value)
+	}
+	return w, sizes
 }
 
 func BuiltinVectorDictionaryFieldIntBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldInt.DictionaryFieldIntBytes) error {

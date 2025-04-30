@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -49,6 +49,36 @@ func BuiltinTupleTupleIntWrite(w []byte, vec [][]int32, nat_n uint32, nat_t uint
 		}
 	}
 	return w, nil
+}
+
+func BuiltinTupleTupleIntCalculateLayout(sizes []int, vec *[][]int32, nat_n uint32, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &elem, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleTupleIntInternalWriteTL2(w []byte, sizes []int, vec *[][]int32, nat_n uint32, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &elem, nat_t)
+	}
+	return w, sizes
 }
 
 func BuiltinTupleTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]int32, nat_n uint32, nat_t uint32) error {

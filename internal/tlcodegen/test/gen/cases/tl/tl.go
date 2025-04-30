@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,6 +8,7 @@
 package tl
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyDoubleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryAnyIntInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlDictionaryFieldAnyDoubleInt"
@@ -34,6 +35,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTuplePairTupleIntTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVruPosition"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVrutoyTopLevelUnion"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorInt"
@@ -73,6 +76,8 @@ type (
 	TupleTupleInt2                                                     = tlTupleTupleInt2.TupleTupleInt2
 	TupleTuplePairTupleIntTupleInt2                                    = tlTupleTuplePairTupleIntTupleInt2.TupleTuplePairTupleIntTupleInt2
 	VectorBenchmarksVruPosition                                        = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
+	VectorBenchmarksVrutoyTopLevelUnion                                = tlVectorBenchmarksVrutoyTopLevelUnion.VectorBenchmarksVrutoyTopLevelUnion
+	VectorBool                                                         = tlVectorBool.VectorBool
 	VectorDictionaryFieldInt                                           = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
 	VectorDictionaryFieldIntBytes                                      = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes
 	VectorDictionaryFieldString                                        = tlVectorDictionaryFieldString.VectorDictionaryFieldString
@@ -81,3 +86,10 @@ type (
 	VectorString                                                       = tlVectorString.VectorString
 	VectorStringBytes                                                  = tlVectorString.VectorStringBytes
 )
+
+func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {
+	return tlBool.BoolReadBoxed(w, v)
+}
+func BoolWriteBoxed(w []byte, v bool) []byte {
+	return tlBool.BoolWriteBoxed(w, v)
+}

@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -192,6 +192,259 @@ func (item *BenchmarksVruPosition) WriteBoxed(w []byte) []byte {
 
 func (item BenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.FieldsMask
+	currentPosition := len(sizes)
+	if item.FieldsMask != 0 {
+		sizes = append(sizes, 4)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.CommitBit
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<0) != 0 {
+		lastUsedBit = 2
+	}
+
+	// calculate layout for item.MetaBlock
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<1) != 0 {
+		lastUsedBit = 3
+	}
+
+	// calculate layout for item.SplitPayload
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<3) != 0 {
+		lastUsedBit = 4
+	}
+
+	// calculate layout for item.RotationBlock
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<5) != 0 {
+		lastUsedBit = 5
+	}
+
+	// calculate layout for item.CanonicalHash
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<15) != 0 {
+		lastUsedBit = 6
+	}
+
+	// calculate layout for item.PayloadOffset
+	currentPosition = len(sizes)
+	if item.PayloadOffset != 0 {
+		sizes = append(sizes, 8)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 7
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.BlockTimeNano
+	currentPosition = len(sizes)
+	if item.BlockTimeNano != 0 {
+		sizes = append(sizes, 8)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 8
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.Hash
+	currentPosition = len(sizes)
+	sizes = item.Hash.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedBit = 9
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// calculate layout for item.FileOffset
+	currentPosition = len(sizes)
+	if item.FileOffset != 0 {
+		sizes = append(sizes, 8)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 10
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.SeqNumber
+	currentPosition = len(sizes)
+	if item.FieldsMask&(1<<14) != 0 {
+		if item.SeqNumber != 0 {
+			sizes = append(sizes, 8)
+			if sizes[currentPosition] != 0 {
+				lastUsedBit = 11
+				sizes[sizePosition] += sizes[currentPosition]
+			} else {
+				sizes = sizes[:currentPosition+1]
+			}
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.FieldsMask
+	if item.FieldsMask != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 1)
+			sizes = sizes[1:]
+			w = basictl.NatWrite(w, item.FieldsMask)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// calculate layout for item.CommitBit
+	if item.FieldsMask&(1<<0) != 0 {
+		w[currentBlockPosition] |= (1 << 2)
+	}
+
+	// calculate layout for item.MetaBlock
+	if item.FieldsMask&(1<<1) != 0 {
+		w[currentBlockPosition] |= (1 << 3)
+	}
+
+	// calculate layout for item.SplitPayload
+	if item.FieldsMask&(1<<3) != 0 {
+		w[currentBlockPosition] |= (1 << 4)
+	}
+
+	// calculate layout for item.RotationBlock
+	if item.FieldsMask&(1<<5) != 0 {
+		w[currentBlockPosition] |= (1 << 5)
+	}
+
+	// calculate layout for item.CanonicalHash
+	if item.FieldsMask&(1<<15) != 0 {
+		w[currentBlockPosition] |= (1 << 6)
+	}
+
+	// calculate layout for item.PayloadOffset
+	if item.PayloadOffset != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 7)
+			sizes = sizes[1:]
+			w = basictl.LongWrite(w, item.PayloadOffset)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// add byte for fields with index 8..15
+	if serializedSize != currentSize {
+		currentBlockPosition = len(w)
+		w = append(w, 0)
+		serializedSize += 1
+	} else {
+		return w, sizes
+	}
+
+	// calculate layout for item.BlockTimeNano
+	if item.BlockTimeNano != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 0)
+			sizes = sizes[1:]
+			w = basictl.LongWrite(w, item.BlockTimeNano)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// calculate layout for item.Hash
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		w[currentBlockPosition] |= (1 << 1)
+		w, sizes = item.Hash.InternalWriteTL2(w, sizes)
+
+	} else {
+		sizes = sizes[1:]
+	}
+
+	// calculate layout for item.FileOffset
+	if item.FileOffset != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 2)
+			sizes = sizes[1:]
+			w = basictl.LongWrite(w, item.FileOffset)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// calculate layout for item.SeqNumber
+	if item.FieldsMask&(1<<14) != 0 {
+		if item.SeqNumber != 0 {
+			serializedSize += sizes[0]
+			if sizes[0] != 0 {
+				w[currentBlockPosition] |= (1 << 3)
+				sizes = sizes[1:]
+				w = basictl.LongWrite(w, item.SeqNumber)
+
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *BenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

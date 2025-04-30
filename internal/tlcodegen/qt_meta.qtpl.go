@@ -76,7 +76,13 @@ type Object interface {
 	}
 	qw422016.N().S(`    ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it (this method is general version of WriteBoxed, use it only when you are working with interface)
-}
+`)
+	if gen.options.GenerateTL2 {
+		qw422016.N().S(`
+	WriteTL2(w []byte, sizes []int) ([]byte, []int)
+`)
+	}
+	qw422016.N().S(`}
 
 type Function interface {
 	Object
@@ -286,8 +292,15 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
-
-func FactoryItemByTLTag(tag uint32) *TLItem {
+`)
+	if gen.options.GenerateTL2 {
+		qw422016.N().S(`
+func (item *TLItem) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    return w, sizes
+}
+`)
+	}
+	qw422016.N().S(`func FactoryItemByTLTag(tag uint32) *TLItem {
     return itemsByTag[tag]
 }
 

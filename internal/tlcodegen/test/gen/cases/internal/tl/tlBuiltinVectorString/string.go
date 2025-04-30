@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -48,6 +48,37 @@ func BuiltinVectorStringWrite(w []byte, vec []string) []byte {
 		w = basictl.StringWrite(w, elem)
 	}
 	return w
+}
+
+func BuiltinVectorStringCalculateLayout(sizes []int, vec *[]string) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = append(sizes, len(elem))
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		sizes = sizes[1:]
+		w = basictl.StringWriteTL2(w, elem)
+	}
+	return w, sizes
 }
 
 func BuiltinVectorStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]string) error {
@@ -123,6 +154,37 @@ func BuiltinVectorStringBytesWrite(w []byte, vec [][]byte) []byte {
 		w = basictl.StringWriteBytes(w, elem)
 	}
 	return w
+}
+
+func BuiltinVectorStringBytesCalculateLayout(sizes []int, vec *[][]byte) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = append(sizes, len(elem))
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byte) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		sizes = sizes[1:]
+		w = basictl.StringBytesWriteTL2(w, elem)
+	}
+	return w, sizes
 }
 
 func BuiltinVectorStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte) error {

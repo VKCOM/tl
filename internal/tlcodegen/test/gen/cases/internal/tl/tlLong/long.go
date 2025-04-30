@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -66,6 +66,22 @@ func (item Long) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *Long) CalculateLayout(sizes []int) []int {
+	sizes = append(sizes, 8)
+	return sizes
+}
+
+func (item *Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*int64)(item)
+	sizes = sizes[1:]
+	w = basictl.LongWrite(w, *ptr)
+	return w, sizes
+}
+
+func (item *Long) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*int64)(item)
 	if err := internal.Json2ReadInt64(in, ptr); err != nil {

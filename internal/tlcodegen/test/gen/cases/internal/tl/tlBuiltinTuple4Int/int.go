@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -43,6 +43,35 @@ func BuiltinTuple4IntWrite(w []byte, vec *[4]int32) []byte {
 		w = basictl.IntWrite(w, elem)
 	}
 	return w
+}
+
+func BuiltinTuple4IntCalculateLayout(sizes []int, vec *[4]int32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = append(sizes, 4)
+		sizes[sizePosition] += sizes[currentPosition]
+	}
+	return sizes
+}
+
+func BuiltinTuple4IntInternalWriteTL2(w []byte, sizes []int, vec *[4]int32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		sizes = sizes[1:]
+		w = basictl.IntWrite(w, elem)
+	}
+	return w, sizes
 }
 
 func BuiltinTuple4IntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[4]int32) error {

@@ -248,21 +248,27 @@ func (item *{%s= goName %}) {%s= isSetName %}() bool { return {%s= natArgUse %} 
 
         {%- if struct_.wr.gen.options.GenerateTL2 -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
-    {%- if field.t.trw.doesCalculateLayoutUseObject() -%}
+            {%- if field.t.trw.doesCalculateLayoutUseObject() -%}
     ptr := (*{%s= fieldTypeString %})(item)
-    {%- endif -%}
+            {%- endif -%}
     {%s= field.t.CalculateLayout(bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
     return sizes
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
-    {%- if field.t.trw.doesWriteTL2UseObject(false) -%}
+            {%- if field.t.trw.doesWriteTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
-    {%- endif -%}
+            {%- endif -%}
     {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
     return w, sizes
 }
+            {%- if len(natArgsDecl) == 0 -%}
 
+func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    sizes = item.CalculateLayout(sizes[0:0])
+    return item.InternalWriteTL2(w, sizes)
+}
+            {%- endif -%}
         {%- endif -%}
         {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
@@ -402,7 +408,6 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     return sizes
 }
 
-
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -458,8 +463,12 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
             {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
     if sizes[0] != 0 {
             {%- endif -%}
+            {%- if field.t.trw.isSizeWrittenInData() -%}
+    serializedSize += basictl.TL2CalculateSize(sizes[0])
+            {%- endif -%}
     w[currentBlockPosition] |= (1 << {%v (fieldIndex + 1) % 8 %})
     {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+
             {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
     } else {
         sizes = sizes[1:]
@@ -476,6 +485,14 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 
     return w, sizes
 }
+
+    {%- if len(natArgsDecl) == 0 -%}
+func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    sizes = item.CalculateLayout(sizes[0:0])
+    return item.InternalWriteTL2(w, sizes)
+}
+    {%- endif -%}
+
 {%- endif -%}
 {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
 
