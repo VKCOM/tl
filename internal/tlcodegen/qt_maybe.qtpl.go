@@ -140,7 +140,16 @@ func (item *`)
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
         currentPosition := len(sizes)
-        `)
+`)
+		nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
+
+		if nonEmptyCondition != "" {
+			qw422016.N().S(`        if `)
+			qw422016.N().S(nonEmptyCondition)
+			qw422016.N().S(` {
+`)
+		}
+		qw422016.N().S(`        `)
 		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
 		qw422016.N().S(`
         if sizes[currentPosition] != 0 {
@@ -151,7 +160,12 @@ func (item *`)
 `)
 		}
 		qw422016.N().S(`        }
-    }
+`)
+		if nonEmptyCondition != "" {
+			qw422016.N().S(`        }
+`)
+		}
+		qw422016.N().S(`    }
     return sizes
 }
 
@@ -169,14 +183,58 @@ func (item *`)
     }
 
     if item.Ok {
+        currentPosition := len(w)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
+`)
+		nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
+
+		if nonEmptyCondition != "" {
+			qw422016.N().S(`        if `)
+			qw422016.N().S(nonEmptyCondition)
+			qw422016.N().S(` {
+`)
+		}
+		qw422016.N().S(`        if sizes[0] != 0 {
+        w[currentPosition] |= (1 << 1)
         `)
 		qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
 		qw422016.N().S(`
-    }
+        }
+`)
+		if nonEmptyCondition != "" {
+			qw422016.N().S(`        }
+`)
+		}
+		qw422016.N().S(`    }
     return w, sizes
 }
+
+//func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadTL2(r []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) (_ []byte, err error) {
+//    currentSize := 0
+//    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+//    if currentSize == 0 {
+//        item.Ok = false
+//    } else {
+//        var block byte
+//        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+//        if block != 3 {
+//            return r, basictl.TL2UnexpectedByteError(block, 1)
+//        }
+//        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+//        if block != 1 {
+//            return r, basictl.TL2UnexpectedByteError(block, 1)
+//        }
+//        `)
+		qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(`
+//    }
+//    return r, nil
+//}
 
 `)
 	}
