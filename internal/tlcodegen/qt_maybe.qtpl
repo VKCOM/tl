@@ -68,6 +68,10 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
         currentPosition := len(sizes)
+        {%- code nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive) -%}
+        {%- if nonEmptyCondition != "" -%}
+        if {%s= nonEmptyCondition %} {
+        {%- endif -%}
         {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
         if sizes[currentPosition] != 0 {
             sizes[sizePosition] += sizes[currentPosition]
@@ -75,6 +79,9 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
             sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
         {%- endif -%}
         }
+        {%- if nonEmptyCondition != "" -%}
+        }
+        {%- endif -%}
     }
     return sizes
 }
@@ -89,12 +96,43 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     }
 
     if item.Ok {
+        currentPosition := len(w)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
+        {%- code nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive) -%}
+        {%- if nonEmptyCondition != "" -%}
+        if {%s= nonEmptyCondition %} {
+        {%- endif -%}
+        if sizes[0] != 0 {
+        w[currentPosition] |= (1 << 1)
         {%s= maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+        }
+        {%- if nonEmptyCondition != "" -%}
+        }
+        {%- endif -%}
     }
     return w, sizes
 }
+
+//func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+//    currentSize := 0
+//    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+//    if currentSize == 0 {
+//        item.Ok = false
+//    } else {
+//        var block byte
+//        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+//        if block != 3 {
+//            return r, basictl.TL2UnexpectedByteError(block, 1)
+//        }
+//        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+//        if block != 1 {
+//            return r, basictl.TL2UnexpectedByteError(block, 1)
+//        }
+//        {%s= maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+//    }
+//    return r, nil
+//}
 
 {%- endif -%}
 {%- if maybe.wr.gen.options.GenerateLegacyJsonRead -%}
