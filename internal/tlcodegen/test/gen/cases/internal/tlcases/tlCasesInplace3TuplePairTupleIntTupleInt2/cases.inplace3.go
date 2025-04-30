@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -62,6 +62,61 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteBoxedGeneral(w []byte,
 func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0x4ffb95cb)
 	return item.Write(w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
+}
+
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) CalculateLayout(sizes []int, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.Value
+	currentPosition := len(sizes)
+	sizes = item.Value.CalculateLayout(sizes, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3)
+	if sizes[currentPosition] != 0 {
+		lastUsedBit = 1
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.Value
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		w[currentBlockPosition] |= (1 << 1)
+		w, sizes = item.Value.InternalWriteTL2(w, sizes, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3)
+
+	} else {
+		sizes = sizes[1:]
+	}
+
+	return w, sizes
 }
 
 func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) error {

@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -105,6 +105,105 @@ func (item *CasesTestOutFieldMask) WriteBoxedGeneral(w []byte, nat_f uint32) (_ 
 func (item *CasesTestOutFieldMask) WriteBoxed(w []byte, nat_f uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xbd6b4b3c)
 	return item.Write(w, nat_f)
+}
+
+func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int, nat_f uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.F1
+	currentPosition := len(sizes)
+	if nat_f&(1<<0) != 0 {
+		if item.F1 != 0 {
+			sizes = append(sizes, 4)
+			if sizes[currentPosition] != 0 {
+				lastUsedBit = 1
+				sizes[sizePosition] += sizes[currentPosition]
+			} else {
+				sizes = sizes[:currentPosition+1]
+			}
+		}
+	}
+
+	// calculate layout for item.F2
+	currentPosition = len(sizes)
+	if nat_f&(1<<3) != 0 {
+		lastUsedBit = 2
+	}
+
+	// calculate layout for item.F3
+	currentPosition = len(sizes)
+	if len(item.F3) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F3, nat_f)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 3
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, nat_f uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.F1
+	if nat_f&(1<<0) != 0 {
+		if item.F1 != 0 {
+			serializedSize += sizes[0]
+			if sizes[0] != 0 {
+				w[currentBlockPosition] |= (1 << 1)
+				sizes = sizes[1:]
+				w = basictl.NatWrite(w, item.F1)
+
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+
+	// calculate layout for item.F2
+	if nat_f&(1<<3) != 0 {
+		w[currentBlockPosition] |= (1 << 2)
+	}
+
+	// calculate layout for item.F3
+	if len(item.F3) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 3)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F3, nat_f)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
 }
 
 func (item *CasesTestOutFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_f uint32) error {

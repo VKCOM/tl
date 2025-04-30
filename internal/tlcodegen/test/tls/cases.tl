@@ -146,3 +146,17 @@ benchmarks.vrutoyPositions {n: #}
 benchmarks.vrutoyTopLevelContainerWithDependency
     n:# value:(benchmarks.vrutoyPositions n)
 = benchmarks.VrutoyTopLevelContainerWithDependency;
+
+// Boolean emulation
+boolFalse#bc799737 = Bool;
+boolTrue#997275b5 = Bool;
+
+casesTL2.testObject
+    n:#
+    f1:n.0?true
+    f2:Bool
+    f3:vector<Bool>
+    f4:(benchmarks.vrutoyPositions n)
+    f5:n.1?Bool
+    f6:vector<benchmarks.VrutoyTopLevelUnion>
+    = casesTL2.TestObject;

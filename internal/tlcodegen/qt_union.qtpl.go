@@ -342,6 +342,15 @@ func (item `)
 		qw422016.N().S(`    return w, sizes
 }
 `)
+		if len(natArgsDecl) == 0 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    sizes = item.CalculateLayout(sizes[0:0])
+    return item.InternalWriteTL2(w, sizes)
+}
+`)
+		}
 	}
 	qw422016.N().S(`
 `)

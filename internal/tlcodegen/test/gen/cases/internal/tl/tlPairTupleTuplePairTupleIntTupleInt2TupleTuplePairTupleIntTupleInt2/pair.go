@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -76,6 +76,91 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, 0xf01604df)
 	return item.Write(w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+}
+
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) CalculateLayout(sizes []int, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.X
+	currentPosition := len(sizes)
+	if len(item.X) != 0 {
+		sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, &item.X, nat_XttXn, nat_XttYn, nat_Xn)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.Y
+	currentPosition = len(sizes)
+	if len(item.Y) != 0 {
+		sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, &item.Y, nat_YttXn, nat_YttYn, nat_Yn)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 2
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.X
+	if len(item.X) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 1)
+			w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, &item.X, nat_XttXn, nat_XttYn, nat_Xn)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// calculate layout for item.Y
+	if len(item.Y) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 2)
+			w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, &item.Y, nat_YttXn, nat_YttYn, nat_Yn)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) error {

@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -15,6 +15,8 @@ const (
 	BenchmarksVrutoyTopLevelContainerWithDependency = 0xc176008e // benchmarks.vrutoyTopLevelContainerWithDependency
 	BenchmarksVrutoytopLevelUnionBig                = 0xef556bee // benchmarks.vrutoytopLevelUnionBig
 	BenchmarksVrutoytopLevelUnionEmpty              = 0xce27c770 // benchmarks.vrutoytopLevelUnionEmpty
+	BoolFalse                                       = 0xbc799737 // boolFalse
+	BoolTrue                                        = 0x997275b5 // boolTrue
 	CasesInplace1                                   = 0x5533e8e9 // cases.inplace1
 	CasesInplace2                                   = 0x869fcff5 // cases.inplace2
 	CasesInplace3                                   = 0x4ffb95cb // cases.inplace3
@@ -47,6 +49,7 @@ const (
 	CasesTestUnion2                                 = 0x464f96c4 // cases.testUnion2
 	CasesTestUnionContainer                         = 0x4497a381 // cases.testUnionContainer
 	CasesTestVector                                 = 0x4975695c // cases.testVector
+	CasesTL2TestObject                              = 0x11e6908a // casesTL2.testObject
 	CasesBytesTestArray                             = 0x3762fb81 // cases_bytes.testArray
 	CasesBytesTestDictAny                           = 0x5a5fce57 // cases_bytes.testDictAny
 	CasesBytesTestDictInt                           = 0x453ace07 // cases_bytes.testDictInt

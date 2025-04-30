@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -67,6 +67,22 @@ func (item VectorInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *VectorInt) CalculateLayout(sizes []int) []int {
+	ptr := (*[]int32)(item)
+	sizes = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]int32)(item)
+	w, sizes = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]int32)(item)
 	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, ptr); err != nil {

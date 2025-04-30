@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -63,6 +63,17 @@ func (item *TupleTupleInt2) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err er
 	return item.Write(w, nat_n)
 }
 
+func (item *TupleTupleInt2) CalculateLayout(sizes []int, nat_n uint32) []int {
+	ptr := (*[][2]int32)(item)
+	sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, ptr, nat_n)
+	return sizes
+}
+
+func (item *TupleTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+	ptr := (*[][2]int32)(item)
+	w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, ptr, nat_n)
+	return w, sizes
+}
 func (item *TupleTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32) error {
 	ptr := (*[][2]int32)(item)
 	if err := tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadJSON(legacyTypeNames, in, ptr, nat_n); err != nil {

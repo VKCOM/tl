@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -105,6 +105,34 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteBoxed(w []byte) []byte {
 		return w
 	}
 	return w
+}
+
+func (item *BenchmarksVrutoyTopLevelUnion) CalculateLayout(sizes []int) []int {
+	switch item.index {
+	case 0:
+		sizes = item.valueBig.CalculateLayout(sizes)
+	case 1:
+		sizes = append(sizes, 1+basictl.TL2CalculateSize(item.index))
+	}
+	return sizes
+}
+
+func (item *BenchmarksVrutoyTopLevelUnion) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		w, sizes = item.valueBig.InternalWriteTL2(w, sizes)
+	case 1:
+		currentSize := sizes[0]
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, currentSize)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, item.index)
+	}
+	return w, sizes
+}
+func (item *BenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -239,6 +267,70 @@ func (item BenchmarksVrutoytopLevelUnionBig) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.NextPositions
+	currentPosition := len(sizes)
+	if len(item.NextPositions) != 0 {
+		sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.NextPositions
+	if len(item.NextPositions) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 1)
+			w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
+
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propNextPositionsPresented bool
 
@@ -354,6 +446,54 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxed(w []byte) []byte {
 
 func (item BenchmarksVrutoytopLevelUnionEmpty) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// add constructor No for union type in case of non first option
+	lastUsedBit = 0
+	sizes[sizePosition] += basictl.TL2CalculateSize(1)
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// add constructor No for union type in case of non first option
+	w[currentBlockPosition] |= (1 << 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	serializedSize += basictl.TL2CalculateSize(1)
+
+	return w, sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -64,6 +64,17 @@ func (item *TuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_tXn uint32, nat
 	return item.Write(w, nat_tXn, nat_tYn)
 }
 
+func (item *TuplePairTupleIntTupleInt2) CalculateLayout(sizes []int, nat_tXn uint32, nat_tYn uint32) []int {
+	ptr := (*[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
+	sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, ptr, nat_tXn, nat_tYn)
+	return sizes
+}
+
+func (item *TuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_tXn uint32, nat_tYn uint32) ([]byte, []int) {
+	ptr := (*[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
+	w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, ptr, nat_tXn, nat_tYn)
+	return w, sizes
+}
 func (item *TuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_tXn uint32, nat_tYn uint32) error {
 	ptr := (*[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
 	if err := tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames, in, ptr, nat_tXn, nat_tYn); err != nil {

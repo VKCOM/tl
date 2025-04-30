@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -65,6 +65,70 @@ func (item *CasesBytesTestDictInt) WriteBoxed(w []byte) []byte {
 
 func (item CasesBytesTestDictInt) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesBytesTestDictInt) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.Dict
+	currentPosition := len(sizes)
+	if len(item.Dict) != 0 {
+		sizes = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntCalculateLayout(sizes, &item.Dict)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesBytesTestDictInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.Dict
+	if len(item.Dict) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 1)
+			w, sizes = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntInternalWriteTL2(w, sizes, &item.Dict)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *CasesBytesTestDictInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesBytesTestDictInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -182,6 +246,70 @@ func (item *CasesBytesTestDictIntBytes) WriteBoxed(w []byte) []byte {
 
 func (item CasesBytesTestDictIntBytes) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesBytesTestDictIntBytes) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.Dict
+	currentPosition := len(sizes)
+	if len(item.Dict) != 0 {
+		sizes = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesCalculateLayout(sizes, &item.Dict)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesBytesTestDictIntBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.Dict
+	if len(item.Dict) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 1)
+			w, sizes = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesInternalWriteTL2(w, sizes, &item.Dict)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *CasesBytesTestDictIntBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesBytesTestDictIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

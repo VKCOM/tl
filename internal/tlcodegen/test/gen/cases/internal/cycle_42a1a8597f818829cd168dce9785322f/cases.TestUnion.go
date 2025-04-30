@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -110,6 +110,30 @@ func (item *CasesTestUnion) WriteBoxed(w []byte) []byte {
 		w = item.value2.Write(w)
 	}
 	return w
+}
+
+func (item *CasesTestUnion) CalculateLayout(sizes []int) []int {
+	switch item.index {
+	case 0:
+		sizes = item.value1.CalculateLayout(sizes)
+	case 1:
+		sizes = item.value2.CalculateLayout(sizes)
+	}
+	return sizes
+}
+
+func (item *CasesTestUnion) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		w, sizes = item.value1.InternalWriteTL2(w, sizes)
+	case 1:
+		w, sizes = item.value2.InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+func (item *CasesTestUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -254,6 +278,69 @@ func (item CasesTestUnion1) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *CasesTestUnion1) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.Value
+	currentPosition := len(sizes)
+	if item.Value != 0 {
+		sizes = append(sizes, 4)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesTestUnion1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.Value
+	if item.Value != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 1)
+			sizes = sizes[1:]
+			w = basictl.IntWrite(w, item.Value)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *CasesTestUnion1) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
+
 func (item *CasesTestUnion1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
@@ -375,6 +462,81 @@ func (item *CasesTestUnion2) WriteBoxed(w []byte) []byte {
 
 func (item CasesTestUnion2) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesTestUnion2) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// add constructor No for union type in case of non first option
+	lastUsedBit = 0
+	sizes[sizePosition] += basictl.TL2CalculateSize(1)
+
+	// calculate layout for item.Value
+	currentPosition := len(sizes)
+	if len(item.Value) != 0 {
+		sizes = append(sizes, len(item.Value))
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesTestUnion2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// add constructor No for union type in case of non first option
+	w[currentBlockPosition] |= (1 << 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	serializedSize += basictl.TL2CalculateSize(1)
+
+	// calculate layout for item.Value
+	if len(item.Value) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			w[currentBlockPosition] |= (1 << 1)
+			sizes = sizes[1:]
+			w = basictl.StringWriteTL2(w, item.Value)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	return w, sizes
+}
+
+func (item *CasesTestUnion2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesTestUnion2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

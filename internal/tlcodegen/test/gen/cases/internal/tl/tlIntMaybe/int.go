@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -53,6 +53,39 @@ func (item *IntMaybe) WriteBoxed(w []byte) []byte {
 		return basictl.IntWrite(w, item.Value)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *IntMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		sizes = append(sizes, 4)
+		if sizes[currentPosition] != 0 {
+			sizes[sizePosition] += sizes[currentPosition]
+		}
+	}
+	return sizes
+}
+
+func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		sizes = sizes[1:]
+		w = basictl.IntWrite(w, item.Value)
+	}
+	return w, sizes
 }
 
 func (item *IntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

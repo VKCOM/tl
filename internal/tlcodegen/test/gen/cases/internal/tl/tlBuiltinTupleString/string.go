@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,6 +46,37 @@ func BuiltinTupleStringWrite(w []byte, vec []string, nat_n uint32) (_ []byte, er
 		w = basictl.StringWrite(w, elem)
 	}
 	return w, nil
+}
+
+func BuiltinTupleStringCalculateLayout(sizes []int, vec *[]string, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = append(sizes, len(elem))
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		sizes = sizes[1:]
+		w = basictl.StringWriteTL2(w, elem)
+	}
+	return w, sizes
 }
 
 func BuiltinTupleStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]string, nat_n uint32) error {
@@ -126,6 +157,37 @@ func BuiltinTupleStringBytesWrite(w []byte, vec [][]byte, nat_n uint32) (_ []byt
 		w = basictl.StringWriteBytes(w, elem)
 	}
 	return w, nil
+}
+
+func BuiltinTupleStringBytesCalculateLayout(sizes []int, vec *[][]byte, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = append(sizes, len(elem))
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byte, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		sizes = sizes[1:]
+		w = basictl.StringBytesWriteTL2(w, elem)
+	}
+	return w, sizes
 }
 
 func BuiltinTupleStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte, nat_n uint32) error {

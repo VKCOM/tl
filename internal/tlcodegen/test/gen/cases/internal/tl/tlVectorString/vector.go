@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -67,6 +67,22 @@ func (item VectorString) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *VectorString) CalculateLayout(sizes []int) []int {
+	ptr := (*[]string)(item)
+	sizes = tlBuiltinVectorString.BuiltinVectorStringCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]string)(item)
+	w, sizes = tlBuiltinVectorString.BuiltinVectorStringInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *VectorString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]string)(item)
 	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -151,6 +167,22 @@ func (item VectorStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 
+func (item *VectorStringBytes) CalculateLayout(sizes []int) []int {
+	ptr := (*[][]byte)(item)
+	sizes = tlBuiltinVectorString.BuiltinVectorStringBytesCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[][]byte)(item)
+	w, sizes = tlBuiltinVectorString.BuiltinVectorStringBytesInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
+}
 func (item *VectorStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[][]byte)(item)
 	if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSON(legacyTypeNames, in, ptr); err != nil {

@@ -570,8 +570,17 @@ func (item *`)
 			qw422016.N().S(`
     return w, sizes
 }
-
 `)
+			if len(natArgsDecl) == 0 {
+				qw422016.N().S(`
+func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    sizes = item.CalculateLayout(sizes[0:0])
+    return item.InternalWriteTL2(w, sizes)
+}
+`)
+			}
 		}
 		if struct_.wr.gen.options.GenerateLegacyJsonRead {
 			qw422016.N().S(`func (item *`)
@@ -830,7 +839,6 @@ func (item *`)
     return sizes
 }
 
-
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
@@ -920,12 +928,17 @@ func (item *`)
 					qw422016.N().S(`    if sizes[0] != 0 {
 `)
 				}
+				if field.t.trw.isSizeWrittenInData() {
+					qw422016.N().S(`    serializedSize += basictl.TL2CalculateSize(sizes[0])
+`)
+				}
 				qw422016.N().S(`    w[currentBlockPosition] |= (1 << `)
 				qw422016.E().V((fieldIndex + 1) % 8)
 				qw422016.N().S(`)
     `)
 				qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
+
 `)
 				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
 					qw422016.N().S(`    } else {
@@ -946,6 +959,18 @@ func (item *`)
 		qw422016.N().S(`
     return w, sizes
 }
+
+`)
+		if len(natArgsDecl) == 0 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    sizes = item.CalculateLayout(sizes[0:0])
+    return item.InternalWriteTL2(w, sizes)
+}
+`)
+		}
+		qw422016.N().S(`
 `)
 	}
 	if struct_.wr.gen.options.GenerateLegacyJsonRead {

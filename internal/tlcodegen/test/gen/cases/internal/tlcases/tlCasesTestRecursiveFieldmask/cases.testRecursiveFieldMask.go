@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -165,6 +165,160 @@ func (item *CasesTestRecursiveFieldmask) WriteBoxed(w []byte) []byte {
 
 func (item CasesTestRecursiveFieldmask) String() string {
 	return string(item.WriteJSON(nil))
+}
+
+func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	lastUsedBit := -1
+
+	// calculate layout for item.F0
+	currentPosition := len(sizes)
+	if item.F0 != 0 {
+		sizes = append(sizes, 4)
+		if sizes[currentPosition] != 0 {
+			lastUsedBit = 1
+			sizes[sizePosition] += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.F1
+	currentPosition = len(sizes)
+	if item.F0&(1<<0) != 0 {
+		if item.F1 != 0 {
+			sizes = append(sizes, 4)
+			if sizes[currentPosition] != 0 {
+				lastUsedBit = 2
+				sizes[sizePosition] += sizes[currentPosition]
+			} else {
+				sizes = sizes[:currentPosition+1]
+			}
+		}
+	}
+
+	// calculate layout for item.F2
+	currentPosition = len(sizes)
+	if item.F1&(1<<1) != 0 {
+		if item.F2 != 0 {
+			sizes = append(sizes, 4)
+			if sizes[currentPosition] != 0 {
+				lastUsedBit = 3
+				sizes[sizePosition] += sizes[currentPosition]
+			} else {
+				sizes = sizes[:currentPosition+1]
+			}
+		}
+	}
+
+	// calculate layout for item.T1
+	currentPosition = len(sizes)
+	if item.F0&(1<<0) != 0 {
+		lastUsedBit = 4
+	}
+
+	// calculate layout for item.T2
+	currentPosition = len(sizes)
+	if item.F1&(1<<1) != 0 {
+		lastUsedBit = 5
+	}
+
+	// calculate layout for item.T3
+	currentPosition = len(sizes)
+	if item.F2&(1<<2) != 0 {
+		lastUsedBit = 6
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedBit != -1 {
+		sizes[sizePosition] += lastUsedBit/8 + 1
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	return sizes
+}
+
+func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// calculate layout for item.F0
+	if item.F0 != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			w[currentBlockPosition] |= (1 << 1)
+			sizes = sizes[1:]
+			w = basictl.NatWrite(w, item.F0)
+
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+
+	// calculate layout for item.F1
+	if item.F0&(1<<0) != 0 {
+		if item.F1 != 0 {
+			serializedSize += sizes[0]
+			if sizes[0] != 0 {
+				w[currentBlockPosition] |= (1 << 2)
+				sizes = sizes[1:]
+				w = basictl.NatWrite(w, item.F1)
+
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+
+	// calculate layout for item.F2
+	if item.F1&(1<<1) != 0 {
+		if item.F2 != 0 {
+			serializedSize += sizes[0]
+			if sizes[0] != 0 {
+				w[currentBlockPosition] |= (1 << 3)
+				sizes = sizes[1:]
+				w = basictl.NatWrite(w, item.F2)
+
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+
+	// calculate layout for item.T1
+	if item.F0&(1<<0) != 0 {
+		w[currentBlockPosition] |= (1 << 4)
+	}
+
+	// calculate layout for item.T2
+	if item.F1&(1<<1) != 0 {
+		w[currentBlockPosition] |= (1 << 5)
+	}
+
+	// calculate layout for item.T3
+	if item.F2&(1<<2) != 0 {
+		w[currentBlockPosition] |= (1 << 6)
+	}
+
+	return w, sizes
+}
+
+func (item *CasesTestRecursiveFieldmask) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	return item.InternalWriteTL2(w, sizes)
 }
 
 func (item *CasesTestRecursiveFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

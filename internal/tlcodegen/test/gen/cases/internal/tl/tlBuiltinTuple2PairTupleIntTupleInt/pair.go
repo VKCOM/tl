@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -46,6 +46,36 @@ func BuiltinTuple2PairTupleIntTupleIntWrite(w []byte, vec *[2]tlPairTupleIntTupl
 		}
 	}
 	return w, nil
+}
+
+func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = elem.CalculateLayout(sizes, nat_tXn, nat_tYn)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes, nat_tXn, nat_tYn)
+	}
+	return w, sizes
 }
 
 func BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) error {

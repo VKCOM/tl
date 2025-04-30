@@ -182,6 +182,12 @@ func (item {%s= asterisk %}{%s= goName %}) InternalWriteTL2(w []byte, sizes []in
     {%- endif -%}
     return w, sizes
 }
+    {%- if len(natArgsDecl) == 0 -%}
+func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+    sizes = item.CalculateLayout(sizes[0:0])
+    return item.InternalWriteTL2(w, sizes)
+}
+    {%- endif -%}
 {%- endif -%}
 
 {%- if union.wr.gen.options.GenerateLegacyJsonRead -%}

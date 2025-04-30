@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -40,6 +40,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestTuple"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestUnionContainer"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestVector"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestObject"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases_bytes/tlCasesBytesTestArray"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases_bytes/tlCasesBytesTestDictAny"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases_bytes/tlCasesBytesTestDictInt"
@@ -108,6 +109,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytes(0x6ccce4be, func() meta.Object { var ret tlCasesReplace7.CasesReplace7; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x197858f5, func() meta.Object { var ret tlCasesReplace7plus.CasesReplace7plus; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xabc39b68, func() meta.Object { var ret tlCasesReplace7plusplus.CasesReplace7plusplus; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0x11e6908a, func() meta.Object { var ret tlCasesTL2TestObject.CasesTL2TestObject; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xe3fae936, func() meta.Object {
 		var ret tlCasesTestAllPossibleFieldConfigsContainer.CasesTestAllPossibleFieldConfigsContainer
 		return &ret

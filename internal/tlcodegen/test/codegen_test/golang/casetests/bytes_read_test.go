@@ -28,6 +28,8 @@ import (
 type MappingSuccessBytes struct {
 	// expected bytes input and output
 	Bytes string
+	// expected TL2 bytes input and output
+	BytesTL2 string
 }
 
 type mappingTestSamplesBytes struct {
@@ -348,6 +350,10 @@ func TestGeneralCasesBytes(t *testing.T) {
 	}
 }
 
+func TestUpdateForTL2(t *testing.T) {
+	updateTestData(t)
+}
+
 func checkExistenceOfTest(tests *allTestsBytes, testName, typeName, bytesHex string) (testCanBeAdded bool, testExists bool, testNameToAdd string) {
 	for testNameValue, test := range tests.Tests {
 		// testName exists, but it is not for this type then return false
@@ -409,4 +415,58 @@ func initTestData(t *testing.T) (_ allTestsBytes, success bool) {
 		return allTestsBytes{}, false
 	}
 	return tests, true
+}
+
+func updateTestData(t *testing.T) {
+	data, readErr := os.ReadFile(PathToBytesData)
+	if readErr != nil {
+		t.Fatalf("testing data is not provided")
+		return
+	}
+
+	tests := allTestsBytes{map[string]mappingTestSamplesBytes{}}
+	_ = json.Unmarshal(data, &tests)
+
+	updated := false
+
+	for testName, testValues := range tests.Tests {
+		for i, success := range testValues.Successes {
+			if len(success.BytesTL2) == 0 {
+				updated = true
+				testObject := factory.CreateObjectFromName(testValues.TestingType)
+				if testObject == nil {
+					t.Fatalf("No testing object for test \"%s\"", testName)
+					return
+				}
+				bytes := utils.ParseHexToBytes(success.Bytes)
+				_, readErr := testObject.Read(bytes)
+				if readErr != nil {
+					t.Fatalf("can't read %s, reason: %s", testValues.TestingType, readErr)
+					return
+				}
+				data, _ := testObject.WriteTL2(nil, nil)
+
+				newTestValues := tests.Tests[testName]
+				newTestValues.Successes[i].BytesTL2 = utils.SprintHexDumpTL2(data)
+				tests.Tests[testName] = newTestValues
+			}
+		}
+	}
+
+	if updated {
+		file, err := os.Create(PathToBytesData)
+
+		if err != nil {
+			t.Fatalf("can't open file with test cases")
+			return
+		}
+		defer file.Close()
+
+		bytes, _ := json.MarshalIndent(tests, "", "\t")
+		_, err = file.Write(bytes)
+		if err != nil {
+			t.Fatalf("can't overwrite file with test cases")
+			return
+		}
+	}
 }

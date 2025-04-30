@@ -1,4 +1,4 @@
-// Copyright 2022 V Kontakte LLC
+// Copyright 2025 V Kontakte LLC
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -47,6 +47,36 @@ func BuiltinTupleBenchmarksVruPositionWrite(w []byte, vec []tlBenchmarksVruPosit
 		w = elem.Write(w)
 	}
 	return w, nil
+}
+
+func BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes []int, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		currentPosition := len(sizes)
+		sizes = elem.CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
 }
 
 func BuiltinTupleBenchmarksVruPositionReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) error {
