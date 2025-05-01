@@ -389,7 +389,6 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 	}
 
 	// calculate layout for item.F11
-	currentPosition = len(sizes)
 	if item.Local&(1<<1) != 0 {
 		lastUsedBit = 7
 	}
@@ -439,7 +438,6 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 	}
 
 	// calculate layout for item.F21
-	currentPosition = len(sizes)
 	if nat_outer&(1<<1) != 0 {
 		lastUsedBit = 11
 	}

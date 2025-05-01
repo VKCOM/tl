@@ -168,7 +168,6 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F1
-	currentPosition = len(sizes)
 	if item.N&(1<<0) != 0 {
 		lastUsedBit = 2
 	}

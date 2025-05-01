@@ -157,13 +157,11 @@ func (item *CasesTestLocalFieldmask) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F3
-	currentPosition = len(sizes)
 	if item.F2&(1<<1) != 0 {
 		lastUsedBit = 3
 	}
 
 	// calculate layout for item.F4
-	currentPosition = len(sizes)
 	if item.F2&(1<<1) != 0 {
 		lastUsedBit = 4
 	}

@@ -127,7 +127,6 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int, nat_f uint32) []
 	}
 
 	// calculate layout for item.F2
-	currentPosition = len(sizes)
 	if nat_f&(1<<3) != 0 {
 		lastUsedBit = 2
 	}
