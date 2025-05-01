@@ -367,7 +367,9 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- if fieldIndex == 0 -%}
     currentPosition := len(sizes)
         {%- else -%}
+            {%- if !field.t.IsTrueType() -%}
     currentPosition = len(sizes)
+            {%- endif -%}
         {%- endif -%}
         {%- if field.fieldMask != nil -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {

@@ -782,8 +782,10 @@ func (item *`)
 				qw422016.N().S(`    currentPosition := len(sizes)
 `)
 			} else {
-				qw422016.N().S(`    currentPosition = len(sizes)
+				if !field.t.IsTrueType() {
+					qw422016.N().S(`    currentPosition = len(sizes)
 `)
+				}
 			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`    if `)

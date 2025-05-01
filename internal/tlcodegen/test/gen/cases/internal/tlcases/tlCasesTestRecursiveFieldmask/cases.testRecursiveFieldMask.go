@@ -213,19 +213,16 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.T1
-	currentPosition = len(sizes)
 	if item.F0&(1<<0) != 0 {
 		lastUsedBit = 4
 	}
 
 	// calculate layout for item.T2
-	currentPosition = len(sizes)
 	if item.F1&(1<<1) != 0 {
 		lastUsedBit = 5
 	}
 
 	// calculate layout for item.T3
-	currentPosition = len(sizes)
 	if item.F2&(1<<2) != 0 {
 		lastUsedBit = 6
 	}

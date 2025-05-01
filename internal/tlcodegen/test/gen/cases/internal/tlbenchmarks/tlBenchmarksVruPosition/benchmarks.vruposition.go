@@ -212,31 +212,26 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.CommitBit
-	currentPosition = len(sizes)
 	if item.FieldsMask&(1<<0) != 0 {
 		lastUsedBit = 2
 	}
 
 	// calculate layout for item.MetaBlock
-	currentPosition = len(sizes)
 	if item.FieldsMask&(1<<1) != 0 {
 		lastUsedBit = 3
 	}
 
 	// calculate layout for item.SplitPayload
-	currentPosition = len(sizes)
 	if item.FieldsMask&(1<<3) != 0 {
 		lastUsedBit = 4
 	}
 
 	// calculate layout for item.RotationBlock
-	currentPosition = len(sizes)
 	if item.FieldsMask&(1<<5) != 0 {
 		lastUsedBit = 5
 	}
 
 	// calculate layout for item.CanonicalHash
-	currentPosition = len(sizes)
 	if item.FieldsMask&(1<<15) != 0 {
 		lastUsedBit = 6
 	}
