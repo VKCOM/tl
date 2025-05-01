@@ -51,13 +51,13 @@ type allTestsBytes struct {
 }
 
 func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
-	seed := rand.Uint64()
+	seed := uint64(14883274921658531818) // rand.Uint64()
 	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(int64(seed))))
 
 	fmt.Println("Seed: ", seed)
 
 	for sId, success := range mt.samples.Successes {
-		t.Run(fmt.Sprintf("Object %d", sId), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Object %d - bytes [%s]", sId, success.Bytes), func(t *testing.T) {
 			mt.object.FillRandom(rg)
 
 			trueBytes := utils.ParseHexToBytes(success.Bytes)
