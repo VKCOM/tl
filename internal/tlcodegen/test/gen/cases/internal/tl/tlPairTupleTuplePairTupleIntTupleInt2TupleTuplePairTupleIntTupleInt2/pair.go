@@ -86,7 +86,7 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 	// calculate layout for item.X
 	currentPosition := len(sizes)
 	if len(item.X) != 0 {
-		sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, &item.X, nat_XttXn, nat_XttYn, nat_Xn)
+		sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, &item.X, nat_Xn, nat_XttXn, nat_XttYn)
 		if sizes[currentPosition] != 0 {
 			lastUsedBit = 1
 			sizes[sizePosition] += sizes[currentPosition]
@@ -99,7 +99,7 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 	// calculate layout for item.Y
 	currentPosition = len(sizes)
 	if len(item.Y) != 0 {
-		sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, &item.Y, nat_YttXn, nat_YttYn, nat_Yn)
+		sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, &item.Y, nat_Yn, nat_YttXn, nat_YttYn)
 		if sizes[currentPosition] != 0 {
 			lastUsedBit = 2
 			sizes[sizePosition] += sizes[currentPosition]
@@ -134,33 +134,79 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.X
+	// write item.X
 	if len(item.X) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 1)
-			w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, &item.X, nat_XttXn, nat_XttYn, nat_Xn)
-
+			w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, &item.X, nat_Xn, nat_XttXn, nat_XttYn)
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Y
+	// write item.Y
 	if len(item.Y) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 2)
-			w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, &item.Y, nat_YttXn, nat_YttYn, nat_Yn)
-
+			w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, &item.Y, nat_Yn, nat_YttXn, nat_YttYn)
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
 	return w, sizes
+}
+
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.X
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r, &item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
+				return r, err
+			}
+		} else {
+			item.X = item.X[:0]
+		}
+
+		// read item.Y
+		if block&(1<<2) != 0 {
+			if r, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r, &item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
+				return r, err
+			}
+		} else {
+			item.Y = item.Y[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) error {

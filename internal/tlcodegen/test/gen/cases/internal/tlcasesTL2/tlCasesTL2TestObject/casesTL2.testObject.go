@@ -257,57 +257,53 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.N
+	// write item.N
 	if item.N != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.NatWrite(w, item.N)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.F1
+	// write item.F1
 	if item.N&(1<<0) != 0 {
 		w[currentBlockPosition] |= (1 << 2)
 	}
 
-	// calculate layout for item.F2
+	// write item.F2
 	if item.F2 {
 		serializedSize += sizes[0]
 		w[currentBlockPosition] |= (1 << 3)
 		sizes = sizes[1:]
-
 	}
 
-	// calculate layout for item.F3
+	// write item.F3
 	if len(item.F3) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 4)
 			w, sizes = tlBuiltinVectorBool.BuiltinVectorBoolInternalWriteTL2(w, sizes, &item.F3)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.F4
+	// write item.F4
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		w[currentBlockPosition] |= (1 << 5)
 		w, sizes = item.F4.InternalWriteTL2(w, sizes, item.N)
-
 	} else {
 		sizes = sizes[1:]
 	}
 
-	// calculate layout for item.F5
+	// write item.F5
 	if item.N&(1<<1) != 0 {
 		if item.F5 {
 			serializedSize += sizes[0]
@@ -319,21 +315,19 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 				} else {
 					w = append(w, 0)
 				}
-
 			} else {
 				sizes = sizes[1:]
 			}
 		}
 	}
 
-	// calculate layout for item.F6
+	// write item.F6
 	if len(item.F6) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 7)
 			w, sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, &item.F6)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -345,6 +339,92 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 func (item *CasesTL2TestObject) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesTL2TestObject) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.N
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.N); err != nil {
+				return r, err
+			}
+		} else {
+			item.N = 0
+		}
+
+		// read item.F2
+		if block&(1<<3) != 0 {
+			item.F2 = true
+		} else {
+			item.F2 = false
+		}
+
+		// read item.F3
+		if block&(1<<4) != 0 {
+			if r, err = tlBuiltinVectorBool.BuiltinVectorBoolReadTL2(r, &item.F3); err != nil {
+				return r, err
+			}
+		} else {
+			item.F3 = item.F3[:0]
+		}
+
+		// read item.F4
+		if block&(1<<5) != 0 {
+			if r, err = item.F4.ReadTL2(r, item.N); err != nil {
+				return r, err
+			}
+		} else {
+			item.F4.Reset()
+		}
+
+		// read item.F5
+		if block&(1<<6) != 0 {
+			if item.N&(1<<1) != 0 {
+				if r, err = basictl.BoolReadTL2(r, &item.F5); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "F5" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.F5 = false
+		}
+
+		// read item.F6
+		if block&(1<<7) != 0 {
+			if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r, &item.F6); err != nil {
+				return r, err
+			}
+		} else {
+			item.F6 = item.F6[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

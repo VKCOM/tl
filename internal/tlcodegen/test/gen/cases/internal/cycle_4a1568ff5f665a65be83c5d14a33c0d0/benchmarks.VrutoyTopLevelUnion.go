@@ -135,6 +135,44 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]by
 	return item.InternalWriteTL2(w, sizes)
 }
 
+func (item *BenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, err = basictl.TL2ReadSize(r, &item.index); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	switch item.index {
+	case 0:
+		r = saveR
+		if r, err = item.valueBig.ReadTL2(r); err != nil {
+			return r, err
+		}
+	case 1:
+		break
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item *BenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("benchmarks.VrutoyTopLevelUnion", in)
 	if err != nil {
@@ -310,14 +348,13 @@ func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes [
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.NextPositions
+	// write item.NextPositions
 	if len(item.NextPositions) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 1)
 			w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -329,6 +366,45 @@ func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes [
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.NextPositions
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadTL2(r, &item.NextPositions); err != nil {
+				return r, err
+			}
+		} else {
+			item.NextPositions = item.NextPositions[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -494,6 +570,36 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

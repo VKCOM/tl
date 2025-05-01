@@ -129,33 +129,79 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes [
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.X
+	// write item.X
 	if len(item.X) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 1)
 			w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, &item.X, nat_X)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Y
+	// write item.Y
 	if len(item.Y) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 2)
 			w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, &item.Y, nat_Y)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
 	return w, sizes
+}
+
+func (item *PairTupleTupleInt2TupleTupleInt2) ReadTL2(r []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.X
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadTL2(r, &item.X, nat_X); err != nil {
+				return r, err
+			}
+		} else {
+			item.X = item.X[:0]
+		}
+
+		// read item.Y
+		if block&(1<<2) != 0 {
+			if r, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadTL2(r, &item.Y, nat_Y); err != nil {
+				return r, err
+			}
+		} else {
+			item.Y = item.Y[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {

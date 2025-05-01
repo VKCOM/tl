@@ -37,6 +37,7 @@ type Object interface {
 	ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it (this method is general version of WriteBoxed, use it only when you are working with interface)
 
+	ReadTL2(r []byte) ([]byte, error)
 	WriteTL2(w []byte, sizes []int) ([]byte, []int)
 }
 
@@ -202,6 +203,10 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON(item.tlName, err.Error())
 	}
 	return nil
+}
+
+func (item *TLItem) ReadTL2(r []byte) ([]byte, error) {
+	return r, nil
 }
 
 func (item *TLItem) WriteTL2(w []byte, sizes []int) ([]byte, []int) {

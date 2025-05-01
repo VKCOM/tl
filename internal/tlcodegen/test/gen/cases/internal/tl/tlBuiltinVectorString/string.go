@@ -81,6 +81,25 @@ func BuiltinVectorStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) (
 	return w, sizes
 }
 
+func BuiltinVectorStringReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem string
+		if r, err = basictl.StringReadTL2(r, &elem); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]string) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
@@ -185,6 +204,25 @@ func BuiltinVectorStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]by
 		w = basictl.StringBytesWriteTL2(w, elem)
 	}
 	return w, sizes
+}
+
+func BuiltinVectorStringBytesReadTL2(r []byte, vec *[][]byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem []byte
+		if r, err = basictl.StringReadBytesTL2(r, &elem); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
 }
 
 func BuiltinVectorStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte) error {

@@ -105,18 +105,56 @@ func (item *CasesInplace3TupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Value
+	// write item.Value
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		w[currentBlockPosition] |= (1 << 1)
 		w, sizes = item.Value.InternalWriteTL2(w, sizes, nat_a2, nat_a3)
-
 	} else {
 		sizes = sizes[1:]
 	}
 
 	return w, sizes
+}
+
+func (item *CasesInplace3TupleInt2) ReadTL2(r []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Value
+		if block&(1<<1) != 0 {
+			if r, err = item.Value.ReadTL2(r, nat_a2, nat_a3); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesInplace3TupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) error {

@@ -81,6 +81,25 @@ func BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, v
 	return w, sizes
 }
 
+func BuiltinVectorBenchmarksVruPositionReadTL2(r []byte, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem tlBenchmarksVruPosition.BenchmarksVruPosition
+		if r, err = elem.ReadTL2(r); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0

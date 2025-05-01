@@ -255,20 +255,19 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.F0
+	// write item.F0
 	if item.F0 != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.NatWrite(w, item.F0)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.F1
+	// write item.F1
 	if item.F0&(1<<0) != 0 {
 		if item.F1 != 0 {
 			serializedSize += sizes[0]
@@ -276,14 +275,13 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 				w[currentBlockPosition] |= (1 << 2)
 				sizes = sizes[1:]
 				w = basictl.NatWrite(w, item.F1)
-
 			} else {
 				sizes = sizes[1:]
 			}
 		}
 	}
 
-	// calculate layout for item.F2
+	// write item.F2
 	if item.F1&(1<<1) != 0 {
 		if item.F2 != 0 {
 			serializedSize += sizes[0]
@@ -291,24 +289,23 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 				w[currentBlockPosition] |= (1 << 3)
 				sizes = sizes[1:]
 				w = basictl.NatWrite(w, item.F2)
-
 			} else {
 				sizes = sizes[1:]
 			}
 		}
 	}
 
-	// calculate layout for item.T1
+	// write item.T1
 	if item.F0&(1<<0) != 0 {
 		w[currentBlockPosition] |= (1 << 4)
 	}
 
-	// calculate layout for item.T2
+	// write item.T2
 	if item.F1&(1<<1) != 0 {
 		w[currentBlockPosition] |= (1 << 5)
 	}
 
-	// calculate layout for item.T3
+	// write item.T3
 	if item.F2&(1<<2) != 0 {
 		w[currentBlockPosition] |= (1 << 6)
 	}
@@ -319,6 +316,71 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 func (item *CasesTestRecursiveFieldmask) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesTestRecursiveFieldmask) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.F0
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.F0); err != nil {
+				return r, err
+			}
+		} else {
+			item.F0 = 0
+		}
+
+		// read item.F1
+		if block&(1<<2) != 0 {
+			if item.F0&(1<<0) != 0 {
+				if r, err = basictl.NatRead(r, &item.F1); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.F1 = 0
+		}
+
+		// read item.F2
+		if block&(1<<3) != 0 {
+			if item.F1&(1<<1) != 0 {
+				if r, err = basictl.NatRead(r, &item.F2); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "F2" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.F2 = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTestRecursiveFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

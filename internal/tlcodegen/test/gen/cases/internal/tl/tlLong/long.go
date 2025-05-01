@@ -82,6 +82,14 @@ func (item *Long) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *Long) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*int64)(item)
+	if r, err = basictl.LongRead(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*int64)(item)
 	if err := internal.Json2ReadInt64(in, ptr); err != nil {

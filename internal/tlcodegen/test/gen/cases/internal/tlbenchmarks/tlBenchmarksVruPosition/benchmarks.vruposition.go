@@ -327,52 +327,50 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.FieldsMask
+	// write item.FieldsMask
 	if item.FieldsMask != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.NatWrite(w, item.FieldsMask)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.CommitBit
+	// write item.CommitBit
 	if item.FieldsMask&(1<<0) != 0 {
 		w[currentBlockPosition] |= (1 << 2)
 	}
 
-	// calculate layout for item.MetaBlock
+	// write item.MetaBlock
 	if item.FieldsMask&(1<<1) != 0 {
 		w[currentBlockPosition] |= (1 << 3)
 	}
 
-	// calculate layout for item.SplitPayload
+	// write item.SplitPayload
 	if item.FieldsMask&(1<<3) != 0 {
 		w[currentBlockPosition] |= (1 << 4)
 	}
 
-	// calculate layout for item.RotationBlock
+	// write item.RotationBlock
 	if item.FieldsMask&(1<<5) != 0 {
 		w[currentBlockPosition] |= (1 << 5)
 	}
 
-	// calculate layout for item.CanonicalHash
+	// write item.CanonicalHash
 	if item.FieldsMask&(1<<15) != 0 {
 		w[currentBlockPosition] |= (1 << 6)
 	}
 
-	// calculate layout for item.PayloadOffset
+	// write item.PayloadOffset
 	if item.PayloadOffset != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 7)
 			sizes = sizes[1:]
 			w = basictl.LongWrite(w, item.PayloadOffset)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -387,44 +385,41 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 		return w, sizes
 	}
 
-	// calculate layout for item.BlockTimeNano
+	// write item.BlockTimeNano
 	if item.BlockTimeNano != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 0)
 			sizes = sizes[1:]
 			w = basictl.LongWrite(w, item.BlockTimeNano)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Hash
+	// write item.Hash
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		w[currentBlockPosition] |= (1 << 1)
 		w, sizes = item.Hash.InternalWriteTL2(w, sizes)
-
 	} else {
 		sizes = sizes[1:]
 	}
 
-	// calculate layout for item.FileOffset
+	// write item.FileOffset
 	if item.FileOffset != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 2)
 			sizes = sizes[1:]
 			w = basictl.LongWrite(w, item.FileOffset)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.SeqNumber
+	// write item.SeqNumber
 	if item.FieldsMask&(1<<14) != 0 {
 		if item.SeqNumber != 0 {
 			serializedSize += sizes[0]
@@ -432,7 +427,6 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 				w[currentBlockPosition] |= (1 << 3)
 				sizes = sizes[1:]
 				w = basictl.LongWrite(w, item.SeqNumber)
-
 			} else {
 				sizes = sizes[1:]
 			}
@@ -445,6 +439,103 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 func (item *BenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *BenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.FieldsMask
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.FieldsMask); err != nil {
+				return r, err
+			}
+		} else {
+			item.FieldsMask = 0
+		}
+
+		// read item.PayloadOffset
+		if block&(1<<7) != 0 {
+			if r, err = basictl.LongRead(r, &item.PayloadOffset); err != nil {
+				return r, err
+			}
+		} else {
+			item.PayloadOffset = 0
+		}
+
+		// read next block for fields 8..15
+		if len(saveR) < len(r)+shift {
+			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+				return r, err
+			}
+		} else {
+			return r, nil
+		}
+
+		// read item.BlockTimeNano
+		if block&(1<<0) != 0 {
+			if r, err = basictl.LongRead(r, &item.BlockTimeNano); err != nil {
+				return r, err
+			}
+		} else {
+			item.BlockTimeNano = 0
+		}
+
+		// read item.Hash
+		if block&(1<<1) != 0 {
+			if r, err = item.Hash.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.Hash.Reset()
+		}
+
+		// read item.FileOffset
+		if block&(1<<2) != 0 {
+			if r, err = basictl.LongRead(r, &item.FileOffset); err != nil {
+				return r, err
+			}
+		} else {
+			item.FileOffset = 0
+		}
+
+		// read item.SeqNumber
+		if block&(1<<3) != 0 {
+			if item.FieldsMask&(1<<14) != 0 {
+				if r, err = basictl.LongRead(r, &item.SeqNumber); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "SeqNumber" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.SeqNumber = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

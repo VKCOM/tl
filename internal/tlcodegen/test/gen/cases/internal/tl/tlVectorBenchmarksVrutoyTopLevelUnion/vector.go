@@ -84,6 +84,14 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int)
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
+	if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
 	if err := tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSON(legacyTypeNames, in, ptr); err != nil {
