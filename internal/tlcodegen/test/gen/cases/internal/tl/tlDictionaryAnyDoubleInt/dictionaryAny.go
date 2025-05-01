@@ -84,6 +84,14 @@ func (item *DictionaryAnyDoubleInt) WriteTL2(w []byte, sizes []int) ([]byte, []i
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *DictionaryAnyDoubleInt) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
+	if r, err = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *DictionaryAnyDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
 	if err := tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntReadJSON(legacyTypeNames, in, ptr); err != nil {

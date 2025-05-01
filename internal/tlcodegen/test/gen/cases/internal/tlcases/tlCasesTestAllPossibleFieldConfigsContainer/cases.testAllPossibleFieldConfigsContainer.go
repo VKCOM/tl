@@ -149,26 +149,24 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalWriteTL2(w []byte
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Outer
+	// write item.Outer
 	if item.Outer != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.NatWrite(w, item.Outer)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Value
+	// write item.Value
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		w[currentBlockPosition] |= (1 << 2)
 		w, sizes = item.Value.InternalWriteTL2(w, sizes, item.Outer)
-
 	} else {
 		sizes = sizes[1:]
 	}
@@ -179,6 +177,54 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalWriteTL2(w []byte
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesTestAllPossibleFieldConfigsContainer) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Outer
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.Outer); err != nil {
+				return r, err
+			}
+		} else {
+			item.Outer = 0
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = item.Value.ReadTL2(r, item.Outer); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

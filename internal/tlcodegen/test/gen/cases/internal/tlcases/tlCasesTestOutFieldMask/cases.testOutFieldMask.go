@@ -170,7 +170,7 @@ func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, nat_f
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.F1
+	// write item.F1
 	if nat_f&(1<<0) != 0 {
 		if item.F1 != 0 {
 			serializedSize += sizes[0]
@@ -178,32 +178,82 @@ func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, nat_f
 				w[currentBlockPosition] |= (1 << 1)
 				sizes = sizes[1:]
 				w = basictl.NatWrite(w, item.F1)
-
 			} else {
 				sizes = sizes[1:]
 			}
 		}
 	}
 
-	// calculate layout for item.F2
+	// write item.F2
 	if nat_f&(1<<3) != 0 {
 		w[currentBlockPosition] |= (1 << 2)
 	}
 
-	// calculate layout for item.F3
+	// write item.F3
 	if len(item.F3) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 3)
 			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F3, nat_f)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
 	return w, sizes
+}
+
+func (item *CasesTestOutFieldMask) ReadTL2(r []byte, nat_f uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.F1
+		if block&(1<<1) != 0 {
+			if nat_f&(1<<0) != 0 {
+				if r, err = basictl.NatRead(r, &item.F1); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.F1 = 0
+		}
+
+		// read item.F3
+		if block&(1<<3) != 0 {
+			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F3, nat_f); err != nil {
+				return r, err
+			}
+		} else {
+			item.F3 = item.F3[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTestOutFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_f uint32) error {

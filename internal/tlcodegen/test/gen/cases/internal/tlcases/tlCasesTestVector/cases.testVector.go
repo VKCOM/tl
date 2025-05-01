@@ -109,14 +109,13 @@ func (item *CasesTestVector) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Arr
+	// write item.Arr
 	if len(item.Arr) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 1)
 			w, sizes = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Arr)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -128,6 +127,45 @@ func (item *CasesTestVector) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 func (item *CasesTestVector) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesTestVector) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Arr
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL2(r, &item.Arr); err != nil {
+				return r, err
+			}
+		} else {
+			item.Arr = item.Arr[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

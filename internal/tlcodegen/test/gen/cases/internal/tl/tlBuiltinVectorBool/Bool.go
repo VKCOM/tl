@@ -84,6 +84,25 @@ func BuiltinVectorBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]by
 	return w, sizes
 }
 
+func BuiltinVectorBoolReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem bool
+		if r, err = basictl.BoolReadTL2(r, &elem); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorBoolReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]bool) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0

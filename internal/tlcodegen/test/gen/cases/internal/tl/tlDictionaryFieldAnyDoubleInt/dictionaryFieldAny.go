@@ -126,27 +126,25 @@ func (item *DictionaryFieldAnyDoubleInt) InternalWriteTL2(w []byte, sizes []int)
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Key
+	// write item.Key
 	if item.Key != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.DoubleWrite(w, item.Key)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Value
+	// write item.Value
 	if item.Value != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 2)
 			sizes = sizes[1:]
 			w = basictl.IntWrite(w, item.Value)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -158,6 +156,54 @@ func (item *DictionaryFieldAnyDoubleInt) InternalWriteTL2(w []byte, sizes []int)
 func (item *DictionaryFieldAnyDoubleInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *DictionaryFieldAnyDoubleInt) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if r, err = basictl.DoubleRead(r, &item.Key); err != nil {
+				return r, err
+			}
+		} else {
+			item.Key = 0
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = basictl.IntRead(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *DictionaryFieldAnyDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

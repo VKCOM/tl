@@ -62,9 +62,11 @@ func (item *IntMaybe) CalculateLayout(sizes []int) []int {
 		sizes[sizePosition] += 1
 		sizes[sizePosition] += basictl.TL2CalculateSize(1)
 		currentPosition := len(sizes)
-		sizes = append(sizes, 4)
-		if sizes[currentPosition] != 0 {
-			sizes[sizePosition] += sizes[currentPosition]
+		if item.Value != 0 {
+			sizes = append(sizes, 4)
+			if sizes[currentPosition] != 0 {
+				sizes[sizePosition] += sizes[currentPosition]
+			}
 		}
 	}
 	return sizes
@@ -80,12 +82,58 @@ func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	}
 
 	if item.Ok {
+		currentPosition := len(w)
 		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
-		sizes = sizes[1:]
-		w = basictl.IntWrite(w, item.Value)
+		if item.Value != 0 {
+			if sizes[0] != 0 {
+				w[currentPosition] |= (1 << 1)
+				sizes = sizes[1:]
+				w = basictl.IntWrite(w, item.Value)
+			}
+		}
 	}
 	return w, sizes
+}
+
+func (item *IntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, err = basictl.TL2ReadSize(r, &index); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = basictl.IntRead(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = 0
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *IntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

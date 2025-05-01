@@ -83,6 +83,14 @@ func (item *TupleInt2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *TupleInt2) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[2]int32)(item)
+	if r, err = tlBuiltinTuple2Int.BuiltinTuple2IntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *TupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[2]int32)(item)
 	if err := tlBuiltinTuple2Int.BuiltinTuple2IntReadJSON(legacyTypeNames, in, ptr); err != nil {

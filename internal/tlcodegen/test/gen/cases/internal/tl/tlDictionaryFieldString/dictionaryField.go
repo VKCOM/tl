@@ -128,7 +128,7 @@ func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]by
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Key
+	// write item.Key
 	if len(item.Key) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
@@ -136,13 +136,12 @@ func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.StringWriteTL2(w, item.Key)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Value
+	// write item.Value
 	if len(item.Value) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
@@ -150,7 +149,6 @@ func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w[currentBlockPosition] |= (1 << 2)
 			sizes = sizes[1:]
 			w = basictl.StringWriteTL2(w, item.Value)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -162,6 +160,54 @@ func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]by
 func (item *DictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *DictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Key); err != nil {
+				return r, err
+			}
+		} else {
+			item.Key = ""
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = ""
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *DictionaryFieldString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -363,7 +409,7 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Key
+	// write item.Key
 	if len(item.Key) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
@@ -371,13 +417,12 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.StringBytesWriteTL2(w, item.Key)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.Value
+	// write item.Value
 	if len(item.Value) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
@@ -385,7 +430,6 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 			w[currentBlockPosition] |= (1 << 2)
 			sizes = sizes[1:]
 			w = basictl.StringBytesWriteTL2(w, item.Value)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -397,6 +441,54 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 func (item *DictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *DictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if r, err = basictl.StringReadBytesTL2(r, &item.Key); err != nil {
+				return r, err
+			}
+		} else {
+			item.Key = item.Key[:0]
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = basictl.StringReadBytesTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = item.Value[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *DictionaryFieldStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

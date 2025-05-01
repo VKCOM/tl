@@ -136,6 +136,47 @@ func (item *CasesTestUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return item.InternalWriteTL2(w, sizes)
 }
 
+func (item *CasesTestUnion) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, err = basictl.TL2ReadSize(r, &item.index); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	switch item.index {
+	case 0:
+		r = saveR
+		if r, err = item.value1.ReadTL2(r); err != nil {
+			return r, err
+		}
+	case 1:
+		r = saveR
+		if r, err = item.value2.ReadTL2(r); err != nil {
+			return r, err
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("cases.TestUnion", in)
 	if err != nil {
@@ -320,14 +361,13 @@ func (item *CasesTestUnion1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Value
+	// write item.Value
 	if item.Value != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.IntWrite(w, item.Value)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -339,6 +379,45 @@ func (item *CasesTestUnion1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 func (item *CasesTestUnion1) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesTestUnion1) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Value
+		if block&(1<<1) != 0 {
+			if r, err = basictl.IntRead(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTestUnion1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -517,7 +596,7 @@ func (item *CasesTestUnion2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
 
-	// calculate layout for item.Value
+	// write item.Value
 	if len(item.Value) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
@@ -525,7 +604,6 @@ func (item *CasesTestUnion2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.StringWriteTL2(w, item.Value)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -537,6 +615,45 @@ func (item *CasesTestUnion2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 func (item *CasesTestUnion2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesTestUnion2) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Value
+		if block&(1<<1) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = ""
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesTestUnion2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

@@ -81,6 +81,25 @@ func BuiltinVectorDictionaryFieldAnyDoubleIntInternalWriteTL2(w []byte, sizes []
 	return w, sizes
 }
 
+func BuiltinVectorDictionaryFieldAnyDoubleIntReadTL2(r []byte, vec *[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt
+		if r, err = elem.ReadTL2(r); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryFieldAnyDoubleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0

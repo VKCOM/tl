@@ -84,6 +84,14 @@ func (item *VectorBenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *VectorBenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	if r, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *VectorBenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
 	if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames, in, ptr); err != nil {

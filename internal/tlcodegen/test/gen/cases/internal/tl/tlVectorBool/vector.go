@@ -83,6 +83,14 @@ func (item *VectorBool) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *VectorBool) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]bool)(item)
+	if r, err = tlBuiltinVectorBool.BuiltinVectorBoolReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *VectorBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]bool)(item)
 	if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSON(legacyTypeNames, in, ptr); err != nil {

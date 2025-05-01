@@ -110,14 +110,13 @@ func (item *CasesBytesTestDictStringString) InternalWriteTL2(w []byte, sizes []i
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Dict
+	// write item.Dict
 	if len(item.Dict) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 1)
 			w, sizes = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, &item.Dict)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -129,6 +128,45 @@ func (item *CasesBytesTestDictStringString) InternalWriteTL2(w []byte, sizes []i
 func (item *CasesBytesTestDictStringString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesBytesTestDictStringString) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Dict
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReadTL2(r, &item.Dict); err != nil {
+				return r, err
+			}
+		} else {
+			tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReset(item.Dict)
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesBytesTestDictStringString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -291,14 +329,13 @@ func (item *CasesBytesTestDictStringStringBytes) InternalWriteTL2(w []byte, size
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Dict
+	// write item.Dict
 	if len(item.Dict) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			w[currentBlockPosition] |= (1 << 1)
 			w, sizes = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, &item.Dict)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -310,6 +347,45 @@ func (item *CasesBytesTestDictStringStringBytes) InternalWriteTL2(w []byte, size
 func (item *CasesBytesTestDictStringStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *CasesBytesTestDictStringStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Dict
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesReadTL2(r, &item.Dict); err != nil {
+				return r, err
+			}
+		} else {
+			item.Dict = item.Dict[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *CasesBytesTestDictStringStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

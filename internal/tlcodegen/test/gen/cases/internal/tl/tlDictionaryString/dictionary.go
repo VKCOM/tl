@@ -84,6 +84,14 @@ func (item *DictionaryString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *DictionaryString) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*map[string]string)(item)
+	if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *DictionaryString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*map[string]string)(item)
 	if err := tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -183,6 +191,14 @@ func (item *DictionaryStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]by
 func (item *DictionaryStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *DictionaryStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]tlDictionaryFieldString.DictionaryFieldStringBytes)(item)
+	if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 func (item *DictionaryStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlDictionaryFieldString.DictionaryFieldStringBytes)(item)

@@ -112,6 +112,35 @@ func (item *CasesTestEnum) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return item.InternalWriteTL2(w, sizes)
 }
 
+func (item CasesTestEnum) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, err = basictl.TL2ReadSize(r, &item.index); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item *CasesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	_jtype := in.UnsafeString()
 	if !in.Ok() {

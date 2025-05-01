@@ -76,6 +76,30 @@ func BuiltinTuple4StringInternalWriteTL2(w []byte, sizes []int, vec *[4]string) 
 	return w, sizes
 }
 
+func BuiltinTuple4StringReadTL2(r []byte, vec *[4]string) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 4 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = basictl.StringReadTL2(r, &(*vec)[i]); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 4 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple4StringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[4]string) error {
 	index := 0
 	if in != nil {
@@ -174,6 +198,30 @@ func BuiltinTuple4StringBytesInternalWriteTL2(w []byte, sizes []int, vec *[4][]b
 		w = basictl.StringBytesWriteTL2(w, elem)
 	}
 	return w, sizes
+}
+
+func BuiltinTuple4StringBytesReadTL2(r []byte, vec *[4][]byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 4 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = basictl.StringReadBytesTL2(r, &(*vec)[i]); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 4 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
 }
 
 func BuiltinTuple4StringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[4][]byte) error {

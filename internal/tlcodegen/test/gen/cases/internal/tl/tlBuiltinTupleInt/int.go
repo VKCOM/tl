@@ -77,6 +77,34 @@ func BuiltinTupleIntInternalWriteTL2(w []byte, sizes []int, vec *[]int32, nat_n 
 	return w, sizes
 }
 
+func BuiltinTupleIntReadTL2(r []byte, vec *[]int32, nat_n uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([]int32, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if uint32(i) == nat_n {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = basictl.IntRead(r, &(*vec)[i]); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if uint32(i) != nat_n {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
 func BuiltinTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int32, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int32, nat_n)

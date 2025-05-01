@@ -83,6 +83,14 @@ func (item *TupleString4) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
 }
+
+func (item *TupleString4) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[4]string)(item)
+	if r, err = tlBuiltinTuple4String.BuiltinTuple4StringReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
+}
 func (item *TupleString4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[4]string)(item)
 	if err := tlBuiltinTuple4String.BuiltinTuple4StringReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -182,6 +190,14 @@ func (item *TupleString4Bytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 func (item *TupleString4Bytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *TupleString4Bytes) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[4][]byte)(item)
+	if r, err = tlBuiltinTuple4String.BuiltinTuple4StringBytesReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 func (item *TupleString4Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[4][]byte)(item)

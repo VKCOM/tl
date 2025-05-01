@@ -78,6 +78,30 @@ func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, ve
 	return w, sizes
 }
 
+func BuiltinTuple2PairTupleIntTupleIntReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 2 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r, nat_tXn, nat_tYn); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 2 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) error {
 	index := 0
 	if in != nil {

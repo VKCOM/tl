@@ -126,27 +126,25 @@ func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	w = append(w, 0)
 	serializedSize += 1
 
-	// calculate layout for item.Low
+	// write item.Low
 	if item.Low != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 1)
 			sizes = sizes[1:]
 			w = basictl.LongWrite(w, item.Low)
-
 		} else {
 			sizes = sizes[1:]
 		}
 	}
 
-	// calculate layout for item.High
+	// write item.High
 	if item.High != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			w[currentBlockPosition] |= (1 << 2)
 			sizes = sizes[1:]
 			w = basictl.LongWrite(w, item.High)
-
 		} else {
 			sizes = sizes[1:]
 		}
@@ -158,6 +156,54 @@ func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 func (item *BenchmarksVruHash) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
 	return item.InternalWriteTL2(w, sizes)
+}
+
+func (item *BenchmarksVruHash) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Low
+		if block&(1<<1) != 0 {
+			if r, err = basictl.LongRead(r, &item.Low); err != nil {
+				return r, err
+			}
+		} else {
+			item.Low = 0
+		}
+
+		// read item.High
+		if block&(1<<2) != 0 {
+			if r, err = basictl.LongRead(r, &item.High); err != nil {
+				return r, err
+			}
+		} else {
+			item.High = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *BenchmarksVruHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
