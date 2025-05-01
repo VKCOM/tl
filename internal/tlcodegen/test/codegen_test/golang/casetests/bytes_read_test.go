@@ -67,7 +67,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 			writeData, writeErr := mt.object.WriteGeneral(nil)
 
 			assert.Nil(t, writeErr)
-			assert.Equal(t, trueBytes, writeData)
+			assert.Equal(t, utils.SprintHexDump(trueBytes), utils.SprintHexDump(writeData))
 
 			_, readAgainErr := mt.object.Read(trueBytes)
 			assert.Nil(t, readAgainErr)

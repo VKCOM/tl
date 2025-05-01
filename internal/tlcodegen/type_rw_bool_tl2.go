@@ -57,7 +57,7 @@ func (trw *TypeRWBool) readTL2Call(
 		return fmt.Sprintf("%[1]s = true", targetObject)
 	}
 	return fmt.Sprintf(`if %[2]s, err = basictl.BoolReadTL2(%[2]s, %[1]s); err != nil { return %[2]s, err }`,
-		targetObject,
+		addAmpersand(refObject, targetObject),
 		targetBytes)
 }
 

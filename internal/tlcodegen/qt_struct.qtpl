@@ -269,6 +269,14 @@ func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
     return item.InternalWriteTL2(w, sizes)
 }
             {%- endif -%}
+
+func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+            {%- if field.t.trw.doesReadTL2UseObject(false) -%}
+    ptr := (*{%s= fieldTypeString %})(item)
+            {%- endif -%}
+    {%s= field.t.ReadTL2Call(bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    return r, nil
+}
         {%- endif -%}
         {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
@@ -490,7 +498,60 @@ func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
     sizes = item.CalculateLayout(sizes[0:0])
     return item.InternalWriteTL2(w, sizes)
 }
+
     {%- endif -%}
+func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    if currentSize == 0 {
+        item.Reset()
+    } else {
+        var block byte
+        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+        // read No of constructor
+        if block & 1 != 0 {
+            var _skip int
+            if r, err = basictl.TL2ReadSize(r, &_skip); err != nil { return r, err }
+        }
+        {%- for fieldIndex, field := range struct_.Fields -%}
+        {%- if (fieldIndex + 1) % 8 == 0 -%}
+
+        // read next block for fields {%v= (fieldIndex + 1) %}..{%v= (fieldIndex + 8) %}
+        if len(saveR) < len(r) + shift {
+            if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+        } else {
+            return r, nil
+        }
+        {%- endif -%}
+        {%- if field.t.IsTrueType() -%}
+        {%- continue -%}
+        {%- endif -%}
+
+    // read item.{%s= field.goName %}
+    if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
+        {%- if field.fieldMask != nil -%}
+        if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
+        {%- endif -%}
+        {%s= field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+        {%- if field.fieldMask != nil -%}
+        } else {
+            return r, basictl.TL2Error("field mask contradiction: field item." + "{%s= field.goName %}" + "is presented but depending bit is absent")
+        }
+        {%- endif -%}
+    } else {
+        {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%[1]s", field.goName), field.recursive) %}
+    }
+    {%- endfor -%}
+    }
+
+    if len(saveR) < len(r) + shift {
+        r = saveR[shift:]
+    }
+    return r, nil
+}
 
 {%- endif -%}
 {%- if struct_.wr.gen.options.GenerateLegacyJsonRead -%}

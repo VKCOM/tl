@@ -18,6 +18,10 @@ func TL2ExpectedNonZeroError() error {
 	return fmt.Errorf("expected non zero value")
 }
 
+func TL2Error(text string) error {
+	return fmt.Errorf(text)
+}
+
 func TL2ReadSize(r []byte, l *int) ([]byte, error) {
 	if len(r) == 0 {
 		return r, io.ErrUnexpectedEOF
@@ -49,11 +53,6 @@ func TL2ReadSize(r []byte, l *int) ([]byte, error) {
 		r = r[8:]
 		if *l <= bigStringLen {
 			return r, fmt.Errorf("non-canonical (huge) string format for length: %d", l)
-		}
-	}
-	if *l > 0 {
-		if len(r) < *l {
-			return r, io.ErrUnexpectedEOF
 		}
 	}
 	return r, nil
@@ -95,6 +94,29 @@ func StringBytesWriteTL2(w []byte, v []byte) []byte {
 	w = TL2WriteSize(w, len(v))
 	w = append(w, v...)
 	return w
+}
+
+func StringReadTL2(r []byte, dst *string) (_ []byte, err error) {
+	var l int
+	if r, err = TL2ReadSize(r, &l); err != nil {
+		return r, err
+	}
+	*dst = string(r[:l])
+	return r[l:], nil
+}
+
+func StringReadBytesTL2(r []byte, dst *[]byte) (_ []byte, err error) {
+	var l int
+	if r, err = TL2ReadSize(r, &l); err != nil {
+		return r, err
+	}
+	if cap(*dst) < l {
+		*dst = make([]byte, l)
+	} else {
+		*dst = (*dst)[:l]
+	}
+	copy(*dst, r)
+	return r[l:], nil
 }
 
 func ByteReadTL2(r []byte, b *byte) ([]byte, error) {

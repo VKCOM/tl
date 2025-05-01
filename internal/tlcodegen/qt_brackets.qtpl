@@ -106,6 +106,21 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %
     return w, sizes
 }
 
+func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= valueNatArgsDecl %}) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    *vec = (*vec)[:0]
+    for len(saveR) < len(r) + shift {
+        var elem {%s= elementTypeString %}
+        {%s= tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "elem.Key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        *vec = append(*vec, elem)
+    }
+    return r, nil
+}
 {%- endif -%}
 
                 {%- if tuple.dictKeyString -%}
@@ -416,6 +431,26 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeSt
 
     return w, sizes
 }
+
+func {%s= goName %}ReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    for key := range *m {
+        delete(*m, key)
+    }
+
+    for len(saveR) < len(r) + shift {
+        var key {%s= keyTypeString %}
+        var value {%s= valueTypeString %}
+        {%s= tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        (*m)[key] = value
+    }
+    return r, nil
+}
 {%- endif -%}
 
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
@@ -644,6 +679,21 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     return w, sizes
 }
 
+
+func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    *vec = (*vec)[:0]
+    for len(saveR) < len(r) + shift {
+        var elem {%s= elementTypeString %}
+        {%s= tuple.element.t.ReadTL2Call(bytesVersion, "r", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        *vec = append(*vec, elem)
+    }
+    return r, nil
+}
 {%- endif -%}
 
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
@@ -782,6 +832,30 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     return w, sizes
 }
 
+func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    if uint32(cap(*vec)) < nat_n {
+        *vec = make([]{%s= elementTypeString %}, nat_n)
+    } else {
+        *vec = (*vec)[:nat_n]
+    }
+    i := 0
+    for len(saveR) < len(r) + shift {
+        if uint32(i) == nat_n {
+            return r, basictl.TL2Error("more elements than expected")
+        }
+        {%s= tuple.element.t.ReadTL2Call(bytesVersion, "r", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        i += 1
+    }
+    if uint32(i) != nat_n {
+        return r, basictl.TL2Error("less elements than expected")
+    }
+    return r, nil
+}
 {%- endif -%}
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
 func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s= typeString %} {%s= natDecl %}) error {
@@ -916,6 +990,26 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
         {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
     }
     return w, sizes
+}
+
+func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    i := 0
+    for len(saveR) < len(r) + shift {
+            if i == {%v= tuple.size %} {
+            return r, basictl.TL2Error("more elements than expected")
+        }
+        {%s= tuple.element.t.ReadTL2Call(bytesVersion, "r", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        i += 1
+    }
+    if i != {%v= tuple.size %} {
+        return r, basictl.TL2Error("less elements than expected")
+    }
+    return r, nil
 }
 {%- endif -%}
 
