@@ -82,9 +82,9 @@ func (trw *TypeRWPrimitive) readTL2Call(
 		method = "basictl.LongRead"
 	case "string":
 		if bytesVersion {
-			method = "basictl.StringBytesRead"
+			method = "basictl.StringReadBytesTL2"
 		} else {
-			method = "basictl.StringRead"
+			method = "basictl.StringReadTL2"
 		}
 	case "float32":
 		method = "basictl.FloatRead"
@@ -95,7 +95,7 @@ func (trw *TypeRWPrimitive) readTL2Call(
 		"",
 		method,
 		targetBytes,
-		addAsterisk(refObject, targetObject),
+		addAmpersand(refObject, targetObject),
 	)
 }
 

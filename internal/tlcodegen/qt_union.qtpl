@@ -190,39 +190,28 @@ func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
     {%- endif -%}
 
 func (item {%s= asterisk %}{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-    {%- if union.IsEnum -%}
-    currentSize := 0
-    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
-    if currentSize == 0 {
-        item.index = 0
-    } else {
-        var block byte
-        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-        if block != 1 {
-            return r, basictl.TL2UnexpectedByteError(block, 1)
-        }
-        if r, err = basictl.TL2ReadSize(r, &item.index); err != nil { return r, err }
-    }
-    {%- else -%}
     saveR := r
     currentSize := 0
     if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
     if currentSize == 0 {
         item.index = 0
     } else {
         var block byte
         if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-        if (block & 1) == 0 {
-            return r, basictl.TL2UnexpectedByteError(block, block | 1)
+        if (block & 1) != 0 {
+            if r, err = basictl.TL2ReadSize(r, &item.index); err != nil { return r, err }
+        } else {
+            item.index = 0
         }
-        if r, err = basictl.TL2ReadSize(r, &item.index); err != nil { return r, err }
     }
-
+    {%- if !union.IsEnum -%}
     switch item.index {
     {%- for i, field := range union.Fields -%}
     case {%d i %}:
         {%- if field.t.IsTrueType() -%}
-        return r, nil
+        break
         {%- else -%}
         r = saveR
         {%s= field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, union.wr.NatParams) %}
@@ -230,6 +219,9 @@ func (item {%s= asterisk %}{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) 
     {%- endfor -%}
     }
     {%- endif -%}
+    if len(saveR) < len(r) + shift {
+        r = saveR[shift:]
+    }
     return r, nil
 }
 {%- endif -%}

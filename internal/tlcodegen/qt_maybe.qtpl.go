@@ -210,31 +210,45 @@ func (item *`)
     return w, sizes
 }
 
-//func (item *`)
+func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL2(r []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-//    currentSize := 0
-//    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
-//    if currentSize == 0 {
-//        item.Ok = false
-//    } else {
-//        var block byte
-//        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-//        if block != 3 {
-//            return r, basictl.TL2UnexpectedByteError(block, 1)
-//        }
-//        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-//        if block != 1 {
-//            return r, basictl.TL2UnexpectedByteError(block, 1)
-//        }
-//        `)
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    if currentSize == 0 {
+        item.Ok = false
+    } else {
+        var block byte
+        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
+        if block & 1 == 0 {
+            return r, basictl.TL2Error("must have constructor bytes")
+        }
+        var index int
+        if r, err = basictl.TL2ReadSize(r, &index); err != nil { return r, err }
+        if index != 1 {
+            return r, basictl.TL2Error("expected 1")
+        }
+        item.Ok = true
+        if block & (1 << 1) != 0 {
+        `)
 		qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
 		qw422016.N().S(`
-//    }
-//    return r, nil
-//}
+        } else {
+        `)
+		qw422016.N().S(maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive))
+		qw422016.N().S(`
+        }
+    }
+    if len(saveR) < len(r) + shift {
+        r = saveR[shift:]
+    }
+    return r, nil
+}
 
 `)
 	}

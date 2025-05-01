@@ -183,6 +183,32 @@ func `)
     return w, sizes
 }
 
+func `)
+				qw422016.N().S(goName)
+				qw422016.N().S(`ReadTL2(r []byte, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(valueNatArgsDecl)
+				qw422016.N().S(`) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    *vec = (*vec)[:0]
+    for len(saveR) < len(r) + shift {
+        var elem `)
+				qw422016.N().S(elementTypeString)
+				qw422016.N().S(`
+        `)
+				qw422016.N().S(tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "elem.Key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(`
+        `)
+				qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(`
+        *vec = append(*vec, elem)
+    }
+    return r, nil
+}
 `)
 			}
 			qw422016.N().S(`
@@ -762,6 +788,40 @@ func `)
 
     return w, sizes
 }
+
+func `)
+				qw422016.N().S(goName)
+				qw422016.N().S(`ReadTL2(r []byte, m *map[`)
+				qw422016.N().S(keyTypeString)
+				qw422016.N().S(`]`)
+				qw422016.N().S(valueTypeString)
+				qw422016.N().S(`) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    for key := range *m {
+        delete(*m, key)
+    }
+
+    for len(saveR) < len(r) + shift {
+        var key `)
+				qw422016.N().S(keyTypeString)
+				qw422016.N().S(`
+        var value `)
+				qw422016.N().S(valueTypeString)
+				qw422016.N().S(`
+        `)
+				qw422016.N().S(tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(`
+        `)
+				qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(`
+        (*m)[key] = value
+    }
+    return r, nil
+}
 `)
 			}
 			qw422016.N().S(`
@@ -1179,6 +1239,30 @@ func `)
     return w, sizes
 }
 
+
+func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`ReadTL2(r []byte, vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    *vec = (*vec)[:0]
+    for len(saveR) < len(r) + shift {
+        var elem `)
+			qw422016.N().S(elementTypeString)
+			qw422016.N().S(`
+        `)
+			qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "r", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+			qw422016.N().S(`
+        *vec = append(*vec, elem)
+    }
+    return r, nil
+}
 `)
 		}
 		qw422016.N().S(`
@@ -1436,6 +1520,39 @@ func `)
     return w, sizes
 }
 
+func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`ReadTL2(r []byte, vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    if uint32(cap(*vec)) < nat_n {
+        *vec = make([]`)
+			qw422016.N().S(elementTypeString)
+			qw422016.N().S(`, nat_n)
+    } else {
+        *vec = (*vec)[:nat_n]
+    }
+    i := 0
+    for len(saveR) < len(r) + shift {
+        if uint32(i) == nat_n {
+            return r, basictl.TL2Error("more elements than expected")
+        }
+        `)
+			qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "r", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+			qw422016.N().S(`
+        i += 1
+    }
+    if uint32(i) != nat_n {
+        return r, basictl.TL2Error("less elements than expected")
+    }
+    return r, nil
+}
 `)
 		}
 		if tuple.wr.gen.options.GenerateLegacyJsonRead {
@@ -1695,6 +1812,37 @@ func `)
 			qw422016.N().S(`
     }
     return w, sizes
+}
+
+func `)
+			qw422016.N().S(goName)
+			qw422016.N().S(`ReadTL2(r []byte, vec *`)
+			qw422016.N().S(typeString)
+			qw422016.N().S(natDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+    saveR := r
+    currentSize := 0
+    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+    i := 0
+    for len(saveR) < len(r) + shift {
+            if i == `)
+			qw422016.N().V(tuple.size)
+			qw422016.N().S(` {
+            return r, basictl.TL2Error("more elements than expected")
+        }
+        `)
+			qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "r", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+			qw422016.N().S(`
+        i += 1
+    }
+    if i != `)
+			qw422016.N().V(tuple.size)
+			qw422016.N().S(` {
+        return r, basictl.TL2Error("less elements than expected")
+    }
+    return r, nil
 }
 `)
 		}

@@ -40,7 +40,7 @@ func (trw *TypeRWUnion) readTL2Call(
 	refObject bool,
 	natArgs []string,
 ) string {
-	return fmt.Sprintf("if %[3]s, err = %[1]s.ReadTL2(%[3]s, %[1]s%[2]s); err != nil { return %[3]s, err }",
+	return fmt.Sprintf("if %[3]s, err = %[1]s.ReadTL2(%[3]s%[2]s); err != nil { return %[3]s, err }",
 		addAsterisk(refObject, targetObject),
 		joinWithCommas(natArgs),
 		targetBytes,

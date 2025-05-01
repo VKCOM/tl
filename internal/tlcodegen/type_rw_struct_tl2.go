@@ -14,7 +14,7 @@ func (trw *TypeRWStruct) calculateLayout(
 		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetSizes)
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.CalculateLayout(bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+		return trw.Fields[0].t.CalculateLayout(bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
 	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), joinWithCommas(natArgs))
 }
@@ -32,7 +32,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 		return fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.WriteTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+		return trw.Fields[0].t.WriteTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
 	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
 		targetSizes,
@@ -55,7 +55,7 @@ func (trw *TypeRWStruct) readTL2Call(
 		return ""
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.ReadTL2Call(bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+		return trw.Fields[0].t.ReadTL2Call(bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
 	return fmt.Sprintf("if %[4]s, err = %[2]s.ReadTL2(%[4]s%[3]s); err != nil { return %[4]s, err }",
 		"",
