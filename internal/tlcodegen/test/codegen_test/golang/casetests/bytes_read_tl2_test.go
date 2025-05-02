@@ -38,7 +38,7 @@ func runMappingTestBytesTL2(t *testing.T, mt mappingTestBytes) {
 	fmt.Println("Seed: ", seed)
 
 	for sId, success := range mt.samples.Successes {
-		t.Run(fmt.Sprintf("Object %d", sId), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Object %d - bytes [%s]", sId, success.Bytes), func(t *testing.T) {
 			mt.object.FillRandom(rg)
 
 			trueBytes := utils.ParseHexToBytes(success.Bytes)
