@@ -139,8 +139,13 @@ func (item *`)
     if item.Ok {
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
-        currentPosition := len(sizes)
 `)
+		isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+
+		if len(trivialSize) == 0 && !maybe.element.t.IsTrueType() {
+			qw422016.N().S(`        currentPosition := len(sizes)
+`)
+		}
 		nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
 
 		if nonEmptyCondition != "" {
@@ -150,17 +155,34 @@ func (item *`)
 `)
 		}
 		qw422016.N().S(`        `)
-		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 		qw422016.N().S(`
-        if sizes[currentPosition] != 0 {
-            sizes[sizePosition] += sizes[currentPosition]
 `)
-		if maybe.element.t.trw.isSizeWrittenInData() {
-			qw422016.N().S(`            sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		sizeValue := "sizes[currentPosition]"
+		if len(trivialSize) != 0 {
+			sizeValue = trivialSize
+		}
+
+		if !isSizeConstant {
+			qw422016.N().S(`        if `)
+			qw422016.N().S(sizeValue)
+			qw422016.N().S(` != 0 {
 `)
 		}
-		qw422016.N().S(`        }
+		qw422016.N().S(`            sizes[sizePosition] += `)
+		qw422016.N().S(sizeValue)
+		qw422016.N().S(`
 `)
+		if maybe.element.t.trw.isSizeWrittenInData() {
+			qw422016.N().S(`            sizes[sizePosition] += basictl.TL2CalculateSize(`)
+			qw422016.N().S(sizeValue)
+			qw422016.N().S(`)
+`)
+		}
+		if !isSizeConstant {
+			qw422016.N().S(`        }
+`)
+		}
 		if nonEmptyCondition != "" {
 			qw422016.N().S(`        }
 `)
@@ -187,6 +209,13 @@ func (item *`)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
 `)
+		isSizeConstant, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+
+		sizeValue = "sizes[0]"
+		if len(trivialSize) != 0 {
+			sizeValue = trivialSize
+		}
+
 		nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
 
 		if nonEmptyCondition != "" {
@@ -195,10 +224,12 @@ func (item *`)
 			qw422016.N().S(` {
 `)
 		}
-		qw422016.N().S(`        if sizes[0] != 0 {
+		qw422016.N().S(`        if `)
+		qw422016.N().S(sizeValue)
+		qw422016.N().S(` != 0 {
         w[currentPosition] |= (1 << 1)
         `)
-		qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 		qw422016.N().S(`
         }
 `)
@@ -217,7 +248,7 @@ func (item *`)
 		qw422016.N().S(`) (_ []byte, err error) {
     saveR := r
     currentSize := 0
-    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
     if currentSize == 0 {
@@ -229,14 +260,14 @@ func (item *`)
             return r, basictl.TL2Error("must have constructor bytes")
         }
         var index int
-        if r, err = basictl.TL2ReadSize(r, &index); err != nil { return r, err }
+        if r, index, err = basictl.TL2ParseSize(r); err != nil { return r, err }
         if index != 1 {
             return r, basictl.TL2Error("expected 1")
         }
         item.Ok = true
         if block & (1 << 1) != 0 {
         `)
-		qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams))
+		qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 		qw422016.N().S(`
         } else {
         `)

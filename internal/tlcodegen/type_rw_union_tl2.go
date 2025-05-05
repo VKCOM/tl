@@ -10,7 +10,7 @@ func (trw *TypeRWUnion) calculateLayout(
 	ins *InternalNamespace,
 	refObject bool,
 	natArgs []string) string {
-	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsterisk(refObject, targetObject), joinWithCommas(natArgs))
+	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWUnion) writeTL2Call(
@@ -25,7 +25,7 @@ func (trw *TypeRWUnion) writeTL2Call(
 ) string {
 	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
 		targetSizes,
-		addAsterisk(refObject, targetObject),
+		addAsteriskAndBrackets(refObject, targetObject),
 		joinWithCommas(natArgs),
 		targetBytes,
 	)
@@ -41,7 +41,7 @@ func (trw *TypeRWUnion) readTL2Call(
 	natArgs []string,
 ) string {
 	return fmt.Sprintf("if %[3]s, err = %[1]s.ReadTL2(%[3]s%[2]s); err != nil { return %[3]s, err }",
-		addAsterisk(refObject, targetObject),
+		addAsteriskAndBrackets(refObject, targetObject),
 		joinWithCommas(natArgs),
 		targetBytes,
 	)
@@ -65,4 +65,8 @@ func (trw *TypeRWUnion) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
 
 func (trw *TypeRWUnion) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
+}
+
+func (trw *TypeRWUnion) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
+	return false, ""
 }

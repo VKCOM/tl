@@ -39,7 +39,7 @@ func TL2ReadSize(r []byte, l *int) ([]byte, error) {
 		*l = (int(r[3]) << 16) + (int(r[2]) << 8) + (int(r[1]) << 0)
 		r = r[4:]
 		if *l <= tinyStringLen {
-			return r, fmt.Errorf("non-canonical (big) string format for length: %d", l)
+			return r, fmt.Errorf("non-canonical (big) string format for length: %d", *l)
 		}
 	default: // hugeStringMarker
 		if len(r) < 8 {
@@ -52,10 +52,47 @@ func TL2ReadSize(r []byte, l *int) ([]byte, error) {
 		*l = int(l64)
 		r = r[8:]
 		if *l <= bigStringLen {
-			return r, fmt.Errorf("non-canonical (huge) string format for length: %d", l)
+			return r, fmt.Errorf("non-canonical (huge) string format for length: %d", *l)
 		}
 	}
 	return r, nil
+}
+
+func TL2ParseSize(r []byte) ([]byte, int, error) {
+	l := 0
+	if len(r) == 0 {
+		return r, l, io.ErrUnexpectedEOF
+	}
+	b0 := r[0]
+
+	switch {
+	case b0 <= tinyStringLen:
+		l = int(b0)
+		r = r[1:]
+	case b0 == bigStringMarker:
+		if len(r) < 4 {
+			return r, l, io.ErrUnexpectedEOF
+		}
+		l = (int(r[3]) << 16) + (int(r[2]) << 8) + (int(r[1]) << 0)
+		r = r[4:]
+		if l <= tinyStringLen {
+			return r, l, fmt.Errorf("non-canonical (big) string format for length: %d", l)
+		}
+	default: // hugeStringMarker
+		if len(r) < 8 {
+			return r, l, io.ErrUnexpectedEOF
+		}
+		l64 := (int64(r[7]) << 48) + (int64(r[6]) << 40) + (int64(r[5]) << 32) + (int64(r[4]) << 24) + (int64(r[3]) << 16) + (int64(r[2]) << 8) + (int64(r[1]) << 0)
+		if l64 > math.MaxInt {
+			return r, l, fmt.Errorf("string length cannot be represented on 32-bit platform: %d", l64)
+		}
+		l = int(l64)
+		r = r[8:]
+		if l <= bigStringLen {
+			return r, l, fmt.Errorf("non-canonical (huge) string format for length: %d", l)
+		}
+	}
+	return r, l, nil
 }
 
 func TL2WriteSize(w []byte, l int) []byte {

@@ -107,3 +107,110 @@ func BenchmarkTL2ReadRandomArray(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkTL1WriteRandomVector(b *testing.B) {
+	b.ReportAllocs()
+
+	valueGen := initTestValues[*tlbenchmarks.VrutoyTopLevelContainer](1, func() *tlbenchmarks.VrutoyTopLevelContainer {
+		return &tlbenchmarks.VrutoyTopLevelContainer{}
+	})
+	dst := tlbenchmarks.VrutoyTopLevelContainer{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		value := valueGen(i)
+		_, err2 := dst.Read(value)
+		if err2 != nil {
+			b.Fail()
+		}
+		b.StartTimer()
+		_ = dst.Write(nil)
+	}
+}
+
+func BenchmarkTL1WriteRandomVectorWithWriteBuffer(b *testing.B) {
+	b.ReportAllocs()
+	writeBuffer := make([]byte, 1000)
+
+	valueGen := initTestValues[*tlbenchmarks.VrutoyTopLevelContainer](1, func() *tlbenchmarks.VrutoyTopLevelContainer {
+		return &tlbenchmarks.VrutoyTopLevelContainer{}
+	})
+	dst := tlbenchmarks.VrutoyTopLevelContainer{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		value := valueGen(i)
+		_, err2 := dst.Read(value)
+		if err2 != nil {
+			b.Fail()
+		}
+		b.StartTimer()
+		writeBuffer = dst.Write(writeBuffer[0:0])
+	}
+}
+
+func BenchmarkTL2WriteRandomVector(b *testing.B) {
+	b.ReportAllocs()
+	writeBuffer := make([]byte, 1000)
+	buffer := make([]int, 10000)
+
+	valueGen := initTestValues[*tlbenchmarks.VrutoyTopLevelContainer](1, func() *tlbenchmarks.VrutoyTopLevelContainer {
+		return &tlbenchmarks.VrutoyTopLevelContainer{}
+	})
+	dst := tlbenchmarks.VrutoyTopLevelContainer{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		value := valueGen(i)
+		_, err2 := dst.Read(value)
+		if err2 != nil {
+			b.Fail()
+		}
+		b.StartTimer()
+		writeBuffer, buffer = dst.WriteTL2(writeBuffer[0:0], buffer[0:0])
+	}
+}
+
+func BenchmarkTL1WriteRandomArrayWithWriteBuffer(b *testing.B) {
+	b.ReportAllocs()
+
+	writeBuffer := make([]byte, 1000)
+
+	valueGen := initTestValues[*tlbenchmarks.VrutoyTopLevelContainerWithDependency](1, func() *tlbenchmarks.VrutoyTopLevelContainerWithDependency {
+		return &tlbenchmarks.VrutoyTopLevelContainerWithDependency{}
+	})
+	dst := tlbenchmarks.VrutoyTopLevelContainerWithDependency{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		value := valueGen(i)
+		_, err2 := dst.Read(value)
+		if err2 != nil {
+			b.Fail()
+		}
+		b.StartTimer()
+		writeBuffer, _ = dst.Write(writeBuffer[0:0])
+	}
+}
+
+func BenchmarkTL2WriteRandomArrayWithWriteBuffer(b *testing.B) {
+	b.ReportAllocs()
+	writeBuffer := make([]byte, 1000)
+	buffer := make([]int, 10000)
+
+	valueGen := initTestValues[*tlbenchmarks.VrutoyTopLevelContainerWithDependency](1, func() *tlbenchmarks.VrutoyTopLevelContainerWithDependency {
+		return &tlbenchmarks.VrutoyTopLevelContainerWithDependency{}
+	})
+	dst := tlbenchmarks.VrutoyTopLevelContainerWithDependency{}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		b.StopTimer()
+		value := valueGen(i)
+		_, err2 := dst.Read(value)
+		if err2 != nil {
+			b.Fail()
+		}
+		b.StartTimer()
+		writeBuffer, buffer = dst.WriteTL2(writeBuffer[0:0], buffer[0:0])
+	}
+}
