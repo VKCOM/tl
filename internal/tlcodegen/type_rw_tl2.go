@@ -26,6 +26,7 @@ type TypeRWTL2 interface {
 	) string
 
 	doesWriteTL2UseObject(canDependOnLocalBit bool) bool
+	tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string)
 
 	readTL2Call(
 		bytesVersion bool,

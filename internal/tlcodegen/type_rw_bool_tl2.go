@@ -14,10 +14,11 @@ func (trw *TypeRWBool) calculateLayout(
 	ins *InternalNamespace,
 	refObject bool,
 	natArgs []string) string {
-	if canDependOnLocalBit {
-		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetSizes)
-	}
-	return fmt.Sprintf("%[1]s = append(%[1]s, 1)", targetSizes)
+	return ""
+	//if canDependOnLocalBit {
+	//	return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetSizes)
+	//}
+	//return fmt.Sprintf("%[1]s = append(%[1]s, 1)", targetSizes)
 }
 
 func (trw *TypeRWBool) writeTL2Call(
@@ -31,10 +32,9 @@ func (trw *TypeRWBool) writeTL2Call(
 	natArgs []string,
 ) string {
 	if canDependOnLocalBit {
-		return fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
+		return "" // fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
 	}
-	return fmt.Sprintf(`%[1]s = %[1]s[1:]
-if %[2]s {
+	return fmt.Sprintf(`if %[2]s {
 	%[3]s = append(%[3]s, 1)
 } else {
 	%[3]s = append(%[3]s, 0)
@@ -79,4 +79,11 @@ func (trw *TypeRWBool) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
 
 func (trw *TypeRWBool) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
+}
+
+func (trw *TypeRWBool) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
+	if canDependOnLocalBit {
+		return true, "0"
+	}
+	return true, "1"
 }

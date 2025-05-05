@@ -67,18 +67,33 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     if item.Ok {
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
+        {%- code
+            isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+        -%}
+        {%- if len(trivialSize) == 0 && !maybe.element.t.IsTrueType() -%}
         currentPosition := len(sizes)
+        {%- endif -%}
         {%- code nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive) -%}
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
         {%- endif -%}
-        {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
-        if sizes[currentPosition] != 0 {
-            sizes[sizePosition] += sizes[currentPosition]
-        {%- if maybe.element.t.trw.isSizeWrittenInData() -%}
-            sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+        {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%- code
+            sizeValue := "sizes[currentPosition]"
+            if len(trivialSize) != 0 {
+                sizeValue = trivialSize
+            }
+        -%}
+        {%- if !isSizeConstant -%}
+        if {%s= sizeValue %} != 0 {
         {%- endif -%}
+            sizes[sizePosition] += {%s= sizeValue %}
+        {%- if maybe.element.t.trw.isSizeWrittenInData() -%}
+            sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
+        {%- endif -%}
+        {%- if !isSizeConstant -%}
         }
+        {%- endif -%}
         {%- if nonEmptyCondition != "" -%}
         }
         {%- endif -%}
@@ -99,13 +114,22 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         currentPosition := len(w)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
+        {%- code
+            isSizeConstant, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+        -%}
+        {%- code
+            sizeValue = "sizes[0]"
+            if len(trivialSize) != 0 {
+                sizeValue = trivialSize
+            }
+        -%}
         {%- code nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive) -%}
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
         {%- endif -%}
-        if sizes[0] != 0 {
+        if {%s= sizeValue %} != 0 {
         w[currentPosition] |= (1 << 1)
-        {%s= maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+        {%s= maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         }
         {%- if nonEmptyCondition != "" -%}
         }
@@ -117,7 +141,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     saveR := r
     currentSize := 0
-    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
     if currentSize == 0 {
@@ -129,13 +153,13 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
             return r, basictl.TL2Error("must have constructor bytes")
         }
         var index int
-        if r, err = basictl.TL2ReadSize(r, &index); err != nil { return r, err }
+        if r, index, err = basictl.TL2ParseSize(r); err != nil { return r, err }
         if index != 1 {
             return r, basictl.TL2Error("expected 1")
         }
         item.Ok = true
         if block & (1 << 1) != 0 {
-        {%s= maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, maybe.wr.NatParams) %}
+        {%s= maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         } else {
         {%s= maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive) %}
         }

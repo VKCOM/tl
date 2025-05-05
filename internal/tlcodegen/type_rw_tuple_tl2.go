@@ -71,3 +71,7 @@ func (trw *TypeRWBrackets) doesWriteTL2UseObject(canDependOnLocalBit bool) bool 
 func (trw *TypeRWBrackets) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
 }
+
+func (trw *TypeRWBrackets) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
+	return false, ""
+}

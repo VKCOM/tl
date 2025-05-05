@@ -577,7 +577,8 @@ func (item *`)
 				qw422016.N().S(goName)
 				qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
     sizes = item.CalculateLayout(sizes[0:0])
-    return item.InternalWriteTL2(w, sizes)
+    w, _ = item.InternalWriteTL2(w, sizes)
+    return w, sizes[0:0]
 }
 `)
 			}
@@ -758,19 +759,34 @@ func (item *`)
 		qw422016.N().S(`) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
-    lastUsedBit := -1
+
+    currentSize := 0
+    lastUsedByte := 0
 `)
 		if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
 			qw422016.N().S(`
     // add constructor No for union type in case of non first option
-    lastUsedBit = 0
-    sizes[sizePosition] += basictl.TL2CalculateSize(`)
+    lastUsedByte = 1
+    currentSize += basictl.TL2CalculateSize(`)
 			qw422016.N().D(struct_.wr.unionIndex)
 			qw422016.N().S(`)
 `)
 		}
+		usesCurrentPosition := false
+		for _, field := range struct_.Fields {
+			_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
+			if len(trivialSize) == 0 {
+				usesCurrentPosition = true
+				break
+			}
+		}
+
+		if usesCurrentPosition {
+			qw422016.N().S(`    currentPosition := len(sizes)
+`)
+		}
 		for fieldIndex, field := range struct_.Fields {
-			if field.t.IsTrueType() && field.fieldMask == nil {
+			if field.t.IsTrueType() {
 				continue
 			}
 			qw422016.N().S(`
@@ -778,14 +794,11 @@ func (item *`)
 			qw422016.N().S(field.goName)
 			qw422016.N().S(`
 `)
-			if fieldIndex == 0 {
-				qw422016.N().S(`    currentPosition := len(sizes)
+			isSizeConstant, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
+
+			if len(trivialSize) == 0 && fieldIndex != 0 {
+				qw422016.N().S(`    currentPosition = len(sizes)
 `)
-			} else {
-				if !field.t.IsTrueType() {
-					qw422016.N().S(`    currentPosition = len(sizes)
-`)
-				}
 			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`    if `)
@@ -795,54 +808,88 @@ func (item *`)
 				qw422016.N().S(`) != 0 {
 `)
 			}
-			if field.t.IsTrueType() {
-				qw422016.N().S(`    lastUsedBit = `)
-				qw422016.N().D(fieldIndex + 1)
-				qw422016.N().S(`
-`)
-			} else {
-				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
+			nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
 
-				if nonEmptyCondition != "" {
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`    if `)
+				qw422016.N().S(nonEmptyCondition)
+				qw422016.N().S(` {
+`)
+			}
+			qw422016.N().S(`    `)
+			qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
+`)
+			if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+				if !isSizeConstant {
+					sizeValue := "sizes[currentPosition]"
+					if len(trivialSize) != 0 {
+						sizeValue = trivialSize
+					}
+
 					qw422016.N().S(`    if `)
-					qw422016.N().S(nonEmptyCondition)
-					qw422016.N().S(` {
-`)
-				}
-				qw422016.N().S(`    `)
-				qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
-				qw422016.N().S(`
-`)
-				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
-					qw422016.N().S(`    if sizes[currentPosition] != 0 {
-        lastUsedBit = `)
-					qw422016.N().D(fieldIndex + 1)
+					qw422016.N().S(sizeValue)
+					qw422016.N().S(` != 0 {
+        lastUsedByte = `)
+					qw422016.N().D((fieldIndex+1)/8 + 1)
 					qw422016.N().S(`
-        sizes[sizePosition] += sizes[currentPosition]
+        currentSize += `)
+					qw422016.N().S(sizeValue)
+					qw422016.N().S(`
 `)
 					if field.t.trw.isSizeWrittenInData() {
-						qw422016.N().S(`        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+						qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
+						qw422016.N().S(sizeValue)
+						qw422016.N().S(`)
 `)
 					}
-					qw422016.N().S(`    } else {
+					if len(trivialSize) == 0 {
+						qw422016.N().S(`    } else {
         sizes = sizes[:currentPosition + 1]
     }
 `)
+					} else {
+						qw422016.N().S(`    }
+`)
+					}
 				} else {
-					qw422016.N().S(`        lastUsedBit = `)
-					qw422016.N().D(fieldIndex + 1)
+					qw422016.N().S(`        lastUsedByte = `)
+					qw422016.N().D((fieldIndex+1)/8 + 1)
 					qw422016.N().S(`
-        sizes[sizePosition] += sizes[currentPosition]
+        currentSize += `)
+					qw422016.N().S(trivialSize)
+					qw422016.N().S(`
 `)
 					if field.t.trw.isSizeWrittenInData() {
-						qw422016.N().S(`        sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+						qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
+						qw422016.N().S(trivialSize)
+						qw422016.N().S(`)
 `)
 					}
 				}
-				if nonEmptyCondition != "" {
-					qw422016.N().S(`    }
+			} else {
+				sizeValue := "sizes[currentPosition]"
+				if len(trivialSize) != 0 {
+					sizeValue = trivialSize
+				}
+
+				qw422016.N().S(`        lastUsedByte = `)
+				qw422016.N().D((fieldIndex+1)/8 + 1)
+				qw422016.N().S(`
+        currentSize += `)
+				qw422016.N().S(sizeValue)
+				qw422016.N().S(`
+`)
+				if field.t.trw.isSizeWrittenInData() {
+					qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
+					qw422016.N().S(sizeValue)
+					qw422016.N().S(`)
 `)
 				}
+			}
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`    }
+`)
 			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`    }
@@ -851,12 +898,13 @@ func (item *`)
 		}
 		qw422016.N().S(`
     // append byte for each section until last mentioned field
-    if lastUsedBit != -1 {
-        sizes[sizePosition] += lastUsedBit / 8 + 1
+    if lastUsedByte != 0 {
+        currentSize += lastUsedByte
     } else {
         // remove unused values
         sizes = sizes[:sizePosition + 1]
     }
+    sizes[sizePosition] = currentSize
     return sizes
 }
 
@@ -877,7 +925,8 @@ func (item *`)
 
 `)
 		if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
-			qw422016.N().S(`    currentBlockPosition := len(w)
+			qw422016.N().S(`    var currentBlock byte
+    currentBlockPosition := len(w)
 `)
 		}
 		qw422016.N().S(`    w = append(w, 0)
@@ -886,7 +935,7 @@ func (item *`)
 		if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
 			qw422016.N().S(`
     // add constructor No for union type in case of non first option
-    w[currentBlockPosition] |= (1 << 0)
+    currentBlock |= (1 << 0)
 
     w = basictl.TL2WriteSize(w, `)
 			qw422016.N().D(struct_.wr.unionIndex)
@@ -904,6 +953,8 @@ func (item *`)
 				qw422016.N().S(`..`)
 				qw422016.N().V((fieldIndex + 8))
 				qw422016.N().S(`
+        w[currentBlockPosition] = currentBlock
+        currentBlock = 0
         if serializedSize != currentSize {
             currentBlockPosition = len(w)
             w = append(w, 0)
@@ -913,7 +964,7 @@ func (item *`)
         }
 `)
 			}
-			if field.t.IsTrueType() && field.fieldMask == nil {
+			if field.t.IsTrueType() {
 				continue
 			}
 			qw422016.N().S(`
@@ -921,6 +972,8 @@ func (item *`)
 			qw422016.N().S(field.goName)
 			qw422016.N().S(`
 `)
+			_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
+
 			if field.fieldMask != nil {
 				qw422016.N().S(`    if `)
 				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
@@ -929,55 +982,67 @@ func (item *`)
 				qw422016.N().S(`) != 0 {
 `)
 			}
-			if field.t.IsTrueType() {
-				qw422016.N().S(`    w[currentBlockPosition] |= (1 << `)
-				qw422016.E().V((fieldIndex + 1) % 8)
-				qw422016.N().S(`)
-`)
-			} else {
-				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
+			nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fmt.Sprintf("item.%s", field.goName), field.recursive)
 
-				if nonEmptyCondition != "" {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(nonEmptyCondition)
-					qw422016.N().S(` {
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`    if `)
+				qw422016.N().S(nonEmptyCondition)
+				qw422016.N().S(` {
 `)
-				}
-				qw422016.N().S(`    serializedSize += sizes[0]
+			}
+			sizeValue := "sizes[0]"
+			if len(trivialSize) != 0 {
+				sizeValue = trivialSize
+			}
+
+			qw422016.N().S(`    serializedSize += `)
+			qw422016.N().S(sizeValue)
+			qw422016.N().S(`
 `)
-				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
-					qw422016.N().S(`    if sizes[0] != 0 {
+			if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+				qw422016.N().S(`    if `)
+				qw422016.N().S(sizeValue)
+				qw422016.N().S(` != 0 {
 `)
-				}
-				if field.t.trw.isSizeWrittenInData() {
-					qw422016.N().S(`    serializedSize += basictl.TL2CalculateSize(sizes[0])
-`)
-				}
-				qw422016.N().S(`    w[currentBlockPosition] |= (1 << `)
-				qw422016.E().V((fieldIndex + 1) % 8)
+			}
+			if field.t.trw.isSizeWrittenInData() {
+				qw422016.N().S(`    serializedSize += basictl.TL2CalculateSize(`)
+				qw422016.N().S(sizeValue)
 				qw422016.N().S(`)
-    `)
-				qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
-				qw422016.N().S(`
 `)
-				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+			}
+			qw422016.N().S(`    currentBlock |= (1 << `)
+			qw422016.E().V((fieldIndex + 1) % 8)
+			qw422016.N().S(`)
+    `)
+			qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.%[1]s", field.goName), field.fieldMask == nil, struct_.wr.ins, field.recursive, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
+`)
+			if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+				if len(trivialSize) == 0 {
 					qw422016.N().S(`    } else {
         sizes = sizes[1:]
     }
 `)
-				}
-				if nonEmptyCondition != "" {
+				} else {
 					qw422016.N().S(`    }
 `)
 				}
+			}
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`    }
+`)
 			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`    }
 `)
 			}
 		}
-		qw422016.N().S(`
-    return w, sizes
+		if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
+			qw422016.N().S(`    w[currentBlockPosition] = currentBlock
+`)
+		}
+		qw422016.N().S(`    return w, sizes
 }
 
 `)
@@ -986,7 +1051,8 @@ func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
     sizes = item.CalculateLayout(sizes[0:0])
-    return item.InternalWriteTL2(w, sizes)
+    w, _ = item.InternalWriteTL2(w, sizes)
+    return w, sizes[0:0]
 }
 
 `)
@@ -998,7 +1064,7 @@ func (item *`)
 		qw422016.N().S(`) (_ []byte, err error) {
     saveR := r
     currentSize := 0
-    if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil { return r, err }
+    if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
     if currentSize == 0 {

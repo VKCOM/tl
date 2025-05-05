@@ -1,10 +1,10 @@
-package golang
+package goldmastertests
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 	"testing"
 )
-import "github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 
 func TestFunctionHasUnion(t *testing.T) {
 	{

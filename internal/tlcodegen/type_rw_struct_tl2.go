@@ -11,7 +11,7 @@ func (trw *TypeRWStruct) calculateLayout(
 	refObject bool,
 	natArgs []string) string {
 	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetSizes)
+		return ""
 	}
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.CalculateLayout(bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
@@ -29,7 +29,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 	refObject bool,
 	natArgs []string) string {
 	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-		return fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
+		return ""
 	}
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.WriteTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
@@ -86,7 +86,13 @@ func (trw *TypeRWStruct) doesCalculateLayoutUseObject() bool {
 }
 
 func (trw *TypeRWStruct) isSizeWrittenInData() bool {
-	return !(trw.wr.IsTrueType() && trw.wr.unionParent == nil)
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return false
+	}
+	if trw.isUnwrapType() || trw.isTypeDef() {
+		return trw.Fields[0].t.trw.isSizeWrittenInData()
+	}
+	return true
 }
 
 func (trw *TypeRWStruct) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
@@ -107,4 +113,14 @@ func (trw *TypeRWStruct) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 		return trw.Fields[0].t.trw.doesReadTL2UseObject(canDependOnLocalBit)
 	}
 	return true
+}
+
+func (trw *TypeRWStruct) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return true, "0"
+	}
+	if trw.isUnwrapType() || trw.isTypeDef() {
+		return trw.Fields[0].t.trw.tl2TrivialSize(targetObject, canDependOnLocalBit, refObject)
+	}
+	return false, ""
 }

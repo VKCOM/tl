@@ -63,6 +63,7 @@ gen_dev: qtpl gen
 .PHONY: goldmaster_nocompile
 goldmaster_nocompile: build
 	@./target/bin/tlgen --language=go --split-internal -v \
+		--tl2-generate=true \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/cases \
 		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/cases/tl \
@@ -73,6 +74,7 @@ goldmaster_nocompile: build
 		--checkLengthSanity=false \
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tlgen --language=go --split-internal -v \
+		--tl2-generate=true \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster \
 		--generateSchemaDocumentation \
@@ -87,6 +89,7 @@ goldmaster_nocompile: build
 		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tlgen --language=go -v \
+		--tl2-generate=true \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster_nosplit \
 		--generateSchemaDocumentation \

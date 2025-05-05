@@ -10,20 +10,9 @@ func (trw *TypeRWPrimitive) calculateLayout(
 	ins *InternalNamespace,
 	refObject bool,
 	natArgs []string) string {
-	size := "4"
-	switch trw.goType {
-	case "int32", "uint32":
-		size = "4"
-	case "int64":
-		size = "8"
-	case "string":
-		size = fmt.Sprintf("len(%[1]s)", addAsterisk(refObject, targetObject))
-	case "float32":
-		size = "4"
-	case "float64":
-		size = "8"
-	}
-	return fmt.Sprintf("%[1]s = append(%[1]s, %[2]s)", targetSizes, size)
+	return ""
+	//_, size := trw.tl2TrivialSize(targetObject, canDependOnLocalBit, refObject)
+	//return fmt.Sprintf("%[1]s = append(%[1]s, %[2]s)", targetSizes, size)
 }
 
 func (trw *TypeRWPrimitive) writeTL2Call(
@@ -54,8 +43,7 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 	case "float64":
 		method = "basictl.DoubleWrite"
 	}
-	return fmt.Sprintf(`%[1]s = %[1]s[1:]
-%[3]s = %[2]s(%[3]s, %[4]s)`,
+	return fmt.Sprintf(`%[3]s = %[2]s(%[3]s, %[4]s)`,
 		targetSizes,
 		method,
 		targetBytes,
@@ -104,7 +92,7 @@ func (trw *TypeRWPrimitive) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool
 }
 
 func (trw *TypeRWPrimitive) doesCalculateLayoutUseObject() bool {
-	return trw.goType == "string"
+	return false
 }
 
 func (trw *TypeRWPrimitive) isSizeWrittenInData() bool {
@@ -117,4 +105,23 @@ func (trw *TypeRWPrimitive) doesWriteTL2UseObject(canDependOnLocalBit bool) bool
 
 func (trw *TypeRWPrimitive) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
+}
+
+func (trw *TypeRWPrimitive) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
+	size = "4"
+	isConstant = true
+	switch trw.goType {
+	case "int32", "uint32":
+		size = "4"
+	case "int64":
+		size = "8"
+	case "string":
+		size = fmt.Sprintf("len(%[1]s)", addAsterisk(refObject, targetObject))
+		isConstant = false
+	case "float32":
+		size = "4"
+	case "float64":
+		size = "8"
+	}
+	return isConstant, size
 }
