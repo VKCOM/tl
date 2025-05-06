@@ -135,9 +135,9 @@ func (item *Replace43) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	sizes = tlBuiltinTuple3Int.BuiltinTuple3IntCalculateLayout(sizes, &item.A)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

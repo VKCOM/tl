@@ -379,9 +379,9 @@ func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.NextPositions
+	currentPosition := len(sizes)
 	if len(item.NextPositions) != 0 {
 		sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions)
 		if sizes[currentPosition] != 0 {

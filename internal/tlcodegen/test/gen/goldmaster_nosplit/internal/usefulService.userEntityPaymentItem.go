@@ -155,7 +155,6 @@ func (item *UsefulServiceUserEntityPaymentItem) CalculateLayout(sizes []int, nat
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Id
 	if len(item.Id) != 0 {
@@ -168,7 +167,7 @@ func (item *UsefulServiceUserEntityPaymentItem) CalculateLayout(sizes []int, nat
 	}
 
 	// calculate layout for item.Promo
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if item.Promo.Ok {
 		sizes = item.Promo.CalculateLayout(sizes, nat_fields_mask)
 		if sizes[currentPosition] != 0 {

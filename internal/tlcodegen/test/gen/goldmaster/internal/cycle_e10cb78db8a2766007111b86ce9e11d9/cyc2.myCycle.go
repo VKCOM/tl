@@ -187,7 +187,6 @@ func (item *Cyc2MyCycle) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -197,7 +196,7 @@ func (item *Cyc2MyCycle) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.A
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if item.A.Ok {
 		sizes = item.A.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

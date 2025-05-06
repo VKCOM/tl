@@ -277,7 +277,6 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -287,7 +286,7 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int) []int
 	}
 
 	// calculate layout for item.A
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if item.N&(1<<0) != 0 {
 		if len(item.A) != 0 {
 			sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A, item.N)

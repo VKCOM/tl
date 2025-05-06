@@ -274,7 +274,6 @@ func (item *ListService5Output) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Flag
 	if item.Flag != 0 {
@@ -284,7 +283,7 @@ func (item *ListService5Output) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Head
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if item.Flag&(1<<0) != 0 {
 		sizes = item.Head.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

@@ -154,9 +154,9 @@ func (item *HalfStr) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.X
+	currentPosition := len(sizes)
 	sizes = item.X.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

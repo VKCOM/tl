@@ -139,9 +139,9 @@ func (item *CasesTestMaybe) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Value
+	currentPosition := len(sizes)
 	if item.Value.Ok {
 		sizes = item.Value.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

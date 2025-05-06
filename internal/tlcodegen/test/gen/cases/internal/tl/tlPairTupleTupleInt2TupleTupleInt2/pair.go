@@ -170,9 +170,9 @@ func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, nat_X
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.X
+	currentPosition := len(sizes)
 	if len(item.X) != 0 {
 		sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, &item.X, nat_X)
 		if sizes[currentPosition] != 0 {

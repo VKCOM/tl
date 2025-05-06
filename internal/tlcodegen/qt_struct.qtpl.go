@@ -2238,19 +2238,15 @@ func (item *`)
 			qw422016.N().S(`)
 `)
 		}
-		usesCurrentPosition := false
-		for _, field := range struct_.Fields {
+		currentPositionFirstUsage := -1
+		for i, field := range struct_.Fields {
 			_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
 			if len(trivialSize) == 0 {
-				usesCurrentPosition = true
+				currentPositionFirstUsage = i
 				break
 			}
 		}
 
-		if usesCurrentPosition {
-			qw422016.N().S(`    currentPosition := len(sizes)
-`)
-		}
 		for fieldIndex, field := range struct_.Fields {
 			if field.t.IsTrueType() {
 				continue
@@ -2269,9 +2265,14 @@ func (item *`)
 			qw422016.N().S(fieldName)
 			qw422016.N().S(`
 `)
-			if len(trivialSize) == 0 && fieldIndex != 0 {
-				qw422016.N().S(`    currentPosition = len(sizes)
+			if len(trivialSize) == 0 {
+				if fieldIndex == currentPositionFirstUsage {
+					qw422016.N().S(`    currentPosition := len(sizes)
 `)
+				} else {
+					qw422016.N().S(`    currentPosition = len(sizes)
+`)
+				}
 			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`    if `)

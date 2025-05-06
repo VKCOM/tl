@@ -161,9 +161,9 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) CalculateLayout(sizes 
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

@@ -140,7 +140,6 @@ func (item *Replace14ElemElemLong) CalculateLayout(sizes []int, nat_n uint32, na
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.X
 	if item.X != 0 {
@@ -150,7 +149,7 @@ func (item *Replace14ElemElemLong) CalculateLayout(sizes []int, nat_n uint32, na
 	}
 
 	// calculate layout for item.Y
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.Y) != 0 {
 		sizes = tlBuiltinTupleLong.BuiltinTupleLongCalculateLayout(sizes, &item.Y, nat_k)
 		if sizes[currentPosition] != 0 {

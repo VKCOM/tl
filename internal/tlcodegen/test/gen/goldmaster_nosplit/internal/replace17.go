@@ -188,9 +188,9 @@ func (item *Replace17) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.X
+	currentPosition := len(sizes)
 	if len(item.X) != 0 {
 		sizes = BuiltinVectorIntCalculateLayout(sizes, &item.X)
 		if sizes[currentPosition] != 0 {

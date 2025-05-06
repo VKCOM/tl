@@ -1090,18 +1090,15 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     currentSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
     {%- endif -%}
     {%- code
-         usesCurrentPosition := false
-         for _, field := range struct_.Fields {
+         currentPositionFirstUsage := -1
+         for i, field := range struct_.Fields {
             _, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
             if len(trivialSize) == 0 {
-                usesCurrentPosition = true
+                currentPositionFirstUsage = i
                 break
             }
          }
     -%}
-    {%- if usesCurrentPosition -%}
-    currentPosition := len(sizes)
-    {%- endif -%}
     {%- for fieldIndex, field := range struct_.Fields -%}
         {%- if field.t.IsTrueType() -%}
         {%- continue -%}
@@ -1118,61 +1115,65 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         -%}
 
     // calculate layout for {%s= fieldName %}
-        {%- if len(trivialSize) == 0 && fieldIndex != 0 -%}
+        {%- if len(trivialSize) == 0 -%}
+            {%- if fieldIndex == currentPositionFirstUsage -%}
+    currentPosition := len(sizes)
+            {%- else -%}
     currentPosition = len(sizes)
+            {%- endif -%}
         {%- endif -%}
         {%- if field.fieldMask != nil -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
-            {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive) -%}
-            {%- if nonEmptyCondition != "" -%}
+        {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive) -%}
+        {%- if nonEmptyCondition != "" -%}
     if {%s= nonEmptyCondition %} {
-            {%- endif -%}
+        {%- endif -%}
     {%s= field.t.CalculateLayout(bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
-                {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
-                    {%- if !isSizeConstant -%}
-                        {%- code
-                            sizeValue := "sizes[currentPosition]"
-                            if len(trivialSize) != 0 {
-                                sizeValue = trivialSize
-                            }
-                        -%}
+        {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
+            {%- if !isSizeConstant -%}
+                {%- code
+                    sizeValue := "sizes[currentPosition]"
+                    if len(trivialSize) != 0 {
+                        sizeValue = trivialSize
+                    }
+                -%}
     if {%s= sizeValue %} != 0 {
         lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
         currentSize += {%s= sizeValue %}
-                        {%- if field.t.trw.isSizeWrittenInData() -%}
+                {%- if field.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
-                        {%- endif -%}
-                        {%- if len(trivialSize) == 0 -%}
+                {%- endif -%}
+                {%- if len(trivialSize) == 0 -%}
     } else {
         sizes = sizes[:currentPosition + 1]
     }
-                        {%- else -%}
+                {%- else -%}
     }
-                        {%- endif -%}
-                    {%- else -%}
+                {%- endif -%}
+            {%- else -%}
         lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
         currentSize += {%s= trivialSize %}
-                        {%- if field.t.trw.isSizeWrittenInData() -%}
+                {%- if field.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= trivialSize %})
-                        {%- endif -%}
-                    {%- endif -%}
-                {%- else -%}
-                    {%- code
-                        sizeValue := "sizes[currentPosition]"
-                        if len(trivialSize) != 0 {
-                            sizeValue = trivialSize
-                        }
-                    -%}
+                {%- endif -%}
+            {%- endif -%}
+        {%- else -%}
+            {%- code
+                sizeValue := "sizes[currentPosition]"
+                if len(trivialSize) != 0 {
+                    sizeValue = trivialSize
+                }
+            -%}
         lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
         currentSize += {%s= sizeValue %}
-                    {%- if field.t.trw.isSizeWrittenInData() -%}
+            {%- if field.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
-                    {%- endif -%}
-                {%- endif -%}
-            {%- if nonEmptyCondition != "" -%}
-    }
             {%- endif -%}
+        {%- endif -%}
+        {%- if nonEmptyCondition != "" -%}
+    }
+        {%- endif -%}
         {%- if field.fieldMask != nil -%}
     }
         {%- endif -%}

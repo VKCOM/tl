@@ -135,9 +135,9 @@ func (item *CasesBytesTestEnumContainer) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Value
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

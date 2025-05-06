@@ -230,7 +230,6 @@ func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A1
 	if item.A1 != 0 {
@@ -254,7 +253,7 @@ func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Arg
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Arg.CalculateLayout(sizes, item.A1, item.A2, item.A3, item.A3, item.A2)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

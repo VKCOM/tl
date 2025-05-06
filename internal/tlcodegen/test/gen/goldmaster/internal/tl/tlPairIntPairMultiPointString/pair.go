@@ -161,7 +161,6 @@ func (item *PairIntPairMultiPointString) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
 	if item.A != 0 {
@@ -171,7 +170,7 @@ func (item *PairIntPairMultiPointString) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.B
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.B.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

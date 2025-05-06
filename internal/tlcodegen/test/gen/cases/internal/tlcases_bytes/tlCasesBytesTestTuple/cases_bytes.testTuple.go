@@ -135,9 +135,9 @@ func (item *CasesBytesTestTuple) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Tpl
+	currentPosition := len(sizes)
 	sizes = tlBuiltinTuple4String.BuiltinTuple4StringCalculateLayout(sizes, &item.Tpl)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -350,9 +350,9 @@ func (item *CasesBytesTestTupleBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Tpl
+	currentPosition := len(sizes)
 	sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesCalculateLayout(sizes, &item.Tpl)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

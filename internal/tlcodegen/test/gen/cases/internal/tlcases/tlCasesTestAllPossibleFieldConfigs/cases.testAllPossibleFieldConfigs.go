@@ -652,7 +652,6 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Local
 	if item.Local != 0 {
@@ -669,7 +668,7 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 	}
 
 	// calculate layout for item.F02
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.F02) != 0 {
 		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F02, item.Local)
 		if sizes[currentPosition] != 0 {

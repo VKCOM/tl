@@ -204,7 +204,6 @@ func (item *Replace7) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -221,7 +220,7 @@ func (item *Replace7) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.A
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.A) != 0 {
 		sizes = BuiltinTupleTupleIntCalculateLayout(sizes, &item.A, item.N, item.M)
 		if sizes[currentPosition] != 0 {
