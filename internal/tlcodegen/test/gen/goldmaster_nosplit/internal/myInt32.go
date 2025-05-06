@@ -43,6 +43,56 @@ func BuiltinTuple3MyInt32Write(w []byte, vec *[3]MyInt32) []byte {
 	return w
 }
 
+func BuiltinTuple3MyInt32CalculateLayout(sizes []int, vec *[3]MyInt32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += 4
+	}
+	return sizes
+}
+
+func BuiltinTuple3MyInt32InternalWriteTL2(w []byte, sizes []int, vec *[3]MyInt32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinTuple3MyInt32ReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 3 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 3 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple3MyInt32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]MyInt32) error {
 	index := 0
 	if in != nil {
@@ -110,6 +160,56 @@ func BuiltinTuple3MyInt32BoxedWrite(w []byte, vec *[3]MyInt32) []byte {
 		w = elem.WriteBoxed(w)
 	}
 	return w
+}
+
+func BuiltinTuple3MyInt32BoxedCalculateLayout(sizes []int, vec *[3]MyInt32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += 4
+	}
+	return sizes
+}
+
+func BuiltinTuple3MyInt32BoxedInternalWriteTL2(w []byte, sizes []int, vec *[3]MyInt32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinTuple3MyInt32BoxedReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 3 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 3 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
 }
 
 func BuiltinTuple3MyInt32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]MyInt32) error {
@@ -201,7 +301,6 @@ func (item *MyInt32) WriteBoxed(w []byte) []byte {
 func (item MyInt32) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *MyInt32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*Int32)(item)
 	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
@@ -233,4 +332,30 @@ func (item *MyInt32) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("myInt32", err.Error())
 	}
 	return nil
+}
+
+func (item *MyInt32) CalculateLayout(sizes []int) []int {
+	ptr := (*Int32)(item)
+	sizes = (*ptr).CalculateLayout(sizes)
+	return sizes
+}
+
+func (item *MyInt32) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*Int32)(item)
+	w, sizes = (*ptr).InternalWriteTL2(w, sizes)
+	return w, sizes
+}
+
+func (item *MyInt32) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *MyInt32) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*Int32)(item)
+	if r, err = (*ptr).ReadTL2(r); err != nil {
+		return r, err
+	}
+	return r, nil
 }

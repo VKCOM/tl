@@ -109,7 +109,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject(0x6ccce4be, func() meta.Object { var ret tlCasesReplace7.CasesReplace7; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x197858f5, func() meta.Object { var ret tlCasesReplace7plus.CasesReplace7plus; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xabc39b68, func() meta.Object { var ret tlCasesReplace7plusplus.CasesReplace7plusplus; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x11e6908a, func() meta.Object { var ret tlCasesTL2TestObject.CasesTL2TestObject; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x4f96dd95, func() meta.Object { var ret tlCasesTL2TestObject.CasesTL2TestObject; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xe3fae936, func() meta.Object {
 		var ret tlCasesTestAllPossibleFieldConfigsContainer.CasesTestAllPossibleFieldConfigsContainer
 		return &ret

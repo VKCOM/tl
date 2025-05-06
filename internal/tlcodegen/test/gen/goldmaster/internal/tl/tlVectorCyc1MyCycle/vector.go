@@ -66,7 +66,6 @@ func (item *VectorCyc1MyCycle) WriteBoxed(w []byte) []byte {
 func (item VectorCyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorCyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
 	if err := cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -98,4 +97,30 @@ func (item *VectorCyc1MyCycle) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorCyc1MyCycle) CalculateLayout(sizes []int) []int {
+	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
+	sizes = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
+	w, sizes = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorCyc1MyCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorCyc1MyCycle) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
+	if r, err = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

@@ -96,9 +96,68 @@ func (item *AColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item AColor) WriteBoxed(w []byte) []byte {
+func (item *AColor) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _AColor[item.index].TLTag)
 	return w
+}
+
+func (item *AColor) CalculateLayout(sizes []int) []int {
+	switch item.index {
+	case 0:
+		sizes = append(sizes, 0)
+	default:
+		sizes = append(sizes, 1+basictl.TL2CalculateSize(item.index))
+	}
+	return sizes
+}
+
+func (item *AColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, 0)
+	default:
+		currentSize := sizes[0]
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, currentSize)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, item.index)
+	}
+	return w, sizes
+}
+func (item *AColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *AColor) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -217,6 +276,85 @@ func (item *AColorBoxedMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
+func (item *AColorBoxedMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		sizes = item.Value.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		}
+	}
+	return sizes
+}
+
+func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		currentPosition := len(w)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		if sizes[0] != 0 {
+			w[currentPosition] |= (1 << 1)
+			w, sizes = item.Value.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	return w, sizes
+}
+
+func (item *AColorBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = item.Value.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value.Reset()
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item *AColorBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
@@ -300,6 +438,53 @@ func BuiltinVectorAColorWrite(w []byte, vec []AColor) []byte {
 		w = elem.WriteBoxed(w)
 	}
 	return w
+}
+
+func BuiltinVectorAColorCalculateLayout(sizes []int, vec *[]AColor) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorAColorInternalWriteTL2(w []byte, sizes []int, vec *[]AColor) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinVectorAColorReadTL2(r []byte, vec *[]AColor) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem AColor
+		if r, err = elem.ReadTL2(r); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
 }
 
 func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]AColor) error {

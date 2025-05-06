@@ -52,6 +52,62 @@ func BuiltinTupleReplace15Elem1Write(w []byte, vec []tlReplace15Elem1.Replace15E
 	return w, nil
 }
 
+func BuiltinTupleReplace15Elem1CalculateLayout(sizes []int, vec *[]tlReplace15Elem1.Replace15Elem1, nat_n uint32, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleReplace15Elem1InternalWriteTL2(w []byte, sizes []int, vec *[]tlReplace15Elem1.Replace15Elem1, nat_n uint32, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+	}
+	return w, sizes
+}
+
+func BuiltinTupleReplace15Elem1ReadTL2(r []byte, vec *[]tlReplace15Elem1.Replace15Elem1, nat_n uint32, nat_t uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([]tlReplace15Elem1.Replace15Elem1, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if uint32(i) == nat_n {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r, nat_t); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if uint32(i) != nat_n {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
 func BuiltinTupleReplace15Elem1ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlReplace15Elem1.Replace15Elem1, nat_n uint32, nat_t uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]tlReplace15Elem1.Replace15Elem1, nat_n)

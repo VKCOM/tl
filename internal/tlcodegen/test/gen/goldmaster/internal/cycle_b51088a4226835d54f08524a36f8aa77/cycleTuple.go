@@ -48,6 +48,58 @@ func BuiltinTuple2CycleTupleWrite(w []byte, vec *[2]CycleTuple) (_ []byte, err e
 	return w, nil
 }
 
+func BuiltinTuple2CycleTupleCalculateLayout(sizes []int, vec *[2]CycleTuple) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTuple2CycleTupleInternalWriteTL2(w []byte, sizes []int, vec *[2]CycleTuple) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinTuple2CycleTupleReadTL2(r []byte, vec *[2]CycleTuple) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 2 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 2 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple2CycleTupleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[2]CycleTuple) error {
 	index := 0
 	if in != nil {
@@ -127,6 +179,62 @@ func BuiltinTupleCycleTupleWrite(w []byte, vec []CycleTuple, nat_n uint32) (_ []
 	return w, nil
 }
 
+func BuiltinTupleCycleTupleCalculateLayout(sizes []int, vec *[]CycleTuple, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleCycleTupleInternalWriteTL2(w []byte, sizes []int, vec *[]CycleTuple, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinTupleCycleTupleReadTL2(r []byte, vec *[]CycleTuple, nat_n uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([]CycleTuple, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if uint32(i) == nat_n {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if uint32(i) != nat_n {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
 func BuiltinTupleCycleTupleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]CycleTuple, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]CycleTuple, nat_n)
@@ -297,9 +405,17 @@ func (item *CycleTuple) WriteGeneral(w []byte) (_ []byte, err error) {
 func (item *CycleTuple) Write(w []byte) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.N)
 	if item.N&(1<<0) != 0 {
-		w = basictl.NatWrite(w, 0x9770768a)
-		if w, err = BuiltinTuple2CycleTupleWrite(w, item.A); err != nil {
-			return w, err
+		if item.A == nil {
+			var tmpValue [2]CycleTuple
+			w = basictl.NatWrite(w, 0x9770768a)
+			if w, err = BuiltinTuple2CycleTupleWrite(w, (&tmpValue)); err != nil {
+				return w, err
+			}
+		} else {
+			w = basictl.NatWrite(w, 0x9770768a)
+			if w, err = BuiltinTuple2CycleTupleWrite(w, item.A); err != nil {
+				return w, err
+			}
 		}
 	}
 	w = basictl.NatWrite(w, 0x9770768a)
@@ -477,4 +593,217 @@ func (item *CycleTuple) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("cycleTuple", err.Error())
 	}
 	return nil
+}
+
+func (item *CycleTuple) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.N
+	if item.N != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.A
+	currentPosition = len(sizes)
+	if item.N&(1<<0) != 0 {
+		sizes = BuiltinTuple2CycleTupleCalculateLayout(sizes, item.A)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.B
+	currentPosition = len(sizes)
+	if len(item.B) != 0 {
+		sizes = BuiltinTupleCycleTupleCalculateLayout(sizes, &item.B, item.N)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.C
+	currentPosition = len(sizes)
+	if item.N&(1<<2) != 0 {
+		sizes = tlBuiltinTuple3Int.BuiltinTuple3IntCalculateLayout(sizes, &item.C)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *CycleTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.N
+	if item.N != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.NatWrite(w, item.N)
+		}
+	}
+	// write item.A
+	if item.N&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = BuiltinTuple2CycleTupleInternalWriteTL2(w, sizes, item.A)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.B
+	if len(item.B) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = BuiltinTupleCycleTupleInternalWriteTL2(w, sizes, &item.B, item.N)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.C
+	if item.N&(1<<2) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 4)
+			w, sizes = tlBuiltinTuple3Int.BuiltinTuple3IntInternalWriteTL2(w, sizes, &item.C)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *CycleTuple) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *CycleTuple) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.N
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.N); err != nil {
+				return r, err
+			}
+		} else {
+			item.N = 0
+		}
+
+		// read item.A
+		if block&(1<<2) != 0 {
+			if item.A == nil {
+				var newValue [2]CycleTuple
+				item.A = &newValue
+			}
+			if item.N&(1<<0) != 0 {
+				if r, err = BuiltinTuple2CycleTupleReadTL2(r, item.A); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+			}
+		} else {
+			if item.A == nil {
+				var newValue [2]CycleTuple
+				item.A = &newValue
+			}
+			BuiltinTuple2CycleTupleReset(item.A)
+		}
+
+		// read item.B
+		if block&(1<<3) != 0 {
+			if r, err = BuiltinTupleCycleTupleReadTL2(r, &item.B, item.N); err != nil {
+				return r, err
+			}
+		} else {
+			item.B = item.B[:0]
+		}
+
+		// read item.C
+		if block&(1<<4) != 0 {
+			if item.N&(1<<2) != 0 {
+				if r, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL2(r, &item.C); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "C" + "is presented but depending bit is absent")
+			}
+		} else {
+			tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.C)
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

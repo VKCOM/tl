@@ -116,6 +116,74 @@ func (item *MyNat3) WriteBoxed(w []byte) []byte {
 	return w
 }
 
+func (item *MyNat3) CalculateLayout(sizes []int) []int {
+	switch item.index {
+	case 0:
+		sizes = append(sizes, 0)
+	case 1:
+		sizes = (*item.valueMyPlus3).CalculateLayout(sizes)
+	}
+	return sizes
+}
+
+func (item *MyNat3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, 0)
+	case 1:
+		w, sizes = (*item.valueMyPlus3).InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+func (item *MyNat3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *MyNat3) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	switch item.index {
+	case 0:
+		break
+	case 1:
+		r = saveR
+		if item.valueMyPlus3 == nil {
+			var newValue MyPlus3
+			item.valueMyPlus3 = &newValue
+		}
+		if r, err = (*item.valueMyPlus3).ReadTL2(r); err != nil {
+			return r, err
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item *MyNat3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("MyNat3", in)
 	if err != nil {
@@ -252,7 +320,6 @@ func (item *MyPlus3) WriteBoxed(w []byte) []byte {
 func (item MyPlus3) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *MyPlus3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*MyNat3)(item)
 	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
@@ -284,6 +351,129 @@ func (item *MyPlus3) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("myPlus3", err.Error())
 	}
 	return nil
+}
+
+func (item *MyPlus3) CalculateLayout(sizes []int) []int {
+	ptr := (*MyNat3)(item)
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// add constructor No for union type in case of non first option
+	lastUsedByte = 1
+	currentSize += basictl.TL2CalculateSize(1)
+	currentPosition := len(sizes)
+
+	// calculate layout for ptr
+	sizes = (*ptr).CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*MyNat3)(item)
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// add constructor No for union type in case of non first option
+	currentBlock |= (1 << 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	serializedSize += basictl.TL2CalculateSize(1)
+	// write ptr
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 1)
+		w, sizes = (*ptr).InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *MyPlus3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *MyPlus3) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*MyNat3)(item)
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read ptr
+		if block&(1<<1) != 0 {
+			if ptr == nil {
+				var newValue MyNat3
+				ptr = &newValue
+			}
+			if r, err = (*ptr).ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			if ptr == nil {
+				var newValue MyNat3
+				ptr = &newValue
+			}
+			ptr.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item MyZero3) AsUnion() MyNat3 {
@@ -373,4 +563,74 @@ func (item *MyZero3) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("myZero3", err.Error())
 	}
 	return nil
+}
+
+func (item *MyZero3) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *MyZero3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	w = append(w, 0)
+	serializedSize += 1
+	return w, sizes
+}
+
+func (item *MyZero3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *MyZero3) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

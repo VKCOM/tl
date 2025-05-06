@@ -66,31 +66,6 @@ func (item *VectorInt) WriteBoxed(w []byte) []byte {
 func (item VectorInt) String() string {
 	return string(item.WriteJSON(nil))
 }
-
-func (item *VectorInt) CalculateLayout(sizes []int) []int {
-	ptr := (*[]int32)(item)
-	sizes = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]int32)(item)
-	w, sizes = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
-func (item *VectorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *VectorInt) ReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]int32)(item)
-	if r, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL2(r, ptr); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]int32)(item)
 	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -122,4 +97,30 @@ func (item *VectorInt) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorInt) CalculateLayout(sizes []int) []int {
+	ptr := (*[]int32)(item)
+	sizes = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]int32)(item)
+	w, sizes = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorInt) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]int32)(item)
+	if r, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

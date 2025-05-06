@@ -63,7 +63,6 @@ func (item *MyInt64) WriteBoxed(w []byte) []byte {
 func (item MyInt64) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *MyInt64) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*Int64)(item)
 	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
@@ -95,4 +94,30 @@ func (item *MyInt64) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("myInt64", err.Error())
 	}
 	return nil
+}
+
+func (item *MyInt64) CalculateLayout(sizes []int) []int {
+	ptr := (*Int64)(item)
+	sizes = (*ptr).CalculateLayout(sizes)
+	return sizes
+}
+
+func (item *MyInt64) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*Int64)(item)
+	w, sizes = (*ptr).InternalWriteTL2(w, sizes)
+	return w, sizes
+}
+
+func (item *MyInt64) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *MyInt64) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*Int64)(item)
+	if r, err = (*ptr).ReadTL2(r); err != nil {
+		return r, err
+	}
+	return r, nil
 }

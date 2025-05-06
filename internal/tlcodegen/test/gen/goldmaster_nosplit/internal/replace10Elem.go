@@ -43,6 +43,58 @@ func BuiltinTuple3Replace10ElemWrite(w []byte, vec *[3]Replace10Elem, nat_t uint
 	return w
 }
 
+func BuiltinTuple3Replace10ElemCalculateLayout(sizes []int, vec *[3]Replace10Elem, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTuple3Replace10ElemInternalWriteTL2(w []byte, sizes []int, vec *[3]Replace10Elem, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+	}
+	return w, sizes
+}
+
+func BuiltinTuple3Replace10ElemReadTL2(r []byte, vec *[3]Replace10Elem, nat_t uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 3 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r, nat_t); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 3 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple3Replace10ElemReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]Replace10Elem, nat_t uint32) error {
 	index := 0
 	if in != nil {
@@ -118,6 +170,62 @@ func BuiltinTupleTuple3Replace10ElemWrite(w []byte, vec [][3]Replace10Elem, nat_
 	return w, nil
 }
 
+func BuiltinTupleTuple3Replace10ElemCalculateLayout(sizes []int, vec *[][3]Replace10Elem, nat_n uint32, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = BuiltinTuple3Replace10ElemCalculateLayout(sizes, &(*vec)[i], nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTupleTuple3Replace10ElemInternalWriteTL2(w []byte, sizes []int, vec *[][3]Replace10Elem, nat_n uint32, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = BuiltinTuple3Replace10ElemInternalWriteTL2(w, sizes, &(*vec)[i], nat_t)
+	}
+	return w, sizes
+}
+
+func BuiltinTupleTuple3Replace10ElemReadTL2(r []byte, vec *[][3]Replace10Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([][3]Replace10Elem, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if uint32(i) == nat_n {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = BuiltinTuple3Replace10ElemReadTL2(r, &(*vec)[i], nat_t); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if uint32(i) != nat_n {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
 func BuiltinTupleTuple3Replace10ElemReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][3]Replace10Elem, nat_n uint32, nat_t uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][3]Replace10Elem, nat_n)
@@ -271,4 +379,119 @@ func (item *Replace10Elem) WriteJSONOpt(newTypeNames bool, short bool, w []byte,
 		w = w[:backupIndexB]
 	}
 	return append(w, '}')
+}
+
+func (item *Replace10Elem) CalculateLayout(sizes []int, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// calculate layout for item.A
+	if item.A != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.B
+	if item.B != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *Replace10Elem) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.A
+	if item.A != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.IntWrite(w, item.A)
+		}
+	}
+	// write item.B
+	if item.B != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.IntWrite(w, item.B)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *Replace10Elem) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.A
+		if block&(1<<1) != 0 {
+			if r, err = basictl.IntRead(r, &item.A); err != nil {
+				return r, err
+			}
+		} else {
+			item.A = 0
+		}
+
+		// read item.B
+		if block&(1<<2) != 0 {
+			if r, err = basictl.IntRead(r, &item.B); err != nil {
+				return r, err
+			}
+		} else {
+			item.B = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

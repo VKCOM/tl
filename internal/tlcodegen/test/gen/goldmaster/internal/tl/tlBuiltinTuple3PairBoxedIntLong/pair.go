@@ -46,6 +46,58 @@ func BuiltinTuple3PairBoxedIntLongWrite(w []byte, vec *[3]tlPairIntLong.PairIntL
 	return w
 }
 
+func BuiltinTuple3PairBoxedIntLongCalculateLayout(sizes []int, vec *[3]tlPairIntLong.PairIntLong) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTuple3PairBoxedIntLongInternalWriteTL2(w []byte, sizes []int, vec *[3]tlPairIntLong.PairIntLong) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinTuple3PairBoxedIntLongReadTL2(r []byte, vec *[3]tlPairIntLong.PairIntLong) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 3 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 3 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple3PairBoxedIntLongReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]tlPairIntLong.PairIntLong) error {
 	index := 0
 	if in != nil {

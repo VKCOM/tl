@@ -54,9 +54,8 @@ func BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes []int, vec *[]tlBenc
 	sizes = append(sizes, 0)
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
 		currentPosition := len(sizes)
-		sizes = elem.CalculateLayout(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -73,8 +72,7 @@ func BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, ve
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes)
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
@@ -82,7 +80,7 @@ func BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w []byte, sizes []int, ve
 func BuiltinTupleBenchmarksVruPositionReadTL2(r []byte, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)

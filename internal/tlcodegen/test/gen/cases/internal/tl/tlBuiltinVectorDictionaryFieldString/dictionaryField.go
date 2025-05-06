@@ -93,14 +93,13 @@ func BuiltinVectorDictionaryFieldStringCalculateLayout(sizes []int, m *map[strin
 
 	for i := 0; i < len(keys); i++ {
 		key := keys[i]
-		currentPosition := len(sizes)
-		sizes = append(sizes, len(key))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-		currentPosition = len(sizes)
-		sizes = append(sizes, len((*m)[key]))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+
+		sizes[sizePosition] += len(key)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(key))
+		value := (*m)[key]
+
+		sizes[sizePosition] += len(value)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(value))
 	}
 	return sizes
 }
@@ -122,10 +121,9 @@ func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, m
 
 	for i := 0; i < len(keys); i++ {
 		key := keys[i]
-		sizes = sizes[1:]
 		w = basictl.StringWriteTL2(w, key)
-		sizes = sizes[1:]
-		w = basictl.StringWriteTL2(w, (*m)[key])
+		value := (*m)[key]
+		w = basictl.StringWriteTL2(w, value)
 	}
 
 	return w, sizes
@@ -134,14 +132,20 @@ func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, m
 func BuiltinVectorDictionaryFieldStringReadTL2(r []byte, m *map[string]string) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+	if *m == nil {
+		*m = make(map[string]string)
+	}
+
 	for key := range *m {
 		delete(*m, key)
 	}
+
+	data := *m
 
 	for len(saveR) < len(r)+shift {
 		var key string
@@ -152,7 +156,7 @@ func BuiltinVectorDictionaryFieldStringReadTL2(r []byte, m *map[string]string) (
 		if r, err = basictl.StringReadTL2(r, &value); err != nil {
 			return r, err
 		}
-		(*m)[key] = value
+		data[key] = value
 	}
 	return r, nil
 }
@@ -251,15 +255,12 @@ func BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes []int, vec *[]
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		currentPosition := len(sizes)
-		sizes = append(sizes, len(elem.Key))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-		currentPosition = len(sizes)
-		sizes = append(sizes, len(elem.Value))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+
+		sizes[sizePosition] += len((*vec)[i].Key)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i].Key))
+
+		sizes[sizePosition] += len((*vec)[i].Value)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i].Value))
 	}
 	return sizes
 }
@@ -275,9 +276,7 @@ func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []i
 
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
-		sizes = sizes[1:]
 		w = basictl.StringBytesWriteTL2(w, elem.Key)
-		sizes = sizes[1:]
 		w = basictl.StringBytesWriteTL2(w, elem.Value)
 	}
 	return w, sizes
@@ -286,7 +285,7 @@ func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []i
 func BuiltinVectorDictionaryFieldStringBytesReadTL2(r []byte, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)

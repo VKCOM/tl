@@ -66,104 +66,6 @@ func (item CasesBytesTestTuple) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *CasesBytesTestTuple) CalculateLayout(sizes []int) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// calculate layout for item.Tpl
-	currentPosition := len(sizes)
-	sizes = tlBuiltinTuple4String.BuiltinTuple4StringCalculateLayout(sizes, &item.Tpl)
-	if sizes[currentPosition] != 0 {
-		lastUsedBit = 1
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *CasesBytesTestTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// write item.Tpl
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		w[currentBlockPosition] |= (1 << 1)
-		w, sizes = tlBuiltinTuple4String.BuiltinTuple4StringInternalWriteTL2(w, sizes, &item.Tpl)
-	} else {
-		sizes = sizes[1:]
-	}
-
-	return w, sizes
-}
-
-func (item *CasesBytesTestTuple) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *CasesBytesTestTuple) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Tpl
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinTuple4String.BuiltinTuple4StringReadTL2(r, &item.Tpl); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinTuple4String.BuiltinTuple4StringReset(&item.Tpl)
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
-}
-
 func (item *CasesBytesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propTplPresented bool
 
@@ -227,6 +129,108 @@ func (item *CasesBytesTestTuple) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *CasesBytesTestTuple) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.Tpl
+	sizes = tlBuiltinTuple4String.BuiltinTuple4StringCalculateLayout(sizes, &item.Tpl)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *CasesBytesTestTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Tpl
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 1)
+		w, sizes = tlBuiltinTuple4String.BuiltinTuple4StringInternalWriteTL2(w, sizes, &item.Tpl)
+	} else {
+		sizes = sizes[1:]
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *CasesBytesTestTuple) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *CasesBytesTestTuple) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Tpl
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTuple4String.BuiltinTuple4StringReadTL2(r, &item.Tpl); err != nil {
+				return r, err
+			}
+		} else {
+			tlBuiltinTuple4String.BuiltinTuple4StringReset(&item.Tpl)
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 type CasesBytesTestTupleBytes struct {
 	Tpl [4][]byte
 }
@@ -275,104 +279,6 @@ func (item *CasesBytesTestTupleBytes) WriteBoxed(w []byte) []byte {
 
 func (item CasesBytesTestTupleBytes) String() string {
 	return string(item.WriteJSON(nil))
-}
-
-func (item *CasesBytesTestTupleBytes) CalculateLayout(sizes []int) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// calculate layout for item.Tpl
-	currentPosition := len(sizes)
-	sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesCalculateLayout(sizes, &item.Tpl)
-	if sizes[currentPosition] != 0 {
-		lastUsedBit = 1
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *CasesBytesTestTupleBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// write item.Tpl
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		w[currentBlockPosition] |= (1 << 1)
-		w, sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesInternalWriteTL2(w, sizes, &item.Tpl)
-	} else {
-		sizes = sizes[1:]
-	}
-
-	return w, sizes
-}
-
-func (item *CasesBytesTestTupleBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *CasesBytesTestTupleBytes) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Tpl
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinTuple4String.BuiltinTuple4StringBytesReadTL2(r, &item.Tpl); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinTuple4String.BuiltinTuple4StringBytesReset(&item.Tpl)
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
 }
 
 func (item *CasesBytesTestTupleBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -436,4 +342,106 @@ func (item *CasesBytesTestTupleBytes) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("cases_bytes.testTuple", err.Error())
 	}
 	return nil
+}
+
+func (item *CasesBytesTestTupleBytes) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.Tpl
+	sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesCalculateLayout(sizes, &item.Tpl)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *CasesBytesTestTupleBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Tpl
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 1)
+		w, sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesInternalWriteTL2(w, sizes, &item.Tpl)
+	} else {
+		sizes = sizes[1:]
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *CasesBytesTestTupleBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *CasesBytesTestTupleBytes) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Tpl
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTuple4String.BuiltinTuple4StringBytesReadTL2(r, &item.Tpl); err != nil {
+				return r, err
+			}
+		} else {
+			tlBuiltinTuple4String.BuiltinTuple4StringBytesReset(&item.Tpl)
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

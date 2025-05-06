@@ -84,6 +84,86 @@ func BuiltinVectorDictionaryFieldStringWrite(w []byte, m map[string]string) []by
 	return w
 }
 
+func BuiltinVectorDictionaryFieldStringCalculateLayout(sizes []int, m *map[string]string) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+
+		sizes[sizePosition] += len(key)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(key))
+		value := (*m)[key]
+
+		sizes[sizePosition] += len(value)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(value))
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, m *map[string]string) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+		w = basictl.StringWriteTL2(w, key)
+		value := (*m)[key]
+		w = basictl.StringWriteTL2(w, value)
+	}
+
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryFieldStringReadTL2(r []byte, m *map[string]string) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if *m == nil {
+		*m = make(map[string]string)
+	}
+
+	for key := range *m {
+		delete(*m, key)
+	}
+
+	data := *m
+
+	for len(saveR) < len(r)+shift {
+		var key string
+		var value string
+		if r, err = basictl.StringReadTL2(r, &key); err != nil {
+			return r, err
+		}
+		if r, err = basictl.StringReadTL2(r, &value); err != nil {
+			return r, err
+		}
+		data[key] = value
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]string) error {
 	var data map[string]string
 	if *m == nil {
@@ -175,6 +255,59 @@ func BuiltinVectorDictionaryFieldStringBytesWrite(w []byte, vec []tlDictionaryFi
 		w = elem.Write(w)
 	}
 	return w
+}
+
+func BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes []int, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	for i := 0; i < len(*vec); i++ {
+
+		sizes[sizePosition] += len((*vec)[i].Key)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i].Key))
+
+		sizes[sizePosition] += len((*vec)[i].Value)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i].Value))
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		w = basictl.StringBytesWriteTL2(w, elem.Key)
+		w = basictl.StringBytesWriteTL2(w, elem.Value)
+	}
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryFieldStringBytesReadTL2(r []byte, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem tlDictionaryFieldString.DictionaryFieldStringBytes
+		if r, err = basictl.StringReadBytesTL2(r, &elem.Key); err != nil {
+			return r, err
+		}
+		if r, err = basictl.StringReadBytesTL2(r, &elem.Value); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
 }
 
 func BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) error {

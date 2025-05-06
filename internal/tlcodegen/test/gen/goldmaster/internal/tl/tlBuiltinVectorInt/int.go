@@ -53,6 +53,51 @@ func BuiltinVectorIntWrite(w []byte, vec []int32) []byte {
 	return w
 }
 
+func BuiltinVectorIntCalculateLayout(sizes []int, vec *[]int32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+
+		sizes[sizePosition] += 4
+	}
+	return sizes
+}
+
+func BuiltinVectorIntInternalWriteTL2(w []byte, sizes []int, vec *[]int32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w = basictl.IntWrite(w, (*vec)[i])
+	}
+	return w, sizes
+}
+
+func BuiltinVectorIntReadTL2(r []byte, vec *[]int32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem int32
+		if r, err = basictl.IntRead(r, &elem); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0

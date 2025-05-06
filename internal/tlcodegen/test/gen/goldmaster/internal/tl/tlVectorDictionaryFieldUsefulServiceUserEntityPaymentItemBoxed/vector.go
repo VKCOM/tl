@@ -86,3 +86,23 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJ
 	w = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(newTypeNames, short, w, *ptr, nat_t)
 	return w
 }
+
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int, nat_t uint32) []int {
+	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
+	sizes = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, ptr, nat_t)
+	return sizes
+}
+
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int, nat_t uint32) ([]byte, []int) {
+	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
+	w, sizes = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, ptr, nat_t)
+	return w, sizes
+}
+
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
+	if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r, ptr, nat_t); err != nil {
+		return r, err
+	}
+	return r, nil
+}

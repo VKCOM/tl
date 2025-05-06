@@ -87,3 +87,23 @@ func (item *TupleCycleTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byt
 	}
 	return w, nil
 }
+
+func (item *TupleCycleTuple) CalculateLayout(sizes []int, nat_n uint32) []int {
+	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
+	sizes = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleCalculateLayout(sizes, ptr, nat_n)
+	return sizes
+}
+
+func (item *TupleCycleTuple) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
+	w, sizes = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleInternalWriteTL2(w, sizes, ptr, nat_n)
+	return w, sizes
+}
+
+func (item *TupleCycleTuple) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
+	if r, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleReadTL2(r, ptr, nat_n); err != nil {
+		return r, err
+	}
+	return r, nil
+}

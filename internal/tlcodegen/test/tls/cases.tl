@@ -159,4 +159,5 @@ casesTL2.testObject
     f4:(benchmarks.vrutoyPositions n)
     f5:n.1?Bool
     f6:vector<benchmarks.VrutoyTopLevelUnion>
+    f7:n.14?vector<True>
     = casesTL2.TestObject;

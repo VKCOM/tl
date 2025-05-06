@@ -64,25 +64,6 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteBoxed(w []byte, nat_ttXn uint3
 	return item.Write(w, nat_ttXn, nat_ttYn, nat_n)
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) CalculateLayout(sizes []int, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) []int {
-	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, ptr, nat_n, nat_ttXn, nat_ttYn)
-	return sizes
-}
-
-func (item *TupleTuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) ([]byte, []int) {
-	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, ptr, nat_n, nat_ttXn, nat_ttYn)
-	return w, sizes
-}
-
-func (item *TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	if r, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r, ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *TupleTuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) error {
 	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
 	if err := tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2ReadJSON(legacyTypeNames, in, ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
@@ -106,4 +87,24 @@ func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(newTypeNames bool, sho
 		return w, err
 	}
 	return w, nil
+}
+
+func (item *TupleTuplePairTupleIntTupleInt2) CalculateLayout(sizes []int, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) []int {
+	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
+	sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes, ptr, nat_n, nat_ttXn, nat_ttYn)
+	return sizes
+}
+
+func (item *TupleTuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) ([]byte, []int) {
+	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
+	w, sizes = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w, sizes, ptr, nat_n, nat_ttXn, nat_ttYn)
+	return w, sizes
+}
+
+func (item *TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
+	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
+	if r, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r, ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
+		return r, err
+	}
+	return r, nil
 }

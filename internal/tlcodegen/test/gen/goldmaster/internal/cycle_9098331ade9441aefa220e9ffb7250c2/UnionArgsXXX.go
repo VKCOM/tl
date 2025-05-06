@@ -134,6 +134,106 @@ func (item *UnionArgsXXX1Int) WriteJSONOpt(newTypeNames bool, short bool, w []by
 	return append(w, '}'), nil
 }
 
+func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.X
+	if len(item.X) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.X, nat_Y)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.X
+	if len(item.X) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.X, nat_Y)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *UnionArgsXXX1Int) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.X
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.X, nat_Y); err != nil {
+				return r, err
+			}
+		} else {
+			item.X = item.X[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item UnionArgsXXX2Int) AsUnion() UnionArgsXXXInt {
 	var ret UnionArgsXXXInt
 	ret.Set2(item)
@@ -242,6 +342,107 @@ func (item *UnionArgsXXX2Int) WriteJSONOpt(newTypeNames bool, short bool, w []by
 	return append(w, '}')
 }
 
+func (item *UnionArgsXXX2Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// add constructor No for union type in case of non first option
+	lastUsedByte = 1
+	currentSize += basictl.TL2CalculateSize(1)
+
+	// calculate layout for item.A
+	if item.A != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// add constructor No for union type in case of non first option
+	currentBlock |= (1 << 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	serializedSize += basictl.TL2CalculateSize(1)
+	// write item.A
+	if item.A != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.IntWrite(w, item.A)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *UnionArgsXXX2Int) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.A
+		if block&(1<<1) != 0 {
+			if r, err = basictl.IntRead(r, &item.A); err != nil {
+				return r, err
+			}
+		} else {
+			item.A = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 var _UnionArgsXXXInt = [2]internal.UnionElement{
 	{TLTag: 0xe7978c97, TLName: "unionArgsXXX1", TLString: "unionArgsXXX1#e7978c97"},
 	{TLTag: 0x6daed784, TLName: "unionArgsXXX2", TLString: "unionArgsXXX2#6daed784"},
@@ -339,6 +540,67 @@ func (item *UnionArgsXXXInt) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err e
 		w = item.value2.Write(w, nat_Y)
 	}
 	return w, nil
+}
+
+func (item *UnionArgsXXXInt) CalculateLayout(sizes []int, nat_Y uint32) []int {
+	switch item.index {
+	case 0:
+		sizes = item.value1.CalculateLayout(sizes, nat_Y)
+	case 1:
+		sizes = item.value2.CalculateLayout(sizes, nat_Y)
+	}
+	return sizes
+}
+
+func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		w, sizes = item.value1.InternalWriteTL2(w, sizes, nat_Y)
+	case 1:
+		w, sizes = item.value2.InternalWriteTL2(w, sizes, nat_Y)
+	}
+	return w, sizes
+}
+
+func (item *UnionArgsXXXInt) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	switch item.index {
+	case 0:
+		r = saveR
+		if r, err = item.value1.ReadTL2(r, nat_Y); err != nil {
+			return r, err
+		}
+	case 1:
+		r = saveR
+		if r, err = item.value2.ReadTL2(r, nat_Y); err != nil {
+			return r, err
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *UnionArgsXXXInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {

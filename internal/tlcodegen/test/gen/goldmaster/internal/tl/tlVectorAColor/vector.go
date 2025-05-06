@@ -67,7 +67,6 @@ func (item *VectorAColor) WriteBoxed(w []byte) []byte {
 func (item VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlAColor.AColor)(item)
 	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -99,4 +98,30 @@ func (item *VectorAColor) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorAColor) CalculateLayout(sizes []int) []int {
+	ptr := (*[]tlAColor.AColor)(item)
+	sizes = tlBuiltinVectorAColor.BuiltinVectorAColorCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]tlAColor.AColor)(item)
+	w, sizes = tlBuiltinVectorAColor.BuiltinVectorAColorInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorAColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorAColor) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]tlAColor.AColor)(item)
+	if r, err = tlBuiltinVectorAColor.BuiltinVectorAColorReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

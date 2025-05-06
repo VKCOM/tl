@@ -53,11 +53,9 @@ func BuiltinTupleStringCalculateLayout(sizes []int, vec *[]string, nat_n uint32)
 	sizes = append(sizes, 0)
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		currentPosition := len(sizes)
-		sizes = append(sizes, len(elem))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+
+		sizes[sizePosition] += len((*vec)[i])
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 	return sizes
 }
@@ -72,9 +70,7 @@ func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string, na
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		sizes = sizes[1:]
-		w = basictl.StringWriteTL2(w, elem)
+		w = basictl.StringWriteTL2(w, (*vec)[i])
 	}
 	return w, sizes
 }
@@ -82,7 +78,7 @@ func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string, na
 func BuiltinTupleStringReadTL2(r []byte, vec *[]string, nat_n uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -192,11 +188,9 @@ func BuiltinTupleStringBytesCalculateLayout(sizes []int, vec *[][]byte, nat_n ui
 	sizes = append(sizes, 0)
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		currentPosition := len(sizes)
-		sizes = append(sizes, len(elem))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+
+		sizes[sizePosition] += len((*vec)[i])
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 	return sizes
 }
@@ -211,9 +205,7 @@ func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byt
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		sizes = sizes[1:]
-		w = basictl.StringBytesWriteTL2(w, elem)
+		w = basictl.StringBytesWriteTL2(w, (*vec)[i])
 	}
 	return w, sizes
 }
@@ -221,7 +213,7 @@ func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byt
 func BuiltinTupleStringBytesReadTL2(r []byte, vec *[][]byte, nat_n uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)

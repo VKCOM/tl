@@ -85,6 +85,87 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(w 
 	return w
 }
 
+func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes []int, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+
+		sizes[sizePosition] += len(key)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(key))
+		value := (*m)[key]
+		currentPosition := len(sizes)
+		sizes = value.CalculateLayout(sizes, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w []byte, sizes []int, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+		w = basictl.StringWriteTL2(w, key)
+		value := (*m)[key]
+		w, sizes = value.InternalWriteTL2(w, sizes, nat_t)
+	}
+
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r []byte, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if *m == nil {
+		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)
+	}
+
+	for key := range *m {
+		delete(*m, key)
+	}
+
+	data := *m
+
+	for len(saveR) < len(r)+shift {
+		var key string
+		var value tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
+		if r, err = basictl.StringReadTL2(r, &key); err != nil {
+			return r, err
+		}
+		if r, err = value.ReadTL2(r, nat_t); err != nil {
+			return r, err
+		}
+		data[key] = value
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) error {
 	var data map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
 	if *m == nil {

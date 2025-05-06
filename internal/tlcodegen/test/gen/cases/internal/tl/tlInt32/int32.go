@@ -65,31 +65,6 @@ func (item *Int32) WriteBoxed(w []byte) []byte {
 func (item Int32) String() string {
 	return string(item.WriteJSON(nil))
 }
-
-func (item *Int32) CalculateLayout(sizes []int) []int {
-	sizes = append(sizes, 4)
-	return sizes
-}
-
-func (item *Int32) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*int32)(item)
-	sizes = sizes[1:]
-	w = basictl.IntWrite(w, *ptr)
-	return w, sizes
-}
-
-func (item *Int32) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *Int32) ReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*int32)(item)
-	if r, err = basictl.IntRead(r, ptr); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *Int32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*int32)(item)
 	if err := internal.Json2ReadInt32(in, ptr); err != nil {
@@ -121,4 +96,29 @@ func (item *Int32) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("int32", err.Error())
 	}
 	return nil
+}
+
+func (item *Int32) CalculateLayout(sizes []int) []int {
+
+	return sizes
+}
+
+func (item *Int32) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*int32)(item)
+	w = basictl.IntWrite(w, *ptr)
+	return w, sizes
+}
+
+func (item *Int32) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Int32) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*int32)(item)
+	if r, err = basictl.IntRead(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

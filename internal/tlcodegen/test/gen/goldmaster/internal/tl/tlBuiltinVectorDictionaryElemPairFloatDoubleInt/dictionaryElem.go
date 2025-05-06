@@ -54,6 +54,53 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(w []byte, vec []tlDictio
 	return w
 }
 
+func BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryElemPairFloatDoubleIntReadTL2(r []byte, vec *[]tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt
+		if r, err = elem.ReadTL2(r); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0

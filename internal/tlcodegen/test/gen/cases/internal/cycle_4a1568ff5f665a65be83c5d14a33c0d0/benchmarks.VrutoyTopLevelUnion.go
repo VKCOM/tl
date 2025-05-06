@@ -132,13 +132,14 @@ func (item *BenchmarksVrutoyTopLevelUnion) InternalWriteTL2(w []byte, sizes []in
 }
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -151,7 +152,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err erro
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, err = basictl.TL2ReadSize(r, &item.index); err != nil {
+			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
 				return r, err
 			}
 		} else {
@@ -305,108 +306,6 @@ func (item BenchmarksVrutoytopLevelUnionBig) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// calculate layout for item.NextPositions
-	currentPosition := len(sizes)
-	if len(item.NextPositions) != 0 {
-		sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 1
-			sizes[sizePosition] += sizes[currentPosition]
-			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// write item.NextPositions
-	if len(item.NextPositions) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			w[currentBlockPosition] |= (1 << 1)
-			w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	return w, sizes
-}
-
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.NextPositions
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadTL2(r, &item.NextPositions); err != nil {
-				return r, err
-			}
-		} else {
-			item.NextPositions = item.NextPositions[:0]
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
-}
-
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propNextPositionsPresented bool
 
@@ -474,6 +373,112 @@ func (item *BenchmarksVrutoytopLevelUnionBig) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.NextPositions
+	if len(item.NextPositions) != 0 {
+		sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.NextPositions
+	if len(item.NextPositions) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.NextPositions
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadTL2(r, &item.NextPositions); err != nil {
+				return r, err
+			}
+		} else {
+			item.NextPositions = item.NextPositions[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item BenchmarksVrutoytopLevelUnionEmpty) AsUnion() BenchmarksVrutoyTopLevelUnion {
 	var ret BenchmarksVrutoyTopLevelUnion
 	ret.SetEmpty()
@@ -524,84 +529,6 @@ func (item BenchmarksVrutoytopLevelUnionEmpty) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVrutoytopLevelUnionEmpty) CalculateLayout(sizes []int) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// add constructor No for union type in case of non first option
-	lastUsedBit = 0
-	sizes[sizePosition] += basictl.TL2CalculateSize(1)
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// add constructor No for union type in case of non first option
-	w[currentBlockPosition] |= (1 << 0)
-
-	w = basictl.TL2WriteSize(w, 1)
-	serializedSize += basictl.TL2CalculateSize(1)
-
-	return w, sizes
-}
-
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
-}
-
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
@@ -641,4 +568,87 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("benchmarks.vrutoytopLevelUnionEmpty", err.Error())
 	}
 	return nil
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// add constructor No for union type in case of non first option
+	lastUsedByte = 1
+	currentSize += basictl.TL2CalculateSize(1)
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// add constructor No for union type in case of non first option
+	currentBlock |= (1 << 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	serializedSize += basictl.TL2CalculateSize(1)
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
