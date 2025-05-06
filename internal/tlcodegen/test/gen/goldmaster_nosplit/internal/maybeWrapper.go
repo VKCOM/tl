@@ -136,9 +136,9 @@ func (item *MaybeWrapperInt3) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	if item.A.Ok {
 		sizes = item.A.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

@@ -184,7 +184,6 @@ func (item *CasesTestOutFieldMaskContainer) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.F
 	if item.F != 0 {
@@ -194,7 +193,7 @@ func (item *CasesTestOutFieldMaskContainer) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Inner
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Inner.CalculateLayout(sizes, item.F)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

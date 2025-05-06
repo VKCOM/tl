@@ -401,7 +401,6 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -418,7 +417,7 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F3
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.F3) != 0 {
 		sizes = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, &item.F3)
 		if sizes[currentPosition] != 0 {

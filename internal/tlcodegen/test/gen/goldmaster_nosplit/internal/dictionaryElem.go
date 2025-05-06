@@ -1424,7 +1424,6 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
 	if item.Key != 0 {
@@ -1434,7 +1433,7 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -1690,7 +1689,6 @@ func (item *DictionaryElemLongPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
 	if item.Key != 0 {
@@ -1700,7 +1698,7 @@ func (item *DictionaryElemLongPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -1956,9 +1954,9 @@ func (item *DictionaryElemPairBoolAColorInt) CalculateLayout(sizes []int) []int 
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2221,9 +2219,9 @@ func (item *DictionaryElemPairFloatDoubleInt) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2486,9 +2484,9 @@ func (item *DictionaryElemPairIntIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2751,9 +2749,9 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) CalculateLayout(sizes 
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -3016,7 +3014,6 @@ func (item *DictionaryElemStringPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
 	if len(item.Key) != 0 {
@@ -3029,7 +3026,7 @@ func (item *DictionaryElemStringPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -3285,9 +3282,9 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uin
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	if len(item.Key) != 0 {
 		sizes = BuiltinTupleStringCalculateLayout(sizes, &item.Key, nat_k)
 		if sizes[currentPosition] != 0 {

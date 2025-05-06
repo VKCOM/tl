@@ -601,7 +601,6 @@ func (item *CycleTuple) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -611,7 +610,7 @@ func (item *CycleTuple) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.A
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if item.N&(1<<0) != 0 {
 		sizes = BuiltinTuple2CycleTupleCalculateLayout(sizes, item.A)
 		if sizes[currentPosition] != 0 {

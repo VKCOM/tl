@@ -115,7 +115,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
         {%- code
-            isSizeConstant, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+            _, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
         -%}
         {%- code
             sizeValue = "sizes[0]"

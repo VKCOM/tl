@@ -209,7 +209,7 @@ func (item *`)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
 `)
-		isSizeConstant, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+		_, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
 
 		sizeValue = "sizes[0]"
 		if len(trivialSize) != 0 {

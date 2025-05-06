@@ -140,9 +140,9 @@ func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int, nat_Y uint32) []int 
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.X
+	currentPosition := len(sizes)
 	if len(item.X) != 0 {
 		sizes = tlBuiltinTupleLong.BuiltinTupleLongCalculateLayout(sizes, &item.X, nat_Y)
 		if sizes[currentPosition] != 0 {

@@ -305,9 +305,9 @@ func (item *Replace11ElemLong) CalculateLayout(sizes []int, nat_n uint32, nat_k 
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.B
+	currentPosition := len(sizes)
 	if nat_n&(1<<0) != 0 {
 		sizes = BuiltinTuple3PairBoxedIntLongCalculateLayout(sizes, &item.B)
 		if sizes[currentPosition] != 0 {

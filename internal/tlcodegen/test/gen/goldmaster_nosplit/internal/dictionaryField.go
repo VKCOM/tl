@@ -1234,7 +1234,6 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLay
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
 	if len(item.Key) != 0 {
@@ -1247,7 +1246,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLay
 	}
 
 	// calculate layout for item.Value
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes, nat_t)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

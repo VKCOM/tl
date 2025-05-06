@@ -139,9 +139,9 @@ func (item *CasesBytesTestVector) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Arr
+	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
 		sizes = tlBuiltinVectorString.BuiltinVectorStringCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
@@ -362,9 +362,9 @@ func (item *CasesBytesTestVectorBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Arr
+	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
 		sizes = tlBuiltinVectorString.BuiltinVectorStringBytesCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {

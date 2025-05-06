@@ -192,7 +192,6 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) CalculateLayout(sizes []i
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Outer
 	if item.Outer != 0 {
@@ -202,7 +201,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) CalculateLayout(sizes []i
 	}
 
 	// calculate layout for item.Value
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes, item.Outer)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

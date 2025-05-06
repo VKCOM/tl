@@ -160,9 +160,9 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uin
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
+	currentPosition := len(sizes)
 	if len(item.Key) != 0 {
 		sizes = tlBuiltinTupleString.BuiltinTupleStringCalculateLayout(sizes, &item.Key, nat_k)
 		if sizes[currentPosition] != 0 {

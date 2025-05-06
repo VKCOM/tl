@@ -139,9 +139,9 @@ func (item *Replace6) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	if len(item.A) != 0 {
 		sizes = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, &item.A)
 		if sizes[currentPosition] != 0 {

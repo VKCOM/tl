@@ -135,9 +135,9 @@ func (item *BenchmarksVrutoyPositions) CalculateLayout(sizes []int, nat_n uint32
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.NextPositions
+	currentPosition := len(sizes)
 	if len(item.NextPositions) != 0 {
 		sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions, nat_n)
 		if sizes[currentPosition] != 0 {

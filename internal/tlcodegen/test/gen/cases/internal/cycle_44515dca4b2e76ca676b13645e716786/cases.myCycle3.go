@@ -193,7 +193,6 @@ func (item *CasesMyCycle3) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -203,7 +202,7 @@ func (item *CasesMyCycle3) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.A
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if item.FieldsMask&(1<<0) != 0 {
 		sizes = item.A.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

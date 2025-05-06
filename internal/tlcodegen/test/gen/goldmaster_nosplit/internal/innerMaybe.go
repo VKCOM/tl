@@ -131,9 +131,9 @@ func (item *InnerMaybe) CalculateLayout(sizes []int, nat_X uint32) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	if item.A.Ok {
 		sizes = item.A.CalculateLayout(sizes, nat_X)
 		if sizes[currentPosition] != 0 {
@@ -348,9 +348,9 @@ func (item *InnerMaybe0) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	if item.A.Ok {
 		sizes = item.A.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

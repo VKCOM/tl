@@ -161,7 +161,6 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Key
 	if item.Key != 0 {
@@ -171,7 +170,7 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

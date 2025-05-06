@@ -395,9 +395,9 @@ func (item *AbCounterChangeRequestPeriodsMany) CalculateLayout(sizes []int) []in
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.ObjectsPeridos
+	currentPosition := len(sizes)
 	if len(item.ObjectsPeridos) != 0 {
 		sizes = BuiltinVectorIntCalculateLayout(sizes, &item.ObjectsPeridos)
 		if sizes[currentPosition] != 0 {

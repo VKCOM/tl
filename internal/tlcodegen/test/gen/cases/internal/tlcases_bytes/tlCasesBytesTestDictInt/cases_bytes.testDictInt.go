@@ -140,9 +140,9 @@ func (item *CasesBytesTestDictInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Dict
+	currentPosition := len(sizes)
 	if len(item.Dict) != 0 {
 		sizes = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntCalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {
@@ -363,9 +363,9 @@ func (item *CasesBytesTestDictIntBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Dict
+	currentPosition := len(sizes)
 	if len(item.Dict) != 0 {
 		sizes = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesCalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {

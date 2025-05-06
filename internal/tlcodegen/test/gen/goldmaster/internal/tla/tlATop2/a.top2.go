@@ -203,7 +203,6 @@ func (item *ATop2) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -220,7 +219,7 @@ func (item *ATop2) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.C
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.C.CalculateLayout(sizes, item.M, item.N, item.N)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

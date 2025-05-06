@@ -199,7 +199,6 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int, nat_f uint32) []
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.F1
 	if nat_f&(1<<0) != 0 {
@@ -211,7 +210,7 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int, nat_f uint32) []
 	}
 
 	// calculate layout for item.F3
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.F3) != 0 {
 		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F3, nat_f)
 		if sizes[currentPosition] != 0 {

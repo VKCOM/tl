@@ -159,9 +159,9 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, na
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	sizes = item.A.CalculateLayout(sizes, nat_W)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

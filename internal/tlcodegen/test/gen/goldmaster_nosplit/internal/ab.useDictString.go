@@ -162,7 +162,6 @@ func (item *AbUseDictString) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -172,7 +171,7 @@ func (item *AbUseDictString) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Tags
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.Tags) != 0 {
 		sizes = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, &item.Tags)
 		if sizes[currentPosition] != 0 {
@@ -436,7 +435,6 @@ func (item *AbUseDictStringBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -446,7 +444,7 @@ func (item *AbUseDictStringBytes) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Tags
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.Tags) != 0 {
 		sizes = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, &item.Tags)
 		if sizes[currentPosition] != 0 {

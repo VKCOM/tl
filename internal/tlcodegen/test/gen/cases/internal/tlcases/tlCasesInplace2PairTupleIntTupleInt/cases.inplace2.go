@@ -130,9 +130,9 @@ func (item *CasesInplace2PairTupleIntTupleInt) CalculateLayout(sizes []int, nat_
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Value
+	currentPosition := len(sizes)
 	sizes = item.Value.CalculateLayout(sizes, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

@@ -159,9 +159,9 @@ func (item *Hren) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.Next
+	currentPosition := len(sizes)
 	if item.Next.Ok {
 		sizes = (*item.Next).CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {

@@ -131,9 +131,9 @@ func (item *AInner) CalculateLayout(sizes []int, nat_I uint32) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	if len(item.A) != 0 {
 		sizes = BuiltinTupleIntCalculateLayout(sizes, &item.A, nat_I)
 		if sizes[currentPosition] != 0 {
@@ -344,9 +344,9 @@ func (item *AInner3) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	sizes = BuiltinTuple3IntCalculateLayout(sizes, &item.A)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

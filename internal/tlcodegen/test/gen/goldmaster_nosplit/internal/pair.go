@@ -419,9 +419,9 @@ func (item *PairAInnerAInner) CalculateLayout(sizes []int, nat_X uint32, nat_Y u
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	sizes = item.A.CalculateLayout(sizes, nat_X)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -683,7 +683,6 @@ func (item *PairBoolAColor) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
 	if item.A {
@@ -693,7 +692,7 @@ func (item *PairBoolAColor) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.B
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.B.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -1737,7 +1736,6 @@ func (item *PairIntPairMultiPointString) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
 	if item.A != 0 {
@@ -1747,7 +1745,7 @@ func (item *PairIntPairMultiPointString) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.B
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.B.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2003,9 +2001,9 @@ func (item *PairMultiPointString) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	sizes = item.A.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2263,9 +2261,9 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, nat_X
 
 	currentSize := 0
 	lastUsedByte := 0
-	currentPosition := len(sizes)
 
 	// calculate layout for item.A
+	currentPosition := len(sizes)
 	sizes = item.A.CalculateLayout(sizes, nat_XXI, nat_XYI)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1

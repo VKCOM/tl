@@ -30,7 +30,7 @@ func TestExactCases(t *testing.T) {
 	json, _ := dst.WriteJSONGeneral(nil)
 	fmt.Println(string(json))
 
-	writeBuffer, sizeBuffer = dst.WriteTL2(writeBuffer[0:0], sizeBuffer[0:0])
+	writeBuffer, _ = dst.WriteTL2(writeBuffer[0:0], sizeBuffer[0:0])
 
 	newDst := factory.CreateObjectFromName(TestingName)
 	_, err := newDst.ReadTL2(writeBuffer)
