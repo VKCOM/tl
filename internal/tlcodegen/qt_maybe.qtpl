@@ -130,7 +130,13 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         if {%s= sizeValue %} != 0 {
         w[currentPosition] |= (1 << 1)
         {%s= maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%- if len(trivialSize) == 0 -%}
+        } else {
+            sizes = sizes[1:]
         }
+        {%- else -%}
+        }
+        {%- endif -%}
         {%- if nonEmptyCondition != "" -%}
         }
         {%- endif -%}
@@ -159,6 +165,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         }
         item.Ok = true
         if block & (1 << 1) != 0 {
+        {%- if maybe.element.recursive -%}
+        if item.Value == nil {
+            var newValue {%s= maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false) %}
+            item.Value = &newValue
+        }
+        {%- endif -%}
         {%s= maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         } else {
         {%s= maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive) %}

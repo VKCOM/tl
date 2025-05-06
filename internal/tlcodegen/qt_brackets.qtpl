@@ -477,16 +477,22 @@ func {%s= goName %}ReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= valueType
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+    if *m == nil {
+        *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %})
+    }
+
     for key := range *m {
         delete(*m, key)
     }
+
+    data := *m
 
     for len(saveR) < len(r) + shift {
         var key {%s= keyTypeString %}
         var value {%s= valueTypeString %}
         {%s= tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         {%s= tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
-        (*m)[key] = value
+        data[key] = value
     }
     return r, nil
 }

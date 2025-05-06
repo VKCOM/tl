@@ -863,9 +863,19 @@ func `)
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+    if *m == nil {
+        *m = make(map[`)
+				qw422016.N().S(keyTypeString)
+				qw422016.N().S(`]`)
+				qw422016.N().S(valueTypeString)
+				qw422016.N().S(`)
+    }
+
     for key := range *m {
         delete(*m, key)
     }
+
+    data := *m
 
     for len(saveR) < len(r) + shift {
         var key `)
@@ -880,7 +890,7 @@ func `)
         `)
 				qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
-        (*m)[key] = value
+        data[key] = value
     }
     return r, nil
 }

@@ -274,6 +274,11 @@ func (item *`)
 `)
 					}
 				} else {
+					struct_, isStruct := field.t.trw.(*TypeRWStruct)
+					if !isStruct {
+						panic("impossible type: union case is not struct + \"" + field.t.goGlobalName + "\"")
+					}
+					struct_.isTypeDef()
 					qw422016.N().S(`        `)
 					qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
 					qw422016.N().S(`
@@ -385,7 +390,21 @@ func (item *`)
 `)
 				} else {
 					qw422016.N().S(`        r = saveR
-        `)
+`)
+					if field.recursive {
+						qw422016.N().S(`        if `)
+						qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
+						qw422016.N().S(` == nil {
+            var newValue `)
+						qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false))
+						qw422016.N().S(`
+            `)
+						qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
+						qw422016.N().S(` = &newValue
+        }
+`)
+					}
+					qw422016.N().S(`        `)
 					qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
 					qw422016.N().S(`
 `)
