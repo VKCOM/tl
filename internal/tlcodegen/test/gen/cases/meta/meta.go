@@ -334,7 +334,7 @@ func init() {
 	fillObject("cases.replace7#6ccce4be", "#6ccce4be", &TLItem{tag: 0x6ccce4be, annotations: 0x0, tlName: "cases.replace7", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.replace7plus#197858f5", "#197858f5", &TLItem{tag: 0x197858f5, annotations: 0x0, tlName: "cases.replace7plus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.replace7plusplus#abc39b68", "#abc39b68", &TLItem{tag: 0xabc39b68, annotations: 0x0, tlName: "cases.replace7plusplus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("casesTL2.testObject#11e6908a", "#11e6908a", &TLItem{tag: 0x11e6908a, annotations: 0x0, tlName: "casesTL2.testObject", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("casesTL2.testObject#4f96dd95", "#4f96dd95", &TLItem{tag: 0x4f96dd95, annotations: 0x0, tlName: "casesTL2.testObject", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testAllPossibleFieldConfigsContainer#e3fae936", "#e3fae936", &TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testArray#a888030d", "#a888030d", &TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testBeforeReadBitValidation#9b2396db", "#9b2396db", &TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

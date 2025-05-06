@@ -54,6 +54,53 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(w []byte, ve
 	return w
 }
 
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(r []byte, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt
+		if r, err = elem.ReadTL2(r); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0

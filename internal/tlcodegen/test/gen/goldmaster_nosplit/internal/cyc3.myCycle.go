@@ -156,6 +156,137 @@ func (item *Cyc3MyCycle) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *Cyc3MyCycle) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.FieldsMask
+	if item.FieldsMask != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.A
+	currentPosition = len(sizes)
+	if len(item.A) != 0 {
+		sizes = BuiltinVectorCyc1MyCycleCalculateLayout(sizes, &item.A)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *Cyc3MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.FieldsMask
+	if item.FieldsMask != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.NatWrite(w, item.FieldsMask)
+		}
+	}
+	// write item.A
+	if len(item.A) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, &item.A)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *Cyc3MyCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Cyc3MyCycle) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.FieldsMask
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.FieldsMask); err != nil {
+				return r, err
+			}
+		} else {
+			item.FieldsMask = 0
+		}
+
+		// read item.A
+		if block&(1<<2) != 0 {
+			if r, err = BuiltinVectorCyc1MyCycleReadTL2(r, &item.A); err != nil {
+				return r, err
+			}
+		} else {
+			item.A = item.A[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 type Cyc3MyCycleMaybe struct {
 	Value Cyc3MyCycle // not deterministic if !Ok
 	Ok    bool
@@ -194,6 +325,85 @@ func (item *Cyc3MyCycleMaybe) WriteBoxed(w []byte) []byte {
 		return item.Value.Write(w)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *Cyc3MyCycleMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		sizes = item.Value.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		}
+	}
+	return sizes
+}
+
+func (item *Cyc3MyCycleMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		currentPosition := len(w)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		if sizes[0] != 0 {
+			w[currentPosition] |= (1 << 1)
+			w, sizes = item.Value.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	return w, sizes
+}
+
+func (item *Cyc3MyCycleMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = item.Value.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value.Reset()
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *Cyc3MyCycleMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

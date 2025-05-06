@@ -181,3 +181,166 @@ func (item *Replace17) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+func (item *Replace17) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.X
+	if len(item.X) != 0 {
+		sizes = BuiltinVectorIntCalculateLayout(sizes, &item.X)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.A
+	if item.A != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.Y
+	currentPosition = len(sizes)
+	if len(item.Y) != 0 {
+		sizes = BuiltinVectorIntCalculateLayout(sizes, &item.Y)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *Replace17) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.X
+	if len(item.X) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, &item.X)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.A
+	if item.A != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.IntWrite(w, item.A)
+		}
+	}
+	// write item.Y
+	if len(item.Y) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Y)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *Replace17) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Replace17) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.X
+		if block&(1<<1) != 0 {
+			if r, err = BuiltinVectorIntReadTL2(r, &item.X); err != nil {
+				return r, err
+			}
+		} else {
+			item.X = item.X[:0]
+		}
+
+		// read item.A
+		if block&(1<<2) != 0 {
+			if r, err = basictl.IntRead(r, &item.A); err != nil {
+				return r, err
+			}
+		} else {
+			item.A = 0
+		}
+
+		// read item.Y
+		if block&(1<<3) != 0 {
+			if r, err = BuiltinVectorIntReadTL2(r, &item.Y); err != nil {
+				return r, err
+			}
+		} else {
+			item.Y = item.Y[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}

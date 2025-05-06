@@ -158,6 +158,135 @@ func (item *DictionaryFieldString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *DictionaryFieldString) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// calculate layout for item.Key
+	if len(item.Key) != 0 {
+
+		if len(item.Key) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Key)
+			currentSize += basictl.TL2CalculateSize(len(item.Key))
+		}
+	}
+
+	// calculate layout for item.Value
+	if len(item.Value) != 0 {
+
+		if len(item.Value) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Value)
+			currentSize += basictl.TL2CalculateSize(len(item.Value))
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Key
+	if len(item.Key) != 0 {
+		serializedSize += len(item.Key)
+		if len(item.Key) != 0 {
+			serializedSize += basictl.TL2CalculateSize(len(item.Key))
+			currentBlock |= (1 << 1)
+			w = basictl.StringWriteTL2(w, item.Key)
+		}
+	}
+	// write item.Value
+	if len(item.Value) != 0 {
+		serializedSize += len(item.Value)
+		if len(item.Value) != 0 {
+			serializedSize += basictl.TL2CalculateSize(len(item.Value))
+			currentBlock |= (1 << 2)
+			w = basictl.StringWriteTL2(w, item.Value)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *DictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *DictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Key); err != nil {
+				return r, err
+			}
+		} else {
+			item.Key = ""
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = ""
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 type DictionaryFieldStringBytes struct {
 	Key   []byte
 	Value []byte
@@ -299,4 +428,133 @@ func (item *DictionaryFieldStringBytes) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("dictionaryField", err.Error())
 	}
 	return nil
+}
+
+func (item *DictionaryFieldStringBytes) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// calculate layout for item.Key
+	if len(item.Key) != 0 {
+
+		if len(item.Key) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Key)
+			currentSize += basictl.TL2CalculateSize(len(item.Key))
+		}
+	}
+
+	// calculate layout for item.Value
+	if len(item.Value) != 0 {
+
+		if len(item.Value) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Value)
+			currentSize += basictl.TL2CalculateSize(len(item.Value))
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Key
+	if len(item.Key) != 0 {
+		serializedSize += len(item.Key)
+		if len(item.Key) != 0 {
+			serializedSize += basictl.TL2CalculateSize(len(item.Key))
+			currentBlock |= (1 << 1)
+			w = basictl.StringBytesWriteTL2(w, item.Key)
+		}
+	}
+	// write item.Value
+	if len(item.Value) != 0 {
+		serializedSize += len(item.Value)
+		if len(item.Value) != 0 {
+			serializedSize += basictl.TL2CalculateSize(len(item.Value))
+			currentBlock |= (1 << 2)
+			w = basictl.StringBytesWriteTL2(w, item.Value)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *DictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *DictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if r, err = basictl.StringReadBytesTL2(r, &item.Key); err != nil {
+				return r, err
+			}
+		} else {
+			item.Key = item.Key[:0]
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = basictl.StringReadBytesTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = item.Value[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

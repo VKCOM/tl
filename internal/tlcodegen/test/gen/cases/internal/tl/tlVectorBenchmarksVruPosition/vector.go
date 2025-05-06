@@ -67,31 +67,6 @@ func (item *VectorBenchmarksVruPosition) WriteBoxed(w []byte) []byte {
 func (item VectorBenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
-
-func (item *VectorBenchmarksVruPosition) CalculateLayout(sizes []int) []int {
-	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorBenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
-func (item *VectorBenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *VectorBenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	if r, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadTL2(r, ptr); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *VectorBenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
 	if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -123,4 +98,30 @@ func (item *VectorBenchmarksVruPosition) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorBenchmarksVruPosition) CalculateLayout(sizes []int) []int {
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorBenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorBenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorBenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	if r, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

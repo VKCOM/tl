@@ -153,3 +153,127 @@ func (item *DictionaryElemTupleStringInt) WriteJSONOpt(newTypeNames bool, short 
 	}
 	return append(w, '}'), nil
 }
+
+func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.Key
+	if len(item.Key) != 0 {
+		sizes = tlBuiltinTupleString.BuiltinTupleStringCalculateLayout(sizes, &item.Key, nat_k)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.Value
+	if item.Value != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int, nat_k uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Key
+	if len(item.Key) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = tlBuiltinTupleString.BuiltinTupleStringInternalWriteTL2(w, sizes, &item.Key, nat_k)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.Value
+	if item.Value != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.IntWrite(w, item.Value)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, nat_k uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTupleString.BuiltinTupleStringReadTL2(r, &item.Key, nat_k); err != nil {
+				return r, err
+			}
+		} else {
+			item.Key = item.Key[:0]
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if r, err = basictl.IntRead(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}

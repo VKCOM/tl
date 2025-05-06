@@ -67,31 +67,6 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteBoxed(w []byte) []byte {
 func (item VectorBenchmarksVrutoyTopLevelUnion) String() string {
 	return string(item.WriteJSON(nil))
 }
-
-func (item *VectorBenchmarksVrutoyTopLevelUnion) CalculateLayout(sizes []int) []int {
-	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
-	sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorBenchmarksVrutoyTopLevelUnion) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
-	w, sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
-func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
-	if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r, ptr); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
 	if err := tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -123,4 +98,30 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) CalculateLayout(sizes []int) []int {
+	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
+	sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
+	w, sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
+	if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

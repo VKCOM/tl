@@ -156,3 +156,128 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteJSONOpt(newTypeNames bool,
 	}
 	return append(w, '}'), nil
 }
+
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, nat_W uint32, nat_PXI uint32, nat_PYI uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.A
+	sizes = item.A.CalculateLayout(sizes, nat_W)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// calculate layout for item.B
+	currentPosition = len(sizes)
+	sizes = item.B.CalculateLayout(sizes, nat_PXI, nat_PYI)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes []int, nat_W uint32, nat_PXI uint32, nat_PYI uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.A
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 1)
+		w, sizes = item.A.InternalWriteTL2(w, sizes, nat_W)
+	} else {
+		sizes = sizes[1:]
+	}
+	// write item.B
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 2)
+		w, sizes = item.B.InternalWriteTL2(w, sizes, nat_PXI, nat_PYI)
+	} else {
+		sizes = sizes[1:]
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.A
+		if block&(1<<1) != 0 {
+			if r, err = item.A.ReadTL2(r, nat_W); err != nil {
+				return r, err
+			}
+		} else {
+			item.A.Reset()
+		}
+
+		// read item.B
+		if block&(1<<2) != 0 {
+			if r, err = item.B.ReadTL2(r, nat_PXI, nat_PYI); err != nil {
+				return r, err
+			}
+		} else {
+			item.B.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}

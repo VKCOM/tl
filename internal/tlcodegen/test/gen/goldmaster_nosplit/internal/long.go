@@ -49,6 +49,60 @@ func BuiltinTupleLongWrite(w []byte, vec []int64, nat_n uint32) (_ []byte, err e
 	return w, nil
 }
 
+func BuiltinTupleLongCalculateLayout(sizes []int, vec *[]int64, nat_n uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+
+		sizes[sizePosition] += 8
+	}
+	return sizes
+}
+
+func BuiltinTupleLongInternalWriteTL2(w []byte, sizes []int, vec *[]int64, nat_n uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w = basictl.LongWrite(w, (*vec)[i])
+	}
+	return w, sizes
+}
+
+func BuiltinTupleLongReadTL2(r []byte, vec *[]int64, nat_n uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if uint32(cap(*vec)) < nat_n {
+		*vec = make([]int64, nat_n)
+	} else {
+		*vec = (*vec)[:nat_n]
+	}
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if uint32(i) == nat_n {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = basictl.LongRead(r, &(*vec)[i]); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if uint32(i) != nat_n {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
 func BuiltinTupleLongReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int64, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int64, nat_n)
@@ -146,7 +200,6 @@ func (item *Long) WriteBoxed(w []byte) []byte {
 func (item Long) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*int64)(item)
 	if err := Json2ReadInt64(in, ptr); err != nil {
@@ -178,4 +231,29 @@ func (item *Long) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("long", err.Error())
 	}
 	return nil
+}
+
+func (item *Long) CalculateLayout(sizes []int) []int {
+
+	return sizes
+}
+
+func (item *Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*int64)(item)
+	w = basictl.LongWrite(w, *ptr)
+	return w, sizes
+}
+
+func (item *Long) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Long) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*int64)(item)
+	if r, err = basictl.LongRead(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

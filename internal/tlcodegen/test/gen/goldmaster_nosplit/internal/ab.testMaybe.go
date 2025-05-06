@@ -233,3 +233,231 @@ func (item *AbTestMaybe) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
+
+func (item *AbTestMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.N
+	if item.N != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.A
+	currentPosition = len(sizes)
+	if item.A.Ok {
+		sizes = item.A.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.B
+	currentPosition = len(sizes)
+	if item.B.Ok {
+		sizes = item.B.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.C
+	currentPosition = len(sizes)
+	if item.C.Ok {
+		sizes = item.C.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.D
+	currentPosition = len(sizes)
+	if item.D.Ok {
+		sizes = item.D.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *AbTestMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.N
+	if item.N != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.NatWrite(w, item.N)
+		}
+	}
+	// write item.A
+	if item.A.Ok {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			currentBlock |= (1 << 2)
+			w, sizes = item.A.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.B
+	if item.B.Ok {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = item.B.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.C
+	if item.C.Ok {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 4)
+			w, sizes = item.C.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.D
+	if item.D.Ok {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 5)
+			w, sizes = item.D.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *AbTestMaybe) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *AbTestMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.N
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.N); err != nil {
+				return r, err
+			}
+		} else {
+			item.N = 0
+		}
+
+		// read item.A
+		if block&(1<<2) != 0 {
+			if r, err = item.A.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.A.Reset()
+		}
+
+		// read item.B
+		if block&(1<<3) != 0 {
+			if r, err = item.B.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.B.Reset()
+		}
+
+		// read item.C
+		if block&(1<<4) != 0 {
+			if r, err = item.C.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.C.Reset()
+		}
+
+		// read item.D
+		if block&(1<<5) != 0 {
+			if r, err = item.D.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.D.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}

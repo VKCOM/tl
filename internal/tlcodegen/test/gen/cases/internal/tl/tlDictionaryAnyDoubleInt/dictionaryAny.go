@@ -67,31 +67,6 @@ func (item *DictionaryAnyDoubleInt) WriteBoxed(w []byte) []byte {
 func (item DictionaryAnyDoubleInt) String() string {
 	return string(item.WriteJSON(nil))
 }
-
-func (item *DictionaryAnyDoubleInt) CalculateLayout(sizes []int) []int {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	sizes = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *DictionaryAnyDoubleInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	w, sizes = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
-func (item *DictionaryAnyDoubleInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *DictionaryAnyDoubleInt) ReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntReadTL2(r, ptr); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *DictionaryAnyDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
 	if err := tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -123,4 +98,30 @@ func (item *DictionaryAnyDoubleInt) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("dictionaryAny", err.Error())
 	}
 	return nil
+}
+
+func (item *DictionaryAnyDoubleInt) CalculateLayout(sizes []int) []int {
+	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
+	sizes = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *DictionaryAnyDoubleInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
+	w, sizes = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *DictionaryAnyDoubleInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *DictionaryAnyDoubleInt) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
+	if r, err = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

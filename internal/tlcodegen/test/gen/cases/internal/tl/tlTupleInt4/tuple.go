@@ -66,31 +66,6 @@ func (item *TupleInt4) WriteBoxed(w []byte) []byte {
 func (item TupleInt4) String() string {
 	return string(item.WriteJSON(nil))
 }
-
-func (item *TupleInt4) CalculateLayout(sizes []int) []int {
-	ptr := (*[4]int32)(item)
-	sizes = tlBuiltinTuple4Int.BuiltinTuple4IntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TupleInt4) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[4]int32)(item)
-	w, sizes = tlBuiltinTuple4Int.BuiltinTuple4IntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
-func (item *TupleInt4) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *TupleInt4) ReadTL2(r []byte) (_ []byte, err error) {
-	ptr := (*[4]int32)(item)
-	if r, err = tlBuiltinTuple4Int.BuiltinTuple4IntReadTL2(r, ptr); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *TupleInt4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[4]int32)(item)
 	if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -122,4 +97,30 @@ func (item *TupleInt4) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("tuple", err.Error())
 	}
 	return nil
+}
+
+func (item *TupleInt4) CalculateLayout(sizes []int) []int {
+	ptr := (*[4]int32)(item)
+	sizes = tlBuiltinTuple4Int.BuiltinTuple4IntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *TupleInt4) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[4]int32)(item)
+	w, sizes = tlBuiltinTuple4Int.BuiltinTuple4IntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *TupleInt4) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *TupleInt4) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[4]int32)(item)
+	if r, err = tlBuiltinTuple4Int.BuiltinTuple4IntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

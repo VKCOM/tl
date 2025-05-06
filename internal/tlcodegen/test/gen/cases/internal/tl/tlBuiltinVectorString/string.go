@@ -55,11 +55,9 @@ func BuiltinVectorStringCalculateLayout(sizes []int, vec *[]string) []int {
 	sizes = append(sizes, 0)
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		currentPosition := len(sizes)
-		sizes = append(sizes, len(elem))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+
+		sizes[sizePosition] += len((*vec)[i])
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 	return sizes
 }
@@ -74,9 +72,7 @@ func BuiltinVectorStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) (
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		sizes = sizes[1:]
-		w = basictl.StringWriteTL2(w, elem)
+		w = basictl.StringWriteTL2(w, (*vec)[i])
 	}
 	return w, sizes
 }
@@ -84,7 +80,7 @@ func BuiltinVectorStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) (
 func BuiltinVectorStringReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -180,11 +176,9 @@ func BuiltinVectorStringBytesCalculateLayout(sizes []int, vec *[][]byte) []int {
 	sizes = append(sizes, 0)
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		currentPosition := len(sizes)
-		sizes = append(sizes, len(elem))
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+
+		sizes[sizePosition] += len((*vec)[i])
+		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 	return sizes
 }
@@ -199,9 +193,7 @@ func BuiltinVectorStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]by
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		sizes = sizes[1:]
-		w = basictl.StringBytesWriteTL2(w, elem)
+		w = basictl.StringBytesWriteTL2(w, (*vec)[i])
 	}
 	return w, sizes
 }
@@ -209,7 +201,7 @@ func BuiltinVectorStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]by
 func BuiltinVectorStringBytesReadTL2(r []byte, vec *[][]byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)

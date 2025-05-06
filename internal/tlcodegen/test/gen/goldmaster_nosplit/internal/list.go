@@ -121,7 +121,12 @@ func (item *ListService5Output) Write(w []byte) []byte {
 		w = item.Head.WriteBoxed(w)
 	}
 	if item.Flag&(1<<0) != 0 {
-		w = item.Tail.Write(w)
+		if item.Tail == nil {
+			var tmpValue ListService5Output
+			w = (&tmpValue).Write(w)
+		} else {
+			w = item.Tail.Write(w)
+		}
 	}
 	return w
 }
@@ -258,4 +263,184 @@ func (item *ListService5Output) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("list", err.Error())
 	}
 	return nil
+}
+
+func (item *ListService5Output) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.Flag
+	if item.Flag != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.Head
+	currentPosition = len(sizes)
+	if item.Flag&(1<<0) != 0 {
+		sizes = item.Head.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.Tail
+	currentPosition = len(sizes)
+	if item.Flag&(1<<0) != 0 {
+		sizes = (*item.Tail).CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Flag
+	if item.Flag != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.NatWrite(w, item.Flag)
+		}
+	}
+	// write item.Head
+	if item.Flag&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = item.Head.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.Tail
+	if item.Flag&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = (*item.Tail).InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *ListService5Output) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *ListService5Output) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Flag
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.Flag); err != nil {
+				return r, err
+			}
+		} else {
+			item.Flag = 0
+		}
+
+		// read item.Head
+		if block&(1<<2) != 0 {
+			if item.Flag&(1<<0) != 0 {
+				if r, err = item.Head.ReadTL2(r); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "Head" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.Head.Reset()
+		}
+
+		// read item.Tail
+		if block&(1<<3) != 0 {
+			if item.Tail == nil {
+				var newValue ListService5Output
+				item.Tail = &newValue
+			}
+			if item.Flag&(1<<0) != 0 {
+				if r, err = (*item.Tail).ReadTL2(r); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "Tail" + "is presented but depending bit is absent")
+			}
+		} else {
+			if item.Tail == nil {
+				var newValue ListService5Output
+				item.Tail = &newValue
+			}
+			item.Tail.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

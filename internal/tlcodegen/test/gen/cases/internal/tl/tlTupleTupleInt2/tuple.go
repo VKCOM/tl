@@ -63,25 +63,6 @@ func (item *TupleTupleInt2) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err er
 	return item.Write(w, nat_n)
 }
 
-func (item *TupleTupleInt2) CalculateLayout(sizes []int, nat_n uint32) []int {
-	ptr := (*[][2]int32)(item)
-	sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, ptr, nat_n)
-	return sizes
-}
-
-func (item *TupleTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
-	ptr := (*[][2]int32)(item)
-	w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, ptr, nat_n)
-	return w, sizes
-}
-
-func (item *TupleTupleInt2) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
-	ptr := (*[][2]int32)(item)
-	if r, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadTL2(r, ptr, nat_n); err != nil {
-		return r, err
-	}
-	return r, nil
-}
 func (item *TupleTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32) error {
 	ptr := (*[][2]int32)(item)
 	if err := tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadJSON(legacyTypeNames, in, ptr, nat_n); err != nil {
@@ -105,4 +86,24 @@ func (item *TupleTupleInt2) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 		return w, err
 	}
 	return w, nil
+}
+
+func (item *TupleTupleInt2) CalculateLayout(sizes []int, nat_n uint32) []int {
+	ptr := (*[][2]int32)(item)
+	sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, ptr, nat_n)
+	return sizes
+}
+
+func (item *TupleTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+	ptr := (*[][2]int32)(item)
+	w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, ptr, nat_n)
+	return w, sizes
+}
+
+func (item *TupleTupleInt2) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+	ptr := (*[][2]int32)(item)
+	if r, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadTL2(r, ptr, nat_n); err != nil {
+		return r, err
+	}
+	return r, nil
 }

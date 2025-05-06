@@ -66,7 +66,6 @@ func (item *TupleInt3) WriteBoxed(w []byte) []byte {
 func (item TupleInt3) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *TupleInt3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[3]int32)(item)
 	if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -98,4 +97,30 @@ func (item *TupleInt3) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("tuple", err.Error())
 	}
 	return nil
+}
+
+func (item *TupleInt3) CalculateLayout(sizes []int) []int {
+	ptr := (*[3]int32)(item)
+	sizes = tlBuiltinTuple3Int.BuiltinTuple3IntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *TupleInt3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[3]int32)(item)
+	w, sizes = tlBuiltinTuple3Int.BuiltinTuple3IntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *TupleInt3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *TupleInt3) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[3]int32)(item)
+	if r, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }

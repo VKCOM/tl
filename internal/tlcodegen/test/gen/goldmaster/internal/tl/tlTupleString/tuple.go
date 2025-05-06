@@ -87,3 +87,23 @@ func (item *TupleString) WriteJSONOpt(newTypeNames bool, short bool, w []byte, n
 	}
 	return w, nil
 }
+
+func (item *TupleString) CalculateLayout(sizes []int, nat_n uint32) []int {
+	ptr := (*[]string)(item)
+	sizes = tlBuiltinTupleString.BuiltinTupleStringCalculateLayout(sizes, ptr, nat_n)
+	return sizes
+}
+
+func (item *TupleString) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+	ptr := (*[]string)(item)
+	w, sizes = tlBuiltinTupleString.BuiltinTupleStringInternalWriteTL2(w, sizes, ptr, nat_n)
+	return w, sizes
+}
+
+func (item *TupleString) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+	ptr := (*[]string)(item)
+	if r, err = tlBuiltinTupleString.BuiltinTupleStringReadTL2(r, ptr, nat_n); err != nil {
+		return r, err
+	}
+	return r, nil
+}

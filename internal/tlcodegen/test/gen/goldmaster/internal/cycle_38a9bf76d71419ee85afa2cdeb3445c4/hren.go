@@ -52,7 +52,12 @@ func (item *Hren) WriteGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Hren) Write(w []byte) []byte {
-	w = item.Next.WriteBoxed(w)
+	if item.Next == nil {
+		var tmpValue HrenMaybe
+		w = (&tmpValue).WriteBoxed(w)
+	} else {
+		w = item.Next.WriteBoxed(w)
+	}
 	return w
 }
 
@@ -150,6 +155,120 @@ func (item *Hren) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *Hren) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.Next
+	if item.Next.Ok {
+		sizes = (*item.Next).CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *Hren) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Next
+	if item.Next.Ok {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = (*item.Next).InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *Hren) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Hren) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Next
+		if block&(1<<1) != 0 {
+			if item.Next == nil {
+				var newValue HrenMaybe
+				item.Next = &newValue
+			}
+			if r, err = (*item.Next).ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			if item.Next == nil {
+				var newValue HrenMaybe
+				item.Next = &newValue
+			}
+			item.Next.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 type HrenMaybe struct {
 	Value Hren // not deterministic if !Ok
 	Ok    bool
@@ -188,6 +307,85 @@ func (item *HrenMaybe) WriteBoxed(w []byte) []byte {
 		return item.Value.Write(w)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *HrenMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		sizes = item.Value.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			sizes[sizePosition] += sizes[currentPosition]
+			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		}
+	}
+	return sizes
+}
+
+func (item *HrenMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		currentPosition := len(w)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		if sizes[0] != 0 {
+			w[currentPosition] |= (1 << 1)
+			w, sizes = item.Value.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	return w, sizes
+}
+
+func (item *HrenMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = item.Value.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value.Reset()
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *HrenMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

@@ -56,6 +56,89 @@ func (item *VectorIntMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
+func (item *VectorIntMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		if len(item.Value) != 0 {
+			sizes = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, &item.Value)
+			if sizes[currentPosition] != 0 {
+				sizes[sizePosition] += sizes[currentPosition]
+				sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+			}
+		}
+	}
+	return sizes
+}
+
+func (item *VectorIntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		currentPosition := len(w)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		if len(item.Value) != 0 {
+			if sizes[0] != 0 {
+				w[currentPosition] |= (1 << 1)
+				w, sizes = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Value)
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+	return w, sizes
+}
+
+func (item *VectorIntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = item.Value[:0]
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 func (item *VectorIntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {

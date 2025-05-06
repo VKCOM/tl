@@ -148,3 +148,132 @@ func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(newTypeNames bool, 
 	}
 	return append(w, '}')
 }
+
+func (item *UsefulServiceUserEntityPaymentItem) CalculateLayout(sizes []int, nat_fields_mask uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.Id
+	if len(item.Id) != 0 {
+
+		if len(item.Id) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Id)
+			currentSize += basictl.TL2CalculateSize(len(item.Id))
+		}
+	}
+
+	// calculate layout for item.Promo
+	currentPosition = len(sizes)
+	if item.Promo.Ok {
+		sizes = item.Promo.CalculateLayout(sizes, nat_fields_mask)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *UsefulServiceUserEntityPaymentItem) InternalWriteTL2(w []byte, sizes []int, nat_fields_mask uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Id
+	if len(item.Id) != 0 {
+		serializedSize += len(item.Id)
+		if len(item.Id) != 0 {
+			serializedSize += basictl.TL2CalculateSize(len(item.Id))
+			currentBlock |= (1 << 1)
+			w = basictl.StringWriteTL2(w, item.Id)
+		}
+	}
+	// write item.Promo
+	if item.Promo.Ok {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = item.Promo.InternalWriteTL2(w, sizes, nat_fields_mask)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *UsefulServiceUserEntityPaymentItem) ReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Id
+		if block&(1<<1) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Id); err != nil {
+				return r, err
+			}
+		} else {
+			item.Id = ""
+		}
+
+		// read item.Promo
+		if block&(1<<2) != 0 {
+			if r, err = item.Promo.ReadTL2(r, nat_fields_mask); err != nil {
+				return r, err
+			}
+		} else {
+			item.Promo.Reset()
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}

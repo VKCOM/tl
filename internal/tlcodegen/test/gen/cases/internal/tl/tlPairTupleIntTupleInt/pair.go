@@ -73,137 +73,6 @@ func (item *PairTupleIntTupleInt) WriteBoxed(w []byte, nat_X uint32, nat_Y uint3
 	return item.Write(w, nat_X, nat_Y)
 }
 
-func (item *PairTupleIntTupleInt) CalculateLayout(sizes []int, nat_X uint32, nat_Y uint32) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// calculate layout for item.X
-	currentPosition := len(sizes)
-	if len(item.X) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.X, nat_X)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 1
-			sizes[sizePosition] += sizes[currentPosition]
-			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.Y
-	currentPosition = len(sizes)
-	if len(item.Y) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.Y, nat_Y)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 2
-			sizes[sizePosition] += sizes[currentPosition]
-			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes []int, nat_X uint32, nat_Y uint32) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// write item.X
-	if len(item.X) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			w[currentBlockPosition] |= (1 << 1)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.X, nat_X)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	// write item.Y
-	if len(item.Y) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			w[currentBlockPosition] |= (1 << 2)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.Y, nat_Y)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	return w, sizes
-}
-
-func (item *PairTupleIntTupleInt) ReadTL2(r []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.X
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.X, nat_X); err != nil {
-				return r, err
-			}
-		} else {
-			item.X = item.X[:0]
-		}
-
-		// read item.Y
-		if block&(1<<2) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.Y, nat_Y); err != nil {
-				return r, err
-			}
-		} else {
-			item.Y = item.Y[:0]
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
-}
-
 func (item *PairTupleIntTupleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
 	var rawX []byte
 	var rawY []byte
@@ -293,4 +162,137 @@ func (item *PairTupleIntTupleInt) WriteJSONOpt(newTypeNames bool, short bool, w 
 		w = w[:backupIndexY]
 	}
 	return append(w, '}'), nil
+}
+
+func (item *PairTupleIntTupleInt) CalculateLayout(sizes []int, nat_X uint32, nat_Y uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.X
+	if len(item.X) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.X, nat_X)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.Y
+	currentPosition = len(sizes)
+	if len(item.Y) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.Y, nat_Y)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes []int, nat_X uint32, nat_Y uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.X
+	if len(item.X) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.X, nat_X)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	// write item.Y
+	if len(item.Y) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.Y, nat_Y)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *PairTupleIntTupleInt) ReadTL2(r []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.X
+		if block&(1<<1) != 0 {
+			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.X, nat_X); err != nil {
+				return r, err
+			}
+		} else {
+			item.X = item.X[:0]
+		}
+
+		// read item.Y
+		if block&(1<<2) != 0 {
+			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.Y, nat_Y); err != nil {
+				return r, err
+			}
+		} else {
+			item.Y = item.Y[:0]
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

@@ -103,6 +103,7 @@ myPlus a:MyNat2 = MyNat2; // struct with field
 myZero3 = MyNat3;
 myPlus3 MyNat3 = MyNat3; // typedef
 
+// ban such things
 cycleTuple n:# a:n.0?(Tuple cycleTuple 2) b:(Tuple cycleTuple n) c:n.2?3*[int] = CycleTuple;
 
 hren next:(Maybe hren) = Hren;

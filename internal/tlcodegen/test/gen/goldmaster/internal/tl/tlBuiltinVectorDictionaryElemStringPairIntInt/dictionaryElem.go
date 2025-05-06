@@ -85,6 +85,87 @@ func BuiltinVectorDictionaryElemStringPairIntIntWrite(w []byte, m map[string]tlP
 	return w
 }
 
+func BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes []int, m *map[string]tlPairIntInt.PairIntInt) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+
+		sizes[sizePosition] += len(key)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(key))
+		value := (*m)[key]
+		currentPosition := len(sizes)
+		sizes = value.CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w []byte, sizes []int, m *map[string]tlPairIntInt.PairIntInt) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	keys := make([]string, 0, len(*m))
+	for k := range *m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for i := 0; i < len(keys); i++ {
+		key := keys[i]
+		w = basictl.StringWriteTL2(w, key)
+		value := (*m)[key]
+		w, sizes = value.InternalWriteTL2(w, sizes)
+	}
+
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r []byte, m *map[string]tlPairIntInt.PairIntInt) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if *m == nil {
+		*m = make(map[string]tlPairIntInt.PairIntInt)
+	}
+
+	for key := range *m {
+		delete(*m, key)
+	}
+
+	data := *m
+
+	for len(saveR) < len(r)+shift {
+		var key string
+		var value tlPairIntInt.PairIntInt
+		if r, err = basictl.StringReadTL2(r, &key); err != nil {
+			return r, err
+		}
+		if r, err = value.ReadTL2(r); err != nil {
+			return r, err
+		}
+		data[key] = value
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryElemStringPairIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]tlPairIntInt.PairIntInt) error {
 	var data map[string]tlPairIntInt.PairIntInt
 	if *m == nil {

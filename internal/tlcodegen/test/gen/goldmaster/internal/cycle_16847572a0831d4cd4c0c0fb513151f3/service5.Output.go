@@ -104,6 +104,76 @@ func (item *Service5EmptyOutput) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (item *Service5EmptyOutput) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *Service5EmptyOutput) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	w = append(w, 0)
+	serializedSize += 1
+	return w, sizes
+}
+
+func (item *Service5EmptyOutput) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Service5EmptyOutput) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
+}
+
 var _Service5Output = [2]internal.UnionElement{
 	{TLTag: 0xff8f7db8, TLName: "service5.emptyOutput", TLString: "service5.emptyOutput#ff8f7db8"},
 	{TLTag: 0xdc170ff4, TLName: "service5.stringOutput", TLString: "service5.stringOutput#dc170ff4"},
@@ -188,6 +258,70 @@ func (item *Service5Output) WriteBoxed(w []byte) []byte {
 		w = item.valueString.Write(w)
 	}
 	return w
+}
+
+func (item *Service5Output) CalculateLayout(sizes []int) []int {
+	switch item.index {
+	case 0:
+		sizes = append(sizes, 0)
+	case 1:
+		sizes = item.valueString.CalculateLayout(sizes)
+	}
+	return sizes
+}
+
+func (item *Service5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	switch item.index {
+	case 0:
+		sizes = sizes[1:]
+		w = basictl.TL2WriteSize(w, 0)
+	case 1:
+		w, sizes = item.valueString.InternalWriteTL2(w, sizes)
+	}
+	return w, sizes
+}
+func (item *Service5Output) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Service5Output) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.index = 0
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.index = 0
+		}
+	}
+	switch item.index {
+	case 0:
+		break
+	case 1:
+		r = saveR
+		if r, err = item.valueString.ReadTL2(r); err != nil {
+			return r, err
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *Service5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -413,4 +547,139 @@ func (item *Service5StringOutput) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("service5.stringOutput", err.Error())
 	}
 	return nil
+}
+
+func (item *Service5StringOutput) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// add constructor No for union type in case of non first option
+	lastUsedByte = 1
+	currentSize += basictl.TL2CalculateSize(1)
+
+	// calculate layout for item.HttpCode
+	if item.HttpCode != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.Response
+	if len(item.Response) != 0 {
+
+		if len(item.Response) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Response)
+			currentSize += basictl.TL2CalculateSize(len(item.Response))
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *Service5StringOutput) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+
+	// add constructor No for union type in case of non first option
+	currentBlock |= (1 << 0)
+
+	w = basictl.TL2WriteSize(w, 1)
+	serializedSize += basictl.TL2CalculateSize(1)
+	// write item.HttpCode
+	if item.HttpCode != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.IntWrite(w, item.HttpCode)
+		}
+	}
+	// write item.Response
+	if len(item.Response) != 0 {
+		serializedSize += len(item.Response)
+		if len(item.Response) != 0 {
+			serializedSize += basictl.TL2CalculateSize(len(item.Response))
+			currentBlock |= (1 << 2)
+			w = basictl.StringWriteTL2(w, item.Response)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *Service5StringOutput) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *Service5StringOutput) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.HttpCode
+		if block&(1<<1) != 0 {
+			if r, err = basictl.IntRead(r, &item.HttpCode); err != nil {
+				return r, err
+			}
+		} else {
+			item.HttpCode = 0
+		}
+
+		// read item.Response
+		if block&(1<<2) != 0 {
+			if r, err = basictl.StringReadTL2(r, &item.Response); err != nil {
+				return r, err
+			}
+		} else {
+			item.Response = ""
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

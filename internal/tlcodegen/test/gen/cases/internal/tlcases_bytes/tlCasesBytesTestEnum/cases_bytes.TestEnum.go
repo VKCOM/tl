@@ -78,12 +78,12 @@ func (item *CasesBytesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error
 	return item.WriteBoxed(w), nil
 }
 
-func (item CasesBytesTestEnum) WriteBoxed(w []byte) []byte {
+func (item *CasesBytesTestEnum) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _CasesBytesTestEnum[item.index].TLTag)
 	return w
 }
 
-func (item CasesBytesTestEnum) CalculateLayout(sizes []int) []int {
+func (item *CasesBytesTestEnum) CalculateLayout(sizes []int) []int {
 	switch item.index {
 	case 0:
 		sizes = append(sizes, 0)
@@ -93,7 +93,7 @@ func (item CasesBytesTestEnum) CalculateLayout(sizes []int) []int {
 	return sizes
 }
 
-func (item CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	switch item.index {
 	case 0:
 		sizes = sizes[1:]
@@ -109,13 +109,14 @@ func (item CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 }
 func (item *CasesBytesTestEnum) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
 }
 
-func (item CasesBytesTestEnum) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *CasesBytesTestEnum) ReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -128,7 +129,7 @@ func (item CasesBytesTestEnum) ReadTL2(r []byte) (_ []byte, err error) {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, err = basictl.TL2ReadSize(r, &item.index); err != nil {
+			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
 				return r, err
 			}
 		} else {

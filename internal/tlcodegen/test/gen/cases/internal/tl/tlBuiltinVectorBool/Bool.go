@@ -56,9 +56,8 @@ func BuiltinVectorBoolCalculateLayout(sizes []int, vec *[]bool) []int {
 	sizes = append(sizes, 0)
 
 	for i := 0; i < len(*vec); i++ {
-		currentPosition := len(sizes)
-		sizes = append(sizes, 1)
-		sizes[sizePosition] += sizes[currentPosition]
+
+		sizes[sizePosition] += 1
 	}
 	return sizes
 }
@@ -73,9 +72,7 @@ func BuiltinVectorBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]by
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		sizes = sizes[1:]
-		if elem {
+		if (*vec)[i] {
 			w = append(w, 1)
 		} else {
 			w = append(w, 0)
@@ -87,7 +84,7 @@ func BuiltinVectorBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]by
 func BuiltinVectorBoolReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)

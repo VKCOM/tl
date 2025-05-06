@@ -61,12 +61,9 @@ func (item *IntMaybe) CalculateLayout(sizes []int) []int {
 	if item.Ok {
 		sizes[sizePosition] += 1
 		sizes[sizePosition] += basictl.TL2CalculateSize(1)
-		currentPosition := len(sizes)
 		if item.Value != 0 {
-			sizes = append(sizes, 4)
-			if sizes[currentPosition] != 0 {
-				sizes[sizePosition] += sizes[currentPosition]
-			}
+
+			sizes[sizePosition] += 4
 		}
 	}
 	return sizes
@@ -86,9 +83,8 @@ func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
 		if item.Value != 0 {
-			if sizes[0] != 0 {
+			if 4 != 0 {
 				w[currentPosition] |= (1 << 1)
-				sizes = sizes[1:]
 				w = basictl.IntWrite(w, item.Value)
 			}
 		}
@@ -99,7 +95,7 @@ func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 func (item *IntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
 	shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -115,7 +111,7 @@ func (item *IntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 			return r, basictl.TL2Error("must have constructor bytes")
 		}
 		var index int
-		if r, err = basictl.TL2ReadSize(r, &index); err != nil {
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
 			return r, err
 		}
 		if index != 1 {

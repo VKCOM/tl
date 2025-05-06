@@ -49,7 +49,7 @@ const (
 	CasesTestUnion2                                 = 0x464f96c4 // cases.testUnion2
 	CasesTestUnionContainer                         = 0x4497a381 // cases.testUnionContainer
 	CasesTestVector                                 = 0x4975695c // cases.testVector
-	CasesTL2TestObject                              = 0x11e6908a // casesTL2.testObject
+	CasesTL2TestObject                              = 0x4f96dd95 // casesTL2.testObject
 	CasesBytesTestArray                             = 0x3762fb81 // cases_bytes.testArray
 	CasesBytesTestDictAny                           = 0x5a5fce57 // cases_bytes.testDictAny
 	CasesBytesTestDictInt                           = 0x453ace07 // cases_bytes.testDictInt

@@ -51,6 +51,53 @@ func BuiltinVectorDictionaryElemUglyIntStringWrite(w []byte, vec []DictionaryEle
 	return w
 }
 
+func BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes []int, vec *[]DictionaryElemUglyIntString, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w []byte, sizes []int, vec *[]DictionaryElemUglyIntString, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+	}
+	return w, sizes
+}
+
+func BuiltinVectorDictionaryElemUglyIntStringReadTL2(r []byte, vec *[]DictionaryElemUglyIntString, nat_t uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	*vec = (*vec)[:0]
+	for len(saveR) < len(r)+shift {
+		var elem DictionaryElemUglyIntString
+		if r, err = elem.ReadTL2(r, nat_t); err != nil {
+			return r, err
+		}
+		*vec = append(*vec, elem)
+	}
+	return r, nil
+}
+
 func BuiltinVectorDictionaryElemUglyIntStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]DictionaryElemUglyIntString, nat_t uint32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
@@ -270,4 +317,139 @@ func (item *DictionaryElemUglyIntString) WriteJSONOpt(newTypeNames bool, short b
 		w = basictl.JSONWriteString(w, item.Value)
 	}
 	return append(w, '}')
+}
+
+func (item *DictionaryElemUglyIntString) CalculateLayout(sizes []int, nat_f uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// calculate layout for item.Key
+	if nat_f&(1<<0) != 0 {
+		if item.Key != 0 {
+
+			lastUsedByte = 1
+			currentSize += 4
+		}
+	}
+
+	// calculate layout for item.Value
+	if nat_f&(1<<1) != 0 {
+		if len(item.Value) != 0 {
+
+			if len(item.Value) != 0 {
+				lastUsedByte = 1
+				currentSize += len(item.Value)
+				currentSize += basictl.TL2CalculateSize(len(item.Value))
+			}
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *DictionaryElemUglyIntString) InternalWriteTL2(w []byte, sizes []int, nat_f uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Key
+	if nat_f&(1<<0) != 0 {
+		if item.Key != 0 {
+			serializedSize += 4
+			if 4 != 0 {
+				currentBlock |= (1 << 1)
+				w = basictl.IntWrite(w, item.Key)
+			}
+		}
+	}
+	// write item.Value
+	if nat_f&(1<<1) != 0 {
+		if len(item.Value) != 0 {
+			serializedSize += len(item.Value)
+			if len(item.Value) != 0 {
+				serializedSize += basictl.TL2CalculateSize(len(item.Value))
+				currentBlock |= (1 << 2)
+				w = basictl.StringWriteTL2(w, item.Value)
+			}
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *DictionaryElemUglyIntString) ReadTL2(r []byte, nat_f uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Key
+		if block&(1<<1) != 0 {
+			if nat_f&(1<<0) != 0 {
+				if r, err = basictl.IntRead(r, &item.Key); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "Key" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.Key = 0
+		}
+
+		// read item.Value
+		if block&(1<<2) != 0 {
+			if nat_f&(1<<1) != 0 {
+				if r, err = basictl.StringReadTL2(r, &item.Value); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "Value" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.Value = ""
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

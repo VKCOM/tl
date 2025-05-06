@@ -72,140 +72,6 @@ func (item BenchmarksVruHash) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVruHash) CalculateLayout(sizes []int) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// calculate layout for item.Low
-	currentPosition := len(sizes)
-	if item.Low != 0 {
-		sizes = append(sizes, 8)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 1
-			sizes[sizePosition] += sizes[currentPosition]
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.High
-	currentPosition = len(sizes)
-	if item.High != 0 {
-		sizes = append(sizes, 8)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 2
-			sizes[sizePosition] += sizes[currentPosition]
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// write item.Low
-	if item.Low != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			w[currentBlockPosition] |= (1 << 1)
-			sizes = sizes[1:]
-			w = basictl.LongWrite(w, item.Low)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	// write item.High
-	if item.High != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			w[currentBlockPosition] |= (1 << 2)
-			sizes = sizes[1:]
-			w = basictl.LongWrite(w, item.High)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	return w, sizes
-}
-
-func (item *BenchmarksVruHash) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *BenchmarksVruHash) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Low
-		if block&(1<<1) != 0 {
-			if r, err = basictl.LongRead(r, &item.Low); err != nil {
-				return r, err
-			}
-		} else {
-			item.Low = 0
-		}
-
-		// read item.High
-		if block&(1<<2) != 0 {
-			if r, err = basictl.LongRead(r, &item.High); err != nil {
-				return r, err
-			}
-		} else {
-			item.High = 0
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
-}
-
 func (item *BenchmarksVruHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propLowPresented bool
 	var propHighPresented bool
@@ -290,4 +156,125 @@ func (item *BenchmarksVruHash) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("benchmarks.vruhash", err.Error())
 	}
 	return nil
+}
+
+func (item *BenchmarksVruHash) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+
+	// calculate layout for item.Low
+	if item.Low != 0 {
+
+		lastUsedByte = 1
+		currentSize += 8
+	}
+
+	// calculate layout for item.High
+	if item.High != 0 {
+
+		lastUsedByte = 1
+		currentSize += 8
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.Low
+	if item.Low != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.LongWrite(w, item.Low)
+		}
+	}
+	// write item.High
+	if item.High != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.LongWrite(w, item.High)
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *BenchmarksVruHash) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *BenchmarksVruHash) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.Low
+		if block&(1<<1) != 0 {
+			if r, err = basictl.LongRead(r, &item.Low); err != nil {
+				return r, err
+			}
+		} else {
+			item.Low = 0
+		}
+
+		// read item.High
+		if block&(1<<2) != 0 {
+			if r, err = basictl.LongRead(r, &item.High); err != nil {
+				return r, err
+			}
+		} else {
+			item.High = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

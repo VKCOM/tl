@@ -194,345 +194,6 @@ func (item BenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
 
-func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	lastUsedBit := -1
-
-	// calculate layout for item.FieldsMask
-	currentPosition := len(sizes)
-	if item.FieldsMask != 0 {
-		sizes = append(sizes, 4)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 1
-			sizes[sizePosition] += sizes[currentPosition]
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.CommitBit
-	if item.FieldsMask&(1<<0) != 0 {
-		lastUsedBit = 2
-	}
-
-	// calculate layout for item.MetaBlock
-	if item.FieldsMask&(1<<1) != 0 {
-		lastUsedBit = 3
-	}
-
-	// calculate layout for item.SplitPayload
-	if item.FieldsMask&(1<<3) != 0 {
-		lastUsedBit = 4
-	}
-
-	// calculate layout for item.RotationBlock
-	if item.FieldsMask&(1<<5) != 0 {
-		lastUsedBit = 5
-	}
-
-	// calculate layout for item.CanonicalHash
-	if item.FieldsMask&(1<<15) != 0 {
-		lastUsedBit = 6
-	}
-
-	// calculate layout for item.PayloadOffset
-	currentPosition = len(sizes)
-	if item.PayloadOffset != 0 {
-		sizes = append(sizes, 8)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 7
-			sizes[sizePosition] += sizes[currentPosition]
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.BlockTimeNano
-	currentPosition = len(sizes)
-	if item.BlockTimeNano != 0 {
-		sizes = append(sizes, 8)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 8
-			sizes[sizePosition] += sizes[currentPosition]
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.Hash
-	currentPosition = len(sizes)
-	sizes = item.Hash.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedBit = 9
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.FileOffset
-	currentPosition = len(sizes)
-	if item.FileOffset != 0 {
-		sizes = append(sizes, 8)
-		if sizes[currentPosition] != 0 {
-			lastUsedBit = 10
-			sizes[sizePosition] += sizes[currentPosition]
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.SeqNumber
-	currentPosition = len(sizes)
-	if item.FieldsMask&(1<<14) != 0 {
-		if item.SeqNumber != 0 {
-			sizes = append(sizes, 8)
-			if sizes[currentPosition] != 0 {
-				lastUsedBit = 11
-				sizes[sizePosition] += sizes[currentPosition]
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedBit != -1 {
-		sizes[sizePosition] += lastUsedBit/8 + 1
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
-	}
-	return sizes
-}
-
-func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
-	}
-
-	currentBlockPosition := len(w)
-	w = append(w, 0)
-	serializedSize += 1
-
-	// write item.FieldsMask
-	if item.FieldsMask != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			w[currentBlockPosition] |= (1 << 1)
-			sizes = sizes[1:]
-			w = basictl.NatWrite(w, item.FieldsMask)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	// write item.CommitBit
-	if item.FieldsMask&(1<<0) != 0 {
-		w[currentBlockPosition] |= (1 << 2)
-	}
-
-	// write item.MetaBlock
-	if item.FieldsMask&(1<<1) != 0 {
-		w[currentBlockPosition] |= (1 << 3)
-	}
-
-	// write item.SplitPayload
-	if item.FieldsMask&(1<<3) != 0 {
-		w[currentBlockPosition] |= (1 << 4)
-	}
-
-	// write item.RotationBlock
-	if item.FieldsMask&(1<<5) != 0 {
-		w[currentBlockPosition] |= (1 << 5)
-	}
-
-	// write item.CanonicalHash
-	if item.FieldsMask&(1<<15) != 0 {
-		w[currentBlockPosition] |= (1 << 6)
-	}
-
-	// write item.PayloadOffset
-	if item.PayloadOffset != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			w[currentBlockPosition] |= (1 << 7)
-			sizes = sizes[1:]
-			w = basictl.LongWrite(w, item.PayloadOffset)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	// add byte for fields with index 8..15
-	if serializedSize != currentSize {
-		currentBlockPosition = len(w)
-		w = append(w, 0)
-		serializedSize += 1
-	} else {
-		return w, sizes
-	}
-
-	// write item.BlockTimeNano
-	if item.BlockTimeNano != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			w[currentBlockPosition] |= (1 << 0)
-			sizes = sizes[1:]
-			w = basictl.LongWrite(w, item.BlockTimeNano)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	// write item.Hash
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		w[currentBlockPosition] |= (1 << 1)
-		w, sizes = item.Hash.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-
-	// write item.FileOffset
-	if item.FileOffset != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			w[currentBlockPosition] |= (1 << 2)
-			sizes = sizes[1:]
-			w = basictl.LongWrite(w, item.FileOffset)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-
-	// write item.SeqNumber
-	if item.FieldsMask&(1<<14) != 0 {
-		if item.SeqNumber != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				w[currentBlockPosition] |= (1 << 3)
-				sizes = sizes[1:]
-				w = basictl.LongWrite(w, item.SeqNumber)
-			} else {
-				sizes = sizes[1:]
-			}
-		}
-	}
-
-	return w, sizes
-}
-
-func (item *BenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
-	return item.InternalWriteTL2(w, sizes)
-}
-
-func (item *BenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
-	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
-		return r, err
-	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
-
-	if currentSize == 0 {
-		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.FieldsMask
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.FieldsMask); err != nil {
-				return r, err
-			}
-		} else {
-			item.FieldsMask = 0
-		}
-
-		// read item.PayloadOffset
-		if block&(1<<7) != 0 {
-			if r, err = basictl.LongRead(r, &item.PayloadOffset); err != nil {
-				return r, err
-			}
-		} else {
-			item.PayloadOffset = 0
-		}
-
-		// read next block for fields 8..15
-		if len(saveR) < len(r)+shift {
-			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-				return r, err
-			}
-		} else {
-			return r, nil
-		}
-
-		// read item.BlockTimeNano
-		if block&(1<<0) != 0 {
-			if r, err = basictl.LongRead(r, &item.BlockTimeNano); err != nil {
-				return r, err
-			}
-		} else {
-			item.BlockTimeNano = 0
-		}
-
-		// read item.Hash
-		if block&(1<<1) != 0 {
-			if r, err = item.Hash.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.Hash.Reset()
-		}
-
-		// read item.FileOffset
-		if block&(1<<2) != 0 {
-			if r, err = basictl.LongRead(r, &item.FileOffset); err != nil {
-				return r, err
-			}
-		} else {
-			item.FileOffset = 0
-		}
-
-		// read item.SeqNumber
-		if block&(1<<3) != 0 {
-			if item.FieldsMask&(1<<14) != 0 {
-				if r, err = basictl.LongRead(r, &item.SeqNumber); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "SeqNumber" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.SeqNumber = 0
-		}
-	}
-
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
-	return r, nil
-}
-
 func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var trueTypeCommitBitPresented bool
@@ -805,4 +466,255 @@ func (item *BenchmarksVruPosition) UnmarshalJSON(b []byte) error {
 		return internal.ErrorInvalidJSON("benchmarks.vruposition", err.Error())
 	}
 	return nil
+}
+
+func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	currentPosition := len(sizes)
+
+	// calculate layout for item.FieldsMask
+	if item.FieldsMask != 0 {
+
+		lastUsedByte = 1
+		currentSize += 4
+	}
+
+	// calculate layout for item.PayloadOffset
+	if item.PayloadOffset != 0 {
+
+		lastUsedByte = 1
+		currentSize += 8
+	}
+
+	// calculate layout for item.BlockTimeNano
+	if item.BlockTimeNano != 0 {
+
+		lastUsedByte = 2
+		currentSize += 8
+	}
+
+	// calculate layout for item.Hash
+	currentPosition = len(sizes)
+	sizes = item.Hash.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 2
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// calculate layout for item.FileOffset
+	if item.FileOffset != 0 {
+
+		lastUsedByte = 2
+		currentSize += 8
+	}
+
+	// calculate layout for item.SeqNumber
+	if item.FieldsMask&(1<<14) != 0 {
+		if item.SeqNumber != 0 {
+
+			lastUsedByte = 2
+			currentSize += 8
+		}
+	}
+
+	// append byte for each section until last mentioned field
+	if lastUsedByte != 0 {
+		currentSize += lastUsedByte
+	} else {
+		// remove unused values
+		sizes = sizes[:sizePosition+1]
+	}
+	sizes[sizePosition] = currentSize
+	return sizes
+}
+
+func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	serializedSize := 0
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
+	serializedSize += 1
+	// write item.FieldsMask
+	if item.FieldsMask != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.NatWrite(w, item.FieldsMask)
+		}
+	}
+	// write item.PayloadOffset
+	if item.PayloadOffset != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 7)
+			w = basictl.LongWrite(w, item.PayloadOffset)
+		}
+	}
+
+	// add byte for fields with index 8..15
+	w[currentBlockPosition] = currentBlock
+	currentBlock = 0
+	if serializedSize != currentSize {
+		currentBlockPosition = len(w)
+		w = append(w, 0)
+		serializedSize += 1
+	} else {
+		return w, sizes
+	}
+	// write item.BlockTimeNano
+	if item.BlockTimeNano != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 0)
+			w = basictl.LongWrite(w, item.BlockTimeNano)
+		}
+	}
+	// write item.Hash
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 1)
+		w, sizes = item.Hash.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
+	}
+	// write item.FileOffset
+	if item.FileOffset != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.LongWrite(w, item.FileOffset)
+		}
+	}
+	// write item.SeqNumber
+	if item.FieldsMask&(1<<14) != 0 {
+		if item.SeqNumber != 0 {
+			serializedSize += 8
+			if 8 != 0 {
+				currentBlock |= (1 << 3)
+				w = basictl.LongWrite(w, item.SeqNumber)
+			}
+		}
+	}
+	w[currentBlockPosition] = currentBlock
+	return w, sizes
+}
+
+func (item *BenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *BenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Reset()
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		// read No of constructor
+		if block&1 != 0 {
+			var _skip int
+			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
+				return r, err
+			}
+		}
+
+		// read item.FieldsMask
+		if block&(1<<1) != 0 {
+			if r, err = basictl.NatRead(r, &item.FieldsMask); err != nil {
+				return r, err
+			}
+		} else {
+			item.FieldsMask = 0
+		}
+
+		// read item.PayloadOffset
+		if block&(1<<7) != 0 {
+			if r, err = basictl.LongRead(r, &item.PayloadOffset); err != nil {
+				return r, err
+			}
+		} else {
+			item.PayloadOffset = 0
+		}
+
+		// read next block for fields 8..15
+		if len(saveR) < len(r)+shift {
+			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+				return r, err
+			}
+		} else {
+			return r, nil
+		}
+
+		// read item.BlockTimeNano
+		if block&(1<<0) != 0 {
+			if r, err = basictl.LongRead(r, &item.BlockTimeNano); err != nil {
+				return r, err
+			}
+		} else {
+			item.BlockTimeNano = 0
+		}
+
+		// read item.Hash
+		if block&(1<<1) != 0 {
+			if r, err = item.Hash.ReadTL2(r); err != nil {
+				return r, err
+			}
+		} else {
+			item.Hash.Reset()
+		}
+
+		// read item.FileOffset
+		if block&(1<<2) != 0 {
+			if r, err = basictl.LongRead(r, &item.FileOffset); err != nil {
+				return r, err
+			}
+		} else {
+			item.FileOffset = 0
+		}
+
+		// read item.SeqNumber
+		if block&(1<<3) != 0 {
+			if item.FieldsMask&(1<<14) != 0 {
+				if r, err = basictl.LongRead(r, &item.SeqNumber); err != nil {
+					return r, err
+				}
+			} else {
+				return r, basictl.TL2Error("field mask contradiction: field item." + "SeqNumber" + "is presented but depending bit is absent")
+			}
+		} else {
+			item.SeqNumber = 0
+		}
+	}
+
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }

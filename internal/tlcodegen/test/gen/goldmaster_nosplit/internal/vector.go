@@ -63,7 +63,6 @@ func (item *VectorAColor) WriteBoxed(w []byte) []byte {
 func (item VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]AColor)(item)
 	if err := BuiltinVectorAColorReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -95,6 +94,32 @@ func (item *VectorAColor) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorAColor) CalculateLayout(sizes []int) []int {
+	ptr := (*[]AColor)(item)
+	sizes = BuiltinVectorAColorCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]AColor)(item)
+	w, sizes = BuiltinVectorAColorInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorAColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorAColor) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]AColor)(item)
+	if r, err = BuiltinVectorAColorReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 
 type VectorCyc1MyCycle []Cyc1MyCycle
@@ -147,7 +172,6 @@ func (item *VectorCyc1MyCycle) WriteBoxed(w []byte) []byte {
 func (item VectorCyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorCyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]Cyc1MyCycle)(item)
 	if err := BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -179,6 +203,32 @@ func (item *VectorCyc1MyCycle) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorCyc1MyCycle) CalculateLayout(sizes []int) []int {
+	ptr := (*[]Cyc1MyCycle)(item)
+	sizes = BuiltinVectorCyc1MyCycleCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]Cyc1MyCycle)(item)
+	w, sizes = BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorCyc1MyCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorCyc1MyCycle) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]Cyc1MyCycle)(item)
+	if r, err = BuiltinVectorCyc1MyCycleReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 
 type VectorDictionaryFieldString map[string]string
@@ -231,7 +281,6 @@ func (item *VectorDictionaryFieldString) WriteBoxed(w []byte) []byte {
 func (item VectorDictionaryFieldString) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorDictionaryFieldString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*map[string]string)(item)
 	if err := BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -263,6 +312,32 @@ func (item *VectorDictionaryFieldString) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorDictionaryFieldString) CalculateLayout(sizes []int) []int {
+	ptr := (*map[string]string)(item)
+	sizes = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorDictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*map[string]string)(item)
+	w, sizes = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorDictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorDictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*map[string]string)(item)
+	if r, err = BuiltinVectorDictionaryFieldStringReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 
 type VectorDictionaryFieldStringBytes []DictionaryFieldStringBytes
@@ -315,7 +390,6 @@ func (item *VectorDictionaryFieldStringBytes) WriteBoxed(w []byte) []byte {
 func (item VectorDictionaryFieldStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorDictionaryFieldStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
 	if err := BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -347,6 +421,32 @@ func (item *VectorDictionaryFieldStringBytes) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorDictionaryFieldStringBytes) CalculateLayout(sizes []int) []int {
+	ptr := (*[]DictionaryFieldStringBytes)(item)
+	sizes = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorDictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]DictionaryFieldStringBytes)(item)
+	w, sizes = BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorDictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorDictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]DictionaryFieldStringBytes)(item)
+	if r, err = BuiltinVectorDictionaryFieldStringBytesReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 
 type VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed map[string]UsefulServiceUserEntityPaymentItem
@@ -419,6 +519,26 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJ
 	return w
 }
 
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int, nat_t uint32) []int {
+	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
+	sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, ptr, nat_t)
+	return sizes
+}
+
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int, nat_t uint32) ([]byte, []int) {
+	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
+	w, sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, ptr, nat_t)
+	return w, sizes
+}
+
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
+	if r, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r, ptr, nat_t); err != nil {
+		return r, err
+	}
+	return r, nil
+}
+
 type VectorInt []int32
 
 func (VectorInt) TLName() string { return "vector" }
@@ -469,7 +589,6 @@ func (item *VectorInt) WriteBoxed(w []byte) []byte {
 func (item VectorInt) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]int32)(item)
 	if err := BuiltinVectorIntReadJSON(legacyTypeNames, in, ptr); err != nil {
@@ -501,6 +620,32 @@ func (item *VectorInt) UnmarshalJSON(b []byte) error {
 		return ErrorInvalidJSON("vector", err.Error())
 	}
 	return nil
+}
+
+func (item *VectorInt) CalculateLayout(sizes []int) []int {
+	ptr := (*[]int32)(item)
+	sizes = BuiltinVectorIntCalculateLayout(sizes, ptr)
+	return sizes
+}
+
+func (item *VectorInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	ptr := (*[]int32)(item)
+	w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, ptr)
+	return w, sizes
+}
+
+func (item *VectorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	sizes = item.CalculateLayout(sizes[0:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	return w, sizes[0:0]
+}
+
+func (item *VectorInt) ReadTL2(r []byte) (_ []byte, err error) {
+	ptr := (*[]int32)(item)
+	if r, err = BuiltinVectorIntReadTL2(r, ptr); err != nil {
+		return r, err
+	}
+	return r, nil
 }
 
 type VectorIntBoxedMaybe struct {
@@ -545,6 +690,89 @@ func (item *VectorIntBoxedMaybe) WriteBoxed(w []byte) []byte {
 		return BuiltinVectorIntWrite(w, item.Value)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *VectorIntBoxedMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		if len(item.Value) != 0 {
+			sizes = BuiltinVectorIntCalculateLayout(sizes, &item.Value)
+			if sizes[currentPosition] != 0 {
+				sizes[sizePosition] += sizes[currentPosition]
+				sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+			}
+		}
+	}
+	return sizes
+}
+
+func (item *VectorIntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		currentPosition := len(w)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		if len(item.Value) != 0 {
+			if sizes[0] != 0 {
+				w[currentPosition] |= (1 << 1)
+				w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Value)
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+	return w, sizes
+}
+
+func (item *VectorIntBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = BuiltinVectorIntReadTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = item.Value[:0]
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *VectorIntBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -628,6 +856,89 @@ func (item *VectorIntMaybe) WriteBoxed(w []byte) []byte {
 		return BuiltinVectorIntWrite(w, item.Value)
 	}
 	return basictl.NatWrite(w, 0x27930a7b)
+}
+
+func (item *VectorIntMaybe) CalculateLayout(sizes []int) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+	if item.Ok {
+		sizes[sizePosition] += 1
+		sizes[sizePosition] += basictl.TL2CalculateSize(1)
+		currentPosition := len(sizes)
+		if len(item.Value) != 0 {
+			sizes = BuiltinVectorIntCalculateLayout(sizes, &item.Value)
+			if sizes[currentPosition] != 0 {
+				sizes[sizePosition] += sizes[currentPosition]
+				sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+			}
+		}
+	}
+	return sizes
+}
+
+func (item *VectorIntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	if item.Ok {
+		currentPosition := len(w)
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, 1)
+		if len(item.Value) != 0 {
+			if sizes[0] != 0 {
+				w[currentPosition] |= (1 << 1)
+				w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Value)
+			} else {
+				sizes = sizes[1:]
+			}
+		}
+	}
+	return w, sizes
+}
+
+func (item *VectorIntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	if currentSize == 0 {
+		item.Ok = false
+	} else {
+		var block byte
+		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+			return r, err
+		}
+		if block&1 == 0 {
+			return r, basictl.TL2Error("must have constructor bytes")
+		}
+		var index int
+		if r, index, err = basictl.TL2ParseSize(r); err != nil {
+			return r, err
+		}
+		if index != 1 {
+			return r, basictl.TL2Error("expected 1")
+		}
+		item.Ok = true
+		if block&(1<<1) != 0 {
+			if r, err = BuiltinVectorIntReadTL2(r, &item.Value); err != nil {
+				return r, err
+			}
+		} else {
+			item.Value = item.Value[:0]
+		}
+	}
+	if len(saveR) < len(r)+shift {
+		r = saveR[shift:]
+	}
+	return r, nil
 }
 
 func (item *VectorIntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

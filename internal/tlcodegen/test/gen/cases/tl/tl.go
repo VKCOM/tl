@@ -41,6 +41,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorTrueBoxed"
 )
 
 type (
@@ -85,6 +86,7 @@ type (
 	VectorInt                                                          = tlVectorInt.VectorInt
 	VectorString                                                       = tlVectorString.VectorString
 	VectorStringBytes                                                  = tlVectorString.VectorStringBytes
+	VectorTrueBoxed                                                    = tlVectorTrueBoxed.VectorTrueBoxed
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {

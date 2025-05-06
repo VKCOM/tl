@@ -46,6 +46,58 @@ func BuiltinTuple3InnerBoxedWrite(w []byte, vec *[3]tlInner.Inner, nat_t uint32)
 	return w
 }
 
+func BuiltinTuple3InnerBoxedCalculateLayout(sizes []int, vec *[3]tlInner.Inner, nat_t uint32) []int {
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
+	for i := 0; i < len(*vec); i++ {
+		currentPosition := len(sizes)
+		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+	return sizes
+}
+
+func BuiltinTuple3InnerBoxedInternalWriteTL2(w []byte, sizes []int, vec *[3]tlInner.Inner, nat_t uint32) ([]byte, []int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+
+	w = basictl.TL2WriteSize(w, currentSize)
+	if currentSize == 0 {
+		return w, sizes
+	}
+
+	for i := 0; i < len(*vec); i++ {
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+	}
+	return w, sizes
+}
+
+func BuiltinTuple3InnerBoxedReadTL2(r []byte, vec *[3]tlInner.Inner, nat_t uint32) (_ []byte, err error) {
+	saveR := r
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+
+	i := 0
+	for len(saveR) < len(r)+shift {
+		if i == 3 {
+			return r, basictl.TL2Error("more elements than expected")
+		}
+		if r, err = (*vec)[i].ReadTL2(r, nat_t); err != nil {
+			return r, err
+		}
+		i += 1
+	}
+	if i != 3 {
+		return r, basictl.TL2Error("less elements than expected")
+	}
+	return r, nil
+}
+
 func BuiltinTuple3InnerBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]tlInner.Inner, nat_t uint32) error {
 	index := 0
 	if in != nil {
