@@ -1104,6 +1104,19 @@ func (item *`)
 			qw422016.N().D((fieldIndex + 1) % 8)
 			qw422016.N().S(`) != 0 {
 `)
+			if field.recursive {
+				qw422016.N().S(`        if `)
+				qw422016.N().S(fmt.Sprintf("item.%[1]s", field.goName))
+				qw422016.N().S(` == nil {
+            var newValue `)
+				qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				qw422016.N().S(`
+            `)
+				qw422016.N().S(fmt.Sprintf("item.%[1]s", field.goName))
+				qw422016.N().S(` = &newValue
+        }
+`)
+			}
 			if field.fieldMask != nil {
 				qw422016.N().S(`        if `)
 				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
@@ -1125,7 +1138,21 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    } else {
-        `)
+`)
+			if field.recursive {
+				qw422016.N().S(`        if `)
+				qw422016.N().S(fmt.Sprintf("item.%[1]s", field.goName))
+				qw422016.N().S(` == nil {
+            var newValue `)
+				qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				qw422016.N().S(`
+            `)
+				qw422016.N().S(fmt.Sprintf("item.%[1]s", field.goName))
+				qw422016.N().S(` = &newValue
+        }
+`)
+			}
+			qw422016.N().S(`        `)
 			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%[1]s", field.goName), field.recursive))
 			qw422016.N().S(`
     }
@@ -2440,6 +2467,19 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 			qw422016.N().S(` & (1<<`)
 			qw422016.E().V(field.BitNumber)
 			qw422016.N().S(`) != 0 {
+`)
+		}
+		if field.recursive {
+			qw422016.N().S(`        if `)
+			qw422016.N().S(fmt.Sprintf("item.%s", field.goName))
+			qw422016.N().S(` == nil {
+            var tmpValue `)
+			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+			qw422016.N().S(`
+            `)
+			qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "(&tmpValue)", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods))
+			qw422016.N().S(`
+        } else {
             `)
 			qw422016.N().S(writingCode)
 			qw422016.N().S(`
@@ -2449,6 +2489,10 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 			qw422016.N().S(`        `)
 			qw422016.N().S(writingCode)
 			qw422016.N().S(`
+`)
+		}
+		if field.fieldMask != nil {
+			qw422016.N().S(`        }
 `)
 		}
 	}

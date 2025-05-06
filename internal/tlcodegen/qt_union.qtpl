@@ -215,6 +215,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         break
         {%- else -%}
         r = saveR
+        {%- if field.recursive -%}
+        if {%s= fmt.Sprintf("item.value%s", field.goName) %} == nil {
+            var newValue {%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
+            {%s= fmt.Sprintf("item.value%s", field.goName) %} = &newValue
+        }
+        {%- endif -%}
         {%s= field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
         {%- endif -%}
     {%- endfor -%}

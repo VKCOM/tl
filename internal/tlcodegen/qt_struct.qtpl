@@ -585,6 +585,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
 
     // read item.{%s= field.goName %}
     if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
+        {%- if field.recursive -%}
+        if {%s= fmt.Sprintf("item.%[1]s", field.goName) %} == nil {
+            var newValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
+            {%s= fmt.Sprintf("item.%[1]s", field.goName) %} = &newValue
+        }
+        {%- endif -%}
         {%- if field.fieldMask != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
@@ -595,6 +601,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         }
         {%- endif -%}
     } else {
+        {%- if field.recursive -%}
+        if {%s= fmt.Sprintf("item.%[1]s", field.goName) %} == nil {
+            var newValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
+            {%s= fmt.Sprintf("item.%[1]s", field.goName) %} = &newValue
+        }
+        {%- endif -%}
         {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%[1]s", field.goName), field.recursive) %}
     }
     {%- endfor -%}
@@ -1252,10 +1264,19 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         -%}
         {%- if field.fieldMask != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+        {%- endif -%}
+        {%- if field.recursive -%}
+        if {%s= fmt.Sprintf("item.%s", field.goName) %} == nil {
+            var tmpValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
+            {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "(&tmpValue)", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods) %}
+        } else {
             {%s= writingCode %}
         }
         {%- else -%}
         {%s= writingCode %}
+        {%- endif -%}
+        {%- if field.fieldMask != nil -%}
+        }
         {%- endif -%}
     {%- endfor -%}
     {%- if struct_.wr.hasErrorInWriteMethods -%}

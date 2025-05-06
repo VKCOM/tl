@@ -231,8 +231,16 @@ func (item *`)
         `)
 		qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 		qw422016.N().S(`
+`)
+		if len(trivialSize) == 0 {
+			qw422016.N().S(`        } else {
+            sizes = sizes[1:]
         }
 `)
+		} else {
+			qw422016.N().S(`        }
+`)
+		}
 		if nonEmptyCondition != "" {
 			qw422016.N().S(`        }
 `)
@@ -266,7 +274,17 @@ func (item *`)
         }
         item.Ok = true
         if block & (1 << 1) != 0 {
-        `)
+`)
+		if maybe.element.recursive {
+			qw422016.N().S(`        if item.Value == nil {
+            var newValue `)
+			qw422016.N().S(maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false))
+			qw422016.N().S(`
+            item.Value = &newValue
+        }
+`)
+		}
+		qw422016.N().S(`        `)
 		qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 		qw422016.N().S(`
         } else {
