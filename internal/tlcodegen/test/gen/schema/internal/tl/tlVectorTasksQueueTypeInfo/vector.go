@@ -62,7 +62,6 @@ func (item *VectorTasksQueueTypeInfo) WriteBoxed(w []byte) []byte {
 func (item VectorTasksQueueTypeInfo) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorTasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
 	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSON(legacyTypeNames, in, ptr); err != nil {

@@ -41,7 +41,6 @@ func BuiltinTupleDoubleWrite(w []byte, vec []float64, nat_n uint32) (_ []byte, e
 	}
 	return w, nil
 }
-
 func BuiltinTupleDoubleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]float64, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]float64, nat_n)

@@ -12,6 +12,9 @@ import (
 )
 
 func (trw *TypeRWMaybe) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
+	if ref {
+		return val + "->has_value()"
+	}
 	return val + ".has_value()"
 }
 

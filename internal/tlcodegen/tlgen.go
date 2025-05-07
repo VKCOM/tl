@@ -2777,6 +2777,7 @@ func fillTypeReduction(
 			if j != -1 && args[j].Index == NumberConstant {
 				typeReduction.Arguments[argI] = args[j]
 			} else if j != -1 && args[j].Index == NumberVariable && args[j].VariableActsAsConstant {
+				typeReduction.Arguments[argI] = args[j]
 				typeReduction.Arguments[argI].VariableActsAsConstant = true
 			} else if _, ok := (*defaultFields)[arg.Variable]; ok {
 				typeReduction.Arguments[argI] = EvaluatedType{Index: NumberConstant, Constant: 0}

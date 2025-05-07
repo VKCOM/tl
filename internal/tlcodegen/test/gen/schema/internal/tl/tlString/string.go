@@ -60,7 +60,6 @@ func (item *String) WriteBoxed(w []byte) []byte {
 func (item String) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *String) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*string)(item)
 	if err := internal.Json2ReadString(in, ptr); err != nil {

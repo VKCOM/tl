@@ -134,7 +134,7 @@ func (item *Hren) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next":`...)
 	w = item.Next.WriteJSONOpt(newTypeNames, short, w)
-	if (item.Next.Ok) == false {
+	if (item.Next != nil && item.Next.Ok) == false {
 		w = w[:backupIndexNext]
 	}
 	return append(w, '}')
@@ -160,7 +160,7 @@ func (item *Hren) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.Next
 	currentPosition := len(sizes)
-	if item.Next.Ok {
+	if item.Next != nil && item.Next.Ok {
 		sizes = (*item.Next).CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
@@ -198,7 +198,7 @@ func (item *Hren) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	w = append(w, 0)
 	serializedSize += 1
 	// write item.Next
-	if item.Next.Ok {
+	if item.Next != nil && item.Next.Ok {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])

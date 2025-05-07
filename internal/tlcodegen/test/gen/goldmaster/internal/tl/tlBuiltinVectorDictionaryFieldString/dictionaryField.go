@@ -40,9 +40,6 @@ func BuiltinVectorDictionaryFieldStringRead(w []byte, m *map[string]string) (_ [
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	var data map[string]string
 	if *m == nil {
 		if l == 0 {
@@ -230,9 +227,6 @@ func BuiltinVectorDictionaryFieldStringBytesFillRandom(rg *basictl.RandGenerator
 func BuiltinVectorDictionaryFieldStringBytesRead(w []byte, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) (_ []byte, err error) {
 	var l uint32
 	if w, err = basictl.NatRead(w, &l); err != nil {
-		return w, err
-	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
 	if uint32(cap(*vec)) < l {
