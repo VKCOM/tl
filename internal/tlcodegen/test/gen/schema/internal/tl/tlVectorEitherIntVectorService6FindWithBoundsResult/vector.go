@@ -62,7 +62,6 @@ func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteBoxed(w []by
 func (item VectorEitherIntVectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult)(item)
 	if err := tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSON(legacyTypeNames, in, ptr); err != nil {

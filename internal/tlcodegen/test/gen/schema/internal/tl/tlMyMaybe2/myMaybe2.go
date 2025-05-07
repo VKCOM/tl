@@ -61,7 +61,6 @@ func (item *MyMaybe2) WriteBoxed(w []byte) []byte {
 func (item MyMaybe2) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *MyMaybe2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
 	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {

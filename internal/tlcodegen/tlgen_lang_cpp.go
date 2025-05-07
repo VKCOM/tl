@@ -855,6 +855,9 @@ namespace tl2 {
             uint32_t tag{};
             uint32_t annotations{};
             std::string name;
+			
+			bool has_create_object = false;
+			bool has_create_function = false;
 
             std::function<std::unique_ptr<tl2::meta::tl_object>()> create_object;
             std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
@@ -862,6 +865,9 @@ namespace tl2 {
 
 		tl2::meta::tl_item get_item_by_name(std::string &&s);
 		tl2::meta::tl_item get_item_by_tag(uint32_t &&tag);
+		
+		bool contains_item_by_name(std::string &&s);
+		bool contains_item_by_tag(uint32_t &&tag);
 
 		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
@@ -910,9 +916,26 @@ tl2::meta::tl_item tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
     throw std::runtime_error("no item with such tag + \"" + std::to_string(tag) + "\"");
 }
 
+bool tl2::meta::contains_item_by_name(std::string &&s) {
+    auto item = items.items.find(s);
+	if (item != items.items.end()) {
+        return true;
+    }
+    return false;
+}
+
+bool tl2::meta::contains_item_by_tag(std::uint32_t &&tag) {
+    auto item = items.items_by_tag.find(tag);
+	if (item != items.items_by_tag.end()) {
+        return true;
+    }
+    return false;
+}
+
 void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
+		item->second->has_create_object = true;
         item->second->create_object = gen;
 		return;	
     }
@@ -922,6 +945,7 @@ void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::un
 void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()>&& gen) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
+		item->second->has_create_function = true;
         item->second->create_function = gen;
 		return;	
     }

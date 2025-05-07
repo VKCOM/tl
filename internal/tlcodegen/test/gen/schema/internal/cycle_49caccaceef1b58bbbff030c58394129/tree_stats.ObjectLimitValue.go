@@ -223,7 +223,6 @@ func (item *TreeStatsObjectLimitValueDouble) WriteBoxed(w []byte) []byte {
 func (item TreeStatsObjectLimitValueDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *TreeStatsObjectLimitValueDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*float64)(item)
 	if err := internal.Json2ReadFloat64(in, ptr); err != nil {

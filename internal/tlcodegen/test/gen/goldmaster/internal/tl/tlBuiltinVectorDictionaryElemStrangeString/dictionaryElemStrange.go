@@ -40,9 +40,6 @@ func BuiltinVectorDictionaryElemStrangeStringRead(w []byte, m *map[uint32]string
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	var data map[uint32]string
 	if *m == nil {
 		if l == 0 {

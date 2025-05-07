@@ -73,7 +73,7 @@ func (item *TasksTaskStatus) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
 
-func (item TasksTaskStatus) WriteBoxed(w []byte) []byte {
+func (item *TasksTaskStatus) WriteBoxed(w []byte) []byte {
 	w = basictl.NatWrite(w, _TasksTaskStatus[item.index].TLTag)
 	return w
 }

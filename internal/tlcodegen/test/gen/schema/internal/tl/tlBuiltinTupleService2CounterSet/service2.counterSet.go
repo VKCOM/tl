@@ -44,7 +44,6 @@ func BuiltinTupleService2CounterSetWrite(w []byte, vec []tlService2CounterSet.Se
 	}
 	return w, nil
 }
-
 func BuiltinTupleService2CounterSetReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]tlService2CounterSet.Service2CounterSet, nat_n)

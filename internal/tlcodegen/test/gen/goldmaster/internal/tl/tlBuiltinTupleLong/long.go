@@ -25,9 +25,6 @@ func BuiltinTupleLongFillRandom(rg *basictl.RandGenerator, vec *[]int64, nat_n u
 }
 
 func BuiltinTupleLongRead(w []byte, vec *[]int64, nat_n uint32) (_ []byte, err error) {
-	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int64, nat_n)
 	} else {

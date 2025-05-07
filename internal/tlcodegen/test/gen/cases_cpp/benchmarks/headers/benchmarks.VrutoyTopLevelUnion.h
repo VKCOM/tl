@@ -15,3 +15,13 @@ bool BenchmarksVrutoyTopLevelUnionWriteBoxed(::basictl::tl_ostream & s, const ::
 
 }} // namespace tl2::details
 
+namespace tl2 { namespace details { 
+
+void BuiltinVectorBenchmarksVrutoyTopLevelUnionReset(std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
+
+bool BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
+bool BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
+bool BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
+
+}} // namespace tl2::details
+

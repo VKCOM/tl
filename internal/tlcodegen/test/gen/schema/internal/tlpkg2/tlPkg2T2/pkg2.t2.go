@@ -61,7 +61,6 @@ func (item *Pkg2T2) WriteBoxed(w []byte) []byte {
 func (item Pkg2T2) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *Pkg2T2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
 	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
