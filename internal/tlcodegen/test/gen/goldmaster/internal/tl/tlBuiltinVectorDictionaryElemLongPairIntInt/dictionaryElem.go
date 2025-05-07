@@ -41,9 +41,6 @@ func BuiltinVectorDictionaryElemLongPairIntIntRead(w []byte, m *map[int64]tlPair
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	var data map[int64]tlPairIntInt.PairIntInt
 	if *m == nil {
 		if l == 0 {

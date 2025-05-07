@@ -86,6 +86,7 @@ goldmaster_nocompile: build
 		--generateByteVersions=$(TL_BYTE_VERSIONS) \
 		--generateRandomCode \
 		--generateLegacyJsonRead=false \
+		--checkLengthSanity=false \
 		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 	@./target/bin/tlgen --language=go -v \
@@ -158,11 +159,12 @@ cpp_gen:
 cpp_gen_test_data:
 	$(MAKE) cpp_template_gen OUTPUT_PATH=cases_cpp TL_FILE=cases.tl
 	$(MAKE) cpp_template_gen OUTPUT_PATH=schema_cpp TL_FILE=schema.tl
+	$(MAKE) cpp_template_gen OUTPUT_PATH=goldmaster_cpp TL_FILE=goldmaster.tl
 
 .PHONY: cpp
 cpp:
 	$(MAKE) cpp_gen
-	$(MAKE) cpp_build
+	#$(MAKE) cpp_build
 
 .PHONY: test_multi_lang_cases
 test_multi_lang_cases:

@@ -62,7 +62,6 @@ func (item *VectorService3Product0) WriteBoxed(w []byte) []byte {
 func (item VectorService3Product0) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorService3Product0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlService3Product0.Service3Product0)(item)
 	if err := tlBuiltinVectorService3Product0.BuiltinVectorService3Product0ReadJSON(legacyTypeNames, in, ptr); err != nil {

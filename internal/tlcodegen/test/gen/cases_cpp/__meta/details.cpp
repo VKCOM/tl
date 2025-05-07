@@ -126,6 +126,9 @@ tl_items::tl_items() {
 	auto item2881723240 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xabc39b68,.annotations=0x0,.name="cases.replace7plusplus",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["cases.replace7plusplus"] = item2881723240;
 	(this->items_by_tag)[0xabc39b68] = item2881723240;
+	auto item1335287189 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0x4f96dd95,.annotations=0x0,.name="casesTL2.testObject",.create_object=no_object_generator,.create_function=no_function_generator});
+	(this->items)["casesTL2.testObject"] = item1335287189;
+	(this->items_by_tag)[0x4f96dd95] = item1335287189;
 	auto item3824871734 = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=0xe3fae936,.annotations=0x0,.name="cases.testAllPossibleFieldConfigsContainer",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["cases.testAllPossibleFieldConfigsContainer"] = item3824871734;
 	(this->items_by_tag)[0xe3fae936] = item3824871734;

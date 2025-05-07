@@ -61,7 +61,6 @@ func (item *VectorDictionaryFieldInt) WriteBoxed(w []byte) []byte {
 func (item VectorDictionaryFieldInt) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorDictionaryFieldInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*map[string]int32)(item)
 	if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSON(legacyTypeNames, in, ptr); err != nil {

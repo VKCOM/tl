@@ -1,0 +1,4 @@
+{
+	"io": ["basictl/io_streams.cpp", "basictl/io_throwable_streams.cpp"],
+	"dependencies":[]
+}

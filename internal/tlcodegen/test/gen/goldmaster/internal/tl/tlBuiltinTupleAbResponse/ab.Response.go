@@ -26,9 +26,6 @@ func BuiltinTupleAbResponseFillRandom(rg *basictl.RandGenerator, vec *[]cycle_b6
 }
 
 func BuiltinTupleAbResponseRead(w []byte, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) (_ []byte, err error) {
-	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n)
 	} else {

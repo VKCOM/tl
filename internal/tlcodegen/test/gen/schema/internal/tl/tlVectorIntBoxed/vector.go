@@ -61,7 +61,6 @@ func (item *VectorIntBoxed) WriteBoxed(w []byte) []byte {
 func (item VectorIntBoxed) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorIntBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]int32)(item)
 	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSON(legacyTypeNames, in, ptr); err != nil {

@@ -23,31 +23,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"testing"
+
+	testformat "github.com/vkcom/tl/internal/tlcodegen/test/codegen_test/golang/common"
 )
-
-type MappingSuccessBytes struct {
-	// expected bytes input and output
-	Bytes string
-	// expected TL2 bytes input and output
-	BytesTL2 string
-}
-
-type mappingTestSamplesBytes struct {
-	// TL name for type to test
-	TestingType string
-	// json values which must success
-	Successes []MappingSuccessBytes
-}
 
 type mappingTestBytes struct {
 	// testing type object
 	object meta.Object
 	// testing samples with results
-	samples mappingTestSamplesBytes
-}
-
-type allTestsBytes struct {
-	Tests map[string]mappingTestSamplesBytes
+	samples testformat.MappingTestSamplesBytes
 }
 
 func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
@@ -354,7 +338,7 @@ func TestUpdateForTL2(t *testing.T) {
 	updateTestData(t)
 }
 
-func checkExistenceOfTest(tests *allTestsBytes, testName, typeName, bytesHex string) (testCanBeAdded bool, testExists bool, testNameToAdd string) {
+func checkExistenceOfTest(tests *testformat.AllTestsBytes, testName, typeName, bytesHex string) (testCanBeAdded bool, testExists bool, testNameToAdd string) {
 	for testNameValue, test := range tests.Tests {
 		// testName exists, but it is not for this type then return false
 		if testNameValue == testName {
@@ -377,7 +361,7 @@ func checkExistenceOfTest(tests *allTestsBytes, testName, typeName, bytesHex str
 	return true, false, testName
 }
 
-func addSample(tests *allTestsBytes, testName string, sample meta.Object, expectingHex string) (bool, error) {
+func addSample(tests *testformat.AllTestsBytes, testName string, sample meta.Object, expectingHex string) (bool, error) {
 	bytes, err := sample.WriteGeneral(nil)
 	if err != nil {
 		return false, err
@@ -392,27 +376,27 @@ func addSample(tests *allTestsBytes, testName string, sample meta.Object, expect
 		if successes.Successes == nil {
 			successes.TestingType = sample.TLName()
 		}
-		successes.Successes = append(successes.Successes, MappingSuccessBytes{Bytes: hexBytes})
+		successes.Successes = append(successes.Successes, testformat.MappingSuccessBytes{Bytes: hexBytes})
 		tests.Tests[placeToAdd] = successes
 		return true, nil
 	}
 	return false, nil
 }
 
-func initTestData(t *testing.T) (_ allTestsBytes, success bool) {
+func initTestData(t *testing.T) (_ testformat.AllTestsBytes, success bool) {
 	data, readErr := os.ReadFile(PathToBytesData)
 
 	if readErr != nil {
 		t.Fatalf("testing data is not provided")
-		return allTestsBytes{}, false
+		return testformat.AllTestsBytes{}, false
 	}
 
-	tests := allTestsBytes{map[string]mappingTestSamplesBytes{}}
+	tests := testformat.AllTestsBytes{Tests: map[string]testformat.MappingTestSamplesBytes{}}
 	err := json.Unmarshal(data, &tests)
 
 	if err != nil {
 		t.Fatalf("can't unmarshall test data")
-		return allTestsBytes{}, false
+		return testformat.AllTestsBytes{}, false
 	}
 	return tests, true
 }
@@ -424,7 +408,7 @@ func updateTestData(t *testing.T) {
 		return
 	}
 
-	tests := allTestsBytes{map[string]mappingTestSamplesBytes{}}
+	tests := testformat.AllTestsBytes{map[string]testformat.MappingTestSamplesBytes{}}
 	_ = json.Unmarshal(data, &tests)
 
 	updated := false
