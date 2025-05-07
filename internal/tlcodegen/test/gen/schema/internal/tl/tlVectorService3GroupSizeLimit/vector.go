@@ -62,7 +62,6 @@ func (item *VectorService3GroupSizeLimit) WriteBoxed(w []byte) []byte {
 func (item VectorService3GroupSizeLimit) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorService3GroupSizeLimit) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
 	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSON(legacyTypeNames, in, ptr); err != nil {

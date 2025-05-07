@@ -61,7 +61,6 @@ func (item *MyAnonMcValue) WriteBoxed(w []byte) []byte {
 func (item MyAnonMcValue) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *MyAnonMcValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
 	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {

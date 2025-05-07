@@ -29,9 +29,6 @@ func BuiltinVectorCyc1MyCycleRead(w []byte, vec *[]Cyc1MyCycle) (_ []byte, err e
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < l {
 		*vec = make([]Cyc1MyCycle, l)
 	} else {

@@ -62,7 +62,6 @@ func (item *VectorInteger) WriteBoxed(w []byte) []byte {
 func (item VectorInteger) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorInteger) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]tlInteger.Integer)(item)
 	if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSON(legacyTypeNames, in, ptr); err != nil {

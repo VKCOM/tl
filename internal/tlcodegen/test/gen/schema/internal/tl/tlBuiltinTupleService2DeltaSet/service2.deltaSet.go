@@ -44,7 +44,6 @@ func BuiltinTupleService2DeltaSetWrite(w []byte, vec []tlService2DeltaSet.Servic
 	}
 	return w, nil
 }
-
 func BuiltinTupleService2DeltaSetReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]tlService2DeltaSet.Service2DeltaSet, nat_n)

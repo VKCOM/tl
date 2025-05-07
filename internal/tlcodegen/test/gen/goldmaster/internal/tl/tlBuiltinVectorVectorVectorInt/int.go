@@ -30,9 +30,6 @@ func BuiltinVectorVectorVectorIntRead(w []byte, vec *[][][]int32) (_ []byte, err
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < l {
 		*vec = make([][][]int32, l)
 	} else {

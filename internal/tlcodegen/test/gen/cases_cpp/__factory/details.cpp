@@ -20,6 +20,7 @@
 #include "cases/types/cases.testBeforeReadBitValidation.h"
 #include "cases/types/cases.testArray.h"
 #include "cases/types/cases.testAllPossibleFieldConfigsContainer.h"
+#include "casesTL2/types/casesTL2.testObject.h"
 #include "cases/types/cases.replace7plusplus.h"
 #include "cases/types/cases.replace7plus.h"
 #include "cases/types/cases.replace7.h"
@@ -550,6 +551,28 @@ void tl2::factory::set_all_factories() {
     };
 	tl2::meta::set_create_object_by_name("cases.replace7plusplus", []() -> std::unique_ptr<tl2::meta::tl_object> {
         return std::make_unique<tl2_cases_Replace7plusplus_tl_object>();
+	});
+
+	struct tl2_casesTL2_TestObject_tl_object : public tl2::meta::tl_object {
+        tl2::casesTL2::TestObject object;
+
+        bool read(basictl::tl_istream &s) override {return object.read(s);}
+        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+
+		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
+		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+        
+		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
+        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
+		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
+		
+		bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    };
+	tl2::meta::set_create_object_by_name("casesTL2.testObject", []() -> std::unique_ptr<tl2::meta::tl_object> {
+        return std::make_unique<tl2_casesTL2_TestObject_tl_object>();
 	});
 
 	struct tl2_cases_TestAllPossibleFieldConfigsContainer_tl_object : public tl2::meta::tl_object {

@@ -61,7 +61,6 @@ func (item *TupleIntBoxed10) WriteBoxed(w []byte) []byte {
 func (item TupleIntBoxed10) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *TupleIntBoxed10) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[10]int32)(item)
 	if err := tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedReadJSON(legacyTypeNames, in, ptr); err != nil {

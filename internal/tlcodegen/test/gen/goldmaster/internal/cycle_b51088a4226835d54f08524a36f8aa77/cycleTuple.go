@@ -151,9 +151,6 @@ func BuiltinTupleCycleTupleFillRandom(rg *basictl.RandGenerator, vec *[]CycleTup
 }
 
 func BuiltinTupleCycleTupleRead(w []byte, vec *[]CycleTuple, nat_n uint32) (_ []byte, err error) {
-	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]CycleTuple, nat_n)
 	} else {

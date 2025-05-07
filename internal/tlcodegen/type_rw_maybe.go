@@ -100,6 +100,9 @@ func (trw *TypeRWMaybe) typeReadingCode(bytesVersion bool, directImports *Direct
 }
 
 func (trw *TypeRWMaybe) typeJSONEmptyCondition(bytesVersion bool, val string, ref bool) string {
+	if ref {
+		return val + "!= nil && " + val + ".Ok"
+	}
 	return val + ".Ok"
 }
 

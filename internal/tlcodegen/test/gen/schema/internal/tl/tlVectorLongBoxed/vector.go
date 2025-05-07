@@ -61,7 +61,6 @@ func (item *VectorLongBoxed) WriteBoxed(w []byte) []byte {
 func (item VectorLongBoxed) String() string {
 	return string(item.WriteJSON(nil))
 }
-
 func (item *VectorLongBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	ptr := (*[]int64)(item)
 	if err := tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedReadJSON(legacyTypeNames, in, ptr); err != nil {

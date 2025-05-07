@@ -41,7 +41,6 @@ func BuiltinTupleIntWrite(w []byte, vec []int32, nat_n uint32) (_ []byte, err er
 	}
 	return w, nil
 }
-
 func BuiltinTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int32, nat_n uint32) error {
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int32, nat_n)

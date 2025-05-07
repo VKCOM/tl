@@ -27,9 +27,6 @@ func BuiltinTupleTuple3Replace10ElemFillRandom(rg *basictl.RandGenerator, vec *[
 }
 
 func BuiltinTupleTuple3Replace10ElemRead(w []byte, vec *[][3]tlReplace10Elem.Replace10Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
-	if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
-		return w, err
-	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][3]tlReplace10Elem.Replace10Elem, nat_n)
 	} else {
