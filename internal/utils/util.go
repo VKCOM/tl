@@ -9,9 +9,6 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 func JsonPrettyPrint(in []byte) []byte {
@@ -21,23 +18,4 @@ func JsonPrettyPrint(in []byte) []byte {
 		return in
 	}
 	return out.Bytes()
-}
-
-// https://github.com/pkg/errors/issues/102.
-func ErrorStringWithStack(err error) string {
-	if err == nil {
-		return ""
-	}
-	type stackTracer interface {
-		StackTrace() errors.StackTrace
-	}
-	cause := errors.Cause(err)
-	if stackTrace, ok := cause.(stackTracer); ok {
-		buf := bytes.Buffer{}
-		for _, frame := range stackTrace.StackTrace() {
-			buf.WriteString(fmt.Sprintf("\n%+v", frame))
-		}
-		return err.Error() + buf.String()
-	}
-	return err.Error()
 }
