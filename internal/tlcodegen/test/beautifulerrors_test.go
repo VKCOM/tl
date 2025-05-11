@@ -7,10 +7,10 @@
 package test
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 
 	"github.com/vkcom/tl/internal/tlast"
