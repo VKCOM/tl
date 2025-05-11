@@ -6,7 +6,6 @@ require (
 	github.com/TwiN/go-color v1.4.1
 	github.com/google/go-cmp v0.5.8
 	github.com/mailru/easyjson v0.7.8-0.20240109111231-141f9c7d7ffe
-	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.4
 	github.com/valyala/quicktemplate v1.7.0
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
