@@ -323,7 +323,8 @@ type Gen2Options struct {
 	AddFactoryData    bool
 
 	// TL2
-	GenerateTL2 bool
+	GenerateTL2  bool
+	TL2WhiteList string
 
 	// Linter
 	Schema2Compare string
@@ -333,7 +334,7 @@ type Gen2Options struct {
 	TLPackageNameFull      string
 	GenerateRPCCode        bool
 	BasicRPCPath           string
-	BytesVersions          string
+	BytesWhiteList         string
 	TypesWhileList         string
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
@@ -1519,14 +1520,35 @@ func checkUnionElementsCompatibility(types []*tlast.Combinator, options *Gen2Opt
 	return nil
 }
 
-func inBytesVersionFilter(name tlast.Name, filter string) bool {
-	if strings.HasSuffix(filter, ".") && name.Namespace == strings.TrimSuffix(filter, ".") {
-		return true
+func prepareNameFilter(filter string) []string {
+	var result []string
+	for _, str := range strings.Split(filter, ",") {
+		str = strings.TrimSpace(str)
+		if str == "" {
+			continue
+		}
+		result = append(result, str)
 	}
-	if !strings.HasSuffix(filter, ".") && name.String() == filter {
-		return true
+	return result
+}
+
+func inNameFilter(name tlast.Name, filter []string) bool {
+	for _, el := range filter {
+		if inNameFilterElement(name, el) {
+			return true
+		}
 	}
 	return false
+}
+
+func inNameFilterElement(name tlast.Name, el string) bool {
+	if el == "." {
+		return true
+	}
+	if !strings.HasSuffix(el, ".") {
+		return name.String() == el
+	}
+	return name.Namespace == strings.TrimSuffix(el, ".")
 }
 
 func collectRelativePaths(absDirName string, relDirName string, relativeFiles map[string]bool, relativeDirs *[]string) error {
@@ -1689,20 +1711,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	default:
 		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported, plus '' for linting", options.Language)
 	}
-	typesWhiteList := strings.Split(options.TypesWhileList, ",")
-	for i := 0; i < len(typesWhiteList); i++ {
-		typesWhiteList[i] = strings.TrimSpace(typesWhiteList[i])
-		if len(typesWhiteList[i]) == 0 {
-			typesWhiteList = append(typesWhiteList[:i], typesWhiteList[i+1:]...)
-		}
-	}
-	generateByteVersions := strings.Split(options.BytesVersions, ",")
-	for i := 0; i < len(generateByteVersions); i++ {
-		generateByteVersions[i] = strings.TrimSpace(generateByteVersions[i])
-		if len(generateByteVersions[i]) == 0 {
-			generateByteVersions = append(generateByteVersions[:i], generateByteVersions[i+1:]...)
-		}
-	}
+	typesWhiteList := prepareNameFilter(options.TypesWhileList)
+	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
+	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
 	gen.supportedAnnotations = map[string]int{"read": 0, "any": 1, "internal": 2, "write": 3, "readwrite": 4, "kphp": 5}
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
@@ -2079,15 +2090,11 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		if !typ.IsFunction {
 			whiteListName = typ.TypeDecl.Name
 		}
-		for _, bv := range generateByteVersions {
-			if inBytesVersionFilter(whiteListName, bv) {
-				shouldGenerate = true
-			}
+		if inNameFilter(whiteListName, bytesWhiteList) {
+			shouldGenerate = true
 		}
-		for _, bv := range typesWhiteList {
-			if inBytesVersionFilter(whiteListName, bv) {
-				shouldGenerate = true
-			}
+		if inNameFilter(whiteListName, typesWhiteList) {
+			shouldGenerate = true
 		}
 		if !shouldGenerate {
 			skippedDueToWhitelist++
@@ -2108,13 +2115,18 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
 	typesCounterMarkBytes := 0
-	// This loop can be before or after loops below, it is convenient to fill sortedTypes inside, so this loop is here
 	for _, v := range gen.generatedTypesList {
-		for _, bv := range generateByteVersions {
-			if inBytesVersionFilter(v.tlName, bv) {
-				v.MarkWantsBytesVersion(bytesChildren)
-				typesCounterMarkBytes++
-			}
+		if inNameFilter(v.tlName, bytesWhiteList) {
+			v.MarkWantsBytesVersion(bytesChildren)
+			typesCounterMarkBytes++
+		}
+	}
+	tl2Children := map[*TypeRWWrapper]bool{}
+	typesCounterMarkTL2 := 0
+	for _, v := range gen.generatedTypesList {
+		if inNameFilter(v.tlName, tl2WhiteList) {
+			v.MarkWantsTL2(tl2Children)
+			typesCounterMarkTL2++
 		}
 	}
 	slices.SortStableFunc(gen.generatedTypesList, func(a, b *TypeRWWrapper) int { //  TODO - better idea?
@@ -2193,8 +2205,11 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		if skippedDueToWhitelist != 0 {
 			log.Printf("skipped %d object roots by the whitelist filter: %s", skippedDueToWhitelist, strings.Join(typesWhiteList, ", "))
 		}
-		if filter := strings.Join(generateByteVersions, ", "); filter != "" {
+		if filter := strings.Join(bytesWhiteList, ", "); filter != "" {
 			log.Printf("found %d object roots for byte-optimized versions of types by the following filter: %s", typesCounterMarkBytes, filter)
+		}
+		if filter := strings.Join(tl2WhiteList, ", "); filter != "" {
+			log.Printf("found %d object roots for TL2 versions of types by the following filter: %s", typesCounterMarkTL2, filter)
 		}
 	}
 	if gen.options.CopyrightFilePath != "" {
@@ -2206,14 +2221,14 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	}
 	switch options.Language {
 	case "go":
-		if err := gen.generateCodeGolang(generateByteVersions); err != nil {
+		if err := gen.generateCodeGolang(bytesWhiteList); err != nil {
 			return nil, err
 		}
 	case "cpp":
 		if gen.copyrightText == "" {
 			gen.copyrightText = "// Code generated by vktl/cmd/tlgen2; DO NOT EDIT.\n"
 		}
-		if err := gen.generateCodeCPP(generateByteVersions); err != nil {
+		if err := gen.generateCodeCPP(bytesWhiteList); err != nil {
 			return nil, err
 		}
 	case "php":
@@ -2227,7 +2242,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 
 `
 		}
-		if err := gen.generateCodePHP(generateByteVersions); err != nil {
+		if err := gen.generateCodePHP(bytesWhiteList); err != nil {
 			return nil, err
 		}
 

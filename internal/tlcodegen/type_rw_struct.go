@@ -137,6 +137,15 @@ func (trw *TypeRWStruct) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]b
 	}
 }
 
+func (trw *TypeRWStruct) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	for _, f := range trw.Fields {
+		f.t.MarkWantsTL2(visitedNodes)
+	}
+	if trw.ResultType != nil {
+		trw.ResultType.MarkWantsTL2(visitedNodes)
+	}
+}
+
 func (trw *TypeRWStruct) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	var result []*TypeRWWrapper
 	for _, typeDep := range trw.wr.arguments {

@@ -8,11 +8,12 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
-	"golang.org/x/exp/slices"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
+	"golang.org/x/exp/slices"
 
 	"github.com/vkcom/tl/internal/tlast"
 )
@@ -91,6 +92,7 @@ type TypeRWWrapper struct {
 	cppLocalName string
 
 	wantsBytesVersion bool
+	wantsTL2          bool
 	preventUnwrap     bool // we can have infinite typedef loop in rare cases
 
 	hasBytesVersion        bool
@@ -481,6 +483,15 @@ func (w *TypeRWWrapper) MarkWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	w.wantsBytesVersion = true
 	visitedNodes[w] = true
 	w.trw.markWantsBytesVersion(visitedNodes)
+}
+
+func (w *TypeRWWrapper) MarkWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	if visitedNodes[w] {
+		return
+	}
+	w.wantsTL2 = true
+	visitedNodes[w] = true
+	w.trw.markWantsTL2(visitedNodes)
 }
 
 func (w *TypeRWWrapper) TypeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {
@@ -1078,6 +1089,7 @@ outer:
 type TypeRW interface {
 	// methods below are target language independent
 	markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool)
+	markWantsTL2(visitedNodes map[*TypeRWWrapper]bool)
 	fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 	FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool)
