@@ -38,7 +38,7 @@ type Object interface {
     ReadJSONLegacy(legacyTypeNames bool, j interface{}) error
     {%- endif -%}
     ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
-	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it (this method is general version of WriteBoxed, use it only when you are working with interface)
+	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it (this method is general version of WriteJSON, use it only when you are working with interface)
     {%- if gen.options.GenerateTL2 -%}
 
     ReadTL2(r []byte) ([]byte, error)

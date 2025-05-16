@@ -75,6 +75,7 @@ goldmaster_nocompile: build
 		./$(TLS_PATH)/cases.tl
 	@./target/bin/tlgen --language=go --split-internal -v \
 		--tl2-generate=true \
+		--tl2WhiteList=ab. \
 		--copyrightPath=./COPYRIGHT \
 		--outdir=./$(GEN_PATH)/goldmaster \
 		--generateSchemaDocumentation \

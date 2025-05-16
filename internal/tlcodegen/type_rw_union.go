@@ -51,6 +51,12 @@ func (trw *TypeRWUnion) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bo
 	}
 }
 
+func (trw *TypeRWUnion) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+	for _, f := range trw.Fields {
+		f.t.MarkWantsTL2(visitedNodes)
+	}
+}
+
 func (trw *TypeRWUnion) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	if visitedNodes[trw.wr] != 0 {
 		return

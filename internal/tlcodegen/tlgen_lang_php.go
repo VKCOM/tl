@@ -38,7 +38,7 @@ type PhpClassMeta struct {
 	UsedInFunctions    bool
 }
 
-func (gen *Gen2) generateCodePHP(generateByteVersions []string) error {
+func (gen *Gen2) generateCodePHP(bytesWhiteList []string) error {
 	// select files where to write code
 	gen.PhpMarkAllInternalTypes()
 	gen.PhpChoosePaths()
