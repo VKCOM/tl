@@ -158,7 +158,7 @@ func StringReadBytesTL2(r []byte, dst *[]byte) (_ []byte, err error) {
 
 func ByteReadTL2(r []byte, b *byte) ([]byte, error) {
 	if len(r) == 0 {
-		return nil, io.ErrUnexpectedEOF
+		return r, io.ErrUnexpectedEOF
 	}
 	*b = r[0]
 	return r[1:], nil

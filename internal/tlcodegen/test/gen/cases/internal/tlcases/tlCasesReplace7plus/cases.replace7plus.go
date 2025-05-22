@@ -75,7 +75,6 @@ func (item *CasesReplace7plus) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesReplace7plus) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -98,7 +97,6 @@ func (item *CasesReplace7plus) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesReplace7plus) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -330,9 +328,9 @@ func (item *CasesReplace7plus) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 }
 
 func (item *CasesReplace7plus) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesReplace7plus) ReadTL2(r []byte) (_ []byte, err error) {

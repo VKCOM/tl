@@ -35,7 +35,6 @@ func (item *CasesTestDictString) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntRead(w, &item.Dict)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -52,7 +51,6 @@ func (item *CasesTestDictString) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesTestDictString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -195,9 +193,9 @@ func (item *CasesTestDictString) InternalWriteTL2(w []byte, sizes []int) ([]byte
 }
 
 func (item *CasesTestDictString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesTestDictString) ReadTL2(r []byte) (_ []byte, err error) {

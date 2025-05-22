@@ -397,7 +397,6 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *CycleTuple) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -435,7 +434,6 @@ func (item *CycleTuple) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CycleTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -720,9 +718,9 @@ func (item *CycleTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 }
 
 func (item *CycleTuple) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CycleTuple) ReadTL2(r []byte) (_ []byte, err error) {

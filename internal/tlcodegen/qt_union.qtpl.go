@@ -18,6 +18,7 @@ var (
 
 func (union *TypeRWUnion) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(union.wr.goGlobalName, bytesVersion)
+	tlName := union.wr.tlName.String()
 	asterisk := ifString(union.IsEnum, "", "*")
 	natArgsDecl := formatNatArgsDecl(union.wr.NatParams)
 	natArgsCall := formatNatArgsDeclCall(union.wr.NatParams)
@@ -161,12 +162,11 @@ func (item*`)
         return w, `)
 	qw422016.N().S(union.wr.gen.InternalPrefix())
 	qw422016.N().S(`ErrorInvalidUnionTag(`)
-	qw422016.N().Q(union.wr.tlName.String())
+	qw422016.N().Q(tlName)
 	qw422016.N().S(`, tag)
     }
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
@@ -243,57 +243,59 @@ func (item *`)
 `)
 	if union.wr.gen.options.GenerateTL2 {
 		qw422016.N().S(`
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) CalculateLayout(sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []int {
 `)
-		if union.IsEnum {
-			qw422016.N().S(`    switch item.index {
+		if union.wr.wantsTL2 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) CalculateLayout(sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) []int {
+`)
+			if union.IsEnum {
+				qw422016.N().S(`    switch item.index {
     case 0:
         sizes = append(sizes, 0)
     default:
         sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
     }
 `)
-		} else {
-			qw422016.N().S(`    switch item.index {
+			} else {
+				qw422016.N().S(`    switch item.index {
 `)
-			for i, field := range union.Fields {
-				qw422016.N().S(`    case `)
-				qw422016.N().D(i)
-				qw422016.N().S(`:
+				for i, field := range union.Fields {
+					qw422016.N().S(`    case `)
+					qw422016.N().D(i)
+					qw422016.N().S(`:
 `)
-				if field.t.IsTrueType() {
-					if i == 0 {
-						qw422016.N().S(`        sizes = append(sizes, 0)
+					if field.t.IsTrueType() {
+						if i == 0 {
+							qw422016.N().S(`        sizes = append(sizes, 0)
 `)
+						} else {
+							qw422016.N().S(`        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
+`)
+						}
 					} else {
-						qw422016.N().S(`        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
+						qw422016.N().S(`        `)
+						qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(`
 `)
 					}
-				} else {
-					qw422016.N().S(`        `)
-					qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
-					qw422016.N().S(`
-`)
 				}
-			}
-			qw422016.N().S(`    }
+				qw422016.N().S(`    }
 `)
-		}
-		qw422016.N().S(`    return sizes
+			}
+			qw422016.N().S(`    return sizes
 }
 
 func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) ([]byte, []int) {
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) ([]byte, []int) {
 `)
-		if union.IsEnum {
-			qw422016.N().S(`    switch item.index {
+			if union.IsEnum {
+				qw422016.N().S(`    switch item.index {
     case 0:
         sizes = sizes[1:]
         w = basictl.TL2WriteSize(w, 0)
@@ -305,48 +307,56 @@ func (item *`)
         w = basictl.TL2WriteSize(w, item.index)
     }
 `)
-		} else {
-			qw422016.N().S(`    switch item.index {
+			} else {
+				qw422016.N().S(`    switch item.index {
 `)
-			for i, field := range union.Fields {
-				qw422016.N().S(`    case `)
-				qw422016.N().D(i)
-				qw422016.N().S(`:
+				for i, field := range union.Fields {
+					qw422016.N().S(`    case `)
+					qw422016.N().D(i)
+					qw422016.N().S(`:
 `)
-				if field.t.IsTrueType() {
-					if i == 0 {
-						qw422016.N().S(`        sizes = sizes[1:]
+					if field.t.IsTrueType() {
+						if i == 0 {
+							qw422016.N().S(`        sizes = sizes[1:]
         w = basictl.TL2WriteSize(w, 0)
 `)
-					} else {
-						qw422016.N().S(`        currentSize := sizes[0]
+						} else {
+							qw422016.N().S(`        currentSize := sizes[0]
         sizes = sizes[1:]
         w = basictl.TL2WriteSize(w, currentSize)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, item.index)
 `)
+						}
+					} else {
+						qw422016.N().S(`        `)
+						qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(`
+`)
 					}
-				} else {
-					qw422016.N().S(`        `)
-					qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
-					qw422016.N().S(`
-`)
 				}
-			}
-			qw422016.N().S(`    }
+				qw422016.N().S(`    }
 `)
-		}
-		qw422016.N().S(`    return w, sizes
+			}
+			qw422016.N().S(`    return w, sizes
 }
 `)
+		}
 		if len(natArgsDecl) == 0 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-    sizes = item.CalculateLayout(sizes[0:0])
+`)
+			if !union.wr.wantsTL2 {
+				qw422016.N().S(`    return w, sizes
+`)
+			} else {
+				qw422016.N().S(`    sizes = item.CalculateLayout(sizes[:0])
     w, _ = item.InternalWriteTL2(w, sizes)
-    return w, sizes[0:0]
-}
+    return w, sizes[:0]
+`)
+			}
+			qw422016.N().S(`}
 `)
 		}
 		qw422016.N().S(`
@@ -355,7 +365,16 @@ func (item *`)
 		qw422016.N().S(`) ReadTL2(r []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    saveR := r
+`)
+		if !union.wr.wantsTL2 {
+			qw422016.N().S(`    return r, `)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`)
+`)
+		} else {
+			qw422016.N().S(`    saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -372,47 +391,49 @@ func (item *`)
         }
     }
 `)
-		if !union.IsEnum {
-			qw422016.N().S(`    switch item.index {
+			if !union.IsEnum {
+				qw422016.N().S(`    switch item.index {
 `)
-			for i, field := range union.Fields {
-				qw422016.N().S(`    case `)
-				qw422016.N().D(i)
-				qw422016.N().S(`:
+				for i, field := range union.Fields {
+					qw422016.N().S(`    case `)
+					qw422016.N().D(i)
+					qw422016.N().S(`:
 `)
-				if field.t.IsTrueType() {
-					qw422016.N().S(`        break
+					if field.t.IsTrueType() {
+						qw422016.N().S(`        break
 `)
-				} else {
-					qw422016.N().S(`        r = saveR
+					} else {
+						qw422016.N().S(`        r = saveR
 `)
-					if field.recursive {
-						qw422016.N().S(`        if `)
-						qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
-						qw422016.N().S(` == nil {
+						if field.recursive {
+							qw422016.N().S(`        if `)
+							qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
+							qw422016.N().S(` == nil {
             var newValue `)
-						qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false))
-						qw422016.N().S(`
+							qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false))
+							qw422016.N().S(`
             `)
-						qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
-						qw422016.N().S(` = &newValue
+							qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
+							qw422016.N().S(` = &newValue
         }
 `)
+						}
+						qw422016.N().S(`        `)
+						qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(`
+`)
 					}
-					qw422016.N().S(`        `)
-					qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
-					qw422016.N().S(`
-`)
 				}
-			}
-			qw422016.N().S(`    }
+				qw422016.N().S(`    }
 `)
-		}
-		qw422016.N().S(`    if len(saveR) < len(r) + shift {
+			}
+			qw422016.N().S(`    if len(saveR) < len(r) + shift {
         r = saveR[shift:]
     }
     return r, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 `)
 	}
 	qw422016.N().S(`
@@ -432,7 +453,7 @@ func (item *`)
         return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidJSON(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, "expected string")
     }
     _jtype, _ok := j.(string)
@@ -440,7 +461,7 @@ func (item *`)
         return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidJSON(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, "expected string")
     }
     switch _jtype {
@@ -476,7 +497,7 @@ func (item *`)
                 return `)
 					qw422016.N().S(union.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-					qw422016.N().Q(union.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, `)
 					qw422016.N().Q(nameWithTag2)
 					qw422016.N().S(`)
@@ -491,7 +512,7 @@ func (item *`)
                 return `)
 				qw422016.N().S(union.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-				qw422016.N().Q(union.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(nameWithTag)
 				qw422016.N().S(`)
@@ -506,7 +527,7 @@ func (item *`)
             return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidEnumTagJSON(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, _jtype)
     }
 }
@@ -515,7 +536,7 @@ func (item *`)
 			qw422016.N().S(`    _jm, _tag, err := `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`JsonReadUnionType(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, j)
     if err != nil {
         return err
@@ -554,7 +575,7 @@ func (item *`)
                 return `)
 					qw422016.N().S(union.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-					qw422016.N().Q(union.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, `)
 					qw422016.N().Q(nameWithTag2)
 					qw422016.N().S(`)
@@ -569,7 +590,7 @@ func (item *`)
                 return `)
 				qw422016.N().S(union.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-				qw422016.N().Q(union.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(nameWithTag)
 				qw422016.N().S(`)
@@ -605,14 +626,14 @@ func (item *`)
             return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidUnionTagJSON(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, _tag)
     }
     for k := range _jm {
         return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, k)
     }
     return nil
@@ -637,7 +658,7 @@ func (item *`)
         return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "expected string")
     }
     switch _jtype {
@@ -673,7 +694,7 @@ func (item *`)
                 return `)
 				qw422016.N().S(union.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-				qw422016.N().Q(union.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(nameWithTag2)
 				qw422016.N().S(`)
@@ -688,7 +709,7 @@ func (item *`)
                 return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(`)
@@ -703,7 +724,7 @@ func (item *`)
             return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidEnumTagJSON(`)
-		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, _jtype)
     }
 }
@@ -712,7 +733,7 @@ func (item *`)
 		qw422016.N().S(`    _tag, _value, err := `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
 		qw422016.N().S(`Json2ReadUnion(`)
-		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, in)
     if err != nil {
         return err
@@ -750,7 +771,7 @@ func (item *`)
                 return `)
 				qw422016.N().S(union.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-				qw422016.N().Q(union.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(nameWithTag2)
 				qw422016.N().S(`)
@@ -765,7 +786,7 @@ func (item *`)
                 return `)
 			qw422016.N().S(union.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorInvalidUnionLegacyTagJSON(`)
-			qw422016.N().Q(union.wr.tlName.String())
+			qw422016.N().Q(tlName)
 			qw422016.N().S(`, `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(`)
@@ -805,7 +826,7 @@ func (item *`)
             return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidUnionTagJSON(`)
-		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, _tag)
     }
     return nil
@@ -1021,7 +1042,7 @@ func (item *`)
         return `)
 		qw422016.N().S(union.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(union.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, err.Error())
     }
     return nil
@@ -1080,7 +1101,10 @@ func (union *TypeRWUnion) streamgenerateConstructorsBehavior(qw422016 *qt422016.
 
 	for i, field := range union.Fields {
 		qw422016.N().S(`
-func (item *`)
+func (item `)
+		if !union.IsEnum {
+			qw422016.N().S(`*`)
+		}
 		qw422016.N().S(goGlobalName)
 		qw422016.N().S(`) Is`)
 		qw422016.N().S(field.goName)

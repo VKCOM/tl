@@ -59,7 +59,6 @@ func (item *Replace15) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleReplace15Elem2.BuiltinTupleReplace15Elem2Read(w, &item.C, item.N, item.N)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace15) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -85,7 +84,6 @@ func (item *Replace15) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Replace15) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -376,9 +374,9 @@ func (item *Replace15) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *Replace15) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *Replace15) ReadTL2(r []byte) (_ []byte, err error) {

@@ -91,7 +91,6 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadBoxed(w []byte) (_ []byte, err er
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BenchmarksVrutoyTopLevelUnion) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -131,9 +130,9 @@ func (item *BenchmarksVrutoyTopLevelUnion) InternalWriteTL2(w []byte, sizes []in
 	return w, sizes
 }
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
@@ -275,7 +274,6 @@ func (item *BenchmarksVrutoytopLevelUnionBig) Read(w []byte) (_ []byte, err erro
 	return tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionRead(w, &item.NextPositions)
 }
 
-// This method is general version of Write, use it instead!
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -292,7 +290,6 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadBoxed(w []byte) (_ []byte, err
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -435,9 +432,9 @@ func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes [
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL2(r []byte) (_ []byte, err error) {
@@ -499,7 +496,6 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) FillRandom(rg *basictl.RandGener
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) Read(w []byte) (_ []byte, err error) { return w, nil }
 
-// This method is general version of Write, use it instead!
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -515,7 +511,6 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadBoxed(w []byte) (_ []byte, e
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -618,9 +613,9 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL2(r []byte) (_ []byte, err error) {

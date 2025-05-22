@@ -125,7 +125,6 @@ func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, m
 		value := (*m)[key]
 		w = basictl.StringWriteTL2(w, value)
 	}
-
 	return w, sizes
 }
 

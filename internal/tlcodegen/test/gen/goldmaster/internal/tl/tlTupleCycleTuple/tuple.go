@@ -36,7 +36,6 @@ func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) 
 	return cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleRead(w, ptr, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleCycleTuple) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -53,7 +52,6 @@ func (item *TupleCycleTuple) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err er
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleCycleTuple) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }

@@ -41,6 +41,8 @@ func (trw *TypeRWBool) fillRecursiveUnwrap(visitedNodes map[*TypeRWWrapper]bool)
 
 func (trw *TypeRWBool) markWantsBytesVersion(visitedNodes map[*TypeRWWrapper]bool) {
 }
+func (trw *TypeRWBool) markWantsTL2(visitedNodes map[*TypeRWWrapper]bool) {
+}
 
 func (trw *TypeRWBool) AllPossibleRecursionProducers() []*TypeRWWrapper {
 	return nil

@@ -37,7 +37,6 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) Read(w
 	return tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.Write(w, nat_t), nil
 }
@@ -54,7 +53,6 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadBo
 	return item.Read(w, nat_t)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_t), nil
 }

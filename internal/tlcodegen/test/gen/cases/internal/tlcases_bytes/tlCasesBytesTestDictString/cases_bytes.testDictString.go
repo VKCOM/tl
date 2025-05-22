@@ -36,7 +36,6 @@ func (item *CasesBytesTestDictString) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntRead(w, &item.Dict)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesBytesTestDictString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -53,7 +52,6 @@ func (item *CasesBytesTestDictString) ReadBoxed(w []byte) (_ []byte, err error) 
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestDictString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -196,9 +194,9 @@ func (item *CasesBytesTestDictString) InternalWriteTL2(w []byte, sizes []int) ([
 }
 
 func (item *CasesBytesTestDictString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestDictString) ReadTL2(r []byte) (_ []byte, err error) {
@@ -259,7 +257,6 @@ func (item *CasesBytesTestDictStringBytes) Read(w []byte) (_ []byte, err error) 
 	return tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesRead(w, &item.Dict)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesBytesTestDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -276,7 +273,6 @@ func (item *CasesBytesTestDictStringBytes) ReadBoxed(w []byte) (_ []byte, err er
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestDictStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -419,9 +415,9 @@ func (item *CasesBytesTestDictStringBytes) InternalWriteTL2(w []byte, sizes []in
 }
 
 func (item *CasesBytesTestDictStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestDictStringBytes) ReadTL2(r []byte) (_ []byte, err error) {

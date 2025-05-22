@@ -33,7 +33,6 @@ func (item *DictionaryString) Read(w []byte) (_ []byte, err error) {
 	return BuiltinVectorDictionaryFieldStringRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -50,7 +49,6 @@ func (item *DictionaryString) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -109,9 +107,9 @@ func (item *DictionaryString) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 }
 
 func (item *DictionaryString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryString) ReadTL2(r []byte) (_ []byte, err error) {
@@ -142,7 +140,6 @@ func (item *DictionaryStringBytes) Read(w []byte) (_ []byte, err error) {
 	return BuiltinVectorDictionaryFieldStringBytesRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -159,7 +156,6 @@ func (item *DictionaryStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -218,9 +214,9 @@ func (item *DictionaryStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]by
 }
 
 func (item *DictionaryStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
@@ -251,7 +247,6 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) Read(w []byte, na
 	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w, ptr, nat_t)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.Write(w, nat_t), nil
 }
@@ -268,7 +263,6 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadBoxed(w []byt
 	return item.Read(w, nat_t)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_t), nil
 }
@@ -351,7 +345,6 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadBox
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_t), nil
 }

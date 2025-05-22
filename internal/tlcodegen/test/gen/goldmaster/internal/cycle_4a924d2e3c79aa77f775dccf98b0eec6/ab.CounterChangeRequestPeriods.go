@@ -101,7 +101,6 @@ func (item *AbCounterChangeRequestPeriods) ReadBoxed(w []byte) (_ []byte, err er
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AbCounterChangeRequestPeriods) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -137,9 +136,9 @@ func (item *AbCounterChangeRequestPeriods) InternalWriteTL2(w []byte, sizes []in
 	return w, sizes
 }
 func (item *AbCounterChangeRequestPeriods) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AbCounterChangeRequestPeriods) ReadTL2(r []byte) (_ []byte, err error) {
@@ -294,7 +293,6 @@ func (item *AbCounterChangeRequestPeriodsMany) Read(w []byte) (_ []byte, err err
 	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.ObjectsPeridos)
 }
 
-// This method is general version of Write, use it instead!
 func (item *AbCounterChangeRequestPeriodsMany) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -311,7 +309,6 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadBoxed(w []byte) (_ []byte, er
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AbCounterChangeRequestPeriodsMany) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -454,9 +451,9 @@ func (item *AbCounterChangeRequestPeriodsMany) InternalWriteTL2(w []byte, sizes 
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte) (_ []byte, err error) {
@@ -523,7 +520,6 @@ func (item *AbCounterChangeRequestPeriodsOne) Read(w []byte) (_ []byte, err erro
 	return basictl.LongRead(w, &item.Period)
 }
 
-// This method is general version of Write, use it instead!
 func (item *AbCounterChangeRequestPeriodsOne) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -540,7 +536,6 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadBoxed(w []byte) (_ []byte, err
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AbCounterChangeRequestPeriodsOne) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -684,9 +679,9 @@ func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes [
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte) (_ []byte, err error) {

@@ -9,12 +9,13 @@ package tlcodegen
 import (
 	"bytes"
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
-	"golang.org/x/exp/slices"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
+	"golang.org/x/exp/slices"
 )
 
 type TypeRWCPPData interface {
@@ -43,7 +44,7 @@ func cppFinishNamespace(s *strings.Builder, ns []string) {
 	s.WriteString(fmt.Sprintf("\n%s // namespace %s\n\n", strings.Repeat("}", len(ns)), strings.Join(ns, "::")))
 }
 
-func (gen *Gen2) generateCodeCPP(generateByteVersions []string) error {
+func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 	cppAllInc := &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 	typesCounter := 0
 

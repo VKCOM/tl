@@ -25,6 +25,7 @@ var (
 func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlTag := fmt.Sprintf("0x%08x", struct_.wr.tlTag)
+	tlName := struct_.wr.tlName.String()
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
@@ -73,7 +74,7 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 		qw422016.N().S(`func (`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) TLName() string { return `)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(` }
 func (`)
 		qw422016.N().S(goName)
@@ -112,7 +113,6 @@ func (item *`)
 	struct_.streamreadFields(qw422016, bytesVersion, directImports)
 	qw422016.N().S(` }
 
-// This method is general version of Write, use it instead!
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteGeneral(w []byte`)
@@ -159,7 +159,6 @@ func (item *`)
 		qw422016.N().S(`)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
@@ -529,6 +528,7 @@ func (struct_ *TypeRWStruct) fieldMaskGettersAndSetters(bytesVersion bool, direc
 
 func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
+	tlName := struct_.wr.tlName.String()
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 	writeNeedsError := struct_.wr.hasErrorInWriteMethods
@@ -656,7 +656,7 @@ func (item *`)
         return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, err.Error())
     }
     return nil
@@ -683,6 +683,7 @@ func (struct_ *TypeRWStruct) generateJSONCode(bytesVersion bool, directImports *
 
 func (struct_ *TypeRWStruct) streamreadJSONCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
+	tlName := struct_.wr.tlName.String()
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 
 	if struct_.wr.gen.options.GenerateLegacyJsonRead {
@@ -697,7 +698,7 @@ func (item *`)
         return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "expected json object")
     }
 `)
@@ -738,7 +739,7 @@ func (item *`)
         return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, k)
     }
 `)
@@ -769,7 +770,7 @@ func (item *`)
         return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(struct_.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, "implicit true field '`)
 					qw422016.N().S(field.originalName)
 					qw422016.N().S(`' cannot be defined, set fieldmask instead")
@@ -815,7 +816,7 @@ func (item *`)
         return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(struct_.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, "field '`)
 					qw422016.N().S(field.originalName)
 					qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
@@ -1031,7 +1032,7 @@ func (item *`)
 		qw422016.N().S(`            return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "this object can't have properties")
 `)
 	} else {
@@ -1067,7 +1068,7 @@ func (item *`)
 					qw422016.N().S(`                    return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(struct_.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, "implicit true field '`)
 					qw422016.N().S(field.originalName)
 					qw422016.N().S(`' cannot be defined, set fieldmask instead")
@@ -1079,7 +1080,7 @@ func (item *`)
                         return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-					qw422016.N().Q(struct_.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, `)
 					qw422016.N().Q(field.originalName)
 					qw422016.N().S(`)
@@ -1103,7 +1104,7 @@ func (item *`)
                         return `)
 				qw422016.N().S(struct_.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-				qw422016.N().Q(struct_.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(field.originalName)
 				qw422016.N().S(`)
@@ -1131,7 +1132,7 @@ func (item *`)
                         return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)
-					qw422016.N().Q(struct_.wr.tlName.String())
+					qw422016.N().Q(tlName)
 					qw422016.N().S(`, "field '`)
 					qw422016.N().S(field.originalName)
 					qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
@@ -1152,7 +1153,7 @@ func (item *`)
                         return `)
 				qw422016.N().S(struct_.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidJSONWithDuplicatingKeys(`)
-				qw422016.N().Q(struct_.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(field.originalName)
 				qw422016.N().S(`)
@@ -1169,7 +1170,7 @@ func (item *`)
 		qw422016.N().S(`                default: return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSONExcessElement(`)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, key)
             }
             in.WantComma()
@@ -1296,7 +1297,7 @@ func (item *`)
                 return `)
 				qw422016.N().S(struct_.wr.gen.InternalPrefix())
 				qw422016.N().S(`ErrorInvalidJSON(`)
-				qw422016.N().Q(struct_.wr.tlName.String())
+				qw422016.N().Q(tlName)
 				qw422016.N().S(`, "field '`)
 				qw422016.N().S(field.originalName)
 				qw422016.N().S(`' is defined, while corresponding implicit fieldmask bit is 0")
@@ -1356,7 +1357,7 @@ func (item *`)
             return `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`ErrorInvalidJSON(`)
-		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "fieldmask bit `)
 		qw422016.N().S(fieldMask.originalName)
 		qw422016.N().S(`.`)
@@ -1604,7 +1605,32 @@ func (item *`)
 	qw422016.N().S(`
     return w, nil
 }
+`)
+	if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadResultTL2(w []byte, ret *`)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`) (_ []byte, err error) {
+    `)
+		qw422016.N().S(struct_.ResultType.ReadTL2Call(bytesVersion, "w", "ret", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
+		qw422016.N().S(`
+    return w, nil
+}
 
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteResultTL2(w []byte, sizes []int, ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`) (_ []byte, _ []int, err error) {
+    `)
+		qw422016.N().S(struct_.ResultType.WriteTL2Call(bytesVersion, "sizes", "w", "ret", false, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
+		qw422016.N().S(`
+    return w, sizes, nil
+}
+`)
+	}
+	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *`)
@@ -2137,57 +2163,67 @@ func (struct_ *TypeRWStruct) readFields(bytesVersion bool, directImports *Direct
 
 func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
+	tlName := struct_.wr.tlName.String()
 	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 
 	if struct_.isTypeDef() && struct_.wr.unionParent == nil {
 		field := struct_.Fields[0]
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) CalculateLayout(sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []int {
+		if struct_.wr.wantsTL2 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) CalculateLayout(sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) []int {
 `)
-		if field.t.trw.doesCalculateLayoutUseObject() {
-			qw422016.N().S(`    ptr := (*`)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`)(item)
+			if field.t.trw.doesCalculateLayoutUseObject() {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(fieldTypeString)
+				qw422016.N().S(`)(item)
 `)
-		}
-		qw422016.N().S(`    `)
-		qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
-		qw422016.N().S(`
+			}
+			qw422016.N().S(`    `)
+			qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
     return sizes
 }
 
 func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) ([]byte, []int) {
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) ([]byte, []int) {
 `)
-		if field.t.trw.doesWriteTL2UseObject(false) {
-			qw422016.N().S(`    ptr := (*`)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`)(item)
+			if field.t.trw.doesWriteTL2UseObject(false) {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(fieldTypeString)
+				qw422016.N().S(`)(item)
 `)
-		}
-		qw422016.N().S(`    `)
-		qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
-		qw422016.N().S(`
+			}
+			qw422016.N().S(`    `)
+			qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
     return w, sizes
 }
 `)
+		}
 		if len(natArgsDecl) == 0 {
 			qw422016.N().S(`
 func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-    sizes = item.CalculateLayout(sizes[0:0])
+`)
+			if !struct_.wr.wantsTL2 {
+				qw422016.N().S(`    return w, sizes
+`)
+			} else {
+				qw422016.N().S(`    sizes = item.CalculateLayout(sizes[:0])
     w, _ = item.InternalWriteTL2(w, sizes)
-    return w, sizes[0:0]
-}
+    return w, sizes[:0]
+`)
+			}
+			qw422016.N().S(`}
 `)
 		}
 		qw422016.N().S(`
@@ -2197,114 +2233,169 @@ func (item *`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if field.t.trw.doesReadTL2UseObject(false) {
-			qw422016.N().S(`    ptr := (*`)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`)(item)
+		if !struct_.wr.wantsTL2 {
+			qw422016.N().S(`    return r, `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`)
+`)
+		} else {
+			if field.t.trw.doesReadTL2UseObject(false) {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(fieldTypeString)
+				qw422016.N().S(`)(item)
+`)
+			}
+			qw422016.N().S(`    `)
+			qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(`
+    return r, nil
 `)
 		}
-		qw422016.N().S(`    `)
-		qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
-		qw422016.N().S(`
-    return r, nil
-}
+		qw422016.N().S(`}
 `)
 	} else {
 		qw422016.N().S(`
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) CalculateLayout(sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []int {
 `)
-		if struct_.isTypeDef() {
-			qw422016.N().S(`    ptr := (*`)
-			qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-			qw422016.N().S(`)(item)
+		if struct_.wr.wantsTL2 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) CalculateLayout(sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) []int {
 `)
-		}
-		qw422016.N().S(`    sizePosition := len(sizes)
+			if struct_.isTypeDef() {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				qw422016.N().S(`)(item)
+`)
+			}
+			qw422016.N().S(`    sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 0
     lastUsedByte := 0
 `)
-		if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
-			qw422016.N().S(`
+			if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
+				qw422016.N().S(`
     // add constructor No for union type in case of non first option
     lastUsedByte = 1
     currentSize += basictl.TL2CalculateSize(`)
-			qw422016.N().D(struct_.wr.unionIndex)
-			qw422016.N().S(`)
+				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().S(`)
 `)
-		}
-		currentPositionFirstUsage := -1
-		for i, field := range struct_.Fields {
-			_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
-			if len(trivialSize) == 0 {
-				currentPositionFirstUsage = i
-				break
 			}
-		}
-
-		for fieldIndex, field := range struct_.Fields {
-			if field.t.IsTrueType() {
-				continue
-			}
-			fieldName := fmt.Sprintf("item.%[1]s", field.goName)
-			fieldRecursive := field.recursive
-			if struct_.isTypeDef() {
-				fieldName = "ptr"
-				fieldRecursive = true
-			}
-
-			isSizeConstant, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
-
-			qw422016.N().S(`
-    // calculate layout for `)
-			qw422016.N().S(fieldName)
-			qw422016.N().S(`
-`)
-			if len(trivialSize) == 0 {
-				if fieldIndex == currentPositionFirstUsage {
-					qw422016.N().S(`    currentPosition := len(sizes)
-`)
-				} else {
-					qw422016.N().S(`    currentPosition = len(sizes)
-`)
+			currentPositionFirstUsage := -1
+			for i, field := range struct_.Fields {
+				_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
+				if len(trivialSize) == 0 {
+					currentPositionFirstUsage = i
+					break
 				}
 			}
-			if field.fieldMask != nil {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-				qw422016.N().S(` & (1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`) != 0 {
-`)
-			}
-			nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
 
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(nonEmptyCondition)
-				qw422016.N().S(` {
+			for fieldIndex, field := range struct_.Fields {
+				if field.t.IsTrueType() {
+					continue
+				}
+				fieldName := fmt.Sprintf("item.%[1]s", field.goName)
+				fieldRecursive := field.recursive
+				if struct_.isTypeDef() {
+					fieldName = "ptr"
+					fieldRecursive = true
+				}
+
+				isSizeConstant, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
+
+				qw422016.N().S(`
+    // calculate layout for `)
+				qw422016.N().S(fieldName)
+				qw422016.N().S(`
 `)
-			}
-			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
-			qw422016.N().S(`
+				if len(trivialSize) == 0 {
+					if fieldIndex == currentPositionFirstUsage {
+						qw422016.N().S(`    currentPosition := len(sizes)
 `)
-			if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
-				if !isSizeConstant {
+					} else {
+						qw422016.N().S(`    currentPosition = len(sizes)
+`)
+					}
+				}
+				if field.fieldMask != nil {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` & (1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`) != 0 {
+`)
+				}
+				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(nonEmptyCondition)
+					qw422016.N().S(` {
+`)
+				}
+				qw422016.N().S(`    `)
+				qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(`
+`)
+				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+					if !isSizeConstant {
+						sizeValue := "sizes[currentPosition]"
+						if len(trivialSize) != 0 {
+							sizeValue = trivialSize
+						}
+
+						qw422016.N().S(`    if `)
+						qw422016.N().S(sizeValue)
+						qw422016.N().S(` != 0 {
+        lastUsedByte = `)
+						qw422016.N().D((fieldIndex+1)/8 + 1)
+						qw422016.N().S(`
+        currentSize += `)
+						qw422016.N().S(sizeValue)
+						qw422016.N().S(`
+`)
+						if field.t.trw.isSizeWrittenInData() {
+							qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
+							qw422016.N().S(sizeValue)
+							qw422016.N().S(`)
+`)
+						}
+						if len(trivialSize) == 0 {
+							qw422016.N().S(`    } else {
+        sizes = sizes[:currentPosition + 1]
+    }
+`)
+						} else {
+							qw422016.N().S(`    }
+`)
+						}
+					} else {
+						qw422016.N().S(`        lastUsedByte = `)
+						qw422016.N().D((fieldIndex+1)/8 + 1)
+						qw422016.N().S(`
+        currentSize += `)
+						qw422016.N().S(trivialSize)
+						qw422016.N().S(`
+`)
+						if field.t.trw.isSizeWrittenInData() {
+							qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
+							qw422016.N().S(trivialSize)
+							qw422016.N().S(`)
+`)
+						}
+					}
+				} else {
 					sizeValue := "sizes[currentPosition]"
 					if len(trivialSize) != 0 {
 						sizeValue = trivialSize
 					}
 
-					qw422016.N().S(`    if `)
-					qw422016.N().S(sizeValue)
-					qw422016.N().S(` != 0 {
-        lastUsedByte = `)
+					qw422016.N().S(`        lastUsedByte = `)
 					qw422016.N().D((fieldIndex+1)/8 + 1)
 					qw422016.N().S(`
         currentSize += `)
@@ -2317,60 +2408,17 @@ func (item *`)
 						qw422016.N().S(`)
 `)
 					}
-					if len(trivialSize) == 0 {
-						qw422016.N().S(`    } else {
-        sizes = sizes[:currentPosition + 1]
-    }
-`)
-					} else {
-						qw422016.N().S(`    }
-`)
-					}
-				} else {
-					qw422016.N().S(`        lastUsedByte = `)
-					qw422016.N().D((fieldIndex+1)/8 + 1)
-					qw422016.N().S(`
-        currentSize += `)
-					qw422016.N().S(trivialSize)
-					qw422016.N().S(`
-`)
-					if field.t.trw.isSizeWrittenInData() {
-						qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
-						qw422016.N().S(trivialSize)
-						qw422016.N().S(`)
-`)
-					}
 				}
-			} else {
-				sizeValue := "sizes[currentPosition]"
-				if len(trivialSize) != 0 {
-					sizeValue = trivialSize
-				}
-
-				qw422016.N().S(`        lastUsedByte = `)
-				qw422016.N().D((fieldIndex+1)/8 + 1)
-				qw422016.N().S(`
-        currentSize += `)
-				qw422016.N().S(sizeValue)
-				qw422016.N().S(`
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`    }
 `)
-				if field.t.trw.isSizeWrittenInData() {
-					qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
-					qw422016.N().S(sizeValue)
-					qw422016.N().S(`)
+				}
+				if field.fieldMask != nil {
+					qw422016.N().S(`    }
 `)
 				}
 			}
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`    }
-`)
-			}
-			if field.fieldMask != nil {
-				qw422016.N().S(`    }
-`)
-			}
-		}
-		qw422016.N().S(`
+			qw422016.N().S(`
     // append byte for each section until last mentioned field
     if lastUsedByte != 0 {
         currentSize += lastUsedByte
@@ -2383,18 +2431,18 @@ func (item *`)
 }
 
 func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) ([]byte, []int) {
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) ([]byte, []int) {
 `)
-		if struct_.isTypeDef() {
-			qw422016.N().S(`    ptr := (*`)
-			qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-			qw422016.N().S(`)(item)
+			if struct_.isTypeDef() {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				qw422016.N().S(`)(item)
 `)
-		}
-		qw422016.N().S(`    currentSize := sizes[0]
+			}
+			qw422016.N().S(`    currentSize := sizes[0]
     sizes = sizes[1:]
 
     serializedSize := 0
@@ -2405,35 +2453,35 @@ func (item *`)
     }
 
 `)
-		if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
-			qw422016.N().S(`    var currentBlock byte
+			if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
+				qw422016.N().S(`    var currentBlock byte
     currentBlockPosition := len(w)
 `)
-		}
-		qw422016.N().S(`    w = append(w, 0)
+			}
+			qw422016.N().S(`    w = append(w, 0)
     serializedSize += 1
 `)
-		if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
-			qw422016.N().S(`
+			if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 {
+				qw422016.N().S(`
     // add constructor No for union type in case of non first option
     currentBlock |= (1 << 0)
 
     w = basictl.TL2WriteSize(w, `)
-			qw422016.N().D(struct_.wr.unionIndex)
-			qw422016.N().S(`)
+				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().S(`)
     serializedSize += basictl.TL2CalculateSize(`)
-			qw422016.N().D(struct_.wr.unionIndex)
-			qw422016.N().S(`)
+				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().S(`)
 `)
-		}
-		for fieldIndex, field := range struct_.Fields {
-			if (fieldIndex+1)%8 == 0 {
-				qw422016.N().S(`
+			}
+			for fieldIndex, field := range struct_.Fields {
+				if (fieldIndex+1)%8 == 0 {
+					qw422016.N().S(`
         // add byte for fields with index `)
-				qw422016.N().V((fieldIndex + 1))
-				qw422016.N().S(`..`)
-				qw422016.N().V((fieldIndex + 8))
-				qw422016.N().S(`
+					qw422016.N().V((fieldIndex + 1))
+					qw422016.N().S(`..`)
+					qw422016.N().V((fieldIndex + 8))
+					qw422016.N().S(`
         w[currentBlockPosition] = currentBlock
         currentBlock = 0
         if serializedSize != currentSize {
@@ -2444,102 +2492,111 @@ func (item *`)
             return w, sizes
         }
 `)
-			}
-			if field.t.IsTrueType() {
-				continue
-			}
-			fieldName := fmt.Sprintf("item.%s", field.goName)
-			fieldRecursive := field.recursive
-			if struct_.isTypeDef() {
-				fieldName = "ptr"
-				fieldRecursive = true
-			}
-			_, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
+				}
+				if field.t.IsTrueType() {
+					continue
+				}
+				fieldName := fmt.Sprintf("item.%s", field.goName)
+				fieldRecursive := field.recursive
+				if struct_.isTypeDef() {
+					fieldName = "ptr"
+					fieldRecursive = true
+				}
+				_, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
 
-			qw422016.N().S(`    // write `)
-			qw422016.N().S(fieldName)
-			qw422016.N().S(`
+				qw422016.N().S(`    // write `)
+				qw422016.N().S(fieldName)
+				qw422016.N().S(`
 `)
-			if field.fieldMask != nil {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-				qw422016.N().S(` & (1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`) != 0 {
+				if field.fieldMask != nil {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` & (1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`) != 0 {
 `)
-			}
-			nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+				}
+				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
 
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(nonEmptyCondition)
-				qw422016.N().S(` {
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(nonEmptyCondition)
+					qw422016.N().S(` {
 `)
-			}
-			sizeValue := "sizes[0]"
-			if len(trivialSize) != 0 {
-				sizeValue = trivialSize
-			}
+				}
+				sizeValue := "sizes[0]"
+				if len(trivialSize) != 0 {
+					sizeValue = trivialSize
+				}
 
-			qw422016.N().S(`    serializedSize += `)
-			qw422016.N().S(sizeValue)
-			qw422016.N().S(`
-`)
-			if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
-				qw422016.N().S(`    if `)
+				qw422016.N().S(`    serializedSize += `)
 				qw422016.N().S(sizeValue)
-				qw422016.N().S(` != 0 {
+				qw422016.N().S(`
 `)
-			}
-			if field.t.trw.isSizeWrittenInData() {
-				qw422016.N().S(`    serializedSize += basictl.TL2CalculateSize(`)
-				qw422016.N().S(sizeValue)
+				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(sizeValue)
+					qw422016.N().S(` != 0 {
+`)
+				}
+				if field.t.trw.isSizeWrittenInData() {
+					qw422016.N().S(`    serializedSize += basictl.TL2CalculateSize(`)
+					qw422016.N().S(sizeValue)
+					qw422016.N().S(`)
+`)
+				}
+				qw422016.N().S(`    currentBlock |= (1 << `)
+				qw422016.E().V((fieldIndex + 1) % 8)
 				qw422016.N().S(`)
-`)
-			}
-			qw422016.N().S(`    currentBlock |= (1 << `)
-			qw422016.E().V((fieldIndex + 1) % 8)
-			qw422016.N().S(`)
     `)
-			qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
-			qw422016.N().S(`
+				qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(`
 `)
-			if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
-				if len(trivialSize) == 0 {
-					qw422016.N().S(`    } else {
+				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
+					if len(trivialSize) == 0 {
+						qw422016.N().S(`    } else {
         sizes = sizes[1:]
     }
 `)
-				} else {
+					} else {
+						qw422016.N().S(`    }
+`)
+					}
+				}
+				if nonEmptyCondition != "" {
+					qw422016.N().S(`    }
+`)
+				}
+				if field.fieldMask != nil {
 					qw422016.N().S(`    }
 `)
 				}
 			}
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`    }
+			if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
+				qw422016.N().S(`    w[currentBlockPosition] = currentBlock
 `)
 			}
-			if field.fieldMask != nil {
-				qw422016.N().S(`    }
-`)
-			}
-		}
-		if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) {
-			qw422016.N().S(`    w[currentBlockPosition] = currentBlock
-`)
-		}
-		qw422016.N().S(`    return w, sizes
+			qw422016.N().S(`    return w, sizes
 }
-
+`)
+		}
+		qw422016.N().S(`
 `)
 		if len(natArgsDecl) == 0 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-    sizes = item.CalculateLayout(sizes[0:0])
+`)
+			if !struct_.wr.wantsTL2 {
+				qw422016.N().S(`    return w, sizes
+`)
+			} else {
+				qw422016.N().S(`    sizes = item.CalculateLayout(sizes[:0])
     w, _ = item.InternalWriteTL2(w, sizes)
-    return w, sizes[0:0]
-}
+    return w, sizes[:0]
+`)
+			}
+			qw422016.N().S(`}
 
 `)
 		}
@@ -2549,13 +2606,21 @@ func (item *`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if struct_.isTypeDef() {
-			qw422016.N().S(`    ptr := (*`)
-			qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-			qw422016.N().S(`)(item)
+		if !struct_.wr.wantsTL2 {
+			qw422016.N().S(`    return r, `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`)
 `)
-		}
-		qw422016.N().S(`    saveR := r
+		} else {
+			if struct_.isTypeDef() {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				qw422016.N().S(`)(item)
+`)
+			}
+			qw422016.N().S(`    saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -2571,100 +2636,102 @@ func (item *`)
             if r, err = basictl.TL2ReadSize(r, &_skip); err != nil { return r, err }
         }
 `)
-		for fieldIndex, field := range struct_.Fields {
-			fieldName := fmt.Sprintf("item.%s", field.goName)
-			fieldRecursive := field.recursive
-			if struct_.isTypeDef() {
-				fieldName = "ptr"
-				fieldRecursive = true
-			}
+			for fieldIndex, field := range struct_.Fields {
+				fieldName := fmt.Sprintf("item.%s", field.goName)
+				fieldRecursive := field.recursive
+				if struct_.isTypeDef() {
+					fieldName = "ptr"
+					fieldRecursive = true
+				}
 
-			if (fieldIndex+1)%8 == 0 {
-				qw422016.N().S(`
+				if (fieldIndex+1)%8 == 0 {
+					qw422016.N().S(`
         // read next block for fields `)
-				qw422016.N().V((fieldIndex + 1))
-				qw422016.N().S(`..`)
-				qw422016.N().V((fieldIndex + 8))
-				qw422016.N().S(`
+					qw422016.N().V((fieldIndex + 1))
+					qw422016.N().S(`..`)
+					qw422016.N().V((fieldIndex + 8))
+					qw422016.N().S(`
         if len(saveR) < len(r) + shift {
             if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
         } else {
             return r, nil
         }
 `)
-			}
-			if field.t.IsTrueType() {
-				continue
-			}
-			qw422016.N().S(`
-    // read `)
-			qw422016.N().S(fieldName)
-			qw422016.N().S(`
-    if block & (1 << `)
-			qw422016.N().D((fieldIndex + 1) % 8)
-			qw422016.N().S(`) != 0 {
-`)
-			if fieldRecursive {
-				qw422016.N().S(`        if `)
-				qw422016.N().S(fieldName)
-				qw422016.N().S(` == nil {
-            var newValue `)
-				qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				}
+				if field.t.IsTrueType() {
+					continue
+				}
 				qw422016.N().S(`
-            `)
+    // read `)
 				qw422016.N().S(fieldName)
-				qw422016.N().S(` = &newValue
-        }
-`)
-			}
-			if field.fieldMask != nil {
-				qw422016.N().S(`        if `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-				qw422016.N().S(` & (1 << `)
-				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`
+    if block & (1 << `)
+				qw422016.N().D((fieldIndex + 1) % 8)
 				qw422016.N().S(`) != 0 {
 `)
-			}
-			qw422016.N().S(`        `)
-			qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
-			qw422016.N().S(`
-`)
-			if field.fieldMask != nil {
-				qw422016.N().S(`        } else {
-            return r, basictl.TL2Error("field mask contradiction: field item." + "`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(`" + "is presented but depending bit is absent")
-        }
-`)
-			}
-			qw422016.N().S(`    } else {
-`)
-			if fieldRecursive {
-				qw422016.N().S(`        if `)
-				qw422016.N().S(fieldName)
-				qw422016.N().S(` == nil {
+				if fieldRecursive {
+					qw422016.N().S(`        if `)
+					qw422016.N().S(fieldName)
+					qw422016.N().S(` == nil {
             var newValue `)
-				qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-				qw422016.N().S(`
+					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+					qw422016.N().S(`
             `)
-				qw422016.N().S(fieldName)
-				qw422016.N().S(` = &newValue
+					qw422016.N().S(fieldName)
+					qw422016.N().S(` = &newValue
         }
 `)
-			}
-			qw422016.N().S(`        `)
-			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive))
-			qw422016.N().S(`
+				}
+				if field.fieldMask != nil {
+					qw422016.N().S(`        if `)
+					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+					qw422016.N().S(` & (1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`) != 0 {
+`)
+				}
+				qw422016.N().S(`        `)
+				qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(`
+`)
+				if field.fieldMask != nil {
+					qw422016.N().S(`        } else {
+            return r, basictl.TL2Error("field mask contradiction: field item." + "`)
+					qw422016.N().S(field.goName)
+					qw422016.N().S(`" + "is presented but depending bit is absent")
+        }
+`)
+				}
+				qw422016.N().S(`    } else {
+`)
+				if fieldRecursive {
+					qw422016.N().S(`        if `)
+					qw422016.N().S(fieldName)
+					qw422016.N().S(` == nil {
+            var newValue `)
+					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+					qw422016.N().S(`
+            `)
+					qw422016.N().S(fieldName)
+					qw422016.N().S(` = &newValue
+        }
+`)
+				}
+				qw422016.N().S(`        `)
+				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive))
+				qw422016.N().S(`
     }
 `)
-		}
-		qw422016.N().S(`    }
+			}
+			qw422016.N().S(`    }
 
     if len(saveR) < len(r) + shift {
         r = saveR[shift:]
     }
     return r, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 `)
 	}
 }

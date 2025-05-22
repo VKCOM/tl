@@ -36,7 +36,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 	}
 	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
 		targetSizes,
-		addAsteriskAndBrackets(refObject, targetObject),
+		targetObject,
 		joinWithCommas(natArgs),
 		targetBytes,
 	)
@@ -59,7 +59,7 @@ func (trw *TypeRWStruct) readTL2Call(
 	}
 	return fmt.Sprintf("if %[4]s, err = %[2]s.ReadTL2(%[4]s%[3]s); err != nil { return %[4]s, err }",
 		"",
-		addAsteriskAndBrackets(refObject, targetObject),
+		targetObject,
 		joinWithCommas(natArgs),
 		targetBytes,
 	)

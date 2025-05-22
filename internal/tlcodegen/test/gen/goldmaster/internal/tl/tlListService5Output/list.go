@@ -113,7 +113,6 @@ func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *ListService5Output) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -141,7 +140,6 @@ func (item *ListService5Output) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *ListService5Output) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -359,7 +357,7 @@ func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 3)
-			w, sizes = (*item.Tail).InternalWriteTL2(w, sizes)
+			w, sizes = item.Tail.InternalWriteTL2(w, sizes)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -369,9 +367,9 @@ func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 }
 
 func (item *ListService5Output) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *ListService5Output) ReadTL2(r []byte) (_ []byte, err error) {
@@ -426,7 +424,7 @@ func (item *ListService5Output) ReadTL2(r []byte) (_ []byte, err error) {
 				item.Tail = &newValue
 			}
 			if item.Flag&(1<<0) != 0 {
-				if r, err = (*item.Tail).ReadTL2(r); err != nil {
+				if r, err = item.Tail.ReadTL2(r); err != nil {
 					return r, err
 				}
 			} else {

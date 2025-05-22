@@ -35,7 +35,6 @@ func (item *InnerMaybe) Read(w []byte, nat_X uint32) (_ []byte, err error) {
 	return item.A.ReadBoxed(w, nat_X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *InnerMaybe) WriteGeneral(w []byte, nat_X uint32) (_ []byte, err error) {
 	return item.Write(w, nat_X)
 }
@@ -54,7 +53,6 @@ func (item *InnerMaybe) ReadBoxed(w []byte, nat_X uint32) (_ []byte, err error) 
 	return item.Read(w, nat_X)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *InnerMaybe) WriteBoxedGeneral(w []byte, nat_X uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_X)
 }
