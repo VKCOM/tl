@@ -130,14 +130,13 @@ func (item *`)
 
 `)
 	if maybe.wr.gen.options.GenerateTL2 {
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) CalculateLayout(sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []int {
-`)
 		if maybe.wr.wantsTL2 {
-			qw422016.N().S(`    sizePosition := len(sizes)
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) CalculateLayout(sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if item.Ok {
         sizes[sizePosition] += 1
@@ -189,19 +188,15 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    }
-`)
-		}
-		qw422016.N().S(`    return sizes
+    return sizes
 }
 
 func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) ([]byte, []int) {
-`)
-		if maybe.wr.wantsTL2 {
-			qw422016.N().S(`    currentSize := sizes[0]
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -214,11 +209,11 @@ func (item *`)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
 `)
-			sizeValue := "sizes[0]"
+			sizeValue = "sizes[0]"
 			if len(trivialSize) != 0 {
 				sizeValue = trivialSize
 			}
-			nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
+			nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
 
 			if nonEmptyCondition != "" {
 				qw422016.N().S(`        if `)
@@ -248,11 +243,11 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    }
+    return w, sizes
+}
 `)
 		}
-		qw422016.N().S(`    return w, sizes
-}
-
+		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadTL2(r []byte`)
