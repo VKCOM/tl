@@ -131,7 +131,6 @@ func BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w []byte, sizes []
 		value := (*m)[key]
 		w, sizes = value.InternalWriteTL2(w, sizes)
 	}
-
 	return w, sizes
 }
 
@@ -348,7 +347,6 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w []byte, sizes [
 		value := (*m)[key]
 		w, sizes = value.InternalWriteTL2(w, sizes)
 	}
-
 	return w, sizes
 }
 
@@ -1060,7 +1058,6 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w []byte, sizes
 		value := (*m)[key]
 		w, sizes = value.InternalWriteTL2(w, sizes)
 	}
-
 	return w, sizes
 }
 
@@ -1304,7 +1301,6 @@ func (item *DictionaryElemIntPairIntInt) Read(w []byte) (_ []byte, err error) {
 	return item.Value.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemIntPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -1322,7 +1318,6 @@ func (item *DictionaryElemIntPairIntInt) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemIntPairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1491,9 +1486,9 @@ func (item *DictionaryElemIntPairIntInt) InternalWriteTL2(w []byte, sizes []int)
 }
 
 func (item *DictionaryElemIntPairIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemIntPairIntInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -1569,7 +1564,6 @@ func (item *DictionaryElemLongPairIntInt) Read(w []byte) (_ []byte, err error) {
 	return item.Value.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemLongPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -1587,7 +1581,6 @@ func (item *DictionaryElemLongPairIntInt) ReadBoxed(w []byte) (_ []byte, err err
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemLongPairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1756,9 +1749,9 @@ func (item *DictionaryElemLongPairIntInt) InternalWriteTL2(w []byte, sizes []int
 }
 
 func (item *DictionaryElemLongPairIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemLongPairIntInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -1834,7 +1827,6 @@ func (item *DictionaryElemPairBoolAColorInt) Read(w []byte) (_ []byte, err error
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemPairBoolAColorInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -1852,7 +1844,6 @@ func (item *DictionaryElemPairBoolAColorInt) ReadBoxed(w []byte) (_ []byte, err 
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemPairBoolAColorInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -2021,9 +2012,9 @@ func (item *DictionaryElemPairBoolAColorInt) InternalWriteTL2(w []byte, sizes []
 }
 
 func (item *DictionaryElemPairBoolAColorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemPairBoolAColorInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -2099,7 +2090,6 @@ func (item *DictionaryElemPairFloatDoubleInt) Read(w []byte) (_ []byte, err erro
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemPairFloatDoubleInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -2117,7 +2107,6 @@ func (item *DictionaryElemPairFloatDoubleInt) ReadBoxed(w []byte) (_ []byte, err
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemPairFloatDoubleInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -2286,9 +2275,9 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalWriteTL2(w []byte, sizes [
 }
 
 func (item *DictionaryElemPairFloatDoubleInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemPairFloatDoubleInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -2364,7 +2353,6 @@ func (item *DictionaryElemPairIntIntInt) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemPairIntIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -2382,7 +2370,6 @@ func (item *DictionaryElemPairIntIntInt) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemPairIntIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -2551,9 +2538,9 @@ func (item *DictionaryElemPairIntIntInt) InternalWriteTL2(w []byte, sizes []int)
 }
 
 func (item *DictionaryElemPairIntIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemPairIntIntInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -2629,7 +2616,6 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) Read(w []byte) (_ []by
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -2647,7 +2633,6 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadBoxed(w []byte) (_
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -2816,9 +2801,9 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalWriteTL2(w []b
 }
 
 func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -2894,7 +2879,6 @@ func (item *DictionaryElemStringPairIntInt) Read(w []byte) (_ []byte, err error)
 	return item.Value.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemStringPairIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -2912,7 +2896,6 @@ func (item *DictionaryElemStringPairIntInt) ReadBoxed(w []byte) (_ []byte, err e
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemStringPairIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -3085,9 +3068,9 @@ func (item *DictionaryElemStringPairIntInt) InternalWriteTL2(w []byte, sizes []i
 }
 
 func (item *DictionaryElemStringPairIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryElemStringPairIntInt) ReadTL2(r []byte) (_ []byte, err error) {
@@ -3163,7 +3146,6 @@ func (item *DictionaryElemTupleStringInt) Read(w []byte, nat_k uint32) (_ []byte
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemTupleStringInt) WriteGeneral(w []byte, nat_k uint32) (_ []byte, err error) {
 	return item.Write(w, nat_k)
 }
@@ -3183,7 +3165,6 @@ func (item *DictionaryElemTupleStringInt) ReadBoxed(w []byte, nat_k uint32) (_ [
 	return item.Read(w, nat_k)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemTupleStringInt) WriteBoxedGeneral(w []byte, nat_k uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_k)
 }

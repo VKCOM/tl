@@ -37,7 +37,6 @@ func (item *TuplePairTupleIntTupleInt2) Read(w []byte, nat_tXn uint32, nat_tYn u
 	return tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntRead(w, ptr, nat_tXn, nat_tYn)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
 	return item.Write(w, nat_tXn, nat_tYn)
 }
@@ -54,7 +53,6 @@ func (item *TuplePairTupleIntTupleInt2) ReadBoxed(w []byte, nat_tXn uint32, nat_
 	return item.Read(w, nat_tXn, nat_tYn)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TuplePairTupleIntTupleInt2) WriteBoxedGeneral(w []byte, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_tXn, nat_tYn)
 }

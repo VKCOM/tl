@@ -42,7 +42,6 @@ func (item *CasesBytesTestArray) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleString.BuiltinTupleStringRead(w, &item.Arr, item.N)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesBytesTestArray) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -62,7 +61,6 @@ func (item *CasesBytesTestArray) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestArray) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -251,9 +249,9 @@ func (item *CasesBytesTestArray) InternalWriteTL2(w []byte, sizes []int) ([]byte
 }
 
 func (item *CasesBytesTestArray) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestArray) ReadTL2(r []byte) (_ []byte, err error) {
@@ -330,7 +328,6 @@ func (item *CasesBytesTestArrayBytes) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleString.BuiltinTupleStringBytesRead(w, &item.Arr, item.N)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesBytesTestArrayBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -350,7 +347,6 @@ func (item *CasesBytesTestArrayBytes) ReadBoxed(w []byte) (_ []byte, err error) 
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestArrayBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -539,9 +535,9 @@ func (item *CasesBytesTestArrayBytes) InternalWriteTL2(w []byte, sizes []int) ([
 }
 
 func (item *CasesBytesTestArrayBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestArrayBytes) ReadTL2(r []byte) (_ []byte, err error) {

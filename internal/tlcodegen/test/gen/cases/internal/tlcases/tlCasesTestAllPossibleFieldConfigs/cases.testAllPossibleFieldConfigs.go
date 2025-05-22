@@ -259,7 +259,6 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesTestAllPossibleFieldConfigs) WriteGeneral(w []byte, nat_outer uint32) (_ []byte, err error) {
 	return item.Write(w, nat_outer)
 }
@@ -309,7 +308,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadBoxed(w []byte, nat_outer uint
 	return item.Read(w, nat_outer)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesTestAllPossibleFieldConfigs) WriteBoxedGeneral(w []byte, nat_outer uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_outer)
 }

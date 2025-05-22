@@ -41,7 +41,6 @@ func (item *DictionaryElemTupleStringInt) Read(w []byte, nat_k uint32) (_ []byte
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemTupleStringInt) WriteGeneral(w []byte, nat_k uint32) (_ []byte, err error) {
 	return item.Write(w, nat_k)
 }
@@ -61,7 +60,6 @@ func (item *DictionaryElemTupleStringInt) ReadBoxed(w []byte, nat_k uint32) (_ [
 	return item.Read(w, nat_k)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemTupleStringInt) WriteBoxedGeneral(w []byte, nat_k uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_k)
 }

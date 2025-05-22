@@ -39,7 +39,6 @@ func (item *Replace14Long) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleReplace14ElemLongRead(w, &item.A, item.K, nat_n, item.K)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace14Long) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -59,7 +58,6 @@ func (item *Replace14Long) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err erro
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Replace14Long) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }

@@ -65,6 +65,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 func {%s= goName %}CalculateLayout(sizes []int,vec *{%s= typeString %}{%s= valueNatArgsDecl %}) []int {
+{%- if tuple.wr.wantsTL2 -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     for i := 0; i < len(*vec); i++ {
@@ -99,10 +100,12 @@ func {%s= goName %}CalculateLayout(sizes []int,vec *{%s= typeString %}{%s= value
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValueValue %})
         {%- endif -%}
     }
+{%- endif -%}
     return sizes
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %}{%s= valueNatArgsDecl %}) ([]byte, []int) {
+{%- if tuple.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -118,10 +121,14 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %
         {%s= tuple.dictKeyField.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem.Key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         {%s= tuple.dictValueField.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
     }
+{%- endif -%}
     return w, sizes
 }
 
 func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= valueNatArgsDecl %}) (_ []byte, err error) {
+{%- if !tuple.wr.wantsTL2 -%}
+    return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -135,6 +142,7 @@ func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= valueNatArgsDec
         *vec = append(*vec, elem)
     }
     return r, nil
+{%- endif -%}
 }
 {%- endif -%}
 
@@ -380,6 +388,7 @@ func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeStr
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) []int {
+{%- if tuple.wr.wantsTL2 -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -433,10 +442,12 @@ func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValueValue %})
         {%- endif -%}
     }
+{%- endif -%}
     return sizes
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) ([]byte, []int) {
+{%- if tuple.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -467,11 +478,14 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeSt
         {%- endif -%}
         {%s= tuple.dictValueField.t.WriteTL2Call(bytesVersion, "sizes", "w", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
     }
-
+{%- endif -%}
     return w, sizes
 }
 
 func {%s= goName %}ReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) (_ []byte, err error) {
+{%- if !tuple.wr.wantsTL2 -%}
+    return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -495,6 +509,7 @@ func {%s= goName %}ReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= valueType
         data[key] = value
     }
     return r, nil
+{%- endif -%}
 }
 {%- endif -%}
 
@@ -689,6 +704,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= natDecl %}) []int {
+{%- if tuple.wr.wantsTL2 -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -709,10 +725,12 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
         {%- endif -%}
     }
+{%- endif -%}
     return sizes
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+{%- if tuple.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -724,11 +742,15 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     for i := 0; i < len(*vec); i++ {
         {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
     }
+{%- endif -%}
     return w, sizes
 }
 
 
 func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+{%- if !tuple.wr.wantsTL2 -%}
+    return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -741,6 +763,7 @@ func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ 
         *vec = append(*vec, elem)
     }
     return r, nil
+{%- endif -%}
 }
 {%- endif -%}
 
@@ -845,6 +868,7 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= natDecl %}) []int {
+{%- if tuple.wr.wantsTL2 -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -865,10 +889,12 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
         {%- endif -%}
     }
+{%- endif -%}
     return sizes
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+{%- if tuple.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -880,10 +906,14 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     for i := 0; i < len(*vec); i++ {
         {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
     }
+{%- endif -%}
     return w, sizes
 }
 
 func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+{%- if !tuple.wr.wantsTL2 -%}
+    return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -906,6 +936,7 @@ func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ 
         return r, basictl.TL2Error("less elements than expected")
     }
     return r, nil
+{%- endif -%}
 }
 {%- endif -%}
 {%- if tuple.wr.gen.options.GenerateLegacyJsonRead -%}
@@ -1008,6 +1039,7 @@ func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s=
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= natDecl %}) []int {
+{%- if tuple.wr.wantsTL2 -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -1028,10 +1060,12 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
         {%- endif -%}
     }
+{%- endif -%}
     return sizes
 }
 
 func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+{%- if tuple.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -1043,10 +1077,14 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     for i := 0; i < len(*vec); i++ {
         {%s= tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
     }
+{%- endif -%}
     return w, sizes
 }
 
 func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+{%- if !tuple.wr.wantsTL2 -%}
+    return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -1064,6 +1102,7 @@ func {%s= goName %}ReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ 
         return r, basictl.TL2Error("less elements than expected")
     }
     return r, nil
+{%- endif -%}
 }
 {%- endif -%}
 

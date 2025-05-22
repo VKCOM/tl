@@ -41,7 +41,6 @@ func (item *PairIntPairMultiPointString) Read(w []byte) (_ []byte, err error) {
 	return item.B.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *PairIntPairMultiPointString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -59,7 +58,6 @@ func (item *PairIntPairMultiPointString) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *PairIntPairMultiPointString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -228,9 +226,9 @@ func (item *PairIntPairMultiPointString) InternalWriteTL2(w []byte, sizes []int)
 }
 
 func (item *PairIntPairMultiPointString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *PairIntPairMultiPointString) ReadTL2(r []byte) (_ []byte, err error) {

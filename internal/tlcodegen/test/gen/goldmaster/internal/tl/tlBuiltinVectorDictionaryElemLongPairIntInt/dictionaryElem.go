@@ -135,7 +135,6 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w []byte, sizes [
 		value := (*m)[key]
 		w, sizes = value.InternalWriteTL2(w, sizes)
 	}
-
 	return w, sizes
 }
 

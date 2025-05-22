@@ -43,7 +43,6 @@ func (item *CdMyTypeMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CdMyTypeMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

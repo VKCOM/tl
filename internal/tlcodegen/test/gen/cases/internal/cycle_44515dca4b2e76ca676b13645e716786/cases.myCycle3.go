@@ -66,7 +66,6 @@ func (item *CasesMyCycle3) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesMyCycle3) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -86,7 +85,6 @@ func (item *CasesMyCycle3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesMyCycle3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -264,9 +262,9 @@ func (item *CasesMyCycle3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 }
 
 func (item *CasesMyCycle3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesMyCycle3) ReadTL2(r []byte) (_ []byte, err error) {

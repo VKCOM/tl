@@ -36,7 +36,6 @@ func (item *VectorCyc1MyCycle) Read(w []byte) (_ []byte, err error) {
 	return cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorCyc1MyCycle) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -53,7 +52,6 @@ func (item *VectorCyc1MyCycle) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorCyc1MyCycle) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -112,9 +110,9 @@ func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 }
 
 func (item *VectorCyc1MyCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *VectorCyc1MyCycle) ReadTL2(r []byte) (_ []byte, err error) {

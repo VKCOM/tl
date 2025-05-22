@@ -3,6 +3,7 @@
 {%- func (union *TypeRWUnion) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
         goName := addBytes(union.wr.goGlobalName, bytesVersion)
+        tlName := union.wr.tlName.String()
         asterisk := ifString(union.IsEnum, "", "*")
         natArgsDecl := formatNatArgsDecl(union.wr.NatParams)
         natArgsCall := formatNatArgsDeclCall(union.wr.NatParams)
@@ -73,11 +74,10 @@ func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err
             formatNatArgs(nil, field.natArgs), field.recursive, true) %}
         {%- endfor -%}
     default:
-        return w, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTag({%q= union.wr.tlName.String() %}, tag)
+        return w, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTag({%q= tlName %}, tag)
     }
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if writeNeedsError -%}
     return item.WriteBoxed(w{%s= natArgsCall %})
@@ -119,6 +119,7 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
 }
 {%- if union.wr.gen.options.GenerateTL2 -%}
 
+{%- if union.wr.wantsTL2 -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
     {%- if union.IsEnum -%}
     switch item.index {
@@ -182,15 +183,23 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     {%- endif -%}
     return w, sizes
 }
+{%- endif -%}
     {%- if len(natArgsDecl) == 0 -%}
 func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-    sizes = item.CalculateLayout(sizes[0:0])
+{%- if !union.wr.wantsTL2 -%}
+    return w, sizes
+{%- else -%}
+    sizes = item.CalculateLayout(sizes[:0])
     w, _ = item.InternalWriteTL2(w, sizes)
-    return w, sizes[0:0]
+    return w, sizes[:0]
+{%- endif -%}
 }
     {%- endif -%}
 
 func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+{%- if !union.wr.wantsTL2 -%}
+    return r, {%s= union.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -230,6 +239,7 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         r = saveR[shift:]
     }
     return r, nil
+{%- endif -%}
 }
 {%- endif -%}
 
@@ -241,11 +251,11 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
     -%}
     {%- if union.IsEnum -%}
     if j == nil {
-        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, "expected string")
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected string")
     }
     _jtype, _ok := j.(string)
     if !_ok {
-        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, "expected string")
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected string")
     }
     switch _jtype {
         {%- for i, field := range union.Fields -%}
@@ -262,21 +272,21 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
                 nameWithTag2 := name2 + tag2
             -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
             if !legacyTypeNames && _jtype == {%q= nameWithTag2 %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag2 %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
             }
             {%- else -%}:{%- endif -%}
             if !legacyTypeNames && _jtype == {%q= nameWithTag %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
             }
             item.index = {%d i %}
             return nil
         {%- endfor -%}
         default:
-            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidEnumTagJSON({%q= union.wr.tlName.String() %}, _jtype)
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidEnumTagJSON({%q= tlName %}, _jtype)
     }
 }
     {%- else -%}
-    _jm, _tag, err := {%s= union.wr.gen.InternalPrefix()%}JsonReadUnionType({%q= union.wr.tlName.String() %}, j)
+    _jm, _tag, err := {%s= union.wr.gen.InternalPrefix()%}JsonReadUnionType({%q= tlName %}, j)
     if err != nil {
         return err
     }
@@ -296,11 +306,11 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
                 nameWithTag2 := name2 + tag2
             -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
             if !legacyTypeNames && _tag == {%q= nameWithTag2 %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag2 %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
             }
             {%- else -%}:{%- endif -%}
             if !legacyTypeNames && _tag == {%q= nameWithTag %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
             }
             item.index = {%d i %}
             {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
@@ -315,10 +325,10 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
             delete(_jm, "value")
         {%- endfor -%}
         default:
-            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= union.wr.tlName.String() %}, _tag)
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= tlName %}, _tag)
     }
     for k := range _jm {
-        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= union.wr.tlName.String() %}, k)
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSONExcessElement({%q= tlName %}, k)
     }
     return nil
 }
@@ -333,7 +343,7 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
     {%- if union.IsEnum -%}
     _jtype := in.UnsafeString()
     if !in.Ok() {
-        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, "expected string")
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "expected string")
     }
     switch _jtype {
         {%- for i, field := range union.Fields -%}
@@ -350,21 +360,21 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
                 nameWithTag2 := name2 + tag2
             -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
             if !legacyTypeNames && _jtype == {%q= nameWithTag2 %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag2 %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
             }
             {%- else -%}:{%- endif -%}
             if !legacyTypeNames && _jtype == {%q= nameWithTag %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
             }
             item.index = {%d i %}
             return nil
         {%- endfor -%}
         default:
-            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidEnumTagJSON({%q= union.wr.tlName.String() %}, _jtype)
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidEnumTagJSON({%q= tlName %}, _jtype)
     }
 }
     {%- else -%}
-    _tag, _value, err := {%s= union.wr.gen.InternalPrefix()%}Json2ReadUnion({%q= union.wr.tlName.String() %}, in)
+    _tag, _value, err := {%s= union.wr.gen.InternalPrefix()%}Json2ReadUnion({%q= tlName %}, in)
     if err != nil {
         return err
     }
@@ -383,11 +393,11 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
                 nameWithTag2 := name2 + tag2
             -%}{%q= nameWithTag2 %}, {%q= name2 %}, {%q= tag2 %}:
             if !legacyTypeNames && _tag == {%q= nameWithTag2 %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag2 %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag2 %})
             }
             {%- else -%}:{%- endif -%}
             if !legacyTypeNames && _tag == {%q= nameWithTag %} {
-                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= union.wr.tlName.String() %}, {%q= nameWithTag %})
+                return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionLegacyTagJSON({%q= tlName %}, {%q= nameWithTag %})
             }
             item.index = {%d i %}
             {%- if field.t.IsTrueType()-%}{%-continue-%}{%-endif-%}
@@ -406,7 +416,7 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
                 formatNatArgs(nil, field.natArgs), field.recursive) %}
         {%- endfor -%}
         default:
-            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= union.wr.tlName.String() %}, _tag)
+            return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTagJSON({%q= tlName %}, _tag)
     }
     return nil
 }
@@ -517,7 +527,7 @@ func (item *{%s= goName %}) MarshalJSON() ([]byte, error) {
 
 func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
     if err := item.ReadJSON(true, &basictl.JsonLexer{Data: b}); err != nil {
-        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= union.wr.tlName.String() %}, err.Error())
+        return {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, err.Error())
     }
     return nil
 }
@@ -538,7 +548,7 @@ func (item *{%s= goName %}) UnmarshalJSON(b []byte) error {
     {%- code goGlobalName := addBytes(union.wr.goGlobalName, bytesVersion) -%}
     {%- for i, field := range union.Fields -%}
 
-func (item *{%s= goGlobalName %}) Is{%s= field.goName %}() bool { return item.index == {%d i %} }
+func (item {% if !union.IsEnum %}*{% endif %}{%s= goGlobalName %}) Is{%s= field.goName %}() bool { return item.index == {%d i %} }
         {%- if union.IsEnum -%}
 func (item *{%s= goGlobalName %}) Set{%s= field.goName %}() { item.index = {%d i %}}
 

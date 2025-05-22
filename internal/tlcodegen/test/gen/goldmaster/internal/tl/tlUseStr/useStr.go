@@ -34,7 +34,6 @@ func (item *UseStr) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UseStr) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -51,7 +50,6 @@ func (item *UseStr) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UseStr) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -189,9 +187,9 @@ func (item *UseStr) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *UseStr) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *UseStr) ReadTL2(r []byte) (_ []byte, err error) {
@@ -252,7 +250,6 @@ func (item *UseStrBytes) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringReadBytes(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UseStrBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -269,7 +266,6 @@ func (item *UseStrBytes) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UseStrBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -407,9 +403,9 @@ func (item *UseStrBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int)
 }
 
 func (item *UseStrBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *UseStrBytes) ReadTL2(r []byte) (_ []byte, err error) {

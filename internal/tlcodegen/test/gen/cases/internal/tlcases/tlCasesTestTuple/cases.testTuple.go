@@ -35,7 +35,6 @@ func (item *CasesTestTuple) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple4Int.BuiltinTuple4IntRead(w, &item.Tpl)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesTestTuple) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -52,7 +51,6 @@ func (item *CasesTestTuple) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesTestTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -187,9 +185,9 @@ func (item *CasesTestTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 }
 
 func (item *CasesTestTuple) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesTestTuple) ReadTL2(r []byte) (_ []byte, err error) {

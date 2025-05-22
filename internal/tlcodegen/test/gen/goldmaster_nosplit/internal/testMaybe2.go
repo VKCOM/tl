@@ -44,7 +44,6 @@ func (item *TestMaybe2) Read(w []byte) (_ []byte, err error) {
 	return item.G.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TestMaybe2) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -63,7 +62,6 @@ func (item *TestMaybe2) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TestMaybe2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -281,9 +279,9 @@ func (item *TestMaybe2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 }
 
 func (item *TestMaybe2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *TestMaybe2) ReadTL2(r []byte) (_ []byte, err error) {

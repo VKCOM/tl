@@ -37,7 +37,6 @@ func (item *Replace15Elem1) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return basictl.LongRead(w, &item.Y)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace15Elem1) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n), nil
 }

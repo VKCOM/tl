@@ -37,7 +37,6 @@ func (item *VectorBenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorBenchmarksVruPosition) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -54,7 +53,6 @@ func (item *VectorBenchmarksVruPosition) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorBenchmarksVruPosition) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -113,9 +111,9 @@ func (item *VectorBenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int)
 }
 
 func (item *VectorBenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *VectorBenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {

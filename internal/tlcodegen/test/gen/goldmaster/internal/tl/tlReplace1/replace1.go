@@ -35,7 +35,6 @@ func (item *Replace1) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.A, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace1) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -54,7 +53,6 @@ func (item *Replace1) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Replace1) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }

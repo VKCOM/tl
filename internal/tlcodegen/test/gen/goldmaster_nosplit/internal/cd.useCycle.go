@@ -38,7 +38,6 @@ func (item *CdUseCycle) Read(w []byte) (_ []byte, err error) {
 	return item.B.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CdUseCycle) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -56,7 +55,6 @@ func (item *CdUseCycle) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CdUseCycle) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -234,9 +232,9 @@ func (item *CdUseCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 }
 
 func (item *CdUseCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CdUseCycle) ReadTL2(r []byte) (_ []byte, err error) {

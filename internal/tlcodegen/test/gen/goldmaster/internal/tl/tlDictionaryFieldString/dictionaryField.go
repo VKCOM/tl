@@ -40,7 +40,6 @@ func (item *DictionaryFieldString) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryFieldString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -58,7 +57,6 @@ func (item *DictionaryFieldString) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryFieldString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -234,9 +232,9 @@ func (item *DictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]by
 }
 
 func (item *DictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
@@ -312,7 +310,6 @@ func (item *DictionaryFieldStringBytes) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringReadBytes(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryFieldStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -330,7 +327,6 @@ func (item *DictionaryFieldStringBytes) ReadBoxed(w []byte) (_ []byte, err error
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryFieldStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -506,9 +502,9 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 }
 
 func (item *DictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {

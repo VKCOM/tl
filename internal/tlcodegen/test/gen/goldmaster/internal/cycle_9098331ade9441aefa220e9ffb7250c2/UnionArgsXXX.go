@@ -41,7 +41,6 @@ func (item *UnionArgsXXX1Int) Read(w []byte, nat_Y uint32) (_ []byte, err error)
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.X, nat_Y)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UnionArgsXXX1Int) WriteGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
 	return item.Write(w, nat_Y)
 }
@@ -60,7 +59,6 @@ func (item *UnionArgsXXX1Int) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err e
 	return item.Read(w, nat_Y)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UnionArgsXXX1Int) WriteBoxedGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_Y)
 }
@@ -259,7 +257,6 @@ func (item *UnionArgsXXX2Int) Read(w []byte, nat_Y uint32) (_ []byte, err error)
 	return basictl.IntRead(w, &item.A)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UnionArgsXXX2Int) WriteGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
 	return item.Write(w, nat_Y), nil
 }
@@ -276,7 +273,6 @@ func (item *UnionArgsXXX2Int) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err e
 	return item.Read(w, nat_Y)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UnionArgsXXX2Int) WriteBoxedGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_Y), nil
 }
@@ -524,7 +520,6 @@ func (item *UnionArgsXXXInt) ReadBoxed(w []byte, nat_Y uint32) (_ []byte, err er
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UnionArgsXXXInt) WriteBoxedGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_Y)
 }

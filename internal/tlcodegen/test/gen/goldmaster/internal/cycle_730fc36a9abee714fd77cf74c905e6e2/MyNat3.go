@@ -102,7 +102,6 @@ func (item *MyNat3) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyNat3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -134,14 +133,14 @@ func (item *MyNat3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		sizes = sizes[1:]
 		w = basictl.TL2WriteSize(w, 0)
 	case 1:
-		w, sizes = (*item.valueMyPlus3).InternalWriteTL2(w, sizes)
+		w, sizes = item.valueMyPlus3.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 func (item *MyNat3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *MyNat3) ReadTL2(r []byte) (_ []byte, err error) {
@@ -176,7 +175,7 @@ func (item *MyNat3) ReadTL2(r []byte) (_ []byte, err error) {
 			var newValue MyPlus3
 			item.valueMyPlus3 = &newValue
 		}
-		if r, err = (*item.valueMyPlus3).ReadTL2(r); err != nil {
+		if r, err = item.valueMyPlus3.ReadTL2(r); err != nil {
 			return r, err
 		}
 	}
@@ -292,7 +291,6 @@ func (item *MyPlus3) Read(w []byte) (_ []byte, err error) {
 	return ptr.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyPlus3) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -309,7 +307,6 @@ func (item *MyPlus3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyPlus3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -416,7 +413,7 @@ func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 1)
-		w, sizes = (*ptr).InternalWriteTL2(w, sizes)
+		w, sizes = ptr.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -425,9 +422,9 @@ func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *MyPlus3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *MyPlus3) ReadTL2(r []byte) (_ []byte, err error) {
@@ -460,7 +457,7 @@ func (item *MyPlus3) ReadTL2(r []byte) (_ []byte, err error) {
 				var newValue MyNat3
 				ptr = &newValue
 			}
-			if r, err = (*ptr).ReadTL2(r); err != nil {
+			if r, err = ptr.ReadTL2(r); err != nil {
 				return r, err
 			}
 		} else {
@@ -496,7 +493,6 @@ func (item *MyZero3) FillRandom(rg *basictl.RandGenerator) {}
 
 func (item *MyZero3) Read(w []byte) (_ []byte, err error) { return w, nil }
 
-// This method is general version of Write, use it instead!
 func (item *MyZero3) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -512,7 +508,6 @@ func (item *MyZero3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyZero3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -602,9 +597,9 @@ func (item *MyZero3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *MyZero3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *MyZero3) ReadTL2(r []byte) (_ []byte, err error) {

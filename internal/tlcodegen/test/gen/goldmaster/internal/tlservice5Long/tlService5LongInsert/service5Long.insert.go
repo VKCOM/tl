@@ -53,7 +53,6 @@ func (item *Service5LongInsert) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service5LongInsert) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -70,7 +69,6 @@ func (item *Service5LongInsert) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5LongInsert) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -87,6 +85,17 @@ func (item *Service5LongInsert) ReadResult(w []byte, ret *cycle_98d4570147919cfd
 func (item *Service5LongInsert) WriteResult(w []byte, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
+}
+func (item *Service5LongInsert) ReadResultTL2(w []byte, ret *cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
+	if w, err = ret.ReadTL2(w); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *Service5LongInsert) WriteResultTL2(w []byte, sizes []int, ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, _ []int, err error) {
+	w, sizes = ret.InternalWriteTL2(w, sizes)
+	return w, sizes, nil
 }
 
 func (item *Service5LongInsert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) error {
@@ -280,9 +289,9 @@ func (item *Service5LongInsert) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 }
 
 func (item *Service5LongInsert) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *Service5LongInsert) ReadTL2(r []byte) (_ []byte, err error) {

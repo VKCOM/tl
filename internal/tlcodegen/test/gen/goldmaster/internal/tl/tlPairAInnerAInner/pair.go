@@ -41,7 +41,6 @@ func (item *PairAInnerAInner) Read(w []byte, nat_X uint32, nat_Y uint32) (_ []by
 	return item.B.Read(w, nat_Y)
 }
 
-// This method is general version of Write, use it instead!
 func (item *PairAInnerAInner) WriteGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	return item.Write(w, nat_X, nat_Y)
 }
@@ -63,7 +62,6 @@ func (item *PairAInnerAInner) ReadBoxed(w []byte, nat_X uint32, nat_Y uint32) (_
 	return item.Read(w, nat_X, nat_Y)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *PairAInnerAInner) WriteBoxedGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_X, nat_Y)
 }

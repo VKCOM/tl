@@ -35,7 +35,6 @@ func (item *CasesInplace2Int) Read(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a
 	return item.Value.Read(w, nat_a2, nat_a3, nat_a1)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesInplace2Int) WriteGeneral(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	return item.Write(w, nat_a1, nat_a2, nat_a3)
 }
@@ -54,7 +53,6 @@ func (item *CasesInplace2Int) ReadBoxed(w []byte, nat_a1 uint32, nat_a2 uint32, 
 	return item.Read(w, nat_a1, nat_a2, nat_a3)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesInplace2Int) WriteBoxedGeneral(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_a1, nat_a2, nat_a3)
 }

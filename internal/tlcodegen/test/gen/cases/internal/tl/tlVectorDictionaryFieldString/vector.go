@@ -37,7 +37,6 @@ func (item *VectorDictionaryFieldString) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorDictionaryFieldString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -54,7 +53,6 @@ func (item *VectorDictionaryFieldString) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorDictionaryFieldString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -113,9 +111,9 @@ func (item *VectorDictionaryFieldString) InternalWriteTL2(w []byte, sizes []int)
 }
 
 func (item *VectorDictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *VectorDictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
@@ -146,7 +144,6 @@ func (item *VectorDictionaryFieldStringBytes) Read(w []byte) (_ []byte, err erro
 	return tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorDictionaryFieldStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -163,7 +160,6 @@ func (item *VectorDictionaryFieldStringBytes) ReadBoxed(w []byte) (_ []byte, err
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorDictionaryFieldStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -222,9 +218,9 @@ func (item *VectorDictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes [
 }
 
 func (item *VectorDictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *VectorDictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {

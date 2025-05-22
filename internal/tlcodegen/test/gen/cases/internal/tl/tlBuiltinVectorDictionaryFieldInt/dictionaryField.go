@@ -123,7 +123,6 @@ func BuiltinVectorDictionaryFieldIntInternalWriteTL2(w []byte, sizes []int, m *m
 		value := (*m)[key]
 		w = basictl.IntWrite(w, value)
 	}
-
 	return w, sizes
 }
 

@@ -36,7 +36,6 @@ func (item *VectorString) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorString.BuiltinVectorStringRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -53,7 +52,6 @@ func (item *VectorString) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -112,9 +110,9 @@ func (item *VectorString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 }
 
 func (item *VectorString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *VectorString) ReadTL2(r []byte) (_ []byte, err error) {
@@ -145,7 +143,6 @@ func (item *VectorStringBytes) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorString.BuiltinVectorStringBytesRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -162,7 +159,6 @@ func (item *VectorStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -221,9 +217,9 @@ func (item *VectorStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 }
 
 func (item *VectorStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *VectorStringBytes) ReadTL2(r []byte) (_ []byte, err error) {

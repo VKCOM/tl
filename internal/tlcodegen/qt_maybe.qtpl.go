@@ -18,12 +18,14 @@ var (
 
 func (maybe *TypeRWMaybe) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
+	tlName := maybe.wr.tlName.String()
 	elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
 	natArgsDecl := formatNatArgsDecl(maybe.wr.NatParams)
 	natArgsCall := formatNatArgsDeclCall(maybe.wr.NatParams)
 	emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
 	okTag := fmt.Sprintf("%#x", maybe.okTag)
 	writeElementNeedsError := maybe.element.t.hasErrorInWriteMethods
+	isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
 
 	qw422016.N().S(`type `)
 	qw422016.N().S(goName)
@@ -78,7 +80,6 @@ func (item *`)
     return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteBoxedGeneral(w []byte`)
@@ -134,61 +135,63 @@ func (item *`)
 		qw422016.N().S(`) CalculateLayout(sizes []int`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) []int {
-    sizePosition := len(sizes)
+`)
+		if maybe.wr.wantsTL2 {
+			qw422016.N().S(`    sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if item.Ok {
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
 `)
-		isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
-
-		if len(trivialSize) == 0 && !maybe.element.t.IsTrueType() {
-			qw422016.N().S(`        currentPosition := len(sizes)
+			if len(trivialSize) == 0 && !maybe.element.t.IsTrueType() {
+				qw422016.N().S(`        currentPosition := len(sizes)
 `)
-		}
-		nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
+			}
+			nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
 
-		if nonEmptyCondition != "" {
-			qw422016.N().S(`        if `)
-			qw422016.N().S(nonEmptyCondition)
-			qw422016.N().S(` {
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`        if `)
+				qw422016.N().S(nonEmptyCondition)
+				qw422016.N().S(` {
 `)
-		}
-		qw422016.N().S(`        `)
-		qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
-		qw422016.N().S(`
+			}
+			qw422016.N().S(`        `)
+			qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(`
 `)
-		sizeValue := "sizes[currentPosition]"
-		if len(trivialSize) != 0 {
-			sizeValue = trivialSize
-		}
+			sizeValue := "sizes[currentPosition]"
+			if len(trivialSize) != 0 {
+				sizeValue = trivialSize
+			}
 
-		if !isSizeConstant {
-			qw422016.N().S(`        if `)
+			if !isSizeConstant {
+				qw422016.N().S(`        if `)
+				qw422016.N().S(sizeValue)
+				qw422016.N().S(` != 0 {
+`)
+			}
+			qw422016.N().S(`            sizes[sizePosition] += `)
 			qw422016.N().S(sizeValue)
-			qw422016.N().S(` != 0 {
+			qw422016.N().S(`
+`)
+			if maybe.element.t.trw.isSizeWrittenInData() {
+				qw422016.N().S(`            sizes[sizePosition] += basictl.TL2CalculateSize(`)
+				qw422016.N().S(sizeValue)
+				qw422016.N().S(`)
+`)
+			}
+			if !isSizeConstant {
+				qw422016.N().S(`        }
+`)
+			}
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`        }
+`)
+			}
+			qw422016.N().S(`    }
 `)
 		}
-		qw422016.N().S(`            sizes[sizePosition] += `)
-		qw422016.N().S(sizeValue)
-		qw422016.N().S(`
-`)
-		if maybe.element.t.trw.isSizeWrittenInData() {
-			qw422016.N().S(`            sizes[sizePosition] += basictl.TL2CalculateSize(`)
-			qw422016.N().S(sizeValue)
-			qw422016.N().S(`)
-`)
-		}
-		if !isSizeConstant {
-			qw422016.N().S(`        }
-`)
-		}
-		if nonEmptyCondition != "" {
-			qw422016.N().S(`        }
-`)
-		}
-		qw422016.N().S(`    }
-    return sizes
+		qw422016.N().S(`    return sizes
 }
 
 func (item *`)
@@ -196,7 +199,9 @@ func (item *`)
 		qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) ([]byte, []int) {
-    currentSize := sizes[0]
+`)
+		if maybe.wr.wantsTL2 {
+			qw422016.N().S(`    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -209,44 +214,43 @@ func (item *`)
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
 `)
-		_, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
+			sizeValue := "sizes[0]"
+			if len(trivialSize) != 0 {
+				sizeValue = trivialSize
+			}
+			nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
 
-		sizeValue = "sizes[0]"
-		if len(trivialSize) != 0 {
-			sizeValue = trivialSize
-		}
-
-		nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
-
-		if nonEmptyCondition != "" {
-			qw422016.N().S(`        if `)
-			qw422016.N().S(nonEmptyCondition)
-			qw422016.N().S(` {
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`        if `)
+				qw422016.N().S(nonEmptyCondition)
+				qw422016.N().S(` {
 `)
-		}
-		qw422016.N().S(`        if `)
-		qw422016.N().S(sizeValue)
-		qw422016.N().S(` != 0 {
+			}
+			qw422016.N().S(`        if `)
+			qw422016.N().S(sizeValue)
+			qw422016.N().S(` != 0 {
         w[currentPosition] |= (1 << 1)
         `)
-		qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
-		qw422016.N().S(`
+			qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(`
 `)
-		if len(trivialSize) == 0 {
-			qw422016.N().S(`        } else {
+			if len(trivialSize) == 0 {
+				qw422016.N().S(`        } else {
             sizes = sizes[1:]
         }
 `)
-		} else {
-			qw422016.N().S(`        }
+			} else {
+				qw422016.N().S(`        }
+`)
+			}
+			if nonEmptyCondition != "" {
+				qw422016.N().S(`        }
+`)
+			}
+			qw422016.N().S(`    }
 `)
 		}
-		if nonEmptyCondition != "" {
-			qw422016.N().S(`        }
-`)
-		}
-		qw422016.N().S(`    }
-    return w, sizes
+		qw422016.N().S(`    return w, sizes
 }
 
 func (item *`)
@@ -254,7 +258,16 @@ func (item *`)
 		qw422016.N().S(`) ReadTL2(r []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    saveR := r
+`)
+		if !maybe.wr.wantsTL2 {
+			qw422016.N().S(`    return r, `)
+			qw422016.N().S(maybe.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`)
+`)
+		} else {
+			qw422016.N().S(`    saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     shift := currentSize + basictl.TL2CalculateSize(currentSize)
@@ -275,28 +288,30 @@ func (item *`)
         item.Ok = true
         if block & (1 << 1) != 0 {
 `)
-		if maybe.element.recursive {
-			qw422016.N().S(`        if item.Value == nil {
+			if maybe.element.recursive {
+				qw422016.N().S(`        if item.Value == nil {
             var newValue `)
-			qw422016.N().S(maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false))
-			qw422016.N().S(`
+				qw422016.N().S(maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false))
+				qw422016.N().S(`
             item.Value = &newValue
         }
 `)
-		}
-		qw422016.N().S(`        `)
-		qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
-		qw422016.N().S(`
+			}
+			qw422016.N().S(`        `)
+			qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(`
         } else {
         `)
-		qw422016.N().S(maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive))
-		qw422016.N().S(`
+			qw422016.N().S(maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive))
+			qw422016.N().S(`
         }
     }
     if len(saveR) < len(r) + shift {
         r = saveR[shift:]
     }
-    return r, nil
+`)
+		}
+		qw422016.N().S(`    return r, nil
 }
 
 `)
@@ -309,9 +324,9 @@ func (item *`)
 		qw422016.N().S(`) error {
   _ok, _jvalue, err := `)
 		qw422016.N().S(maybe.wr.gen.InternalPrefix())
-		qw422016.N().S(`JsonReadMaybe("`)
-		maybe.wr.tlName.StreamString(qw422016)
-		qw422016.N().S(`", j)
+		qw422016.N().S(`JsonReadMaybe(`)
+		qw422016.N().Q(tlName)
+		qw422016.N().S(`, j)
   if err != nil {
     return err
   }
@@ -333,9 +348,9 @@ func (item *`)
 	qw422016.N().S(`) error {
   _ok, _jvalue, err := `)
 	qw422016.N().S(maybe.wr.gen.InternalPrefix())
-	qw422016.N().S(`Json2ReadMaybe("`)
-	maybe.wr.tlName.StreamString(qw422016)
-	qw422016.N().S(`", in)
+	qw422016.N().S(`Json2ReadMaybe(`)
+	qw422016.N().Q(tlName)
+	qw422016.N().S(`, in)
   if err != nil {
     return err
   }

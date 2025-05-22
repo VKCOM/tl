@@ -160,7 +160,6 @@ func (item *Replace14ElemElemLong) Read(w []byte, nat_n uint32, nat_k uint32) (_
 	return BuiltinTupleLongRead(w, &item.Y, nat_k)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace14ElemElemLong) WriteGeneral(w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n, nat_k)
 }
