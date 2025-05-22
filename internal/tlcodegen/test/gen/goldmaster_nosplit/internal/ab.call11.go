@@ -32,7 +32,6 @@ func (item *AbCall11) Read(w []byte) (_ []byte, err error) {
 	return item.X.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *AbCall11) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *AbCall11) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AbCall11) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -66,6 +64,17 @@ func (item *AbCall11) ReadResult(w []byte, ret *AColor) (_ []byte, err error) {
 func (item *AbCall11) WriteResult(w []byte, ret AColor) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
+}
+func (item *AbCall11) ReadResultTL2(w []byte, ret *AColor) (_ []byte, err error) {
+	if w, err = ret.ReadTL2(w); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *AbCall11) WriteResultTL2(w []byte, sizes []int, ret AColor) (_ []byte, _ []int, err error) {
+	w, sizes = ret.InternalWriteTL2(w, sizes)
+	return w, sizes, nil
 }
 
 func (item *AbCall11) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *AColor) error {
@@ -237,9 +246,9 @@ func (item *AbCall11) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *AbCall11) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AbCall11) ReadTL2(r []byte) (_ []byte, err error) {

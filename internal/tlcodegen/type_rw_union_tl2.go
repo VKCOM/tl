@@ -25,7 +25,7 @@ func (trw *TypeRWUnion) writeTL2Call(
 ) string {
 	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
 		targetSizes,
-		addAsteriskAndBrackets(refObject, targetObject),
+		targetObject,
 		joinWithCommas(natArgs),
 		targetBytes,
 	)
@@ -41,7 +41,7 @@ func (trw *TypeRWUnion) readTL2Call(
 	natArgs []string,
 ) string {
 	return fmt.Sprintf("if %[3]s, err = %[1]s.ReadTL2(%[3]s%[2]s); err != nil { return %[3]s, err }",
-		addAsteriskAndBrackets(refObject, targetObject),
+		targetObject,
 		joinWithCommas(natArgs),
 		targetBytes,
 	)

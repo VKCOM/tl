@@ -50,20 +50,20 @@ func (item *AColor) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *AColor) IsColor() bool { return item.index == 0 }
-func (item *AColor) SetColor()     { item.index = 0 }
+func (item AColor) IsColor() bool { return item.index == 0 }
+func (item *AColor) SetColor()    { item.index = 0 }
 
-func (item *AColor) IsRed() bool { return item.index == 1 }
-func (item *AColor) SetRed()     { item.index = 1 }
+func (item AColor) IsRed() bool { return item.index == 1 }
+func (item *AColor) SetRed()    { item.index = 1 }
 
-func (item *AColor) IsGreen() bool { return item.index == 2 }
-func (item *AColor) SetGreen()     { item.index = 2 }
+func (item AColor) IsGreen() bool { return item.index == 2 }
+func (item *AColor) SetGreen()    { item.index = 2 }
 
-func (item *AColor) IsBRed() bool { return item.index == 3 }
-func (item *AColor) SetBRed()     { item.index = 3 }
+func (item AColor) IsBRed() bool { return item.index == 3 }
+func (item *AColor) SetBRed()    { item.index = 3 }
 
-func (item *AColor) IsBlue() bool { return item.index == 4 }
-func (item *AColor) SetBlue()     { item.index = 4 }
+func (item AColor) IsBlue() bool { return item.index == 4 }
+func (item *AColor) SetBlue()    { item.index = 4 }
 
 func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
@@ -91,7 +91,6 @@ func (item *AColor) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AColor) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -126,9 +125,9 @@ func (item *AColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 func (item *AColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AColor) ReadTL2(r []byte) (_ []byte, err error) {
@@ -263,7 +262,6 @@ func (item *AColorBoxedMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AColorBoxedMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

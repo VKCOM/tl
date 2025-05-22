@@ -130,7 +130,6 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 		value := (*m)[key]
 		w, sizes = value.InternalWriteTL2(w, sizes, nat_t)
 	}
-
 	return w, sizes
 }
 

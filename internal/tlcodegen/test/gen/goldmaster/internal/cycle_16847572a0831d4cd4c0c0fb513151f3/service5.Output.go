@@ -33,7 +33,6 @@ func (item *Service5EmptyOutput) FillRandom(rg *basictl.RandGenerator) {}
 
 func (item *Service5EmptyOutput) Read(w []byte) (_ []byte, err error) { return w, nil }
 
-// This method is general version of Write, use it instead!
 func (item *Service5EmptyOutput) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *Service5EmptyOutput) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5EmptyOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -139,9 +137,9 @@ func (item *Service5EmptyOutput) InternalWriteTL2(w []byte, sizes []int) ([]byte
 }
 
 func (item *Service5EmptyOutput) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *Service5EmptyOutput) ReadTL2(r []byte) (_ []byte, err error) {
@@ -244,7 +242,6 @@ func (item *Service5Output) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5Output) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -281,9 +278,9 @@ func (item *Service5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	return w, sizes
 }
 func (item *Service5Output) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *Service5Output) ReadTL2(r []byte) (_ []byte, err error) {
@@ -431,7 +428,6 @@ func (item *Service5StringOutput) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Response)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service5StringOutput) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -449,7 +445,6 @@ func (item *Service5StringOutput) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5StringOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -631,9 +626,9 @@ func (item *Service5StringOutput) InternalWriteTL2(w []byte, sizes []int) ([]byt
 }
 
 func (item *Service5StringOutput) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *Service5StringOutput) ReadTL2(r []byte) (_ []byte, err error) {

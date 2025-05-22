@@ -44,14 +44,14 @@ func (item *CasesBytesTestEnum) FillRandom(rg *basictl.RandGenerator) {
 	}
 }
 
-func (item *CasesBytesTestEnum) Is1() bool { return item.index == 0 }
-func (item *CasesBytesTestEnum) Set1()     { item.index = 0 }
+func (item CasesBytesTestEnum) Is1() bool { return item.index == 0 }
+func (item *CasesBytesTestEnum) Set1()    { item.index = 0 }
 
-func (item *CasesBytesTestEnum) Is2() bool { return item.index == 1 }
-func (item *CasesBytesTestEnum) Set2()     { item.index = 1 }
+func (item CasesBytesTestEnum) Is2() bool { return item.index == 1 }
+func (item *CasesBytesTestEnum) Set2()    { item.index = 1 }
 
-func (item *CasesBytesTestEnum) Is3() bool { return item.index == 2 }
-func (item *CasesBytesTestEnum) Set3()     { item.index = 2 }
+func (item CasesBytesTestEnum) Is3() bool { return item.index == 2 }
+func (item *CasesBytesTestEnum) Set3()    { item.index = 2 }
 
 func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
@@ -73,7 +73,6 @@ func (item *CasesBytesTestEnum) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestEnum) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -108,9 +107,9 @@ func (item *CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	return w, sizes
 }
 func (item *CasesBytesTestEnum) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestEnum) ReadTL2(r []byte) (_ []byte, err error) {

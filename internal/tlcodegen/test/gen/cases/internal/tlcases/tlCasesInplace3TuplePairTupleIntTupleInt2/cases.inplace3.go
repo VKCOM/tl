@@ -35,7 +35,6 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) Read(w []byte, nat_a1 uint3
 	return item.Value.Read(w, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteGeneral(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
 	return item.Write(w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
@@ -54,7 +53,6 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadBoxed(w []byte, nat_a1 
 	return item.Read(w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteBoxedGeneral(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }

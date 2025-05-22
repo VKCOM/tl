@@ -64,7 +64,6 @@ func (item *UsefulServiceGetUserEntity) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *UsefulServiceGetUserEntity) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -84,7 +83,6 @@ func (item *UsefulServiceGetUserEntity) ReadBoxed(w []byte) (_ []byte, err error
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UsefulServiceGetUserEntity) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -101,6 +99,17 @@ func (item *UsefulServiceGetUserEntity) ReadResult(w []byte, ret *UsefulServiceG
 func (item *UsefulServiceGetUserEntity) WriteResult(w []byte, ret UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
 	w = ret.WriteBoxed(w, item.FieldsMask)
 	return w, nil
+}
+func (item *UsefulServiceGetUserEntity) ReadResultTL2(w []byte, ret *UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
+	if w, err = (*ret).ReadTL2(w, item.FieldsMask); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, sizes []int, ret UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, _ []int, err error) {
+	w, sizes = ret.InternalWriteTL2(w, sizes, item.FieldsMask)
+	return w, sizes, nil
 }
 
 func (item *UsefulServiceGetUserEntity) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *UsefulServiceGetUserEntityResultBoxedMaybe) error {
@@ -314,9 +323,9 @@ func (item *UsefulServiceGetUserEntity) InternalWriteTL2(w []byte, sizes []int) 
 }
 
 func (item *UsefulServiceGetUserEntity) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *UsefulServiceGetUserEntity) ReadTL2(r []byte) (_ []byte, err error) {

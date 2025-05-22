@@ -43,7 +43,6 @@ func (item *TupleIntMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err erro
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_t)
 }

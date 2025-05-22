@@ -3,12 +3,14 @@
 {%- func (maybe *TypeRWMaybe) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
     {%- code
         goName := addBytes(maybe.wr.goGlobalName, bytesVersion)
+        tlName := maybe.wr.tlName.String()
         elementTypeString := maybe.element.t.TypeString2(bytesVersion, directImports, maybe.wr.ins, false, false)
         natArgsDecl := formatNatArgsDecl(maybe.wr.NatParams)
         natArgsCall := formatNatArgsDeclCall(maybe.wr.NatParams)
         emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
         okTag := fmt.Sprintf("%#x", maybe.okTag)
         writeElementNeedsError := maybe.element.t.hasErrorInWriteMethods
+        isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
     -%}
 type {%s= goName %} struct {
     Value {%s= elementTypeString %} // not deterministic if !Ok
@@ -39,7 +41,6 @@ func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, er
     return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if writeElementNeedsError -%}
     return item.WriteBoxed(w{%s= natArgsCall %})
@@ -62,14 +63,12 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
 
 {%- if maybe.wr.gen.options.GenerateTL2 -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+{%- if maybe.wr.wantsTL2 -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if item.Ok {
         sizes[sizePosition] += 1
         sizes[sizePosition] += basictl.TL2CalculateSize(1)
-        {%- code
-            isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
-        -%}
         {%- if len(trivialSize) == 0 && !maybe.element.t.IsTrueType() -%}
         currentPosition := len(sizes)
         {%- endif -%}
@@ -98,10 +97,12 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         }
         {%- endif -%}
     }
+{%- endif -%}
     return sizes
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+{%- if maybe.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -115,15 +116,12 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
         {%- code
-            _, trivialSize = maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
-        -%}
-        {%- code
-            sizeValue = "sizes[0]"
+            sizeValue := "sizes[0]"
             if len(trivialSize) != 0 {
                 sizeValue = trivialSize
             }
+            nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
         -%}
-        {%- code nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive) -%}
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
         {%- endif -%}
@@ -141,10 +139,14 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         }
         {%- endif -%}
     }
+{%- endif -%}
     return w, sizes
 }
 
 func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+{%- if !maybe.wr.wantsTL2 -%}
+    return r, {%s= maybe.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
+{%- else -%}
     saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -179,13 +181,14 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
     if len(saveR) < len(r) + shift {
         r = saveR[shift:]
     }
+{%- endif -%}
     return r, nil
 }
 
 {%- endif -%}
 {%- if maybe.wr.gen.options.GenerateLegacyJsonRead -%}
 func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%s= natArgsDecl %}) error {
-  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe("{%= maybe.wr.tlName.String() %}", j)
+  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}JsonReadMaybe({%q= tlName %}, j)
   if err != nil {
     return err
   }
@@ -198,7 +201,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 
 {%- endif -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
-  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}Json2ReadMaybe("{%= maybe.wr.tlName.String() %}", in)
+  _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}Json2ReadMaybe({%q= tlName %}, in)
   if err != nil {
     return err
   }

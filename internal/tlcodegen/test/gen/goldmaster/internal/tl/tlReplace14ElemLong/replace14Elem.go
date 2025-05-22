@@ -61,7 +61,6 @@ func (item *Replace14ElemLong) Read(w []byte, nat_n uint32, nat_k uint32) (_ []b
 	return basictl.IntRead(w, &item.C)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace14ElemLong) WriteGeneral(w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n, nat_k)
 }

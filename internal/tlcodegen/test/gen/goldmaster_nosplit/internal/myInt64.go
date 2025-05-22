@@ -33,7 +33,6 @@ func (item *MyInt64) Read(w []byte) (_ []byte, err error) {
 	return ptr.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyInt64) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -50,7 +49,6 @@ func (item *MyInt64) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyInt64) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -104,19 +102,19 @@ func (item *MyInt64) CalculateLayout(sizes []int) []int {
 
 func (item *MyInt64) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	ptr := (*Int64)(item)
-	w, sizes = (*ptr).InternalWriteTL2(w, sizes)
+	w, sizes = ptr.InternalWriteTL2(w, sizes)
 	return w, sizes
 }
 
 func (item *MyInt64) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *MyInt64) ReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*Int64)(item)
-	if r, err = (*ptr).ReadTL2(r); err != nil {
+	if r, err = ptr.ReadTL2(r); err != nil {
 		return r, err
 	}
 	return r, nil

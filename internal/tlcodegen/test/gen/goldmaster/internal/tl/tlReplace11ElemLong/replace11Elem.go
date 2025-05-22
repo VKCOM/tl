@@ -62,7 +62,6 @@ func (item *Replace11ElemLong) Read(w []byte, nat_n uint32, nat_k uint32) (_ []b
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.C, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Replace11ElemLong) WriteGeneral(w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n, nat_k)
 }

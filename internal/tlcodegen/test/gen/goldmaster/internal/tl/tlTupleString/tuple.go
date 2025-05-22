@@ -36,7 +36,6 @@ func (item *TupleString) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return tlBuiltinTupleString.BuiltinTupleStringRead(w, ptr, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleString) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -53,7 +52,6 @@ func (item *TupleString) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error)
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleString) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }

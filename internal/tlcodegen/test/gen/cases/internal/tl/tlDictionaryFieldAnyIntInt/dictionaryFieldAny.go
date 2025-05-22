@@ -40,7 +40,6 @@ func (item *DictionaryFieldAnyIntInt) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryFieldAnyIntInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -58,7 +57,6 @@ func (item *DictionaryFieldAnyIntInt) ReadBoxed(w []byte) (_ []byte, err error) 
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryFieldAnyIntInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -226,9 +224,9 @@ func (item *DictionaryFieldAnyIntInt) InternalWriteTL2(w []byte, sizes []int) ([
 }
 
 func (item *DictionaryFieldAnyIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *DictionaryFieldAnyIntInt) ReadTL2(r []byte) (_ []byte, err error) {

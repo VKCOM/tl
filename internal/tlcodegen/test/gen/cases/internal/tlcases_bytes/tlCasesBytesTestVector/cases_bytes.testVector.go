@@ -35,7 +35,6 @@ func (item *CasesBytesTestVector) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorString.BuiltinVectorStringRead(w, &item.Arr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesBytesTestVector) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -52,7 +51,6 @@ func (item *CasesBytesTestVector) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestVector) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -195,9 +193,9 @@ func (item *CasesBytesTestVector) InternalWriteTL2(w []byte, sizes []int) ([]byt
 }
 
 func (item *CasesBytesTestVector) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestVector) ReadTL2(r []byte) (_ []byte, err error) {
@@ -258,7 +256,6 @@ func (item *CasesBytesTestVectorBytes) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorString.BuiltinVectorStringBytesRead(w, &item.Arr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesBytesTestVectorBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -275,7 +272,6 @@ func (item *CasesBytesTestVectorBytes) ReadBoxed(w []byte) (_ []byte, err error)
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesBytesTestVectorBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -418,9 +414,9 @@ func (item *CasesBytesTestVectorBytes) InternalWriteTL2(w []byte, sizes []int) (
 }
 
 func (item *CasesBytesTestVectorBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesBytesTestVectorBytes) ReadTL2(r []byte) (_ []byte, err error) {

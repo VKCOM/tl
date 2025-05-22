@@ -33,7 +33,6 @@ func (item *TupleCycleTuple) Read(w []byte, nat_n uint32) (_ []byte, err error) 
 	return BuiltinTupleCycleTupleRead(w, ptr, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleCycleTuple) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -50,7 +49,6 @@ func (item *TupleCycleTuple) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err er
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleCycleTuple) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }
@@ -125,7 +123,6 @@ func (item *TupleCycleTuple2) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTuple2CycleTupleRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleCycleTuple2) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -142,7 +139,6 @@ func (item *TupleCycleTuple2) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleCycleTuple2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -207,9 +203,9 @@ func (item *TupleCycleTuple2) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 }
 
 func (item *TupleCycleTuple2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *TupleCycleTuple2) ReadTL2(r []byte) (_ []byte, err error) {
@@ -240,7 +236,6 @@ func (item *TupleInt) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleIntRead(w, ptr, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleInt) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -257,7 +252,6 @@ func (item *TupleInt) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleInt) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }
@@ -332,7 +326,6 @@ func (item *TupleInt0) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTuple0IntRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleInt0) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -349,7 +342,6 @@ func (item *TupleInt0) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleInt0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -408,9 +400,9 @@ func (item *TupleInt0) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *TupleInt0) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *TupleInt0) ReadTL2(r []byte) (_ []byte, err error) {
@@ -448,7 +440,6 @@ func (item *TupleInt0Maybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleInt0Maybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -601,7 +592,6 @@ func (item *TupleInt3) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTuple3IntRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleInt3) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -618,7 +608,6 @@ func (item *TupleInt3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleInt3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -677,9 +666,9 @@ func (item *TupleInt3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *TupleInt3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *TupleInt3) ReadTL2(r []byte) (_ []byte, err error) {
@@ -720,7 +709,6 @@ func (item *TupleInt3BoxedMaybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleInt3BoxedMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -881,7 +869,6 @@ func (item *TupleInt3Maybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleInt3Maybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1034,7 +1021,6 @@ func (item *TupleIntBoxed0) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTuple0IntBoxedRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleIntBoxed0) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -1051,7 +1037,6 @@ func (item *TupleIntBoxed0) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntBoxed0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1110,9 +1095,9 @@ func (item *TupleIntBoxed0) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 }
 
 func (item *TupleIntBoxed0) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *TupleIntBoxed0) ReadTL2(r []byte) (_ []byte, err error) {
@@ -1153,7 +1138,6 @@ func (item *TupleIntBoxed0BoxedMaybe) ReadBoxed(w []byte) (_ []byte, err error) 
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntBoxed0BoxedMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1307,7 +1291,6 @@ func (item *TupleIntBoxed3) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTuple3IntBoxedRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleIntBoxed3) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -1324,7 +1307,6 @@ func (item *TupleIntBoxed3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntBoxed3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1383,9 +1365,9 @@ func (item *TupleIntBoxed3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 }
 
 func (item *TupleIntBoxed3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *TupleIntBoxed3) ReadTL2(r []byte) (_ []byte, err error) {
@@ -1423,7 +1405,6 @@ func (item *TupleIntBoxed3Maybe) ReadBoxed(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntBoxed3Maybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -1583,7 +1564,6 @@ func (item *TupleIntMaybe) ReadBoxed(w []byte, nat_t uint32) (_ []byte, err erro
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_t)
 }
@@ -1740,7 +1720,6 @@ func (item *TupleLong) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleLongRead(w, ptr, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleLong) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -1757,7 +1736,6 @@ func (item *TupleLong) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleLong) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }
@@ -1832,7 +1810,6 @@ func (item *TupleString) Read(w []byte, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleStringRead(w, ptr, nat_n)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleString) WriteGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
@@ -1849,7 +1826,6 @@ func (item *TupleString) ReadBoxed(w []byte, nat_n uint32) (_ []byte, err error)
 	return item.Read(w, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleString) WriteBoxedGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_n)
 }

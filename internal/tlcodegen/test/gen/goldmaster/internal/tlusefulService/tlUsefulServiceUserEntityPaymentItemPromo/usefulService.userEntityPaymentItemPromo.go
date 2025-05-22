@@ -36,7 +36,6 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) Read(w []byte, nat_fields_m
 	return basictl.StringRead(w, &item.Content)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UsefulServiceUserEntityPaymentItemPromo) WriteGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	return item.Write(w, nat_fields_mask), nil
 }
@@ -53,7 +52,6 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) ReadBoxed(w []byte, nat_fie
 	return item.Read(w, nat_fields_mask)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UsefulServiceUserEntityPaymentItemPromo) WriteBoxedGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_fields_mask), nil
 }

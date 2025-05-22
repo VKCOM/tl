@@ -133,7 +133,6 @@ func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []
 		value := (*m)[key]
 		w = basictl.StringWriteTL2(w, value)
 	}
-
 	return w, sizes
 }
 

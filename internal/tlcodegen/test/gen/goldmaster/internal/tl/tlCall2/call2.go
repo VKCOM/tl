@@ -36,7 +36,6 @@ func (item *Call2) Read(w []byte) (_ []byte, err error) {
 	return item.X.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Call2) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -53,7 +52,6 @@ func (item *Call2) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Call2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -70,6 +68,17 @@ func (item *Call2) ReadResult(w []byte, ret *tlCdTypeB.CdTypeB) (_ []byte, err e
 func (item *Call2) WriteResult(w []byte, ret tlCdTypeB.CdTypeB) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
+}
+func (item *Call2) ReadResultTL2(w []byte, ret *tlCdTypeB.CdTypeB) (_ []byte, err error) {
+	if w, err = ret.ReadTL2(w); err != nil {
+		return w, err
+	}
+	return w, nil
+}
+
+func (item *Call2) WriteResultTL2(w []byte, sizes []int, ret tlCdTypeB.CdTypeB) (_ []byte, _ []int, err error) {
+	w, sizes = ret.InternalWriteTL2(w, sizes)
+	return w, sizes, nil
 }
 
 func (item *Call2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlCdTypeB.CdTypeB) error {
@@ -241,9 +250,9 @@ func (item *Call2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *Call2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *Call2) ReadTL2(r []byte) (_ []byte, err error) {

@@ -87,7 +87,6 @@ func (item *DictionaryElemUglyIntString) Read(w []byte, nat_f uint32) (_ []byte,
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryElemUglyIntString) WriteGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
 	return item.Write(w, nat_f), nil
 }
@@ -109,7 +108,6 @@ func (item *DictionaryElemUglyIntString) ReadBoxed(w []byte, nat_f uint32) (_ []
 	return item.Read(w, nat_f)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryElemUglyIntString) WriteBoxedGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_f), nil
 }

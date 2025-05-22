@@ -86,7 +86,6 @@ func (item *MyNat) Read(w []byte) (_ []byte, err error) {
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyNat) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -111,7 +110,6 @@ func (item *MyNat) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyNat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -285,7 +283,7 @@ func (item *MyNat) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = (*item.A).InternalWriteTL2(w, sizes)
+			w, sizes = item.A.InternalWriteTL2(w, sizes)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -295,9 +293,9 @@ func (item *MyNat) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *MyNat) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *MyNat) ReadTL2(r []byte) (_ []byte, err error) {
@@ -339,7 +337,7 @@ func (item *MyNat) ReadTL2(r []byte) (_ []byte, err error) {
 				item.A = &newValue
 			}
 			if item.FieldsMask&(1<<0) != 0 {
-				if r, err = (*item.A).ReadTL2(r); err != nil {
+				if r, err = item.A.ReadTL2(r); err != nil {
 					return r, err
 				}
 			} else {

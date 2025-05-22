@@ -43,7 +43,6 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadBoxed(w []byte, nat_
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteBoxedGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_t), nil
 }

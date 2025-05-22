@@ -42,7 +42,6 @@ func (item *AbUseDictString) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringRead(w, &item.Tags)
 }
 
-// This method is general version of Write, use it instead!
 func (item *AbUseDictString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -60,7 +59,6 @@ func (item *AbUseDictString) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AbUseDictString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -237,9 +235,9 @@ func (item *AbUseDictString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 }
 
 func (item *AbUseDictString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AbUseDictString) ReadTL2(r []byte) (_ []byte, err error) {
@@ -315,7 +313,6 @@ func (item *AbUseDictStringBytes) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesRead(w, &item.Tags)
 }
 
-// This method is general version of Write, use it instead!
 func (item *AbUseDictStringBytes) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -333,7 +330,6 @@ func (item *AbUseDictStringBytes) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AbUseDictStringBytes) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -510,9 +506,9 @@ func (item *AbUseDictStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byt
 }
 
 func (item *AbUseDictStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *AbUseDictStringBytes) ReadTL2(r []byte) (_ []byte, err error) {

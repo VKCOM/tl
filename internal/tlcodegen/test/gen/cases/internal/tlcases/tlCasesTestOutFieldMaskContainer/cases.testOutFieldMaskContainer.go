@@ -50,7 +50,6 @@ func (item *CasesTestOutFieldMaskContainer) Read(w []byte) (_ []byte, err error)
 	return item.Inner.Read(w, item.F)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesTestOutFieldMaskContainer) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -70,7 +69,6 @@ func (item *CasesTestOutFieldMaskContainer) ReadBoxed(w []byte) (_ []byte, err e
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesTestOutFieldMaskContainer) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -251,9 +249,9 @@ func (item *CasesTestOutFieldMaskContainer) InternalWriteTL2(w []byte, sizes []i
 }
 
 func (item *CasesTestOutFieldMaskContainer) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	sizes = item.CalculateLayout(sizes[0:0])
+	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[0:0]
+	return w, sizes[:0]
 }
 
 func (item *CasesTestOutFieldMaskContainer) ReadTL2(r []byte) (_ []byte, err error) {

@@ -75,7 +75,6 @@ func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32) (_ []byte, err e
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F3, nat_f)
 }
 
-// This method is general version of Write, use it instead!
 func (item *CasesTestOutFieldMask) WriteGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
 	return item.Write(w, nat_f)
 }
@@ -97,7 +96,6 @@ func (item *CasesTestOutFieldMask) ReadBoxed(w []byte, nat_f uint32) (_ []byte, 
 	return item.Read(w, nat_f)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *CasesTestOutFieldMask) WriteBoxedGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_f)
 }
