@@ -62,8 +62,8 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
 }
 
 {%- if maybe.wr.gen.options.GenerateTL2 -%}
-func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
 {%- if maybe.wr.wantsTL2 -%}
+func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if item.Ok {
@@ -97,12 +97,10 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         }
         {%- endif -%}
     }
-{%- endif -%}
     return sizes
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
-{%- if maybe.wr.wantsTL2 -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -116,11 +114,11 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         w = append(w, 1)
         w = basictl.TL2WriteSize(w, 1)
         {%- code
-            sizeValue := "sizes[0]"
+            sizeValue = "sizes[0]"
             if len(trivialSize) != 0 {
                 sizeValue = trivialSize
             }
-            nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
+            nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
         -%}
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
@@ -139,9 +137,9 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         }
         {%- endif -%}
     }
-{%- endif -%}
     return w, sizes
 }
+{%- endif -%}
 
 func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
 {%- if !maybe.wr.wantsTL2 -%}

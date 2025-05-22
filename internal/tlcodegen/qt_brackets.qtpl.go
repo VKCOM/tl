@@ -115,15 +115,15 @@ func `)
 `)
 			if tuple.wr.gen.options.GenerateTL2 {
 				qw422016.N().S(`
-func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`CalculateLayout(sizes []int,vec *`)
-				qw422016.N().S(typeString)
-				qw422016.N().S(valueNatArgsDecl)
-				qw422016.N().S(`) []int {
 `)
 				if tuple.wr.wantsTL2 {
-					qw422016.N().S(`    sizePosition := len(sizes)
+					qw422016.N().S(`func `)
+					qw422016.N().S(goName)
+					qw422016.N().S(`CalculateLayout(sizes []int,vec *`)
+					qw422016.N().S(typeString)
+					qw422016.N().S(valueNatArgsDecl)
+					qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
     for i := 0; i < len(*vec); i++ {
 `)
@@ -176,20 +176,16 @@ func `)
 `)
 					}
 					qw422016.N().S(`    }
-`)
-				}
-				qw422016.N().S(`    return sizes
+    return sizes
 }
 
 func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int,vec *`)
-				qw422016.N().S(typeString)
-				qw422016.N().S(valueNatArgsDecl)
-				qw422016.N().S(`) ([]byte, []int) {
-`)
-				if tuple.wr.wantsTL2 {
-					qw422016.N().S(`    currentSize := sizes[0]
+					qw422016.N().S(goName)
+					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int,vec *`)
+					qw422016.N().S(typeString)
+					qw422016.N().S(valueNatArgsDecl)
+					qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -210,11 +206,11 @@ func `)
 					qw422016.N().S(tuple.dictValueField.t.WriteTL2Call(bytesVersion, "sizes", "w", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
     }
+    return w, sizes
+}
 `)
 				}
-				qw422016.N().S(`    return w, sizes
-}
-
+				qw422016.N().S(`
 func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`ReadTL2(r []byte, vec *`)
@@ -724,17 +720,17 @@ func `)
 `)
 			if tuple.wr.gen.options.GenerateTL2 {
 				qw422016.N().S(`
-func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`CalculateLayout(sizes []int, m *map[`)
-				qw422016.N().S(keyTypeString)
-				qw422016.N().S(`]`)
-				qw422016.N().S(valueTypeString)
-				qw422016.N().S(natDecl)
-				qw422016.N().S(`) []int {
 `)
 				if tuple.wr.wantsTL2 {
-					qw422016.N().S(`    sizePosition := len(sizes)
+					qw422016.N().S(`func `)
+					qw422016.N().S(goName)
+					qw422016.N().S(`CalculateLayout(sizes []int, m *map[`)
+					qw422016.N().S(keyTypeString)
+					qw422016.N().S(`]`)
+					qw422016.N().S(valueTypeString)
+					qw422016.N().S(natDecl)
+					qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     keys := make([]`)
@@ -813,22 +809,18 @@ func `)
 `)
 					}
 					qw422016.N().S(`    }
-`)
-				}
-				qw422016.N().S(`    return sizes
+    return sizes
 }
 
 func `)
-				qw422016.N().S(goName)
-				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, m *map[`)
-				qw422016.N().S(keyTypeString)
-				qw422016.N().S(`]`)
-				qw422016.N().S(valueTypeString)
-				qw422016.N().S(natDecl)
-				qw422016.N().S(`) ([]byte, []int) {
-`)
-				if tuple.wr.wantsTL2 {
-					qw422016.N().S(`    currentSize := sizes[0]
+					qw422016.N().S(goName)
+					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, m *map[`)
+					qw422016.N().S(keyTypeString)
+					qw422016.N().S(`]`)
+					qw422016.N().S(valueTypeString)
+					qw422016.N().S(natDecl)
+					qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -871,11 +863,11 @@ func `)
 					qw422016.N().S(tuple.dictValueField.t.WriteTL2Call(bytesVersion, "sizes", "w", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
     }
+    return w, sizes
+}
 `)
 				}
-				qw422016.N().S(`    return w, sizes
-}
-
+				qw422016.N().S(`
 func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`ReadTL2(r []byte, m *map[`)
@@ -1290,16 +1282,16 @@ func `)
 `)
 		if tuple.wr.gen.options.GenerateTL2 {
 			qw422016.N().S(`
-func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) []int {
 `)
 			if tuple.wr.wantsTL2 {
-				qw422016.N().S(`    sizePosition := len(sizes)
+				qw422016.N().S(`func `)
+				qw422016.N().S(goName)
+				qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(` `)
+				qw422016.N().S(natDecl)
+				qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     for i := 0; i < len(*vec); i++ {
@@ -1328,21 +1320,17 @@ func `)
 `)
 				}
 				qw422016.N().S(`    }
-`)
-			}
-			qw422016.N().S(`    return sizes
+    return sizes
 }
 
 func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) ([]byte, []int) {
-`)
-			if tuple.wr.wantsTL2 {
-				qw422016.N().S(`    currentSize := sizes[0]
+				qw422016.N().S(goName)
+				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(` `)
+				qw422016.N().S(natDecl)
+				qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -1355,12 +1343,11 @@ func `)
 				qw422016.N().S(tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
     }
+    return w, sizes
+}
 `)
 			}
-			qw422016.N().S(`    return w, sizes
-}
-
-
+			qw422016.N().S(`
 func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`ReadTL2(r []byte, vec *`)
@@ -1594,16 +1581,16 @@ func `)
 `)
 		if tuple.wr.gen.options.GenerateTL2 {
 			qw422016.N().S(`
-func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) []int {
 `)
 			if tuple.wr.wantsTL2 {
-				qw422016.N().S(`    sizePosition := len(sizes)
+				qw422016.N().S(`func `)
+				qw422016.N().S(goName)
+				qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(` `)
+				qw422016.N().S(natDecl)
+				qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     for i := 0; i < len(*vec); i++ {
@@ -1632,21 +1619,17 @@ func `)
 `)
 				}
 				qw422016.N().S(`    }
-`)
-			}
-			qw422016.N().S(`    return sizes
+    return sizes
 }
 
 func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) ([]byte, []int) {
-`)
-			if tuple.wr.wantsTL2 {
-				qw422016.N().S(`    currentSize := sizes[0]
+				qw422016.N().S(goName)
+				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(` `)
+				qw422016.N().S(natDecl)
+				qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -1659,11 +1642,11 @@ func `)
 				qw422016.N().S(tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
     }
+    return w, sizes
+}
 `)
 			}
-			qw422016.N().S(`    return w, sizes
-}
-
+			qw422016.N().S(`
 func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`ReadTL2(r []byte, vec *`)
@@ -1911,16 +1894,16 @@ func `)
 `)
 		if tuple.wr.gen.options.GenerateTL2 {
 			qw422016.N().S(`
-func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) []int {
 `)
 			if tuple.wr.wantsTL2 {
-				qw422016.N().S(`    sizePosition := len(sizes)
+				qw422016.N().S(`func `)
+				qw422016.N().S(goName)
+				qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(` `)
+				qw422016.N().S(natDecl)
+				qw422016.N().S(`) []int {
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     for i := 0; i < len(*vec); i++ {
@@ -1949,21 +1932,17 @@ func `)
 `)
 				}
 				qw422016.N().S(`    }
-`)
-			}
-			qw422016.N().S(`    return sizes
+    return sizes
 }
 
 func `)
-			qw422016.N().S(goName)
-			qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
-			qw422016.N().S(typeString)
-			qw422016.N().S(` `)
-			qw422016.N().S(natDecl)
-			qw422016.N().S(`) ([]byte, []int) {
-`)
-			if tuple.wr.wantsTL2 {
-				qw422016.N().S(`    currentSize := sizes[0]
+				qw422016.N().S(goName)
+				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
+				qw422016.N().S(typeString)
+				qw422016.N().S(` `)
+				qw422016.N().S(natDecl)
+				qw422016.N().S(`) ([]byte, []int) {
+    currentSize := sizes[0]
     sizes = sizes[1:]
 
     w = basictl.TL2WriteSize(w, currentSize)
@@ -1976,11 +1955,11 @@ func `)
 				qw422016.N().S(tuple.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
     }
+    return w, sizes
+}
 `)
 			}
-			qw422016.N().S(`    return w, sizes
-}
-
+			qw422016.N().S(`
 func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`ReadTL2(r []byte, vec *`)
