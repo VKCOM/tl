@@ -65,6 +65,7 @@ func (item *AbCall11) WriteResult(w []byte, ret AColor) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
+
 func (item *AbCall11) ReadResultTL2(w []byte, ret *AColor) (_ []byte, err error) {
 	if w, err = ret.ReadTL2(w); err != nil {
 		return w, err

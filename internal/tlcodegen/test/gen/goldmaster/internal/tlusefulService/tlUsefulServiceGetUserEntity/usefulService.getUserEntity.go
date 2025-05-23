@@ -103,6 +103,7 @@ func (item *UsefulServiceGetUserEntity) WriteResult(w []byte, ret tlUsefulServic
 	w = ret.WriteBoxed(w, item.FieldsMask)
 	return w, nil
 }
+
 func (item *UsefulServiceGetUserEntity) ReadResultTL2(w []byte, ret *tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
 	if w, err = (*ret).ReadTL2(w, item.FieldsMask); err != nil {
 		return w, err

@@ -178,7 +178,7 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
     if ret != nil {
 {%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
 		if resp.Format().IsTl2() {
-			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+			resp.Body, err = args.ReadResultTL2(resp.Body, ret)
 		} else {
 {%- endif -%}
 			resp.Body, err = args.ReadResult(resp.Body, ret)

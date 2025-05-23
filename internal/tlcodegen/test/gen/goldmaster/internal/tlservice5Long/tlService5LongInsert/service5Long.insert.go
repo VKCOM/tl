@@ -86,6 +86,7 @@ func (item *Service5LongInsert) WriteResult(w []byte, ret cycle_98d4570147919cfd
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
+
 func (item *Service5LongInsert) ReadResultTL2(w []byte, ret *cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongOutput) (_ []byte, err error) {
 	if w, err = ret.ReadTL2(w); err != nil {
 		return w, err
