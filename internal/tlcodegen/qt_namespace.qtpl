@@ -157,16 +157,16 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 {%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
 	if req.Format.IsTl2() {
-		req.Body, err = args.WriteTl2(req.Body, nil)
+		req.Body, _ = args.WriteTL2(req.Body, nil)
 	} else {
 {%- endif -%}
         req.Body, err = args.WriteBoxedGeneral(req.Body)
+        if err != nil {
+            return internal.ErrorClientWrite("{%s= tlName %}", err)
+        }
 {%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
     }
 {%- endif -%}
-    if err != nil {
-        return internal.ErrorClientWrite("{%s= tlName %}", err)
-    }
     resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
     if extra != nil && resp != nil {
         extra.ResponseExtra = resp.Extra
@@ -272,10 +272,10 @@ switch hctx.RequestFunctionName {
                 tlName := wr.tlName.String()
             -%}
 {%- if fun.wr.wantsTL2 -%}
-case {%s= tlName %}:
+case "{%s= tlName %}":
     if h.{%s= funcTypeString %} != nil {
         var args {%s= funcTypeString %}
-        if _, err = args.ReadTL2(r); err != nil {
+        if _, err = args.ReadTL2(hctx.Request); err != nil {
             return internal.ErrorServerRead("{%s= tlName %}", err)
         }
         ctx = hctx.WithContext(ctx)

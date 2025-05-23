@@ -284,22 +284,22 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 `)
 	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
 		qw422016.N().S(`	if req.Format.IsTl2() {
-		req.Body, err = args.WriteTl2(req.Body, nil)
+		req.Body, _ = args.WriteTL2(req.Body, nil)
 	} else {
 `)
 	}
 	qw422016.N().S(`        req.Body, err = args.WriteBoxedGeneral(req.Body)
+        if err != nil {
+            return internal.ErrorClientWrite("`)
+	qw422016.N().S(tlName)
+	qw422016.N().S(`", err)
+        }
 `)
 	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
 		qw422016.N().S(`    }
 `)
 	}
-	qw422016.N().S(`    if err != nil {
-        return internal.ErrorClientWrite("`)
-	qw422016.N().S(tlName)
-	qw422016.N().S(`", err)
-    }
-    resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
+	qw422016.N().S(`    resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
     if extra != nil && resp != nil {
         extra.ResponseExtra = resp.Extra
     }
@@ -493,16 +493,16 @@ func streamhandleRequestTL2(qw422016 *qt422016.Writer, types []*TypeRWWrapper, d
 			tlName := wr.tlName.String()
 
 			if fun.wr.wantsTL2 {
-				qw422016.N().S(`case `)
+				qw422016.N().S(`case "`)
 				qw422016.N().S(tlName)
-				qw422016.N().S(`:
+				qw422016.N().S(`":
     if h.`)
 				qw422016.N().S(funcTypeString)
 				qw422016.N().S(` != nil {
         var args `)
 				qw422016.N().S(funcTypeString)
 				qw422016.N().S(`
-        if _, err = args.ReadTL2(r); err != nil {
+        if _, err = args.ReadTL2(hctx.Request); err != nil {
             return internal.ErrorServerRead("`)
 				qw422016.N().S(tlName)
 				qw422016.N().S(`", err)
