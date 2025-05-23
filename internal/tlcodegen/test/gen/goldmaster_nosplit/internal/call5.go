@@ -65,6 +65,7 @@ func (item *Call5) WriteResult(w []byte, ret CdTypeB) (_ []byte, err error) {
 	w = ret.WriteBoxed(w)
 	return w, nil
 }
+
 func (item *Call5) ReadResultTL2(w []byte, ret *CdTypeB) (_ []byte, err error) {
 	if w, err = ret.ReadTL2(w); err != nil {
 		return w, err

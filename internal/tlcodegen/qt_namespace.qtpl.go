@@ -313,7 +313,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 `)
 	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
 		qw422016.N().S(`		if resp.Format().IsTl2() {
-			resp.Body, err = args.ReadResultTL2(resp.Body, nil, ret)
+			resp.Body, err = args.ReadResultTL2(resp.Body, ret)
 		} else {
 `)
 	}

@@ -1607,7 +1607,8 @@ func (item *`)
 }
 `)
 	if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 {
-		qw422016.N().S(`func (item *`)
+		qw422016.N().S(`
+func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadResultTL2(w []byte, ret *`)
 		qw422016.N().S(retArg)
@@ -2171,7 +2172,8 @@ func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, by
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
 		if struct_.wr.wantsTL2 {
-			qw422016.N().S(`func (item *`)
+			qw422016.N().S(`
+func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) CalculateLayout(sizes []int`)
 			qw422016.N().S(natArgsDecl)

@@ -759,6 +759,7 @@ func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte,
     return w, nil
 }
 {%- if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 -%}
+
 func (item *{%s= goName %}) ReadResultTL2(w []byte, ret *{%s= retArg %}) (_ []byte, err error) {
     {%s= struct_.ResultType.ReadTL2Call(bytesVersion, "w", "ret", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)) %}
     return w, nil
@@ -1055,6 +1056,7 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
             fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
 {%- if struct_.wr.wantsTL2 -%}
+
 func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
         {%- if field.t.trw.doesCalculateLayoutUseObject() -%}
     ptr := (*{%s= fieldTypeString %})(item)
