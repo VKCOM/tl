@@ -7,6 +7,7 @@
 #include "__common_namespace/headers/int32.h"
 #include "a/headers/a_dictionaryElemUgly.h"
 #include "a/headers/a_dictionaryElem.h"
+#include "__common_namespace/headers/dictionaryElemStrange.h"
 #include "a/headers/a_dictionaryElemStrange.h"
 #include "a/headers/a_string.h"
 #include "a/headers/a_myInt32.h"
@@ -1200,76 +1201,84 @@ bool tl2::details::BuiltinVectorAColorWrite(::basictl::tl_ostream & s, const std
 	return true;
 }
 
-void tl2::details::BuiltinVectorDictionaryElemIntPairIntIntReset(std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
-	item.resize(0); // TODO - unwrap
+void tl2::details::BuiltinVectorDictionaryElemIntPairIntIntReset(std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
+	item.clear(); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
-	s << "[";
+bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
+	s << "{";
 	size_t index = 0;
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemIntPairIntIntWriteJSON(s, el)) { return false; }
+		s << el.first;
+		s << ":";
+		if (!::tl2::details::PairIntIntWriteJSON(s, el.second)) { return false; }
 		if (index != item.size() - 1) {
 			s << ",";
 		}
 		index++;
 	}
-	s << "]";
+	s << "}";
 	return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
+bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
+	item.clear();
+	for(uint32_t i = 0; i < len; i++) {
+		::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>> el;
 		if (!::tl2::details::DictionaryElemIntPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+		item[el.key] = el.value;
 	}
 	return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
+bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemIntPairIntIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+		::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
+		if (!::tl2::details::DictionaryElemIntPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
 
-void tl2::details::BuiltinVectorDictionaryElemLongPairIntIntReset(std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
-	item.resize(0); // TODO - unwrap
+void tl2::details::BuiltinVectorDictionaryElemLongPairIntIntReset(std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
+	item.clear(); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
-	s << "[";
+bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
+	s << "{";
 	size_t index = 0;
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemLongPairIntIntWriteJSON(s, el)) { return false; }
+		s << el.first;
+		s << ":";
+		if (!::tl2::details::PairIntIntWriteJSON(s, el.second)) { return false; }
 		if (index != item.size() - 1) {
 			s << ",";
 		}
 		index++;
 	}
-	s << "]";
+	s << "}";
 	return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
+bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
+	item.clear();
+	for(uint32_t i = 0; i < len; i++) {
+		::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>> el;
 		if (!::tl2::details::DictionaryElemLongPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+		item[el.key] = el.value;
 	}
 	return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item) {
+bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemLongPairIntIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+		::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
+		if (!::tl2::details::DictionaryElemLongPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
@@ -1447,9 +1456,9 @@ bool tl2::details::BuiltinVectorDictionaryElemStrangeStringRead(::basictl::tl_is
 	if (!s.nat_read(len)) { return false; }
 	item.clear();
 	for(uint32_t i = 0; i < len; i++) {
-		uint32_t key;
-		if (!s.nat_read(key)) { return false; }
-		if (!s.string_read(item[key])) { return false; }
+		::tl2::DictionaryElemStrange<std::string> el;
+		if (!::tl2::details::DictionaryElemStrangeStringRead(s, el)) { return s.set_error_unknown_scenario(); }
+		item[el.key] = el.value;
 	}
 	return true;
 }
@@ -1457,45 +1466,49 @@ bool tl2::details::BuiltinVectorDictionaryElemStrangeStringRead(::basictl::tl_is
 bool tl2::details::BuiltinVectorDictionaryElemStrangeStringWrite(::basictl::tl_ostream & s, const std::map<uint32_t, std::string>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!s.nat_write(el.first)) { return false;}
-		if (!s.string_write(el.second)) { return false;}
+		::tl2::DictionaryElemStrange<std::string> el2{.key= el.first, .value= el.second};
+		if (!::tl2::details::DictionaryElemStrangeStringWrite(s, el2)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }
 
-void tl2::details::BuiltinVectorDictionaryElemStringPairIntIntReset(std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item) {
-	item.resize(0); // TODO - unwrap
+void tl2::details::BuiltinVectorDictionaryElemStringPairIntIntReset(std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
+	item.clear(); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item) {
-	s << "[";
+bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
+	s << "{";
 	size_t index = 0;
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemStringPairIntIntWriteJSON(s, el)) { return false; }
+		s << "\"" << el.first << "\"";
+		s << ":";
+		if (!::tl2::details::PairIntIntWriteJSON(s, el.second)) { return false; }
 		if (index != item.size() - 1) {
 			s << ",";
 		}
 		index++;
 	}
-	s << "]";
+	s << "}";
 	return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item) {
+bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
+	item.clear();
+	for(uint32_t i = 0; i < len; i++) {
+		::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>> el;
 		if (!::tl2::details::DictionaryElemStringPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+		item[el.key] = el.value;
 	}
 	return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item) {
+bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemStringPairIntIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+		::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
+		if (!::tl2::details::DictionaryElemStringPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }

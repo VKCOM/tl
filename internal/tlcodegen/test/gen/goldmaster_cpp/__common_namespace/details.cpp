@@ -58,6 +58,7 @@
 #include "__common_namespace/headers/cycleTuple.h"
 #include "__common_namespace/headers/long.h"
 #include "__common_namespace/headers/Bool.h"
+#include "__common_namespace/headers/dictionaryField.h"
 #include "__common_namespace/headers/useStr.h"
 #include "__common_namespace/headers/noStr.h"
 #include "__common_namespace/headers/typeA.h"
@@ -1274,6 +1275,53 @@ bool tl2::details::DictionaryElemStrangeStringReadBoxed(::basictl::tl_istream & 
 bool tl2::details::DictionaryElemStrangeStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElemStrange<std::string>& item) {
 	if (!s.nat_write(0xe3b2385c)) { return false; }
 	return tl2::details::DictionaryElemStrangeStringWrite(s, item);
+}
+
+void tl2::details::DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) noexcept {
+	item.key.clear();
+	item.value.clear();
+}
+
+bool tl2::details::DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) noexcept {
+	auto add_comma = false;
+	s << "{";
+	if (item.key.size() != 0) {
+		add_comma = true;
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (item.value.size() != 0) {
+		if (add_comma) {
+			s << ",";
+		}
+		add_comma = true;
+		s << "\"value\":";
+		s << "\"" << item.value << "\"";
+	}
+	s << "}";
+	return true;
+}
+
+bool tl2::details::DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) noexcept {
+	if (!s.string_read(item.key)) { return false; }
+	if (!s.string_read(item.value)) { return false; }
+	return true;
+}
+
+bool tl2::details::DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) noexcept {
+	if (!s.string_write(item.key)) { return false;}
+	if (!s.string_write(item.value)) { return false;}
+	return true;
+}
+
+bool tl2::details::DictionaryFieldStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) {
+	if (!s.nat_read_exact_tag(0x239c1b62)) { return false; }
+	return tl2::details::DictionaryFieldStringRead(s, item);
+}
+
+bool tl2::details::DictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) {
+	if (!s.nat_write(0x239c1b62)) { return false; }
+	return tl2::details::DictionaryFieldStringWrite(s, item);
 }
 
 bool tl2::Hren::write_json(std::ostream& s)const {

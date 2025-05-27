@@ -998,7 +998,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 				return r, err
 			}
 		} else {
-			return r, nil
+			block = 0
 		}
 
 		// read item.F12

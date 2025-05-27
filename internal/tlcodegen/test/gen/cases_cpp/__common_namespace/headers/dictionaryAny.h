@@ -20,13 +20,13 @@ bool DictionaryAnyDoubleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Di
 
 namespace tl2 { namespace details { 
 
-void DictionaryAnyIntIntReset(std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) noexcept;
+void DictionaryAnyIntIntReset(std::map<int32_t, int32_t>& item) noexcept;
 
-bool DictionaryAnyIntIntWriteJSON(std::ostream& s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) noexcept;
-bool DictionaryAnyIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) noexcept; 
-bool DictionaryAnyIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item) noexcept;
-bool DictionaryAnyIntIntReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item);
-bool DictionaryAnyIntIntWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item);
+bool DictionaryAnyIntIntWriteJSON(std::ostream& s, const std::map<int32_t, int32_t>& item) noexcept;
+bool DictionaryAnyIntIntRead(::basictl::tl_istream & s, std::map<int32_t, int32_t>& item) noexcept; 
+bool DictionaryAnyIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item) noexcept;
+bool DictionaryAnyIntIntReadBoxed(::basictl::tl_istream & s, std::map<int32_t, int32_t>& item);
+bool DictionaryAnyIntIntWriteBoxed(::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item);
 
 }} // namespace tl2::details
 

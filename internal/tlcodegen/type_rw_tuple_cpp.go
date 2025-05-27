@@ -28,6 +28,10 @@ func (trw *TypeRWBrackets) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrap
 	trw.element.t.CPPFillRecursiveChildren(visitedNodes)
 }
 
+func (trw *TypeRWBrackets) CPPAllowCurrentDefinition() bool {
+	return true
+}
+
 func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	hppInc.ns[trw.wr] = CppIncludeInfo{componentId: trw.wr.typeComponent, namespace: trw.wr.tlName.Namespace}
 	//if trw.dictLike && !bytesVersion {
@@ -38,14 +42,13 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespace(bytesVersion bool, hppInc *D
 	//}
 	if trw.dictLike {
 		pairType := trw.element.t.trw.(*TypeRWStruct)
-		if len(pairType.wr.origTL[0].TemplateArguments) == 1 {
-			keyType := pairType.Fields[0]
-			valueType := pairType.Fields[1]
-			return fmt.Sprintf("std::map<%[1]s, %[2]s>",
-				keyType.t.CPPTypeStringInNamespace(bytesVersion, hppInc),
-				valueType.t.CPPTypeStringInNamespace(bytesVersion, hppInc),
-			)
-		}
+		keyType := pairType.Fields[0]
+		valueType := pairType.Fields[1]
+		return fmt.Sprintf("std::map<%[1]s, %[2]s>",
+			keyType.t.CPPTypeStringInNamespace(bytesVersion, hppInc),
+			valueType.t.CPPTypeStringInNamespace(bytesVersion, hppInc),
+		)
+
 	}
 	if trw.vectorLike || trw.dynamicSize {
 		return fmt.Sprintf("std::vector<%s>", trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc))
@@ -75,7 +78,7 @@ func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved(bytesVersion boo
 func (trw *TypeRWBrackets) cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string {
 	switch len(typeReduction.Type.Arguments) {
 	case 1:
-		if cppIsDictionaryElement(trw.element.t) && typeReduction.Type.Arguments[0].Type != nil && len(typeReduction.Type.Arguments[0].Type.Arguments) == 1 {
+		if trw.dictLike && typeReduction.Type.Arguments[0].Type != nil && len(typeReduction.Type.Arguments[0].Type.Arguments) >= 1 {
 			pairReduction := typeReduction.Type.Arguments[0].Type
 			pairType := trw.element.t.trw.(*TypeRWStruct)
 
@@ -244,7 +247,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 
 				`
 	*/
-	case trw.dictLike && len(trw.element.t.origTL[0].TemplateArguments) == 1:
+	case trw.dictLike:
 		trw.CPPGenerateCodeMap(hpp, hppInc, hppIncFwd, hppDet, hppDetInc, cppDet, cppDetInc, bytesVersion, forwardDeclaration)
 		return
 	case trw.vectorLike:
@@ -473,9 +476,9 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::map<%[13]s, %[2]s>& item%[
 	if (!s.nat_read(len)) { return false; }
 	item.clear();
 	for(uint32_t i = 0; i < len; i++) {
-		%[13]s key;
+		%[14]s el;
 	%[5]s
-	%[11]s
+		item[el.%[15]s] = el.%[16]s;
 	}
 	return true;
 }
@@ -483,8 +486,8 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::map<%[13]s, %[2]s>& item%[
 bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>& item%[4]s) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-	%[6]s
-	%[12]s
+		%[14]s el2{.%[15]s= el.first, .%[16]s= el.second};
+	%[17]s
 	}
 	return true;
 }
@@ -493,8 +496,8 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>&
 			valueType.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc),
 			trw.size, // 3
 			formatNatArgsDeclCPP(trw.wr.NatParams),
-			keyValue.t.trw.CPPTypeReadingCode(bytesVersion, "key",
-				keyValue.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+			trw.element.t.trw.CPPTypeReadingCode(bytesVersion, "el",
+				trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
 				true), // 5
 			keyValue.t.trw.CPPTypeWritingCode(bytesVersion, "el.first",
 				keyValue.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
@@ -514,6 +517,12 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>&
 				valueType.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
 				false),
 			keyValue.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc), // 13
+			trw.element.t.CPPTypeStringInNamespace(bytesVersion, cppDetInc),
+			trw.dictKeyField.cppName, // 15
+			trw.dictValueField.cppName,
+			trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "el2",
+				trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
+				false), // 17
 		))
 	}
 }

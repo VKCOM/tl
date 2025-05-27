@@ -58,7 +58,7 @@ int main() {
 
 
 bool test_case(std::string type_name, std::string& testing_bytes) {
-    auto test_object = tl2::meta::get_item_by_name(std::move(type_name)).create_object();
+    auto test_object = tl2::meta::get_item_by_name(std::move(type_name)).value().create_object();
     auto expected_output = hex::parse_hex_to_bytes(testing_bytes);
 
     basictl::tl_istream_string input_connector{expected_output};
@@ -92,7 +92,7 @@ bool test_case(std::string type_name, std::string& testing_bytes) {
 
 
 bool test_case_throwable(std::string type_name, std::string& testing_bytes) {
-    auto test_object = tl2::meta::get_item_by_name(std::move(type_name)).create_object();
+    auto test_object = tl2::meta::get_item_by_name(std::move(type_name)).value().create_object();
     auto expected_output = hex::parse_hex_to_bytes(testing_bytes);
 
     basictl::tl_istream_string input_connector{expected_output};

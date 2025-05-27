@@ -20,9 +20,9 @@ struct UseDictUgly {
 	std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>> e;
 	std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>> f;
 	std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>> g;
-	std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>> x;
-	std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>> y;
-	std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>> z;
+	std::map<int32_t, ::tl2::Pair<int32_t, int32_t>> x;
+	std::map<int64_t, ::tl2::Pair<int32_t, int32_t>> y;
+	std::map<std::string, ::tl2::Pair<int32_t, int32_t>> z;
 
 	std::string_view tl_name() const { return "useDictUgly"; }
 	uint32_t tl_tag() const { return 0xfb9ce817; }

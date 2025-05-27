@@ -18,6 +18,10 @@ func (trw *TypeRWBool) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, 
 func (trw *TypeRWBool) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWBool) CPPAllowCurrentDefinition() bool {
+	return true
+}
+
 func (trw *TypeRWBool) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	hppInc.ns[trw.wr] = CppIncludeInfo{componentId: trw.wr.typeComponent, namespace: trw.wr.tlName.Namespace}
 	return "bool"

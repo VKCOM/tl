@@ -1125,7 +1125,7 @@ func (item *Replace) ReadTL2(r []byte) (_ []byte, err error) {
 				return r, err
 			}
 		} else {
-			return r, nil
+			block = 0
 		}
 
 		// read item.E
@@ -1206,7 +1206,7 @@ func (item *Replace) ReadTL2(r []byte) (_ []byte, err error) {
 				return r, err
 			}
 		} else {
-			return r, nil
+			block = 0
 		}
 
 		// read item.O

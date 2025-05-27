@@ -9,15 +9,15 @@
 #include "cases_bytes/headers/cases_bytes.TestEnumItems.h"
 #include "cases_bytes/headers/cases_bytes.testDictStringString.h"
 #include "cases_bytes/headers/cases_bytes_dictionary.h"
+#include "__common_namespace/headers/dictionaryField.h"
 #include "cases_bytes/headers/cases_bytes.testDictString.h"
 #include "cases_bytes/headers/cases_bytes.testDictInt.h"
-#include "__common_namespace/headers/dictionaryFieldAny.h"
 #include "cases_bytes/headers/cases_bytes.testDictAny.h"
 #include "__common_namespace/headers/dictionaryAny.h"
 #include "cases_bytes/headers/cases_bytes.testArray.h"
 #include "cases_bytes/headers/cases_bytes_string.h"
 #include "cases_bytes/headers/cases_bytes_dictionaryField.h"
-#include "__common_namespace/headers/dictionaryField.h"
+#include "__common_namespace/headers/dictionaryFieldAny.h"
 
 
 void tl2::details::BuiltinTuple4StringReset(std::array<std::string, 4>& item) {
@@ -115,9 +115,9 @@ bool tl2::details::BuiltinVectorDictionaryFieldStringRead(::basictl::tl_istream 
 	if (!s.nat_read(len)) { return false; }
 	item.clear();
 	for(uint32_t i = 0; i < len; i++) {
-		std::string key;
-		if (!s.string_read(key)) { return false; }
-		if (!s.string_read(item[key])) { return false; }
+		::tl2::DictionaryField<std::string> el;
+		if (!::tl2::details::DictionaryFieldStringRead(s, el)) { return s.set_error_unknown_scenario(); }
+		item[el.key] = el.value;
 	}
 	return true;
 }
@@ -125,8 +125,8 @@ bool tl2::details::BuiltinVectorDictionaryFieldStringRead(::basictl::tl_istream 
 bool tl2::details::BuiltinVectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!s.string_write(el.first)) { return false;}
-		if (!s.string_write(el.second)) { return false;}
+		::tl2::DictionaryField<std::string> el2{.key= el.first, .value= el.second};
+		if (!::tl2::details::DictionaryFieldStringWrite(s, el2)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
 }

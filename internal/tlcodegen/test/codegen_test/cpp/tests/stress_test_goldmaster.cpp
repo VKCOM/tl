@@ -27,10 +27,10 @@ int main() {
     for (auto& [test_name, test_data]: tests.items()) {
         std::cout << "Run [" << test_name << "]:" << std::endl;
         for (auto& test_data_input: test_data["Successes"]) {
-            std::cout << "\tTestData [" << test_data_input.at("Bytes") << "]: ";
-
             std::string type_name = test_data.at("TestingType");
             std::string testing_bytes = test_data_input.at("Bytes");
+
+            std::cout << "\tTestData [" << testing_bytes << "]: ";
 
             auto success = test_case(type_name, testing_bytes);
             if (!success) {
@@ -50,14 +50,11 @@ int main() {
 
 
 bool test_case(std::string type_name, std::string& testing_bytes) {
-    if (!tl2::meta::contains_item_by_name(std::move(type_name))) {
-        return true;
-    }
     auto item = tl2::meta::get_item_by_name(std::move(type_name));
-    if (!item.has_create_object) {
+    if (!item || !item.value().has_create_object) {
         return true;
     }
-    auto test_object = item.create_object();
+    auto test_object = item.value().create_object();
     auto expected_output = hex::parse_hex_to_bytes(testing_bytes);
 
     basictl::tl_istream_string input_connector{expected_output};

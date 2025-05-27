@@ -13,9 +13,10 @@ build-test-gen:
 
 # run in project root "make cpp_gen_test_data"
 run-all-tests: build-test-gen
+	make clean-build; \
 	make run-objects-test; \
 	make run-functions-test; \
-	make clean-build;
+	make run-goldmaster-stress;
 
 clean-build:
 	rm -rf build

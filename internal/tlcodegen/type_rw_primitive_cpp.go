@@ -21,6 +21,10 @@ func (trw *TypeRWPrimitive) CPPTypeJSONEmptyCondition(bytesVersion bool, val str
 func (trw *TypeRWPrimitive) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool) {
 }
 
+func (trw *TypeRWPrimitive) CPPAllowCurrentDefinition() bool {
+	return true
+}
+
 func (trw *TypeRWPrimitive) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	return trw.cppPrimitiveType
 }

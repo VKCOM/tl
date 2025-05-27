@@ -837,7 +837,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 				return r, err
 			}
 		} else {
-			return r, nil
+			block = 0
 		}
 
 		// read item.G
