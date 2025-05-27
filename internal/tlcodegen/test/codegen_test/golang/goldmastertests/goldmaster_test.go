@@ -19,7 +19,7 @@ import (
 func TestGoldmasterStressTest(t *testing.T) {
 	tests, err := readTestData()
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err.Error())
 	}
 	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
 
@@ -67,7 +67,7 @@ func TestGoldmasterStressTest(t *testing.T) {
 func TestGoldmasterStressTestTL2(t *testing.T) {
 	tests, err := readTestData()
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatal(err.Error())
 	}
 	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
 
@@ -146,7 +146,7 @@ func TestGoldmasterGenerateStressTestData(t *testing.T) {
 				dst.FillRandom(rg)
 				tl1write, err := dst.WriteBoxedGeneral(nil)
 				if err != nil {
-					t.Fatalf(err.Error())
+					t.Fatal(err.Error())
 				}
 				tl2write, _ := dst.WriteTL2(nil, nil)
 
@@ -162,7 +162,7 @@ func TestGoldmasterGenerateStressTestData(t *testing.T) {
 
 		err := writeTestData(tests)
 		if err != nil {
-			t.Fatalf(err.Error())
+			t.Fatal(err.Error())
 		}
 	}
 }
@@ -185,14 +185,14 @@ func readTestData() (testformat.AllTestsBytes, error) {
 }
 
 func writeTestData(tests testformat.AllTestsBytes) error {
-	bytes, err := json.MarshalIndent(tests, "", "\t")
+	jsonBytes, _ := json.MarshalIndent(tests, "", "\t")
 	file, err := os.Create(PathToBytesData)
 
 	if err != nil {
 		return err
 	}
 	defer file.Close()
-	_, err = file.Write(bytes)
+	_, err = file.Write(jsonBytes)
 	if err != nil {
 		return err
 	}
