@@ -87,13 +87,13 @@ func phpIsDictionary(wr *TypeRWWrapper) bool {
 	return false
 }
 
-func cppIsDictionaryElement(wr *TypeRWWrapper) bool {
-	isDict, _, _, _ := isDictionaryElement(wr)
-	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
-		return true
-	}
-	return false
-}
+//func cppIsDictionaryElement(wr *TypeRWWrapper) bool {
+//	isDict, _, _, _ := isDictionaryElement(wr)
+//	if isDict && wr.tlName.Namespace == "" { // TODO NOT A SOLUTION, BUT...
+//		return true
+//	}
+//	return false
+//}
 
 func (trw *TypeRWBrackets) FillRecursiveChildren(visitedNodes map[*TypeRWWrapper]int, generic bool) {
 	for _, typeDep := range trw.AllPossibleRecursionProducers() {
