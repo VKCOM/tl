@@ -12,21 +12,21 @@
 
 namespace tl2 { namespace details { 
 
-void BuiltinVectorDictionaryElemIntPairIntIntReset(std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item);
+void BuiltinVectorDictionaryElemIntPairIntIntReset(std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item);
-bool BuiltinVectorDictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item);
-bool BuiltinVectorDictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>>& item);
+bool BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
 
 }} // namespace tl2::details
 
 namespace tl2 { namespace details { 
 
-void BuiltinVectorDictionaryElemLongPairIntIntReset(std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item);
+void BuiltinVectorDictionaryElemLongPairIntIntReset(std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item);
-bool BuiltinVectorDictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item);
-bool BuiltinVectorDictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>>& item);
+bool BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
 
 }} // namespace tl2::details
 
@@ -72,11 +72,11 @@ bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(::basictl::t
 
 namespace tl2 { namespace details { 
 
-void BuiltinVectorDictionaryElemStringPairIntIntReset(std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item);
+void BuiltinVectorDictionaryElemStringPairIntIntReset(std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item);
-bool BuiltinVectorDictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item);
-bool BuiltinVectorDictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>>& item);
+bool BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
 
 }} // namespace tl2::details
 

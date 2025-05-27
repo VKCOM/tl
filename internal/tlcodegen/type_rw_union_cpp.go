@@ -24,6 +24,10 @@ func (trw *TypeRWUnion) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 	}
 }
 
+func (trw *TypeRWUnion) CPPAllowCurrentDefinition() bool {
+	return true
+}
+
 func (trw *TypeRWUnion) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	_, _, args := trw.wr.cppTypeStringInNamespace(bytesVersion, hppInc, false, HalfResolvedArgument{})
 	return trw.wr.cppNamespaceQualifier() + trw.wr.cppLocalName + args

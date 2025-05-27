@@ -33,9 +33,9 @@ bool tl2::details::BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentIte
 	if (!s.nat_read(len)) { return false; }
 	item.clear();
 	for(uint32_t i = 0; i < len; i++) {
-		std::string key;
-		if (!s.string_read(key)) { return false; }
-		if (!::tl2::details::UsefulServiceUserEntityPaymentItemReadBoxed(s, item[key], nat_t)) { return s.set_error_unknown_scenario(); }
+		::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem> el;
+		if (!::tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
+		item[el.key] = el.value;
 	}
 	return true;
 }
@@ -43,10 +43,55 @@ bool tl2::details::BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentIte
 bool tl2::details::BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
-		if (!s.string_write(el.first)) { return false;}
-		if (!::tl2::details::UsefulServiceUserEntityPaymentItemWriteBoxed(s, el.second, nat_t)) { return s.set_error_unknown_scenario(); }
+		::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem> el2{.key= el.first, .value= el.second};
+		if (!::tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(s, el2, nat_t)) { return s.set_error_unknown_scenario(); }
 	}
 	return true;
+}
+
+void tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item) noexcept {
+	item.key.clear();
+	::tl2::details::UsefulServiceUserEntityPaymentItemReset(item.value);
+}
+
+bool tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(std::ostream& s, const ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept {
+	auto add_comma = false;
+	s << "{";
+	if (item.key.size() != 0) {
+		add_comma = true;
+		s << "\"key\":";
+		s << "\"" << item.key << "\"";
+	}
+	if (add_comma) {
+		s << ",";
+	}
+	add_comma = true;
+	s << "\"value\":";
+	if (!::tl2::details::UsefulServiceUserEntityPaymentItemWriteJSON(s, item.value, nat_t)) { return false; }
+	s << "}";
+	return true;
+}
+
+bool tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(::basictl::tl_istream & s, ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept {
+	if (!s.string_read(item.key)) { return false; }
+	if (!::tl2::details::UsefulServiceUserEntityPaymentItemReadBoxed(s, item.value, nat_t)) { return s.set_error_unknown_scenario(); }
+	return true;
+}
+
+bool tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept {
+	if (!s.string_write(item.key)) { return false;}
+	if (!::tl2::details::UsefulServiceUserEntityPaymentItemWriteBoxed(s, item.value, nat_t)) { return s.set_error_unknown_scenario(); }
+	return true;
+}
+
+bool tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) {
+	if (!s.nat_read_exact_tag(0x239c1b62)) { return false; }
+	return tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(s, item, nat_t);
+}
+
+bool tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) {
+	if (!s.nat_write(0x239c1b62)) { return false; }
+	return tl2::details::DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(s, item, nat_t);
 }
 
 void tl2::details::DictionaryUsefulServiceUserEntityPaymentItemBoxedReset(std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item) noexcept {

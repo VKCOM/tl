@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(test_objects_json
         tests/test_objects_json.cpp
-#        tests/test_objects_bytes.cpp
-#        tests/test_functions_bytes.cpp
 		../../gen/cases_cpp/basictl/impl/string_io.h
 		../../gen/cases_cpp/basictl/impl/string_io.cpp
 		../../gen/cases_cpp/basictl/io_connectors.h
@@ -24,10 +22,15 @@ add_executable(test_objects_json
 		../../gen/cases_cpp/cases_bytes/details.cpp
 )
 
+target_include_directories(
+		test_objects_json
+		PRIVATE
+		../../gen/cases_cpp/
+)
+
+
 add_executable(test_objects_bytes
-#        tests/test_objects_json.cpp
         tests/test_objects_bytes.cpp
-#        tests/test_functions_bytes.cpp
         ../../gen/cases_cpp/basictl/impl/string_io.h
         ../../gen/cases_cpp/basictl/impl/string_io.cpp
         ../../gen/cases_cpp/basictl/io_connectors.h
@@ -45,9 +48,14 @@ add_executable(test_objects_bytes
 		../../gen/cases_cpp/cases_bytes/details.cpp
 )
 
+target_include_directories(
+		test_objects_bytes
+		PRIVATE
+		../../gen/cases_cpp/
+)
+
+
 add_executable(test_functions_bytes
-#        tests/test_objects_json.cpp
-#        tests/test_objects_bytes.cpp
         tests/test_functions_bytes.cpp
         ../../gen/schema_cpp/basictl/impl/string_io.h
         ../../gen/schema_cpp/basictl/impl/string_io.cpp
@@ -74,10 +82,13 @@ add_executable(test_functions_bytes
         ../../gen/schema_cpp/unique/details.cpp
 )
 
+target_include_directories(
+		test_functions_bytes
+		PRIVATE
+		../../gen/schema_cpp/
+)
 
 add_executable(stress_test_goldmaster
-		#        tests/test_objects_json.cpp
-		#        tests/test_objects_bytes.cpp
 		tests/stress_test_goldmaster.cpp
 		../../gen/goldmaster_cpp/basictl/impl/string_io.h
 		../../gen/goldmaster_cpp/basictl/impl/string_io.cpp
@@ -101,4 +112,10 @@ add_executable(stress_test_goldmaster
 		../../gen/goldmaster_cpp/service5/details.cpp
 		../../gen/goldmaster_cpp/service5Long/details.cpp
 		../../gen/goldmaster_cpp/usefulService/details.cpp
+)
+
+target_include_directories(
+		stress_test_goldmaster
+		PRIVATE
+		../../gen/goldmaster_cpp/
 )

@@ -16,3 +16,15 @@ bool BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(::
 
 }} // namespace tl2::details
 
+namespace tl2 { namespace details { 
+
+void DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item) noexcept;
+
+bool DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(std::ostream& s, const ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept;
+bool DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(::basictl::tl_istream & s, ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept; 
+bool DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept;
+bool DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t);
+bool DictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t);
+
+}} // namespace tl2::details
+

@@ -24,7 +24,7 @@ int main() {
     for (auto &test_data: tests) {
         std::cout << "Run [" << test_data.at("FunctionName") << ", " << test_data.at("FunctionBodyBytes") << "]: ";
 
-        auto test_function = tl2::meta::get_item_by_name(test_data.at("FunctionName")).create_function();
+        auto test_function = tl2::meta::get_item_by_name(test_data.at("FunctionName")).value().create_function();
         auto function_body_input = hex::parse_hex_to_bytes(test_data.at("FunctionBodyBytes"));
         auto expected_result_output = hex::parse_hex_to_bytes(test_data.at("ResultBytes"));
 

@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 #include <functional>
+#include <optional>
 
 #include "basictl/io_streams.h"
 #include "basictl/io_throwable_streams.h"
@@ -47,11 +48,8 @@ namespace tl2 {
             std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
         };
 
-		tl2::meta::tl_item get_item_by_name(std::string &&s);
-		tl2::meta::tl_item get_item_by_tag(uint32_t &&tag);
-		
-		bool contains_item_by_name(std::string &&s);
-		bool contains_item_by_tag(uint32_t &&tag);
+		std::optional<tl2::meta::tl_item> get_item_by_name(std::string &&s);
+		std::optional<tl2::meta::tl_item> get_item_by_tag(uint32_t &&tag);
 
 		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);

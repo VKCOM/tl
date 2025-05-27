@@ -36,3 +36,15 @@ bool BuiltinVectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const st
 
 }} // namespace tl2::details
 
+namespace tl2 { namespace details { 
+
+void DictionaryFieldService1ValueReset(::tl2::DictionaryField<::tl2::service1::Value>& item) noexcept;
+
+bool DictionaryFieldService1ValueWriteJSON(std::ostream& s, const ::tl2::DictionaryField<::tl2::service1::Value>& item) noexcept;
+bool DictionaryFieldService1ValueRead(::basictl::tl_istream & s, ::tl2::DictionaryField<::tl2::service1::Value>& item) noexcept; 
+bool DictionaryFieldService1ValueWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<::tl2::service1::Value>& item) noexcept;
+bool DictionaryFieldService1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<::tl2::service1::Value>& item);
+bool DictionaryFieldService1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<::tl2::service1::Value>& item);
+
+}} // namespace tl2::details
+

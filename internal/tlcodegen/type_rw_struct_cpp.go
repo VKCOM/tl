@@ -28,6 +28,53 @@ func (trw *TypeRWStruct) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrappe
 	}
 }
 
+func (trw *TypeRWStruct) CPPAllowCurrentDefinition() bool {
+	// todo
+	if trw.isTypeDef() {
+		typeReduction := trw.cppGetCurrentTypeReduction()
+
+		field := trw.Fields[0]
+		typeRed := trw.wr.gen.typesInfo.FieldTypeReduction(&typeReduction, 0)
+
+		brackets, isBrackets := field.t.trw.(*TypeRWBrackets)
+		if isBrackets {
+			if brackets.dictLike && typeRed.Type.Arguments[0].Type != nil && len(typeRed.Type.Arguments[0].Type.Arguments) >= 1 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (trw *TypeRWStruct) cppGetCurrentTypeReduction() TypeReduction {
+	ti := trw.wr.gen.typesInfo
+	tlName := trw.wr.tlName
+
+	_, isType := ti.Types[tlName]
+	typeReduction := TypeReduction{IsType: isType}
+	if isType {
+		typeReduction.Type = ti.Types[tlName]
+	} else {
+		typeReduction.Constructor = ti.Constructors[tlName]
+	}
+	for i, arg := range typeReduction.ReferenceType().TypeArguments {
+		evalArg := EvaluatedType{}
+		if arg.IsNat {
+			evalArg.Index = 1
+			evalArg.Variable = arg.FieldName
+			if trw.wr.arguments[i].isArith {
+				// set true only here
+				evalArg.VariableActsAsConstant = true
+			}
+		} else {
+			evalArg.Index = 3
+			evalArg.TypeVariable = arg.FieldName
+		}
+		typeReduction.Arguments = append(typeReduction.Arguments, evalArg)
+	}
+	return typeReduction
+}
+
 func (trw *TypeRWStruct) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.CPPTypeStringInNamespace(bytesVersion, hppInc)
@@ -137,30 +184,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 		}
 
 		ti := trw.wr.gen.typesInfo
-		tlName := trw.wr.tlName
-
-		_, isType := ti.Types[tlName]
-		typeReduction := TypeReduction{IsType: isType}
-		if isType {
-			typeReduction.Type = ti.Types[tlName]
-		} else {
-			typeReduction.Constructor = ti.Constructors[tlName]
-		}
-		for i, arg := range typeReduction.ReferenceType().TypeArguments {
-			evalArg := EvaluatedType{}
-			if arg.IsNat {
-				evalArg.Index = 1
-				evalArg.Variable = arg.FieldName
-				if trw.wr.arguments[i].isArith {
-					// set true only here
-					evalArg.VariableActsAsConstant = true
-				}
-			} else {
-				evalArg.Index = 3
-				evalArg.TypeVariable = arg.FieldName
-			}
-			typeReduction.Arguments = append(typeReduction.Arguments, evalArg)
-		}
+		typeReduction := trw.cppGetCurrentTypeReduction()
 
 		if trw.isTypeDef() {
 			field := trw.Fields[0]

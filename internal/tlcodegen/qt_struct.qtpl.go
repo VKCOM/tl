@@ -2656,7 +2656,7 @@ func (item *`)
         if len(saveR) < len(r) + shift {
             if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
         } else {
-            return r, nil
+            block = 0
         }
 `)
 				}

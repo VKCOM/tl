@@ -19,11 +19,13 @@ import (
 )
 
 type TypeRWCPPData interface {
-	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string
 	cppTypeStringInNamespaceHalfResolved2(bytesVersion bool, typeReduction EvaluatedType) string
 	cppTypeStringInNamespaceHalfResolved(bytesVersion bool, hppInc *DirectIncludesCPP, halfResolved HalfResolvedArgument) string
 	cppDefaultInitializer(halfResolved HalfResolvedArgument, halfResolve bool) string
+
+	CPPAllowCurrentDefinition() bool
+	CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper]bool)
 	CPPHasBytesVersion() bool
 	CPPTypeResettingCode(bytesVersion bool, val string) string
 	CPPTypeWritingJsonCode(bytesVersion bool, val string, bare bool, natArgs []string, last bool) string
@@ -105,13 +107,15 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 			}
 
 			for _, typeDefVariation := range typeDefVariations {
-				typesCounter++
-				var hppDefinition strings.Builder
-				typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, nil, nil, nil, nil, typeDefVariation.NeedBytesVersion, false)
-				def := hppDefinition.String()
-				if !typeDefinitions[def] {
-					typeDefinitions[def] = true
-					hpp.WriteString(def)
+				if typeRw.trw.CPPAllowCurrentDefinition() {
+					typesCounter++
+					var hppDefinition strings.Builder
+					typeRw.trw.CPPGenerateCode(&hppDefinition, hppInc, hppIncFwd, nil, nil, nil, nil, typeDefVariation.NeedBytesVersion, false)
+					def := hppDefinition.String()
+					if !typeDefinitions[def] {
+						typeDefinitions[def] = true
+						hpp.WriteString(def)
+					}
 				}
 			}
 		}
@@ -586,7 +590,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string
 			front[t] = true
 		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
 			front[t] = true
-			if t.trw.IsWrappingType() || strings.HasPrefix(strings.ToLower(t.cppLocalName), strings.ToLower("DictionaryField")) {
+			if t.trw.IsWrappingType() { // || strings.HasPrefix(strings.ToLower(t.cppLocalName), strings.ToLower("DictionaryField")) {
 				t.groupName = GhostTypes
 			} else {
 				gen.decideGroupInConflict(t, edges, nil)
@@ -821,6 +825,7 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 #include <ostream>
 #include <string>
 #include <functional>
+#include <optional>
 
 #include "%[1]s"
 #include "%[2]s"
@@ -863,11 +868,8 @@ namespace tl2 {
             std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
         };
 
-		tl2::meta::tl_item get_item_by_name(std::string &&s);
-		tl2::meta::tl_item get_item_by_tag(uint32_t &&tag);
-		
-		bool contains_item_by_name(std::string &&s);
-		bool contains_item_by_tag(uint32_t &&tag);
+		std::optional<tl2::meta::tl_item> get_item_by_name(std::string &&s);
+		std::optional<tl2::meta::tl_item> get_item_by_tag(uint32_t &&tag);
 
 		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
 		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
@@ -900,36 +902,20 @@ namespace {
     };
 }
 
-tl2::meta::tl_item tl2::meta::get_item_by_name(std::string &&s) {
+std::optional<tl2::meta::tl_item> tl2::meta::get_item_by_name(std::string &&s) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
         return *item->second;
     }
-    throw std::runtime_error("no item with such name + \"" + s + "\"");
+    return {};
 }
 
-tl2::meta::tl_item tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
+std::optional<tl2::meta::tl_item> tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
     auto item = items.items_by_tag.find(tag);
 	if (item != items.items_by_tag.end()) {
         return *item->second;
     }
-    throw std::runtime_error("no item with such tag + \"" + std::to_string(tag) + "\"");
-}
-
-bool tl2::meta::contains_item_by_name(std::string &&s) {
-    auto item = items.items.find(s);
-	if (item != items.items.end()) {
-        return true;
-    }
-    return false;
-}
-
-bool tl2::meta::contains_item_by_tag(std::uint32_t &&tag) {
-    auto item = items.items_by_tag.find(tag);
-	if (item != items.items_by_tag.end()) {
-        return true;
-    }
-    return false;
+    return {};
 }
 
 void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {

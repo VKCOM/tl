@@ -22,36 +22,20 @@ namespace {
     };
 }
 
-tl2::meta::tl_item tl2::meta::get_item_by_name(std::string &&s) {
+std::optional<tl2::meta::tl_item> tl2::meta::get_item_by_name(std::string &&s) {
     auto item = items.items.find(s);
 	if (item != items.items.end()) {
         return *item->second;
     }
-    throw std::runtime_error("no item with such name + \"" + s + "\"");
+    return {};
 }
 
-tl2::meta::tl_item tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
+std::optional<tl2::meta::tl_item> tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
     auto item = items.items_by_tag.find(tag);
 	if (item != items.items_by_tag.end()) {
         return *item->second;
     }
-    throw std::runtime_error("no item with such tag + \"" + std::to_string(tag) + "\"");
-}
-
-bool tl2::meta::contains_item_by_name(std::string &&s) {
-    auto item = items.items.find(s);
-	if (item != items.items.end()) {
-        return true;
-    }
-    return false;
-}
-
-bool tl2::meta::contains_item_by_tag(std::uint32_t &&tag) {
-    auto item = items.items_by_tag.find(tag);
-	if (item != items.items_by_tag.end()) {
-        return true;
-    }
-    return false;
+    return {};
 }
 
 void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {

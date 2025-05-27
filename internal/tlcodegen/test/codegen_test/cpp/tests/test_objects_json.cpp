@@ -25,7 +25,11 @@ int main() {
         for (auto& test_data_input: test_data["Successes"]) {
             std::cout << "\tTestData [" << test_data_input.at("DataAsBytes") << "]: ";
 
-            auto test_object = tl2::meta::get_item_by_name(test_data.at("TestingType")).create_object();
+            auto test_object_generator = tl2::meta::get_item_by_name(test_data.at("TestingType"));
+            if (!test_object_generator) {
+                continue;
+            }
+            auto test_object = test_object_generator.value().create_object();
             auto bytes_input = hex::parse_hex_to_bytes(test_data_input.at("DataAsBytes"));
             std::string expected_json_output = test_data_input.at("DataAsJson");
 

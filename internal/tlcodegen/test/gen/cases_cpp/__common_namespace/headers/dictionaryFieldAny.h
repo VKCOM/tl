@@ -17,11 +17,11 @@ bool BuiltinVectorDictionaryFieldAnyDoubleIntWrite(::basictl::tl_ostream & s, co
 
 namespace tl2 { namespace details { 
 
-void BuiltinVectorDictionaryFieldAnyIntIntReset(std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item);
+void BuiltinVectorDictionaryFieldAnyIntIntReset(std::map<int32_t, int32_t>& item);
 
-bool BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryFieldAnyIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryFieldAnyIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryFieldAny<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(std::ostream & s, const std::map<int32_t, int32_t>& item);
+bool BuiltinVectorDictionaryFieldAnyIntIntRead(::basictl::tl_istream & s, std::map<int32_t, int32_t>& item);
+bool BuiltinVectorDictionaryFieldAnyIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item);
 
 }} // namespace tl2::details
 

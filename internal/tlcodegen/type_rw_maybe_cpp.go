@@ -22,6 +22,10 @@ func (trw *TypeRWMaybe) CPPFillRecursiveChildren(visitedNodes map[*TypeRWWrapper
 	trw.element.t.CPPFillRecursiveChildren(visitedNodes)
 }
 
+func (trw *TypeRWMaybe) CPPAllowCurrentDefinition() bool {
+	return true
+}
+
 func (trw *TypeRWMaybe) cppTypeStringInNamespace(bytesVersion bool, hppInc *DirectIncludesCPP) string {
 	hppInc.ns[trw.wr] = CppIncludeInfo{componentId: trw.wr.typeComponent, namespace: trw.wr.tlName.Namespace}
 	return "std::optional<" + trw.element.t.CPPTypeStringInNamespace(bytesVersion, hppInc) + ">"

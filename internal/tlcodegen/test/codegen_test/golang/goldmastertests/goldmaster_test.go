@@ -64,63 +64,58 @@ func TestGoldmasterStressTest(t *testing.T) {
 	}
 }
 
-// fix after
-//func TestGoldmasterStressTestTL2(t *testing.T) {
-//	tests, err := readTestData()
-//	if err != nil {
-//		t.Fatalf(err.Error())
-//	}
-//	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
-//
-//	testNames := utils.Keys(tests.Tests)
-//	sort.Strings(testNames)
-//
-//	for _, testName := range testNames {
-//		t.Run(testName, func(t *testing.T) {
-//			testingInfo := tests.Tests[testName]
-//			t.Run(testingInfo.TestingType, func(t *testing.T) {
-//				dst := factory.CreateObjectFromName(testingInfo.TestingType)
-//				if dst == nil {
-//					t.Fatalf("can't create object of type\"%s\"", testingInfo.TestingType)
-//				}
-//				dst.FillRandom(rg)
-//				for _, success := range testingInfo.Successes {
-//					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
-//						_, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2))
-//						if err != nil {
-//							t.Fatalf("read error: %s", err.Error())
-//						}
-//
-//						newDst := factory.CreateObjectFromName(testingInfo.TestingType)
-//						if success.IsTLBytesBoxed {
-//							_, err := newDst.ReadBoxed(utils.ParseHexToBytes(success.Bytes))
-//							if err != nil {
-//								t.Fatalf("read tl1 error: %s", err.Error())
-//							}
-//						} else {
-//							_, err := newDst.Read(utils.ParseHexToBytes(success.Bytes))
-//							if err != nil {
-//								t.Fatalf("read tl1 error: %s", err.Error())
-//							}
-//						}
-//
-//						if !cmp.Equal(newDst, dst, cmpopts.EquateEmpty()) {
-//							t.Fatalf("no same objects: %s", cmp.Diff(newDst, dst, cmpopts.EquateEmpty()))
-//						}
-//
-//						writeReturn, _ := dst.WriteTL2(nil, nil)
-//						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn)) {
-//							return
-//						}
-//					})
-//				}
-//			})
-//		})
-//	}
-//}
+func TestGoldmasterStressTestTL2(t *testing.T) {
+	tests, err := readTestData()
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
+
+	testNames := utils.Keys(tests.Tests)
+	sort.Strings(testNames)
+
+	for _, testName := range testNames {
+		t.Run(testName, func(t *testing.T) {
+			testingInfo := tests.Tests[testName]
+			t.Run(testingInfo.TestingType, func(t *testing.T) {
+				dst := factory.CreateObjectFromName(testingInfo.TestingType)
+				if dst == nil {
+					t.Fatalf("can't create object of type\"%s\"", testingInfo.TestingType)
+				}
+				dst.FillRandom(rg)
+				for _, success := range testingInfo.Successes {
+					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
+						_, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2))
+						if err != nil {
+							t.Fatalf("read error: %s", err.Error())
+						}
+
+						newDst := factory.CreateObjectFromName(testingInfo.TestingType)
+						if success.IsTLBytesBoxed {
+							_, err := newDst.ReadBoxed(utils.ParseHexToBytes(success.Bytes))
+							if err != nil {
+								t.Fatalf("read tl1 error: %s", err.Error())
+							}
+						} else {
+							_, err := newDst.Read(utils.ParseHexToBytes(success.Bytes))
+							if err != nil {
+								t.Fatalf("read tl1 error: %s", err.Error())
+							}
+						}
+
+						writeReturn, _ := dst.WriteTL2(nil, nil)
+						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn)) {
+							return
+						}
+					})
+				}
+			})
+		})
+	}
+}
 
 const PathToBytesData = "../../data/test-stress-data-goldmaster.json"
-const UpdateTests = true
+const UpdateTests = false
 const NumberOfSamples = 10
 
 func TestGoldmasterGenerateStressTestData(t *testing.T) {
