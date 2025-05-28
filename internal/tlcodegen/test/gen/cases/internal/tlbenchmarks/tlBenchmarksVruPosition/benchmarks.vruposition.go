@@ -620,98 +620,99 @@ func (item *BenchmarksVruPosition) WriteTL2(w []byte, sizes []int) ([]byte, []in
 }
 
 func (item *BenchmarksVruPosition) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.FieldsMask
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.FieldsMask); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.FieldsMask
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.FieldsMask); err != nil {
-				return r, err
-			}
-		} else {
-			item.FieldsMask = 0
-		}
-
-		// read item.PayloadOffset
-		if block&(1<<7) != 0 {
-			if r, err = basictl.LongRead(r, &item.PayloadOffset); err != nil {
-				return r, err
-			}
-		} else {
-			item.PayloadOffset = 0
-		}
-
-		// read next block for fields 8..15
-		if len(saveR) < len(r)+shift {
-			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-				return r, err
-			}
-		} else {
-			block = 0
-		}
-
-		// read item.BlockTimeNano
-		if block&(1<<0) != 0 {
-			if r, err = basictl.LongRead(r, &item.BlockTimeNano); err != nil {
-				return r, err
-			}
-		} else {
-			item.BlockTimeNano = 0
-		}
-
-		// read item.Hash
-		if block&(1<<1) != 0 {
-			if r, err = item.Hash.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.Hash.Reset()
-		}
-
-		// read item.FileOffset
-		if block&(1<<2) != 0 {
-			if r, err = basictl.LongRead(r, &item.FileOffset); err != nil {
-				return r, err
-			}
-		} else {
-			item.FileOffset = 0
-		}
-
-		// read item.SeqNumber
-		if block&(1<<3) != 0 {
-			if item.FieldsMask&(1<<14) != 0 {
-				if r, err = basictl.LongRead(r, &item.SeqNumber); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "SeqNumber" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.SeqNumber = 0
-		}
+		item.FieldsMask = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.PayloadOffset
+	if block&(1<<7) != 0 {
+		if currentR, err = basictl.LongRead(currentR, &item.PayloadOffset); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.PayloadOffset = 0
 	}
+
+	// read next block for fields 8..15
+	if len(currentR) > 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return currentR, err
+		}
+	} else {
+		block = 0
+	}
+
+	// read item.BlockTimeNano
+	if block&(1<<0) != 0 {
+		if currentR, err = basictl.LongRead(currentR, &item.BlockTimeNano); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.BlockTimeNano = 0
+	}
+
+	// read item.Hash
+	if block&(1<<1) != 0 {
+		if currentR, err = item.Hash.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Hash.Reset()
+	}
+
+	// read item.FileOffset
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.LongRead(currentR, &item.FileOffset); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.FileOffset = 0
+	}
+
+	// read item.SeqNumber
+	if block&(1<<3) != 0 {
+		if item.FieldsMask&(1<<14) != 0 {
+			if currentR, err = basictl.LongRead(currentR, &item.SeqNumber); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "SeqNumber" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.SeqNumber = 0
+	}
+
 	return r, nil
 }

@@ -78,18 +78,22 @@ func BuiltinVectorStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) (
 }
 
 func BuiltinVectorStringReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem string
-		if r, err = basictl.StringReadTL2(r, &elem); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &elem); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}
@@ -199,18 +203,22 @@ func BuiltinVectorStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]by
 }
 
 func BuiltinVectorStringBytesReadTL2(r []byte, vec *[][]byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem []byte
-		if r, err = basictl.StringReadBytesTL2(r, &elem); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &elem); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}

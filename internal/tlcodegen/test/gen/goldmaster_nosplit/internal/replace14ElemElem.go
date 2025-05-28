@@ -74,20 +74,23 @@ func BuiltinTuple3Replace14ElemElemLongInternalWriteTL2(w []byte, sizes []int, v
 }
 
 func BuiltinTuple3Replace14ElemElemLongReadTL2(r []byte, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if i == 3 {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = (*vec)[i].ReadTL2(r, nat_tn, nat_tk); err != nil {
-			return r, err
+		if currentR, err = (*vec)[i].ReadTL2(currentR, nat_tn, nat_tk); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}
@@ -332,49 +335,50 @@ func (item *Replace14ElemElemLong) InternalWriteTL2(w []byte, sizes []int, nat_n
 }
 
 func (item *Replace14ElemElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.X
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.X
-		if block&(1<<1) != 0 {
-			if r, err = basictl.IntRead(r, &item.X); err != nil {
-				return r, err
-			}
-		} else {
-			item.X = 0
-		}
-
-		// read item.Y
-		if block&(1<<2) != 0 {
-			if r, err = BuiltinTupleLongReadTL2(r, &item.Y, nat_k); err != nil {
-				return r, err
-			}
-		} else {
-			item.Y = item.Y[:0]
-		}
+		item.X = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Y
+	if block&(1<<2) != 0 {
+		if currentR, err = BuiltinTupleLongReadTL2(currentR, &item.Y, nat_k); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Y = item.Y[:0]
 	}
+
 	return r, nil
 }

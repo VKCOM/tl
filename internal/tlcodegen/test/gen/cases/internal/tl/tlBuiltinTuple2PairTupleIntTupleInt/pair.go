@@ -77,20 +77,23 @@ func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, ve
 }
 
 func BuiltinTuple2PairTupleIntTupleIntReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if i == 2 {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = (*vec)[i].ReadTL2(r, nat_tXn, nat_tYn); err != nil {
-			return r, err
+		if currentR, err = (*vec)[i].ReadTL2(currentR, nat_tXn, nat_tYn); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}

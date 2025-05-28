@@ -226,21 +226,25 @@ func `)
 					qw422016.N().S(`)
 `)
 				} else {
-					qw422016.N().S(`    saveR := r
-    currentSize := 0
+					qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
 
     *vec = (*vec)[:0]
-    for len(saveR) < len(r) + shift {
+    for len(currentR) > 0 {
         var elem `)
 					qw422016.N().S(elementTypeString)
 					qw422016.N().S(`
         `)
-					qw422016.N().S(tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "elem.Key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "currentR", "elem.Key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         `)
-					qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "currentR", "elem.Value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         *vec = append(*vec, elem)
     }
@@ -885,10 +889,14 @@ func `)
 					qw422016.N().S(`)
 `)
 				} else {
-					qw422016.N().S(`    saveR := r
-    currentSize := 0
+					qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
 
     if *m == nil {
         *m = make(map[`)
@@ -904,7 +912,7 @@ func `)
 
     data := *m
 
-    for len(saveR) < len(r) + shift {
+    for len(currentR) > 0 {
         var key `)
 					qw422016.N().S(keyTypeString)
 					qw422016.N().S(`
@@ -912,10 +920,10 @@ func `)
 					qw422016.N().S(valueTypeString)
 					qw422016.N().S(`
         `)
-					qw422016.N().S(tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "r", "key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.dictKeyField.t.ReadTL2Call(bytesVersion, "currentR", "key", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         `)
-					qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "r", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.dictValueField.t.ReadTL2Call(bytesVersion, "currentR", "value", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         data[key] = value
     }
@@ -1363,18 +1371,22 @@ func `)
 				qw422016.N().S(`)
 `)
 			} else {
-				qw422016.N().S(`    saveR := r
-    currentSize := 0
+				qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
 
     *vec = (*vec)[:0]
-    for len(saveR) < len(r) + shift {
+    for len(currentR) > 0 {
         var elem `)
 				qw422016.N().S(elementTypeString)
 				qw422016.N().S(`
         `)
-				qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "r", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "currentR", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
         *vec = append(*vec, elem)
     }
@@ -1662,10 +1674,14 @@ func `)
 				qw422016.N().S(`)
 `)
 			} else {
-				qw422016.N().S(`    saveR := r
-    currentSize := 0
+				qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
 
     if uint32(cap(*vec)) < nat_n {
         *vec = make([]`)
@@ -1675,12 +1691,12 @@ func `)
         *vec = (*vec)[:nat_n]
     }
     i := 0
-    for len(saveR) < len(r) + shift {
+    for len(currentR) > 0 {
         if uint32(i) == nat_n {
             return r, basictl.TL2Error("more elements than expected")
         }
         `)
-				qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "r", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
         i += 1
     }
@@ -1975,20 +1991,23 @@ func `)
 				qw422016.N().S(`)
 `)
 			} else {
-				qw422016.N().S(`    saveR := r
-    currentSize := 0
+				qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
 
+    currentR := r[:currentSize]
+    r = r[currentSize:]
     i := 0
-    for len(saveR) < len(r) + shift {
-            if i == `)
+    for len(currentR) > 0 {
+        if i == `)
 				qw422016.N().V(tuple.size)
 				qw422016.N().S(` {
             return r, basictl.TL2Error("more elements than expected")
         }
         `)
-				qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "r", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+				qw422016.N().S(tuple.element.t.ReadTL2Call(bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 				qw422016.N().S(`
         i += 1
     }

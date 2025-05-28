@@ -72,20 +72,23 @@ func BuiltinTuple3IntInternalWriteTL2(w []byte, sizes []int, vec *[3]int32) ([]b
 }
 
 func BuiltinTuple3IntReadTL2(r []byte, vec *[3]int32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if i == 3 {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = basictl.IntRead(r, &(*vec)[i]); err != nil {
-			return r, err
+		if currentR, err = basictl.IntRead(currentR, &(*vec)[i]); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}

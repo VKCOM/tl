@@ -330,53 +330,54 @@ func (item *UsefulServiceGetUserEntity) WriteTL2(w []byte, sizes []int) ([]byte,
 }
 
 func (item *UsefulServiceGetUserEntity) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.FieldsMask
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.FieldsMask); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.FieldsMask
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.FieldsMask); err != nil {
-				return r, err
-			}
-		} else {
-			item.FieldsMask = 0
-		}
-
-		// read item.StageId
-		if block&(1<<2) != 0 {
-			if item.FieldsMask&(1<<0) != 0 {
-				if r, err = basictl.StringReadTL2(r, &item.StageId); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "StageId" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.StageId = ""
-		}
+		item.FieldsMask = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.StageId
+	if block&(1<<2) != 0 {
+		if item.FieldsMask&(1<<0) != 0 {
+			if currentR, err = basictl.StringReadTL2(currentR, &item.StageId); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "StageId" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.StageId = ""
 	}
+
 	return r, nil
 }

@@ -16,12 +16,16 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
+const randomSeed = 123432
+const PathToBytesData = "../../data/test-stress-data-goldmaster.json"
+const NumberOfSamples = 10
+
 func TestGoldmasterStressTest(t *testing.T) {
 	tests, err := readTestData()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
+	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(randomSeed)))
 
 	testNames := utils.Keys(tests.Tests)
 	sort.Strings(testNames)
@@ -69,7 +73,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
+	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(randomSeed)))
 
 	testNames := utils.Keys(tests.Tests)
 	sort.Strings(testNames)
@@ -85,9 +89,12 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 				dst.FillRandom(rg)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
-						_, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2))
+						readOffset, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2))
 						if err != nil {
 							t.Fatalf("read error: %s", err.Error())
+						}
+						if len(readOffset) > 0 {
+							t.Fatalf("read tl2 offset not zero")
 						}
 
 						newDst := factory.CreateObjectFromName(testingInfo.TestingType)
@@ -105,7 +112,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 
 						writeReturn, _ := dst.WriteTL2(nil, nil)
 						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn)) {
-							return
+							t.Fatalf("write tl2 unexpected result")
 						}
 					})
 				}
@@ -114,56 +121,86 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 	}
 }
 
-const PathToBytesData = "../../data/test-stress-data-goldmaster.json"
-const UpdateTests = false
-const NumberOfSamples = 10
+func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
+	restoredValues, restoreErr := readTestData()
+	if restoreErr != nil {
+		createTestSamples(t)
+	} else {
+		changedSomething := false
+		sizeBuffer := make([]int, 100)
+		writeBuffer := make([]byte, 100)
 
-func TestGoldmasterGenerateStressTestData(t *testing.T) {
-	if UpdateTests {
-		rg := basictl.NewRandGenerator(rand.New(rand.NewSource(123432)))
-		tests := testformat.AllTestsBytes{Tests: map[string]testformat.MappingTestSamplesBytes{}}
-
-		bannedSet := utils.SliceToSet(bannedTypes)
-
-		items := meta.GetAllTLItems()
-		for _, item := range items {
-			if bannedSet[item.TLName()] {
-				continue
-			}
-
-			testingData := testformat.MappingTestSamplesBytes{}
-			testingData.TestingType = item.TLName()
-
-			dst := factory.CreateObject(item.TLTag())
-			if dst == nil {
-				t.Fatalf("can't init object")
-			}
-			if _, ok := dst.(*meta.TLItem); ok {
-				continue
-			}
-
-			for i := 0; i < NumberOfSamples; i++ {
-				dst.FillRandom(rg)
-				tl1write, err := dst.WriteBoxedGeneral(nil)
-				if err != nil {
-					t.Fatal(err.Error())
+		for testName, _ := range restoredValues.Tests {
+			testingType := restoredValues.Tests[testName].TestingType
+			for i, testCase := range restoredValues.Tests[testName].Successes {
+				obj := factory.CreateObjectFromName(testingType)
+				if obj == nil {
+					t.Fatalf("can't create \"%s\"", testingType)
 				}
-				tl2write, _ := dst.WriteTL2(nil, nil)
-
-				exactTest := testformat.MappingSuccessBytes{}
-				exactTest.Bytes = utils.SprintHexDump(tl1write)
-				exactTest.BytesTL2 = utils.SprintHexDumpTL2(tl2write)
-				exactTest.IsTLBytesBoxed = true
-
-				testingData.Successes = append(testingData.Successes, exactTest)
+				tl1Data := utils.ParseHexToBytes(testCase.Bytes)
+				if testCase.IsTLBytesBoxed {
+					_, _ = obj.ReadBoxed(tl1Data)
+				} else {
+					_, _ = obj.Read(tl1Data)
+				}
+				writeBuffer, sizeBuffer = obj.WriteTL2(writeBuffer[0:0], sizeBuffer[0:0])
+				if testCase.BytesTL2 != utils.SprintHexDumpTL2(writeBuffer) {
+					changedSomething = true
+					restoredValues.Tests[testName].Successes[i].BytesTL2 = utils.SprintHexDumpTL2(writeBuffer)
+				}
 			}
-			tests.Tests[fmt.Sprintf("Test[%s]", testingData.TestingType)] = testingData
 		}
 
-		err := writeTestData(tests)
-		if err != nil {
-			t.Fatal(err.Error())
+		if changedSomething {
+			_ = writeTestData(restoredValues)
 		}
+	}
+}
+
+func createTestSamples(t *testing.T) {
+	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(randomSeed)))
+	tests := testformat.AllTestsBytes{Tests: map[string]testformat.MappingTestSamplesBytes{}}
+
+	bannedSet := utils.SliceToSet(bannedTypes)
+
+	items := meta.GetAllTLItems()
+	for _, item := range items {
+		if bannedSet[item.TLName()] {
+			continue
+		}
+
+		testingData := testformat.MappingTestSamplesBytes{}
+		testingData.TestingType = item.TLName()
+
+		dst := factory.CreateObject(item.TLTag())
+		if dst == nil {
+			t.Fatalf("can't init object")
+		}
+		if _, ok := dst.(*meta.TLItem); ok {
+			continue
+		}
+
+		for i := 0; i < NumberOfSamples; i++ {
+			dst.FillRandom(rg)
+			tl1write, err := dst.WriteBoxedGeneral(nil)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+			tl2write, _ := dst.WriteTL2(nil, nil)
+
+			exactTest := testformat.MappingSuccessBytes{}
+			exactTest.Bytes = utils.SprintHexDump(tl1write)
+			exactTest.BytesTL2 = utils.SprintHexDumpTL2(tl2write)
+			exactTest.IsTLBytesBoxed = true
+
+			testingData.Successes = append(testingData.Successes, exactTest)
+		}
+		tests.Tests[fmt.Sprintf("Test[%s]", testingData.TestingType)] = testingData
+	}
+
+	err := writeTestData(tests)
+	if err != nil {
+		t.Fatal(err.Error())
 	}
 }
 

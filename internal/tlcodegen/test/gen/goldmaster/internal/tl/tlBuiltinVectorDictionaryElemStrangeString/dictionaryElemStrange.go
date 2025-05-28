@@ -134,12 +134,16 @@ func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []
 }
 
 func BuiltinVectorDictionaryElemStrangeStringReadTL2(r []byte, m *map[uint32]string) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if *m == nil {
 		*m = make(map[uint32]string)
@@ -151,14 +155,14 @@ func BuiltinVectorDictionaryElemStrangeStringReadTL2(r []byte, m *map[uint32]str
 
 	data := *m
 
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var key uint32
 		var value string
-		if r, err = basictl.NatRead(r, &key); err != nil {
-			return r, err
+		if currentR, err = basictl.NatRead(currentR, &key); err != nil {
+			return currentR, err
 		}
-		if r, err = basictl.StringReadTL2(r, &value); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &value); err != nil {
+			return currentR, err
 		}
 		data[key] = value
 	}

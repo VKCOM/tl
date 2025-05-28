@@ -246,53 +246,54 @@ func (item *Replace11ElemLong) InternalWriteTL2(w []byte, sizes []int, nat_n uin
 }
 
 func (item *Replace11ElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.B
+	if block&(1<<1) != 0 {
+		if nat_n&(1<<0) != 0 {
+			if currentR, err = tlBuiltinTuple3PairBoxedIntLong.BuiltinTuple3PairBoxedIntLongReadTL2(currentR, &item.B); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "B" + "is presented but depending bit is absent")
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.B
-		if block&(1<<1) != 0 {
-			if nat_n&(1<<0) != 0 {
-				if r, err = tlBuiltinTuple3PairBoxedIntLong.BuiltinTuple3PairBoxedIntLongReadTL2(r, &item.B); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "B" + "is presented but depending bit is absent")
-			}
-		} else {
-			tlBuiltinTuple3PairBoxedIntLong.BuiltinTuple3PairBoxedIntLongReset(&item.B)
-		}
-
-		// read item.C
-		if block&(1<<2) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.C, nat_n); err != nil {
-				return r, err
-			}
-		} else {
-			item.C = item.C[:0]
-		}
+		tlBuiltinTuple3PairBoxedIntLong.BuiltinTuple3PairBoxedIntLongReset(&item.B)
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.C
+	if block&(1<<2) != 0 {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.C, nat_n); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.C = item.C[:0]
 	}
+
 	return r, nil
 }

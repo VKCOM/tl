@@ -76,12 +76,16 @@ func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string, na
 }
 
 func BuiltinTupleStringReadTL2(r []byte, vec *[]string, nat_n uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]string, nat_n)
@@ -89,12 +93,12 @@ func BuiltinTupleStringReadTL2(r []byte, vec *[]string, nat_n uint32) (_ []byte,
 		*vec = (*vec)[:nat_n]
 	}
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if uint32(i) == nat_n {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = basictl.StringReadTL2(r, &(*vec)[i]); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &(*vec)[i]); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}
@@ -211,12 +215,16 @@ func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byt
 }
 
 func BuiltinTupleStringBytesReadTL2(r []byte, vec *[][]byte, nat_n uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][]byte, nat_n)
@@ -224,12 +232,12 @@ func BuiltinTupleStringBytesReadTL2(r []byte, vec *[][]byte, nat_n uint32) (_ []
 		*vec = (*vec)[:nat_n]
 	}
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if uint32(i) == nat_n {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = basictl.StringReadBytesTL2(r, &(*vec)[i]); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &(*vec)[i]); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}

@@ -416,6 +416,7 @@ func (item *MaybeTest1) CalculateLayout(sizes []int) []int {
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 		} else {
 			sizes = sizes[:currentPosition+1]
 		}
@@ -428,6 +429,7 @@ func (item *MaybeTest1) CalculateLayout(sizes []int) []int {
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 		} else {
 			sizes = sizes[:currentPosition+1]
 		}
@@ -571,6 +573,7 @@ func (item *MaybeTest1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	if item.A.Ok {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
 			w, sizes = item.A.InternalWriteTL2(w, sizes)
 		} else {
@@ -581,6 +584,7 @@ func (item *MaybeTest1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	if item.B.Ok {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 3)
 			w, sizes = item.B.InternalWriteTL2(w, sizes)
 		} else {
@@ -693,139 +697,140 @@ func (item *MaybeTest1) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *MaybeTest1) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.N
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.N
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.N = 0
-		}
-
-		// read item.A
-		if block&(1<<2) != 0 {
-			if r, err = item.A.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.A.Reset()
-		}
-
-		// read item.B
-		if block&(1<<3) != 0 {
-			if r, err = item.B.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.B.Reset()
-		}
-
-		// read item.C
-		if block&(1<<4) != 0 {
-			if r, err = item.C.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.C.Reset()
-		}
-
-		// read item.D
-		if block&(1<<5) != 0 {
-			if r, err = item.D.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.D.Reset()
-		}
-
-		// read item.E
-		if block&(1<<6) != 0 {
-			if r, err = item.E.ReadTL2(r, item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.E.Reset()
-		}
-
-		// read item.F
-		if block&(1<<7) != 0 {
-			if r, err = item.F.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.F.Reset()
-		}
-
-		// read next block for fields 8..15
-		if len(saveR) < len(r)+shift {
-			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-				return r, err
-			}
-		} else {
-			block = 0
-		}
-
-		// read item.G
-		if block&(1<<0) != 0 {
-			if r, err = item.G.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.G.Reset()
-		}
-
-		// read item.H
-		if block&(1<<1) != 0 {
-			if r, err = item.H.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.H.Reset()
-		}
-
-		// read item.I
-		if block&(1<<2) != 0 {
-			if r, err = item.I.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.I.Reset()
-		}
-
-		// read item.J
-		if block&(1<<3) != 0 {
-			if r, err = item.J.ReadTL2(r); err != nil {
-				return r, err
-			}
-		} else {
-			item.J.Reset()
-		}
+		item.N = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.A
+	if block&(1<<2) != 0 {
+		if currentR, err = item.A.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.A.Reset()
 	}
+
+	// read item.B
+	if block&(1<<3) != 0 {
+		if currentR, err = item.B.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.B.Reset()
+	}
+
+	// read item.C
+	if block&(1<<4) != 0 {
+		if currentR, err = item.C.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.C.Reset()
+	}
+
+	// read item.D
+	if block&(1<<5) != 0 {
+		if currentR, err = item.D.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.D.Reset()
+	}
+
+	// read item.E
+	if block&(1<<6) != 0 {
+		if currentR, err = item.E.ReadTL2(currentR, item.N); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.E.Reset()
+	}
+
+	// read item.F
+	if block&(1<<7) != 0 {
+		if currentR, err = item.F.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F.Reset()
+	}
+
+	// read next block for fields 8..15
+	if len(currentR) > 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return currentR, err
+		}
+	} else {
+		block = 0
+	}
+
+	// read item.G
+	if block&(1<<0) != 0 {
+		if currentR, err = item.G.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.G.Reset()
+	}
+
+	// read item.H
+	if block&(1<<1) != 0 {
+		if currentR, err = item.H.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.H.Reset()
+	}
+
+	// read item.I
+	if block&(1<<2) != 0 {
+		if currentR, err = item.I.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.I.Reset()
+	}
+
+	// read item.J
+	if block&(1<<3) != 0 {
+		if currentR, err = item.J.ReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.J.Reset()
+	}
+
 	return r, nil
 }

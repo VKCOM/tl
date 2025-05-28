@@ -7,6 +7,8 @@ type MappingSuccessBytes struct {
 	BytesTL2 string
 	// is tl1 data boxed
 	IsTLBytesBoxed bool
+	// can't be changed with auto generation
+	IsTL2DataFixed bool
 }
 
 type MappingTestSamplesBytes struct {

@@ -74,20 +74,23 @@ func BuiltinTuple2CycleTupleInternalWriteTL2(w []byte, sizes []int, vec *[2]Cycl
 }
 
 func BuiltinTuple2CycleTupleReadTL2(r []byte, vec *[2]CycleTuple) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if i == 2 {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = (*vec)[i].ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}
@@ -205,12 +208,16 @@ func BuiltinTupleCycleTupleInternalWriteTL2(w []byte, sizes []int, vec *[]CycleT
 }
 
 func BuiltinTupleCycleTupleReadTL2(r []byte, vec *[]CycleTuple, nat_n uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]CycleTuple, nat_n)
@@ -218,12 +225,12 @@ func BuiltinTupleCycleTupleReadTL2(r []byte, vec *[]CycleTuple, nat_n uint32) (_
 		*vec = (*vec)[:nat_n]
 	}
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if uint32(i) == nat_n {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = (*vec)[i].ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}
@@ -721,83 +728,84 @@ func (item *CycleTuple) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *CycleTuple) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.N
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.N
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.N = 0
-		}
-
-		// read item.A
-		if block&(1<<2) != 0 {
-			if item.A == nil {
-				var newValue [2]CycleTuple
-				item.A = &newValue
-			}
-			if item.N&(1<<0) != 0 {
-				if r, err = BuiltinTuple2CycleTupleReadTL2(r, item.A); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
-			}
-		} else {
-			if item.A == nil {
-				var newValue [2]CycleTuple
-				item.A = &newValue
-			}
-			BuiltinTuple2CycleTupleReset(item.A)
-		}
-
-		// read item.B
-		if block&(1<<3) != 0 {
-			if r, err = BuiltinTupleCycleTupleReadTL2(r, &item.B, item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.B = item.B[:0]
-		}
-
-		// read item.C
-		if block&(1<<4) != 0 {
-			if item.N&(1<<2) != 0 {
-				if r, err = BuiltinTuple3IntReadTL2(r, &item.C); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "C" + "is presented but depending bit is absent")
-			}
-		} else {
-			BuiltinTuple3IntReset(&item.C)
-		}
+		item.N = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.A
+	if block&(1<<2) != 0 {
+		if item.A == nil {
+			var newValue [2]CycleTuple
+			item.A = &newValue
+		}
+		if item.N&(1<<0) != 0 {
+			if currentR, err = BuiltinTuple2CycleTupleReadTL2(currentR, item.A); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+		}
+	} else {
+		if item.A == nil {
+			var newValue [2]CycleTuple
+			item.A = &newValue
+		}
+		BuiltinTuple2CycleTupleReset(item.A)
 	}
+
+	// read item.B
+	if block&(1<<3) != 0 {
+		if currentR, err = BuiltinTupleCycleTupleReadTL2(currentR, &item.B, item.N); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.B = item.B[:0]
+	}
+
+	// read item.C
+	if block&(1<<4) != 0 {
+		if item.N&(1<<2) != 0 {
+			if currentR, err = BuiltinTuple3IntReadTL2(currentR, &item.C); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "C" + "is presented but depending bit is absent")
+		}
+	} else {
+		BuiltinTuple3IntReset(&item.C)
+	}
+
 	return r, nil
 }

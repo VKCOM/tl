@@ -174,40 +174,41 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, 
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.Content
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Content); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Content
-		if block&(1<<1) != 0 {
-			if r, err = basictl.StringReadTL2(r, &item.Content); err != nil {
-				return r, err
-			}
-		} else {
-			item.Content = ""
-		}
+		item.Content = ""
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }

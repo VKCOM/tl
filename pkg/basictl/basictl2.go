@@ -18,8 +18,8 @@ func TL2ExpectedNonZeroError() error {
 	return fmt.Errorf("expected non zero value")
 }
 
-func TL2Error(text string) error {
-	return fmt.Errorf("tl2 error: %s", text)
+func TL2Error(format string, a ...any) error {
+	return fmt.Errorf("tl2 error: %s", fmt.Sprintf(format, a...))
 }
 
 func TL2ReadSize(r []byte, l *int) ([]byte, error) {

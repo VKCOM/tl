@@ -191,40 +191,41 @@ func (item *Replace3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *Replace3) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.A
+	if block&(1<<1) != 0 {
+		if currentR, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL2(currentR, &item.A); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.A
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL2(r, &item.A); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.A)
-		}
+		tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.A)
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }

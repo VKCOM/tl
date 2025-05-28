@@ -181,44 +181,45 @@ func (item *Replace12Elem) InternalWriteTL2(w []byte, sizes []int, nat_n uint32)
 }
 
 func (item *Replace12Elem) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
 		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
+	}
 
-		// read item.A
-		if block&(1<<1) != 0 {
-			if nat_n&(1<<0) != 0 {
-				if r, err = basictl.IntRead(r, &item.A); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+	// read item.A
+	if block&(1<<1) != 0 {
+		if nat_n&(1<<0) != 0 {
+			if currentR, err = basictl.IntRead(currentR, &item.A); err != nil {
+				return currentR, err
 			}
 		} else {
-			item.A = 0
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
 		}
+	} else {
+		item.A = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }

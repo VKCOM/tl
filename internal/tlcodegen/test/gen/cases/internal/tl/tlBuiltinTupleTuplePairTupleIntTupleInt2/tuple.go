@@ -81,12 +81,16 @@ func BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w []byte, sizes []in
 }
 
 func BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r []byte, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n)
@@ -94,12 +98,12 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r []byte, vec *[][2]tlPairTup
 		*vec = (*vec)[:nat_n]
 	}
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if uint32(i) == nat_n {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReadTL2(r, &(*vec)[i], nat_ttXn, nat_ttYn); err != nil {
-			return r, err
+		if currentR, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReadTL2(currentR, &(*vec)[i], nat_ttXn, nat_ttYn); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}

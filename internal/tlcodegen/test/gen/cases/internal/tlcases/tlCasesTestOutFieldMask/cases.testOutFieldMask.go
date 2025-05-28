@@ -272,53 +272,54 @@ func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, nat_f
 }
 
 func (item *CasesTestOutFieldMask) ReadTL2(r []byte, nat_f uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.F1
+	if block&(1<<1) != 0 {
+		if nat_f&(1<<0) != 0 {
+			if currentR, err = basictl.NatRead(currentR, &item.F1); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.F1
-		if block&(1<<1) != 0 {
-			if nat_f&(1<<0) != 0 {
-				if r, err = basictl.NatRead(r, &item.F1); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F1 = 0
-		}
-
-		// read item.F3
-		if block&(1<<3) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F3, nat_f); err != nil {
-				return r, err
-			}
-		} else {
-			item.F3 = item.F3[:0]
-		}
+		item.F1 = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.F3
+	if block&(1<<3) != 0 {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F3, nat_f); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F3 = item.F3[:0]
 	}
+
 	return r, nil
 }

@@ -172,49 +172,50 @@ func (item *AbAlias) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 
 func (item *AbAlias) ReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*int32)(item)
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read ptr
+	if block&(1<<1) != 0 {
+		if ptr == nil {
+			var newValue int32
+			ptr = &newValue
+		}
+		if currentR, err = basictl.IntRead(currentR, ptr); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
+		if ptr == nil {
+			var newValue int32
+			ptr = &newValue
 		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read ptr
-		if block&(1<<1) != 0 {
-			if ptr == nil {
-				var newValue int32
-				ptr = &newValue
-			}
-			if r, err = basictl.IntRead(r, ptr); err != nil {
-				return r, err
-			}
-		} else {
-			if ptr == nil {
-				var newValue int32
-				ptr = &newValue
-			}
-			*ptr = 0
-		}
+		*ptr = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }
 
@@ -408,41 +409,42 @@ func (item *AbCode) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *AbCode) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.X
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.X
-		if block&(1<<1) != 0 {
-			if r, err = basictl.IntRead(r, &item.X); err != nil {
-				return r, err
-			}
-		} else {
-			item.X = 0
-		}
+		item.X = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }
 
@@ -574,32 +576,33 @@ func (item *AbEmpty) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *AbEmpty) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
 		}
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }
 
@@ -1351,12 +1354,16 @@ func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, vec *[]AbResp
 }
 
 func BuiltinTupleAbResponseReadTL2(r []byte, vec *[]AbResponse, nat_n uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]AbResponse, nat_n)
@@ -1364,12 +1371,12 @@ func BuiltinTupleAbResponseReadTL2(r []byte, vec *[]AbResponse, nat_n uint32) (_
 		*vec = (*vec)[:nat_n]
 	}
 	i := 0
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		if uint32(i) == nat_n {
 			return r, basictl.TL2Error("more elements than expected")
 		}
-		if r, err = (*vec)[i].ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 		i += 1
 	}
@@ -1660,50 +1667,51 @@ func (item *CdResponse) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *CdResponse) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.X
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.X
-		if block&(1<<1) != 0 {
-			if r, err = basictl.IntRead(r, &item.X); err != nil {
-				return r, err
-			}
-		} else {
-			item.X = 0
-		}
-
-		// read item.Str
-		if block&(1<<2) != 0 {
-			if r, err = basictl.StringReadTL2(r, &item.Str); err != nil {
-				return r, err
-			}
-		} else {
-			item.Str = ""
-		}
+		item.X = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Str
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Str); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Str = ""
 	}
+
 	return r, nil
 }
 
@@ -1942,49 +1950,50 @@ func (item *CdResponseBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *CdResponseBytes) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.X
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.X
-		if block&(1<<1) != 0 {
-			if r, err = basictl.IntRead(r, &item.X); err != nil {
-				return r, err
-			}
-		} else {
-			item.X = 0
-		}
-
-		// read item.Str
-		if block&(1<<2) != 0 {
-			if r, err = basictl.StringReadBytesTL2(r, &item.Str); err != nil {
-				return r, err
-			}
-		} else {
-			item.Str = item.Str[:0]
-		}
+		item.X = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Str
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Str); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Str = item.Str[:0]
 	}
+
 	return r, nil
 }
