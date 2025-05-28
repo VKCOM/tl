@@ -921,154 +921,155 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.Local
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.Local); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Local
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.Local); err != nil {
-				return r, err
-			}
-		} else {
-			item.Local = 0
-		}
-
-		// read item.F00
-		if block&(1<<2) != 0 {
-			if r, err = basictl.IntRead(r, &item.F00); err != nil {
-				return r, err
-			}
-		} else {
-			item.F00 = 0
-		}
-
-		// read item.F02
-		if block&(1<<4) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F02, item.Local); err != nil {
-				return r, err
-			}
-		} else {
-			item.F02 = item.F02[:0]
-		}
-
-		// read item.F03
-		if block&(1<<5) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F03, nat_outer); err != nil {
-				return r, err
-			}
-		} else {
-			item.F03 = item.F03[:0]
-		}
-
-		// read item.F10
-		if block&(1<<6) != 0 {
-			if item.Local&(1<<0) != 0 {
-				if r, err = basictl.IntRead(r, &item.F10); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F10" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F10 = 0
-		}
-
-		// read next block for fields 8..15
-		if len(saveR) < len(r)+shift {
-			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-				return r, err
-			}
-		} else {
-			block = 0
-		}
-
-		// read item.F12
-		if block&(1<<0) != 0 {
-			if item.Local&(1<<2) != 0 {
-				if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F12, item.Local); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F12" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F12 = item.F12[:0]
-		}
-
-		// read item.F13
-		if block&(1<<1) != 0 {
-			if item.Local&(1<<3) != 0 {
-				if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F13, nat_outer); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F13" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F13 = item.F13[:0]
-		}
-
-		// read item.F20
-		if block&(1<<2) != 0 {
-			if nat_outer&(1<<0) != 0 {
-				if r, err = basictl.IntRead(r, &item.F20); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F20" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F20 = 0
-		}
-
-		// read item.F22
-		if block&(1<<4) != 0 {
-			if nat_outer&(1<<2) != 0 {
-				if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F22, item.Local); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F22" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F22 = item.F22[:0]
-		}
-
-		// read item.F23
-		if block&(1<<5) != 0 {
-			if nat_outer&(1<<3) != 0 {
-				if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.F23, nat_outer); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F23" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F23 = item.F23[:0]
-		}
+		item.Local = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.F00
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.F00); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F00 = 0
 	}
+
+	// read item.F02
+	if block&(1<<4) != 0 {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F02, item.Local); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F02 = item.F02[:0]
+	}
+
+	// read item.F03
+	if block&(1<<5) != 0 {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F03, nat_outer); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F03 = item.F03[:0]
+	}
+
+	// read item.F10
+	if block&(1<<6) != 0 {
+		if item.Local&(1<<0) != 0 {
+			if currentR, err = basictl.IntRead(currentR, &item.F10); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F10" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F10 = 0
+	}
+
+	// read next block for fields 8..15
+	if len(currentR) > 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return currentR, err
+		}
+	} else {
+		block = 0
+	}
+
+	// read item.F12
+	if block&(1<<0) != 0 {
+		if item.Local&(1<<2) != 0 {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F12, item.Local); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F12" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F12 = item.F12[:0]
+	}
+
+	// read item.F13
+	if block&(1<<1) != 0 {
+		if item.Local&(1<<3) != 0 {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F13, nat_outer); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F13" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F13 = item.F13[:0]
+	}
+
+	// read item.F20
+	if block&(1<<2) != 0 {
+		if nat_outer&(1<<0) != 0 {
+			if currentR, err = basictl.IntRead(currentR, &item.F20); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F20" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F20 = 0
+	}
+
+	// read item.F22
+	if block&(1<<4) != 0 {
+		if nat_outer&(1<<2) != 0 {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F22, item.Local); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F22" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F22 = item.F22[:0]
+	}
+
+	// read item.F23
+	if block&(1<<5) != 0 {
+		if nat_outer&(1<<3) != 0 {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F23, nat_outer); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F23" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F23 = item.F23[:0]
+	}
+
 	return r, nil
 }

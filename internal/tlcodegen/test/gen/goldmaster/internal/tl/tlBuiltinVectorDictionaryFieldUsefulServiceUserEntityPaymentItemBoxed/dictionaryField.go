@@ -131,12 +131,16 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r []byte, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if *m == nil {
 		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)
@@ -148,14 +152,14 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(
 
 	data := *m
 
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var key string
 		var value tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
-		if r, err = basictl.StringReadTL2(r, &key); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &key); err != nil {
+			return currentR, err
 		}
-		if r, err = value.ReadTL2(r, nat_t); err != nil {
-			return r, err
+		if currentR, err = value.ReadTL2(currentR, nat_t); err != nil {
+			return currentR, err
 		}
 		data[key] = value
 	}

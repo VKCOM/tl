@@ -78,15 +78,19 @@ func BuiltinVectorTrueBoxedInternalWriteTL2(w []byte, sizes []int, vec *[]tlTrue
 }
 
 func BuiltinVectorTrueBoxedReadTL2(r []byte, vec *[]tlTrue.True) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem tlTrue.True
 
 		*vec = append(*vec, elem)

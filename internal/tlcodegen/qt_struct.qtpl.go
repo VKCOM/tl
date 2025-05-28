@@ -2622,21 +2622,26 @@ func (item *`)
 				qw422016.N().S(`)(item)
 `)
 			}
-			qw422016.N().S(`    saveR := r
-    currentSize := 0
+			qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
 
     if currentSize == 0 {
         item.Reset()
-    } else {
-        var block byte
-        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-        // read No of constructor
-        if block & 1 != 0 {
-            var _skip int
-            if r, err = basictl.TL2ReadSize(r, &_skip); err != nil { return r, err }
-        }
+        return r, nil
+    }
+    var block byte
+    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+    // read No of constructor
+    if block & 1 != 0 {
+        var _skip int
+        if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil { return currentR, err }
+    }
 `)
 			for fieldIndex, field := range struct_.Fields {
 				fieldName := fmt.Sprintf("item.%s", field.goName)
@@ -2648,16 +2653,16 @@ func (item *`)
 
 				if (fieldIndex+1)%8 == 0 {
 					qw422016.N().S(`
-        // read next block for fields `)
+    // read next block for fields `)
 					qw422016.N().V((fieldIndex + 1))
 					qw422016.N().S(`..`)
 					qw422016.N().V((fieldIndex + 8))
 					qw422016.N().S(`
-        if len(saveR) < len(r) + shift {
-            if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-        } else {
-            block = 0
-        }
+    if len(currentR) > 0 {
+        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+    } else {
+        block = 0
+    }
 `)
 				}
 				if field.t.IsTrueType() {
@@ -2693,12 +2698,12 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
 `)
 				if field.fieldMask != nil {
 					qw422016.N().S(`        } else {
-            return r, basictl.TL2Error("field mask contradiction: field item." + "`)
+            return currentR, basictl.TL2Error("field mask contradiction: field item." + "`)
 					qw422016.N().S(field.goName)
 					qw422016.N().S(`" + "is presented but depending bit is absent")
         }
@@ -2725,11 +2730,7 @@ func (item *`)
     }
 `)
 			}
-			qw422016.N().S(`    }
-
-    if len(saveR) < len(r) + shift {
-        r = saveR[shift:]
-    }
+			qw422016.N().S(`
     return r, nil
 `)
 		}

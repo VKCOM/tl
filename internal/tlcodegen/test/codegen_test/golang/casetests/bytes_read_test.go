@@ -35,7 +35,7 @@ type mappingTestBytes struct {
 }
 
 func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
-	seed := uint64(14883274921658531818) // rand.Uint64()
+	seed := rand.Uint64()
 	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(int64(seed))))
 
 	fmt.Println("Seed: ", seed)
@@ -71,7 +71,7 @@ func runMappingTestBytes(t *testing.T, mt mappingTestBytes) {
 func TestAllTLObjectsReadJsonByRandomBytes(t *testing.T) {
 	const RepeatNumber = 100
 
-	seed := uint64(12501105899753422230) // rand.Uint64()
+	seed := rand.Uint64()
 
 	t.Logf("Seed: %d\n", seed)
 
@@ -408,15 +408,14 @@ func updateTestData(t *testing.T) {
 		return
 	}
 
-	tests := testformat.AllTestsBytes{map[string]testformat.MappingTestSamplesBytes{}}
+	tests := testformat.AllTestsBytes{Tests: map[string]testformat.MappingTestSamplesBytes{}}
 	_ = json.Unmarshal(data, &tests)
 
 	updated := false
 
 	for testName, testValues := range tests.Tests {
 		for i, success := range testValues.Successes {
-			if len(success.BytesTL2) == 0 {
-				updated = true
+			if !success.IsTL2DataFixed {
 				testObject := factory.CreateObjectFromName(testValues.TestingType)
 				if testObject == nil {
 					t.Fatalf("No testing object for test \"%s\"", testName)
@@ -429,10 +428,14 @@ func updateTestData(t *testing.T) {
 					return
 				}
 				data, _ := testObject.WriteTL2(nil, nil)
+				tl2StringData := utils.SprintHexDumpTL2(data)
 
-				newTestValues := tests.Tests[testName]
-				newTestValues.Successes[i].BytesTL2 = utils.SprintHexDumpTL2(data)
-				tests.Tests[testName] = newTestValues
+				if success.BytesTL2 != tl2StringData {
+					updated = true
+					newTestValues := tests.Tests[testName]
+					newTestValues.Successes[i].BytesTL2 = tl2StringData
+					tests.Tests[testName] = newTestValues
+				}
 			}
 		}
 	}

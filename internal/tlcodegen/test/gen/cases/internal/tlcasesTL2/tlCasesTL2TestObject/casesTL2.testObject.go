@@ -595,109 +595,110 @@ func (item *CasesTL2TestObject) WriteTL2(w []byte, sizes []int) ([]byte, []int) 
 }
 
 func (item *CasesTL2TestObject) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.N
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.N
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.N = 0
-		}
-
-		// read item.F2
-		if block&(1<<3) != 0 {
-			item.F2 = true
-		} else {
-			item.F2 = false
-		}
-
-		// read item.F3
-		if block&(1<<4) != 0 {
-			if r, err = tlBuiltinVectorBool.BuiltinVectorBoolReadTL2(r, &item.F3); err != nil {
-				return r, err
-			}
-		} else {
-			item.F3 = item.F3[:0]
-		}
-
-		// read item.F4
-		if block&(1<<5) != 0 {
-			if r, err = item.F4.ReadTL2(r, item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.F4.Reset()
-		}
-
-		// read item.F5
-		if block&(1<<6) != 0 {
-			if item.N&(1<<1) != 0 {
-				if r, err = basictl.BoolReadTL2(r, &item.F5); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F5" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F5 = false
-		}
-
-		// read item.F6
-		if block&(1<<7) != 0 {
-			if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r, &item.F6); err != nil {
-				return r, err
-			}
-		} else {
-			item.F6 = item.F6[:0]
-		}
-
-		// read next block for fields 8..15
-		if len(saveR) < len(r)+shift {
-			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-				return r, err
-			}
-		} else {
-			block = 0
-		}
-
-		// read item.F7
-		if block&(1<<0) != 0 {
-			if item.N&(1<<14) != 0 {
-				if r, err = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedReadTL2(r, &item.F7); err != nil {
-					return r, err
-				}
-			} else {
-				return r, basictl.TL2Error("field mask contradiction: field item." + "F7" + "is presented but depending bit is absent")
-			}
-		} else {
-			item.F7 = item.F7[:0]
-		}
+		item.N = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.F2
+	if block&(1<<3) != 0 {
+		item.F2 = true
+	} else {
+		item.F2 = false
 	}
+
+	// read item.F3
+	if block&(1<<4) != 0 {
+		if currentR, err = tlBuiltinVectorBool.BuiltinVectorBoolReadTL2(currentR, &item.F3); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F3 = item.F3[:0]
+	}
+
+	// read item.F4
+	if block&(1<<5) != 0 {
+		if currentR, err = item.F4.ReadTL2(currentR, item.N); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F4.Reset()
+	}
+
+	// read item.F5
+	if block&(1<<6) != 0 {
+		if item.N&(1<<1) != 0 {
+			if currentR, err = basictl.BoolReadTL2(currentR, &item.F5); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F5" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F5 = false
+	}
+
+	// read item.F6
+	if block&(1<<7) != 0 {
+		if currentR, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(currentR, &item.F6); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F6 = item.F6[:0]
+	}
+
+	// read next block for fields 8..15
+	if len(currentR) > 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return currentR, err
+		}
+	} else {
+		block = 0
+	}
+
+	// read item.F7
+	if block&(1<<0) != 0 {
+		if item.N&(1<<14) != 0 {
+			if currentR, err = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedReadTL2(currentR, &item.F7); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F7" + "is presented but depending bit is absent")
+		}
+	} else {
+		item.F7 = item.F7[:0]
+	}
+
 	return r, nil
 }

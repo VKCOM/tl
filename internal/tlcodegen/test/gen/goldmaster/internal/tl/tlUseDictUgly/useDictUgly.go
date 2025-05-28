@@ -746,139 +746,140 @@ func (item *UseDictUgly) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
 }
 
 func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.N
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.N
-		if block&(1<<1) != 0 {
-			if r, err = basictl.NatRead(r, &item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.N = 0
-		}
-
-		// read item.A
-		if block&(1<<2) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringReadTL2(r, &item.A, item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.A = item.A[:0]
-		}
-
-		// read item.B
-		if block&(1<<3) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringReadTL2(r, &item.B); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringReset(item.B)
-		}
-
-		// read item.C
-		if block&(1<<4) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntReadTL2(r, &item.C); err != nil {
-				return r, err
-			}
-		} else {
-			item.C = item.C[:0]
-		}
-
-		// read item.D
-		if block&(1<<5) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntReadTL2(r, &item.D, item.N); err != nil {
-				return r, err
-			}
-		} else {
-			item.D = item.D[:0]
-		}
-
-		// read item.E
-		if block&(1<<6) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntReadTL2(r, &item.E); err != nil {
-				return r, err
-			}
-		} else {
-			item.E = item.E[:0]
-		}
-
-		// read item.F
-		if block&(1<<7) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntReadTL2(r, &item.F); err != nil {
-				return r, err
-			}
-		} else {
-			item.F = item.F[:0]
-		}
-
-		// read next block for fields 8..15
-		if len(saveR) < len(r)+shift {
-			if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-				return r, err
-			}
-		} else {
-			block = 0
-		}
-
-		// read item.G
-		if block&(1<<0) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(r, &item.G); err != nil {
-				return r, err
-			}
-		} else {
-			item.G = item.G[:0]
-		}
-
-		// read item.X
-		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReadTL2(r, &item.X); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
-		}
-
-		// read item.Y
-		if block&(1<<2) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReadTL2(r, &item.Y); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
-		}
-
-		// read item.Z
-		if block&(1<<3) != 0 {
-			if r, err = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r, &item.Z); err != nil {
-				return r, err
-			}
-		} else {
-			tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
-		}
+		item.N = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.A
+	if block&(1<<2) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringReadTL2(currentR, &item.A, item.N); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.A = item.A[:0]
 	}
+
+	// read item.B
+	if block&(1<<3) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringReadTL2(currentR, &item.B); err != nil {
+			return currentR, err
+		}
+	} else {
+		tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringReset(item.B)
+	}
+
+	// read item.C
+	if block&(1<<4) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntReadTL2(currentR, &item.C); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.C = item.C[:0]
+	}
+
+	// read item.D
+	if block&(1<<5) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntReadTL2(currentR, &item.D, item.N); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.D = item.D[:0]
+	}
+
+	// read item.E
+	if block&(1<<6) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntReadTL2(currentR, &item.E); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.E = item.E[:0]
+	}
+
+	// read item.F
+	if block&(1<<7) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntReadTL2(currentR, &item.F); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.F = item.F[:0]
+	}
+
+	// read next block for fields 8..15
+	if len(currentR) > 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return currentR, err
+		}
+	} else {
+		block = 0
+	}
+
+	// read item.G
+	if block&(1<<0) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(currentR, &item.G); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.G = item.G[:0]
+	}
+
+	// read item.X
+	if block&(1<<1) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReadTL2(currentR, &item.X); err != nil {
+			return currentR, err
+		}
+	} else {
+		tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
+	}
+
+	// read item.Y
+	if block&(1<<2) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReadTL2(currentR, &item.Y); err != nil {
+			return currentR, err
+		}
+	} else {
+		tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
+	}
+
+	// read item.Z
+	if block&(1<<3) != 0 {
+		if currentR, err = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReadTL2(currentR, &item.Z); err != nil {
+			return currentR, err
+		}
+	} else {
+		tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
+	}
+
 	return r, nil
 }

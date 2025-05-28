@@ -80,18 +80,22 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w []byte, sizes 
 }
 
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r []byte, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion
-		if r, err = elem.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = elem.ReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}

@@ -129,12 +129,16 @@ func BuiltinVectorDictionaryFieldStringInternalWriteTL2(w []byte, sizes []int, m
 }
 
 func BuiltinVectorDictionaryFieldStringReadTL2(r []byte, m *map[string]string) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if *m == nil {
 		*m = make(map[string]string)
@@ -146,14 +150,14 @@ func BuiltinVectorDictionaryFieldStringReadTL2(r []byte, m *map[string]string) (
 
 	data := *m
 
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var key string
 		var value string
-		if r, err = basictl.StringReadTL2(r, &key); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &key); err != nil {
+			return currentR, err
 		}
-		if r, err = basictl.StringReadTL2(r, &value); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &value); err != nil {
+			return currentR, err
 		}
 		data[key] = value
 	}
@@ -285,21 +289,25 @@ func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []i
 }
 
 func BuiltinVectorDictionaryFieldStringBytesReadTL2(r []byte, vec *[]DictionaryFieldStringBytes) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem DictionaryFieldStringBytes
-		if r, err = basictl.StringReadBytesTL2(r, &elem.Key); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &elem.Key); err != nil {
+			return currentR, err
 		}
-		if r, err = basictl.StringReadBytesTL2(r, &elem.Value); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &elem.Value); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}
@@ -465,12 +473,16 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r []byte, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if *m == nil {
 		*m = make(map[string]UsefulServiceUserEntityPaymentItem)
@@ -482,14 +494,14 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(
 
 	data := *m
 
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var key string
 		var value UsefulServiceUserEntityPaymentItem
-		if r, err = basictl.StringReadTL2(r, &key); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &key); err != nil {
+			return currentR, err
 		}
-		if r, err = value.ReadTL2(r, nat_t); err != nil {
-			return r, err
+		if currentR, err = value.ReadTL2(currentR, nat_t); err != nil {
+			return currentR, err
 		}
 		data[key] = value
 	}
@@ -773,50 +785,51 @@ func (item *DictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []in
 }
 
 func (item *DictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.Key
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Key); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Key
-		if block&(1<<1) != 0 {
-			if r, err = basictl.StringReadTL2(r, &item.Key); err != nil {
-				return r, err
-			}
-		} else {
-			item.Key = ""
-		}
-
-		// read item.Value
-		if block&(1<<2) != 0 {
-			if r, err = basictl.StringReadTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			item.Value = ""
-		}
+		item.Key = ""
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Value
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value = ""
 	}
+
 	return r, nil
 }
 
@@ -1043,50 +1056,51 @@ func (item *DictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte,
 }
 
 func (item *DictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.Key
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Key); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Key
-		if block&(1<<1) != 0 {
-			if r, err = basictl.StringReadBytesTL2(r, &item.Key); err != nil {
-				return r, err
-			}
-		} else {
-			item.Key = item.Key[:0]
-		}
-
-		// read item.Value
-		if block&(1<<2) != 0 {
-			if r, err = basictl.StringReadBytesTL2(r, &item.Value); err != nil {
-				return r, err
-			}
-		} else {
-			item.Value = item.Value[:0]
-		}
+		item.Key = item.Key[:0]
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Value
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Value); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value = item.Value[:0]
 	}
+
 	return r, nil
 }
 
@@ -1297,49 +1311,50 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWrit
 }
 
 func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.Key
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Key); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.Key
-		if block&(1<<1) != 0 {
-			if r, err = basictl.StringReadTL2(r, &item.Key); err != nil {
-				return r, err
-			}
-		} else {
-			item.Key = ""
-		}
-
-		// read item.Value
-		if block&(1<<2) != 0 {
-			if r, err = item.Value.ReadTL2(r, nat_t); err != nil {
-				return r, err
-			}
-		} else {
-			item.Value.Reset()
-		}
+		item.Key = ""
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Value
+	if block&(1<<2) != 0 {
+		if currentR, err = item.Value.ReadTL2(currentR, nat_t); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Value.Reset()
 	}
+
 	return r, nil
 }

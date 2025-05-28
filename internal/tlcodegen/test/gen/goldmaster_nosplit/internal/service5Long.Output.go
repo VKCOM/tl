@@ -141,32 +141,33 @@ func (item *Service5LongEmptyOutput) WriteTL2(w []byte, sizes []int) ([]byte, []
 }
 
 func (item *Service5LongEmptyOutput) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
-	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
 		}
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
 }
 
@@ -654,49 +655,50 @@ func (item *Service5LongStringOutput) WriteTL2(w []byte, sizes []int) ([]byte, [
 }
 
 func (item *Service5LongStringOutput) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if currentSize == 0 {
 		item.Reset()
+		return r, nil
+	}
+	var block byte
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return currentR, err
+	}
+	// read No of constructor
+	if block&1 != 0 {
+		var _skip int
+		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+			return currentR, err
+		}
+	}
+
+	// read item.HttpCode
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.LongRead(currentR, &item.HttpCode); err != nil {
+			return currentR, err
+		}
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
-			return r, err
-		}
-		// read No of constructor
-		if block&1 != 0 {
-			var _skip int
-			if r, err = basictl.TL2ReadSize(r, &_skip); err != nil {
-				return r, err
-			}
-		}
-
-		// read item.HttpCode
-		if block&(1<<1) != 0 {
-			if r, err = basictl.LongRead(r, &item.HttpCode); err != nil {
-				return r, err
-			}
-		} else {
-			item.HttpCode = 0
-		}
-
-		// read item.Response
-		if block&(1<<2) != 0 {
-			if r, err = basictl.StringReadTL2(r, &item.Response); err != nil {
-				return r, err
-			}
-		} else {
-			item.Response = ""
-		}
+		item.HttpCode = 0
 	}
 
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
+	// read item.Response
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Response); err != nil {
+			return currentR, err
+		}
+	} else {
+		item.Response = ""
 	}
+
 	return r, nil
 }

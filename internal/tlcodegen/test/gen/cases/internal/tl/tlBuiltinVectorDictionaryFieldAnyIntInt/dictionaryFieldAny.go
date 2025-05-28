@@ -131,12 +131,16 @@ func BuiltinVectorDictionaryFieldAnyIntIntInternalWriteTL2(w []byte, sizes []int
 }
 
 func BuiltinVectorDictionaryFieldAnyIntIntReadTL2(r []byte, m *map[int32]int32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if *m == nil {
 		*m = make(map[int32]int32)
@@ -148,14 +152,14 @@ func BuiltinVectorDictionaryFieldAnyIntIntReadTL2(r []byte, m *map[int32]int32) 
 
 	data := *m
 
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var key int32
 		var value int32
-		if r, err = basictl.IntRead(r, &key); err != nil {
-			return r, err
+		if currentR, err = basictl.IntRead(currentR, &key); err != nil {
+			return currentR, err
 		}
-		if r, err = basictl.IntRead(r, &value); err != nil {
-			return r, err
+		if currentR, err = basictl.IntRead(currentR, &value); err != nil {
+			return currentR, err
 		}
 		data[key] = value
 	}
@@ -293,21 +297,25 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesInternalWriteTL2(w []byte, sizes 
 }
 
 func BuiltinVectorDictionaryFieldAnyIntIntBytesReadTL2(r []byte, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
-		if r, err = basictl.IntRead(r, &elem.Key); err != nil {
-			return r, err
+		if currentR, err = basictl.IntRead(currentR, &elem.Key); err != nil {
+			return currentR, err
 		}
-		if r, err = basictl.IntRead(r, &elem.Value); err != nil {
-			return r, err
+		if currentR, err = basictl.IntRead(currentR, &elem.Value); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}

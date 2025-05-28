@@ -80,18 +80,22 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w
 }
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(r []byte, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt
-		if r, err = elem.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = elem.ReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}

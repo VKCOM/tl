@@ -1335,21 +1335,26 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
     {%- if struct_.isTypeDef() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
-    saveR := r
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
-    shift := currentSize + basictl.TL2CalculateSize(currentSize)
+    if len(r) < currentSize {
+        return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+    }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
 
     if currentSize == 0 {
         item.Reset()
-    } else {
-        var block byte
-        if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-        // read No of constructor
-        if block & 1 != 0 {
-            var _skip int
-            if r, err = basictl.TL2ReadSize(r, &_skip); err != nil { return r, err }
-        }
+        return r, nil
+    }
+    var block byte
+    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+    // read No of constructor
+    if block & 1 != 0 {
+        var _skip int
+        if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil { return currentR, err }
+    }
         {%- for fieldIndex, field := range struct_.Fields -%}
         {%- code
             fieldName := fmt.Sprintf("item.%s", field.goName)
@@ -1361,12 +1366,12 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         -%}
         {%- if (fieldIndex + 1) % 8 == 0 -%}
 
-        // read next block for fields {%v= (fieldIndex + 1) %}..{%v= (fieldIndex + 8) %}
-        if len(saveR) < len(r) + shift {
-            if r, err = basictl.ByteReadTL2(r, &block); err != nil { return r, err }
-        } else {
-            block = 0
-        }
+    // read next block for fields {%v= (fieldIndex + 1) %}..{%v= (fieldIndex + 8) %}
+    if len(currentR) > 0 {
+        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+    } else {
+        block = 0
+    }
         {%- endif -%}
         {%- if field.t.IsTrueType() -%}
         {%- continue -%}
@@ -1383,10 +1388,10 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         {%- if field.fieldMask != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
-        {%s= field.t.ReadTL2Call(bytesVersion, "r", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+        {%s= field.t.ReadTL2Call(bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
         {%- if field.fieldMask != nil -%}
         } else {
-            return r, basictl.TL2Error("field mask contradiction: field item." + "{%s= field.goName %}" + "is presented but depending bit is absent")
+            return currentR, basictl.TL2Error("field mask contradiction: field item." + "{%s= field.goName %}" + "is presented but depending bit is absent")
         }
         {%- endif -%}
     } else {
@@ -1399,11 +1404,7 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
         {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive) %}
     }
     {%- endfor -%}
-    }
 
-    if len(saveR) < len(r) + shift {
-        r = saveR[shift:]
-    }
     return r, nil
 {%- endif -%}
 }

@@ -82,18 +82,22 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes [
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntReadTL2(r []byte, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	*vec = (*vec)[:0]
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var elem tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt
-		if r, err = elem.ReadTL2(r, nat_t); err != nil {
-			return r, err
+		if currentR, err = elem.ReadTL2(currentR, nat_t); err != nil {
+			return currentR, err
 		}
 		*vec = append(*vec, elem)
 	}

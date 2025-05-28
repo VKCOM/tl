@@ -131,12 +131,16 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w []byte, sizes
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r []byte, m *map[string]tlPairIntInt.PairIntInt) (_ []byte, err error) {
-	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
 
 	if *m == nil {
 		*m = make(map[string]tlPairIntInt.PairIntInt)
@@ -148,14 +152,14 @@ func BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r []byte, m *map[string]
 
 	data := *m
 
-	for len(saveR) < len(r)+shift {
+	for len(currentR) > 0 {
 		var key string
 		var value tlPairIntInt.PairIntInt
-		if r, err = basictl.StringReadTL2(r, &key); err != nil {
-			return r, err
+		if currentR, err = basictl.StringReadTL2(currentR, &key); err != nil {
+			return currentR, err
 		}
-		if r, err = value.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = value.ReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 		data[key] = value
 	}
