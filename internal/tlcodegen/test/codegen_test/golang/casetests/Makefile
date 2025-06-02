@@ -34,14 +34,14 @@ run-read-benchmark-vector:
 	go test \
 	-bench=BenchmarkTL.*ReadRandomVector \
 	-count=3 -run=^\# \
-	-benchtime=15000000x \
+	-benchtime=45000000x \
 	-benchmem \
 	-test.cpuprofile=cpu_vector_read.out \
 	-test.memprofile=mem_vector_read.out \
 	-test.outputdir=out
 
-view-read-benchmark-array-cpu:
+view-read-benchmark-vector-cpu:
 	go tool pprof -http=localhost:6060 out/cpu_vector_read.out
 
-view-read-benchmark-array-mem:
+view-read-benchmark-vector-mem:
 	go tool pprof -http=localhost:6060 out/mem_vector_read.out
