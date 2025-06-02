@@ -2625,27 +2625,26 @@ func (item *`)
 
 `)
 		}
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalReadTL2(r []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
-`)
 		if !struct_.wr.wantsTL2 {
-			qw422016.N().S(`    return r, `)
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalReadTL2(r []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+    return r, `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
 			qw422016.N().Q(tlName)
 			qw422016.N().S(`)
 `)
 		} else {
-			if struct_.isTypeDef() {
-				qw422016.N().S(`    ptr := (*`)
-				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-				qw422016.N().S(`)(item)
-`)
-			}
-			qw422016.N().S(`    currentSize := 0
+			if struct_.wr.unionParent == nil {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) InternalReadTL2(r []byte`)
+				qw422016.N().S(natArgsDecl)
+				qw422016.N().S(`) (_ []byte, err error) {
+    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if len(r) < currentSize {
         return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
@@ -2662,10 +2661,33 @@ func (item *`)
     if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
     // read No of constructor
     if block & 1 != 0 {
-        var _skip int
-        if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil { return currentR, err }
+        var index int
+        if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil { return currentR, err }
+        if index != 0 {
+            // unknown cases for current type
+            item.Reset()
+            return r, nil
+        }
     }
 `)
+			} else {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) InternalReadTL2(r []byte, block byte`)
+				qw422016.N().S(natArgsDecl)
+				qw422016.N().S(`) (_ []byte, err error) {
+`)
+				if len(struct_.Fields) != 0 {
+					qw422016.N().S(`    currentR := r
+`)
+				}
+			}
+			if struct_.isTypeDef() {
+				qw422016.N().S(`    ptr := (*`)
+				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+				qw422016.N().S(`)(item)
+`)
+			}
 			for fieldIndex, field := range struct_.Fields {
 				fieldName := fmt.Sprintf("item.%s", field.goName)
 				fieldRecursive := field.recursive
@@ -2764,8 +2786,41 @@ func (item *`)
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
-    return item.InternalReadTL2(r)
-}
+`)
+			if struct_.wr.unionParent != nil {
+				qw422016.N().S(`    currentSize := 0
+    if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
+
+    var block byte
+    var index int
+    if currentSize == 0 {
+        index = 0
+    } else {
+        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+        if (block & 1) != 0 {
+            if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        } else {
+            index = 0
+        }
+    }
+    if index != `)
+				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().S(` {
+        return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, `)
+				qw422016.N().D(struct_.wr.unionIndex)
+				qw422016.N().S(`)
+    }
+    currentR, err = item.InternalReadTL2(currentR, block)
+    return r, err
+`)
+			} else {
+				qw422016.N().S(`    return item.InternalReadTL2(r)
+`)
+			}
+			qw422016.N().S(`}
 `)
 		}
 	}

@@ -57,11 +57,16 @@ func (trw *TypeRWStruct) readTL2Call(
 	if trw.isUnwrapType() {
 		return trw.Fields[0].t.ReadTL2Call(bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
-	return fmt.Sprintf("if %[4]s, err = %[2]s.InternalReadTL2(%[4]s%[3]s); err != nil { return %[4]s, err }",
+	additionalSuffix := ""
+	if trw.wr.unionParent != nil {
+		additionalSuffix = ", block"
+	}
+	return fmt.Sprintf("if %[4]s, err = %[2]s.InternalReadTL2(%[4]s%[5]s%[3]s); err != nil { return %[4]s, err }",
 		"",
 		targetObject,
 		joinWithCommas(natArgs),
 		targetBytes,
+		additionalSuffix,
 	)
 }
 

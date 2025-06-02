@@ -1348,13 +1348,12 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
 }
 
     {%- endif -%}
-func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if !struct_.wr.wantsTL2 -%}
+func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
-    {%- if struct_.isTypeDef() -%}
-    ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
-    {%- endif -%}
+    {%- if struct_.wr.unionParent == nil -%}
+func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if len(r) < currentSize {
@@ -1372,9 +1371,23 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
     if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
     // read No of constructor
     if block & 1 != 0 {
-        var _skip int
-        if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil { return currentR, err }
+        var index int
+        if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil { return currentR, err }
+        if index != 0 {
+            // unknown cases for current type
+            item.Reset()
+            return r, nil
+        }
     }
+    {%- else -%}
+func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte{%s= natArgsDecl %}) (_ []byte, err error) {
+        {%- if len(struct_.Fields) != 0 -%}
+    currentR := r
+        {%- endif -%}
+    {%- endif -%}
+    {%- if struct_.isTypeDef() -%}
+    ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
+    {%- endif -%}
         {%- for fieldIndex, field := range struct_.Fields -%}
         {%- code
             fieldName := fmt.Sprintf("item.%s", field.goName)
@@ -1431,7 +1444,33 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
 
     {%- if len(natArgsDecl) == 0 -%}
 func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+    {%- if struct_.wr.unionParent != nil -%}
+    currentSize := 0
+    if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
+
+    currentR := r[:currentSize]
+    r = r[currentSize:]
+
+    var block byte
+    var index int
+    if currentSize == 0 {
+        index = 0
+    } else {
+        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+        if (block & 1) != 0 {
+            if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        } else {
+            index = 0
+        }
+    }
+    if index != {%d= struct_.wr.unionIndex %} {
+        return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, {%d= struct_.wr.unionIndex %})
+    }
+    currentR, err = item.InternalReadTL2(currentR, block)
+    return r, err
+    {%- else -%}
     return item.InternalReadTL2(r)
+    {%- endif -%}
 }
     {%- endif -%}
 {%- endif -%}
