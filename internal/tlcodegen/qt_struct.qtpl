@@ -1075,28 +1075,41 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 {%- endif -%}
         {%- if len(natArgsDecl) == 0 -%}
 
-func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 {%- if !struct_.wr.wantsTL2 -%}
     return w, sizes
 {%- else -%}
+    var sizes []int
+    if ctx != nil {
+        sizes = ctx.SizeBuffer
+    }
     sizes = item.CalculateLayout(sizes[:0])
     w, _ = item.InternalWriteTL2(w, sizes)
-    return w, sizes[:0]
+    if ctx != nil {
+        ctx.SizeBuffer = sizes[:0]
+    }
+    return w
 {%- endif -%}
 }
         {%- endif -%}
 
-func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-{%- if !struct_.wr.wantsTL2 -%}
+func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if !struct_.wr.wantsTL2 -%}
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
-{%- else -%}
+    {%- else -%}
             {%- if field.t.trw.doesReadTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
             {%- endif -%}
     {%s= field.t.ReadTL2Call(bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
     return r, nil
-{%- endif -%}
+    {%- endif -%}
 }
+
+    {%- if len(natArgsDecl) == 0 -%}
+func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+    return item.InternalReadTL2(r)
+}
+    {%- endif -%}
 {%- else -%}
 
 {%- if struct_.wr.wantsTL2 -%}
@@ -1317,21 +1330,28 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 {%- endif -%}
 
     {%- if len(natArgsDecl) == 0 -%}
-func (item *{%s= goName %}) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 {%- if !struct_.wr.wantsTL2 -%}
-    return w, sizes
+    return w
 {%- else -%}
+    var sizes []int
+    if ctx != nil {
+        sizes = ctx.SizeBuffer
+    }
     sizes = item.CalculateLayout(sizes[:0])
     w, _ = item.InternalWriteTL2(w, sizes)
-    return w, sizes[:0]
+    if ctx != nil {
+        ctx.SizeBuffer = sizes[:0]
+    }
+    return w
 {%- endif -%}
 }
 
     {%- endif -%}
-func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-{%- if !struct_.wr.wantsTL2 -%}
+func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if !struct_.wr.wantsTL2 -%}
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
-{%- else -%}
+    {%- else -%}
     {%- if struct_.isTypeDef() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1406,7 +1426,13 @@ func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err 
     {%- endfor -%}
 
     return r, nil
-{%- endif -%}
+    {%- endif -%}
 }
+
+    {%- if len(natArgsDecl) == 0 -%}
+func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+    return item.InternalReadTL2(r)
+}
+    {%- endif -%}
 {%- endif -%}
 {%- endfunc -%}

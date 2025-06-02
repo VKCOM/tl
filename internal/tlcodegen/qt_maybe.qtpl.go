@@ -250,7 +250,7 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadTL2(r []byte`)
+		qw422016.N().S(`) InternalReadTL2(r []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)

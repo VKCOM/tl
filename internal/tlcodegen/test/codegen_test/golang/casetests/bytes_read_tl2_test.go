@@ -45,12 +45,11 @@ func runMappingTestBytesTL2(t *testing.T, mt mappingTestBytes) {
 			_, readErr := mt.object.Read(trueBytes)
 
 			assert.Nil(t, readErr)
-			resultTL2, sizes := mt.object.WriteTL2(nil, nil)
+			resultTL2 := mt.object.WriteTL2(nil, nil)
 
-			assert.Empty(t, sizes)
 			assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(resultTL2))
 
-			_, readTL2Err := mt.object.ReadTL2(resultTL2)
+			_, readTL2Err := mt.object.ReadTL2(resultTL2, nil)
 			assert.Nil(t, readTL2Err)
 
 			newBytes, writeErr := mt.object.WriteGeneral(nil)

@@ -141,7 +141,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) ReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
 {%- if !maybe.wr.wantsTL2 -%}
     return r, {%s= maybe.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
 {%- else -%}

@@ -79,8 +79,8 @@ type Object interface {
 `)
 	if gen.options.GenerateTL2 {
 		qw422016.N().S(`
-    ReadTL2(r []byte) ([]byte, error)
-	WriteTL2(w []byte, sizes []int) ([]byte, []int)
+    ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error)
+	WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte
 `)
 	}
 	qw422016.N().S(`}
@@ -296,12 +296,12 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 `)
 	if gen.options.GenerateTL2 {
 		qw422016.N().S(`
-func (item *TLItem) ReadTL2(r []byte) ([]byte, error) {
+func (item *TLItem) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
     return r, nil
 }
 
-func (item *TLItem) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-    return w, sizes
+func (item *TLItem) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+    return w
 }
 `)
 	}

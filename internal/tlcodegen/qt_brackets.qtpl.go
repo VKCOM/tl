@@ -213,7 +213,7 @@ func `)
 				qw422016.N().S(`
 func `)
 				qw422016.N().S(goName)
-				qw422016.N().S(`ReadTL2(r []byte, vec *`)
+				qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 				qw422016.N().S(typeString)
 				qw422016.N().S(valueNatArgsDecl)
 				qw422016.N().S(`) (_ []byte, err error) {
@@ -874,7 +874,7 @@ func `)
 				qw422016.N().S(`
 func `)
 				qw422016.N().S(goName)
-				qw422016.N().S(`ReadTL2(r []byte, m *map[`)
+				qw422016.N().S(`InternalReadTL2(r []byte, m *map[`)
 				qw422016.N().S(keyTypeString)
 				qw422016.N().S(`]`)
 				qw422016.N().S(valueTypeString)
@@ -1358,7 +1358,7 @@ func `)
 			qw422016.N().S(`
 func `)
 			qw422016.N().S(goName)
-			qw422016.N().S(`ReadTL2(r []byte, vec *`)
+			qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 			qw422016.N().S(typeString)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
@@ -1661,7 +1661,7 @@ func `)
 			qw422016.N().S(`
 func `)
 			qw422016.N().S(goName)
-			qw422016.N().S(`ReadTL2(r []byte, vec *`)
+			qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 			qw422016.N().S(typeString)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
@@ -1978,7 +1978,7 @@ func `)
 			qw422016.N().S(`
 func `)
 			qw422016.N().S(goName)
-			qw422016.N().S(`ReadTL2(r []byte, vec *`)
+			qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 			qw422016.N().S(typeString)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {

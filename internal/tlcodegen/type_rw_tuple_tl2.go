@@ -42,7 +42,7 @@ func (trw *TypeRWBrackets) readTL2Call(
 	refObject bool,
 	natArgs []string,
 ) string {
-	return fmt.Sprintf("if %[6]s, err = %[5]s%[4]sReadTL2(%[6]s, %[2]s%[3]s); err != nil { return %[6]s, err }",
+	return fmt.Sprintf("if %[6]s, err = %[5]s%[4]sInternalReadTL2(%[6]s, %[2]s%[3]s); err != nil { return %[6]s, err }",
 		"",
 		addAmpersand(refObject, targetObject),
 		joinWithCommas(natArgs),

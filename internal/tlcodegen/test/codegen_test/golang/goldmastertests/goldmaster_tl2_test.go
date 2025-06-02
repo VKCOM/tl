@@ -19,7 +19,7 @@ func TestExactCases(t *testing.T) {
 	const TestingName = "maybeTest1"
 	const TestingBytes = "00000001_3f9c8ef8_6c7aebef_27930a7b_3f9c8ef8_5be1ea97_69b661d9_49821d42_27930a7b_0a7d3b9e_3f9c8ef8_3b68a044_0a7d3b9e_3f9c8ef8_27930a7b_27930a7b_27930a7b_27930a7b"
 
-	sizeBuffer := make([]int, 100)
+	context := basictl.TL2WriteContext{SizeBuffer: make([]int, 100)}
 	writeBuffer := make([]byte, 100)
 
 	testingBytesChanged := strings.ReplaceAll(TestingBytes, "_", " ")
@@ -30,10 +30,10 @@ func TestExactCases(t *testing.T) {
 	json, _ := dst.WriteJSONGeneral(nil)
 	fmt.Println(string(json))
 
-	writeBuffer, _ = dst.WriteTL2(writeBuffer[0:0], sizeBuffer[0:0])
+	writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
 
 	newDst := factory.CreateObjectFromName(TestingName)
-	_, err := newDst.ReadTL2(writeBuffer)
+	_, err := newDst.ReadTL2(writeBuffer, nil)
 	if err != nil {
 		t.Fatalf("can't readTL2: %s", err)
 	}
@@ -52,7 +52,7 @@ func TestGoldmasterTL2Random(t *testing.T) {
 	rg := basictl.NewRandGenerator(rand.New(rand.NewSource(seed)))
 	allItems := meta.GetAllTLItems()
 
-	sizeBuffer := make([]int, 100)
+	context := basictl.TL2WriteContext{SizeBuffer: make([]int, 100)}
 	writeBuffer := make([]byte, 100)
 
 	bannedSet := utils.SliceToSet(bannedTypes)
@@ -74,9 +74,9 @@ func TestGoldmasterTL2Random(t *testing.T) {
 					t.Fatalf("can't seriliaze %d-th object", i)
 				}
 				t.Run(fmt.Sprintf("TL[%s]", utils.SprintHexDump(data)), func(t *testing.T) {
-					writeBuffer, sizeBuffer = dst.WriteTL2(writeBuffer[0:0], sizeBuffer[0:0])
+					writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
 					newDst := factory.CreateObject(item.TLTag())
-					_, err = newDst.ReadTL2(writeBuffer)
+					_, err = newDst.ReadTL2(writeBuffer, nil)
 					if err != nil {
 						t.Fatalf("can't readTL2 %d-th object", i)
 					}
