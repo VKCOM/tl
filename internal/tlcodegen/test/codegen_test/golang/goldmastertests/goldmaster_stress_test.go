@@ -89,7 +89,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 				dst.FillRandom(rg)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
-						readOffset, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2))
+						readOffset, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2), nil)
 						if err != nil {
 							t.Fatalf("read error: %s", err.Error())
 						}
@@ -110,7 +110,7 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 							}
 						}
 
-						writeReturn, _ := dst.WriteTL2(nil, nil)
+						writeReturn := dst.WriteTL2(nil, &basictl.TL2WriteContext{})
 						if !assert.Equal(t, success.BytesTL2, utils.SprintHexDumpTL2(writeReturn)) {
 							t.Fatalf("write tl2 unexpected result")
 						}
@@ -127,7 +127,7 @@ func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
 		createTestSamples(t)
 	} else {
 		changedSomething := false
-		sizeBuffer := make([]int, 100)
+		context := basictl.TL2WriteContext{SizeBuffer: make([]int, 100)}
 		writeBuffer := make([]byte, 100)
 
 		for testName, _ := range restoredValues.Tests {
@@ -143,7 +143,7 @@ func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
 				} else {
 					_, _ = obj.Read(tl1Data)
 				}
-				writeBuffer, sizeBuffer = obj.WriteTL2(writeBuffer[0:0], sizeBuffer[0:0])
+				writeBuffer = obj.WriteTL2(writeBuffer[0:0], &context)
 				if testCase.BytesTL2 != utils.SprintHexDumpTL2(writeBuffer) {
 					changedSomething = true
 					restoredValues.Tests[testName].Successes[i].BytesTL2 = utils.SprintHexDumpTL2(writeBuffer)
@@ -186,7 +186,7 @@ func createTestSamples(t *testing.T) {
 			if err != nil {
 				t.Fatal(err.Error())
 			}
-			tl2write, _ := dst.WriteTL2(nil, nil)
+			tl2write := dst.WriteTL2(nil, &basictl.TL2WriteContext{})
 
 			exactTest := testformat.MappingSuccessBytes{}
 			exactTest.Bytes = utils.SprintHexDump(tl1write)

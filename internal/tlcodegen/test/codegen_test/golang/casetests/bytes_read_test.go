@@ -427,7 +427,7 @@ func updateTestData(t *testing.T) {
 					t.Fatalf("can't read %s, reason: %s", testValues.TestingType, readErr)
 					return
 				}
-				data, _ := testObject.WriteTL2(nil, nil)
+				data := testObject.WriteTL2(nil, nil)
 				tl2StringData := utils.SprintHexDumpTL2(data)
 
 				if success.BytesTL2 != tl2StringData {

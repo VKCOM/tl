@@ -6,6 +6,13 @@ import (
 	"math"
 )
 
+type TL2WriteContext struct {
+	// buffer for allocations of objects sizes
+	SizeBuffer []int
+}
+
+type TL2ReadContext struct{}
+
 func TL2UnexpectedByteError(actualByte, expectedByte byte) error {
 	return fmt.Errorf("unexpected byte %d, expected: %d", actualByte, expectedByte)
 }
