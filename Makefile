@@ -126,14 +126,7 @@ gen_tlo: build # do not set --basicPkgPath, or you'll have hard time updating ba
 gen_all: tlo-bootstrap gen goldmaster
 
 qtpl:
-	@if ! [ -x "$(command -v qtc)"]; then \
-		echo "qtc could not be found"; \
-		echo "install it using"; \
-		echo "go get -u github.com/valyala/quicktemplate"; \
-		echo "go get -u github.com/valyala/quicktemplate/qtc"; \
-	else \
-		qtc -dir=./internal -skipLineComments; \
-	fi
+	go run github.com/valyala/quicktemplate/qtc -dir=./internal -skipLineComments;
 
 .PHONY: cpp_move_basictl
 cpp_move_basictl:
