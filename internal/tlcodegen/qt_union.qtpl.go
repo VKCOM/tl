@@ -393,7 +393,15 @@ func (item *`)
     } else {
         if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
         if (block & 1) != 0 {
-            if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+			readResult := "currentR"
+			if union.IsEnum {
+				readResult = "_"
+			}
+
+			qw422016.N().S(`            if `)
+			qw422016.N().S(readResult)
+			qw422016.N().S(`, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
         } else {
             item.index = 0
         }

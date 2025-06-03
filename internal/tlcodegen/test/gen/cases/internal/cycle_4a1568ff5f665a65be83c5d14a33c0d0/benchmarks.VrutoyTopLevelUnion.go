@@ -159,7 +159,7 @@ func (item *BenchmarksVrutoyTopLevelUnion) InternalReadTL2(r []byte) (_ []byte, 
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
