@@ -216,7 +216,15 @@ func `)
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+					readResult := "currentR"
+					if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+						readResult = "_"
+					}
+
+					qw422016.N().S(`        if `)
+					qw422016.N().S(readResult)
+					qw422016.N().S(`, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if cap(*vec) < elementCount {
@@ -865,7 +873,15 @@ func `)
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+					readResult := "currentR"
+					if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+						readResult = "_"
+					}
+
+					qw422016.N().S(`        if `)
+					qw422016.N().S(readResult)
+					qw422016.N().S(`, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if *m == nil {
@@ -1362,7 +1378,15 @@ func `)
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+				readResult := "currentR"
+				if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+					readResult = "_"
+				}
+
+				qw422016.N().S(`        if `)
+				qw422016.N().S(readResult)
+				qw422016.N().S(`, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if cap(*vec) < elementCount {
@@ -1733,7 +1757,15 @@ func `)
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+				readResult := "currentR"
+				if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+					readResult = "_"
+				}
+
+				qw422016.N().S(`        if `)
+				qw422016.N().S(readResult)
+				qw422016.N().S(`, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if uint32(cap(*vec)) < nat_n {
@@ -2077,7 +2109,15 @@ func `)
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+`)
+				readResult := "currentR"
+				if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+					readResult = "_"
+				}
+
+				qw422016.N().S(`        if `)
+				qw422016.N().S(readResult)
+				qw422016.N().S(`, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     lastIndex := elementCount

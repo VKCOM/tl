@@ -526,7 +526,7 @@ func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte,
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {

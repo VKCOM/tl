@@ -229,7 +229,7 @@ func (item *AbAlias) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 	if index != 2 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 2)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -472,7 +472,7 @@ func (item *AbCode) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, er
 	if index != 1 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -643,7 +643,7 @@ func (item *AbEmpty) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 	if index != 0 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -846,7 +846,7 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -1190,7 +1190,7 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -1818,7 +1818,7 @@ func (item *CdResponse) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte
 	if index != 3 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 3)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -2115,6 +2115,6 @@ func (item *CdResponseBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 	if index != 3 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 3)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }

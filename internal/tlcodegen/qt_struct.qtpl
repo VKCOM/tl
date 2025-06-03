@@ -1475,7 +1475,7 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
     if index != {%d= struct_.wr.unionIndex %} {
         return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, {%d= struct_.wr.unionIndex %})
     }
-    currentR, err = item.InternalReadTL2(currentR, block)
+    _, err = item.InternalReadTL2(currentR, block)
     return r, err
     {%- else -%}
     return item.InternalReadTL2(r)
