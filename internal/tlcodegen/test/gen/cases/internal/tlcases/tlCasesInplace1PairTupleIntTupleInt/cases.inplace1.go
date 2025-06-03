@@ -179,7 +179,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes 
 	return w, sizes
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) ReadTL2(r []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
+func (item *CasesInplace1PairTupleIntTupleInt) InternalReadTL2(r []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -201,15 +201,20 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadTL2(r []byte, nat_a1 uint32, 
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Value
 	if block&(1<<1) != 0 {
-		if currentR, err = item.Value.ReadTL2(currentR, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
 			return currentR, err
 		}
 	} else {

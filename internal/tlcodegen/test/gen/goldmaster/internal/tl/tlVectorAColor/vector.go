@@ -110,16 +110,27 @@ func (item *VectorAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 	return w, sizes
 }
 
-func (item *VectorAColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorAColor) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorAColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]tlAColor.AColor)(item)
-	if r, err = tlBuiltinVectorAColor.BuiltinVectorAColorReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorAColor.BuiltinVectorAColorInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorAColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

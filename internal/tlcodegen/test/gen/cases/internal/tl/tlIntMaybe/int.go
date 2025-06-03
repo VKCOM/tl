@@ -91,7 +91,7 @@ func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *IntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *IntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {

@@ -2,6 +2,7 @@ package tlcodegen
 
 type TypeRWTL2 interface {
 	calculateLayout(
+		directImports *DirectImports,
 		bytesVersion bool,
 		targetSizes string,
 		targetObject string,
@@ -10,11 +11,13 @@ type TypeRWTL2 interface {
 		refObject bool,
 		natArgs []string,
 	) string
-	doesCalculateLayoutUseObject() bool
+
+	doesCalculateLayoutUseObject(allowInplace bool) bool
 	isSizeWrittenInData() bool
 	doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool
 
 	writeTL2Call(
+		directImports *DirectImports,
 		bytesVersion bool,
 		targetSizes string,
 		targetBytes string,
@@ -29,6 +32,7 @@ type TypeRWTL2 interface {
 	tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string)
 
 	readTL2Call(
+		directImports *DirectImports,
 		bytesVersion bool,
 		targetBytes string,
 		targetObject string,
@@ -39,9 +43,11 @@ type TypeRWTL2 interface {
 	) string
 
 	doesReadTL2UseObject(canDependOnLocalBit bool) bool
+	doesReadTL2UseBytes(canDependOnLocalBit bool) bool
 }
 
 func (w *TypeRWWrapper) CalculateLayout(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
@@ -51,10 +57,11 @@ func (w *TypeRWWrapper) CalculateLayout(
 	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.calculateLayout(bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.calculateLayout(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
 }
 
 func (w *TypeRWWrapper) WriteTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetBytes string,
@@ -65,10 +72,11 @@ func (w *TypeRWWrapper) WriteTL2Call(
 	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.writeTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.writeTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
 }
 
 func (w *TypeRWWrapper) ReadTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetBytes string,
 	targetObject string,
@@ -78,5 +86,5 @@ func (w *TypeRWWrapper) ReadTL2Call(
 	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.readTL2Call(bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.readTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
 }

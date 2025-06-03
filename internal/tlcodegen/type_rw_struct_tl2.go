@@ -3,6 +3,7 @@ package tlcodegen
 import "fmt"
 
 func (trw *TypeRWStruct) calculateLayout(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
@@ -14,12 +15,13 @@ func (trw *TypeRWStruct) calculateLayout(
 		return ""
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.CalculateLayout(bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
+		return trw.Fields[0].t.CalculateLayout(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
 	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), joinWithCommas(natArgs))
 }
 
 func (trw *TypeRWStruct) writeTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetBytes string,
@@ -32,7 +34,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 		return ""
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.WriteTL2Call(bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
+		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
 	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
 		targetSizes,
@@ -43,6 +45,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 }
 
 func (trw *TypeRWStruct) readTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetBytes string,
 	targetObject string,
@@ -55,7 +58,7 @@ func (trw *TypeRWStruct) readTL2Call(
 		return ""
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.ReadTL2Call(bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
+		return trw.Fields[0].t.ReadTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
 	}
 	additionalSuffix := ""
 	if trw.wr.unionParent != nil {
@@ -80,12 +83,12 @@ func (trw *TypeRWStruct) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return true
 }
 
-func (trw *TypeRWStruct) doesCalculateLayoutUseObject() bool {
+func (trw *TypeRWStruct) doesCalculateLayoutUseObject(allowInplace bool) bool {
 	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 		return false
 	}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.trw.doesCalculateLayoutUseObject()
+		return trw.Fields[0].t.trw.doesCalculateLayoutUseObject(allowInplace)
 	}
 	return true
 }
@@ -111,6 +114,16 @@ func (trw *TypeRWStruct) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
 }
 
 func (trw *TypeRWStruct) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		return false
+	}
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.trw.doesReadTL2UseObject(canDependOnLocalBit)
+	}
+	return true
+}
+
+func (trw *TypeRWStruct) doesReadTL2UseBytes(canDependOnLocalBit bool) bool {
 	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 		return false
 	}

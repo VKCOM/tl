@@ -51,13 +51,17 @@ func BuiltinTuple2PairTupleIntTupleIntWrite(w []byte, vec *[2]tlPairTupleIntTupl
 func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if 2 != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(2)
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 2; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_tXn, nat_tYn)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+
 	return sizes
 }
 
@@ -66,17 +70,17 @@ func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, ve
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if 2 != 0 {
+		w = basictl.TL2WriteSize(w, 2)
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 2; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_tXn, nat_tYn)
 	}
 	return w, sizes
 }
 
-func BuiltinTuple2PairTupleIntTupleIntReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -87,19 +91,30 @@ func BuiltinTuple2PairTupleIntTupleIntReadTL2(r []byte, vec *[2]tlPairTupleIntTu
 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
-	i := 0
-	for len(currentR) > 0 {
-		if i == 2 {
-			return r, basictl.TL2Error("more elements than expected")
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
 		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR, nat_tXn, nat_tYn); err != nil {
+	}
+
+	lastIndex := elementCount
+	if lastIndex > 2 {
+		lastIndex = 2
+	}
+
+	for i := 0; i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_tXn, nat_tYn); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if i != 2 {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < 2; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 

@@ -51,12 +51,28 @@ func BuiltinTupleStringWrite(w []byte, vec []string, nat_n uint32) (_ []byte, er
 func BuiltinTupleStringCalculateLayout(sizes []int, vec *[]string, nat_n uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if nat_n != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+	for i := uint32(0); i < lastIndex; i++ {
 
 		sizes[sizePosition] += len((*vec)[i])
 		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem string
+
+		sizes[sizePosition] += len(elem)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
+	}
+
 	return sizes
 }
 
@@ -65,17 +81,29 @@ func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string, na
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if nat_n != 0 {
+		w = basictl.TL2WriteSize(w, int(nat_n))
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		w = basictl.StringWriteTL2(w, (*vec)[i])
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem string
+		w = basictl.StringWriteTL2(w, elem)
+	}
+
 	return w, sizes
 }
 
-func BuiltinTupleStringReadTL2(r []byte, vec *[]string, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleStringInternalReadTL2(r []byte, vec *[]string, nat_n uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -87,24 +115,35 @@ func BuiltinTupleStringReadTL2(r []byte, vec *[]string, nat_n uint32) (_ []byte,
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]string, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	i := 0
-	for len(currentR) > 0 {
-		if uint32(i) == nat_n {
-			return r, basictl.TL2Error("more elements than expected")
-		}
+
+	lastIndex := uint32(elementCount)
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		if currentR, err = basictl.StringReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if uint32(i) != nat_n {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < nat_n; i++ {
+		(*vec)[i] = ""
 	}
+
 	return r, nil
 }
 func BuiltinTupleStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]string, nat_n uint32) error {
@@ -190,12 +229,28 @@ func BuiltinTupleStringBytesWrite(w []byte, vec [][]byte, nat_n uint32) (_ []byt
 func BuiltinTupleStringBytesCalculateLayout(sizes []int, vec *[][]byte, nat_n uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if nat_n != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+	for i := uint32(0); i < lastIndex; i++ {
 
 		sizes[sizePosition] += len((*vec)[i])
 		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem []byte
+
+		sizes[sizePosition] += len(elem)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
+	}
+
 	return sizes
 }
 
@@ -204,17 +259,29 @@ func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byt
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if nat_n != 0 {
+		w = basictl.TL2WriteSize(w, int(nat_n))
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		w = basictl.StringBytesWriteTL2(w, (*vec)[i])
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem []byte
+		w = basictl.StringBytesWriteTL2(w, elem)
+	}
+
 	return w, sizes
 }
 
-func BuiltinTupleStringBytesReadTL2(r []byte, vec *[][]byte, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleStringBytesInternalReadTL2(r []byte, vec *[][]byte, nat_n uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -226,24 +293,35 @@ func BuiltinTupleStringBytesReadTL2(r []byte, vec *[][]byte, nat_n uint32) (_ []
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][]byte, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	i := 0
-	for len(currentR) > 0 {
-		if uint32(i) == nat_n {
-			return r, basictl.TL2Error("more elements than expected")
-		}
+
+	lastIndex := uint32(elementCount)
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		if currentR, err = basictl.StringReadBytesTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if uint32(i) != nat_n {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < nat_n; i++ {
+		(*vec)[i] = (*vec)[i][:0]
 	}
+
 	return r, nil
 }
 func BuiltinTupleStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte, nat_n uint32) error {

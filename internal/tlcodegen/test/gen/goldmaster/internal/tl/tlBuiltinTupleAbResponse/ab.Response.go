@@ -52,13 +52,30 @@ func BuiltinTupleAbResponseWrite(w []byte, vec []cycle_b62dd5050d0a18c7485fd980c
 func BuiltinTupleAbResponseCalculateLayout(sizes []int, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if nat_n != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
+		currentPosition := len(sizes)
+		sizes = elem.CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+
 	return sizes
 }
 
@@ -67,17 +84,29 @@ func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, vec *[]cycle_
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if nat_n != 0 {
+		w = basictl.TL2WriteSize(w, int(nat_n))
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
+		w, sizes = elem.InternalWriteTL2(w, sizes)
+	}
+
 	return w, sizes
 }
 
-func BuiltinTupleAbResponseReadTL2(r []byte, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -89,24 +118,35 @@ func BuiltinTupleAbResponseReadTL2(r []byte, vec *[]cycle_b62dd5050d0a18c7485fd9
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	i := 0
-	for len(currentR) > 0 {
-		if uint32(i) == nat_n {
-			return r, basictl.TL2Error("more elements than expected")
-		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+
+	lastIndex := uint32(elementCount)
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if uint32(i) != nat_n {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < nat_n; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) error {

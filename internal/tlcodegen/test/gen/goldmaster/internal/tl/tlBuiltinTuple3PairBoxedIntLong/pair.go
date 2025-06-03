@@ -49,13 +49,17 @@ func BuiltinTuple3PairBoxedIntLongWrite(w []byte, vec *[3]tlPairIntLong.PairIntL
 func BuiltinTuple3PairBoxedIntLongCalculateLayout(sizes []int, vec *[3]tlPairIntLong.PairIntLong) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if 3 != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+
 	return sizes
 }
 
@@ -64,17 +68,17 @@ func BuiltinTuple3PairBoxedIntLongInternalWriteTL2(w []byte, sizes []int, vec *[
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if 3 != 0 {
+		w = basictl.TL2WriteSize(w, 3)
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinTuple3PairBoxedIntLongReadTL2(r []byte, vec *[3]tlPairIntLong.PairIntLong) (_ []byte, err error) {
+func BuiltinTuple3PairBoxedIntLongInternalReadTL2(r []byte, vec *[3]tlPairIntLong.PairIntLong) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -85,19 +89,30 @@ func BuiltinTuple3PairBoxedIntLongReadTL2(r []byte, vec *[3]tlPairIntLong.PairIn
 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
-	i := 0
-	for len(currentR) > 0 {
-		if i == 3 {
-			return r, basictl.TL2Error("more elements than expected")
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
 		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+	}
+
+	lastIndex := elementCount
+	if lastIndex > 3 {
+		lastIndex = 3
+	}
+
+	for i := 0; i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if i != 3 {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < 3; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 

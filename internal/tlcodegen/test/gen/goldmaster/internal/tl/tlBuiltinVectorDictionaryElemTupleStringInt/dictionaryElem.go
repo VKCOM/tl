@@ -56,10 +56,14 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []tlDictionary
 func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes, nat_t)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -71,17 +75,18 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes [
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntReadTL2(r []byte, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -93,13 +98,21 @@ func BuiltinVectorDictionaryElemTupleStringIntReadTL2(r []byte, vec *[]tlDiction
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt
-		if currentR, err = elem.ReadTL2(currentR, nat_t); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

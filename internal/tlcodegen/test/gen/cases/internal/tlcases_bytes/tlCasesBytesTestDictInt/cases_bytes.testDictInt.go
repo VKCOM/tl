@@ -193,13 +193,20 @@ func (item *CasesBytesTestDictInt) InternalWriteTL2(w []byte, sizes []int) ([]by
 	return w, sizes
 }
 
-func (item *CasesBytesTestDictInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *CasesBytesTestDictInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *CasesBytesTestDictInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *CasesBytesTestDictInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -221,15 +228,20 @@ func (item *CasesBytesTestDictInt) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Dict
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -237,6 +249,10 @@ func (item *CasesBytesTestDictInt) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *CasesBytesTestDictInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type CasesBytesTestDictIntBytes struct {
@@ -415,13 +431,20 @@ func (item *CasesBytesTestDictIntBytes) InternalWriteTL2(w []byte, sizes []int) 
 	return w, sizes
 }
 
-func (item *CasesBytesTestDictIntBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *CasesBytesTestDictIntBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *CasesBytesTestDictIntBytes) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *CasesBytesTestDictIntBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -443,15 +466,20 @@ func (item *CasesBytesTestDictIntBytes) ReadTL2(r []byte) (_ []byte, err error) 
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Dict
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -459,4 +487,8 @@ func (item *CasesBytesTestDictIntBytes) ReadTL2(r []byte) (_ []byte, err error) 
 	}
 
 	return r, nil
+}
+
+func (item *CasesBytesTestDictIntBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

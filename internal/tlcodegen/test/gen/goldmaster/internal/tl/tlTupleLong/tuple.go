@@ -98,9 +98,9 @@ func (item *TupleLong) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]
 	return w, sizes
 }
 
-func (item *TupleLong) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleLong) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]int64)(item)
-	if r, err = tlBuiltinTupleLong.BuiltinTupleLongReadTL2(r, ptr, nat_n); err != nil {
+	if r, err = tlBuiltinTupleLong.BuiltinTupleLongInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil

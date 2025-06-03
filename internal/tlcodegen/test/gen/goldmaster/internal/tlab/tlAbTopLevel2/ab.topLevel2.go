@@ -227,13 +227,20 @@ func (item *AbTopLevel2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int)
 	return w, sizes
 }
 
-func (item *AbTopLevel2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AbTopLevel2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AbTopLevel2) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *AbTopLevel2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -255,15 +262,20 @@ func (item *AbTopLevel2) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.A
 	if block&(1<<1) != 0 {
-		if currentR, err = item.A.ReadTL2(currentR); err != nil {
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -272,7 +284,7 @@ func (item *AbTopLevel2) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.B
 	if block&(1<<2) != 0 {
-		if currentR, err = item.B.ReadTL2(currentR); err != nil {
+		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -280,6 +292,10 @@ func (item *AbTopLevel2) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *AbTopLevel2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type AbTopLevel2Bytes struct {
@@ -492,13 +508,20 @@ func (item *AbTopLevel2Bytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 	return w, sizes
 }
 
-func (item *AbTopLevel2Bytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AbTopLevel2Bytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AbTopLevel2Bytes) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *AbTopLevel2Bytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -520,15 +543,20 @@ func (item *AbTopLevel2Bytes) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.A
 	if block&(1<<1) != 0 {
-		if currentR, err = item.A.ReadTL2(currentR); err != nil {
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -537,7 +565,7 @@ func (item *AbTopLevel2Bytes) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.B
 	if block&(1<<2) != 0 {
-		if currentR, err = item.B.ReadTL2(currentR); err != nil {
+		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -545,4 +573,8 @@ func (item *AbTopLevel2Bytes) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *AbTopLevel2Bytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

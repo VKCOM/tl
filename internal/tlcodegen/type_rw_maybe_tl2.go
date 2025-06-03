@@ -3,6 +3,7 @@ package tlcodegen
 import "fmt"
 
 func (trw *TypeRWMaybe) calculateLayout(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
@@ -14,6 +15,7 @@ func (trw *TypeRWMaybe) calculateLayout(
 }
 
 func (trw *TypeRWMaybe) writeTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetBytes string,
@@ -32,6 +34,7 @@ func (trw *TypeRWMaybe) writeTL2Call(
 }
 
 func (trw *TypeRWMaybe) readTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetBytes string,
 	targetObject string,
@@ -52,7 +55,7 @@ func (trw *TypeRWMaybe) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return true
 }
 
-func (trw *TypeRWMaybe) doesCalculateLayoutUseObject() bool {
+func (trw *TypeRWMaybe) doesCalculateLayoutUseObject(allowInplace bool) bool {
 	return true
 }
 
@@ -65,6 +68,10 @@ func (trw *TypeRWMaybe) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
 }
 
 func (trw *TypeRWMaybe) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
+	return true
+}
+
+func (trw *TypeRWMaybe) doesReadTL2UseBytes(canDependOnLocalBit bool) bool {
 	return true
 }
 

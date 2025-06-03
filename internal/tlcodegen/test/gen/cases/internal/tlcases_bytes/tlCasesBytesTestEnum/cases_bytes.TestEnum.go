@@ -106,39 +106,48 @@ func (item *CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	}
 	return w, sizes
 }
-func (item *CasesBytesTestEnum) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *CasesBytesTestEnum) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *CasesBytesTestEnum) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
+func (item *CasesBytesTestEnum) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
 	if currentSize == 0 {
 		item.index = 0
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
 			item.index = 0
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
+}
+
+func (item *CasesBytesTestEnum) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
 }
 
 func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {

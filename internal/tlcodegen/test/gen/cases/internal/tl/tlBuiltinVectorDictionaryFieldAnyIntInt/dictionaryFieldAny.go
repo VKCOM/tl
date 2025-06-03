@@ -86,6 +86,9 @@ func BuiltinVectorDictionaryFieldAnyIntIntWrite(w []byte, m map[int32]int32) []b
 func BuiltinVectorDictionaryFieldAnyIntIntCalculateLayout(sizes []int, m *map[int32]int32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*m) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
+	}
 
 	keys := make([]int32, 0, len(*m))
 	for k := range *m {
@@ -96,10 +99,11 @@ func BuiltinVectorDictionaryFieldAnyIntIntCalculateLayout(sizes []int, m *map[in
 	})
 
 	for i := 0; i < len(keys); i++ {
-
-		sizes[sizePosition] += 4
-
-		sizes[sizePosition] += 4
+		elem := tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt{Key: keys[i], Value: (*m)[keys[i]]}
+		currentPosition := len(sizes)
+		sizes = elem.CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 	return sizes
 }
@@ -109,8 +113,8 @@ func BuiltinVectorDictionaryFieldAnyIntIntInternalWriteTL2(w []byte, sizes []int
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*m) != 0 {
+		w = basictl.TL2WriteSize(w, len(*m))
 	}
 
 	keys := make([]int32, 0, len(*m))
@@ -122,15 +126,13 @@ func BuiltinVectorDictionaryFieldAnyIntIntInternalWriteTL2(w []byte, sizes []int
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-		w = basictl.IntWrite(w, key)
-		value := (*m)[key]
-		w = basictl.IntWrite(w, value)
+		elem := tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt{Key: keys[i], Value: (*m)[keys[i]]}
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryFieldAnyIntIntReadTL2(r []byte, m *map[int32]int32) (_ []byte, err error) {
+func BuiltinVectorDictionaryFieldAnyIntIntInternalReadTL2(r []byte, m *map[int32]int32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -142,6 +144,13 @@ func BuiltinVectorDictionaryFieldAnyIntIntReadTL2(r []byte, m *map[int32]int32) 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if *m == nil {
 		*m = make(map[int32]int32)
 	}
@@ -152,16 +161,12 @@ func BuiltinVectorDictionaryFieldAnyIntIntReadTL2(r []byte, m *map[int32]int32) 
 
 	data := *m
 
-	for len(currentR) > 0 {
-		var key int32
-		var value int32
-		if currentR, err = basictl.IntRead(currentR, &key); err != nil {
+	for i := 0; i < elementCount; i++ {
+		elem := tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt{}
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		if currentR, err = basictl.IntRead(currentR, &value); err != nil {
-			return currentR, err
-		}
-		data[key] = value
+		data[elem.Key] = elem.Value
 	}
 	return r, nil
 }
@@ -270,11 +275,15 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesWrite(w []byte, vec []tlDictionar
 func BuiltinVectorDictionaryFieldAnyIntIntBytesCalculateLayout(sizes []int, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 	for i := 0; i < len(*vec); i++ {
-
-		sizes[sizePosition] += 4
-
-		sizes[sizePosition] += 4
+		currentPosition := len(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 	return sizes
 }
@@ -284,19 +293,18 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesInternalWriteTL2(w []byte, sizes 
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
-		w = basictl.IntWrite(w, elem.Key)
-		w = basictl.IntWrite(w, elem.Value)
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryFieldAnyIntIntBytesReadTL2(r []byte, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryFieldAnyIntIntBytesInternalReadTL2(r []byte, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -308,16 +316,22 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesReadTL2(r []byte, vec *[]tlDictio
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt
-		if currentR, err = basictl.IntRead(currentR, &elem.Key); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		elem := (*vec)[i]
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		if currentR, err = basictl.IntRead(currentR, &elem.Value); err != nil {
-			return currentR, err
-		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

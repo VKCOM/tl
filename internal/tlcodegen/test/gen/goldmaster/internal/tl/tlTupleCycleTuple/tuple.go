@@ -98,9 +98,9 @@ func (item *TupleCycleTuple) InternalWriteTL2(w []byte, sizes []int, nat_n uint3
 	return w, sizes
 }
 
-func (item *TupleCycleTuple) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleCycleTuple) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	if r, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleReadTL2(r, ptr, nat_n); err != nil {
+	if r, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil

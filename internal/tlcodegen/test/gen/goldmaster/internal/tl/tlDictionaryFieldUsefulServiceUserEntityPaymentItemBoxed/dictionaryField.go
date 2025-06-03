@@ -222,7 +222,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWrit
 	return w, sizes
 }
 
-func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -244,9 +244,14 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -261,7 +266,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = item.Value.ReadTL2(currentR, nat_t); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR, nat_t); err != nil {
 			return currentR, err
 		}
 	} else {

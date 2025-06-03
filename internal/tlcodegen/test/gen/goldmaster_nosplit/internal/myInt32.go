@@ -46,11 +46,15 @@ func BuiltinTuple3MyInt32Write(w []byte, vec *[3]MyInt32) []byte {
 func BuiltinTuple3MyInt32CalculateLayout(sizes []int, vec *[3]MyInt32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if 3 != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		sizes = (*vec)[i].CalculateLayout(sizes)
 		sizes[sizePosition] += 4
 	}
+
 	return sizes
 }
 
@@ -59,17 +63,17 @@ func BuiltinTuple3MyInt32InternalWriteTL2(w []byte, sizes []int, vec *[3]MyInt32
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if 3 != 0 {
+		w = basictl.TL2WriteSize(w, 3)
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinTuple3MyInt32ReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error) {
+func BuiltinTuple3MyInt32InternalReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -80,19 +84,30 @@ func BuiltinTuple3MyInt32ReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error
 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
-	i := 0
-	for len(currentR) > 0 {
-		if i == 3 {
-			return r, basictl.TL2Error("more elements than expected")
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
 		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+	}
+
+	lastIndex := elementCount
+	if lastIndex > 3 {
+		lastIndex = 3
+	}
+
+	for i := 0; i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if i != 3 {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < 3; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 
@@ -168,11 +183,15 @@ func BuiltinTuple3MyInt32BoxedWrite(w []byte, vec *[3]MyInt32) []byte {
 func BuiltinTuple3MyInt32BoxedCalculateLayout(sizes []int, vec *[3]MyInt32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if 3 != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		sizes = (*vec)[i].CalculateLayout(sizes)
 		sizes[sizePosition] += 4
 	}
+
 	return sizes
 }
 
@@ -181,17 +200,17 @@ func BuiltinTuple3MyInt32BoxedInternalWriteTL2(w []byte, sizes []int, vec *[3]My
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if 3 != 0 {
+		w = basictl.TL2WriteSize(w, 3)
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinTuple3MyInt32BoxedReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error) {
+func BuiltinTuple3MyInt32BoxedInternalReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -202,19 +221,30 @@ func BuiltinTuple3MyInt32BoxedReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, err 
 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
-	i := 0
-	for len(currentR) > 0 {
-		if i == 3 {
-			return r, basictl.TL2Error("more elements than expected")
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
 		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR); err != nil {
+	}
+
+	lastIndex := elementCount
+	if lastIndex > 3 {
+		lastIndex = 3
+	}
+
+	for i := 0; i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if i != 3 {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < 3; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 
@@ -350,16 +380,27 @@ func (item *MyInt32) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *MyInt32) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *MyInt32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *MyInt32) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *MyInt32) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*Int32)(item)
-	if r, err = ptr.ReadTL2(r); err != nil {
+	if r, err = ptr.InternalReadTL2(r); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *MyInt32) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

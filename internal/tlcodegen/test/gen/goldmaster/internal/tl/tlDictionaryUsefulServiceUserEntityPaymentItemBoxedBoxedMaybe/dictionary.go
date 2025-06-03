@@ -103,7 +103,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) Interna
 	return w, sizes
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -130,7 +130,7 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadTL2
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r, &item.Value, nat_t); err != nil {
+			if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, &item.Value, nat_t); err != nil {
 				return r, err
 			}
 		} else {

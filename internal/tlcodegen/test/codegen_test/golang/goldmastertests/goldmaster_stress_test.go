@@ -89,7 +89,8 @@ func TestGoldmasterStressTestTL2(t *testing.T) {
 				dst.FillRandom(rg)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
-						readOffset, err := dst.ReadTL2(utils.ParseHexToBytesTL2(success.BytesTL2), nil)
+						readData := utils.ParseHexToBytesTL2(success.BytesTL2)
+						readOffset, err := dst.ReadTL2(readData, nil)
 						if err != nil {
 							t.Fatalf("read error: %s", err.Error())
 						}

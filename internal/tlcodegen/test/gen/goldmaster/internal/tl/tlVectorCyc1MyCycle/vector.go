@@ -109,16 +109,27 @@ func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	return w, sizes
 }
 
-func (item *VectorCyc1MyCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorCyc1MyCycle) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorCyc1MyCycle) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorCyc1MyCycle) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	if r, err = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleReadTL2(r, ptr); err != nil {
+	if r, err = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorCyc1MyCycle) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

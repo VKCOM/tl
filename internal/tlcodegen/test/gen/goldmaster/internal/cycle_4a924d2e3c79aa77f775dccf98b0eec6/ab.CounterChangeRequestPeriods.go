@@ -135,29 +135,37 @@ func (item *AbCounterChangeRequestPeriods) InternalWriteTL2(w []byte, sizes []in
 	}
 	return w, sizes
 }
-func (item *AbCounterChangeRequestPeriods) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AbCounterChangeRequestPeriods) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AbCounterChangeRequestPeriods) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
+func (item *AbCounterChangeRequestPeriods) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
 	if currentSize == 0 {
 		item.index = 0
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -166,20 +174,19 @@ func (item *AbCounterChangeRequestPeriods) ReadTL2(r []byte) (_ []byte, err erro
 	}
 	switch item.index {
 	case 0:
-		r = saveR
-		if r, err = item.valueMany.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = item.valueMany.InternalReadTL2(currentR, block); err != nil {
+			return currentR, err
 		}
 	case 1:
-		r = saveR
-		if r, err = item.valueOne.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = item.valueOne.InternalReadTL2(currentR, block); err != nil {
+			return currentR, err
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
+}
+
+func (item *AbCounterChangeRequestPeriods) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
 }
 
 func (item *AbCounterChangeRequestPeriods) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -450,43 +457,25 @@ func (item *AbCounterChangeRequestPeriodsMany) InternalWriteTL2(w []byte, sizes 
 	return w, sizes
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AbCounterChangeRequestPeriodsMany) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
-			return currentR, err
-		}
-	}
+func (item *AbCounterChangeRequestPeriodsMany) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
+	currentR := r
 
 	// read item.ObjectsPeridos
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorInt.BuiltinVectorIntReadTL2(currentR, &item.ObjectsPeridos); err != nil {
+		if currentR, err = tlBuiltinVectorInt.BuiltinVectorIntInternalReadTL2(currentR, &item.ObjectsPeridos); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -494,6 +483,38 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte) (_ []byte, err 
 	}
 
 	return r, nil
+}
+
+func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 0 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
+	}
+	currentR, err = item.InternalReadTL2(currentR, block)
+	return r, err
 }
 
 func (item AbCounterChangeRequestPeriodsOne) AsUnion() AbCounterChangeRequestPeriods {
@@ -679,39 +700,21 @@ func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AbCounterChangeRequestPeriodsOne) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
-			return currentR, err
-		}
-	}
+func (item *AbCounterChangeRequestPeriodsOne) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
+	currentR := r
 
 	// read item.Period
 	if block&(1<<1) != 0 {
@@ -723,4 +726,36 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte) (_ []byte, err e
 	}
 
 	return r, nil
+}
+
+func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 1 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
+	}
+	currentR, err = item.InternalReadTL2(currentR, block)
+	return r, err
 }

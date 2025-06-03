@@ -7,6 +7,7 @@ BOOL = BYTE or BIT in STRUCT
 */
 
 func (trw *TypeRWBool) calculateLayout(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
@@ -22,6 +23,7 @@ func (trw *TypeRWBool) calculateLayout(
 }
 
 func (trw *TypeRWBool) writeTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
 	targetBytes string,
@@ -45,6 +47,7 @@ func (trw *TypeRWBool) writeTL2Call(
 }
 
 func (trw *TypeRWBool) readTL2Call(
+	directImports *DirectImports,
 	bytesVersion bool,
 	targetBytes string,
 	targetObject string,
@@ -65,7 +68,7 @@ func (trw *TypeRWBool) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return !canDependOnLocalBit
 }
 
-func (trw *TypeRWBool) doesCalculateLayoutUseObject() bool {
+func (trw *TypeRWBool) doesCalculateLayoutUseObject(allowInplace bool) bool {
 	return false
 }
 
@@ -79,6 +82,10 @@ func (trw *TypeRWBool) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
 
 func (trw *TypeRWBool) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 	return true
+}
+
+func (trw *TypeRWBool) doesReadTL2UseBytes(canDependOnLocalBit bool) bool {
+	return !canDependOnLocalBit
 }
 
 func (trw *TypeRWBool) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {

@@ -150,13 +150,6 @@ func (n *InternalNamespace) Prefix(directImports *DirectImports, in *InternalNam
 	return n.Name + "."
 }
 
-func (n *InternalNamespace) AddPrefix(in *InternalNamespace) string {
-	if n == in {
-		return ""
-	}
-	return n.Name + "."
-}
-
 func (n *InternalNamespace) ImportsSingleNamedNamespace() (empty bool, name string) {
 	for nn := range n.Namespaces {
 		if nn == "" {

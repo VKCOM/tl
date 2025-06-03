@@ -109,18 +109,29 @@ func (item *TupleString4) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 	return w, sizes
 }
 
-func (item *TupleString4) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleString4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleString4) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleString4) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[4]string)(item)
-	if r, err = tlBuiltinTuple4String.BuiltinTuple4StringReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinTuple4String.BuiltinTuple4StringInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleString4) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type TupleString4Bytes [4][]byte
@@ -216,16 +227,27 @@ func (item *TupleString4Bytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	return w, sizes
 }
 
-func (item *TupleString4Bytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleString4Bytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleString4Bytes) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleString4Bytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[4][]byte)(item)
-	if r, err = tlBuiltinTuple4String.BuiltinTuple4StringBytesReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinTuple4String.BuiltinTuple4StringBytesInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleString4Bytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

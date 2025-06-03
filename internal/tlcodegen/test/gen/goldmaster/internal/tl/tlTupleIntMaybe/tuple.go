@@ -98,7 +98,7 @@ func (item *TupleIntMaybe) InternalWriteTL2(w []byte, sizes []int, nat_t uint32)
 	return w, sizes
 }
 
-func (item *TupleIntMaybe) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *TupleIntMaybe) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -125,7 +125,7 @@ func (item *TupleIntMaybe) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error)
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(r, &item.Value, nat_t); err != nil {
+			if r, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(r, &item.Value, nat_t); err != nil {
 				return r, err
 			}
 		} else {

@@ -1614,7 +1614,7 @@ func (item *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, err error) {
     `)
-		qw422016.N().S(struct_.ResultType.ReadTL2Call(bytesVersion, "w", "ret", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
+		qw422016.N().S(struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "w", "ret", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
 		qw422016.N().S(`
     return w, nil
 }
@@ -1625,7 +1625,7 @@ func (item *`)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, _ []int, err error) {
     `)
-		qw422016.N().S(struct_.ResultType.WriteTL2Call(bytesVersion, "sizes", "w", "ret", false, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
+		qw422016.N().S(struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", false, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
 		qw422016.N().S(`
     return w, sizes, nil
 }
@@ -2179,14 +2179,14 @@ func (item *`)
 			qw422016.N().S(natArgsDecl)
 			qw422016.N().S(`) []int {
 `)
-			if field.t.trw.doesCalculateLayoutUseObject() {
+			if field.t.trw.doesCalculateLayoutUseObject(true) {
 				qw422016.N().S(`    ptr := (*`)
 				qw422016.N().S(fieldTypeString)
 				qw422016.N().S(`)(item)
 `)
 			}
 			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(field.t.CalculateLayout(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
 			qw422016.N().S(`
     return sizes
 }
@@ -2204,7 +2204,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
 			qw422016.N().S(`
     return w, sizes
 }
@@ -2257,7 +2257,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
 			qw422016.N().S(`
     return r, nil
 `)
@@ -2357,7 +2357,7 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`    `)
-				qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.CalculateLayout(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
 `)
 				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
@@ -2567,7 +2567,7 @@ func (item *`)
 				qw422016.E().V((fieldIndex + 1) % 8)
 				qw422016.N().S(`)
     `)
-				qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
 `)
 				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
@@ -2677,7 +2677,15 @@ func (item *`)
 				qw422016.N().S(natArgsDecl)
 				qw422016.N().S(`) (_ []byte, err error) {
 `)
-				if len(struct_.Fields) != 0 {
+				initCurrentR := false
+				for _, field := range struct_.Fields {
+					if field.t.trw.doesReadTL2UseBytes(field.fieldMask == nil) {
+						initCurrentR = true
+						break
+					}
+				}
+
+				if initCurrentR {
 					qw422016.N().S(`    currentR := r
 `)
 				}
@@ -2743,7 +2751,7 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
 				qw422016.N().S(`
 `)
 				if field.fieldMask != nil {

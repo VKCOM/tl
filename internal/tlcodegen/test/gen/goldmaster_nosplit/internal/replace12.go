@@ -250,13 +250,20 @@ func (item *Replace12) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *Replace12) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *Replace12) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *Replace12) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *Replace12) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -278,9 +285,14 @@ func (item *Replace12) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -295,7 +307,7 @@ func (item *Replace12) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.A
 	if block&(1<<2) != 0 {
-		if currentR, err = BuiltinTupleTuple3Replace12ElemReadTL2(currentR, &item.A, item.N, item.N); err != nil {
+		if currentR, err = BuiltinTupleTuple3Replace12ElemInternalReadTL2(currentR, &item.A, item.N, item.N); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -303,4 +315,8 @@ func (item *Replace12) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *Replace12) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

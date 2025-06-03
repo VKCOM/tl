@@ -193,37 +193,12 @@ func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 	return w, sizes
 }
 
-func (item *UnionArgsXXX1Long) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
-			return currentR, err
-		}
-	}
+func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
+	currentR := r
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleLong.BuiltinTupleLongReadTL2(currentR, &item.X, nat_Y); err != nil {
+		if currentR, err = tlBuiltinTupleLong.BuiltinTupleLongInternalReadTL2(currentR, &item.X, nat_Y); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -401,33 +376,8 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 	return w, sizes
 }
 
-func (item *UnionArgsXXX2Long) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
-			return currentR, err
-		}
-	}
+func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
+	currentR := r
 
 	// read item.A
 	if block&(1<<1) != 0 {
@@ -559,23 +509,24 @@ func (item *UnionArgsXXXLong) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	return w, sizes
 }
 
-func (item *UnionArgsXXXLong) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
-	saveR := r
+func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
 	if currentSize == 0 {
 		item.index = 0
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -584,18 +535,13 @@ func (item *UnionArgsXXXLong) ReadTL2(r []byte, nat_Y uint32) (_ []byte, err err
 	}
 	switch item.index {
 	case 0:
-		r = saveR
-		if r, err = item.value1.ReadTL2(r, nat_Y); err != nil {
-			return r, err
+		if currentR, err = item.value1.InternalReadTL2(currentR, block, nat_Y); err != nil {
+			return currentR, err
 		}
 	case 1:
-		r = saveR
-		if r, err = item.value2.ReadTL2(r, nat_Y); err != nil {
-			return r, err
+		if currentR, err = item.value2.InternalReadTL2(currentR, block, nat_Y); err != nil {
+			return currentR, err
 		}
-	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
 	}
 	return r, nil
 }

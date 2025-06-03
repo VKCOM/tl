@@ -53,11 +53,15 @@ func BuiltinVectorStringWrite(w []byte, vec []string) []byte {
 func BuiltinVectorStringCalculateLayout(sizes []int, vec *[]string) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
 
-		sizes[sizePosition] += len((*vec)[i])
-		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
+		sizes[sizePosition] += len(elem)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
 	}
 	return sizes
 }
@@ -67,17 +71,18 @@ func BuiltinVectorStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) (
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w = basictl.StringWriteTL2(w, (*vec)[i])
+		elem := (*vec)[i]
+		w = basictl.StringWriteTL2(w, elem)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorStringReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
+func BuiltinVectorStringInternalReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -89,13 +94,21 @@ func BuiltinVectorStringReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem string
-		if currentR, err = basictl.StringReadTL2(currentR, &elem); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]string, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = basictl.StringReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -178,11 +191,15 @@ func BuiltinVectorStringBytesWrite(w []byte, vec [][]byte) []byte {
 func BuiltinVectorStringBytesCalculateLayout(sizes []int, vec *[][]byte) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
 
-		sizes[sizePosition] += len((*vec)[i])
-		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
+		sizes[sizePosition] += len(elem)
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
 	}
 	return sizes
 }
@@ -192,17 +209,18 @@ func BuiltinVectorStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]by
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w = basictl.StringBytesWriteTL2(w, (*vec)[i])
+		elem := (*vec)[i]
+		w = basictl.StringBytesWriteTL2(w, elem)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorStringBytesReadTL2(r []byte, vec *[][]byte) (_ []byte, err error) {
+func BuiltinVectorStringBytesInternalReadTL2(r []byte, vec *[][]byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -214,13 +232,21 @@ func BuiltinVectorStringBytesReadTL2(r []byte, vec *[][]byte) (_ []byte, err err
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem []byte
-		if currentR, err = basictl.StringReadBytesTL2(currentR, &elem); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([][]byte, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = basictl.StringReadBytesTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

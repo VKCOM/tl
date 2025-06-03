@@ -55,13 +55,30 @@ func BuiltinTupleTuplePairTupleIntTupleInt2Write(w []byte, vec [][2]tlPairTupleI
 func BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes []int, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if nat_n != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &(*vec)[i], nat_ttXn, nat_ttYn)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
+		currentPosition := len(sizes)
+		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &elem, nat_ttXn, nat_ttYn)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+
 	return sizes
 }
 
@@ -70,17 +87,29 @@ func BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w []byte, sizes []in
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if nat_n != 0 {
+		w = basictl.TL2WriteSize(w, int(nat_n))
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, &(*vec)[i], nat_ttXn, nat_ttYn)
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
+		w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, &elem, nat_ttXn, nat_ttYn)
+	}
+
 	return w, sizes
 }
 
-func BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r []byte, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+func BuiltinTupleTuplePairTupleIntTupleInt2InternalReadTL2(r []byte, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -92,24 +121,35 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r []byte, vec *[][2]tlPairTup
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	i := 0
-	for len(currentR) > 0 {
-		if uint32(i) == nat_n {
-			return r, basictl.TL2Error("more elements than expected")
-		}
-		if currentR, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReadTL2(currentR, &(*vec)[i], nat_ttXn, nat_ttYn); err != nil {
+
+	lastIndex := uint32(elementCount)
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
+		if currentR, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(currentR, &(*vec)[i], nat_ttXn, nat_ttYn); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if uint32(i) != nat_n {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < nat_n; i++ {
+		tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReset(&(*vec)[i])
 	}
+
 	return r, nil
 }
 func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) error {

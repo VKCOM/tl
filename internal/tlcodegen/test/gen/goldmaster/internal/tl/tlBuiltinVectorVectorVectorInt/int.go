@@ -54,10 +54,14 @@ func BuiltinVectorVectorVectorIntWrite(w []byte, vec [][][]int32) []byte {
 func BuiltinVectorVectorVectorIntCalculateLayout(sizes []int, vec *[][][]int32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntCalculateLayout(sizes, &(*vec)[i])
+		elem := (*vec)[i]
+		sizes = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntCalculateLayout(sizes, &elem)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -69,17 +73,18 @@ func BuiltinVectorVectorVectorIntInternalWriteTL2(w []byte, sizes []int, vec *[]
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntInternalWriteTL2(w, sizes, &(*vec)[i])
+		elem := (*vec)[i]
+		w, sizes = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntInternalWriteTL2(w, sizes, &elem)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorVectorVectorIntReadTL2(r []byte, vec *[][][]int32) (_ []byte, err error) {
+func BuiltinVectorVectorVectorIntInternalReadTL2(r []byte, vec *[][][]int32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -91,13 +96,21 @@ func BuiltinVectorVectorVectorIntReadTL2(r []byte, vec *[][][]int32) (_ []byte, 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem [][]int32
-		if currentR, err = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntReadTL2(currentR, &elem); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([][][]int32, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntInternalReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

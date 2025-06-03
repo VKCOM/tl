@@ -99,9 +99,9 @@ func (item *TupleTuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []
 	return w, sizes
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
+func (item *TupleTuplePairTupleIntTupleInt2) InternalReadTL2(r []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	if r, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2ReadTL2(r, ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
+	if r, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2InternalReadTL2(r, ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
 		return r, err
 	}
 	return r, nil

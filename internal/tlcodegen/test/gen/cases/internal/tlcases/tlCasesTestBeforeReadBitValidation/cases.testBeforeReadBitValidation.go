@@ -377,13 +377,20 @@ func (item *CasesTestBeforeReadBitValidation) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *CasesTestBeforeReadBitValidation) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *CasesTestBeforeReadBitValidation) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *CasesTestBeforeReadBitValidation) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -405,9 +412,14 @@ func (item *CasesTestBeforeReadBitValidation) ReadTL2(r []byte) (_ []byte, err e
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -423,7 +435,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadTL2(r []byte) (_ []byte, err e
 	// read item.A
 	if block&(1<<2) != 0 {
 		if item.N&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.A, item.N); err != nil {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A, item.N); err != nil {
 				return currentR, err
 			}
 		} else {
@@ -436,7 +448,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadTL2(r []byte) (_ []byte, err e
 	// read item.B
 	if block&(1<<3) != 0 {
 		if item.N&(1<<1) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.B, item.N); err != nil {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.B, item.N); err != nil {
 				return currentR, err
 			}
 		} else {
@@ -447,4 +459,8 @@ func (item *CasesTestBeforeReadBitValidation) ReadTL2(r []byte) (_ []byte, err e
 	}
 
 	return r, nil
+}
+
+func (item *CasesTestBeforeReadBitValidation) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

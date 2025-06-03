@@ -76,7 +76,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
         {%- endif -%}
-        {%s= maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         {%- code
             sizeValue := "sizes[currentPosition]"
             if len(trivialSize) != 0 {
@@ -125,7 +125,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         {%- endif -%}
         if {%s= sizeValue %} != 0 {
         w[currentPosition] |= (1 << 1)
-        {%s= maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         {%- if len(trivialSize) == 0 -%}
         } else {
             sizes = sizes[1:]
@@ -171,7 +171,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
             item.Value = &newValue
         }
         {%- endif -%}
-        {%s= maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.ReadTL2Call(directImports, bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         } else {
         {%s= maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive) %}
         }

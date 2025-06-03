@@ -54,10 +54,14 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(w []byte, vec []cycle_4a156
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes []int, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -69,17 +73,18 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w []byte, sizes 
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r []byte, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) (_ []byte, err error) {
+func BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(r []byte, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -91,13 +96,21 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r []byte, vec *[]cycle_4a
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion
-		if currentR, err = elem.ReadTL2(currentR); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

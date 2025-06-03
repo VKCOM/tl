@@ -48,13 +48,17 @@ func BuiltinTuple3Replace14ElemElemLongWrite(w []byte, vec *[3]Replace14ElemElem
 func BuiltinTuple3Replace14ElemElemLongCalculateLayout(sizes []int, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if 3 != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_tn, nat_tk)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+
 	return sizes
 }
 
@@ -63,17 +67,17 @@ func BuiltinTuple3Replace14ElemElemLongInternalWriteTL2(w []byte, sizes []int, v
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if 3 != 0 {
+		w = basictl.TL2WriteSize(w, 3)
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	for i := 0; i < 3; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_tn, nat_tk)
 	}
 	return w, sizes
 }
 
-func BuiltinTuple3Replace14ElemElemLongReadTL2(r []byte, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) (_ []byte, err error) {
+func BuiltinTuple3Replace14ElemElemLongInternalReadTL2(r []byte, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -84,19 +88,30 @@ func BuiltinTuple3Replace14ElemElemLongReadTL2(r []byte, vec *[3]Replace14ElemEl
 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
-	i := 0
-	for len(currentR) > 0 {
-		if i == 3 {
-			return r, basictl.TL2Error("more elements than expected")
+
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
 		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR, nat_tn, nat_tk); err != nil {
+	}
+
+	lastIndex := elementCount
+	if lastIndex > 3 {
+		lastIndex = 3
+	}
+
+	for i := 0; i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_tn, nat_tk); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if i != 3 {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < 3; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 
@@ -334,7 +349,7 @@ func (item *Replace14ElemElemLong) InternalWriteTL2(w []byte, sizes []int, nat_n
 	return w, sizes
 }
 
-func (item *Replace14ElemElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
+func (item *Replace14ElemElemLong) InternalReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -356,9 +371,14 @@ func (item *Replace14ElemElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32)
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -373,7 +393,7 @@ func (item *Replace14ElemElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32)
 
 	// read item.Y
 	if block&(1<<2) != 0 {
-		if currentR, err = BuiltinTupleLongReadTL2(currentR, &item.Y, nat_k); err != nil {
+		if currentR, err = BuiltinTupleLongInternalReadTL2(currentR, &item.Y, nat_k); err != nil {
 			return currentR, err
 		}
 	} else {

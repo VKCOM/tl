@@ -139,7 +139,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
             {%- endif -%}
         {%- else -%}
-        {%s= field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.CalculateLayout(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
         {%- endif -%}
     {%- endfor -%}
     }
@@ -176,7 +176,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         w = basictl.TL2WriteSize(w, item.index)
             {%- endif -%}
         {%- else -%}
-        {%s= field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
         {%- endif -%}
     {%- endfor -%}
     }
@@ -237,7 +237,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
             {%s= fmt.Sprintf("item.value%s", field.goName) %} = &newValue
         }
         {%- endif -%}
-        {%s= field.t.ReadTL2Call(bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
         {%- endif -%}
     {%- endfor -%}
     }

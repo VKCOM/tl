@@ -228,7 +228,7 @@ func (item *UsefulServiceGetUserEntityResult) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *UsefulServiceGetUserEntityResult) ReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
+func (item *UsefulServiceGetUserEntityResult) InternalReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -250,9 +250,14 @@ func (item *UsefulServiceGetUserEntityResult) ReadTL2(r []byte, nat_fields_mask 
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -267,7 +272,7 @@ func (item *UsefulServiceGetUserEntityResult) ReadTL2(r []byte, nat_fields_mask 
 
 	// read item.PaymentItems
 	if block&(1<<2) != 0 {
-		if currentR, err = item.PaymentItems.ReadTL2(currentR, nat_fields_mask); err != nil {
+		if currentR, err = item.PaymentItems.InternalReadTL2(currentR, nat_fields_mask); err != nil {
 			return currentR, err
 		}
 	} else {

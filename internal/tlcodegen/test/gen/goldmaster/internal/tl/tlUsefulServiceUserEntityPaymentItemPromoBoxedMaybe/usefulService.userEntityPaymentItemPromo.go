@@ -94,7 +94,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalWriteTL2(
 	return w, sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -121,7 +121,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadTL2(r []byte,
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = item.Value.ReadTL2(r, nat_t); err != nil {
+			if r, err = item.Value.InternalReadTL2(r, nat_t); err != nil {
 				return r, err
 			}
 		} else {
