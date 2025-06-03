@@ -128,7 +128,13 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= valueNa
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        {%- code
+            readResult := "currentR"
+            if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+                readResult = "_"
+            }
+        -%}
+        if {%s= readResult %}, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if cap(*vec) < elementCount {
@@ -476,7 +482,13 @@ func {%s= goName %}InternalReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= v
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        {%- code
+            readResult := "currentR"
+            if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+                readResult = "_"
+            }
+        -%}
+        if {%s= readResult %}, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if *m == nil {
@@ -754,7 +766,13 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        {%- code
+            readResult := "currentR"
+            if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+                readResult = "_"
+            }
+        -%}
+        if {%s= readResult %}, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if cap(*vec) < elementCount {
@@ -969,7 +987,13 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        {%- code
+            readResult := "currentR"
+            if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+                readResult = "_"
+            }
+        -%}
+        if {%s= readResult %}, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     if uint32(cap(*vec)) < nat_n {
@@ -1155,7 +1179,13 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl
 
     elementCount := 0
     if currentSize != 0 {
-        if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+        {%- code
+            readResult := "currentR"
+            if !tuple.element.t.trw.doesReadTL2UseBytes(false) {
+                readResult = "_"
+            }
+        -%}
+        if {%s= readResult %}, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
     lastIndex := elementCount

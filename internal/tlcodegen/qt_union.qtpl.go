@@ -393,7 +393,7 @@ func (item *`)
     } else {
         if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
         if (block & 1) != 0 {
-            if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
+            if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
         } else {
             item.index = 0
         }

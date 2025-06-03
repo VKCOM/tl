@@ -167,7 +167,7 @@ func (item *MyNat2) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -513,7 +513,7 @@ func (item *MyPlus) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, er
 	if index != 1 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -684,6 +684,6 @@ func (item *MyZero) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, er
 	if index != 0 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
 	}
-	currentR, err = item.InternalReadTL2(currentR, block)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }

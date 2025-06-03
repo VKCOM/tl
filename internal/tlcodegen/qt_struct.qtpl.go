@@ -2821,7 +2821,7 @@ func (item *`)
 				qw422016.N().D(struct_.wr.unionIndex)
 				qw422016.N().S(`)
     }
-    currentR, err = item.InternalReadTL2(currentR, block)
+    _, err = item.InternalReadTL2(currentR, block)
     return r, err
 `)
 			} else {

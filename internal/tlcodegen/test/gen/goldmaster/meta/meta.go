@@ -30,7 +30,7 @@ type Object interface {
 	FillRandom(rg *basictl.RandGenerator)
 	Read(w []byte) ([]byte, error)              // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
 	ReadBoxed(w []byte) ([]byte, error)         // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
-	WriteGeneral(w []byte) ([]byte, error)      // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
+	WriteGeneral(w []byte) ([]byte, error)      // same as Write, but has common signature (with error) for all objects, so can be called through interface
 	WriteBoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
 
 	MarshalJSON() ([]byte, error) // returns type's JSON representation, plus error

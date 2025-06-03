@@ -94,7 +94,7 @@ func BuiltinVectorTrueBoxedInternalReadTL2(r []byte, vec *[]tlTrue.True) (_ []by
 
 	elementCount := 0
 	if currentSize != 0 {
-		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+		if _, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
 	}

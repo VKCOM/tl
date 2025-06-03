@@ -131,7 +131,7 @@ func TestGoldmasterUpdateTL2StressTestData(t *testing.T) {
 		context := basictl.TL2WriteContext{SizeBuffer: make([]int, 100)}
 		writeBuffer := make([]byte, 100)
 
-		for testName, _ := range restoredValues.Tests {
+		for testName := range restoredValues.Tests {
 			testingType := restoredValues.Tests[testName].TestingType
 			for i, testCase := range restoredValues.Tests[testName].Successes {
 				obj := factory.CreateObjectFromName(testingType)
