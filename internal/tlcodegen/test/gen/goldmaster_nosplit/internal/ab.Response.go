@@ -846,7 +846,7 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -1190,7 +1190,7 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
