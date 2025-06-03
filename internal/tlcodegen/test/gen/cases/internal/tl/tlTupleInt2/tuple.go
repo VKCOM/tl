@@ -109,16 +109,27 @@ func (item *TupleInt2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *TupleInt2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleInt2) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleInt2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[2]int32)(item)
-	if r, err = tlBuiltinTuple2Int.BuiltinTuple2IntReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinTuple2Int.BuiltinTuple2IntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

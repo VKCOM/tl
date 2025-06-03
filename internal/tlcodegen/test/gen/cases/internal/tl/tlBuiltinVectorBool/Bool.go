@@ -54,6 +54,9 @@ func BuiltinVectorBoolWrite(w []byte, vec []bool) []byte {
 func BuiltinVectorBoolCalculateLayout(sizes []int, vec *[]bool) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 
@@ -67,12 +70,13 @@ func BuiltinVectorBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]by
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		if (*vec)[i] {
+		elem := (*vec)[i]
+		if elem {
 			w = append(w, 1)
 		} else {
 			w = append(w, 0)
@@ -81,7 +85,7 @@ func BuiltinVectorBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]by
 	return w, sizes
 }
 
-func BuiltinVectorBoolReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {
+func BuiltinVectorBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -93,13 +97,21 @@ func BuiltinVectorBoolReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem bool
-		if currentR, err = basictl.BoolReadTL2(currentR, &elem); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]bool, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = basictl.BoolReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

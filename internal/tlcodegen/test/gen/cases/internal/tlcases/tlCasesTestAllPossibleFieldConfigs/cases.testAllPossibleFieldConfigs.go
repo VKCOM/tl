@@ -920,7 +920,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte, nat_outer uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -942,9 +942,14 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -968,7 +973,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 
 	// read item.F02
 	if block&(1<<4) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F02, item.Local); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F02, item.Local); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -977,7 +982,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 
 	// read item.F03
 	if block&(1<<5) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F03, nat_outer); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F03, nat_outer); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -1009,7 +1014,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 	// read item.F12
 	if block&(1<<0) != 0 {
 		if item.Local&(1<<2) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F12, item.Local); err != nil {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F12, item.Local); err != nil {
 				return currentR, err
 			}
 		} else {
@@ -1022,7 +1027,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 	// read item.F13
 	if block&(1<<1) != 0 {
 		if item.Local&(1<<3) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F13, nat_outer); err != nil {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F13, nat_outer); err != nil {
 				return currentR, err
 			}
 		} else {
@@ -1048,7 +1053,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 	// read item.F22
 	if block&(1<<4) != 0 {
 		if nat_outer&(1<<2) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F22, item.Local); err != nil {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F22, item.Local); err != nil {
 				return currentR, err
 			}
 		} else {
@@ -1061,7 +1066,7 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, nat_outer uint32
 	// read item.F23
 	if block&(1<<5) != 0 {
 		if nat_outer&(1<<3) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.F23, nat_outer); err != nil {
+			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F23, nat_outer); err != nil {
 				return currentR, err
 			}
 		} else {

@@ -86,6 +86,9 @@ func BuiltinVectorDictionaryElemStrangeStringWrite(w []byte, m map[uint32]string
 func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, m *map[uint32]string) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*m) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
+	}
 
 	keys := make([]uint32, 0, len(*m))
 	for k := range *m {
@@ -96,13 +99,11 @@ func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, m *map
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-
-		sizes[sizePosition] += 4
-		value := (*m)[key]
-
-		sizes[sizePosition] += len(value)
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(value))
+		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{Key: keys[i], Value: (*m)[keys[i]]}
+		currentPosition := len(sizes)
+		sizes = elem.CalculateLayout(sizes)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 	return sizes
 }
@@ -112,8 +113,8 @@ func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*m) != 0 {
+		w = basictl.TL2WriteSize(w, len(*m))
 	}
 
 	keys := make([]uint32, 0, len(*m))
@@ -125,15 +126,13 @@ func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-		w = basictl.NatWrite(w, key)
-		value := (*m)[key]
-		w = basictl.StringWriteTL2(w, value)
+		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{Key: keys[i], Value: (*m)[keys[i]]}
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemStrangeStringReadTL2(r []byte, m *map[uint32]string) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[uint32]string) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -145,6 +144,13 @@ func BuiltinVectorDictionaryElemStrangeStringReadTL2(r []byte, m *map[uint32]str
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if *m == nil {
 		*m = make(map[uint32]string)
 	}
@@ -155,16 +161,12 @@ func BuiltinVectorDictionaryElemStrangeStringReadTL2(r []byte, m *map[uint32]str
 
 	data := *m
 
-	for len(currentR) > 0 {
-		var key uint32
-		var value string
-		if currentR, err = basictl.NatRead(currentR, &key); err != nil {
+	for i := 0; i < elementCount; i++ {
+		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{}
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		if currentR, err = basictl.StringReadTL2(currentR, &value); err != nil {
-			return currentR, err
-		}
-		data[key] = value
+		data[elem.Key] = elem.Value
 	}
 	return r, nil
 }

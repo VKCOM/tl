@@ -95,9 +95,9 @@ func (item *TupleCycleTuple) InternalWriteTL2(w []byte, sizes []int, nat_n uint3
 	return w, sizes
 }
 
-func (item *TupleCycleTuple) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleCycleTuple) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]CycleTuple)(item)
-	if r, err = BuiltinTupleCycleTupleReadTL2(r, ptr, nat_n); err != nil {
+	if r, err = BuiltinTupleCycleTupleInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -202,18 +202,29 @@ func (item *TupleCycleTuple2) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 	return w, sizes
 }
 
-func (item *TupleCycleTuple2) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleCycleTuple2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleCycleTuple2) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleCycleTuple2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[2]CycleTuple)(item)
-	if r, err = BuiltinTuple2CycleTupleReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinTuple2CycleTupleInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleCycleTuple2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type TupleInt []int32
@@ -298,9 +309,9 @@ func (item *TupleInt) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]b
 	return w, sizes
 }
 
-func (item *TupleInt) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleInt) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]int32)(item)
-	if r, err = BuiltinTupleIntReadTL2(r, ptr, nat_n); err != nil {
+	if r, err = BuiltinTupleIntInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -399,18 +410,29 @@ func (item *TupleInt0) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *TupleInt0) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleInt0) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleInt0) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleInt0) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[0]int32)(item)
-	if r, err = BuiltinTuple0IntReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinTuple0IntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleInt0) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type TupleInt0Maybe struct {
@@ -491,7 +513,7 @@ func (item *TupleInt0Maybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	return w, sizes
 }
 
-func (item *TupleInt0Maybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleInt0Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -518,7 +540,7 @@ func (item *TupleInt0Maybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple0IntReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinTuple0IntInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {
@@ -665,18 +687,29 @@ func (item *TupleInt3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *TupleInt3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleInt3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleInt3) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleInt3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[3]int32)(item)
-	if r, err = BuiltinTuple3IntReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinTuple3IntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleInt3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type TupleInt3BoxedMaybe struct {
@@ -761,7 +794,7 @@ func (item *TupleInt3BoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	return w, sizes
 }
 
-func (item *TupleInt3BoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleInt3BoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -788,7 +821,7 @@ func (item *TupleInt3BoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple3IntReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinTuple3IntInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {
@@ -920,7 +953,7 @@ func (item *TupleInt3Maybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	return w, sizes
 }
 
-func (item *TupleInt3Maybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleInt3Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -947,7 +980,7 @@ func (item *TupleInt3Maybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple3IntReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinTuple3IntInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {
@@ -1094,18 +1127,29 @@ func (item *TupleIntBoxed0) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	return w, sizes
 }
 
-func (item *TupleIntBoxed0) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleIntBoxed0) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleIntBoxed0) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleIntBoxed0) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[0]int32)(item)
-	if r, err = BuiltinTuple0IntBoxedReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinTuple0IntBoxedInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleIntBoxed0) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type TupleIntBoxed0BoxedMaybe struct {
@@ -1190,7 +1234,7 @@ func (item *TupleIntBoxed0BoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([
 	return w, sizes
 }
 
-func (item *TupleIntBoxed0BoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleIntBoxed0BoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -1217,7 +1261,7 @@ func (item *TupleIntBoxed0BoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple0IntBoxedReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinTuple0IntBoxedInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {
@@ -1364,18 +1408,29 @@ func (item *TupleIntBoxed3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	return w, sizes
 }
 
-func (item *TupleIntBoxed3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *TupleIntBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *TupleIntBoxed3) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleIntBoxed3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[3]int32)(item)
-	if r, err = BuiltinTuple3IntBoxedReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinTuple3IntBoxedInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleIntBoxed3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type TupleIntBoxed3Maybe struct {
@@ -1456,7 +1511,7 @@ func (item *TupleIntBoxed3Maybe) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	return w, sizes
 }
 
-func (item *TupleIntBoxed3Maybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleIntBoxed3Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -1483,7 +1538,7 @@ func (item *TupleIntBoxed3Maybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinTuple3IntBoxedReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinTuple3IntBoxedInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {
@@ -1619,7 +1674,7 @@ func (item *TupleIntMaybe) InternalWriteTL2(w []byte, sizes []int, nat_t uint32)
 	return w, sizes
 }
 
-func (item *TupleIntMaybe) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *TupleIntMaybe) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -1646,7 +1701,7 @@ func (item *TupleIntMaybe) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error)
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinTupleIntReadTL2(r, &item.Value, nat_t); err != nil {
+			if r, err = BuiltinTupleIntInternalReadTL2(r, &item.Value, nat_t); err != nil {
 				return r, err
 			}
 		} else {
@@ -1782,9 +1837,9 @@ func (item *TupleLong) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]
 	return w, sizes
 }
 
-func (item *TupleLong) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleLong) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]int64)(item)
-	if r, err = BuiltinTupleLongReadTL2(r, ptr, nat_n); err != nil {
+	if r, err = BuiltinTupleLongInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -1872,9 +1927,9 @@ func (item *TupleString) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) (
 	return w, sizes
 }
 
-func (item *TupleString) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleString) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]string)(item)
-	if r, err = BuiltinTupleStringReadTL2(r, ptr, nat_n); err != nil {
+	if r, err = BuiltinTupleStringInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil

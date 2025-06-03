@@ -39,8 +39,8 @@ type Object interface {
 	ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it
 
-	ReadTL2(r []byte) ([]byte, error)
-	WriteTL2(w []byte, sizes []int) ([]byte, []int)
+	ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error)
+	WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte
 }
 
 type Function interface {
@@ -209,12 +209,12 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TLItem) ReadTL2(r []byte) ([]byte, error) {
+func (item *TLItem) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
 	return r, nil
 }
 
-func (item *TLItem) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	return w, sizes
+func (item *TLItem) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	return w
 }
 func FactoryItemByTLTag(tag uint32) *TLItem {
 	return itemsByTag[tag]

@@ -109,18 +109,29 @@ func (item *VectorString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 	return w, sizes
 }
 
-func (item *VectorString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorString) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]string)(item)
-	if r, err = tlBuiltinVectorString.BuiltinVectorStringReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorString.BuiltinVectorStringInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorStringBytes [][]byte
@@ -216,16 +227,27 @@ func (item *VectorStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	return w, sizes
 }
 
-func (item *VectorStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorStringBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[][]byte)(item)
-	if r, err = tlBuiltinVectorString.BuiltinVectorStringBytesReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorString.BuiltinVectorStringBytesInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

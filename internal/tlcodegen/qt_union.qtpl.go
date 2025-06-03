@@ -277,7 +277,7 @@ func (item *`)
 						}
 					} else {
 						qw422016.N().S(`        `)
-						qw422016.N().S(field.t.CalculateLayout(bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(field.t.CalculateLayout(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
 						qw422016.N().S(`
 `)
 					}
@@ -330,7 +330,7 @@ func (item *`)
 						}
 					} else {
 						qw422016.N().S(`        `)
-						qw422016.N().S(field.t.WriteTL2Call(bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
 						qw422016.N().S(`
 `)
 					}
@@ -425,7 +425,7 @@ func (item *`)
 `)
 						}
 						qw422016.N().S(`        `)
-						qw422016.N().S(field.t.ReadTL2Call(bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
 						qw422016.N().S(`
 `)
 					}

@@ -124,39 +124,48 @@ func (item *AColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	}
 	return w, sizes
 }
-func (item *AColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AColor) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
+func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
 	if currentSize == 0 {
 		item.index = 0
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
 			item.index = 0
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
+}
+
+func (item *AColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
 }
 
 func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -313,7 +322,7 @@ func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 	return w, sizes
 }
 
-func (item *AColorBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -340,7 +349,7 @@ func (item *AColorBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = item.Value.ReadTL2(r); err != nil {
+			if r, err = item.Value.InternalReadTL2(r); err != nil {
 				return r, err
 			}
 		} else {
@@ -441,10 +450,14 @@ func BuiltinVectorAColorWrite(w []byte, vec []AColor) []byte {
 func BuiltinVectorAColorCalculateLayout(sizes []int, vec *[]AColor) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -456,17 +469,18 @@ func BuiltinVectorAColorInternalWriteTL2(w []byte, sizes []int, vec *[]AColor) (
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorAColorReadTL2(r []byte, vec *[]AColor) (_ []byte, err error) {
+func BuiltinVectorAColorInternalReadTL2(r []byte, vec *[]AColor) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -478,13 +492,21 @@ func BuiltinVectorAColorReadTL2(r []byte, vec *[]AColor) (_ []byte, err error) {
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem AColor
-		if currentR, err = elem.ReadTL2(currentR); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]AColor, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }

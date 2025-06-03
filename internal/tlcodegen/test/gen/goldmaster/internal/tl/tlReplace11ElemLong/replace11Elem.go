@@ -245,7 +245,7 @@ func (item *Replace11ElemLong) InternalWriteTL2(w []byte, sizes []int, nat_n uin
 	return w, sizes
 }
 
-func (item *Replace11ElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
+func (item *Replace11ElemLong) InternalReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -267,16 +267,21 @@ func (item *Replace11ElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ 
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.B
 	if block&(1<<1) != 0 {
 		if nat_n&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTuple3PairBoxedIntLong.BuiltinTuple3PairBoxedIntLongReadTL2(currentR, &item.B); err != nil {
+			if currentR, err = tlBuiltinTuple3PairBoxedIntLong.BuiltinTuple3PairBoxedIntLongInternalReadTL2(currentR, &item.B); err != nil {
 				return currentR, err
 			}
 		} else {
@@ -288,7 +293,7 @@ func (item *Replace11ElemLong) ReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ 
 
 	// read item.C
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntReadTL2(currentR, &item.C, nat_n); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.C, nat_n); err != nil {
 			return currentR, err
 		}
 	} else {

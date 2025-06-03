@@ -94,7 +94,7 @@ func (item *AbMyTypeMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 	return w, sizes
 }
 
-func (item *AbMyTypeMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *AbMyTypeMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -121,7 +121,7 @@ func (item *AbMyTypeMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = item.Value.ReadTL2(r); err != nil {
+			if r, err = item.Value.InternalReadTL2(r); err != nil {
 				return r, err
 			}
 		} else {

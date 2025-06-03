@@ -52,13 +52,30 @@ func BuiltinTupleReplace15ElemWrite(w []byte, vec []tlReplace15Elem.Replace15Ele
 func BuiltinTupleReplace15ElemCalculateLayout(sizes []int, vec *[]tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if nat_n != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem tlReplace15Elem.Replace15Elem
+		currentPosition := len(sizes)
+		sizes = elem.CalculateLayout(sizes, nat_t)
+		sizes[sizePosition] += sizes[currentPosition]
+		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	}
+
 	return sizes
 }
 
@@ -67,17 +84,29 @@ func BuiltinTupleReplace15ElemInternalWriteTL2(w []byte, sizes []int, vec *[]tlR
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if nat_n != 0 {
+		w = basictl.TL2WriteSize(w, int(nat_n))
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem tlReplace15Elem.Replace15Elem
+		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
+	}
+
 	return w, sizes
 }
 
-func BuiltinTupleReplace15ElemReadTL2(r []byte, vec *[]tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
+func BuiltinTupleReplace15ElemInternalReadTL2(r []byte, vec *[]tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -89,24 +118,35 @@ func BuiltinTupleReplace15ElemReadTL2(r []byte, vec *[]tlReplace15Elem.Replace15
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]tlReplace15Elem.Replace15Elem, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	i := 0
-	for len(currentR) > 0 {
-		if uint32(i) == nat_n {
-			return r, basictl.TL2Error("more elements than expected")
-		}
-		if currentR, err = (*vec)[i].ReadTL2(currentR, nat_t); err != nil {
+
+	lastIndex := uint32(elementCount)
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if uint32(i) != nat_n {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < nat_n; i++ {
+		(*vec)[i].Reset()
 	}
+
 	return r, nil
 }
 func BuiltinTupleReplace15ElemReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) error {

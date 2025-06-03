@@ -106,18 +106,29 @@ func (item *VectorAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 	return w, sizes
 }
 
-func (item *VectorAColor) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorAColor) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorAColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]AColor)(item)
-	if r, err = BuiltinVectorAColorReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinVectorAColorInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorAColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorCyc1MyCycle []Cyc1MyCycle
@@ -213,18 +224,29 @@ func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	return w, sizes
 }
 
-func (item *VectorCyc1MyCycle) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorCyc1MyCycle) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorCyc1MyCycle) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorCyc1MyCycle) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]Cyc1MyCycle)(item)
-	if r, err = BuiltinVectorCyc1MyCycleReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinVectorCyc1MyCycleInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorCyc1MyCycle) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorDictionaryFieldString map[string]string
@@ -320,18 +342,29 @@ func (item *VectorDictionaryFieldString) InternalWriteTL2(w []byte, sizes []int)
 	return w, sizes
 }
 
-func (item *VectorDictionaryFieldString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorDictionaryFieldString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorDictionaryFieldString) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorDictionaryFieldString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[string]string)(item)
-	if r, err = BuiltinVectorDictionaryFieldStringReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinVectorDictionaryFieldStringInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorDictionaryFieldString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorDictionaryFieldStringBytes []DictionaryFieldStringBytes
@@ -427,18 +460,29 @@ func (item *VectorDictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *VectorDictionaryFieldStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorDictionaryFieldStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorDictionaryFieldStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorDictionaryFieldStringBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	if r, err = BuiltinVectorDictionaryFieldStringBytesReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorDictionaryFieldStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed map[string]UsefulServiceUserEntityPaymentItem
@@ -521,9 +565,9 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) Intern
 	return w, sizes
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if r, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r, ptr, nat_t); err != nil {
+	if r, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr, nat_t); err != nil {
 		return r, err
 	}
 	return r, nil
@@ -622,18 +666,29 @@ func (item *VectorInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *VectorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]int32)(item)
-	if r, err = BuiltinVectorIntReadTL2(r, ptr); err != nil {
+	if r, err = BuiltinVectorIntInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorIntBoxedMaybe struct {
@@ -722,7 +777,7 @@ func (item *VectorIntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	return w, sizes
 }
 
-func (item *VectorIntBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorIntBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -749,7 +804,7 @@ func (item *VectorIntBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinVectorIntReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinVectorIntInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {
@@ -887,7 +942,7 @@ func (item *VectorIntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	return w, sizes
 }
 
-func (item *VectorIntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -914,7 +969,7 @@ func (item *VectorIntMaybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = BuiltinVectorIntReadTL2(r, &item.Value); err != nil {
+			if r, err = BuiltinVectorIntInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {

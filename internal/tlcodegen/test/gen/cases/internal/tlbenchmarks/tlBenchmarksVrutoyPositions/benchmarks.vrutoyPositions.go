@@ -188,7 +188,7 @@ func (item *BenchmarksVrutoyPositions) InternalWriteTL2(w []byte, sizes []int, n
 	return w, sizes
 }
 
-func (item *BenchmarksVrutoyPositions) ReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *BenchmarksVrutoyPositions) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -210,15 +210,20 @@ func (item *BenchmarksVrutoyPositions) ReadTL2(r []byte, nat_n uint32) (_ []byte
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.NextPositions
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionReadTL2(currentR, &item.NextPositions, nat_n); err != nil {
+		if currentR, err = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionInternalReadTL2(currentR, &item.NextPositions, nat_n); err != nil {
 			return currentR, err
 		}
 	} else {

@@ -110,18 +110,29 @@ func (item *DictionaryString) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 	return w, sizes
 }
 
-func (item *DictionaryString) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryString) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryString) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[string]string)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *DictionaryString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryStringBytes []tlDictionaryFieldString.DictionaryFieldStringBytes
@@ -217,16 +228,27 @@ func (item *DictionaryStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]by
 	return w, sizes
 }
 
-func (item *DictionaryStringBytes) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryStringBytes) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryStringBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]tlDictionaryFieldString.DictionaryFieldStringBytes)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *DictionaryStringBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

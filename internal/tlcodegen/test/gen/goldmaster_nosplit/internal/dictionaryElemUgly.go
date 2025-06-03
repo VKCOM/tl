@@ -54,10 +54,14 @@ func BuiltinVectorDictionaryElemUglyIntStringWrite(w []byte, vec []DictionaryEle
 func BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes []int, vec *[]DictionaryElemUglyIntString, nat_t uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes, nat_t)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -69,17 +73,18 @@ func BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w []byte, sizes []
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemUglyIntStringReadTL2(r []byte, vec *[]DictionaryElemUglyIntString, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(r []byte, vec *[]DictionaryElemUglyIntString, nat_t uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -91,13 +96,21 @@ func BuiltinVectorDictionaryElemUglyIntStringReadTL2(r []byte, vec *[]Dictionary
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem DictionaryElemUglyIntString
-		if currentR, err = elem.ReadTL2(currentR, nat_t); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]DictionaryElemUglyIntString, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -400,7 +413,7 @@ func (item *DictionaryElemUglyIntString) InternalWriteTL2(w []byte, sizes []int,
 	return w, sizes
 }
 
-func (item *DictionaryElemUglyIntString) ReadTL2(r []byte, nat_f uint32) (_ []byte, err error) {
+func (item *DictionaryElemUglyIntString) InternalReadTL2(r []byte, nat_f uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -422,9 +435,14 @@ func (item *DictionaryElemUglyIntString) ReadTL2(r []byte, nat_f uint32) (_ []by
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 

@@ -155,7 +155,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(maybe.element.t.CalculateLayout(bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 			qw422016.N().S(`
 `)
 			sizeValue := "sizes[currentPosition]"
@@ -226,7 +226,7 @@ func (item *`)
 			qw422016.N().S(` != 0 {
         w[currentPosition] |= (1 << 1)
         `)
-			qw422016.N().S(maybe.element.t.WriteTL2Call(bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 			qw422016.N().S(`
 `)
 			if len(trivialSize) == 0 {
@@ -293,7 +293,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(maybe.element.t.ReadTL2Call(bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.ReadTL2Call(directImports, bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 			qw422016.N().S(`
         } else {
         `)

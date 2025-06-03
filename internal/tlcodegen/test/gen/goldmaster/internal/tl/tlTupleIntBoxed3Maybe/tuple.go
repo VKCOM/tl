@@ -94,7 +94,7 @@ func (item *TupleIntBoxed3Maybe) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	return w, sizes
 }
 
-func (item *TupleIntBoxed3Maybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *TupleIntBoxed3Maybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -121,7 +121,7 @@ func (item *TupleIntBoxed3Maybe) ReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadTL2(r, &item.Value); err != nil {
+			if r, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalReadTL2(r, &item.Value); err != nil {
 				return r, err
 			}
 		} else {

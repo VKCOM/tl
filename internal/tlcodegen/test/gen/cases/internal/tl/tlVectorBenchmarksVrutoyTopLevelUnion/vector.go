@@ -110,16 +110,27 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) InternalWriteTL2(w []byte, size
 	return w, sizes
 }
 
-func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorBenchmarksVrutoyTopLevelUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
-	if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

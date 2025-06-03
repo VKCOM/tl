@@ -86,6 +86,9 @@ func BuiltinVectorDictionaryElemIntPairIntIntWrite(w []byte, m map[int32]PairInt
 func BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes []int, m *map[int32]PairIntInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*m) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
+	}
 
 	keys := make([]int32, 0, len(*m))
 	for k := range *m {
@@ -96,12 +99,9 @@ func BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes []int, m *map
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-
-		sizes[sizePosition] += 4
-		value := (*m)[key]
+		elem := DictionaryElemIntPairIntInt{Key: keys[i], Value: (*m)[keys[i]]}
 		currentPosition := len(sizes)
-		sizes = value.CalculateLayout(sizes)
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -113,8 +113,8 @@ func BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w []byte, sizes []
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*m) != 0 {
+		w = basictl.TL2WriteSize(w, len(*m))
 	}
 
 	keys := make([]int32, 0, len(*m))
@@ -126,15 +126,13 @@ func BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w []byte, sizes []
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-		w = basictl.IntWrite(w, key)
-		value := (*m)[key]
-		w, sizes = value.InternalWriteTL2(w, sizes)
+		elem := DictionaryElemIntPairIntInt{Key: keys[i], Value: (*m)[keys[i]]}
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemIntPairIntIntReadTL2(r []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(r []byte, m *map[int32]PairIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -146,6 +144,13 @@ func BuiltinVectorDictionaryElemIntPairIntIntReadTL2(r []byte, m *map[int32]Pair
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if *m == nil {
 		*m = make(map[int32]PairIntInt)
 	}
@@ -156,16 +161,12 @@ func BuiltinVectorDictionaryElemIntPairIntIntReadTL2(r []byte, m *map[int32]Pair
 
 	data := *m
 
-	for len(currentR) > 0 {
-		var key int32
-		var value PairIntInt
-		if currentR, err = basictl.IntRead(currentR, &key); err != nil {
+	for i := 0; i < elementCount; i++ {
+		elem := DictionaryElemIntPairIntInt{}
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		if currentR, err = value.ReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-		data[key] = value
+		data[elem.Key] = elem.Value
 	}
 	return r, nil
 }
@@ -306,6 +307,9 @@ func BuiltinVectorDictionaryElemLongPairIntIntWrite(w []byte, m map[int64]PairIn
 func BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes []int, m *map[int64]PairIntInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*m) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
+	}
 
 	keys := make([]int64, 0, len(*m))
 	for k := range *m {
@@ -316,12 +320,9 @@ func BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes []int, m *ma
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-
-		sizes[sizePosition] += 8
-		value := (*m)[key]
+		elem := DictionaryElemLongPairIntInt{Key: keys[i], Value: (*m)[keys[i]]}
 		currentPosition := len(sizes)
-		sizes = value.CalculateLayout(sizes)
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -333,8 +334,8 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w []byte, sizes [
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*m) != 0 {
+		w = basictl.TL2WriteSize(w, len(*m))
 	}
 
 	keys := make([]int64, 0, len(*m))
@@ -346,15 +347,13 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w []byte, sizes [
 	})
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-		w = basictl.LongWrite(w, key)
-		value := (*m)[key]
-		w, sizes = value.InternalWriteTL2(w, sizes)
+		elem := DictionaryElemLongPairIntInt{Key: keys[i], Value: (*m)[keys[i]]}
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemLongPairIntIntReadTL2(r []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(r []byte, m *map[int64]PairIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -366,6 +365,13 @@ func BuiltinVectorDictionaryElemLongPairIntIntReadTL2(r []byte, m *map[int64]Pai
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if *m == nil {
 		*m = make(map[int64]PairIntInt)
 	}
@@ -376,16 +382,12 @@ func BuiltinVectorDictionaryElemLongPairIntIntReadTL2(r []byte, m *map[int64]Pai
 
 	data := *m
 
-	for len(currentR) > 0 {
-		var key int64
-		var value PairIntInt
-		if currentR, err = basictl.LongRead(currentR, &key); err != nil {
+	for i := 0; i < elementCount; i++ {
+		elem := DictionaryElemLongPairIntInt{}
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		if currentR, err = value.ReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-		data[key] = value
+		data[elem.Key] = elem.Value
 	}
 	return r, nil
 }
@@ -496,10 +498,14 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntWrite(w []byte, vec []Dictionar
 func BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairBoolAColorInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -511,17 +517,18 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w []byte, size
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemPairBoolAColorIntReadTL2(r []byte, vec *[]DictionaryElemPairBoolAColorInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(r []byte, vec *[]DictionaryElemPairBoolAColorInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -533,13 +540,21 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntReadTL2(r []byte, vec *[]Dictio
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem DictionaryElemPairBoolAColorInt
-		if currentR, err = elem.ReadTL2(currentR); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]DictionaryElemPairBoolAColorInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -625,10 +640,14 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(w []byte, vec []Dictiona
 func BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairFloatDoubleInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -640,17 +659,18 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w []byte, siz
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemPairFloatDoubleIntReadTL2(r []byte, vec *[]DictionaryElemPairFloatDoubleInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemPairFloatDoubleIntInternalReadTL2(r []byte, vec *[]DictionaryElemPairFloatDoubleInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -662,13 +682,21 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntReadTL2(r []byte, vec *[]Dicti
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem DictionaryElemPairFloatDoubleInt
-		if currentR, err = elem.ReadTL2(currentR); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]DictionaryElemPairFloatDoubleInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -754,10 +782,14 @@ func BuiltinVectorDictionaryElemPairIntIntIntWrite(w []byte, vec []DictionaryEle
 func BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairIntIntInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -769,17 +801,18 @@ func BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w []byte, sizes []
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemPairIntIntIntReadTL2(r []byte, vec *[]DictionaryElemPairIntIntInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemPairIntIntIntInternalReadTL2(r []byte, vec *[]DictionaryElemPairIntIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -791,13 +824,21 @@ func BuiltinVectorDictionaryElemPairIntIntIntReadTL2(r []byte, vec *[]Dictionary
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem DictionaryElemPairIntIntInt
-		if currentR, err = elem.ReadTL2(currentR); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]DictionaryElemPairIntIntInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -883,10 +924,14 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(w []byte, ve
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairIntPairMultiPointStringInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -898,17 +943,18 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(r []byte, vec *[]DictionaryElemPairIntPairMultiPointStringInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(r []byte, vec *[]DictionaryElemPairIntPairMultiPointStringInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -920,13 +966,21 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(r []byte, 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem DictionaryElemPairIntPairMultiPointStringInt
-		if currentR, err = elem.ReadTL2(currentR); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]DictionaryElemPairIntPairMultiPointStringInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -1040,6 +1094,9 @@ func BuiltinVectorDictionaryElemStringPairIntIntWrite(w []byte, m map[string]Pai
 func BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes []int, m *map[string]PairIntInt) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*m) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
+	}
 
 	keys := make([]string, 0, len(*m))
 	for k := range *m {
@@ -1048,13 +1105,9 @@ func BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes []int, m *
 	sort.Strings(keys)
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-
-		sizes[sizePosition] += len(key)
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(key))
-		value := (*m)[key]
+		elem := DictionaryElemStringPairIntInt{Key: keys[i], Value: (*m)[keys[i]]}
 		currentPosition := len(sizes)
-		sizes = value.CalculateLayout(sizes)
+		sizes = elem.CalculateLayout(sizes)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -1066,8 +1119,8 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w []byte, sizes
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*m) != 0 {
+		w = basictl.TL2WriteSize(w, len(*m))
 	}
 
 	keys := make([]string, 0, len(*m))
@@ -1077,15 +1130,13 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w []byte, sizes
 	sort.Strings(keys)
 
 	for i := 0; i < len(keys); i++ {
-		key := keys[i]
-		w = basictl.StringWriteTL2(w, key)
-		value := (*m)[key]
-		w, sizes = value.InternalWriteTL2(w, sizes)
+		elem := DictionaryElemStringPairIntInt{Key: keys[i], Value: (*m)[keys[i]]}
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r []byte, m *map[string]PairIntInt) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(r []byte, m *map[string]PairIntInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1097,6 +1148,13 @@ func BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r []byte, m *map[string]
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if *m == nil {
 		*m = make(map[string]PairIntInt)
 	}
@@ -1107,16 +1165,12 @@ func BuiltinVectorDictionaryElemStringPairIntIntReadTL2(r []byte, m *map[string]
 
 	data := *m
 
-	for len(currentR) > 0 {
-		var key string
-		var value PairIntInt
-		if currentR, err = basictl.StringReadTL2(currentR, &key); err != nil {
+	for i := 0; i < elementCount; i++ {
+		elem := DictionaryElemStringPairIntInt{}
+		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
-		if currentR, err = value.ReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-		data[key] = value
+		data[elem.Key] = elem.Value
 	}
 	return r, nil
 }
@@ -1218,10 +1272,14 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []DictionaryEl
 func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]DictionaryElemTupleStringInt, nat_t uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if len(*vec) != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+	}
 
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes, nat_t)
 		sizes[sizePosition] += sizes[currentPosition]
 		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -1233,17 +1291,18 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes [
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	for i := 0; i < len(*vec); i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_t)
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntReadTL2(r []byte, vec *[]DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1255,13 +1314,21 @@ func BuiltinVectorDictionaryElemTupleStringIntReadTL2(r []byte, vec *[]Dictionar
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	*vec = (*vec)[:0]
-	for len(currentR) > 0 {
-		var elem DictionaryElemTupleStringInt
-		if currentR, err = elem.ReadTL2(currentR, nat_t); err != nil {
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
+	if cap(*vec) < elementCount {
+		*vec = make([]DictionaryElemTupleStringInt, elementCount)
+	}
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
 			return currentR, err
 		}
-		*vec = append(*vec, elem)
 	}
 	return r, nil
 }
@@ -1517,13 +1584,20 @@ func (item *DictionaryElemIntPairIntInt) InternalWriteTL2(w []byte, sizes []int)
 	return w, sizes
 }
 
-func (item *DictionaryElemIntPairIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemIntPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemIntPairIntInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemIntPairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1545,9 +1619,14 @@ func (item *DictionaryElemIntPairIntInt) ReadTL2(r []byte) (_ []byte, err error)
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -1562,7 +1641,7 @@ func (item *DictionaryElemIntPairIntInt) ReadTL2(r []byte) (_ []byte, err error)
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = item.Value.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -1570,6 +1649,10 @@ func (item *DictionaryElemIntPairIntInt) ReadTL2(r []byte) (_ []byte, err error)
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemIntPairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemLongPairIntInt struct {
@@ -1781,13 +1864,20 @@ func (item *DictionaryElemLongPairIntInt) InternalWriteTL2(w []byte, sizes []int
 	return w, sizes
 }
 
-func (item *DictionaryElemLongPairIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemLongPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemLongPairIntInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemLongPairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1809,9 +1899,14 @@ func (item *DictionaryElemLongPairIntInt) ReadTL2(r []byte) (_ []byte, err error
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -1826,7 +1921,7 @@ func (item *DictionaryElemLongPairIntInt) ReadTL2(r []byte) (_ []byte, err error
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = item.Value.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -1834,6 +1929,10 @@ func (item *DictionaryElemLongPairIntInt) ReadTL2(r []byte) (_ []byte, err error
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemLongPairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemPairBoolAColorInt struct {
@@ -2045,13 +2144,20 @@ func (item *DictionaryElemPairBoolAColorInt) InternalWriteTL2(w []byte, sizes []
 	return w, sizes
 }
 
-func (item *DictionaryElemPairBoolAColorInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemPairBoolAColorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemPairBoolAColorInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemPairBoolAColorInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -2073,15 +2179,20 @@ func (item *DictionaryElemPairBoolAColorInt) ReadTL2(r []byte) (_ []byte, err er
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = item.Key.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -2098,6 +2209,10 @@ func (item *DictionaryElemPairBoolAColorInt) ReadTL2(r []byte) (_ []byte, err er
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemPairBoolAColorInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemPairFloatDoubleInt struct {
@@ -2309,13 +2424,20 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *DictionaryElemPairFloatDoubleInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemPairFloatDoubleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemPairFloatDoubleInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemPairFloatDoubleInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -2337,15 +2459,20 @@ func (item *DictionaryElemPairFloatDoubleInt) ReadTL2(r []byte) (_ []byte, err e
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = item.Key.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -2362,6 +2489,10 @@ func (item *DictionaryElemPairFloatDoubleInt) ReadTL2(r []byte) (_ []byte, err e
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemPairFloatDoubleInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemPairIntIntInt struct {
@@ -2573,13 +2704,20 @@ func (item *DictionaryElemPairIntIntInt) InternalWriteTL2(w []byte, sizes []int)
 	return w, sizes
 }
 
-func (item *DictionaryElemPairIntIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemPairIntIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemPairIntIntInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemPairIntIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -2601,15 +2739,20 @@ func (item *DictionaryElemPairIntIntInt) ReadTL2(r []byte) (_ []byte, err error)
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = item.Key.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -2626,6 +2769,10 @@ func (item *DictionaryElemPairIntIntInt) ReadTL2(r []byte) (_ []byte, err error)
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemPairIntIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemPairIntPairMultiPointStringInt struct {
@@ -2837,13 +2984,20 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalWriteTL2(w []b
 	return w, sizes
 }
 
-func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -2865,15 +3019,20 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadTL2(r []byte) (_ [
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = item.Key.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -2890,6 +3049,10 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadTL2(r []byte) (_ [
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemStringPairIntInt struct {
@@ -3105,13 +3268,20 @@ func (item *DictionaryElemStringPairIntInt) InternalWriteTL2(w []byte, sizes []i
 	return w, sizes
 }
 
-func (item *DictionaryElemStringPairIntInt) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryElemStringPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *DictionaryElemStringPairIntInt) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *DictionaryElemStringPairIntInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -3133,9 +3303,14 @@ func (item *DictionaryElemStringPairIntInt) ReadTL2(r []byte) (_ []byte, err err
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -3150,7 +3325,7 @@ func (item *DictionaryElemStringPairIntInt) ReadTL2(r []byte) (_ []byte, err err
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = item.Value.ReadTL2(currentR); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -3158,6 +3333,10 @@ func (item *DictionaryElemStringPairIntInt) ReadTL2(r []byte) (_ []byte, err err
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemStringPairIntInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type DictionaryElemTupleStringInt struct {
@@ -3372,7 +3551,7 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 	return w, sizes
 }
 
-func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, nat_k uint32) (_ []byte, err error) {
+func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -3394,15 +3573,20 @@ func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, nat_k uint32) (_ []b
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = BuiltinTupleStringReadTL2(currentR, &item.Key, nat_k); err != nil {
+		if currentR, err = BuiltinTupleStringInternalReadTL2(currentR, &item.Key, nat_k); err != nil {
 			return currentR, err
 		}
 	} else {

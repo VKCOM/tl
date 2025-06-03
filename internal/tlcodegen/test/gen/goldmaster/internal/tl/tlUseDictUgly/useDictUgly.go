@@ -739,13 +739,20 @@ func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int)
 	return w, sizes
 }
 
-func (item *UseDictUgly) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *UseDictUgly) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -767,9 +774,14 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
@@ -784,7 +796,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.A
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringReadTL2(currentR, &item.A, item.N); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(currentR, &item.A, item.N); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -793,7 +805,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.B
 	if block&(1<<3) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringReadTL2(currentR, &item.B); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(currentR, &item.B); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -802,7 +814,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.C
 	if block&(1<<4) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntReadTL2(currentR, &item.C); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntInternalReadTL2(currentR, &item.C); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -811,7 +823,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.D
 	if block&(1<<5) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntReadTL2(currentR, &item.D, item.N); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(currentR, &item.D, item.N); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -820,7 +832,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.E
 	if block&(1<<6) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntReadTL2(currentR, &item.E); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -829,7 +841,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.F
 	if block&(1<<7) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntReadTL2(currentR, &item.F); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntInternalReadTL2(currentR, &item.F); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -847,7 +859,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.G
 	if block&(1<<0) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadTL2(currentR, &item.G); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(currentR, &item.G); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -856,7 +868,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntReadTL2(currentR, &item.X); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -865,7 +877,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.Y
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntReadTL2(currentR, &item.Y); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -874,7 +886,7 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.Z
 	if block&(1<<3) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntReadTL2(currentR, &item.Z); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -882,4 +894,8 @@ func (item *UseDictUgly) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *UseDictUgly) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

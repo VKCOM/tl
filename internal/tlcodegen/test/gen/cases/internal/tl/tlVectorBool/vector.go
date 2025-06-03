@@ -109,16 +109,27 @@ func (item *VectorBool) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	return w, sizes
 }
 
-func (item *VectorBool) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorBool) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *VectorBool) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *VectorBool) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*[]bool)(item)
-	if r, err = tlBuiltinVectorBool.BuiltinVectorBoolReadTL2(r, ptr); err != nil {
+	if r, err = tlBuiltinVectorBool.BuiltinVectorBoolInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *VectorBool) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

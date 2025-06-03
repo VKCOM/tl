@@ -97,9 +97,9 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(
 	return w, sizes
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadTL2(r, ptr, nat_t); err != nil {
+	if r, err = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr, nat_t); err != nil {
 		return r, err
 	}
 	return r, nil

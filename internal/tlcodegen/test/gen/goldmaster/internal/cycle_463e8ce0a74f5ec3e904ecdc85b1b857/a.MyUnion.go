@@ -130,29 +130,37 @@ func (item *AMyUnion) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	}
 	return w, sizes
 }
-func (item *AMyUnion) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AMyUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AMyUnion) ReadTL2(r []byte) (_ []byte, err error) {
-	saveR := r
+func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
 	}
-	shift := currentSize + basictl.TL2CalculateSize(currentSize)
 
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
 	if currentSize == 0 {
 		item.index = 0
 	} else {
-		var block byte
-		if r, err = basictl.ByteReadTL2(r, &block); err != nil {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
 		if (block & 1) != 0 {
-			if r, item.index, err = basictl.TL2ParseSize(r); err != nil {
+			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
 		} else {
@@ -161,20 +169,19 @@ func (item *AMyUnion) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	switch item.index {
 	case 0:
-		r = saveR
-		if r, err = item.valueUNionA.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = item.valueUNionA.InternalReadTL2(currentR, block); err != nil {
+			return currentR, err
 		}
 	case 1:
-		r = saveR
-		if r, err = item.valueNionA.ReadTL2(r); err != nil {
-			return r, err
+		if currentR, err = item.valueNionA.InternalReadTL2(currentR, block); err != nil {
+			return currentR, err
 		}
 	}
-	if len(saveR) < len(r)+shift {
-		r = saveR[shift:]
-	}
 	return r, nil
+}
+
+func (item *AMyUnion) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
 }
 
 func (item *AMyUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
@@ -436,39 +443,21 @@ func (item *AUNionA) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *AUNionA) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AUNionA) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AUNionA) ReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
-			return currentR, err
-		}
-	}
+func (item *AUNionA) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
+	currentR := r
 
 	// read item.A
 	if block&(1<<1) != 0 {
@@ -480,6 +469,38 @@ func (item *AUNionA) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *AUNionA) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 0 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
+	}
+	currentR, err = item.InternalReadTL2(currentR, block)
+	return r, err
 }
 
 func (item AuNionA) AsUnion() AMyUnion {
@@ -665,39 +686,21 @@ func (item *AuNionA) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *AuNionA) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AuNionA) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AuNionA) ReadTL2(r []byte) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	if currentSize == 0 {
-		item.Reset()
-		return r, nil
-	}
-	var block byte
-	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-		return currentR, err
-	}
-	// read No of constructor
-	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
-			return currentR, err
-		}
-	}
+func (item *AuNionA) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
+	currentR := r
 
 	// read item.B
 	if block&(1<<1) != 0 {
@@ -709,4 +712,36 @@ func (item *AuNionA) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *AuNionA) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 1 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
+	}
+	currentR, err = item.InternalReadTL2(currentR, block)
+	return r, err
 }

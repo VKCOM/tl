@@ -51,11 +51,25 @@ func BuiltinTupleLongWrite(w []byte, vec []int64, nat_n uint32) (_ []byte, err e
 func BuiltinTupleLongCalculateLayout(sizes []int, vec *[]int64, nat_n uint32) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+	if nat_n != 0 {
+		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+	for i := uint32(0); i < lastIndex; i++ {
 
 		sizes[sizePosition] += 8
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+
+		sizes[sizePosition] += 8
+	}
+
 	return sizes
 }
 
@@ -64,17 +78,29 @@ func BuiltinTupleLongInternalWriteTL2(w []byte, sizes []int, vec *[]int64, nat_n
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if nat_n != 0 {
+		w = basictl.TL2WriteSize(w, int(nat_n))
 	}
 
-	for i := 0; i < len(*vec); i++ {
+	lastIndex := uint32(len(*vec))
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		w = basictl.LongWrite(w, (*vec)[i])
 	}
+
+	// append empty objects if not enough
+	for i := lastIndex; i < nat_n; i++ {
+		var elem int64
+		w = basictl.LongWrite(w, elem)
+	}
+
 	return w, sizes
 }
 
-func BuiltinTupleLongReadTL2(r []byte, vec *[]int64, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleLongInternalReadTL2(r []byte, vec *[]int64, nat_n uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -86,24 +112,35 @@ func BuiltinTupleLongReadTL2(r []byte, vec *[]int64, nat_n uint32) (_ []byte, er
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
+	elementCount := 0
+	if currentSize != 0 {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+			return r, err
+		}
+	}
+
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int64, nat_n)
 	} else {
 		*vec = (*vec)[:nat_n]
 	}
-	i := 0
-	for len(currentR) > 0 {
-		if uint32(i) == nat_n {
-			return r, basictl.TL2Error("more elements than expected")
-		}
+
+	lastIndex := uint32(elementCount)
+	if lastIndex > nat_n {
+		lastIndex = nat_n
+	}
+
+	for i := uint32(0); i < lastIndex; i++ {
 		if currentR, err = basictl.LongRead(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
-		i += 1
 	}
-	if uint32(i) != nat_n {
-		return r, basictl.TL2Error("less elements than expected")
+
+	// reset elements if received less elements
+	for i := lastIndex; i < nat_n; i++ {
+		(*vec)[i] = 0
 	}
+
 	return r, nil
 }
 func BuiltinTupleLongReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int64, nat_n uint32) error {

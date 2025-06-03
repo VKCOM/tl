@@ -184,13 +184,20 @@ func (item *AInner3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	return w, sizes
 }
 
-func (item *AInner3) WriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AInner3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	sizes = item.CalculateLayout(sizes[:0])
 	w, _ = item.InternalWriteTL2(w, sizes)
-	return w, sizes[:0]
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
-func (item *AInner3) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *AInner3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -212,15 +219,20 @@ func (item *AInner3) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 	// read No of constructor
 	if block&1 != 0 {
-		var _skip int
-		if currentR, err = basictl.TL2ReadSize(currentR, &_skip); err != nil {
+		var index int
+		if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil {
 			return currentR, err
+		}
+		if index != 0 {
+			// unknown cases for current type
+			item.Reset()
+			return r, nil
 		}
 	}
 
 	// read item.A
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTuple3Int.BuiltinTuple3IntReadTL2(currentR, &item.A); err != nil {
+		if currentR, err = tlBuiltinTuple3Int.BuiltinTuple3IntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -228,4 +240,8 @@ func (item *AInner3) ReadTL2(r []byte) (_ []byte, err error) {
 	}
 
 	return r, nil
+}
+
+func (item *AInner3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

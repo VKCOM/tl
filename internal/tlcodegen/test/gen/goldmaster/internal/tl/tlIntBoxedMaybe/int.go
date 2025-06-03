@@ -95,7 +95,7 @@ func (item *IntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 	return w, sizes
 }
 
-func (item *IntBoxedMaybe) ReadTL2(r []byte) (_ []byte, err error) {
+func (item *IntBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
