@@ -2217,7 +2217,7 @@ func (item *`)
 			qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 `)
 			if !struct_.wr.wantsTL2 {
-				qw422016.N().S(`    return w, sizes
+				qw422016.N().S(`    return w
 `)
 			} else {
 				qw422016.N().S(`    var sizes []int
@@ -2625,19 +2625,7 @@ func (item *`)
 
 `)
 		}
-		if !struct_.wr.wantsTL2 {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalReadTL2(r []byte`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) (_ []byte, err error) {
-    return r, `)
-			qw422016.N().S(struct_.wr.gen.InternalPrefix())
-			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(tlName)
-			qw422016.N().S(`)
-`)
-		} else {
+		if struct_.wr.wantsTL2 {
 			if struct_.wr.unionParent == nil {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
@@ -2785,18 +2773,30 @@ func (item *`)
 			}
 			qw422016.N().S(`
     return r, nil
+}
 `)
 		}
-		qw422016.N().S(`}
-
+		qw422016.N().S(`
 `)
 		if len(natArgsDecl) == 0 {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+			if !struct_.wr.wantsTL2 {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+        return r, `)
+				qw422016.N().S(struct_.wr.gen.InternalPrefix())
+				qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+				qw422016.N().Q(tlName)
+				qw422016.N().S(`)
+}
 `)
-			if struct_.wr.unionParent != nil {
-				qw422016.N().S(`    currentSize := 0
+			} else {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+`)
+				if struct_.wr.unionParent != nil {
+					qw422016.N().S(`    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
 
     currentR := r[:currentSize]
@@ -2815,21 +2815,22 @@ func (item *`)
         }
     }
     if index != `)
-				qw422016.N().D(struct_.wr.unionIndex)
-				qw422016.N().S(` {
+					qw422016.N().D(struct_.wr.unionIndex)
+					qw422016.N().S(` {
         return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, `)
-				qw422016.N().D(struct_.wr.unionIndex)
-				qw422016.N().S(`)
+					qw422016.N().D(struct_.wr.unionIndex)
+					qw422016.N().S(`)
     }
     _, err = item.InternalReadTL2(currentR, block)
     return r, err
 `)
-			} else {
-				qw422016.N().S(`    return item.InternalReadTL2(r)
+				} else {
+					qw422016.N().S(`    return item.InternalReadTL2(r)
+`)
+				}
+				qw422016.N().S(`}
 `)
 			}
-			qw422016.N().S(`}
-`)
 		}
 	}
 }
