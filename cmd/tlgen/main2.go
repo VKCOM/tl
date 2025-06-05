@@ -93,8 +93,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate methods to get meta information about tl objects`)
 	flag.BoolVar(&opt.AddFactoryData, "cpp-generate-factory", false,
 		`whether to generate factory of tl objects`)
-	//flag.BoolVar(&opt.LocalizeNamespaces, "cpp-localize-namespaces", false,
-	//	`whether to generate code such way that each namespace can be compiled independent (some code might be duplicated)`)
+	flag.BoolVar(&opt.GenerateCommonMakefile, "cpp-common-makefile", false,
+		`whether to generate Makefile in a root with all generated namespaces targets`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
