@@ -338,10 +338,10 @@ type Gen2Options struct {
 	UseCheckLengthSanity   bool
 
 	// C++
-	RootCPP            string
-	RootCPPNamespace   string
-	SeparateFiles      bool
-	LocalizeNamespaces bool
+	RootCPP                string
+	RootCPPNamespace       string
+	SeparateFiles          bool
+	GenerateCommonMakefile bool
 
 	// PHP
 	AddFunctionBodies            bool
@@ -1695,7 +1695,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		}
 	case "cpp":
 		if options.RootCPPNamespace == "" {
-			options.RootCPPNamespace = "tl2"
+			options.RootCPPNamespace = "tlgen"
 		}
 		gen.RootCPPNamespaceElements = strings.Split(options.RootCPPNamespace, "::")
 		gen.DetailsCPPNamespaceElements = []string{options.RootCPPNamespace, "details"} // TODO - rename to prevent collisions with TL namespace details

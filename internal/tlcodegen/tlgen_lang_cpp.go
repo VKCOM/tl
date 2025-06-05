@@ -52,7 +52,7 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 
 	_deps := gen.decideCppCodeDestinations(gen.generatedTypesList)
 
-	finalDeps, err := gen.createDependencies(_deps)
+	_, err := gen.createDependencies(_deps)
 	if err != nil {
 		return err
 	}
@@ -256,6 +256,7 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 	var cppMake1 strings.Builder
 
 	const MakefilePath = "Makefile"
+	const BuildPath = "__build"
 
 	for _, nf := range cppAllInc.splitByNamespaces() {
 		// it is a group
@@ -263,18 +264,20 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		namespaceDetails := namespace
 		namespaceDeps := nf.Includes.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.cppDetailsFileName })
 
-		namespaceFilePath := "details/namespaces/" + namespaceDetails + cppExt
+		namespaceFilePath := filepath.Join("details", "namespaces", namespaceDetails+cppExt)
 		if !gen.options.SplitInternal {
 			namespaceFilePath = namespaceDeps[0] + cppExt
 		}
-		buildFilePath := filepath.Join("__build", namespaceDetails+".o")
+		buildFilePath := filepath.Join(BuildPath, namespaceDetails+".o")
+		localMakefilePath := filepath.Join(namespace, "Makefile")
 
+		var cppMakeNamespace strings.Builder
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
 
 		for _, n := range namespaceDeps {
 			cppMake1Namespace.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, n+cppExt)))
-			cppMake1UsedFiles.WriteString(getCppDiff(MakefilePath, n+cppExt))
+			//cppMake1UsedFiles.WriteString(getCppDiff(MakefilePath, n+cppExt))
 
 			usedTypes := detailsCpps[n]
 			usedTypes = utils.FilterSlice(usedTypes, func(w *TypeRWWrapper) bool {
@@ -289,14 +292,27 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 
 			sort.Strings(hppDetsList)
 			for _, h := range hppDetsList {
-				cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(MakefilePath, h+hppExt)))
+				cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(localMakefilePath, h+hppExt)))
 			}
 		}
 
-		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
-		cppMake1.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o %s -c %s\n", buildFilePath, namespaceFilePath))
+		relativeBuildFolderPath, _ := filepath.Rel(namespace, BuildPath)
+		relativeDetails, _ := filepath.Rel(namespace, namespaceFilePath)
+		relativeObjectFile, _ := filepath.Rel(namespace, buildFilePath)
+
+		if !gen.options.GenerateCommonMakefile {
+			appendCompilerOptions(&cppMakeNamespace)
+		}
+
+		cppMakeNamespace.WriteString(fmt.Sprintf("%s: %s %s\n", "build", relativeDetails, cppMake1UsedFiles.String()))
+		cppMakeNamespace.WriteString(fmt.Sprintf("\t@mkdir -p %s\n\t$(CC) $(CFLAGS) -I.. -o %s -c %s\n", relativeBuildFolderPath, relativeObjectFile, relativeDetails))
+
+		cppMake1.WriteString(fmt.Sprintf("%[1]s/%[2]s.o:\n\t$(MAKE) -C %[2]s build CC=\"$(CC)\" CFLAGS=\"$(CFLAGS)\"\n\n", BuildPath, namespace))
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
+		if err := gen.addCodeFile(localMakefilePath, cppMakeNamespace.String()); err != nil {
+			return err
+		}
 		if gen.options.SplitInternal {
 			if err := gen.addCodeFile(namespaceFilePath, gen.copyrightText+cppMake1Namespace.String()); err != nil {
 				return err
@@ -314,71 +330,41 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		return err
 	}
 
-	cppMake.WriteString(`
-CC = g++
-CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
-`)
+	appendCompilerOptions(&cppMake)
+
 	cppMake.WriteString("# compile all object files together\n")
 	cppMake.WriteString("all: ")
-	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
+	cppMake.WriteString("__build/main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString("\t@mkdir -p __build\n")
 	cppMake.WriteString("\t$(CC) $(CFLAGS) -o all ")
-	cppMake.WriteString("main.o __build/io_streams.o __build/io_throwable_streams.o ")
+	cppMake.WriteString("__build/main.o __build/io_streams.o __build/io_throwable_streams.o ")
 	cppMake.WriteString(fmt.Sprintf("%s\n", cppMakeO.String()))
 	cppMake.WriteString(`
-main.o: main.cpp
+__build/main.o: main.cpp
 	@mkdir -p __build
-	$(CC) $(CFLAGS) -c main.cpp
+	$(CC) $(CFLAGS) -c main.cpp -o __build/main.o
 `)
 	cppMake.WriteString("\n")
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
 
-	createStreams(gen, &cppMake)
+	if err := createStreams(gen, &cppMake); err != nil {
+		return err
+	}
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("# create object files for individual namespaces\n")
+	cppMake.WriteString("# build object files for individual namespaces\n")
 	cppMake.WriteString(cppMake1.String())
 
-	cppMake.WriteString("# compile individual namespaces\n")
-	for _, ns := range cppAllInc.splitByNamespaces() {
-		oDeps := strings.Builder{}
-
-		currentDeps := utils.Keys(finalDeps[ns.Namespace])
-		sort.Strings(currentDeps)
-
-		oDeps.WriteString("main.o")
-		oDeps.WriteString(fmt.Sprintf(" __build/%s.o", ns.Namespace))
-
-		oDeps.WriteString(" __build/io_streams.o")
-		oDeps.WriteString(" __build/io_throwable_streams.o")
-
-		for _, dep := range currentDeps {
-			if dep == ns.Namespace {
-				continue
-			}
-			oDeps.WriteString(fmt.Sprintf(" __build/%s.o", dep))
+	if gen.options.GenerateCommonMakefile {
+		if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
+			return err
 		}
-
-		cppMake.WriteString(fmt.Sprintf("__compile/%[1]s: %[2]s\n", ns.Namespace, oDeps.String()))
-		cppMake.WriteString("\t@mkdir -p __compile\n")
-		cppMake.WriteString(fmt.Sprintf("\t$(CC) $(CFLAGS) -o __compile/%[1]s %[2]s\n\n", ns.Namespace, oDeps.String()))
-	}
-
-	cppMake.WriteString("# compile all namespaces (for test purposes)\n")
-	cppMake.WriteString("compile-all:")
-	for _, ns := range cppAllInc.splitByNamespaces() {
-		cppMake.WriteString(fmt.Sprintf(" __compile/%s", ns.Namespace))
-	}
-	cppMake.WriteString("\n")
-
-	if err := gen.addCodeFile("main.cpp", "int main() { return 0; }"); err != nil {
-		return err
-	}
-	if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
-		return err
+		if err := gen.addCodeFile("Makefile", cppMake.String()); err != nil {
+			return err
+		}
 	}
 	if err = gen.addCPPBasicTLFiles(); err != nil {
 		return err
@@ -465,8 +451,7 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		if ns == CommonGroup && wasFirst {
 			return nil, fmt.Errorf("tlgen bug: %s is not independent", CommonGroup)
 		}
-		// это отсылка на никиту с.
-		if err := gen.addCodeFile(filepath.Join(gen.options.RootCPP, ns, "info.json"), code.String()); err != nil {
+		if err := gen.addCodeFile(filepath.Join(ns, "info.json"), code.String()); err != nil {
 			return nil, err
 		}
 	}
@@ -519,20 +504,50 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 	return nil
 }
 
-func createStreams(gen *Gen2, cppMake *strings.Builder) {
-	cppMake.WriteString("# compile streams which are used to work with io\n")
-	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+func createStreams(gen *Gen2, cppMake *strings.Builder) error {
+	cppMake.WriteString("# build object files streams which are used to work with io\n")
 
-	cppMake.WriteString("\n")
+	cppMake.WriteString(`__build/io_streams.o:
+	$(MAKE) -C basictl build_io_streams CC="$(CC)" CFLAGS="$(CFLAGS)"
 
-	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+`,
+	)
 
-	cppMake.WriteString("\n")
+	cppMake.WriteString(`__build/io_throwable_streams.o:
+	$(MAKE) -C basictl build_io_throwable_streams CC="$(CC)" CFLAGS="$(CFLAGS)"
 
-	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+`,
+	)
+
+	cppMake.WriteString(`__build/string_io.o:
+	$(MAKE) -C basictl build_string_io CC="$(CC)" CFLAGS="$(CFLAGS)"
+`,
+	)
+
+	streamsMake := strings.Builder{}
+
+	if !gen.options.GenerateCommonMakefile {
+		appendCompilerOptions(&streamsMake)
+	}
+
+	streamsMake.WriteString("build_io_streams: constants.h errors.h io_connectors.h io_streams.cpp io_streams.h\n")
+	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/io_streams.o -c io_streams.cpp\n")
+
+	streamsMake.WriteString("\n")
+
+	streamsMake.WriteString("build_io_throwable_streams: constants.h errors.h io_connectors.h io_throwable_streams.cpp io_throwable_streams.h\n")
+	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/io_throwable_streams.o -c io_throwable_streams.cpp\n")
+
+	streamsMake.WriteString("\n")
+
+	streamsMake.WriteString("build_string_io: io_connectors.h impl/string_io.cpp impl/string_io.h\n")
+	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/string_io.o -c impl/string_io.cpp\n")
+
+	if err := gen.addCodeFile(filepath.Join("basictl", "Makefile"), streamsMake.String()); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
@@ -674,8 +689,8 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string
 	}
 
 	if CppPrintGraphvizRepresentation {
-		file := os.Stdout
-		//file, _ := os.Create("graphviz.dot")
+		//file := os.Stdout
+		file, _ := os.Create("out/graphviz.dot")
 		printDepsGraph(file, allTypes, edges)
 	}
 
@@ -969,14 +984,35 @@ tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 		return err
 	}
 
-	make.WriteString("# compile meta data collection\n")
-	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s __build
-	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c %[2]s
+	make.WriteString("# build object file for meta data collection\n")
+	make.WriteString(`__build/__meta.o:
+	$(MAKE) -C __meta build CC="$(CC)" CFLAGS="$(CFLAGS)"
 `,
-		filepathName,
-		filepathDetailsName,
-	))
+	)
 	make.WriteString("\n")
+
+	relativeFilepathName, _ := filepath.Rel("__meta", filepathName)
+	relativeFilepathDetailsName, _ := filepath.Rel("__meta", filepathDetailsName)
+
+	metaMakefile := strings.Builder{}
+
+	if !gen.options.GenerateCommonMakefile {
+		appendCompilerOptions(&metaMakefile)
+	}
+
+	metaMakefile.WriteString(fmt.Sprintf(`build: %[1]s %[2]s
+	@mkdir -p ../__build
+	$(CC) $(CFLAGS) -I.. -o ../__build/__meta.o -c %[2]s
+`,
+		relativeFilepathName,
+		relativeFilepathDetailsName,
+	))
+	metaMakefile.WriteString("\n")
+
+	if err := gen.addCodeFile(filepath.Join("__meta", "Makefile"), metaMakefile.String()); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -1100,14 +1136,15 @@ void tl2::factory::set_all_factories() {
 	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, filepath.Join("__meta", "headers"+hppExt))))
 	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", filepath.Join(gen.options.RootCPP, filepathName)))
 
-	factoryFileDependencies := strings.Builder{}
+	relativeFactoryDeps := strings.Builder{}
 
 	for _, headerFile := range imports.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 		if !createdHpps[headerFile] {
 			continue
 		}
 		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
-		factoryFileDependencies.WriteString(" " + headerFile + hppExt)
+		relativeDep, _ := filepath.Rel("__factory", headerFile+hppExt)
+		relativeFactoryDeps.WriteString(" " + relativeDep)
 	}
 	factoryDetails.WriteString(suffix)
 
@@ -1118,15 +1155,43 @@ void tl2::factory::set_all_factories() {
 		return err
 	}
 
-	make.WriteString("# compile objects factories\n")
-	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s __build
-	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c %[2]s
+	make.WriteString("# build object file for factories\n")
+	make.WriteString(`__build/__factory.o:
+	$(MAKE) -C __factory build CC="$(CC)" CFLAGS="$(CFLAGS)"
 `,
-		filepathName,
-		filepathNameDetails,
-		factoryFileDependencies.String(),
-	))
+	)
 	make.WriteString("\n")
 
+	relativeFilepathName, _ := filepath.Rel("__meta", filepathName)
+	relativeFilepathDetailsName, _ := filepath.Rel("__meta", filepathNameDetails)
+
+	factoryMakefile := strings.Builder{}
+
+	if !gen.options.GenerateCommonMakefile {
+		appendCompilerOptions(&factoryMakefile)
+	}
+
+	factoryMakefile.WriteString(fmt.Sprintf(`build: %[1]s %[2]s%[3]s
+	@mkdir -p ../__build
+	$(CC) $(CFLAGS) -I.. -o ../__build/__factory.o -c %[2]s
+`,
+		relativeFilepathName,
+		relativeFilepathDetailsName,
+		relativeFactoryDeps.String(),
+	))
+	factoryMakefile.WriteString("\n")
+
+	if err := gen.addCodeFile(filepath.Join("__factory", "Makefile"), factoryMakefile.String()); err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func appendCompilerOptions(make *strings.Builder) {
+	make.WriteString(`# compiler options
+CC = g++
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+
+`)
 }
