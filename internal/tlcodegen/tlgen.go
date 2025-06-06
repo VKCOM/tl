@@ -342,6 +342,7 @@ type Gen2Options struct {
 	RootCPPNamespace       string
 	SeparateFiles          bool
 	GenerateCommonMakefile bool
+	DeleteUnrelatedFiles   bool
 
 	// PHP
 	AddFunctionBodies            bool
@@ -1525,23 +1526,28 @@ func prepareNameFilter(filter string) []string {
 	return result
 }
 
-func inNameFilter(name tlast.Name, filter []string) bool {
-	for _, el := range filter {
-		if inNameFilterElement(name, el) {
+func inNameFilter(name tlast.Name, filters []string) bool {
+	for _, filter := range filters {
+		if inNameFilterElement(name, filter) {
 			return true
 		}
 	}
 	return false
 }
 
-func inNameFilterElement(name tlast.Name, el string) bool {
-	if el == "." {
+func inNameFilterElement(name tlast.Name, filter string) bool {
+	// tmp solution to empty namespace
+	const EmptyNamespacePrefix = "_."
+	if filter == EmptyNamespacePrefix {
+		return name.Namespace == ""
+	}
+	if filter == "." {
 		return true
 	}
-	if !strings.HasSuffix(el, ".") {
-		return name.String() == el
+	if !strings.HasSuffix(filter, ".") {
+		return name.String() == filter
 	}
-	return name.Namespace == strings.TrimSuffix(el, ".")
+	return name.Namespace == strings.TrimSuffix(filter, ".")
 }
 
 func collectRelativePaths(absDirName string, relDirName string, relativeFiles map[string]bool, relativeDirs *[]string) error {
@@ -1616,13 +1622,11 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 			return fmt.Errorf("error writing file %q: %w", f, err)
 		}
 	}
+	filters := prepareNameFilter(gen.options.TypesWhileList)
 	for filepathName := range relativeFiles {
 		f := filepath.Join(outdir, filepathName)
 		if gen.options.Language == "cpp" {
-			if strings.HasSuffix(f, ".o") {
-				continue
-			}
-			if strings.Contains(f, "__compile") {
+			if gen.cppFilterFile(filepathName, filters) {
 				continue
 			}
 		}
@@ -1638,6 +1642,29 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	// do not check Verbose
 	fmt.Printf("%d target files did not change so were not touched, %d written, %d deleted\n", notTouched, written, deleted)
 	return nil
+}
+
+func (gen *Gen2) cppFilterFile(file string, filters []string) bool {
+	if strings.HasSuffix(file, ".o") {
+		return true
+	}
+	if !gen.options.DeleteUnrelatedFiles {
+		cleanFile := filepath.Clean(file)
+		folders := make([]string, 0)
+		for cleanFile != "." {
+			cleanFile = filepath.Dir(cleanFile)
+			folders = append(folders, cleanFile)
+		}
+		if len(folders) < 2 {
+			return true
+		}
+		folder := folders[len(folders)-2]
+		if folder == CommonGroup {
+			folder = ""
+		}
+		return !inNameFilter(tlast.Name{Namespace: folder}, filters)
+	}
+	return true
 }
 
 func (gen *Gen2) addCodeFile(filepathName string, code string) error {
