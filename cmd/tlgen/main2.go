@@ -95,6 +95,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate factory of tl objects`)
 	flag.BoolVar(&opt.GenerateCommonMakefile, "cpp-common-makefile", false,
 		`whether to generate Makefile in a root with all generated namespaces targets`)
+	flag.BoolVar(&opt.DeleteUnrelatedFiles, "cpp-delete-unrelated-files", true,
+		`whether to delete files that are already in the target directory, but will not be affected by the new generation`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,

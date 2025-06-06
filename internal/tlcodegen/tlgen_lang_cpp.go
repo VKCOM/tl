@@ -269,7 +269,7 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 			namespaceFilePath = namespaceDeps[0] + cppExt
 		}
 		buildFilePath := filepath.Join(BuildPath, namespaceDetails+".o")
-		localMakefilePath := filepath.Join(namespace, "Makefile")
+		localMakefilePath := filepath.Join(namespace, MakefilePath)
 
 		var cppMakeNamespace strings.Builder
 		var cppMake1UsedFiles strings.Builder
@@ -300,9 +300,7 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		relativeDetails, _ := filepath.Rel(namespace, namespaceFilePath)
 		relativeObjectFile, _ := filepath.Rel(namespace, buildFilePath)
 
-		if !gen.options.GenerateCommonMakefile {
-			appendCompilerOptions(&cppMakeNamespace)
-		}
+		appendCompilerOptions(&cppMakeNamespace)
 
 		cppMakeNamespace.WriteString(fmt.Sprintf("%s: %s %s\n", "build", relativeDetails, cppMake1UsedFiles.String()))
 		cppMakeNamespace.WriteString(fmt.Sprintf("\t@mkdir -p %s\n\t$(CC) $(CFLAGS) -I.. -o %s -c %s\n", relativeBuildFolderPath, relativeObjectFile, relativeDetails))
@@ -526,9 +524,7 @@ func createStreams(gen *Gen2, cppMake *strings.Builder) error {
 
 	streamsMake := strings.Builder{}
 
-	if !gen.options.GenerateCommonMakefile {
-		appendCompilerOptions(&streamsMake)
-	}
+	appendCompilerOptions(&streamsMake)
 
 	streamsMake.WriteString("build_io_streams: constants.h errors.h io_connectors.h io_streams.cpp io_streams.h\n")
 	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/io_streams.o -c io_streams.cpp\n")
@@ -996,9 +992,7 @@ tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 
 	metaMakefile := strings.Builder{}
 
-	if !gen.options.GenerateCommonMakefile {
-		appendCompilerOptions(&metaMakefile)
-	}
+	appendCompilerOptions(&metaMakefile)
 
 	metaMakefile.WriteString(fmt.Sprintf(`build: %[1]s %[2]s
 	@mkdir -p ../__build
@@ -1167,9 +1161,7 @@ void tl2::factory::set_all_factories() {
 
 	factoryMakefile := strings.Builder{}
 
-	if !gen.options.GenerateCommonMakefile {
-		appendCompilerOptions(&factoryMakefile)
-	}
+	appendCompilerOptions(&factoryMakefile)
 
 	factoryMakefile.WriteString(fmt.Sprintf(`build: %[1]s %[2]s%[3]s
 	@mkdir -p ../__build
