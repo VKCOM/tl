@@ -161,6 +161,7 @@ func streamtypesAlias(qw422016 *qt422016.Writer, anyTypeAlias bool, namespace st
 	for _, wr := range types {
 		if wr.ShouldWriteEnumElementAlias() {
 			_, ourUnionParentLocal := ourTypes[wr.unionParent.wr]
+			ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.unionParent.wr.tlName.Namespace // false for vectors moved into our namespace
 			typeString := wr.TypeString2(false, directImports, nil, true, true)
 
 			qw422016.N().S(`func `)
@@ -248,6 +249,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 		return
 	}
 	_, ourResultType := ourTypes[fun.ResultType]
+	ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
 	ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
 	typeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
 	tlName := wr.tlName.String()
@@ -353,6 +355,7 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, shortPackageName string, na
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			tlName := wr.tlName.String()
 			_, ourResultType := ourTypes[fun.ResultType]
+			ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
 			ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
 

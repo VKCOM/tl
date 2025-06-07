@@ -12,14 +12,19 @@ import (
 )
 
 type (
-	Color                           = internal.AColor
-	ColorBoxedMaybe                 = internal.AColorBoxedMaybe
-	Inner                           = internal.AInner
-	Inner3                          = internal.AInner3
-	MiddlePairInnerInnerInnerBoxed3 = internal.AMiddlePairAInnerAInnerAInnerBoxed3
-	MyUnion                         = internal.AMyUnion
-	Top2                            = internal.ATop2
-	UNionA                          = internal.AUNionA
+	Color                            = internal.AColor
+	ColorBoxedMaybe                  = internal.AColorBoxedMaybe
+	DictionaryElemPairBoolAColorInt  = internal.DictionaryElemPairBoolAColorInt
+	Inner                            = internal.AInner
+	Inner3                           = internal.AInner3
+	MiddlePairInnerInnerInnerBoxed3  = internal.AMiddlePairAInnerAInnerAInnerBoxed3
+	MyUnion                          = internal.AMyUnion
+	PairAInnerAInner                 = internal.PairAInnerAInner
+	PairBoolAColor                   = internal.PairBoolAColor
+	PairPairAInnerAInnerAInnerBoxed3 = internal.PairPairAInnerAInnerAInnerBoxed3
+	Top2                             = internal.ATop2
+	UNionA                           = internal.AUNionA
+	VectorAColor                     = internal.VectorAColor
 )
 
 func Blue() Color   { return internal.ABlue() }

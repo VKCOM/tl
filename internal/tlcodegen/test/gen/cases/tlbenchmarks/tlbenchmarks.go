@@ -9,6 +9,8 @@ package tlbenchmarks
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/cycle_4a1568ff5f665a65be83c5d14a33c0d0"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVruPosition"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVrutoyTopLevelUnion"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVruHash"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVruPosition"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVrutoyPositions"
@@ -17,6 +19,8 @@ import (
 )
 
 type (
+	VectorBenchmarksVruPosition           = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
+	VectorBenchmarksVrutoyTopLevelUnion   = tlVectorBenchmarksVrutoyTopLevelUnion.VectorBenchmarksVrutoyTopLevelUnion
 	VruHash                               = tlBenchmarksVruHash.BenchmarksVruHash
 	VruPosition                           = tlBenchmarksVruPosition.BenchmarksVruPosition
 	VrutoyPositions                       = tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions

@@ -8,8 +8,12 @@
 package tlusefulService
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryUsefulServiceUserEntityPaymentItemBoxed"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUsefulServiceGetUserEntityResultBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceGetUserEntity"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceGetUserEntityResult"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlusefulService/tlUsefulServiceUserEntityPaymentItem"
@@ -17,10 +21,14 @@ import (
 )
 
 type (
-	GetUserEntity                        = tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity
-	GetUserEntityResult                  = tlUsefulServiceGetUserEntityResult.UsefulServiceGetUserEntityResult
-	GetUserEntityResultBoxedMaybe        = tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe
-	UserEntityPaymentItem                = tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
-	UserEntityPaymentItemPromo           = tlUsefulServiceUserEntityPaymentItemPromo.UsefulServiceUserEntityPaymentItemPromo
-	UserEntityPaymentItemPromoBoxedMaybe = tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
+	DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed       = tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryUsefulServiceUserEntityPaymentItemBoxed            = tlDictionaryUsefulServiceUserEntityPaymentItemBoxed.DictionaryUsefulServiceUserEntityPaymentItemBoxed
+	DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe  = tlDictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe.DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe
+	GetUserEntity                                                = tlUsefulServiceGetUserEntity.UsefulServiceGetUserEntity
+	GetUserEntityResult                                          = tlUsefulServiceGetUserEntityResult.UsefulServiceGetUserEntityResult
+	GetUserEntityResultBoxedMaybe                                = tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe
+	UserEntityPaymentItem                                        = tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
+	UserEntityPaymentItemPromo                                   = tlUsefulServiceUserEntityPaymentItemPromo.UsefulServiceUserEntityPaymentItemPromo
+	UserEntityPaymentItemPromoBoxedMaybe                         = tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
+	VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed = tlVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
 )
