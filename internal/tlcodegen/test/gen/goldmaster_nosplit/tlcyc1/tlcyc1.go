@@ -12,5 +12,6 @@ import (
 )
 
 type (
-	MyCycle = internal.Cyc1MyCycle
+	MyCycle           = internal.Cyc1MyCycle
+	VectorCyc1MyCycle = internal.VectorCyc1MyCycle
 )

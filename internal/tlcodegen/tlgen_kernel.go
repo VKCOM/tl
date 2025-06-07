@@ -202,12 +202,26 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 	return exist, t.Bare, actualNatArgs, halfResolved, nil
 }
 
+func collectArgsNamespaces(tip *TypeRWWrapper, argNamespaces map[string]struct{}) {
+	// This is policy. You can adjust it, so more or less templates instantiations
+	// are moved into namespace of arguments. Code should compile anyway.
+	if tip.tlName.Namespace != "" {
+		argNamespaces[tip.tlName.Namespace] = struct{}{}
+	}
+	for _, arg := range tip.arguments {
+		if !arg.isNat {
+			collectArgsNamespaces(arg.tip, argNamespaces)
+		}
+	}
+}
+
 func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	tlType := myWrapper.origTL
 	lrc := LocalResolveContext{
 		localTypeArgs: map[string]LocalTypeArg{},
 		localNatArgs:  map[string]LocalNatArg{},
 	}
+	argNamespaces := map[string]struct{}{}
 	for i, a := range tlType[0].TemplateArguments { // they are the same for all constructors
 		if err := lrc.checkArgsCollision(a.FieldName, a.PR, errNatParamNameCollision); err != nil {
 			return err
@@ -228,6 +242,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			}
 			continue
 		}
+		collectArgsNamespaces(ra.tip, argNamespaces)
 		natArgs := ra.tip.NatArgs(nil, a.FieldName)
 		// We can select arbitrary names for arguments here, but they all must be unique per generatedType
 		// The simplest idea to avoid collisions is to exploit uniqueness of field names
@@ -250,7 +265,15 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			myWrapper.NatParams = append(myWrapper.NatParams, natArg.name)
 		}
 	}
-
+	replaceNamespace := func(n string) *Namespace {
+		newNamespace := n
+		if n == "" && len(argNamespaces) == 1 {
+			for ns := range argNamespaces {
+				newNamespace = ns
+			}
+		}
+		return gen.getNamespace(newNamespace)
+	}
 	//myWrapper.cppNamespaceQualifier = "::" + gen.options.RootCPPNamespace + "::"
 	//if rt2.Type.Namespace != "" {
 	//	myWrapper.cppNamespaceQualifier += rt2.Type.Namespace + "::"
@@ -258,7 +281,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	if len(tlType) == 1 {
 		myWrapper.tlName = tlType[0].Construct.Name
 		myWrapper.fileName = tlType[0].Construct.Name.String()
-		namespace := gen.getNamespace(myWrapper.tlName.Namespace)
+		namespace := replaceNamespace(myWrapper.tlName.Namespace)
 		namespace.types = append(namespace.types, myWrapper)
 		myWrapper.ns = namespace
 		myWrapper.tlTag = tlType[0].Crc32()
@@ -292,7 +315,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 	myWrapper.tlName = tlType[0].TypeDecl.Name
 	myWrapper.fileName = tlType[0].TypeDecl.Name.String()
 	if isBool, falseDesc, trueDesc := IsUnionBool(tlType); isBool { // TODO - test if parts of Bool are in different namespaces
-		namespace := gen.getNamespace(myWrapper.tlName.Namespace)
+		namespace := replaceNamespace(myWrapper.tlName.Namespace)
 		namespace.types = append(namespace.types, myWrapper)
 		myWrapper.ns = namespace
 
@@ -316,7 +339,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			return err
 		}
 
-		namespace := gen.getNamespace(elementResolvedType.tlName.Namespace)
+		namespace := replaceNamespace(elementResolvedType.tlName.Namespace)
 		namespace.types = append(namespace.types, myWrapper)
 		myWrapper.ns = namespace
 
@@ -346,7 +369,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		isEnum = isEnum && len(typ.Fields) == 0
 	}
 
-	namespace := gen.getNamespace(tlType[0].TypeDecl.Name.Namespace)
+	namespace := replaceNamespace(myWrapper.tlName.Namespace)
 	namespace.types = append(namespace.types, myWrapper)
 	myWrapper.ns = namespace
 

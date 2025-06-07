@@ -34,8 +34,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleString4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTupleTuplePairTupleIntTupleInt2"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVruPosition"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBenchmarksVrutoyTopLevelUnion"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlVectorDictionaryFieldString"
@@ -76,8 +74,6 @@ type (
 	TupleString4Bytes                                                  = tlTupleString4.TupleString4Bytes
 	TupleTupleInt2                                                     = tlTupleTupleInt2.TupleTupleInt2
 	TupleTuplePairTupleIntTupleInt2                                    = tlTupleTuplePairTupleIntTupleInt2.TupleTuplePairTupleIntTupleInt2
-	VectorBenchmarksVruPosition                                        = tlVectorBenchmarksVruPosition.VectorBenchmarksVruPosition
-	VectorBenchmarksVrutoyTopLevelUnion                                = tlVectorBenchmarksVrutoyTopLevelUnion.VectorBenchmarksVrutoyTopLevelUnion
 	VectorBool                                                         = tlVectorBool.VectorBool
 	VectorDictionaryFieldInt                                           = tlVectorDictionaryFieldInt.VectorDictionaryFieldInt
 	VectorDictionaryFieldIntBytes                                      = tlVectorDictionaryFieldInt.VectorDictionaryFieldIntBytes

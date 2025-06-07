@@ -93,6 +93,7 @@ type(
         {%- if wr.ShouldWriteEnumElementAlias() -%}
             {%- code
                 _, ourUnionParentLocal := ourTypes[wr.unionParent.wr]
+                ourUnionParentLocal = ourUnionParentLocal && wr.tlName.Namespace == wr.unionParent.wr.tlName.Namespace // false for vectors moved into our namespace
                 typeString := wr.TypeString2(false, directImports, nil, true, true)
             -%}
 func {%s= typeString %}() {%s= wr.unionParent.wr.TypeString2(false, directImports, nil, ourUnionParentLocal, false) %} { return {%s= wr.TypeString2(false, directImports, nil, false, true) %}() }
@@ -134,6 +135,7 @@ func {%s= localTypeString %}WriteBoxed(w []byte, v bool) []byte {
     {%- if !ok || fun.ResultType == nil -%} {%- return -%} {%- endif -%}
     {%- code
          _, ourResultType := ourTypes[fun.ResultType]
+         ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
          ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
          typeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
          tlName := wr.tlName.String()
@@ -199,6 +201,7 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
             {%- code
                 tlName := wr.tlName.String()
                  _, ourResultType := ourTypes[fun.ResultType]
+                 ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
                 ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
             -%}
