@@ -24,7 +24,7 @@ namespace basictl {
 
         tl_istream &operator=(tl_istream &&) = delete;
 
-        ~tl_istream() { final_advance(); };
+        ~tl_istream() { sync(); };
 
         friend class tl_throwable_istream;
 
@@ -104,7 +104,7 @@ namespace basictl {
 
         bool string_read(std::string &value) noexcept;
 
-        void final_advance() noexcept;
+        void sync() noexcept;
 
         [[nodiscard]] bool has_error() const noexcept;
 
@@ -161,7 +161,7 @@ namespace basictl {
 
         tl_ostream &operator=(tl_ostream &&) = delete;
 
-        ~tl_ostream() { final_advance(); };
+        ~tl_ostream() { sync(); };
 
         friend class tl_throwable_ostream;
 
@@ -214,7 +214,7 @@ namespace basictl {
 
         bool string_write(const std::string &value);
 
-        void final_advance() noexcept;
+        void sync() noexcept;
 
         [[nodiscard]] bool has_error() const noexcept;
 
