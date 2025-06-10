@@ -91,9 +91,16 @@ func (item *Service5LongInsert) ReadResultTL2(w []byte, ret *Service5LongOutput)
 	return w, nil
 }
 
-func (item *Service5LongInsert) WriteResultTL2(w []byte, sizes []int, ret Service5LongOutput) (_ []byte, _ []int, err error) {
+func (item *Service5LongInsert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret Service5LongOutput) (_ []byte, err error) {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	w, sizes = ret.InternalWriteTL2(w, sizes)
-	return w, sizes, nil
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w, nil
 }
 
 func (item *Service5LongInsert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *Service5LongOutput) error {

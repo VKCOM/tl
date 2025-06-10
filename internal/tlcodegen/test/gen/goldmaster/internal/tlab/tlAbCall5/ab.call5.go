@@ -77,9 +77,16 @@ func (item *AbCall5) ReadResultTL2(w []byte, ret *tlCdTypeB.CdTypeB) (_ []byte, 
 	return w, nil
 }
 
-func (item *AbCall5) WriteResultTL2(w []byte, sizes []int, ret tlCdTypeB.CdTypeB) (_ []byte, _ []int, err error) {
+func (item *AbCall5) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret tlCdTypeB.CdTypeB) (_ []byte, err error) {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	w, sizes = ret.InternalWriteTL2(w, sizes)
-	return w, sizes, nil
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w, nil
 }
 
 func (item *AbCall5) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlCdTypeB.CdTypeB) error {

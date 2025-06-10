@@ -1536,12 +1536,7 @@ func inNameFilter(name tlast.Name, filters []string) bool {
 }
 
 func inNameFilterElement(name tlast.Name, filter string) bool {
-	// tmp solution to empty namespace
-	const EmptyNamespacePrefix = "_."
-	if filter == EmptyNamespacePrefix {
-		return name.Namespace == ""
-	}
-	if filter == "." {
+	if filter == "*" {
 		return true
 	}
 	if !strings.HasSuffix(filter, ".") {

@@ -77,9 +77,16 @@ func (item *Call7) ReadResultTL2(w []byte, ret *tlAbTypeB.AbTypeB) (_ []byte, er
 	return w, nil
 }
 
-func (item *Call7) WriteResultTL2(w []byte, sizes []int, ret tlAbTypeB.AbTypeB) (_ []byte, _ []int, err error) {
+func (item *Call7) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret tlAbTypeB.AbTypeB) (_ []byte, err error) {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	w, sizes = ret.InternalWriteTL2(w, sizes)
-	return w, sizes, nil
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w, nil
 }
 
 func (item *Call7) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlAbTypeB.AbTypeB) error {

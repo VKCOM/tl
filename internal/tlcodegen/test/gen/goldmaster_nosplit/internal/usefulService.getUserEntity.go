@@ -108,9 +108,16 @@ func (item *UsefulServiceGetUserEntity) ReadResultTL2(w []byte, ret *UsefulServi
 	return w, nil
 }
 
-func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, sizes []int, ret UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, _ []int, err error) {
+func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
 	w, sizes = ret.InternalWriteTL2(w, sizes, item.FieldsMask)
-	return w, sizes, nil
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w, nil
 }
 
 func (item *UsefulServiceGetUserEntity) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *UsefulServiceGetUserEntityResultBoxedMaybe) error {
