@@ -40,7 +40,7 @@ namespace basictl {
         ptr += fullLen;
     }
 
-    void tl_throwable_istream::final_advance() noexcept {
+    void tl_throwable_istream::sync() noexcept {
         provider->advance(ptr - start_block);
         start_block = ptr;
     }
@@ -154,7 +154,7 @@ namespace basictl {
         ptr += fullLen;
     }
 
-    void tl_throwable_ostream::final_advance() noexcept {
+    void tl_throwable_ostream::sync() noexcept {
         provider->advance(ptr - start_block);
         start_block = ptr;
     }

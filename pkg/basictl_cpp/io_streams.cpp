@@ -57,7 +57,7 @@ namespace basictl {
         return true;
     }
 
-    void tl_istream::final_advance() noexcept {
+    void tl_istream::sync() noexcept {
         provider->advance(ptr - start_block);
         start_block = ptr;
     }
@@ -243,7 +243,7 @@ namespace basictl {
         return true;
     }
 
-    void tl_ostream::final_advance() noexcept {
+    void tl_ostream::sync() noexcept {
         provider->advance(ptr - start_block);
         start_block = ptr;
     }
