@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/hren.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void HrenReset(::tl2::Hren& item) noexcept;
+void HrenReset(::tlgen::Hren& item) noexcept;
 
-bool HrenWriteJSON(std::ostream& s, const ::tl2::Hren& item) noexcept;
-bool HrenRead(::basictl::tl_istream & s, ::tl2::Hren& item) noexcept; 
-bool HrenWrite(::basictl::tl_ostream & s, const ::tl2::Hren& item) noexcept;
-bool HrenReadBoxed(::basictl::tl_istream & s, ::tl2::Hren& item);
-bool HrenWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Hren& item);
+bool HrenWriteJSON(std::ostream& s, const ::tlgen::Hren& item) noexcept;
+bool HrenRead(::tlgen::basictl::tl_istream & s, ::tlgen::Hren& item) noexcept; 
+bool HrenWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Hren& item) noexcept;
+bool HrenReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Hren& item);
+bool HrenWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Hren& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool HrenMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::Hren>& item);
+bool HrenMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::Hren>& item);
 
-bool HrenMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::Hren>& item);
-bool HrenMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::Hren>& item);
+bool HrenMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::Hren>& item);
+bool HrenMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::Hren>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

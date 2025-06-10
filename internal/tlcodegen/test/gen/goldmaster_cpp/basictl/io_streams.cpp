@@ -3,7 +3,7 @@
 #include "basictl/io_streams.h"
 #include "basictl/io_throwable_streams.h"
 
-namespace basictl {
+namespace tlgen::basictl {
     tl_istream::tl_istream(tl_input_connector &provider) : provider(&provider) {}
 
     tl_istream::tl_istream(tl_throwable_istream &from) : provider(nullptr) {
@@ -15,8 +15,8 @@ namespace basictl {
             return false;
         }
         auto len = size_t(static_cast<unsigned char>(*ptr));
-        if (len >= TL_BIG_STRING_MARKER) [[unlikely]] {
-            if (len > TL_BIG_STRING_MARKER) [[unlikely]] {
+        if (len >= tlgen::basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
+            if (len > tlgen::basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
                 return set_error_sequence_length();
             }
             uint32_t len32 = 0;
@@ -57,8 +57,8 @@ namespace basictl {
         return true;
     }
 
-    void tl_istream::last_release() noexcept {
-        provider->release_buffer(ptr - start_block);
+    void tl_istream::sync() noexcept {
+        provider->advance(ptr - start_block);
         start_block = ptr;
     }
 
@@ -99,7 +99,7 @@ namespace basictl {
 
     void tl_istream::grow_buffer() noexcept {
         ptr = end_block;
-        provider->release_buffer(ptr - start_block);
+        provider->advance(ptr - start_block);
         auto new_buffer_request = provider->get_buffer();
         if (new_buffer_request) {
             auto new_buffer = new_buffer_request.value();
@@ -191,7 +191,7 @@ namespace basictl {
         to.end_block = end_block;
 
         if (has_error()) {
-            throw ::basictl::exception_from_tl_stream_error(error.value());
+            throw ::tlgen::basictl::exception_from_tl_stream_error(error.value());
         }
     }
 
@@ -203,11 +203,11 @@ namespace basictl {
 
     bool tl_ostream::string_write(const std::string &value) {
         auto len = value.size();
-        if (len > TL_MAX_TINY_STRING_LEN) [[unlikely]] {
-            if (len > TL_BIG_STRING_LEN) [[unlikely]] {
+        if (len > tlgen::basictl::TL_MAX_TINY_STRING_LEN) [[unlikely]] {
+            if (len > tlgen::basictl::TL_BIG_STRING_LEN) [[unlikely]] {
                 return set_error_sequence_length();
             }
-            uint32_t p = (len << 8U) | TL_BIG_STRING_MARKER;
+            uint32_t p = (len << 8U) | tlgen::basictl::TL_BIG_STRING_MARKER;
             if (!store_data(&p, 4)) [[unlikely]] {
                 return false;
             }
@@ -243,8 +243,8 @@ namespace basictl {
         return true;
     }
 
-    void tl_ostream::last_release() noexcept {
-        provider->release_buffer(ptr - start_block);
+    void tl_ostream::sync() noexcept {
+        provider->advance(ptr - start_block);
         start_block = ptr;
     }
 
@@ -287,7 +287,7 @@ namespace basictl {
 
     void tl_ostream::grow_buffer() {
         ptr = end_block;
-        provider->release_buffer(ptr - start_block);
+        provider->advance(ptr - start_block);
         auto new_buffer_request = provider->get_buffer();
         if (new_buffer_request) {
             auto new_buffer = new_buffer_request.value();
@@ -351,7 +351,7 @@ namespace basictl {
         to.end_block = end_block;
 
         if (has_error()) {
-            throw ::basictl::exception_from_tl_stream_error(error.value());
+            throw ::tlgen::basictl::exception_from_tl_stream_error(error.value());
         }
     }
-} // namespace basictl
+} // namespace tlgen::basictl

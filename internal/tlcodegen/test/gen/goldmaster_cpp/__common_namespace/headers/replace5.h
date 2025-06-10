@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace5.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace5Reset(::tl2::Replace5& item) noexcept;
+void Replace5Reset(::tlgen::Replace5& item) noexcept;
 
-bool Replace5WriteJSON(std::ostream& s, const ::tl2::Replace5& item) noexcept;
-bool Replace5Read(::basictl::tl_istream & s, ::tl2::Replace5& item) noexcept; 
-bool Replace5Write(::basictl::tl_ostream & s, const ::tl2::Replace5& item) noexcept;
-bool Replace5ReadBoxed(::basictl::tl_istream & s, ::tl2::Replace5& item);
-bool Replace5WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Replace5& item);
+bool Replace5WriteJSON(std::ostream& s, const ::tlgen::Replace5& item) noexcept;
+bool Replace5Read(::tlgen::basictl::tl_istream & s, ::tlgen::Replace5& item) noexcept; 
+bool Replace5Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace5& item) noexcept;
+bool Replace5ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Replace5& item);
+bool Replace5WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace5& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

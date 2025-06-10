@@ -6,18 +6,18 @@
 #include "__common_namespace/functions/boxedVector32.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BoxedVector32Reset(::tl2::BoxedVector32& item) noexcept;
+void BoxedVector32Reset(::tlgen::BoxedVector32& item) noexcept;
 
-bool BoxedVector32WriteJSON(std::ostream& s, const ::tl2::BoxedVector32& item) noexcept;
-bool BoxedVector32Read(::basictl::tl_istream & s, ::tl2::BoxedVector32& item) noexcept; 
-bool BoxedVector32Write(::basictl::tl_ostream & s, const ::tl2::BoxedVector32& item) noexcept;
-bool BoxedVector32ReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedVector32& item);
-bool BoxedVector32WriteBoxed(::basictl::tl_ostream & s, const ::tl2::BoxedVector32& item);
+bool BoxedVector32WriteJSON(std::ostream& s, const ::tlgen::BoxedVector32& item) noexcept;
+bool BoxedVector32Read(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32& item) noexcept; 
+bool BoxedVector32Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVector32& item) noexcept;
+bool BoxedVector32ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32& item);
+bool BoxedVector32WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVector32& item);
 
-bool BoxedVector32ReadResult(::basictl::tl_istream & s, ::tl2::BoxedVector32& item, std::vector<int32_t>& result);
-bool BoxedVector32WriteResult(::basictl::tl_ostream & s, ::tl2::BoxedVector32& item, std::vector<int32_t>& result);
-		
-}} // namespace tl2::details
+bool BoxedVector32ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32& item, std::vector<int32_t>& result);
+bool BoxedVector32WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedVector32& item, std::vector<int32_t>& result);
+    
+}} // namespace tlgen::details
 

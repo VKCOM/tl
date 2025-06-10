@@ -5,13 +5,13 @@
 
 #include "basictl/io_connectors.h"
 
-namespace basictl {
+namespace tlgen::basictl {
     class tl_istream_string : public tl_input_connector {
     public:
         explicit tl_istream_string(const std::string & buffer) : buffer(buffer) {}
 
         tl_connector_result<std::span<const std::byte>> get_buffer() noexcept override;
-        void release_buffer(size_t size) noexcept override;
+        void advance(size_t size) noexcept override;
 
         std::span<const std::byte> used_buffer();
     private:
@@ -24,7 +24,7 @@ namespace basictl {
         explicit tl_ostream_string(std::string & buffer) : buffer(buffer) {}
 
         tl_connector_result<std::span<std::byte>> get_buffer() noexcept override;
-        void release_buffer(size_t size) noexcept override;
+        void advance(size_t size) noexcept override;
 
         std::span<std::byte> used_buffer();
     private:

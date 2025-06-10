@@ -7,15 +7,15 @@
 #include "__common_namespace/types/pair.h"
 #include "a/types/a.inner.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AMiddlePairAInnerAInnerAInnerBoxed3Reset(::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item) noexcept;
+void AMiddlePairAInnerAInnerAInnerBoxed3Reset(::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item) noexcept;
 
-bool AMiddlePairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) noexcept;
-bool AMiddlePairAInnerAInnerAInnerBoxed3Read(::basictl::tl_istream & s, ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) noexcept; 
-bool AMiddlePairAInnerAInnerAInnerBoxed3Write(::basictl::tl_ostream & s, const ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) noexcept;
-bool AMiddlePairAInnerAInnerAInnerBoxed3ReadBoxed(::basictl::tl_istream & s, ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI);
-bool AMiddlePairAInnerAInnerAInnerBoxed3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI);
+bool AMiddlePairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) noexcept;
+bool AMiddlePairAInnerAInnerAInnerBoxed3Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) noexcept; 
+bool AMiddlePairAInnerAInnerAInnerBoxed3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) noexcept;
+bool AMiddlePairAInnerAInnerAInnerBoxed3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI);
+bool AMiddlePairAInnerAInnerAInnerBoxed3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

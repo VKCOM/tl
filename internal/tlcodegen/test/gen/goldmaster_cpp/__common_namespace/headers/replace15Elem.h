@@ -5,23 +5,23 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace15Elem.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleReplace15ElemReset(std::vector<::tl2::Replace15Elem>& item);
+void BuiltinTupleReplace15ElemReset(std::vector<::tlgen::Replace15Elem>& item);
 
-bool BuiltinTupleReplace15ElemWriteJSON(std::ostream & s, const std::vector<::tl2::Replace15Elem>& item, uint32_t nat_n, uint32_t nat_t);
-bool BuiltinTupleReplace15ElemRead(::basictl::tl_istream & s, std::vector<::tl2::Replace15Elem>& item, uint32_t nat_n, uint32_t nat_t);
-bool BuiltinTupleReplace15ElemWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Replace15Elem>& item, uint32_t nat_n, uint32_t nat_t);
+bool BuiltinTupleReplace15ElemWriteJSON(std::ostream & s, const std::vector<::tlgen::Replace15Elem>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTupleReplace15ElemRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Replace15Elem>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTupleReplace15ElemWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Replace15Elem>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace15ElemReset(::tl2::Replace15Elem& item) noexcept;
+void Replace15ElemReset(::tlgen::Replace15Elem& item) noexcept;
 
-bool Replace15ElemWriteJSON(std::ostream& s, const ::tl2::Replace15Elem& item, uint32_t nat_n) noexcept;
-bool Replace15ElemRead(::basictl::tl_istream & s, ::tl2::Replace15Elem& item, uint32_t nat_n) noexcept; 
-bool Replace15ElemWrite(::basictl::tl_ostream & s, const ::tl2::Replace15Elem& item, uint32_t nat_n) noexcept;
+bool Replace15ElemWriteJSON(std::ostream& s, const ::tlgen::Replace15Elem& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool Replace15ElemRead(::tlgen::basictl::tl_istream & s, ::tlgen::Replace15Elem& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool Replace15ElemWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace15Elem& item, [[maybe_unused]] uint32_t nat_n) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

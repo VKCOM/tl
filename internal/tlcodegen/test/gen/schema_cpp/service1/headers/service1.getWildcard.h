@@ -6,18 +6,18 @@
 #include "service1/functions/service1.getWildcard.h"
 #include "__common_namespace/types/map.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1GetWildcardReset(::tl2::service1::GetWildcard& item) noexcept;
+void Service1GetWildcardReset(::tlgen::service1::GetWildcard& item) noexcept;
 
-bool Service1GetWildcardWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcard& item) noexcept;
-bool Service1GetWildcardRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcard& item) noexcept; 
-bool Service1GetWildcardWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcard& item) noexcept;
-bool Service1GetWildcardReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetWildcard& item);
-bool Service1GetWildcardWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcard& item);
+bool Service1GetWildcardWriteJSON(std::ostream& s, const ::tlgen::service1::GetWildcard& item) noexcept;
+bool Service1GetWildcardRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcard& item) noexcept; 
+bool Service1GetWildcardWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcard& item) noexcept;
+bool Service1GetWildcardReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcard& item);
+bool Service1GetWildcardWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcard& item);
 
-bool Service1GetWildcardReadResult(::basictl::tl_istream & s, ::tl2::service1::GetWildcard& item, std::vector<::tl2::Map<std::string, std::string>>& result);
-bool Service1GetWildcardWriteResult(::basictl::tl_ostream & s, ::tl2::service1::GetWildcard& item, std::vector<::tl2::Map<std::string, std::string>>& result);
-		
-}} // namespace tl2::details
+bool Service1GetWildcardReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcard& item, std::vector<::tlgen::Map<std::string, std::string>>& result);
+bool Service1GetWildcardWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetWildcard& item, std::vector<::tlgen::Map<std::string, std::string>>& result);
+    
+}} // namespace tlgen::details
 

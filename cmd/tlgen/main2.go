@@ -93,10 +93,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate methods to get meta information about tl objects`)
 	flag.BoolVar(&opt.AddFactoryData, "cpp-generate-factory", false,
 		`whether to generate factory of tl objects`)
-	flag.BoolVar(&opt.GenerateCommonMakefile, "cpp-common-makefile", false,
-		`whether to generate Makefile in a root with all generated namespaces targets`)
+	flag.BoolVar(&opt.GenerateCommonMakefile, "cpp-generate-common-makefile", true,
+		`whether to generate Makefile in a root with all generated namespaces targets (default:true)`)
 	flag.BoolVar(&opt.DeleteUnrelatedFiles, "cpp-delete-unrelated-files", true,
-		`whether to delete files that are already in the target directory, but will not be affected by the new generation`)
+		`whether to delete files that are already in the target directory, but will not be affected by the new generation (default:true)`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
@@ -106,11 +106,11 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.BoolVar(&opt.AddFactoryData, "php-generate-factory", false,
 		`whether to generate factory of tl objects`)
 	flag.BoolVar(&opt.IgnoreUnusedInFunctionsTypes, "php-ignore-unused-types", true,
-		`whether to not generate types without usages in functions`)
+		`whether to not generate types without usages in functions (default:true)`)
 	flag.BoolVar(&opt.AddRPCTypes, "php-rpc-support", true,
-		`whether to generate special rpc types`)
+		`whether to generate special rpc types (default:true)`)
 	flag.BoolVar(&opt.InplaceSimpleStructs, "php-inplace-simple-structs", true,
-		`whether to avoid generation of structs with no arguments and only 1 field`)
+		`whether to avoid generation of structs with no arguments and only 1 field (default:true)`)
 
 	if opt.AddFactoryData {
 		opt.AddMetaData = true

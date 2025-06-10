@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/long.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTupleLongReset(std::vector<int64_t>& item);
 
-bool BuiltinTupleLongWriteJSON(std::ostream & s, const std::vector<int64_t>& item, uint32_t nat_n);
-bool BuiltinTupleLongRead(::basictl::tl_istream & s, std::vector<int64_t>& item, uint32_t nat_n);
-bool BuiltinTupleLongWrite(::basictl::tl_ostream & s, const std::vector<int64_t>& item, uint32_t nat_n);
+bool BuiltinTupleLongWriteJSON(std::ostream & s, const std::vector<int64_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleLongRead(::tlgen::basictl::tl_istream & s, std::vector<int64_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleLongWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int64_t>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

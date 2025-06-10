@@ -7,95 +7,95 @@
 #include "__common_namespace/types/pair.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTupleTupleInt2Reset(std::vector<std::array<int32_t, 2>>& item);
 
-bool BuiltinTupleTupleInt2WriteJSON(std::ostream & s, const std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n);
-bool BuiltinTupleTupleInt2Read(::basictl::tl_istream & s, std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n);
-bool BuiltinTupleTupleInt2Write(::basictl::tl_ostream & s, const std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n);
+bool BuiltinTupleTupleInt2WriteJSON(std::ostream & s, const std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleTupleInt2Read(::tlgen::basictl::tl_istream & s, std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleTupleInt2Write(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleTuplePairTupleIntTupleInt2Reset(std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item);
+void BuiltinTupleTuplePairTupleIntTupleInt2Reset(std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item);
 
-bool BuiltinTupleTuplePairTupleIntTupleInt2WriteJSON(std::ostream & s, const std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_n, uint32_t nat_ttXn, uint32_t nat_ttYn);
-bool BuiltinTupleTuplePairTupleIntTupleInt2Read(::basictl::tl_istream & s, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_n, uint32_t nat_ttXn, uint32_t nat_ttYn);
-bool BuiltinTupleTuplePairTupleIntTupleInt2Write(::basictl::tl_ostream & s, const std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_n, uint32_t nat_ttXn, uint32_t nat_ttYn);
+bool BuiltinTupleTuplePairTupleIntTupleInt2WriteJSON(std::ostream & s, const std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn);
+bool BuiltinTupleTuplePairTupleIntTupleInt2Read(::tlgen::basictl::tl_istream & s, std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn);
+bool BuiltinTupleTuplePairTupleIntTupleInt2Write(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void TupleIntReset(std::vector<int32_t>& item) noexcept;
 
-bool TupleIntWriteJSON(std::ostream& s, const std::vector<int32_t>& item, uint32_t nat_n) noexcept;
-bool TupleIntRead(::basictl::tl_istream & s, std::vector<int32_t>& item, uint32_t nat_n) noexcept; 
-bool TupleIntWrite(::basictl::tl_ostream & s, const std::vector<int32_t>& item, uint32_t nat_n) noexcept;
-bool TupleIntReadBoxed(::basictl::tl_istream & s, std::vector<int32_t>& item, uint32_t nat_n);
-bool TupleIntWriteBoxed(::basictl::tl_ostream & s, const std::vector<int32_t>& item, uint32_t nat_n);
+bool TupleIntWriteJSON(std::ostream& s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool TupleIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool TupleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool TupleIntReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool TupleIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void TupleInt2Reset(std::array<int32_t, 2>& item) noexcept;
 
 bool TupleInt2WriteJSON(std::ostream& s, const std::array<int32_t, 2>& item) noexcept;
-bool TupleInt2Read(::basictl::tl_istream & s, std::array<int32_t, 2>& item) noexcept; 
-bool TupleInt2Write(::basictl::tl_ostream & s, const std::array<int32_t, 2>& item) noexcept;
-bool TupleInt2ReadBoxed(::basictl::tl_istream & s, std::array<int32_t, 2>& item);
-bool TupleInt2WriteBoxed(::basictl::tl_ostream & s, const std::array<int32_t, 2>& item);
+bool TupleInt2Read(::tlgen::basictl::tl_istream & s, std::array<int32_t, 2>& item) noexcept; 
+bool TupleInt2Write(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 2>& item) noexcept;
+bool TupleInt2ReadBoxed(::tlgen::basictl::tl_istream & s, std::array<int32_t, 2>& item);
+bool TupleInt2WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 2>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void TupleInt4Reset(std::array<int32_t, 4>& item) noexcept;
 
 bool TupleInt4WriteJSON(std::ostream& s, const std::array<int32_t, 4>& item) noexcept;
-bool TupleInt4Read(::basictl::tl_istream & s, std::array<int32_t, 4>& item) noexcept; 
-bool TupleInt4Write(::basictl::tl_ostream & s, const std::array<int32_t, 4>& item) noexcept;
-bool TupleInt4ReadBoxed(::basictl::tl_istream & s, std::array<int32_t, 4>& item);
-bool TupleInt4WriteBoxed(::basictl::tl_ostream & s, const std::array<int32_t, 4>& item);
+bool TupleInt4Read(::tlgen::basictl::tl_istream & s, std::array<int32_t, 4>& item) noexcept; 
+bool TupleInt4Write(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 4>& item) noexcept;
+bool TupleInt4ReadBoxed(::tlgen::basictl::tl_istream & s, std::array<int32_t, 4>& item);
+bool TupleInt4WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 4>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TuplePairTupleIntTupleInt2Reset(std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item) noexcept;
+void TuplePairTupleIntTupleInt2Reset(std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item) noexcept;
 
-bool TuplePairTupleIntTupleInt2WriteJSON(std::ostream& s, const std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, uint32_t nat_tXn, uint32_t nat_tYn) noexcept;
-bool TuplePairTupleIntTupleInt2Read(::basictl::tl_istream & s, std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, uint32_t nat_tXn, uint32_t nat_tYn) noexcept; 
-bool TuplePairTupleIntTupleInt2Write(::basictl::tl_ostream & s, const std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, uint32_t nat_tXn, uint32_t nat_tYn) noexcept;
-bool TuplePairTupleIntTupleInt2ReadBoxed(::basictl::tl_istream & s, std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, uint32_t nat_tXn, uint32_t nat_tYn);
-bool TuplePairTupleIntTupleInt2WriteBoxed(::basictl::tl_ostream & s, const std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, uint32_t nat_tXn, uint32_t nat_tYn);
+bool TuplePairTupleIntTupleInt2WriteJSON(std::ostream& s, const std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, [[maybe_unused]] uint32_t nat_tXn, [[maybe_unused]] uint32_t nat_tYn) noexcept;
+bool TuplePairTupleIntTupleInt2Read(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, [[maybe_unused]] uint32_t nat_tXn, [[maybe_unused]] uint32_t nat_tYn) noexcept; 
+bool TuplePairTupleIntTupleInt2Write(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, [[maybe_unused]] uint32_t nat_tXn, [[maybe_unused]] uint32_t nat_tYn) noexcept;
+bool TuplePairTupleIntTupleInt2ReadBoxed(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, [[maybe_unused]] uint32_t nat_tXn, [[maybe_unused]] uint32_t nat_tYn);
+bool TuplePairTupleIntTupleInt2WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>& item, [[maybe_unused]] uint32_t nat_tXn, [[maybe_unused]] uint32_t nat_tYn);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void TupleTupleInt2Reset(std::vector<std::array<int32_t, 2>>& item) noexcept;
 
-bool TupleTupleInt2WriteJSON(std::ostream& s, const std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n) noexcept;
-bool TupleTupleInt2Read(::basictl::tl_istream & s, std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n) noexcept; 
-bool TupleTupleInt2Write(::basictl::tl_ostream & s, const std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n) noexcept;
-bool TupleTupleInt2ReadBoxed(::basictl::tl_istream & s, std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n);
-bool TupleTupleInt2WriteBoxed(::basictl::tl_ostream & s, const std::vector<std::array<int32_t, 2>>& item, uint32_t nat_n);
+bool TupleTupleInt2WriteJSON(std::ostream& s, const std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool TupleTupleInt2Read(::tlgen::basictl::tl_istream & s, std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool TupleTupleInt2Write(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool TupleTupleInt2ReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n);
+bool TupleTupleInt2WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<int32_t, 2>>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TupleTuplePairTupleIntTupleInt2Reset(std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item) noexcept;
+void TupleTuplePairTupleIntTupleInt2Reset(std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item) noexcept;
 
-bool TupleTuplePairTupleIntTupleInt2WriteJSON(std::ostream& s, const std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_ttXn, uint32_t nat_ttYn, uint32_t nat_n) noexcept;
-bool TupleTuplePairTupleIntTupleInt2Read(::basictl::tl_istream & s, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_ttXn, uint32_t nat_ttYn, uint32_t nat_n) noexcept; 
-bool TupleTuplePairTupleIntTupleInt2Write(::basictl::tl_ostream & s, const std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_ttXn, uint32_t nat_ttYn, uint32_t nat_n) noexcept;
-bool TupleTuplePairTupleIntTupleInt2ReadBoxed(::basictl::tl_istream & s, std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_ttXn, uint32_t nat_ttYn, uint32_t nat_n);
-bool TupleTuplePairTupleIntTupleInt2WriteBoxed(::basictl::tl_ostream & s, const std::vector<std::array<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, uint32_t nat_ttXn, uint32_t nat_ttYn, uint32_t nat_n);
+bool TupleTuplePairTupleIntTupleInt2WriteJSON(std::ostream& s, const std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool TupleTuplePairTupleIntTupleInt2Read(::tlgen::basictl::tl_istream & s, std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool TupleTuplePairTupleIntTupleInt2Write(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool TupleTuplePairTupleIntTupleInt2ReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn, [[maybe_unused]] uint32_t nat_n);
+bool TupleTuplePairTupleIntTupleInt2WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>, 2>>& item, [[maybe_unused]] uint32_t nat_ttXn, [[maybe_unused]] uint32_t nat_ttYn, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -6,8 +6,8 @@
 #include "__common_namespace/types/dictionaryFieldAny.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename k, typename v>
-using DictionaryAny = std::vector<::tl2::DictionaryFieldAny<k, v>>;
-} // namespace tl2
+using DictionaryAny = std::vector<::tlgen::DictionaryFieldAny<k, v>>;
+} // namespace tlgen
 

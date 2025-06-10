@@ -6,37 +6,37 @@
 #include "__common_namespace/types/true.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct UseTrue {
-	uint32_t fm = 0;
-	::tl2::True a{};
-	::tl2::True b{};
-	::tl2::True c{};
-	::tl2::True d{};
-	bool e = false;
+  uint32_t fm = 0;
+  ::tlgen::True a{};
+  ::tlgen::True b{};
+  ::tlgen::True c{};
+  ::tlgen::True d{};
+  bool e = false;
 
-	std::string_view tl_name() const { return "useTrue"; }
-	uint32_t tl_tag() const { return 0xdfdd4180; }
+  std::string_view tl_name() const { return "useTrue"; }
+  uint32_t tl_tag() const { return 0xdfdd4180; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const UseTrue& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const UseTrue& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

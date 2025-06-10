@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myDictOfInt.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyDictOfIntReset(::tl2::MyDictOfInt& item) noexcept;
+void MyDictOfIntReset(::tlgen::MyDictOfInt& item) noexcept;
 
-bool MyDictOfIntWriteJSON(std::ostream& s, const ::tl2::MyDictOfInt& item) noexcept;
-bool MyDictOfIntRead(::basictl::tl_istream & s, ::tl2::MyDictOfInt& item) noexcept; 
-bool MyDictOfIntWrite(::basictl::tl_ostream & s, const ::tl2::MyDictOfInt& item) noexcept;
-bool MyDictOfIntReadBoxed(::basictl::tl_istream & s, ::tl2::MyDictOfInt& item);
-bool MyDictOfIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyDictOfInt& item);
+bool MyDictOfIntWriteJSON(std::ostream& s, const ::tlgen::MyDictOfInt& item) noexcept;
+bool MyDictOfIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyDictOfInt& item) noexcept; 
+bool MyDictOfIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyDictOfInt& item) noexcept;
+bool MyDictOfIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyDictOfInt& item);
+bool MyDictOfIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyDictOfInt& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

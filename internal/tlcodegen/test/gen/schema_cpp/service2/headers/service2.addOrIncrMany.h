@@ -6,18 +6,18 @@
 #include "service2/functions/service2.addOrIncrMany.h"
 #include "service2/types/service2.counterSet.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service2AddOrIncrManyReset(::tl2::service2::AddOrIncrMany& item) noexcept;
+void Service2AddOrIncrManyReset(::tlgen::service2::AddOrIncrMany& item) noexcept;
 
-bool Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tl2::service2::AddOrIncrMany& item) noexcept;
-bool Service2AddOrIncrManyRead(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item) noexcept; 
-bool Service2AddOrIncrManyWrite(::basictl::tl_ostream & s, const ::tl2::service2::AddOrIncrMany& item) noexcept;
-bool Service2AddOrIncrManyReadBoxed(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item);
-bool Service2AddOrIncrManyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service2::AddOrIncrMany& item);
+bool Service2AddOrIncrManyWriteJSON(std::ostream& s, const ::tlgen::service2::AddOrIncrMany& item) noexcept;
+bool Service2AddOrIncrManyRead(::tlgen::basictl::tl_istream & s, ::tlgen::service2::AddOrIncrMany& item) noexcept; 
+bool Service2AddOrIncrManyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::AddOrIncrMany& item) noexcept;
+bool Service2AddOrIncrManyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service2::AddOrIncrMany& item);
+bool Service2AddOrIncrManyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::AddOrIncrMany& item);
 
-bool Service2AddOrIncrManyReadResult(::basictl::tl_istream & s, ::tl2::service2::AddOrIncrMany& item, std::vector<::tl2::service2::CounterSet>& result);
-bool Service2AddOrIncrManyWriteResult(::basictl::tl_ostream & s, ::tl2::service2::AddOrIncrMany& item, std::vector<::tl2::service2::CounterSet>& result);
-		
-}} // namespace tl2::details
+bool Service2AddOrIncrManyReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service2::AddOrIncrMany& item, std::vector<::tlgen::service2::CounterSet>& result);
+bool Service2AddOrIncrManyWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service2::AddOrIncrMany& item, std::vector<::tlgen::service2::CounterSet>& result);
+    
+}} // namespace tlgen::details
 

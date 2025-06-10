@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace8.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace8Reset(::tl2::Replace8& item) noexcept;
+void Replace8Reset(::tlgen::Replace8& item) noexcept;
 
-bool Replace8WriteJSON(std::ostream& s, const ::tl2::Replace8& item) noexcept;
-bool Replace8Read(::basictl::tl_istream & s, ::tl2::Replace8& item) noexcept; 
-bool Replace8Write(::basictl::tl_ostream & s, const ::tl2::Replace8& item) noexcept;
-bool Replace8ReadBoxed(::basictl::tl_istream & s, ::tl2::Replace8& item);
-bool Replace8WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Replace8& item);
+bool Replace8WriteJSON(std::ostream& s, const ::tlgen::Replace8& item) noexcept;
+bool Replace8Read(::tlgen::basictl::tl_istream & s, ::tlgen::Replace8& item) noexcept; 
+bool Replace8Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace8& item) noexcept;
+bool Replace8ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Replace8& item);
+bool Replace8WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace8& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

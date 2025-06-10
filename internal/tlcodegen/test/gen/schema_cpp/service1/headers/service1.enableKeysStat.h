@@ -6,18 +6,18 @@
 #include "service1/functions/service1.enableKeysStat.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1EnableKeysStatReset(::tl2::service1::EnableKeysStat& item) noexcept;
+void Service1EnableKeysStatReset(::tlgen::service1::EnableKeysStat& item) noexcept;
 
-bool Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tl2::service1::EnableKeysStat& item) noexcept;
-bool Service1EnableKeysStatRead(::basictl::tl_istream & s, ::tl2::service1::EnableKeysStat& item) noexcept; 
-bool Service1EnableKeysStatWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableKeysStat& item) noexcept;
-bool Service1EnableKeysStatReadBoxed(::basictl::tl_istream & s, ::tl2::service1::EnableKeysStat& item);
-bool Service1EnableKeysStatWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::EnableKeysStat& item);
+bool Service1EnableKeysStatWriteJSON(std::ostream& s, const ::tlgen::service1::EnableKeysStat& item) noexcept;
+bool Service1EnableKeysStatRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableKeysStat& item) noexcept; 
+bool Service1EnableKeysStatWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::EnableKeysStat& item) noexcept;
+bool Service1EnableKeysStatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableKeysStat& item);
+bool Service1EnableKeysStatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::EnableKeysStat& item);
 
-bool Service1EnableKeysStatReadResult(::basictl::tl_istream & s, ::tl2::service1::EnableKeysStat& item, bool& result);
-bool Service1EnableKeysStatWriteResult(::basictl::tl_ostream & s, ::tl2::service1::EnableKeysStat& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service1EnableKeysStatReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableKeysStat& item, bool& result);
+bool Service1EnableKeysStatWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::EnableKeysStat& item, bool& result);
+    
+}} // namespace tlgen::details
 

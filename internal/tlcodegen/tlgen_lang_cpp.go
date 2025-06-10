@@ -256,7 +256,6 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 	var cppMake1 strings.Builder
 
 	const MakefilePath = "Makefile"
-	const BuildPath = "__build"
 
 	for _, nf := range cppAllInc.splitByNamespaces() {
 		// it is a group
@@ -268,10 +267,8 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		if !gen.options.SplitInternal {
 			namespaceFilePath = namespaceDeps[0] + cppExt
 		}
-		buildFilePath := filepath.Join(BuildPath, namespaceDetails+".o")
-		localMakefilePath := filepath.Join(namespace, MakefilePath)
+		buildFilePath := filepath.Join("__build", namespaceDetails+".o")
 
-		var cppMakeNamespace strings.Builder
 		var cppMake1UsedFiles strings.Builder
 		var cppMake1Namespace strings.Builder
 
@@ -292,25 +289,14 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 
 			sort.Strings(hppDetsList)
 			for _, h := range hppDetsList {
-				cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(localMakefilePath, h+hppExt)))
+				cppMake1UsedFiles.WriteString(fmt.Sprintf(" %s", getCppDiff(MakefilePath, h+hppExt)))
 			}
 		}
 
-		relativeBuildFolderPath, _ := filepath.Rel(namespace, BuildPath)
-		relativeDetails, _ := filepath.Rel(namespace, namespaceFilePath)
-		relativeObjectFile, _ := filepath.Rel(namespace, buildFilePath)
-
-		appendCompilerOptions(&cppMakeNamespace)
-
-		cppMakeNamespace.WriteString(fmt.Sprintf("%s: %s %s\n", "build", relativeDetails, cppMake1UsedFiles.String()))
-		cppMakeNamespace.WriteString(fmt.Sprintf("\t@mkdir -p %s\n\t$(CC) $(CFLAGS) -I.. -o %s -c %s\n", relativeBuildFolderPath, relativeObjectFile, relativeDetails))
-
-		cppMake1.WriteString(fmt.Sprintf("%[1]s/%[2]s.o:\n\t$(MAKE) -C %[2]s build CC=\"$(CC)\" CFLAGS=\"$(CFLAGS)\"\n\n", BuildPath, namespace))
+		cppMake1.WriteString(fmt.Sprintf("%s: %s %s\n", buildFilePath, namespaceFilePath, cppMake1UsedFiles.String()))
+		cppMake1.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o %s -c %s\n", buildFilePath, namespaceFilePath))
 		cppMakeO.WriteString(fmt.Sprintf("%s ", buildFilePath))
 
-		if err := gen.addCodeFile(localMakefilePath, cppMakeNamespace.String()); err != nil {
-			return err
-		}
 		if gen.options.SplitInternal {
 			if err := gen.addCodeFile(namespaceFilePath, gen.copyrightText+cppMake1Namespace.String()); err != nil {
 				return err
@@ -347,9 +333,7 @@ __build/main.o: main.cpp
 	cppMake.WriteString(metaMake.String())
 	cppMake.WriteString(factoryMake.String())
 
-	if err := createStreams(gen, &cppMake); err != nil {
-		return err
-	}
+	createStreams(gen, &cppMake)
 
 	cppMake.WriteString("\n")
 
@@ -446,9 +430,9 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		code.WriteString("]\n")
 		code.WriteString("}")
 
-		if ns == CommonGroup && wasFirst {
-			return nil, fmt.Errorf("tlgen bug: %s is not independent", CommonGroup)
-		}
+		//if ns == CommonGroup && wasFirst {
+		//	return nil, fmt.Errorf("tlgen bug: %s is not independent", CommonGroup)
+		//}
 		if err := gen.addCodeFile(filepath.Join(ns, "info.json"), code.String()); err != nil {
 			return nil, err
 		}
@@ -491,10 +475,17 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 				}
 			}
 
-			code.Write(data[includesEnd+len(basictlCppIncludeEnd):])
+			bodyCode := data[includesEnd+len(basictlCppIncludeEnd):]
+			bodyCode = bytes.ReplaceAll(bodyCode, []byte("basictl"), []byte(gen.cppBasictlNamespace()))
+
+			code.Write(bodyCode)
 		} else {
-			code.Write(data)
+			bodyCode := data
+			bodyCode = bytes.ReplaceAll(bodyCode, []byte("basictl"), []byte(gen.cppBasictlNamespace()))
+
+			code.Write(bodyCode)
 		}
+
 		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), gen.copyrightText+code.String()); err != nil {
 			return err
 		}
@@ -502,48 +493,20 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 	return nil
 }
 
-func createStreams(gen *Gen2, cppMake *strings.Builder) error {
-	cppMake.WriteString("# build object files streams which are used to work with io\n")
+func createStreams(gen *Gen2, cppMake *strings.Builder) {
+	cppMake.WriteString("# compile streams which are used to work with io\n")
+	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c basictl/io_streams.cpp\n")
 
-	cppMake.WriteString(`__build/io_streams.o:
-	$(MAKE) -C basictl build_io_streams CC="$(CC)" CFLAGS="$(CFLAGS)"
+	cppMake.WriteString("\n")
 
-`,
-	)
+	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
 
-	cppMake.WriteString(`__build/io_throwable_streams.o:
-	$(MAKE) -C basictl build_io_throwable_streams CC="$(CC)" CFLAGS="$(CFLAGS)"
+	cppMake.WriteString("\n")
 
-`,
-	)
-
-	cppMake.WriteString(`__build/string_io.o:
-	$(MAKE) -C basictl build_string_io CC="$(CC)" CFLAGS="$(CFLAGS)"
-`,
-	)
-
-	streamsMake := strings.Builder{}
-
-	appendCompilerOptions(&streamsMake)
-
-	streamsMake.WriteString("build_io_streams: constants.h errors.h io_connectors.h io_streams.cpp io_streams.h\n")
-	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/io_streams.o -c io_streams.cpp\n")
-
-	streamsMake.WriteString("\n")
-
-	streamsMake.WriteString("build_io_throwable_streams: constants.h errors.h io_connectors.h io_throwable_streams.cpp io_throwable_streams.h\n")
-	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/io_throwable_streams.o -c io_throwable_streams.cpp\n")
-
-	streamsMake.WriteString("\n")
-
-	streamsMake.WriteString("build_string_io: io_connectors.h impl/string_io.cpp impl/string_io.h\n")
-	streamsMake.WriteString("\t@mkdir -p ../__build\n\t$(CC) $(CFLAGS) -I.. -o ../__build/string_io.o -c impl/string_io.cpp\n")
-
-	if err := gen.addCodeFile(filepath.Join("basictl", "Makefile"), streamsMake.String()); err != nil {
-		return err
-	}
-
-	return nil
+	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
+	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
@@ -597,7 +560,7 @@ func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string
 	front := make(map[*TypeRWWrapper]bool)
 
 	for t := range edges {
-		if t.groupName != NoNamespaceGroup {
+		if !t.trw.IsWrappingType() && t.groupName != NoNamespaceGroup {
 			front[t] = true
 		} else if t.groupName == NoNamespaceGroup && len(reverseEdges[t]) == 0 {
 			front[t] = true
@@ -732,8 +695,6 @@ func (gen *Gen2) decideGroupInConflict(to *TypeRWWrapper, edges map[*TypeRWWrapp
 }
 
 func printDepsGraph(out *os.File, allTypes []*TypeRWWrapper, edges map[*TypeRWWrapper][]*TypeRWWrapper) {
-	print("debug\n")
-
 	vertices := make([]*TypeRWWrapper, len(allTypes))
 	copy(vertices, allTypes)
 	slices.SortFunc(vertices, TypeComparator)
@@ -841,115 +802,117 @@ func createMeta(gen *Gen2, make *strings.Builder) error {
 #include "%[1]s"
 #include "%[2]s"
 
-namespace tl2 {
-    namespace meta {
-        struct tl_object {
-            virtual bool read(::basictl::tl_istream &s) = 0;
-            virtual bool write(::basictl::tl_ostream &s) = 0;
+namespace %[3]s {
+	namespace meta {
+		struct tl_object {
+			virtual bool read(::%[4]s::tl_istream &s) = 0;
+			virtual bool write(::%[4]s::tl_ostream &s) = 0;
 
-			virtual void read_or_throw(::basictl::tl_throwable_istream &s) = 0;
-            virtual void write_or_throw(::basictl::tl_throwable_ostream &s) = 0;
+			virtual void read(::%[4]s::tl_throwable_istream &s) = 0;
+			virtual void write(::%[4]s::tl_throwable_ostream &s) = 0;
 
-            virtual bool read_boxed(::basictl::tl_istream &s) = 0;
-            virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+			virtual bool read_boxed(::%[4]s::tl_istream &s) = 0;
+			virtual bool write_boxed(::%[4]s::tl_ostream &s) = 0;
 
-			virtual void read_boxed_or_throw(::basictl::tl_throwable_istream &s) = 0;
-            virtual void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) = 0;
-			
+			virtual void read_boxed(::%[4]s::tl_throwable_istream &s) = 0;
+			virtual void write_boxed(::%[4]s::tl_throwable_ostream &s) = 0;
+
 			virtual bool write_json(std::ostream &s) = 0;
 
-            virtual ~tl_object() = default;
-        };
+			virtual ~tl_object() = default;
+		};
 
-        struct tl_function : public tl_object {
-            virtual bool read_write_result(::basictl::tl_istream &in, ::basictl::tl_ostream &out) = 0;
+		struct tl_function : public tl_object {
+			virtual bool read_write_result(::%[4]s::tl_istream &in, ::%[4]s::tl_ostream &out) = 0;
 
-            virtual ~tl_function() = default;
-        };
+			virtual ~tl_function() = default;
+		};
 
-        struct tl_item {
-            uint32_t tag{};
-            uint32_t annotations{};
-            std::string name;
-			
+		struct tl_item {
+			uint32_t tag{};
+			uint32_t annotations{};
+			std::string name;
+
 			bool has_create_object = false;
 			bool has_create_function = false;
 
-            std::function<std::unique_ptr<tl2::meta::tl_object>()> create_object;
-            std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
-        };
+			std::function<std::unique_ptr<%[3]s::meta::tl_object>()> create_object;
+			std::function<std::unique_ptr<%[3]s::meta::tl_function>()> create_function;
+		};
 
-		std::optional<tl2::meta::tl_item> get_item_by_name(std::string &&s);
-		std::optional<tl2::meta::tl_item> get_item_by_tag(uint32_t &&tag);
+		std::optional<%[3]s::meta::tl_item> get_item_by_name(std::string &&s);
+		std::optional<%[3]s::meta::tl_item> get_item_by_tag(uint32_t &&tag);
 
-		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
-		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
-        
-    }
+		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<%[3]s::meta::tl_object>()> &&factory);
+		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<%[3]s::meta::tl_function>()> &&factory);
+
+	}
 }`,
 		filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath),
-		filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath)))
+		filepath.Join(gen.options.RootCPP, basicCPPTLIOThrowableStreamsPath),
+		gen.options.RootCPPNamespace,
+		gen.cppBasictlNamespace()))
 
 	metaDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, basicCPPTLIOStreamsPath)))
 	metaDetails.WriteString(fmt.Sprintf(`
 #include <map>
 
-#include "%s"
+#include "%[1]s"
 
 namespace {
 	struct tl_items {
 		public:
-			std::map<std::string, std::shared_ptr<tl2::meta::tl_item>> items;
-			std::map<uint32_t, std::shared_ptr<tl2::meta::tl_item>> items_by_tag;
+			std::map<std::string, std::shared_ptr<::%[2]s::meta::tl_item>> items;
+			std::map<uint32_t, std::shared_ptr<::%[2]s::meta::tl_item>> items_by_tag;
 			tl_items();
 	};
     
 	tl_items items;
-    std::function<std::unique_ptr<tl2::meta::tl_object>()> no_object_generator = []() -> std::unique_ptr<tl2::meta::tl_object> {
+    std::function<std::unique_ptr<::%[2]s::meta::tl_object>()> no_object_generator = []() -> std::unique_ptr<::%[2]s::meta::tl_object> {
         throw std::runtime_error("no generation for this type of objects");
     };
-    std::function<std::unique_ptr<tl2::meta::tl_function>()> no_function_generator = []() -> std::unique_ptr<tl2::meta::tl_function> {
+    std::function<std::unique_ptr<::%[2]s::meta::tl_function>()> no_function_generator = []() -> std::unique_ptr<::%[2]s::meta::tl_function> {
         throw std::runtime_error("no generation for this type of functions");
     };
 }
 
-std::optional<tl2::meta::tl_item> tl2::meta::get_item_by_name(std::string &&s) {
-    auto item = items.items.find(s);
+std::optional<::%[2]s::meta::tl_item> %[2]s::meta::get_item_by_name(std::string &&s) {
+	auto item = items.items.find(s);
 	if (item != items.items.end()) {
-        return *item->second;
-    }
-    return {};
+		return *item->second;
+	}
+	return {};
 }
 
-std::optional<tl2::meta::tl_item> tl2::meta::get_item_by_tag(std::uint32_t &&tag) {
-    auto item = items.items_by_tag.find(tag);
+std::optional<::%[2]s::meta::tl_item> %[2]s::meta::get_item_by_tag(std::uint32_t &&tag) {
+	auto item = items.items_by_tag.find(tag);
 	if (item != items.items_by_tag.end()) {
-        return *item->second;
-    }
-    return {};
+		return *item->second;
+	}
+	return {};
 }
 
-void tl2::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()>&& gen) {
-    auto item = items.items.find(s);
+void %[2]s::meta::set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<::%[2]s::meta::tl_object>()>&& gen) {
+	auto item = items.items.find(s);
 	if (item != items.items.end()) {
 		item->second->has_create_object = true;
-        item->second->create_object = gen;
+		item->second->create_object = gen;
 		return;	
-    }
-    throw std::runtime_error("no item with such name + \"" + s + "\"");
+	}
+	throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
 
-void tl2::meta::set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()>&& gen) {
-    auto item = items.items.find(s);
+void %[2]s::meta::set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<::%[2]s::meta::tl_function>()>&& gen) {
+	auto item = items.items.find(s);
 	if (item != items.items.end()) {
 		item->second->has_create_function = true;
-        item->second->create_function = gen;
+		item->second->create_function = gen;
 		return;	
-    }
-    throw std::runtime_error("no item with such name + \"" + s + "\"");
+	}
+	throw std::runtime_error("no item with such name + \"" + s + "\"");
 }
 
-tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
+tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName), gen.options.RootCPPNamespace))
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -958,13 +921,14 @@ tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 		if _, isStruct := wr.trw.(*TypeRWStruct); isStruct {
 			metaDetails.WriteString(
 				fmt.Sprintf(`
-	auto item%[4]d = std::shared_ptr<tl2::meta::tl_item>(new tl2::meta::tl_item{.tag=%[2]s,.annotations=%[3]s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator});
+	auto item%[4]d = std::shared_ptr<::%[5]s::meta::tl_item>(new ::%[5]s::meta::tl_item{.tag=%[2]s,.annotations=%[3]s,.name="%[1]s",.create_object=no_object_generator,.create_function=no_function_generator});
 	(this->items)["%[1]s"] = item%[4]d;
 	(this->items_by_tag)[%[2]s] = item%[4]d;`,
 					wr.tlName.String(),
 					fmt.Sprintf("0x%08x", wr.tlTag),
 					fmt.Sprintf("0x%x", wr.AnnotationsMask()),
 					wr.tlTag,
+					gen.options.RootCPPNamespace,
 				),
 			)
 		}
@@ -980,33 +944,14 @@ tl_items::tl_items() {`, filepath.Join(gen.options.RootCPP, filepathName)))
 		return err
 	}
 
-	make.WriteString("# build object file for meta data collection\n")
-	make.WriteString(`__build/__meta.o:
-	$(MAKE) -C __meta build CC="$(CC)" CFLAGS="$(CFLAGS)"
+	make.WriteString("# compile meta data collection\n")
+	make.WriteString(fmt.Sprintf(`__build/__meta.o: %[1]s %[2]s __build
+	$(CC) $(CFLAGS) -I. -o __build/__meta.o -c %[2]s
 `,
-	)
-	make.WriteString("\n")
-
-	relativeFilepathName, _ := filepath.Rel("__meta", filepathName)
-	relativeFilepathDetailsName, _ := filepath.Rel("__meta", filepathDetailsName)
-
-	metaMakefile := strings.Builder{}
-
-	appendCompilerOptions(&metaMakefile)
-
-	metaMakefile.WriteString(fmt.Sprintf(`build: %[1]s %[2]s
-	@mkdir -p ../__build
-	$(CC) $(CFLAGS) -I.. -o ../__build/__meta.o -c %[2]s
-`,
-		relativeFilepathName,
-		relativeFilepathDetailsName,
+		filepathName,
+		filepathDetailsName,
 	))
-	metaMakefile.WriteString("\n")
-
-	if err := gen.addCodeFile(filepath.Join("__meta", "Makefile"), metaMakefile.String()); err != nil {
-		return err
-	}
-
+	make.WriteString("\n")
 	return nil
 }
 
@@ -1022,17 +967,17 @@ func createFactory(gen *Gen2, createdHpps map[string]bool, make *strings.Builder
 
 	imports := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
 
-	factory.WriteString(`
+	factory.WriteString(fmt.Sprintf(`
 #pragma once
-namespace tl2 {
+namespace %[1]s {
     namespace factory {    
 		void set_all_factories();
 	}
-}`)
+}`, gen.options.RootCPPNamespace))
 
-	factoryDetails.WriteString(`
-void tl2::factory::set_all_factories() {
-`)
+	factoryDetails.WriteString(fmt.Sprintf(`
+void %[1]s::factory::set_all_factories() {
+`, gen.options.RootCPPNamespace))
 
 	for _, wr := range gen.generatedTypesList {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
@@ -1055,26 +1000,28 @@ void tl2::factory::set_all_factories() {
 			}
 
 			factoryDetails.WriteString(fmt.Sprintf(`
-	struct %[3]s_%[1]s : public tl2::meta::%[1]s {
-        %[2]s object;
+	struct %[3]s_%[1]s : public ::%[4]s::meta::%[1]s {
+		%[2]s object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+		bool read(::%[5]s::tl_istream &s) override {return object.read(s);}
+		bool write(::%[5]s::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+		void read(::%[5]s::tl_throwable_istream &s) override { object.read(s);}
+		void write(::%[5]s::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+		bool read_boxed(::%[5]s::tl_istream &s) override {return object.read_boxed(s);}
+		bool write_boxed(::%[5]s::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
+		void read_boxed(::%[5]s::tl_throwable_istream &s) override { object.read_boxed(s);}
+		void write_boxed(::%[5]s::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
 		bool write_json(std::ostream &s) override {return object.write_json(s);}
 `,
 				implementedInterface,
 				myFullTypeNoPrefix,
 				myFullTypeWithUnderlines,
+				gen.options.RootCPPNamespace,
+				gen.cppBasictlNamespace(),
 			))
 			if strct.ResultType != nil {
 				hppTmpInclude2 := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
@@ -1083,7 +1030,7 @@ void tl2::factory::set_all_factories() {
 				imports.ns[strct.ResultType] = CppIncludeInfo{componentId: strct.ResultType.typeComponent, namespace: strct.ResultType.groupName}
 
 				factoryDetails.WriteString(fmt.Sprintf(`
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
+		bool read_write_result(::%[2]s::tl_istream &in, ::%[2]s::tl_ostream &out) override {
 			%[1]s result;
 			bool read_result = this->object.read_result(in, result);
 			if (!read_result) {
@@ -1093,30 +1040,33 @@ void tl2::factory::set_all_factories() {
 		}
 `,
 					resultTypeNoPrefix,
+					gen.cppBasictlNamespace(),
 				))
 			}
 			factoryDetails.WriteString(`
-    };`)
+	};`)
 			factoryDetails.WriteString(fmt.Sprintf(`
-	tl2::meta::set_create_object_by_name("%[1]s", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<%[2]s_%[3]s>();
+	::%[5]s::meta::set_create_object_by_name("%[1]s", []() -> std::unique_ptr<::%[5]s::meta::tl_object> {
+		return std::make_unique<%[2]s_%[3]s>();
 	});
 `,
 				wr.tlName.String(),
 				myFullTypeWithUnderlines,
 				implementedInterface,
 				myFullTypeNoPrefix,
+				gen.options.RootCPPNamespace,
 			))
 			if strct.ResultType != nil {
 				factoryDetails.WriteString(fmt.Sprintf(`
-	tl2::meta::set_create_function_by_name("%[1]s", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<%[2]s_%[3]s>();
+	::%[5]s::meta::set_create_function_by_name("%[1]s", []() -> std::unique_ptr<::%[5]s::meta::tl_function> {
+		return std::make_unique<%[2]s_%[3]s>();
 	});
 `,
 					wr.tlName.String(),
 					myFullTypeWithUnderlines,
 					implementedInterface,
 					myFullTypeNoPrefix,
+					gen.options.RootCPPNamespace,
 				))
 			}
 		}
@@ -1130,15 +1080,14 @@ void tl2::factory::set_all_factories() {
 	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n", filepath.Join(gen.options.RootCPP, filepath.Join("__meta", "headers"+hppExt))))
 	factoryDetails.WriteString(fmt.Sprintf("#include \"%s\"\n\n", filepath.Join(gen.options.RootCPP, filepathName)))
 
-	relativeFactoryDeps := strings.Builder{}
+	factoryFileDependencies := strings.Builder{}
 
 	for _, headerFile := range imports.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.fileName }) {
 		if !createdHpps[headerFile] {
 			continue
 		}
 		factoryDetails.WriteString(fmt.Sprintf("#include \"%s%s\"\n", filepath.Join(gen.options.RootCPP, headerFile), hppExt))
-		relativeDep, _ := filepath.Rel("__factory", headerFile+hppExt)
-		relativeFactoryDeps.WriteString(" " + relativeDep)
+		factoryFileDependencies.WriteString(" " + headerFile + hppExt)
 	}
 	factoryDetails.WriteString(suffix)
 
@@ -1149,33 +1098,15 @@ void tl2::factory::set_all_factories() {
 		return err
 	}
 
-	make.WriteString("# build object file for factories\n")
-	make.WriteString(`__build/__factory.o:
-	$(MAKE) -C __factory build CC="$(CC)" CFLAGS="$(CFLAGS)"
+	make.WriteString("# compile objects factories\n")
+	make.WriteString(fmt.Sprintf(`__build/__factory.o: %[1]s %[2]s%[3]s __build
+	$(CC) $(CFLAGS) -I. -o __build/__factory.o -c %[2]s
 `,
-	)
-	make.WriteString("\n")
-
-	relativeFilepathName, _ := filepath.Rel("__meta", filepathName)
-	relativeFilepathDetailsName, _ := filepath.Rel("__meta", filepathNameDetails)
-
-	factoryMakefile := strings.Builder{}
-
-	appendCompilerOptions(&factoryMakefile)
-
-	factoryMakefile.WriteString(fmt.Sprintf(`build: %[1]s %[2]s%[3]s
-	@mkdir -p ../__build
-	$(CC) $(CFLAGS) -I.. -o ../__build/__factory.o -c %[2]s
-`,
-		relativeFilepathName,
-		relativeFilepathDetailsName,
-		relativeFactoryDeps.String(),
+		filepathName,
+		filepathNameDetails,
+		factoryFileDependencies.String(),
 	))
-	factoryMakefile.WriteString("\n")
-
-	if err := gen.addCodeFile(filepath.Join("__factory", "Makefile"), factoryMakefile.String()); err != nil {
-		return err
-	}
+	make.WriteString("\n")
 
 	return nil
 }
@@ -1183,7 +1114,19 @@ void tl2::factory::set_all_factories() {
 func appendCompilerOptions(make *strings.Builder) {
 	make.WriteString(`# compiler options
 CC = g++
-CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror -Wunused-parameter
 
 `)
+}
+
+func cppRunLocalLinter(code, filename string) (string, string) {
+	if strings.HasSuffix(filename, hppExt) ||
+		strings.HasSuffix(filename, cppExt) {
+		code = strings.ReplaceAll(code, "\t", "  ")
+	}
+	return code, filename
+}
+
+func (gen *Gen2) cppBasictlNamespace() string {
+	return fmt.Sprintf("%[1]s::%[2]s", gen.options.RootCPPNamespace, "basictl")
 }

@@ -8,34 +8,34 @@
 #include "a/types/a.inner.h"
 
 
-namespace tl2 { namespace a { 
+namespace tlgen { namespace a { 
 struct Top2 {
-	uint32_t n = 0;
-	uint32_t m = 0;
-	::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>> c{};
+  uint32_t n = 0;
+  uint32_t m = 0;
+  ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>> c{};
 
-	std::string_view tl_name() const { return "a.top2"; }
-	uint32_t tl_tag() const { return 0x7082d18f; }
+  std::string_view tl_name() const { return "a.top2"; }
+  uint32_t tl_tag() const { return 0x7082d18f; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const Top2& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const Top2& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-}} // namespace tl2::a
+}} // namespace tlgen::a
 

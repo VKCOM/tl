@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/float.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void FloatReset(float& item) noexcept;
 
 bool FloatWriteJSON(std::ostream& s, const float& item) noexcept;
-bool FloatRead(::basictl::tl_istream & s, float& item) noexcept; 
-bool FloatWrite(::basictl::tl_ostream & s, const float& item) noexcept;
-bool FloatReadBoxed(::basictl::tl_istream & s, float& item);
-bool FloatWriteBoxed(::basictl::tl_ostream & s, const float& item);
+bool FloatRead(::tlgen::basictl::tl_istream & s, float& item) noexcept; 
+bool FloatWrite(::tlgen::basictl::tl_ostream & s, const float& item) noexcept;
+bool FloatReadBoxed(::tlgen::basictl::tl_istream & s, float& item);
+bool FloatWriteBoxed(::tlgen::basictl::tl_ostream & s, const float& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -6,38 +6,38 @@
 #include "a/types/a.Color.h"
 
 
-namespace tl2 { namespace ab { 
+namespace tlgen { namespace ab { 
 struct Call11 {
-	::tl2::a::Color x;
+  ::tlgen::a::Color x;
 
-	std::string_view tl_name() const { return "ab.call11"; }
-	uint32_t tl_tag() const { return 0xecb2a36c; }
+  std::string_view tl_name() const { return "ab.call11"; }
+  uint32_t tl_tag() const { return 0xecb2a36c; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	bool read_result(::basictl::tl_istream & s, ::tl2::a::Color & result) noexcept;
-	bool write_result(::basictl::tl_ostream & s, ::tl2::a::Color & result) noexcept;
+  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color & result) noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::a::Color & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, ::tl2::a::Color & result);
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, ::tl2::a::Color & result);
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::a::Color & result);
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::a::Color & result);
 
-	friend std::ostream& operator<<(std::ostream& s, const Call11& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const Call11& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-}} // namespace tl2::ab
+}} // namespace tlgen::ab
 

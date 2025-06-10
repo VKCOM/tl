@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/typeD.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TypeDReset(::tl2::TypeD& item) noexcept;
+void TypeDReset(::tlgen::TypeD& item) noexcept;
 
-bool TypeDWriteJSON(std::ostream& s, const ::tl2::TypeD& item) noexcept;
-bool TypeDRead(::basictl::tl_istream & s, ::tl2::TypeD& item) noexcept; 
-bool TypeDWrite(::basictl::tl_ostream & s, const ::tl2::TypeD& item) noexcept;
-bool TypeDReadBoxed(::basictl::tl_istream & s, ::tl2::TypeD& item);
-bool TypeDWriteBoxed(::basictl::tl_ostream & s, const ::tl2::TypeD& item);
+bool TypeDWriteJSON(std::ostream& s, const ::tlgen::TypeD& item) noexcept;
+bool TypeDRead(::tlgen::basictl::tl_istream & s, ::tlgen::TypeD& item) noexcept; 
+bool TypeDWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::TypeD& item) noexcept;
+bool TypeDReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::TypeD& item);
+bool TypeDWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::TypeD& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

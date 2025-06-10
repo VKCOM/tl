@@ -16,10 +16,14 @@ namespace basictl {
         explicit tl_connector_result(Type buffer)
                 : result_(buffer) {}
 
-        explicit tl_connector_result(tl_connector_error error)
+        explicit tl_connector_result(basictl::tl_connector_error error)
                 : result_(std::move(error)) {}
 
         explicit operator bool() const noexcept {
+            return std::holds_alternative<Type>(result_);
+        }
+
+        bool has_value() const noexcept {
             return std::holds_alternative<Type>(result_);
         }
 
@@ -36,7 +40,7 @@ namespace basictl {
         }
 
     private:
-        std::variant<Type, tl_connector_error> result_;
+        std::variant<Type, basictl::tl_connector_error> result_;
     };
 
     class tl_input_connector {
@@ -45,7 +49,7 @@ namespace basictl {
 
         virtual tl_connector_result<std::span<const std::byte>> get_buffer() noexcept = 0;
 
-        virtual void release_buffer(size_t size) noexcept = 0;
+        virtual void advance(size_t size) noexcept = 0;
     };
 
     class tl_output_connector {
@@ -54,7 +58,7 @@ namespace basictl {
 
         virtual tl_connector_result<std::span<std::byte>> get_buffer() noexcept = 0;
 
-        virtual void release_buffer(size_t size) noexcept = 0;
+        virtual void advance(size_t size) noexcept = 0;
     };
 }
 

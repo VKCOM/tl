@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cd/types/cd.typeD.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CdTypeDReset(::tl2::cd::TypeD& item) noexcept;
+void CdTypeDReset(::tlgen::cd::TypeD& item) noexcept;
 
-bool CdTypeDWriteJSON(std::ostream& s, const ::tl2::cd::TypeD& item) noexcept;
-bool CdTypeDRead(::basictl::tl_istream & s, ::tl2::cd::TypeD& item) noexcept; 
-bool CdTypeDWrite(::basictl::tl_ostream & s, const ::tl2::cd::TypeD& item) noexcept;
-bool CdTypeDReadBoxed(::basictl::tl_istream & s, ::tl2::cd::TypeD& item);
-bool CdTypeDWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cd::TypeD& item);
+bool CdTypeDWriteJSON(std::ostream& s, const ::tlgen::cd::TypeD& item) noexcept;
+bool CdTypeDRead(::tlgen::basictl::tl_istream & s, ::tlgen::cd::TypeD& item) noexcept; 
+bool CdTypeDWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::TypeD& item) noexcept;
+bool CdTypeDReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cd::TypeD& item);
+bool CdTypeDWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::TypeD& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

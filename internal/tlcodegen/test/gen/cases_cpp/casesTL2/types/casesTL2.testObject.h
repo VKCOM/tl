@@ -8,39 +8,39 @@
 #include "__common_namespace/types/true.h"
 
 
-namespace tl2 { namespace casesTL2 { 
+namespace tlgen { namespace casesTL2 { 
 struct TestObject {
-	uint32_t n = 0;
-	::tl2::True f1{};
-	bool f2 = false;
-	std::vector<bool> f3;
-	::tl2::benchmarks::VrutoyPositions f4{};
-	bool f5 = false;
-	std::vector<::tl2::benchmarks::VrutoyTopLevelUnion> f6;
-	std::vector<::tl2::True> f7;
+  uint32_t n = 0;
+  ::tlgen::True f1{};
+  bool f2 = false;
+  std::vector<bool> f3;
+  ::tlgen::benchmarks::VrutoyPositions f4{};
+  bool f5 = false;
+  std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion> f6;
+  std::vector<::tlgen::True> f7;
 
-	std::string_view tl_name() const { return "casesTL2.testObject"; }
-	uint32_t tl_tag() const { return 0x4f96dd95; }
+  std::string_view tl_name() const { return "casesTL2.testObject"; }
+  uint32_t tl_tag() const { return 0x4f96dd95; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const TestObject& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const TestObject& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-}} // namespace tl2::casesTL2
+}} // namespace tlgen::casesTL2
 

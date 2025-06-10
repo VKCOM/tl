@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cstdint>
 
-namespace basictl {
+namespace tlgen::basictl {
     inline constexpr std::size_t TL_MAX_TINY_STRING_LEN = 253;
     inline constexpr std::size_t TL_BIG_STRING_LEN = 0xffffff;
     inline constexpr std::uint8_t TL_BIG_STRING_MARKER = 0xfe;

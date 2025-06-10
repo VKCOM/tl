@@ -6,15 +6,15 @@
 #include "__common_namespace/types/vector.h"
 #include "cyc1/types/cyc1.myCycle.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorCyc1MyCycleReset(std::vector<::tl2::cyc1::MyCycle>& item) noexcept;
+void VectorCyc1MyCycleReset(std::vector<::tlgen::cyc1::MyCycle>& item) noexcept;
 
-bool VectorCyc1MyCycleWriteJSON(std::ostream& s, const std::vector<::tl2::cyc1::MyCycle>& item) noexcept;
-bool VectorCyc1MyCycleRead(::basictl::tl_istream & s, std::vector<::tl2::cyc1::MyCycle>& item) noexcept; 
-bool VectorCyc1MyCycleWrite(::basictl::tl_ostream & s, const std::vector<::tl2::cyc1::MyCycle>& item) noexcept;
-bool VectorCyc1MyCycleReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::cyc1::MyCycle>& item);
-bool VectorCyc1MyCycleWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::cyc1::MyCycle>& item);
+bool VectorCyc1MyCycleWriteJSON(std::ostream& s, const std::vector<::tlgen::cyc1::MyCycle>& item) noexcept;
+bool VectorCyc1MyCycleRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::cyc1::MyCycle>& item) noexcept; 
+bool VectorCyc1MyCycleWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::cyc1::MyCycle>& item) noexcept;
+bool VectorCyc1MyCycleReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::cyc1::MyCycle>& item);
+bool VectorCyc1MyCycleWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::cyc1::MyCycle>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cd/types/cd.topLevel3.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CdTopLevel3Reset(::tl2::cd::TopLevel3& item) noexcept;
+void CdTopLevel3Reset(::tlgen::cd::TopLevel3& item) noexcept;
 
-bool CdTopLevel3WriteJSON(std::ostream& s, const ::tl2::cd::TopLevel3& item) noexcept;
-bool CdTopLevel3Read(::basictl::tl_istream & s, ::tl2::cd::TopLevel3& item) noexcept; 
-bool CdTopLevel3Write(::basictl::tl_ostream & s, const ::tl2::cd::TopLevel3& item) noexcept;
-bool CdTopLevel3ReadBoxed(::basictl::tl_istream & s, ::tl2::cd::TopLevel3& item);
-bool CdTopLevel3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cd::TopLevel3& item);
+bool CdTopLevel3WriteJSON(std::ostream& s, const ::tlgen::cd::TopLevel3& item) noexcept;
+bool CdTopLevel3Read(::tlgen::basictl::tl_istream & s, ::tlgen::cd::TopLevel3& item) noexcept; 
+bool CdTopLevel3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::TopLevel3& item) noexcept;
+bool CdTopLevel3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cd::TopLevel3& item);
+bool CdTopLevel3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::TopLevel3& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

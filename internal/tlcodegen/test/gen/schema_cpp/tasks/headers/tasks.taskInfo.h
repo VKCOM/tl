@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "tasks/types/tasks.taskInfo.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksTaskInfoReset(::tl2::tasks::TaskInfo& item) noexcept;
+void TasksTaskInfoReset(::tlgen::tasks::TaskInfo& item) noexcept;
 
-bool TasksTaskInfoWriteJSON(std::ostream& s, const ::tl2::tasks::TaskInfo& item) noexcept;
-bool TasksTaskInfoRead(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item) noexcept; 
-bool TasksTaskInfoWrite(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item) noexcept;
-bool TasksTaskInfoReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::TaskInfo& item);
-bool TasksTaskInfoWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::TaskInfo& item);
+bool TasksTaskInfoWriteJSON(std::ostream& s, const ::tlgen::tasks::TaskInfo& item) noexcept;
+bool TasksTaskInfoRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::TaskInfo& item) noexcept; 
+bool TasksTaskInfoWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::TaskInfo& item) noexcept;
+bool TasksTaskInfoReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::TaskInfo& item);
+bool TasksTaskInfoWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::TaskInfo& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool TasksTaskInfoMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::tasks::TaskInfo>& item);
+bool TasksTaskInfoMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::tasks::TaskInfo>& item);
 
-bool TasksTaskInfoMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::tasks::TaskInfo>& item);
-bool TasksTaskInfoMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::tasks::TaskInfo>& item);
+bool TasksTaskInfoMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::tasks::TaskInfo>& item);
+bool TasksTaskInfoMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::tasks::TaskInfo>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

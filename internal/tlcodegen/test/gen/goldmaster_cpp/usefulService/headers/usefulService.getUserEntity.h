@@ -6,18 +6,18 @@
 #include "usefulService/functions/usefulService.getUserEntity.h"
 #include "usefulService/types/usefulService.getUserEntityResult.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UsefulServiceGetUserEntityReset(::tl2::usefulService::GetUserEntity& item) noexcept;
+void UsefulServiceGetUserEntityReset(::tlgen::usefulService::GetUserEntity& item) noexcept;
 
-bool UsefulServiceGetUserEntityWriteJSON(std::ostream& s, const ::tl2::usefulService::GetUserEntity& item) noexcept;
-bool UsefulServiceGetUserEntityRead(::basictl::tl_istream & s, ::tl2::usefulService::GetUserEntity& item) noexcept; 
-bool UsefulServiceGetUserEntityWrite(::basictl::tl_ostream & s, const ::tl2::usefulService::GetUserEntity& item) noexcept;
-bool UsefulServiceGetUserEntityReadBoxed(::basictl::tl_istream & s, ::tl2::usefulService::GetUserEntity& item);
-bool UsefulServiceGetUserEntityWriteBoxed(::basictl::tl_ostream & s, const ::tl2::usefulService::GetUserEntity& item);
+bool UsefulServiceGetUserEntityWriteJSON(std::ostream& s, const ::tlgen::usefulService::GetUserEntity& item) noexcept;
+bool UsefulServiceGetUserEntityRead(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntity& item) noexcept; 
+bool UsefulServiceGetUserEntityWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::GetUserEntity& item) noexcept;
+bool UsefulServiceGetUserEntityReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntity& item);
+bool UsefulServiceGetUserEntityWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::GetUserEntity& item);
 
-bool UsefulServiceGetUserEntityReadResult(::basictl::tl_istream & s, ::tl2::usefulService::GetUserEntity& item, std::optional<::tl2::usefulService::GetUserEntityResult>& result);
-bool UsefulServiceGetUserEntityWriteResult(::basictl::tl_ostream & s, ::tl2::usefulService::GetUserEntity& item, std::optional<::tl2::usefulService::GetUserEntityResult>& result);
-		
-}} // namespace tl2::details
+bool UsefulServiceGetUserEntityReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result);
+bool UsefulServiceGetUserEntityWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result);
+    
+}} // namespace tlgen::details
 

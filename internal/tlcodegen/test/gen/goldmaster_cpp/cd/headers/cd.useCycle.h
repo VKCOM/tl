@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cd/types/cd.useCycle.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CdUseCycleReset(::tl2::cd::UseCycle& item) noexcept;
+void CdUseCycleReset(::tlgen::cd::UseCycle& item) noexcept;
 
-bool CdUseCycleWriteJSON(std::ostream& s, const ::tl2::cd::UseCycle& item) noexcept;
-bool CdUseCycleRead(::basictl::tl_istream & s, ::tl2::cd::UseCycle& item) noexcept; 
-bool CdUseCycleWrite(::basictl::tl_ostream & s, const ::tl2::cd::UseCycle& item) noexcept;
-bool CdUseCycleReadBoxed(::basictl::tl_istream & s, ::tl2::cd::UseCycle& item);
-bool CdUseCycleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cd::UseCycle& item);
+bool CdUseCycleWriteJSON(std::ostream& s, const ::tlgen::cd::UseCycle& item) noexcept;
+bool CdUseCycleRead(::tlgen::basictl::tl_istream & s, ::tlgen::cd::UseCycle& item) noexcept; 
+bool CdUseCycleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::UseCycle& item) noexcept;
+bool CdUseCycleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cd::UseCycle& item);
+bool CdUseCycleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::UseCycle& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

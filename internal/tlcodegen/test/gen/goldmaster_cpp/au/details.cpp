@@ -2,89 +2,96 @@
 #include "au/headers/au.nionA.h"
 
 
-bool tl2::au::NionA::write_json(std::ostream& s)const {
-	if (!::tl2::details::AuNionAWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::au::NionA::write_json(std::ostream& s)const {
+  if (!::tlgen::details::AuNionAWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::au::NionA::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AuNionARead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::au::NionA::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AuNionARead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::au::NionA::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AuNionAWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::au::NionA::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AuNionAWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::au::NionA::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::au::NionA::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::au::NionA::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::au::NionA::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::au::NionA::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AuNionAReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::au::NionA::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AuNionAReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::au::NionA::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AuNionAWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::au::NionA::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AuNionAWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::au::NionA::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::au::NionA::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::au::NionA::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::au::NionA::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::AuNionAReset(::tl2::au::NionA& item) noexcept {
-	item.b = 0;
+void tlgen::details::AuNionAReset(::tlgen::au::NionA& item) noexcept {
+  (void)item;
+  item.b = 0;
 }
 
-bool tl2::details::AuNionAWriteJSON(std::ostream& s, const ::tl2::au::NionA& item) noexcept {
-	s << "{";
-	if (item.b != 0) {
-		s << "\"b\":";
-		s << item.b;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::AuNionAWriteJSON(std::ostream& s, const ::tlgen::au::NionA& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.b != 0) {
+    s << "\"b\":";
+    s << item.b;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::AuNionARead(::basictl::tl_istream & s, ::tl2::au::NionA& item) noexcept {
-	if (!s.int_read(item.b)) { return false; }
-	return true;
+bool tlgen::details::AuNionARead(::tlgen::basictl::tl_istream & s, ::tlgen::au::NionA& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.b)) { return false; }
+  return true;
 }
 
-bool tl2::details::AuNionAWrite(::basictl::tl_ostream & s, const ::tl2::au::NionA& item) noexcept {
-	if (!s.int_write(item.b)) { return false;}
-	return true;
+bool tlgen::details::AuNionAWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::au::NionA& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.b)) { return false;}
+  return true;
 }
 
-bool tl2::details::AuNionAReadBoxed(::basictl::tl_istream & s, ::tl2::au::NionA& item) {
-	if (!s.nat_read_exact_tag(0xdf61f632)) { return false; }
-	return tl2::details::AuNionARead(s, item);
+bool tlgen::details::AuNionAReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::au::NionA& item) {
+  if (!s.nat_read_exact_tag(0xdf61f632)) { return false; }
+  return tlgen::details::AuNionARead(s, item);
 }
 
-bool tl2::details::AuNionAWriteBoxed(::basictl::tl_ostream & s, const ::tl2::au::NionA& item) {
-	if (!s.nat_write(0xdf61f632)) { return false; }
-	return tl2::details::AuNionAWrite(s, item);
+bool tlgen::details::AuNionAWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::au::NionA& item) {
+  if (!s.nat_write(0xdf61f632)) { return false; }
+  return tlgen::details::AuNionAWrite(s, item);
 }

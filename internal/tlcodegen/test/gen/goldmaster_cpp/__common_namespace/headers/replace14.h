@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace14.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace14LongReset(::tl2::Replace14<int64_t>& item) noexcept;
+void Replace14LongReset(::tlgen::Replace14<int64_t>& item) noexcept;
 
-bool Replace14LongWriteJSON(std::ostream& s, const ::tl2::Replace14<int64_t>& item, uint32_t nat_n) noexcept;
-bool Replace14LongRead(::basictl::tl_istream & s, ::tl2::Replace14<int64_t>& item, uint32_t nat_n) noexcept; 
-bool Replace14LongWrite(::basictl::tl_ostream & s, const ::tl2::Replace14<int64_t>& item, uint32_t nat_n) noexcept;
-bool Replace14LongReadBoxed(::basictl::tl_istream & s, ::tl2::Replace14<int64_t>& item, uint32_t nat_n);
-bool Replace14LongWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Replace14<int64_t>& item, uint32_t nat_n);
+bool Replace14LongWriteJSON(std::ostream& s, const ::tlgen::Replace14<int64_t>& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool Replace14LongRead(::tlgen::basictl::tl_istream & s, ::tlgen::Replace14<int64_t>& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool Replace14LongWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace14<int64_t>& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool Replace14LongReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Replace14<int64_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool Replace14LongWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace14<int64_t>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

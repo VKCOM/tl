@@ -5,35 +5,35 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/pair.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple3PairBoxedIntLongReset(std::array<::tl2::Pair<int32_t, int64_t>, 3>& item);
+void BuiltinTuple3PairBoxedIntLongReset(std::array<::tlgen::Pair<int32_t, int64_t>, 3>& item);
 
-bool BuiltinTuple3PairBoxedIntLongWriteJSON(std::ostream & s, const std::array<::tl2::Pair<int32_t, int64_t>, 3>& item);
-bool BuiltinTuple3PairBoxedIntLongRead(::basictl::tl_istream & s, std::array<::tl2::Pair<int32_t, int64_t>, 3>& item);
-bool BuiltinTuple3PairBoxedIntLongWrite(::basictl::tl_ostream & s, const std::array<::tl2::Pair<int32_t, int64_t>, 3>& item);
+bool BuiltinTuple3PairBoxedIntLongWriteJSON(std::ostream & s, const std::array<::tlgen::Pair<int32_t, int64_t>, 3>& item);
+bool BuiltinTuple3PairBoxedIntLongRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Pair<int32_t, int64_t>, 3>& item);
+bool BuiltinTuple3PairBoxedIntLongWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Pair<int32_t, int64_t>, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuplePairBoxedIntLongReset(std::vector<::tl2::Pair<int32_t, int64_t>>& item);
+void BuiltinTuplePairBoxedIntLongReset(std::vector<::tlgen::Pair<int32_t, int64_t>>& item);
 
-bool BuiltinTuplePairBoxedIntLongWriteJSON(std::ostream & s, const std::vector<::tl2::Pair<int32_t, int64_t>>& item, uint32_t nat_n);
-bool BuiltinTuplePairBoxedIntLongRead(::basictl::tl_istream & s, std::vector<::tl2::Pair<int32_t, int64_t>>& item, uint32_t nat_n);
-bool BuiltinTuplePairBoxedIntLongWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Pair<int32_t, int64_t>>& item, uint32_t nat_n);
+bool BuiltinTuplePairBoxedIntLongWriteJSON(std::ostream & s, const std::vector<::tlgen::Pair<int32_t, int64_t>>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTuplePairBoxedIntLongRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Pair<int32_t, int64_t>>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTuplePairBoxedIntLongWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Pair<int32_t, int64_t>>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairIntLongReset(::tl2::Pair<int32_t, int64_t>& item) noexcept;
+void PairIntLongReset(::tlgen::Pair<int32_t, int64_t>& item) noexcept;
 
-bool PairIntLongWriteJSON(std::ostream& s, const ::tl2::Pair<int32_t, int64_t>& item) noexcept;
-bool PairIntLongRead(::basictl::tl_istream & s, ::tl2::Pair<int32_t, int64_t>& item) noexcept; 
-bool PairIntLongWrite(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, int64_t>& item) noexcept;
-bool PairIntLongReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<int32_t, int64_t>& item);
-bool PairIntLongWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, int64_t>& item);
+bool PairIntLongWriteJSON(std::ostream& s, const ::tlgen::Pair<int32_t, int64_t>& item) noexcept;
+bool PairIntLongRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, int64_t>& item) noexcept; 
+bool PairIntLongWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, int64_t>& item) noexcept;
+bool PairIntLongReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, int64_t>& item);
+bool PairIntLongWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, int64_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

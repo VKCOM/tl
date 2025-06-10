@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/statOne.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void StatOneReset(::tl2::StatOne& item) noexcept;
+void StatOneReset(::tlgen::StatOne& item) noexcept;
 
-bool StatOneWriteJSON(std::ostream& s, const ::tl2::StatOne& item) noexcept;
-bool StatOneRead(::basictl::tl_istream & s, ::tl2::StatOne& item) noexcept; 
-bool StatOneWrite(::basictl::tl_ostream & s, const ::tl2::StatOne& item) noexcept;
-bool StatOneReadBoxed(::basictl::tl_istream & s, ::tl2::StatOne& item);
-bool StatOneWriteBoxed(::basictl::tl_ostream & s, const ::tl2::StatOne& item);
+bool StatOneWriteJSON(std::ostream& s, const ::tlgen::StatOne& item) noexcept;
+bool StatOneRead(::tlgen::basictl::tl_istream & s, ::tlgen::StatOne& item) noexcept; 
+bool StatOneWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::StatOne& item) noexcept;
+bool StatOneReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::StatOne& item);
+bool StatOneWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::StatOne& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

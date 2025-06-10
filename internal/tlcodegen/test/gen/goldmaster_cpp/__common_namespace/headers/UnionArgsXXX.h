@@ -5,23 +5,23 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/UnionArgsXXX.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UnionArgsXXXIntReset(::tl2::UnionArgsXXX<int32_t>& item) noexcept;
+void UnionArgsXXXIntReset(::tlgen::UnionArgsXXX<int32_t>& item) noexcept;
 
-bool UnionArgsXXXIntWriteJSON(std::ostream & s, const ::tl2::UnionArgsXXX<int32_t>& item, uint32_t nat_Y) noexcept;
-bool UnionArgsXXXIntReadBoxed(::basictl::tl_istream & s, ::tl2::UnionArgsXXX<int32_t>& item, uint32_t nat_Y) noexcept;
-bool UnionArgsXXXIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UnionArgsXXX<int32_t>& item, uint32_t nat_Y) noexcept;
+bool UnionArgsXXXIntWriteJSON(std::ostream & s, const ::tlgen::UnionArgsXXX<int32_t>& item, [[maybe_unused]] uint32_t nat_Y) noexcept;
+bool UnionArgsXXXIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UnionArgsXXX<int32_t>& item, [[maybe_unused]] uint32_t nat_Y) noexcept;
+bool UnionArgsXXXIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UnionArgsXXX<int32_t>& item, [[maybe_unused]] uint32_t nat_Y) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UnionArgsXXXLongReset(::tl2::UnionArgsXXX<int64_t>& item) noexcept;
+void UnionArgsXXXLongReset(::tlgen::UnionArgsXXX<int64_t>& item) noexcept;
 
-bool UnionArgsXXXLongWriteJSON(std::ostream & s, const ::tl2::UnionArgsXXX<int64_t>& item, uint32_t nat_Y) noexcept;
-bool UnionArgsXXXLongReadBoxed(::basictl::tl_istream & s, ::tl2::UnionArgsXXX<int64_t>& item, uint32_t nat_Y) noexcept;
-bool UnionArgsXXXLongWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UnionArgsXXX<int64_t>& item, uint32_t nat_Y) noexcept;
+bool UnionArgsXXXLongWriteJSON(std::ostream & s, const ::tlgen::UnionArgsXXX<int64_t>& item, [[maybe_unused]] uint32_t nat_Y) noexcept;
+bool UnionArgsXXXLongReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UnionArgsXXX<int64_t>& item, [[maybe_unused]] uint32_t nat_Y) noexcept;
+bool UnionArgsXXXLongWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UnionArgsXXX<int64_t>& item, [[maybe_unused]] uint32_t nat_Y) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

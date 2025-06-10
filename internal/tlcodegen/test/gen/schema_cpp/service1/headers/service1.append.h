@@ -6,18 +6,18 @@
 #include "service1/functions/service1.append.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1AppendReset(::tl2::service1::Append& item) noexcept;
+void Service1AppendReset(::tlgen::service1::Append& item) noexcept;
 
-bool Service1AppendWriteJSON(std::ostream& s, const ::tl2::service1::Append& item) noexcept;
-bool Service1AppendRead(::basictl::tl_istream & s, ::tl2::service1::Append& item) noexcept; 
-bool Service1AppendWrite(::basictl::tl_ostream & s, const ::tl2::service1::Append& item) noexcept;
-bool Service1AppendReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Append& item);
-bool Service1AppendWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Append& item);
+bool Service1AppendWriteJSON(std::ostream& s, const ::tlgen::service1::Append& item) noexcept;
+bool Service1AppendRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Append& item) noexcept; 
+bool Service1AppendWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Append& item) noexcept;
+bool Service1AppendReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Append& item);
+bool Service1AppendWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Append& item);
 
-bool Service1AppendReadResult(::basictl::tl_istream & s, ::tl2::service1::Append& item, bool& result);
-bool Service1AppendWriteResult(::basictl::tl_ostream & s, ::tl2::service1::Append& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service1AppendReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Append& item, bool& result);
+bool Service1AppendWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::Append& item, bool& result);
+    
+}} // namespace tlgen::details
 

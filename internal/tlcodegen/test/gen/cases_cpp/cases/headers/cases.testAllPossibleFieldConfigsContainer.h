@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testAllPossibleFieldConfigsContainer.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestAllPossibleFieldConfigsContainerReset(::tl2::cases::TestAllPossibleFieldConfigsContainer& item) noexcept;
+void CasesTestAllPossibleFieldConfigsContainerReset(::tlgen::cases::TestAllPossibleFieldConfigsContainer& item) noexcept;
 
-bool CasesTestAllPossibleFieldConfigsContainerWriteJSON(std::ostream& s, const ::tl2::cases::TestAllPossibleFieldConfigsContainer& item) noexcept;
-bool CasesTestAllPossibleFieldConfigsContainerRead(::basictl::tl_istream & s, ::tl2::cases::TestAllPossibleFieldConfigsContainer& item) noexcept; 
-bool CasesTestAllPossibleFieldConfigsContainerWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestAllPossibleFieldConfigsContainer& item) noexcept;
-bool CasesTestAllPossibleFieldConfigsContainerReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestAllPossibleFieldConfigsContainer& item);
-bool CasesTestAllPossibleFieldConfigsContainerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestAllPossibleFieldConfigsContainer& item);
+bool CasesTestAllPossibleFieldConfigsContainerWriteJSON(std::ostream& s, const ::tlgen::cases::TestAllPossibleFieldConfigsContainer& item) noexcept;
+bool CasesTestAllPossibleFieldConfigsContainerRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestAllPossibleFieldConfigsContainer& item) noexcept; 
+bool CasesTestAllPossibleFieldConfigsContainerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestAllPossibleFieldConfigsContainer& item) noexcept;
+bool CasesTestAllPossibleFieldConfigsContainerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestAllPossibleFieldConfigsContainer& item);
+bool CasesTestAllPossibleFieldConfigsContainerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestAllPossibleFieldConfigsContainer& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

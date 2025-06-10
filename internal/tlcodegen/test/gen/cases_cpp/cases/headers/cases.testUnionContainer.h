@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testUnionContainer.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestUnionContainerReset(::tl2::cases::TestUnionContainer& item) noexcept;
+void CasesTestUnionContainerReset(::tlgen::cases::TestUnionContainer& item) noexcept;
 
-bool CasesTestUnionContainerWriteJSON(std::ostream& s, const ::tl2::cases::TestUnionContainer& item) noexcept;
-bool CasesTestUnionContainerRead(::basictl::tl_istream & s, ::tl2::cases::TestUnionContainer& item) noexcept; 
-bool CasesTestUnionContainerWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestUnionContainer& item) noexcept;
-bool CasesTestUnionContainerReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestUnionContainer& item);
-bool CasesTestUnionContainerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestUnionContainer& item);
+bool CasesTestUnionContainerWriteJSON(std::ostream& s, const ::tlgen::cases::TestUnionContainer& item) noexcept;
+bool CasesTestUnionContainerRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestUnionContainer& item) noexcept; 
+bool CasesTestUnionContainerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestUnionContainer& item) noexcept;
+bool CasesTestUnionContainerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestUnionContainer& item);
+bool CasesTestUnionContainerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestUnionContainer& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

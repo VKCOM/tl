@@ -6,35 +6,35 @@
 #include "__common_namespace/types/vector.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void VectorIntReset(std::vector<int32_t>& item) noexcept;
 
 bool VectorIntWriteJSON(std::ostream& s, const std::vector<int32_t>& item) noexcept;
-bool VectorIntRead(::basictl::tl_istream & s, std::vector<int32_t>& item) noexcept; 
-bool VectorIntWrite(::basictl::tl_ostream & s, const std::vector<int32_t>& item) noexcept;
-bool VectorIntReadBoxed(::basictl::tl_istream & s, std::vector<int32_t>& item);
-bool VectorIntWriteBoxed(::basictl::tl_ostream & s, const std::vector<int32_t>& item);
+bool VectorIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item) noexcept; 
+bool VectorIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item) noexcept;
+bool VectorIntReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item);
+bool VectorIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 bool VectorIntBoxedMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<int32_t>>& item);
 
-bool VectorIntBoxedMaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<int32_t>>& item);
-bool VectorIntBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<std::vector<int32_t>>& item);
+bool VectorIntBoxedMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<std::vector<int32_t>>& item);
+bool VectorIntBoxedMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<int32_t>>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 bool VectorIntMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<int32_t>>& item);
 
-bool VectorIntMaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<int32_t>>& item);
-bool VectorIntMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<std::vector<int32_t>>& item);
+bool VectorIntMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<std::vector<int32_t>>& item);
+bool VectorIntMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<int32_t>>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

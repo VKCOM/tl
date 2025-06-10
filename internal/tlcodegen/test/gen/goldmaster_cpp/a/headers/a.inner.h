@@ -5,27 +5,27 @@
 #include "basictl/io_throwable_streams.h"
 #include "a/types/a.inner.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AInnerReset(::tl2::a::Inner& item) noexcept;
+void AInnerReset(::tlgen::a::Inner& item) noexcept;
 
-bool AInnerWriteJSON(std::ostream& s, const ::tl2::a::Inner& item, uint32_t nat_I) noexcept;
-bool AInnerRead(::basictl::tl_istream & s, ::tl2::a::Inner& item, uint32_t nat_I) noexcept; 
-bool AInnerWrite(::basictl::tl_ostream & s, const ::tl2::a::Inner& item, uint32_t nat_I) noexcept;
-bool AInnerReadBoxed(::basictl::tl_istream & s, ::tl2::a::Inner& item, uint32_t nat_I);
-bool AInnerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Inner& item, uint32_t nat_I);
+bool AInnerWriteJSON(std::ostream& s, const ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) noexcept;
+bool AInnerRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) noexcept; 
+bool AInnerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) noexcept;
+bool AInnerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I);
+bool AInnerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AInner3Reset(::tl2::a::InnerI<3>& item) noexcept;
+void AInner3Reset(::tlgen::a::InnerI<3>& item) noexcept;
 
-bool AInner3WriteJSON(std::ostream& s, const ::tl2::a::InnerI<3>& item) noexcept;
-bool AInner3Read(::basictl::tl_istream & s, ::tl2::a::InnerI<3>& item) noexcept; 
-bool AInner3Write(::basictl::tl_ostream & s, const ::tl2::a::InnerI<3>& item) noexcept;
-bool AInner3ReadBoxed(::basictl::tl_istream & s, ::tl2::a::InnerI<3>& item);
-bool AInner3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::InnerI<3>& item);
+bool AInner3WriteJSON(std::ostream& s, const ::tlgen::a::InnerI<3>& item) noexcept;
+bool AInner3Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::InnerI<3>& item) noexcept; 
+bool AInner3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::InnerI<3>& item) noexcept;
+bool AInner3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::InnerI<3>& item);
+bool AInner3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::InnerI<3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

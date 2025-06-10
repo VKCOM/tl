@@ -7,42 +7,42 @@
 #include "benchmarks/types/benchmarks.vruhash.h"
 
 
-namespace tl2 { namespace benchmarks { 
+namespace tlgen { namespace benchmarks { 
 struct Vruposition {
-	uint32_t fields_mask = 0;
-	::tl2::True commit_bit{};
-	::tl2::True meta_block{};
-	::tl2::True split_payload{};
-	::tl2::True rotation_block{};
-	::tl2::True canonical_hash{};
-	int64_t payload_offset = 0;
-	int64_t block_time_nano = 0;
-	::tl2::benchmarks::Vruhash hash{};
-	int64_t file_offset = 0;
-	int64_t seq_number = 0;
+  uint32_t fields_mask = 0;
+  ::tlgen::True commit_bit{};
+  ::tlgen::True meta_block{};
+  ::tlgen::True split_payload{};
+  ::tlgen::True rotation_block{};
+  ::tlgen::True canonical_hash{};
+  int64_t payload_offset = 0;
+  int64_t block_time_nano = 0;
+  ::tlgen::benchmarks::Vruhash hash{};
+  int64_t file_offset = 0;
+  int64_t seq_number = 0;
 
-	std::string_view tl_name() const { return "benchmarks.vruposition"; }
-	uint32_t tl_tag() const { return 0x32792c04; }
+  std::string_view tl_name() const { return "benchmarks.vruposition"; }
+  uint32_t tl_tag() const { return 0x32792c04; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const Vruposition& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const Vruposition& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-}} // namespace tl2::benchmarks
+}} // namespace tlgen::benchmarks
 

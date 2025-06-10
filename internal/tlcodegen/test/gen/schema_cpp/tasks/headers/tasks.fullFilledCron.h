@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "tasks/types/tasks.fullFilledCron.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksFullFilledCronReset(::tl2::tasks::FullFilledCron& item) noexcept;
+void TasksFullFilledCronReset(::tlgen::tasks::FullFilledCron& item) noexcept;
 
-bool TasksFullFilledCronWriteJSON(std::ostream& s, const ::tl2::tasks::FullFilledCron& item) noexcept;
-bool TasksFullFilledCronRead(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item) noexcept; 
-bool TasksFullFilledCronWrite(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item) noexcept;
-bool TasksFullFilledCronReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::FullFilledCron& item);
-bool TasksFullFilledCronWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::FullFilledCron& item);
+bool TasksFullFilledCronWriteJSON(std::ostream& s, const ::tlgen::tasks::FullFilledCron& item) noexcept;
+bool TasksFullFilledCronRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::FullFilledCron& item) noexcept; 
+bool TasksFullFilledCronWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::FullFilledCron& item) noexcept;
+bool TasksFullFilledCronReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::FullFilledCron& item);
+bool TasksFullFilledCronWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::FullFilledCron& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "service1/types/service1.strvalue.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1StrvalueReset(::tl2::service1::Strvalue& item) noexcept;
+void Service1StrvalueReset(::tlgen::service1::Strvalue& item) noexcept;
 
-bool Service1StrvalueWriteJSON(std::ostream& s, const ::tl2::service1::Strvalue& item) noexcept;
-bool Service1StrvalueRead(::basictl::tl_istream & s, ::tl2::service1::Strvalue& item) noexcept; 
-bool Service1StrvalueWrite(::basictl::tl_ostream & s, const ::tl2::service1::Strvalue& item) noexcept;
-bool Service1StrvalueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Strvalue& item);
-bool Service1StrvalueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Strvalue& item);
+bool Service1StrvalueWriteJSON(std::ostream& s, const ::tlgen::service1::Strvalue& item) noexcept;
+bool Service1StrvalueRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Strvalue& item) noexcept; 
+bool Service1StrvalueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Strvalue& item) noexcept;
+bool Service1StrvalueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Strvalue& item);
+bool Service1StrvalueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Strvalue& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

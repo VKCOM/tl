@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testTuple.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestTupleReset(::tl2::cases::TestTuple& item) noexcept;
+void CasesTestTupleReset(::tlgen::cases::TestTuple& item) noexcept;
 
-bool CasesTestTupleWriteJSON(std::ostream& s, const ::tl2::cases::TestTuple& item) noexcept;
-bool CasesTestTupleRead(::basictl::tl_istream & s, ::tl2::cases::TestTuple& item) noexcept; 
-bool CasesTestTupleWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestTuple& item) noexcept;
-bool CasesTestTupleReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestTuple& item);
-bool CasesTestTupleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestTuple& item);
+bool CasesTestTupleWriteJSON(std::ostream& s, const ::tlgen::cases::TestTuple& item) noexcept;
+bool CasesTestTupleRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestTuple& item) noexcept; 
+bool CasesTestTupleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestTuple& item) noexcept;
+bool CasesTestTupleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestTuple& item);
+bool CasesTestTupleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestTuple& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

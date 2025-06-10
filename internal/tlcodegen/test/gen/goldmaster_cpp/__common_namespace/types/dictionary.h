@@ -5,8 +5,8 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename t>
 using Dictionary = std::map<std::string, t>;
-} // namespace tl2
+} // namespace tlgen
 

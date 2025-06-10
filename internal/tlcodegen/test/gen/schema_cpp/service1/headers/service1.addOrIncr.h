@@ -6,18 +6,18 @@
 #include "service1/functions/service1.addOrIncr.h"
 #include "service1/types/service1.Value.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1AddOrIncrReset(::tl2::service1::AddOrIncr& item) noexcept;
+void Service1AddOrIncrReset(::tlgen::service1::AddOrIncr& item) noexcept;
 
-bool Service1AddOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::AddOrIncr& item) noexcept;
-bool Service1AddOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::AddOrIncr& item) noexcept; 
-bool Service1AddOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::AddOrIncr& item) noexcept;
-bool Service1AddOrIncrReadBoxed(::basictl::tl_istream & s, ::tl2::service1::AddOrIncr& item);
-bool Service1AddOrIncrWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::AddOrIncr& item);
+bool Service1AddOrIncrWriteJSON(std::ostream& s, const ::tlgen::service1::AddOrIncr& item) noexcept;
+bool Service1AddOrIncrRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::AddOrIncr& item) noexcept; 
+bool Service1AddOrIncrWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::AddOrIncr& item) noexcept;
+bool Service1AddOrIncrReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::AddOrIncr& item);
+bool Service1AddOrIncrWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::AddOrIncr& item);
 
-bool Service1AddOrIncrReadResult(::basictl::tl_istream & s, ::tl2::service1::AddOrIncr& item, ::tl2::service1::Value& result);
-bool Service1AddOrIncrWriteResult(::basictl::tl_ostream & s, ::tl2::service1::AddOrIncr& item, ::tl2::service1::Value& result);
-		
-}} // namespace tl2::details
+bool Service1AddOrIncrReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::AddOrIncr& item, ::tlgen::service1::Value& result);
+bool Service1AddOrIncrWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::AddOrIncr& item, ::tlgen::service1::Value& result);
+    
+}} // namespace tlgen::details
 

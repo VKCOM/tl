@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myDouble.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyDoubleReset(::tl2::MyDouble& item) noexcept;
+void MyDoubleReset(::tlgen::MyDouble& item) noexcept;
 
-bool MyDoubleWriteJSON(std::ostream& s, const ::tl2::MyDouble& item) noexcept;
-bool MyDoubleRead(::basictl::tl_istream & s, ::tl2::MyDouble& item) noexcept; 
-bool MyDoubleWrite(::basictl::tl_ostream & s, const ::tl2::MyDouble& item) noexcept;
-bool MyDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::MyDouble& item);
-bool MyDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyDouble& item);
+bool MyDoubleWriteJSON(std::ostream& s, const ::tlgen::MyDouble& item) noexcept;
+bool MyDoubleRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyDouble& item) noexcept; 
+bool MyDoubleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyDouble& item) noexcept;
+bool MyDoubleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyDouble& item);
+bool MyDoubleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyDouble& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

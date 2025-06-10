@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myAnonMcValue.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyAnonMcValueReset(::tl2::MyAnonMcValue& item) noexcept;
+void MyAnonMcValueReset(::tlgen::MyAnonMcValue& item) noexcept;
 
-bool MyAnonMcValueWriteJSON(std::ostream& s, const ::tl2::MyAnonMcValue& item) noexcept;
-bool MyAnonMcValueRead(::basictl::tl_istream & s, ::tl2::MyAnonMcValue& item) noexcept; 
-bool MyAnonMcValueWrite(::basictl::tl_ostream & s, const ::tl2::MyAnonMcValue& item) noexcept;
-bool MyAnonMcValueReadBoxed(::basictl::tl_istream & s, ::tl2::MyAnonMcValue& item);
-bool MyAnonMcValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyAnonMcValue& item);
+bool MyAnonMcValueWriteJSON(std::ostream& s, const ::tlgen::MyAnonMcValue& item) noexcept;
+bool MyAnonMcValueRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyAnonMcValue& item) noexcept; 
+bool MyAnonMcValueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyAnonMcValue& item) noexcept;
+bool MyAnonMcValueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyAnonMcValue& item);
+bool MyAnonMcValueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyAnonMcValue& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

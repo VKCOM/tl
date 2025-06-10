@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cd/types/cd.response.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CdResponseReset(::tl2::cd::Response& item) noexcept;
+void CdResponseReset(::tlgen::cd::Response& item) noexcept;
 
-bool CdResponseWriteJSON(std::ostream& s, const ::tl2::cd::Response& item) noexcept;
-bool CdResponseRead(::basictl::tl_istream & s, ::tl2::cd::Response& item) noexcept; 
-bool CdResponseWrite(::basictl::tl_ostream & s, const ::tl2::cd::Response& item) noexcept;
-bool CdResponseReadBoxed(::basictl::tl_istream & s, ::tl2::cd::Response& item);
-bool CdResponseWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cd::Response& item);
+bool CdResponseWriteJSON(std::ostream& s, const ::tlgen::cd::Response& item) noexcept;
+bool CdResponseRead(::tlgen::basictl::tl_istream & s, ::tlgen::cd::Response& item) noexcept; 
+bool CdResponseWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::Response& item) noexcept;
+bool CdResponseReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cd::Response& item);
+bool CdResponseWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::Response& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

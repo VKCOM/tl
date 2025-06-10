@@ -5,23 +5,23 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myInt32.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple3MyInt32Reset(std::array<::tl2::MyInt32, 3>& item);
+void BuiltinTuple3MyInt32Reset(std::array<::tlgen::MyInt32, 3>& item);
 
-bool BuiltinTuple3MyInt32WriteJSON(std::ostream & s, const std::array<::tl2::MyInt32, 3>& item);
-bool BuiltinTuple3MyInt32Read(::basictl::tl_istream & s, std::array<::tl2::MyInt32, 3>& item);
-bool BuiltinTuple3MyInt32Write(::basictl::tl_ostream & s, const std::array<::tl2::MyInt32, 3>& item);
+bool BuiltinTuple3MyInt32WriteJSON(std::ostream & s, const std::array<::tlgen::MyInt32, 3>& item);
+bool BuiltinTuple3MyInt32Read(::tlgen::basictl::tl_istream & s, std::array<::tlgen::MyInt32, 3>& item);
+bool BuiltinTuple3MyInt32Write(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::MyInt32, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple3MyInt32BoxedReset(std::array<::tl2::MyInt32, 3>& item);
+void BuiltinTuple3MyInt32BoxedReset(std::array<::tlgen::MyInt32, 3>& item);
 
-bool BuiltinTuple3MyInt32BoxedWriteJSON(std::ostream & s, const std::array<::tl2::MyInt32, 3>& item);
-bool BuiltinTuple3MyInt32BoxedRead(::basictl::tl_istream & s, std::array<::tl2::MyInt32, 3>& item);
-bool BuiltinTuple3MyInt32BoxedWrite(::basictl::tl_ostream & s, const std::array<::tl2::MyInt32, 3>& item);
+bool BuiltinTuple3MyInt32BoxedWriteJSON(std::ostream & s, const std::array<::tlgen::MyInt32, 3>& item);
+bool BuiltinTuple3MyInt32BoxedRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::MyInt32, 3>& item);
+bool BuiltinTuple3MyInt32BoxedWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::MyInt32, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

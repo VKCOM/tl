@@ -7,18 +7,18 @@
 #include "service1/types/service1.Value.h"
 #include "__common_namespace/types/dictionaryField.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1GetWildcardWithFlagsReset(::tl2::service1::GetWildcardWithFlags& item) noexcept;
+void Service1GetWildcardWithFlagsReset(::tlgen::service1::GetWildcardWithFlags& item) noexcept;
 
-bool Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardWithFlags& item) noexcept;
-bool Service1GetWildcardWithFlagsRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item) noexcept; 
-bool Service1GetWildcardWithFlagsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardWithFlags& item) noexcept;
-bool Service1GetWildcardWithFlagsReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item);
-bool Service1GetWildcardWithFlagsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardWithFlags& item);
+bool Service1GetWildcardWithFlagsWriteJSON(std::ostream& s, const ::tlgen::service1::GetWildcardWithFlags& item) noexcept;
+bool Service1GetWildcardWithFlagsRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardWithFlags& item) noexcept; 
+bool Service1GetWildcardWithFlagsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcardWithFlags& item) noexcept;
+bool Service1GetWildcardWithFlagsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardWithFlags& item);
+bool Service1GetWildcardWithFlagsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcardWithFlags& item);
 
-bool Service1GetWildcardWithFlagsReadResult(::basictl::tl_istream & s, ::tl2::service1::GetWildcardWithFlags& item, std::map<std::string, ::tl2::service1::Value>& result);
-bool Service1GetWildcardWithFlagsWriteResult(::basictl::tl_ostream & s, ::tl2::service1::GetWildcardWithFlags& item, std::map<std::string, ::tl2::service1::Value>& result);
-		
-}} // namespace tl2::details
+bool Service1GetWildcardWithFlagsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardWithFlags& item, std::map<std::string, ::tlgen::service1::Value>& result);
+bool Service1GetWildcardWithFlagsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetWildcardWithFlags& item, std::map<std::string, ::tlgen::service1::Value>& result);
+    
+}} // namespace tlgen::details
 

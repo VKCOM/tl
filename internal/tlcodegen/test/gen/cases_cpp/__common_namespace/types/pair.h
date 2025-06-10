@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X, typename Y>
 struct Pair {
-	X x{};
-	Y y{};
+  X x{};
+  Y y{};
 
-	std::string_view tl_name() const { return "pair"; }
-	uint32_t tl_tag() const { return 0xf01604df; }
+  std::string_view tl_name() const { return "pair"; }
+  uint32_t tl_tag() const { return 0xf01604df; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testOutFieldMaskContainer.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestOutFieldMaskContainerReset(::tl2::cases::TestOutFieldMaskContainer& item) noexcept;
+void CasesTestOutFieldMaskContainerReset(::tlgen::cases::TestOutFieldMaskContainer& item) noexcept;
 
-bool CasesTestOutFieldMaskContainerWriteJSON(std::ostream& s, const ::tl2::cases::TestOutFieldMaskContainer& item) noexcept;
-bool CasesTestOutFieldMaskContainerRead(::basictl::tl_istream & s, ::tl2::cases::TestOutFieldMaskContainer& item) noexcept; 
-bool CasesTestOutFieldMaskContainerWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestOutFieldMaskContainer& item) noexcept;
-bool CasesTestOutFieldMaskContainerReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestOutFieldMaskContainer& item);
-bool CasesTestOutFieldMaskContainerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestOutFieldMaskContainer& item);
+bool CasesTestOutFieldMaskContainerWriteJSON(std::ostream& s, const ::tlgen::cases::TestOutFieldMaskContainer& item) noexcept;
+bool CasesTestOutFieldMaskContainerRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestOutFieldMaskContainer& item) noexcept; 
+bool CasesTestOutFieldMaskContainerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestOutFieldMaskContainer& item) noexcept;
+bool CasesTestOutFieldMaskContainerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestOutFieldMaskContainer& item);
+bool CasesTestOutFieldMaskContainerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestOutFieldMaskContainer& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -9,87 +9,87 @@
 #include "a/types/a.inner.h"
 #include "a/types/a.Color.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairAInnerAInnerReset(::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item) noexcept;
+void PairAInnerAInnerReset(::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item) noexcept;
 
-bool PairAInnerAInnerWriteJSON(std::ostream& s, const ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) noexcept;
-bool PairAInnerAInnerRead(::basictl::tl_istream & s, ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) noexcept; 
-bool PairAInnerAInnerWrite(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) noexcept;
-bool PairAInnerAInnerReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y);
-bool PairAInnerAInnerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y);
+bool PairAInnerAInnerWriteJSON(std::ostream& s, const ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) noexcept;
+bool PairAInnerAInnerRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) noexcept; 
+bool PairAInnerAInnerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) noexcept;
+bool PairAInnerAInnerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y);
+bool PairAInnerAInnerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairBoolAColorReset(::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept;
+void PairBoolAColorReset(::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept;
 
-bool PairBoolAColorWriteJSON(std::ostream& s, const ::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept;
-bool PairBoolAColorRead(::basictl::tl_istream & s, ::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept; 
-bool PairBoolAColorWrite(::basictl::tl_ostream & s, const ::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept;
-bool PairBoolAColorReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<bool, ::tl2::a::Color>& item);
-bool PairBoolAColorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<bool, ::tl2::a::Color>& item);
+bool PairBoolAColorWriteJSON(std::ostream& s, const ::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept;
+bool PairBoolAColorRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept; 
+bool PairBoolAColorWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept;
+bool PairBoolAColorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<bool, ::tlgen::a::Color>& item);
+bool PairBoolAColorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<bool, ::tlgen::a::Color>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairFloatDoubleReset(::tl2::Pair<float, double>& item) noexcept;
+void PairFloatDoubleReset(::tlgen::Pair<float, double>& item) noexcept;
 
-bool PairFloatDoubleWriteJSON(std::ostream& s, const ::tl2::Pair<float, double>& item) noexcept;
-bool PairFloatDoubleRead(::basictl::tl_istream & s, ::tl2::Pair<float, double>& item) noexcept; 
-bool PairFloatDoubleWrite(::basictl::tl_ostream & s, const ::tl2::Pair<float, double>& item) noexcept;
-bool PairFloatDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<float, double>& item);
-bool PairFloatDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<float, double>& item);
+bool PairFloatDoubleWriteJSON(std::ostream& s, const ::tlgen::Pair<float, double>& item) noexcept;
+bool PairFloatDoubleRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<float, double>& item) noexcept; 
+bool PairFloatDoubleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<float, double>& item) noexcept;
+bool PairFloatDoubleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<float, double>& item);
+bool PairFloatDoubleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<float, double>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairIntIntReset(::tl2::Pair<int32_t, int32_t>& item) noexcept;
+void PairIntIntReset(::tlgen::Pair<int32_t, int32_t>& item) noexcept;
 
-bool PairIntIntWriteJSON(std::ostream& s, const ::tl2::Pair<int32_t, int32_t>& item) noexcept;
-bool PairIntIntRead(::basictl::tl_istream & s, ::tl2::Pair<int32_t, int32_t>& item) noexcept; 
-bool PairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, int32_t>& item) noexcept;
-bool PairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<int32_t, int32_t>& item);
-bool PairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, int32_t>& item);
+bool PairIntIntWriteJSON(std::ostream& s, const ::tlgen::Pair<int32_t, int32_t>& item) noexcept;
+bool PairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, int32_t>& item) noexcept; 
+bool PairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, int32_t>& item) noexcept;
+bool PairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, int32_t>& item);
+bool PairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairIntPairMultiPointStringReset(::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept;
+void PairIntPairMultiPointStringReset(::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept;
 
-bool PairIntPairMultiPointStringWriteJSON(std::ostream& s, const ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept;
-bool PairIntPairMultiPointStringRead(::basictl::tl_istream & s, ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept; 
-bool PairIntPairMultiPointStringWrite(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept;
-bool PairIntPairMultiPointStringReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item);
-bool PairIntPairMultiPointStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item);
+bool PairIntPairMultiPointStringWriteJSON(std::ostream& s, const ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept;
+bool PairIntPairMultiPointStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept; 
+bool PairIntPairMultiPointStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept;
+bool PairIntPairMultiPointStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item);
+bool PairIntPairMultiPointStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairMultiPointStringReset(::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept;
+void PairMultiPointStringReset(::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept;
 
-bool PairMultiPointStringWriteJSON(std::ostream& s, const ::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept;
-bool PairMultiPointStringRead(::basictl::tl_istream & s, ::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept; 
-bool PairMultiPointStringWrite(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept;
-bool PairMultiPointStringReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<::tl2::MultiPoint, std::string>& item);
-bool PairMultiPointStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::MultiPoint, std::string>& item);
+bool PairMultiPointStringWriteJSON(std::ostream& s, const ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept;
+bool PairMultiPointStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept; 
+bool PairMultiPointStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept;
+bool PairMultiPointStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item);
+bool PairMultiPointStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void PairPairAInnerAInnerAInnerBoxed3Reset(::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item) noexcept;
+void PairPairAInnerAInnerAInnerBoxed3Reset(::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item) noexcept;
 
-bool PairPairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) noexcept;
-bool PairPairAInnerAInnerAInnerBoxed3Read(::basictl::tl_istream & s, ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) noexcept; 
-bool PairPairAInnerAInnerAInnerBoxed3Write(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) noexcept;
-bool PairPairAInnerAInnerAInnerBoxed3ReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI);
-bool PairPairAInnerAInnerAInnerBoxed3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI);
+bool PairPairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) noexcept;
+bool PairPairAInnerAInnerAInnerBoxed3Read(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) noexcept; 
+bool PairPairAInnerAInnerAInnerBoxed3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) noexcept;
+bool PairPairAInnerAInnerAInnerBoxed3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI);
+bool PairPairAInnerAInnerAInnerBoxed3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

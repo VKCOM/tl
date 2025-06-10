@@ -5,38 +5,38 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct InnerMaybe {
-	std::optional<std::vector<int32_t>> a;
+  std::optional<std::vector<int32_t>> a;
 
-	std::string_view tl_name() const { return "innerMaybe"; }
-	uint32_t tl_tag() const { return 0x0a7d3b9e; }
+  std::string_view tl_name() const { return "innerMaybe"; }
+  uint32_t tl_tag() const { return 0x0a7d3b9e; }
 
-	bool write_json(std::ostream& s, uint32_t nat_X)const;
+  bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_X) const;
 
-	bool read(::basictl::tl_istream & s, uint32_t nat_X) noexcept;
-	bool write(::basictl::tl_ostream & s, uint32_t nat_X)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_X) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_X) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_X);
-	void write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_X)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_X);
+  void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_X) const;
 
-	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_X) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_X)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_X);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_X)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_X) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_X)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_X);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_X)const;
 };
 
-} // namespace tl2
+} // namespace tlgen
 
-namespace tl2 { 
+namespace tlgen { 
 template<uint32_t X>
 struct InnerMaybeX {
-	std::optional<std::array<int32_t, X>> a;
+  std::optional<std::array<int32_t, X>> a;
 
-	std::string_view tl_name() const { return "innerMaybe"; }
-	uint32_t tl_tag() const { return 0x0a7d3b9e; }
+  std::string_view tl_name() const { return "innerMaybe"; }
+  uint32_t tl_tag() const { return 0x0a7d3b9e; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

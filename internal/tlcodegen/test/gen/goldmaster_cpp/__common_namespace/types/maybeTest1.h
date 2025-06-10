@@ -6,42 +6,42 @@
 #include "__common_namespace/types/innerMaybe.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct MaybeTest1 {
-	uint32_t n = 0;
-	std::optional<int32_t> a;
-	std::optional<int32_t> b;
-	std::optional<std::array<int32_t, 3>> c;
-	std::optional<std::array<int32_t, 3>> d;
-	::tl2::InnerMaybe e{};
-	::tl2::InnerMaybeX<0> f{};
-	std::optional<std::vector<int32_t>> g;
-	std::optional<std::vector<int32_t>> h;
-	std::optional<std::array<int32_t, 3>> i;
-	std::optional<std::array<int32_t, 0>> j;
+  uint32_t n = 0;
+  std::optional<int32_t> a;
+  std::optional<int32_t> b;
+  std::optional<std::array<int32_t, 3>> c;
+  std::optional<std::array<int32_t, 3>> d;
+  ::tlgen::InnerMaybe e{};
+  ::tlgen::InnerMaybeX<0> f{};
+  std::optional<std::vector<int32_t>> g;
+  std::optional<std::vector<int32_t>> h;
+  std::optional<std::array<int32_t, 3>> i;
+  std::optional<std::array<int32_t, 0>> j;
 
-	std::string_view tl_name() const { return "maybeTest1"; }
-	uint32_t tl_tag() const { return 0xc457763c; }
+  std::string_view tl_name() const { return "maybeTest1"; }
+  uint32_t tl_tag() const { return 0xc457763c; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const MaybeTest1& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const MaybeTest1& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

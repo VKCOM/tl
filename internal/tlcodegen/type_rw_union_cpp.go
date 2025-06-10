@@ -130,16 +130,17 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 			hpp.WriteString(fmt.Sprintf(`
 	bool write_json(std::ostream& s%[1]s)const;
 
-	bool read_boxed(::basictl::tl_istream & s%[1]s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s%[1]s)const noexcept;
+	bool read_boxed(::%[5]s::tl_istream & s%[1]s) noexcept;
+	bool write_boxed(::%[5]s::tl_ostream & s%[1]s)const noexcept;
 	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s%[1]s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const;
+	void read_boxed(::%[5]s::tl_throwable_istream & s%[1]s);
+	void write_boxed(::%[5]s::tl_throwable_ostream & s%[1]s)const;
 `,
 				formatNatArgsDeclCPP(trw.wr.NatParams),
 				trw.CPPTypeResettingCode(bytesVersion, "*this"),
 				trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
-				trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
+				trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+				trw.wr.gen.cppBasictlNamespace()))
 		}
 		hpp.WriteString("};\n")
 		cppFinishNamespace(hpp, typeNamespace)
@@ -157,9 +158,13 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 void %[1]sReset(%[2]s& item) noexcept;
 
 bool %[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) noexcept;
-bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept;
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept;
-`, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
+bool %[1]sReadBoxed(::%[4]s::tl_istream & s, %[2]s& item%[3]s) noexcept;
+bool %[1]sWriteBoxed(::%[4]s::tl_ostream & s, const %[2]s& item%[3]s) noexcept;
+`,
+			goGlobalName,
+			myFullType,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			trw.wr.gen.cppBasictlNamespace()))
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
 
@@ -177,23 +182,23 @@ bool %[5]s::write_json(std::ostream & s%[1]s)const {
 %[7]s
 	return true;
 }
-bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) noexcept {
+bool %[5]s::read_boxed(::%[9]s::tl_istream & s%[1]s) noexcept {
 %[3]s
 	return true;
 }
-bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const noexcept {
+bool %[5]s::write_boxed(::%[9]s::tl_ostream & s%[1]s)const noexcept {
 %[4]s
 	return true;
 }
 
-void %[5]s::read_boxed_or_throw(::basictl::tl_throwable_istream & s%[1]s) {
-	::basictl::tl_istream s2(s);
+void %[5]s::read_boxed(::%[9]s::tl_throwable_istream & s%[1]s) {
+	::%[9]s::tl_istream s2(s);
 	this->read_boxed(s2%[8]s);
 	s2.pass_data(s);
 }
 
-void %[5]s::write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const {
-	::basictl::tl_ostream s2(s);
+void %[5]s::write_boxed(::%[9]s::tl_throwable_ostream & s%[1]s)const {
+	::%[9]s::tl_ostream s2(s);
 	this->write_boxed(s2%[8]s);
 	s2.pass_data(s);
 }
@@ -214,6 +219,7 @@ uint32_t %[5]s::tl_tag() const {
 				goGlobalName,
 				trw.CPPTypeWritingJsonCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 				formatNatArgsCallCPP(trw.wr.NatParams),
+				trw.wr.gen.cppBasictlNamespace(),
 			))
 		}
 		cppDet.WriteString(fmt.Sprintf(`
@@ -225,7 +231,7 @@ bool %[7]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) noexcept {
 %[8]s
 	return true;
 }
-bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept {
+bool %[7]s::%[1]sReadBoxed(::%[9]s::tl_istream & s, %[2]s& item%[3]s) noexcept {
 	uint32_t nat;
 	if (!s.nat_read(nat)) { return false; }
 	switch (nat) {
@@ -235,7 +241,7 @@ bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept
 	return true;
 }
 
-bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept{
+bool %[7]s::%[1]sWriteBoxed(::%[9]s::tl_ostream & s, const %[2]s& item%[3]s) noexcept{
 	if (!s.nat_write(%[1]s_tbl_tl_tag[item.value.index()])) { return false; }
 	switch (item.value.index()) {
 %[6]s	}
@@ -250,6 +256,7 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) n
 			trw.CPPWriteFields(bytesVersion),
 			trw.wr.gen.DetailsCPPNamespace,
 			trw.CPPWriteJSONFields(bytesVersion),
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 	}
 	/*

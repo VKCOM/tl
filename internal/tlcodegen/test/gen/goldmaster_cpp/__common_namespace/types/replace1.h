@@ -5,38 +5,38 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct Replace1 {
-	std::vector<int32_t> a;
+  std::vector<int32_t> a;
 
-	std::string_view tl_name() const { return "replace1"; }
-	uint32_t tl_tag() const { return 0x89eac43a; }
+  std::string_view tl_name() const { return "replace1"; }
+  uint32_t tl_tag() const { return 0x89eac43a; }
 
-	bool write_json(std::ostream& s, uint32_t nat_n)const;
+  bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_n) const;
 
-	bool read(::basictl::tl_istream & s, uint32_t nat_n) noexcept;
-	bool write(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_n) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_n);
-	void write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_n)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_n);
+  void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n) const;
 
-	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_n) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_n)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_n);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_n)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_n) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_n);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n)const;
 };
 
-} // namespace tl2
+} // namespace tlgen
 
-namespace tl2 { 
+namespace tlgen { 
 template<uint32_t n>
 struct Replace1n {
-	std::array<int32_t, n> a{};
+  std::array<int32_t, n> a{};
 
-	std::string_view tl_name() const { return "replace1"; }
-	uint32_t tl_tag() const { return 0x89eac43a; }
+  std::string_view tl_name() const { return "replace1"; }
+  uint32_t tl_tag() const { return 0x89eac43a; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

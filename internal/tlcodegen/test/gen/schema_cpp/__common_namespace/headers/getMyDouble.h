@@ -6,18 +6,18 @@
 #include "__common_namespace/functions/getMyDouble.h"
 #include "__common_namespace/types/myDouble.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void GetMyDoubleReset(::tl2::GetMyDouble& item) noexcept;
+void GetMyDoubleReset(::tlgen::GetMyDouble& item) noexcept;
 
-bool GetMyDoubleWriteJSON(std::ostream& s, const ::tl2::GetMyDouble& item) noexcept;
-bool GetMyDoubleRead(::basictl::tl_istream & s, ::tl2::GetMyDouble& item) noexcept; 
-bool GetMyDoubleWrite(::basictl::tl_ostream & s, const ::tl2::GetMyDouble& item) noexcept;
-bool GetMyDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::GetMyDouble& item);
-bool GetMyDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::GetMyDouble& item);
+bool GetMyDoubleWriteJSON(std::ostream& s, const ::tlgen::GetMyDouble& item) noexcept;
+bool GetMyDoubleRead(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDouble& item) noexcept; 
+bool GetMyDoubleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDouble& item) noexcept;
+bool GetMyDoubleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDouble& item);
+bool GetMyDoubleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDouble& item);
 
-bool GetMyDoubleReadResult(::basictl::tl_istream & s, ::tl2::GetMyDouble& item, ::tl2::MyDouble& result);
-bool GetMyDoubleWriteResult(::basictl::tl_ostream & s, ::tl2::GetMyDouble& item, ::tl2::MyDouble& result);
-		
-}} // namespace tl2::details
+bool GetMyDoubleReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDouble& item, ::tlgen::MyDouble& result);
+bool GetMyDoubleWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetMyDouble& item, ::tlgen::MyDouble& result);
+    
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "service2/types/service2.objectId.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service2ObjectIdReset(::tl2::service2::ObjectId& item) noexcept;
+void Service2ObjectIdReset(::tlgen::service2::ObjectId& item) noexcept;
 
-bool Service2ObjectIdWriteJSON(std::ostream& s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) noexcept;
-bool Service2ObjectIdRead(::basictl::tl_istream & s, ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) noexcept; 
-bool Service2ObjectIdWrite(::basictl::tl_ostream & s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength) noexcept;
-bool Service2ObjectIdReadBoxed(::basictl::tl_istream & s, ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength);
-bool Service2ObjectIdWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service2::ObjectId& item, uint32_t nat_objectIdLength);
+bool Service2ObjectIdWriteJSON(std::ostream& s, const ::tlgen::service2::ObjectId& item, [[maybe_unused]] uint32_t nat_objectIdLength) noexcept;
+bool Service2ObjectIdRead(::tlgen::basictl::tl_istream & s, ::tlgen::service2::ObjectId& item, [[maybe_unused]] uint32_t nat_objectIdLength) noexcept; 
+bool Service2ObjectIdWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::ObjectId& item, [[maybe_unused]] uint32_t nat_objectIdLength) noexcept;
+bool Service2ObjectIdReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service2::ObjectId& item, [[maybe_unused]] uint32_t nat_objectIdLength);
+bool Service2ObjectIdWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::ObjectId& item, [[maybe_unused]] uint32_t nat_objectIdLength);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,25 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cd/types/cd.myType.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CdMyTypeReset(::tl2::cd::MyType& item) noexcept;
+void CdMyTypeReset(::tlgen::cd::MyType& item) noexcept;
 
-bool CdMyTypeWriteJSON(std::ostream& s, const ::tl2::cd::MyType& item) noexcept;
-bool CdMyTypeRead(::basictl::tl_istream & s, ::tl2::cd::MyType& item) noexcept; 
-bool CdMyTypeWrite(::basictl::tl_ostream & s, const ::tl2::cd::MyType& item) noexcept;
-bool CdMyTypeReadBoxed(::basictl::tl_istream & s, ::tl2::cd::MyType& item);
-bool CdMyTypeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cd::MyType& item);
+bool CdMyTypeWriteJSON(std::ostream& s, const ::tlgen::cd::MyType& item) noexcept;
+bool CdMyTypeRead(::tlgen::basictl::tl_istream & s, ::tlgen::cd::MyType& item) noexcept; 
+bool CdMyTypeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::MyType& item) noexcept;
+bool CdMyTypeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cd::MyType& item);
+bool CdMyTypeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cd::MyType& item);
 
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-bool CdMyTypeMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::cd::MyType>& item);
-
-bool CdMyTypeMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::cd::MyType>& item);
-bool CdMyTypeMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::cd::MyType>& item);
-
-
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

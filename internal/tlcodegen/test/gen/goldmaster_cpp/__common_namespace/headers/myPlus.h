@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myPlus.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyPlusReset(::tl2::MyPlus& item) noexcept;
+void MyPlusReset(::tlgen::MyPlus& item) noexcept;
 
-bool MyPlusWriteJSON(std::ostream& s, const ::tl2::MyPlus& item) noexcept;
-bool MyPlusRead(::basictl::tl_istream & s, ::tl2::MyPlus& item) noexcept; 
-bool MyPlusWrite(::basictl::tl_ostream & s, const ::tl2::MyPlus& item) noexcept;
-bool MyPlusReadBoxed(::basictl::tl_istream & s, ::tl2::MyPlus& item);
-bool MyPlusWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyPlus& item);
+bool MyPlusWriteJSON(std::ostream& s, const ::tlgen::MyPlus& item) noexcept;
+bool MyPlusRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyPlus& item) noexcept; 
+bool MyPlusWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyPlus& item) noexcept;
+bool MyPlusReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyPlus& item);
+bool MyPlusWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyPlus& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "tasks/types/tasks.queueStats.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksQueueStatsReset(::tl2::tasks::QueueStats& item) noexcept;
+void TasksQueueStatsReset(::tlgen::tasks::QueueStats& item) noexcept;
 
-bool TasksQueueStatsWriteJSON(std::ostream& s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) noexcept;
-bool TasksQueueStatsRead(::basictl::tl_istream & s, ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) noexcept; 
-bool TasksQueueStatsWrite(::basictl::tl_ostream & s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask) noexcept;
-bool TasksQueueStatsReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask);
-bool TasksQueueStatsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::QueueStats& item, uint32_t nat_fields_mask);
+bool TasksQueueStatsWriteJSON(std::ostream& s, const ::tlgen::tasks::QueueStats& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool TasksQueueStatsRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::QueueStats& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept; 
+bool TasksQueueStatsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::QueueStats& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool TasksQueueStatsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::QueueStats& item, [[maybe_unused]] uint32_t nat_fields_mask);
+bool TasksQueueStatsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::QueueStats& item, [[maybe_unused]] uint32_t nat_fields_mask);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

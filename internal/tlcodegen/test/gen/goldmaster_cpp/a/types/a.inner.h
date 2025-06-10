@@ -5,38 +5,38 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { namespace a { 
+namespace tlgen { namespace a { 
 struct Inner {
-	std::vector<int32_t> a;
+  std::vector<int32_t> a;
 
-	std::string_view tl_name() const { return "a.inner"; }
-	uint32_t tl_tag() const { return 0xec5089b9; }
+  std::string_view tl_name() const { return "a.inner"; }
+  uint32_t tl_tag() const { return 0xec5089b9; }
 
-	bool write_json(std::ostream& s, uint32_t nat_I)const;
+  bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_I) const;
 
-	bool read(::basictl::tl_istream & s, uint32_t nat_I) noexcept;
-	bool write(::basictl::tl_ostream & s, uint32_t nat_I)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_I) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_I) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_I);
-	void write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_I)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_I);
+  void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I) const;
 
-	bool read_boxed(::basictl::tl_istream & s, uint32_t nat_I) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s, uint32_t nat_I)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_I);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_I)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_I) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_I)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_I);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I)const;
 };
 
-}} // namespace tl2::a
+}} // namespace tlgen::a
 
-namespace tl2 { namespace a { 
+namespace tlgen { namespace a { 
 template<uint32_t I>
 struct InnerI {
-	std::array<int32_t, I> a{};
+  std::array<int32_t, I> a{};
 
-	std::string_view tl_name() const { return "a.inner"; }
-	uint32_t tl_tag() const { return 0xec5089b9; }
+  std::string_view tl_name() const { return "a.inner"; }
+  uint32_t tl_tag() const { return 0xec5089b9; }
 };
 
-}} // namespace tl2::a
+}} // namespace tlgen::a
 

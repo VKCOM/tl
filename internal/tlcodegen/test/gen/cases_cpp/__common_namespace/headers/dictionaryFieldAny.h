@@ -5,47 +5,47 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/dictionaryFieldAny.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryFieldAnyDoubleIntReset(std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item);
+void BuiltinVectorDictionaryFieldAnyDoubleIntReset(std::vector<::tlgen::DictionaryFieldAny<double, int32_t>>& item);
 
-bool BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item);
-bool BuiltinVectorDictionaryFieldAnyDoubleIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item);
-bool BuiltinVectorDictionaryFieldAnyDoubleIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryFieldAny<double, int32_t>>& item);
+bool BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryFieldAny<double, int32_t>>& item);
+bool BuiltinVectorDictionaryFieldAnyDoubleIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryFieldAny<double, int32_t>>& item);
+bool BuiltinVectorDictionaryFieldAnyDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryFieldAny<double, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinVectorDictionaryFieldAnyIntIntReset(std::map<int32_t, int32_t>& item);
 
 bool BuiltinVectorDictionaryFieldAnyIntIntWriteJSON(std::ostream & s, const std::map<int32_t, int32_t>& item);
-bool BuiltinVectorDictionaryFieldAnyIntIntRead(::basictl::tl_istream & s, std::map<int32_t, int32_t>& item);
-bool BuiltinVectorDictionaryFieldAnyIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item);
+bool BuiltinVectorDictionaryFieldAnyIntIntRead(::tlgen::basictl::tl_istream & s, std::map<int32_t, int32_t>& item);
+bool BuiltinVectorDictionaryFieldAnyIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryFieldAnyDoubleIntReset(::tl2::DictionaryFieldAny<double, int32_t>& item) noexcept;
+void DictionaryFieldAnyDoubleIntReset(::tlgen::DictionaryFieldAny<double, int32_t>& item) noexcept;
 
-bool DictionaryFieldAnyDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<double, int32_t>& item) noexcept;
-bool DictionaryFieldAnyDoubleIntRead(::basictl::tl_istream & s, ::tl2::DictionaryFieldAny<double, int32_t>& item) noexcept; 
-bool DictionaryFieldAnyDoubleIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryFieldAny<double, int32_t>& item) noexcept;
-bool DictionaryFieldAnyDoubleIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryFieldAny<double, int32_t>& item);
-bool DictionaryFieldAnyDoubleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryFieldAny<double, int32_t>& item);
+bool DictionaryFieldAnyDoubleIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryFieldAny<double, int32_t>& item) noexcept;
+bool DictionaryFieldAnyDoubleIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryFieldAny<double, int32_t>& item) noexcept; 
+bool DictionaryFieldAnyDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryFieldAny<double, int32_t>& item) noexcept;
+bool DictionaryFieldAnyDoubleIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryFieldAny<double, int32_t>& item);
+bool DictionaryFieldAnyDoubleIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryFieldAny<double, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryFieldAnyIntIntReset(::tl2::DictionaryFieldAny<int32_t, int32_t>& item) noexcept;
+void DictionaryFieldAnyIntIntReset(::tlgen::DictionaryFieldAny<int32_t, int32_t>& item) noexcept;
 
-bool DictionaryFieldAnyIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) noexcept;
-bool DictionaryFieldAnyIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) noexcept; 
-bool DictionaryFieldAnyIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryFieldAny<int32_t, int32_t>& item) noexcept;
-bool DictionaryFieldAnyIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryFieldAny<int32_t, int32_t>& item);
-bool DictionaryFieldAnyIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryFieldAny<int32_t, int32_t>& item);
+bool DictionaryFieldAnyIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryFieldAny<int32_t, int32_t>& item) noexcept;
+bool DictionaryFieldAnyIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryFieldAny<int32_t, int32_t>& item) noexcept; 
+bool DictionaryFieldAnyIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryFieldAny<int32_t, int32_t>& item) noexcept;
+bool DictionaryFieldAnyIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryFieldAny<int32_t, int32_t>& item);
+bool DictionaryFieldAnyIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryFieldAny<int32_t, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

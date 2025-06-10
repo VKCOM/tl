@@ -1596,6 +1596,9 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 	written := 0
 	deleted := 0
 	for filepathName, code := range gen.Code {
+		if gen.options.Language == "cpp" {
+			code, filepathName = cppRunLocalLinter(code, filepathName)
+		}
 		d := filepath.Join(outdir, filepath.Dir(filepathName))
 		if err := os.MkdirAll(d, 0755); err != nil && !os.IsExist(err) {
 			return fmt.Errorf("error creating dir %q: %w", d, err)
@@ -1622,7 +1625,10 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 			return fmt.Errorf("error writing file %q: %w", f, err)
 		}
 	}
-	filters := prepareNameFilter(gen.options.TypesWhileList)
+	filters := []string{"."}
+	if gen.options.TypesWhileList != "" {
+		filters = prepareNameFilter(gen.options.TypesWhileList)
+	}
 	for filepathName := range relativeFiles {
 		f := filepath.Join(outdir, filepathName)
 		if gen.options.Language == "cpp" {
@@ -1648,22 +1654,23 @@ func (gen *Gen2) cppFilterFile(file string, filters []string) bool {
 	if strings.HasSuffix(file, ".o") {
 		return true
 	}
-	if !gen.options.DeleteUnrelatedFiles {
-		cleanFile := filepath.Clean(file)
-		folders := make([]string, 0)
-		for cleanFile != "." {
-			cleanFile = filepath.Dir(cleanFile)
-			folders = append(folders, cleanFile)
-		}
-		if len(folders) < 2 {
-			return true
-		}
-		folder := folders[len(folders)-2]
-		if folder == CommonGroup {
-			folder = ""
-		}
-		return !inNameFilter(tlast.Name{Namespace: folder}, filters)
-	}
+	// for future?
+	//if !gen.options.DeleteUnrelatedFiles {
+	//	cleanFile := filepath.Clean(file)
+	//	folders := make([]string, 0)
+	//	for cleanFile != "." {
+	//		cleanFile = filepath.Dir(cleanFile)
+	//		folders = append(folders, cleanFile)
+	//	}
+	//	if len(folders) < 2 {
+	//		return true
+	//	}
+	//	folder := folders[len(folders)-2]
+	//	if folder == CommonGroup {
+	//		folder = ""
+	//	}
+	//	return !inNameFilter(tlast.Name{Namespace: folder}, filters)
+	//}
 	return true
 }
 

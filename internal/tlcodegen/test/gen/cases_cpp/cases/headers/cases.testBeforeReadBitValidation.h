@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testBeforeReadBitValidation.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestBeforeReadBitValidationReset(::tl2::cases::TestBeforeReadBitValidation& item) noexcept;
+void CasesTestBeforeReadBitValidationReset(::tlgen::cases::TestBeforeReadBitValidation& item) noexcept;
 
-bool CasesTestBeforeReadBitValidationWriteJSON(std::ostream& s, const ::tl2::cases::TestBeforeReadBitValidation& item) noexcept;
-bool CasesTestBeforeReadBitValidationRead(::basictl::tl_istream & s, ::tl2::cases::TestBeforeReadBitValidation& item) noexcept; 
-bool CasesTestBeforeReadBitValidationWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestBeforeReadBitValidation& item) noexcept;
-bool CasesTestBeforeReadBitValidationReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestBeforeReadBitValidation& item);
-bool CasesTestBeforeReadBitValidationWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestBeforeReadBitValidation& item);
+bool CasesTestBeforeReadBitValidationWriteJSON(std::ostream& s, const ::tlgen::cases::TestBeforeReadBitValidation& item) noexcept;
+bool CasesTestBeforeReadBitValidationRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestBeforeReadBitValidation& item) noexcept; 
+bool CasesTestBeforeReadBitValidationWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestBeforeReadBitValidation& item) noexcept;
+bool CasesTestBeforeReadBitValidationReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestBeforeReadBitValidation& item);
+bool CasesTestBeforeReadBitValidationWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestBeforeReadBitValidation& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

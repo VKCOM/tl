@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.useCycle.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbUseCycleReset(::tl2::ab::UseCycle& item) noexcept;
+void AbUseCycleReset(::tlgen::ab::UseCycle& item) noexcept;
 
-bool AbUseCycleWriteJSON(std::ostream& s, const ::tl2::ab::UseCycle& item) noexcept;
-bool AbUseCycleRead(::basictl::tl_istream & s, ::tl2::ab::UseCycle& item) noexcept; 
-bool AbUseCycleWrite(::basictl::tl_ostream & s, const ::tl2::ab::UseCycle& item) noexcept;
-bool AbUseCycleReadBoxed(::basictl::tl_istream & s, ::tl2::ab::UseCycle& item);
-bool AbUseCycleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::UseCycle& item);
+bool AbUseCycleWriteJSON(std::ostream& s, const ::tlgen::ab::UseCycle& item) noexcept;
+bool AbUseCycleRead(::tlgen::basictl::tl_istream & s, ::tlgen::ab::UseCycle& item) noexcept; 
+bool AbUseCycleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::UseCycle& item) noexcept;
+bool AbUseCycleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::UseCycle& item);
+bool AbUseCycleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::UseCycle& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

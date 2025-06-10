@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/true.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TrueReset(::tl2::True& item) noexcept;
+void TrueReset(::tlgen::True& item) noexcept;
 
-bool TrueWriteJSON(std::ostream& s, const ::tl2::True& item) noexcept;
-bool TrueRead(::basictl::tl_istream & s, ::tl2::True& item) noexcept; 
-bool TrueWrite(::basictl::tl_ostream & s, const ::tl2::True& item) noexcept;
-bool TrueReadBoxed(::basictl::tl_istream & s, ::tl2::True& item);
-bool TrueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::True& item);
+bool TrueWriteJSON(std::ostream& s, const ::tlgen::True& item) noexcept;
+bool TrueRead(::tlgen::basictl::tl_istream & s, ::tlgen::True& item) noexcept; 
+bool TrueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::True& item) noexcept;
+bool TrueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::True& item);
+bool TrueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::True& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

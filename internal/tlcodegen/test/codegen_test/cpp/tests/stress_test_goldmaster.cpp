@@ -18,7 +18,7 @@ bool test_case(std::string type_name, std::string& testing_bytes);
 bool test_case_throwable(std::string type_name, std::string& testing_bytes);
 
 int main() {
-    tl2::factory::set_all_factories();
+    tlgen::factory::set_all_factories();
 
     std::ifstream f("../data/test-stress-data-goldmaster.json");
     json data = json::parse(f);
@@ -50,19 +50,19 @@ int main() {
 
 
 bool test_case(std::string type_name, std::string& testing_bytes) {
-    auto item = tl2::meta::get_item_by_name(std::move(type_name));
+    auto item = tlgen::meta::get_item_by_name(std::move(type_name));
     if (!item || !item.value().has_create_object) {
         return true;
     }
     auto test_object = item.value().create_object();
     auto expected_output = hex::parse_hex_to_bytes(testing_bytes);
 
-    basictl::tl_istream_string input_connector{expected_output};
-    basictl::tl_istream input{input_connector};
+    tlgen::basictl::tl_istream_string input_connector{expected_output};
+    tlgen::basictl::tl_istream input{input_connector};
 
     std::string out_string;
-    basictl::tl_ostream_string output_connector{out_string};
-    basictl::tl_ostream output{output_connector};
+    tlgen::basictl::tl_ostream_string output_connector{out_string};
+    tlgen::basictl::tl_ostream output{output_connector};
 
     bool read_result = test_object->read_boxed(input);
     bool write_result = test_object->write_boxed(output);

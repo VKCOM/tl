@@ -5,105 +5,105 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTuple10IntBoxedReset(std::array<int32_t, 10>& item);
 
 bool BuiltinTuple10IntBoxedWriteJSON(std::ostream & s, const std::array<int32_t, 10>& item);
-bool BuiltinTuple10IntBoxedRead(::basictl::tl_istream & s, std::array<int32_t, 10>& item);
-bool BuiltinTuple10IntBoxedWrite(::basictl::tl_ostream & s, const std::array<int32_t, 10>& item);
+bool BuiltinTuple10IntBoxedRead(::tlgen::basictl::tl_istream & s, std::array<int32_t, 10>& item);
+bool BuiltinTuple10IntBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 10>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTuple2IntBoxedReset(std::array<int32_t, 2>& item);
 
 bool BuiltinTuple2IntBoxedWriteJSON(std::ostream & s, const std::array<int32_t, 2>& item);
-bool BuiltinTuple2IntBoxedRead(::basictl::tl_istream & s, std::array<int32_t, 2>& item);
-bool BuiltinTuple2IntBoxedWrite(::basictl::tl_ostream & s, const std::array<int32_t, 2>& item);
+bool BuiltinTuple2IntBoxedRead(::tlgen::basictl::tl_istream & s, std::array<int32_t, 2>& item);
+bool BuiltinTuple2IntBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 2>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTuple3IntReset(std::array<int32_t, 3>& item);
 
 bool BuiltinTuple3IntWriteJSON(std::ostream & s, const std::array<int32_t, 3>& item);
-bool BuiltinTuple3IntRead(::basictl::tl_istream & s, std::array<int32_t, 3>& item);
-bool BuiltinTuple3IntWrite(::basictl::tl_ostream & s, const std::array<int32_t, 3>& item);
+bool BuiltinTuple3IntRead(::tlgen::basictl::tl_istream & s, std::array<int32_t, 3>& item);
+bool BuiltinTuple3IntWrite(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTuple5IntReset(std::array<int32_t, 5>& item);
 
 bool BuiltinTuple5IntWriteJSON(std::ostream & s, const std::array<int32_t, 5>& item);
-bool BuiltinTuple5IntRead(::basictl::tl_istream & s, std::array<int32_t, 5>& item);
-bool BuiltinTuple5IntWrite(::basictl::tl_ostream & s, const std::array<int32_t, 5>& item);
+bool BuiltinTuple5IntRead(::tlgen::basictl::tl_istream & s, std::array<int32_t, 5>& item);
+bool BuiltinTuple5IntWrite(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 5>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTupleIntReset(std::vector<int32_t>& item);
 
-bool BuiltinTupleIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item, uint32_t nat_n);
-bool BuiltinTupleIntRead(::basictl::tl_istream & s, std::vector<int32_t>& item, uint32_t nat_n);
-bool BuiltinTupleIntWrite(::basictl::tl_ostream & s, const std::vector<int32_t>& item, uint32_t nat_n);
+bool BuiltinTupleIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTupleIntBoxedReset(std::vector<int32_t>& item);
 
-bool BuiltinTupleIntBoxedWriteJSON(std::ostream & s, const std::vector<int32_t>& item, uint32_t nat_n);
-bool BuiltinTupleIntBoxedRead(::basictl::tl_istream & s, std::vector<int32_t>& item, uint32_t nat_n);
-bool BuiltinTupleIntBoxedWrite(::basictl::tl_ostream & s, const std::vector<int32_t>& item, uint32_t nat_n);
+bool BuiltinTupleIntBoxedWriteJSON(std::ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleIntBoxedRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleIntBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinVectorIntReset(std::vector<int32_t>& item);
 
 bool BuiltinVectorIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item);
-bool BuiltinVectorIntRead(::basictl::tl_istream & s, std::vector<int32_t>& item);
-bool BuiltinVectorIntWrite(::basictl::tl_ostream & s, const std::vector<int32_t>& item);
+bool BuiltinVectorIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item);
+bool BuiltinVectorIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinVectorIntBoxedReset(std::vector<int32_t>& item);
 
 bool BuiltinVectorIntBoxedWriteJSON(std::ostream & s, const std::vector<int32_t>& item);
-bool BuiltinVectorIntBoxedRead(::basictl::tl_istream & s, std::vector<int32_t>& item);
-bool BuiltinVectorIntBoxedWrite(::basictl::tl_ostream & s, const std::vector<int32_t>& item);
+bool BuiltinVectorIntBoxedRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item);
+bool BuiltinVectorIntBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void IntReset(int32_t& item) noexcept;
 
 bool IntWriteJSON(std::ostream& s, const int32_t& item) noexcept;
-bool IntRead(::basictl::tl_istream & s, int32_t& item) noexcept; 
-bool IntWrite(::basictl::tl_ostream & s, const int32_t& item) noexcept;
-bool IntReadBoxed(::basictl::tl_istream & s, int32_t& item);
-bool IntWriteBoxed(::basictl::tl_ostream & s, const int32_t& item);
+bool IntRead(::tlgen::basictl::tl_istream & s, int32_t& item) noexcept; 
+bool IntWrite(::tlgen::basictl::tl_ostream & s, const int32_t& item) noexcept;
+bool IntReadBoxed(::tlgen::basictl::tl_istream & s, int32_t& item);
+bool IntWriteBoxed(::tlgen::basictl::tl_ostream & s, const int32_t& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 bool IntMaybeWriteJSON(std::ostream & s, const std::optional<int32_t>& item);
 
-bool IntMaybeReadBoxed(::basictl::tl_istream & s, std::optional<int32_t>& item);
-bool IntMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<int32_t>& item);
+bool IntMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<int32_t>& item);
+bool IntMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<int32_t>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

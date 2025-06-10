@@ -6,18 +6,18 @@
 #include "__common_namespace/functions/getStats.h"
 #include "tasks/types/tasks.queueTypeStats.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void GetStatsReset(::tl2::GetStats& item) noexcept;
+void GetStatsReset(::tlgen::GetStats& item) noexcept;
 
-bool GetStatsWriteJSON(std::ostream& s, const ::tl2::GetStats& item) noexcept;
-bool GetStatsRead(::basictl::tl_istream & s, ::tl2::GetStats& item) noexcept; 
-bool GetStatsWrite(::basictl::tl_ostream & s, const ::tl2::GetStats& item) noexcept;
-bool GetStatsReadBoxed(::basictl::tl_istream & s, ::tl2::GetStats& item);
-bool GetStatsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::GetStats& item);
+bool GetStatsWriteJSON(std::ostream& s, const ::tlgen::GetStats& item) noexcept;
+bool GetStatsRead(::tlgen::basictl::tl_istream & s, ::tlgen::GetStats& item) noexcept; 
+bool GetStatsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetStats& item) noexcept;
+bool GetStatsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetStats& item);
+bool GetStatsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetStats& item);
 
-bool GetStatsReadResult(::basictl::tl_istream & s, ::tl2::GetStats& item, ::tl2::tasks::QueueTypeStats& result);
-bool GetStatsWriteResult(::basictl::tl_ostream & s, ::tl2::GetStats& item, ::tl2::tasks::QueueTypeStats& result);
-		
-}} // namespace tl2::details
+bool GetStatsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetStats& item, ::tlgen::tasks::QueueTypeStats& result);
+bool GetStatsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetStats& item, ::tlgen::tasks::QueueTypeStats& result);
+    
+}} // namespace tlgen::details
 

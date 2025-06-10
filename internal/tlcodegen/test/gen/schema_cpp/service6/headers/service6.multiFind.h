@@ -8,18 +8,18 @@
 #include "service6/types/service6.error.h"
 #include "__common_namespace/types/Either.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service6MultiFindReset(::tl2::service6::MultiFind& item) noexcept;
+void Service6MultiFindReset(::tlgen::service6::MultiFind& item) noexcept;
 
-bool Service6MultiFindWriteJSON(std::ostream& s, const ::tl2::service6::MultiFind& item) noexcept;
-bool Service6MultiFindRead(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item) noexcept; 
-bool Service6MultiFindWrite(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item) noexcept;
-bool Service6MultiFindReadBoxed(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item);
-bool Service6MultiFindWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item);
+bool Service6MultiFindWriteJSON(std::ostream& s, const ::tlgen::service6::MultiFind& item) noexcept;
+bool Service6MultiFindRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item) noexcept; 
+bool Service6MultiFindWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFind& item) noexcept;
+bool Service6MultiFindReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item);
+bool Service6MultiFindWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFind& item);
 
-bool Service6MultiFindReadResult(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& result);
-bool Service6MultiFindWriteResult(::basictl::tl_ostream & s, ::tl2::service6::MultiFind& item, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& result);
-		
-}} // namespace tl2::details
+bool Service6MultiFindReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result);
+bool Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result);
+    
+}} // namespace tlgen::details
 

@@ -7,27 +7,27 @@
 #include "service1/types/service1.Value.h"
 #include "__common_namespace/types/dictionaryField.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void VectorDictionaryFieldDictionaryIntReset(std::map<std::string, std::map<std::string, int32_t>>& item) noexcept;
 
 bool VectorDictionaryFieldDictionaryIntWriteJSON(std::ostream& s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept;
-bool VectorDictionaryFieldDictionaryIntRead(::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item) noexcept; 
-bool VectorDictionaryFieldDictionaryIntWrite(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept;
-bool VectorDictionaryFieldDictionaryIntReadBoxed(::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item);
-bool VectorDictionaryFieldDictionaryIntWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item);
+bool VectorDictionaryFieldDictionaryIntRead(::tlgen::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item) noexcept; 
+bool VectorDictionaryFieldDictionaryIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item) noexcept;
+bool VectorDictionaryFieldDictionaryIntReadBoxed(::tlgen::basictl::tl_istream & s, std::map<std::string, std::map<std::string, int32_t>>& item);
+bool VectorDictionaryFieldDictionaryIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::map<std::string, std::map<std::string, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService1ValueReset(std::vector<::tl2::service1::Value>& item) noexcept;
+void VectorService1ValueReset(std::vector<::tlgen::service1::Value>& item) noexcept;
 
-bool VectorService1ValueWriteJSON(std::ostream& s, const std::vector<::tl2::service1::Value>& item) noexcept;
-bool VectorService1ValueRead(::basictl::tl_istream & s, std::vector<::tl2::service1::Value>& item) noexcept; 
-bool VectorService1ValueWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service1::Value>& item) noexcept;
-bool VectorService1ValueReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service1::Value>& item);
-bool VectorService1ValueWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service1::Value>& item);
+bool VectorService1ValueWriteJSON(std::ostream& s, const std::vector<::tlgen::service1::Value>& item) noexcept;
+bool VectorService1ValueRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service1::Value>& item) noexcept; 
+bool VectorService1ValueWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service1::Value>& item) noexcept;
+bool VectorService1ValueReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service1::Value>& item);
+bool VectorService1ValueWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service1::Value>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

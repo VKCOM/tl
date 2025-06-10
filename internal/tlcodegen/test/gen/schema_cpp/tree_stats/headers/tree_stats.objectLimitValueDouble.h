@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "tree_stats/types/tree_stats.objectLimitValueDouble.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TreeStatsObjectLimitValueDoubleReset(::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept;
+void TreeStatsObjectLimitValueDoubleReset(::tlgen::tree_stats::ObjectLimitValueDouble& item) noexcept;
 
-bool TreeStatsObjectLimitValueDoubleWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept;
-bool TreeStatsObjectLimitValueDoubleRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept; 
-bool TreeStatsObjectLimitValueDoubleWrite(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueDouble& item) noexcept;
-bool TreeStatsObjectLimitValueDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueDouble& item);
-bool TreeStatsObjectLimitValueDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueDouble& item);
+bool TreeStatsObjectLimitValueDoubleWriteJSON(std::ostream& s, const ::tlgen::tree_stats::ObjectLimitValueDouble& item) noexcept;
+bool TreeStatsObjectLimitValueDoubleRead(::tlgen::basictl::tl_istream & s, ::tlgen::tree_stats::ObjectLimitValueDouble& item) noexcept; 
+bool TreeStatsObjectLimitValueDoubleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tree_stats::ObjectLimitValueDouble& item) noexcept;
+bool TreeStatsObjectLimitValueDoubleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tree_stats::ObjectLimitValueDouble& item);
+bool TreeStatsObjectLimitValueDoubleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tree_stats::ObjectLimitValueDouble& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

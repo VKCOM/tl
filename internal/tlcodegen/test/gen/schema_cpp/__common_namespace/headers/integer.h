@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/integer.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorIntegerReset(std::vector<::tl2::Integer>& item);
+void BuiltinVectorIntegerReset(std::vector<::tlgen::Integer>& item);
 
-bool BuiltinVectorIntegerWriteJSON(std::ostream & s, const std::vector<::tl2::Integer>& item);
-bool BuiltinVectorIntegerRead(::basictl::tl_istream & s, std::vector<::tl2::Integer>& item);
-bool BuiltinVectorIntegerWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Integer>& item);
+bool BuiltinVectorIntegerWriteJSON(std::ostream & s, const std::vector<::tlgen::Integer>& item);
+bool BuiltinVectorIntegerRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Integer>& item);
+bool BuiltinVectorIntegerWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Integer>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void IntegerReset(::tl2::Integer& item) noexcept;
+void IntegerReset(::tlgen::Integer& item) noexcept;
 
-bool IntegerWriteJSON(std::ostream& s, const ::tl2::Integer& item) noexcept;
-bool IntegerRead(::basictl::tl_istream & s, ::tl2::Integer& item) noexcept; 
-bool IntegerWrite(::basictl::tl_ostream & s, const ::tl2::Integer& item) noexcept;
-bool IntegerReadBoxed(::basictl::tl_istream & s, ::tl2::Integer& item);
-bool IntegerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Integer& item);
+bool IntegerWriteJSON(std::ostream& s, const ::tlgen::Integer& item) noexcept;
+bool IntegerRead(::tlgen::basictl::tl_istream & s, ::tlgen::Integer& item) noexcept; 
+bool IntegerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Integer& item) noexcept;
+bool IntegerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Integer& item);
+bool IntegerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Integer& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

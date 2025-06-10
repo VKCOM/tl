@@ -8,7 +8,7 @@
 #include <cstring>
 #include <string>
 
-namespace basictl {
+namespace tlgen::basictl {
     enum class tl_error_type {
         STREAM_EOF,
         INCORRECT_SEQUENCE_LENGTH,

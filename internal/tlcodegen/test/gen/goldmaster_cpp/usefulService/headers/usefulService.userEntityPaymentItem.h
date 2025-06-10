@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "usefulService/types/usefulService.userEntityPaymentItem.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UsefulServiceUserEntityPaymentItemReset(::tl2::usefulService::UserEntityPaymentItem& item) noexcept;
+void UsefulServiceUserEntityPaymentItemReset(::tlgen::usefulService::UserEntityPaymentItem& item) noexcept;
 
-bool UsefulServiceUserEntityPaymentItemWriteJSON(std::ostream& s, const ::tl2::usefulService::UserEntityPaymentItem& item, uint32_t nat_fields_mask) noexcept;
-bool UsefulServiceUserEntityPaymentItemRead(::basictl::tl_istream & s, ::tl2::usefulService::UserEntityPaymentItem& item, uint32_t nat_fields_mask) noexcept; 
-bool UsefulServiceUserEntityPaymentItemWrite(::basictl::tl_ostream & s, const ::tl2::usefulService::UserEntityPaymentItem& item, uint32_t nat_fields_mask) noexcept;
-bool UsefulServiceUserEntityPaymentItemReadBoxed(::basictl::tl_istream & s, ::tl2::usefulService::UserEntityPaymentItem& item, uint32_t nat_fields_mask);
-bool UsefulServiceUserEntityPaymentItemWriteBoxed(::basictl::tl_ostream & s, const ::tl2::usefulService::UserEntityPaymentItem& item, uint32_t nat_fields_mask);
+bool UsefulServiceUserEntityPaymentItemWriteJSON(std::ostream& s, const ::tlgen::usefulService::UserEntityPaymentItem& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool UsefulServiceUserEntityPaymentItemRead(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::UserEntityPaymentItem& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept; 
+bool UsefulServiceUserEntityPaymentItemWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::UserEntityPaymentItem& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool UsefulServiceUserEntityPaymentItemReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::UserEntityPaymentItem& item, [[maybe_unused]] uint32_t nat_fields_mask);
+bool UsefulServiceUserEntityPaymentItemWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::UserEntityPaymentItem& item, [[maybe_unused]] uint32_t nat_fields_mask);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

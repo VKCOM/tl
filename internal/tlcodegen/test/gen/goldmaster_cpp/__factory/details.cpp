@@ -87,2054 +87,2054 @@
 #include "b/types/a.ColorItems.h"
 #include "a/types/a.ColorItems.h"
 
-void tl2::factory::set_all_factories() {
+void tlgen::factory::set_all_factories() {
 
-	struct tl2_a_Blue_tl_object : public tl2::meta::tl_object {
-        tl2::a::Blue object;
+  struct tlgen_a_Blue_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::a::Blue object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("a.blue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_a_Blue_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_a_Color0_tl_object : public tl2::meta::tl_object {
-        tl2::a::Color0 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("a.blue", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_a_Blue_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_a_Color0_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::a::Color0 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("a.color", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_a_Color0_tl_object>();
+  });
+
+  struct tlgen_a_Green_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::a::Green object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("a.green", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_a_Green_tl_object>();
+  });
+
+  struct tlgen_a_Red_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::a::Red object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("a.red", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_a_Red_tl_object>();
+  });
+
+  struct tlgen_a_Top2_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::a::Top2 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("a.top2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_a_Top2_tl_object>();
+  });
+
+  struct tlgen_a_UNionA_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::a::UNionA object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("a.uNionA", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_a_UNionA_tl_object>();
+  });
+
+  struct tlgen_ab_Call1_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call1 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::ab::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call1", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call1_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call1", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call1_tl_function>();
+  });
+
+  struct tlgen_ab_Call10_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call10 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::a::Color result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call10", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call10_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call10", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call10_tl_function>();
+  });
+
+  struct tlgen_ab_Call11_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call11 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::a::Color result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call11", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call11_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call11", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call11_tl_function>();
+  });
+
+  struct tlgen_ab_Call2_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call2 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::cd::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call2_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call2", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call2_tl_function>();
+  });
+
+  struct tlgen_ab_Call3_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call3 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call3", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call3_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call3", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call3_tl_function>();
+  });
+
+  struct tlgen_ab_Call4_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call4 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::ab::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call4", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call4_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call4", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call4_tl_function>();
+  });
+
+  struct tlgen_ab_Call5_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call5 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::cd::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call5", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call5_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call5", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call5_tl_function>();
+  });
+
+  struct tlgen_ab_Call6_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call6 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call6", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call6_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call6", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call6_tl_function>();
+  });
+
+  struct tlgen_ab_Call7_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call7 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::ab::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call7", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call7_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call7", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call7_tl_function>();
+  });
+
+  struct tlgen_ab_Call8_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call8 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::cd::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call8", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call8_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call8", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call8_tl_function>();
+  });
+
+  struct tlgen_ab_Call9_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::ab::Call9 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::TypeB result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.call9", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Call9_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("ab.call9", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_ab_Call9_tl_function>();
+  });
+
+  struct tlgen_ab_Code_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::Code object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.code", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Code_tl_object>();
+  });
+
+  struct tlgen_ab_CounterChangeRequestPeriodsMany_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::CounterChangeRequestPeriodsMany object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.counterChangeRequestPeriodsMany", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_CounterChangeRequestPeriodsMany_tl_object>();
+  });
+
+  struct tlgen_ab_CounterChangeRequestPeriodsOne_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::CounterChangeRequestPeriodsOne object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.counterChangeRequestPeriodsOne", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_CounterChangeRequestPeriodsOne_tl_object>();
+  });
+
+  struct tlgen_ab_Empty_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::Empty object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.empty", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_Empty_tl_object>();
+  });
+
+  struct tlgen_ab_MyType_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::MyType object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.myType", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_MyType_tl_object>();
+  });
+
+  struct tlgen_ab_TestMaybe_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TestMaybe object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.testMaybe", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TestMaybe_tl_object>();
+  });
+
+  struct tlgen_ab_TopLevel1_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TopLevel1 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.topLevel1", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TopLevel1_tl_object>();
+  });
+
+  struct tlgen_ab_TopLevel2_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TopLevel2 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("a.color", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_a_Color0_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.topLevel2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TopLevel2_tl_object>();
+  });
 
-	struct tl2_a_Green_tl_object : public tl2::meta::tl_object {
-        tl2::a::Green object;
+  struct tlgen_ab_TypeA_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TypeA object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("a.green", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_a_Green_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_a_Red_tl_object : public tl2::meta::tl_object {
-        tl2::a::Red object;
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.typeA", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TypeA_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_ab_TypeB_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TypeB object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("a.red", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_a_Red_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_a_Top2_tl_object : public tl2::meta::tl_object {
-        tl2::a::Top2 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.typeB", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TypeB_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_ab_TypeC_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TypeC object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("a.top2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_a_Top2_tl_object>();
-	});
-
-	struct tl2_a_UNionA_tl_object : public tl2::meta::tl_object {
-        tl2::a::UNionA object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("a.uNionA", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_a_UNionA_tl_object>();
-	});
-
-	struct tl2_ab_Call1_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call1 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::ab::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call1", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call1_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call1", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call1_tl_function>();
-	});
-
-	struct tl2_ab_Call10_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call10 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::a::Color result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call10", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call10_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call10", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call10_tl_function>();
-	});
-
-	struct tl2_ab_Call11_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call11 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::a::Color result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call11", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call11_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call11", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call11_tl_function>();
-	});
-
-	struct tl2_ab_Call2_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call2 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::cd::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call2_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call2", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call2_tl_function>();
-	});
-
-	struct tl2_ab_Call3_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call3 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call3_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call3", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call3_tl_function>();
-	});
-
-	struct tl2_ab_Call4_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call4 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::ab::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call4", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call4_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call4", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call4_tl_function>();
-	});
-
-	struct tl2_ab_Call5_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call5 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::cd::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call5", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call5_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call5", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call5_tl_function>();
-	});
-
-	struct tl2_ab_Call6_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call6 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call6", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call6_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call6", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call6_tl_function>();
-	});
-
-	struct tl2_ab_Call7_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call7 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::ab::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call7", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call7_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call7", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call7_tl_function>();
-	});
-
-	struct tl2_ab_Call8_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call8 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::cd::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call8", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call8_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call8", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call8_tl_function>();
-	});
-
-	struct tl2_ab_Call9_tl_function : public tl2::meta::tl_function {
-        tl2::ab::Call9 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			tl2::TypeB result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.call9", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Call9_tl_function>();
-	});
-
-	tl2::meta::set_create_function_by_name("ab.call9", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_ab_Call9_tl_function>();
-	});
-
-	struct tl2_ab_Code_tl_object : public tl2::meta::tl_object {
-        tl2::ab::Code object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.code", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Code_tl_object>();
-	});
-
-	struct tl2_ab_CounterChangeRequestPeriodsMany_tl_object : public tl2::meta::tl_object {
-        tl2::ab::CounterChangeRequestPeriodsMany object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.counterChangeRequestPeriodsMany", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_CounterChangeRequestPeriodsMany_tl_object>();
-	});
-
-	struct tl2_ab_CounterChangeRequestPeriodsOne_tl_object : public tl2::meta::tl_object {
-        tl2::ab::CounterChangeRequestPeriodsOne object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.counterChangeRequestPeriodsOne", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_CounterChangeRequestPeriodsOne_tl_object>();
-	});
-
-	struct tl2_ab_Empty_tl_object : public tl2::meta::tl_object {
-        tl2::ab::Empty object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.empty", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_Empty_tl_object>();
-	});
-
-	struct tl2_ab_MyType_tl_object : public tl2::meta::tl_object {
-        tl2::ab::MyType object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.myType", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_MyType_tl_object>();
-	});
-
-	struct tl2_ab_TestMaybe_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TestMaybe object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.testMaybe", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TestMaybe_tl_object>();
-	});
-
-	struct tl2_ab_TopLevel1_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TopLevel1 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.topLevel1", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TopLevel1_tl_object>();
-	});
-
-	struct tl2_ab_TopLevel2_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TopLevel2 object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.topLevel2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TopLevel2_tl_object>();
-	});
-
-	struct tl2_ab_TypeA_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TypeA object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.typeA", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TypeA_tl_object>();
-	});
-
-	struct tl2_ab_TypeB_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TypeB object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
-
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
-
-    };
-	tl2::meta::set_create_object_by_name("ab.typeB", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TypeB_tl_object>();
-	});
-
-	struct tl2_ab_TypeC_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TypeC object;
-
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
-
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("ab.typeC", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TypeC_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.typeC", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TypeC_tl_object>();
+  });
 
-	struct tl2_ab_TypeD_tl_object : public tl2::meta::tl_object {
-        tl2::ab::TypeD object;
+  struct tlgen_ab_TypeD_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::TypeD object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
-        
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("ab.typeD", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_TypeD_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.typeD", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_TypeD_tl_object>();
+  });
 
-	struct tl2_ab_UseCycle_tl_object : public tl2::meta::tl_object {
-        tl2::ab::UseCycle object;
+  struct tlgen_ab_UseCycle_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::UseCycle object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("ab.useCycle", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_UseCycle_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_ab_UseDictString_tl_object : public tl2::meta::tl_object {
-        tl2::ab::UseDictString object;
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.useCycle", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_UseCycle_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_ab_UseDictString_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::ab::UseDictString object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("ab.useDictString", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_ab_UseDictString_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("ab.useDictString", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_ab_UseDictString_tl_object>();
+  });
 
-	struct tl2_au_NionA_tl_object : public tl2::meta::tl_object {
-        tl2::au::NionA object;
+  struct tlgen_au_NionA_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::au::NionA object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("au.nionA", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_au_NionA_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_b_Red_tl_object : public tl2::meta::tl_object {
-        tl2::b::Red object;
+  };
+  ::tlgen::meta::set_create_object_by_name("au.nionA", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_au_NionA_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_b_Red_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::b::Red object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("b.red", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_b_Red_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("b.red", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_b_Red_tl_object>();
+  });
 
-	struct tl2_cd_MyType_tl_object : public tl2::meta::tl_object {
-        tl2::cd::MyType object;
+  struct tlgen_cd_MyType_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::MyType object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.myType", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_MyType_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_cd_Response_tl_object : public tl2::meta::tl_object {
-        tl2::cd::Response object;
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.myType", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_MyType_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_cd_Response_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::Response object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.response", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_Response_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.response", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_Response_tl_object>();
+  });
 
-	struct tl2_cd_TopLevel3_tl_object : public tl2::meta::tl_object {
-        tl2::cd::TopLevel3 object;
+  struct tlgen_cd_TopLevel3_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::TopLevel3 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.topLevel3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_TopLevel3_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_cd_TypeA_tl_object : public tl2::meta::tl_object {
-        tl2::cd::TypeA object;
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.topLevel3", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_TopLevel3_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_cd_TypeA_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::TypeA object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.typeA", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_TypeA_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.typeA", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_TypeA_tl_object>();
+  });
 
-	struct tl2_cd_TypeB_tl_object : public tl2::meta::tl_object {
-        tl2::cd::TypeB object;
+  struct tlgen_cd_TypeB_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::TypeB object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.typeB", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_TypeB_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_cd_TypeC_tl_object : public tl2::meta::tl_object {
-        tl2::cd::TypeC object;
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.typeB", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_TypeB_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_cd_TypeC_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::TypeC object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.typeC", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_TypeC_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.typeC", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_TypeC_tl_object>();
+  });
 
-	struct tl2_cd_TypeD_tl_object : public tl2::meta::tl_object {
-        tl2::cd::TypeD object;
+  struct tlgen_cd_TypeD_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::TypeD object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.typeD", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_TypeD_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_cd_UseCycle_tl_object : public tl2::meta::tl_object {
-        tl2::cd::UseCycle object;
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.typeD", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_TypeD_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_cd_UseCycle_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cd::UseCycle object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cd.useCycle", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cd_UseCycle_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("cd.useCycle", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cd_UseCycle_tl_object>();
+  });
 
-	struct tl2_cyc1_MyCycle_tl_object : public tl2::meta::tl_object {
-        tl2::cyc1::MyCycle object;
+  struct tlgen_cyc1_MyCycle_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cyc1::MyCycle object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cyc1.myCycle", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cyc1_MyCycle_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_cyc2_MyCycle_tl_object : public tl2::meta::tl_object {
-        tl2::cyc2::MyCycle object;
+  };
+  ::tlgen::meta::set_create_object_by_name("cyc1.myCycle", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cyc1_MyCycle_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_cyc2_MyCycle_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cyc2::MyCycle object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cyc2.myCycle", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cyc2_MyCycle_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("cyc2.myCycle", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cyc2_MyCycle_tl_object>();
+  });
 
-	struct tl2_cyc3_MyCycle_tl_object : public tl2::meta::tl_object {
-        tl2::cyc3::MyCycle object;
+  struct tlgen_cyc3_MyCycle_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::cyc3::MyCycle object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cyc3.myCycle", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_cyc3_MyCycle_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_CycleTuple_tl_object : public tl2::meta::tl_object {
-        tl2::CycleTuple object;
+  };
+  ::tlgen::meta::set_create_object_by_name("cyc3.myCycle", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_cyc3_MyCycle_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_CycleTuple_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::CycleTuple object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("cycleTuple", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_CycleTuple_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("cycleTuple", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_CycleTuple_tl_object>();
+  });
 
-	struct tl2_HalfStr_tl_object : public tl2::meta::tl_object {
-        tl2::HalfStr object;
+  struct tlgen_HalfStr_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::HalfStr object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("halfStr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_HalfStr_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Hren_tl_object : public tl2::meta::tl_object {
-        tl2::Hren object;
+  };
+  ::tlgen::meta::set_create_object_by_name("halfStr", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_HalfStr_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Hren_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Hren object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("hren", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Hren_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("hren", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Hren_tl_object>();
+  });
 
-	struct tl2_MaybeTest1_tl_object : public tl2::meta::tl_object {
-        tl2::MaybeTest1 object;
+  struct tlgen_MaybeTest1_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MaybeTest1 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("maybeTest1", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MaybeTest1_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_MultiPoint_tl_object : public tl2::meta::tl_object {
-        tl2::MultiPoint object;
+  };
+  ::tlgen::meta::set_create_object_by_name("maybeTest1", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MaybeTest1_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_MultiPoint_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MultiPoint object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("multiPoint", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MultiPoint_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("multiPoint", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MultiPoint_tl_object>();
+  });
 
-	struct tl2_MyNat_tl_object : public tl2::meta::tl_object {
-        tl2::MyNat object;
+  struct tlgen_MyNat_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MyNat object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("myNat", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyNat_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_MyPlus_tl_object : public tl2::meta::tl_object {
-        tl2::MyPlus object;
+  };
+  ::tlgen::meta::set_create_object_by_name("myNat", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MyNat_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_MyPlus_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MyPlus object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("myPlus", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyPlus_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("myPlus", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MyPlus_tl_object>();
+  });
 
-	struct tl2_MyPlus3_tl_object : public tl2::meta::tl_object {
-        tl2::MyPlus3 object;
+  struct tlgen_MyPlus3_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MyPlus3 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("myPlus3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyPlus3_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_MyZero_tl_object : public tl2::meta::tl_object {
-        tl2::MyZero object;
+  };
+  ::tlgen::meta::set_create_object_by_name("myPlus3", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MyPlus3_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_MyZero_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MyZero object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("myZero", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyZero_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("myZero", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MyZero_tl_object>();
+  });
 
-	struct tl2_MyZero3_tl_object : public tl2::meta::tl_object {
-        tl2::MyZero3 object;
+  struct tlgen_MyZero3_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::MyZero3 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("myZero3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_MyZero3_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_NativeWrappers_tl_object : public tl2::meta::tl_object {
-        tl2::NativeWrappers object;
+  };
+  ::tlgen::meta::set_create_object_by_name("myZero3", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_MyZero3_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_NativeWrappers_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::NativeWrappers object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("nativeWrappers", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_NativeWrappers_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("nativeWrappers", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_NativeWrappers_tl_object>();
+  });
 
-	struct tl2_NoStr_tl_object : public tl2::meta::tl_object {
-        tl2::NoStr object;
+  struct tlgen_NoStr_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::NoStr object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("noStr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_NoStr_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace_tl_object : public tl2::meta::tl_object {
-        tl2::Replace object;
+  };
+  ::tlgen::meta::set_create_object_by_name("noStr", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_NoStr_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace10_tl_object : public tl2::meta::tl_object {
-        tl2::Replace10 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace10_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace10 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace10", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace10_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("replace10", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace10_tl_object>();
+  });
 
-	struct tl2_Replace12_tl_object : public tl2::meta::tl_object {
-        tl2::Replace12 object;
+  struct tlgen_Replace12_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace12 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace12", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace12_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace15_tl_object : public tl2::meta::tl_object {
-        tl2::Replace15 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace12", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace12_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace15_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace15 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace15", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace15_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("replace15", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace15_tl_object>();
+  });
 
-	struct tl2_Replace17_tl_object : public tl2::meta::tl_object {
-        tl2::Replace17 object;
+  struct tlgen_Replace17_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace17 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace17", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace17_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace18_tl_object : public tl2::meta::tl_object {
-        tl2::Replace18 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace17", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace17_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace18_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace18 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace18", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace18_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("replace18", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace18_tl_object>();
+  });
 
-	struct tl2_Replace2_tl_object : public tl2::meta::tl_object {
-        tl2::Replace2 object;
+  struct tlgen_Replace2_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace2 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace2_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace3_tl_object : public tl2::meta::tl_object {
-        tl2::Replace3 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace2_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace3_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace3 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace3", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace3_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("replace3", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace3_tl_object>();
+  });
 
-	struct tl2_Replace5_tl_object : public tl2::meta::tl_object {
-        tl2::Replace5 object;
+  struct tlgen_Replace5_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace5 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace5", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace5_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace6_tl_object : public tl2::meta::tl_object {
-        tl2::Replace6 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace5", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace5_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace6_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace6 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace6", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace6_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("replace6", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace6_tl_object>();
+  });
 
-	struct tl2_Replace7_tl_object : public tl2::meta::tl_object {
-        tl2::Replace7 object;
+  struct tlgen_Replace7_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace7 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace7", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace7_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_Replace8_tl_object : public tl2::meta::tl_object {
-        tl2::Replace8 object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace7", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace7_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_Replace8_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace8 object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace8", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace8_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("replace8", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace8_tl_object>();
+  });
 
-	struct tl2_Replace9_tl_object : public tl2::meta::tl_object {
-        tl2::Replace9 object;
+  struct tlgen_Replace9_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::Replace9 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("replace9", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_Replace9_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_service5_EmptyOutput_tl_object : public tl2::meta::tl_object {
-        tl2::service5::EmptyOutput object;
+  };
+  ::tlgen::meta::set_create_object_by_name("replace9", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_Replace9_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_service5_EmptyOutput_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::service5::EmptyOutput object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("service5.emptyOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_EmptyOutput_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("service5.emptyOutput", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_service5_EmptyOutput_tl_object>();
+  });
 
-	struct tl2_service5Long_EmptyOutput_tl_object : public tl2::meta::tl_object {
-        tl2::service5Long::EmptyOutput object;
+  struct tlgen_service5Long_EmptyOutput_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::service5Long::EmptyOutput object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("service5Long.emptyOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5Long_EmptyOutput_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_service5Long_StringOutput_tl_object : public tl2::meta::tl_object {
-        tl2::service5Long::StringOutput object;
+  };
+  ::tlgen::meta::set_create_object_by_name("service5Long.emptyOutput", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_service5Long_EmptyOutput_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_service5Long_StringOutput_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::service5Long::StringOutput object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("service5Long.stringOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5Long_StringOutput_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("service5Long.stringOutput", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_service5Long_StringOutput_tl_object>();
+  });
 
-	struct tl2_service5_StringOutput_tl_object : public tl2::meta::tl_object {
-        tl2::service5::StringOutput object;
+  struct tlgen_service5_StringOutput_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::service5::StringOutput object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("service5.stringOutput", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_service5_StringOutput_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_TestMaybe_tl_object : public tl2::meta::tl_object {
-        tl2::TestMaybe object;
+  };
+  ::tlgen::meta::set_create_object_by_name("service5.stringOutput", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_service5_StringOutput_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_TestMaybe_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::TestMaybe object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("testMaybe", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_TestMaybe_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("testMaybe", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_TestMaybe_tl_object>();
+  });
 
-	struct tl2_TestMaybe2_tl_object : public tl2::meta::tl_object {
-        tl2::TestMaybe2 object;
+  struct tlgen_TestMaybe2_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::TestMaybe2 object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("testMaybe2", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_TestMaybe2_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_True_tl_object : public tl2::meta::tl_object {
-        tl2::True object;
+  };
+  ::tlgen::meta::set_create_object_by_name("testMaybe2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_TestMaybe2_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_True_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::True object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("true", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_True_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("true", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_True_tl_object>();
+  });
 
-	struct tl2_TypeA_tl_object : public tl2::meta::tl_object {
-        tl2::TypeA object;
+  struct tlgen_TypeA_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::TypeA object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("typeA", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_TypeA_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_TypeB_tl_object : public tl2::meta::tl_object {
-        tl2::TypeB object;
+  };
+  ::tlgen::meta::set_create_object_by_name("typeA", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_TypeA_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_TypeB_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::TypeB object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("typeB", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_TypeB_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("typeB", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_TypeB_tl_object>();
+  });
 
-	struct tl2_TypeC_tl_object : public tl2::meta::tl_object {
-        tl2::TypeC object;
+  struct tlgen_TypeC_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::TypeC object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("typeC", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_TypeC_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_TypeD_tl_object : public tl2::meta::tl_object {
-        tl2::TypeD object;
+  };
+  ::tlgen::meta::set_create_object_by_name("typeC", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_TypeC_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_TypeD_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::TypeD object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("typeD", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_TypeD_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("typeD", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_TypeD_tl_object>();
+  });
 
-	struct tl2_UnionArgsUse_tl_object : public tl2::meta::tl_object {
-        tl2::UnionArgsUse object;
+  struct tlgen_UnionArgsUse_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::UnionArgsUse object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("unionArgsUse", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_UnionArgsUse_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_UseDictUgly_tl_object : public tl2::meta::tl_object {
-        tl2::UseDictUgly object;
+  };
+  ::tlgen::meta::set_create_object_by_name("unionArgsUse", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_UnionArgsUse_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_UseDictUgly_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::UseDictUgly object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("useDictUgly", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_UseDictUgly_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("useDictUgly", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_UseDictUgly_tl_object>();
+  });
 
-	struct tl2_UseResponse_tl_object : public tl2::meta::tl_object {
-        tl2::UseResponse object;
+  struct tlgen_UseResponse_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::UseResponse object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("useResponse", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_UseResponse_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_UseStr_tl_object : public tl2::meta::tl_object {
-        tl2::UseStr object;
+  };
+  ::tlgen::meta::set_create_object_by_name("useResponse", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_UseResponse_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_UseStr_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::UseStr object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("useStr", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_UseStr_tl_object>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("useStr", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_UseStr_tl_object>();
+  });
 
-	struct tl2_UseTrue_tl_object : public tl2::meta::tl_object {
-        tl2::UseTrue object;
+  struct tlgen_UseTrue_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::UseTrue object;
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-    };
-	tl2::meta::set_create_object_by_name("useTrue", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_UseTrue_tl_object>();
-	});
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-	struct tl2_usefulService_GetUserEntity_tl_function : public tl2::meta::tl_function {
-        tl2::usefulService::GetUserEntity object;
+  };
+  ::tlgen::meta::set_create_object_by_name("useTrue", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_UseTrue_tl_object>();
+  });
 
-        bool read(basictl::tl_istream &s) override {return object.read(s);}
-        bool write(basictl::tl_ostream &s) override {return object.write(s);}
+  struct tlgen_usefulService_GetUserEntity_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::usefulService::GetUserEntity object;
 
-		void read_or_throw(::basictl::tl_throwable_istream &s) override { object.read_or_throw(s);}
-		void write_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_or_throw(s);}
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
         
-		bool read_boxed(basictl::tl_istream &s) override {return object.read_boxed(s);}
-        bool write_boxed(basictl::tl_ostream &s) override {return object.write_boxed(s);}
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
 
-		void read_boxed_or_throw(::basictl::tl_throwable_istream &s) override { object.read_boxed_or_throw(s);}
-		void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) override { object.write_boxed_or_throw(s);}
-		
-		bool write_json(std::ostream &s) override {return object.write_json(s);}
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
 
-		bool read_write_result(basictl::tl_istream &in, basictl::tl_ostream &out) override {
-			std::optional<::tl2::usefulService::GetUserEntityResult> result;
-			bool read_result = this->object.read_result(in, result);
-			if (!read_result) {
-				return false;
-			}
-			return this->object.write_result(out, result);
-		}
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      std::optional<::tlgen::usefulService::GetUserEntityResult> result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
 
-    };
-	tl2::meta::set_create_object_by_name("usefulService.getUserEntity", []() -> std::unique_ptr<tl2::meta::tl_object> {
-        return std::make_unique<tl2_usefulService_GetUserEntity_tl_function>();
-	});
+  };
+  ::tlgen::meta::set_create_object_by_name("usefulService.getUserEntity", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_usefulService_GetUserEntity_tl_function>();
+  });
 
-	tl2::meta::set_create_function_by_name("usefulService.getUserEntity", []() -> std::unique_ptr<tl2::meta::tl_function> {
-        return std::make_unique<tl2_usefulService_GetUserEntity_tl_function>();
-	});
+  ::tlgen::meta::set_create_function_by_name("usefulService.getUserEntity", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_usefulService_GetUserEntity_tl_function>();
+  });
 
 }

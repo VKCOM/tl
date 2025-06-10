@@ -9,39 +9,39 @@
 #include "service6/types/service6.error.h"
 #include "__common_namespace/types/Either.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorEitherService6ErrorVectorService6FindResultRowReset(std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept;
+void VectorEitherService6ErrorVectorService6FindResultRowReset(std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept;
 
-bool VectorEitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept;
-bool VectorEitherService6ErrorVectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept; 
-bool VectorEitherService6ErrorVectorService6FindResultRowWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept;
-bool VectorEitherService6ErrorVectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item);
-bool VectorEitherService6ErrorVectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item);
+bool VectorEitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept;
+bool VectorEitherService6ErrorVectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept; 
+bool VectorEitherService6ErrorVectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept;
+bool VectorEitherService6ErrorVectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item);
+bool VectorEitherService6ErrorVectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService6FindResultRowReset(std::vector<::tl2::service6::FindResultRow>& item) noexcept;
+void VectorService6FindResultRowReset(std::vector<::tlgen::service6::FindResultRow>& item) noexcept;
 
-bool VectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tl2::service6::FindResultRow>& item) noexcept;
-bool VectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindResultRow>& item) noexcept; 
-bool VectorService6FindResultRowWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindResultRow>& item) noexcept;
-bool VectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service6::FindResultRow>& item);
-bool VectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindResultRow>& item);
+bool VectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tlgen::service6::FindResultRow>& item) noexcept;
+bool VectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindResultRow>& item) noexcept; 
+bool VectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindResultRow>& item) noexcept;
+bool VectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindResultRow>& item);
+bool VectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindResultRow>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService6FindWithBoundsResultReset(std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept;
+void VectorService6FindWithBoundsResultReset(std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept;
 
-bool VectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept;
-bool VectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept; 
-bool VectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept;
-bool VectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item);
-bool VectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item);
+bool VectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept;
+bool VectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept; 
+bool VectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept;
+bool VectorService6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindWithBoundsResult>& item);
+bool VectorService6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

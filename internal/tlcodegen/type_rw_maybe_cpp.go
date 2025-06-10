@@ -89,14 +89,16 @@ func (trw *TypeRWMaybe) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 		hppDet.WriteString(fmt.Sprintf(`
 bool %[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s);
 
-bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+bool %[1]sReadBoxed(::%[6]s::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWriteBoxed(::%[6]s::tl_ostream & s, const %[2]s& item%[3]s);
 
-`, goGlobalName,
+`,
+			goGlobalName,
 			myFullType,
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 			formatNatArgsCallCPP(trw.wr.NatParams),
-			trw.wr.tlTag))
+			trw.wr.tlTag,
+			trw.wr.gen.cppBasictlNamespace()))
 
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
@@ -116,7 +118,7 @@ bool %[6]s::%[1]sWriteJSON(std::ostream & s, const %[2]s& item%[3]s) {
 	s << "}";
 	return true;
 }
-bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
+bool %[6]s::%[1]sReadBoxed(::%[10]s::tl_istream & s, %[2]s& item%[3]s) {
 	bool has_item = false;
 	if (!s.bool_read(has_item, 0x%[4]x, 0x%[5]x)) { return false; }
 	if (has_item) {
@@ -130,7 +132,7 @@ bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
 	return true;
 }
 
-bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
+bool %[6]s::%[1]sWriteBoxed(::%[10]s::tl_ostream & s, const %[2]s& item%[3]s) {
 	if (!s.nat_write(item ? 0x%[5]x : 0x%[4]x)) { return false; }
 	if (item) {
 	%[8]s
@@ -162,6 +164,7 @@ bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				}
 				return s
 			}(),
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 	}
 	/*

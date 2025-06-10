@@ -6,18 +6,18 @@
 #include "ab/functions/ab.call1.h"
 #include "ab/types/ab.typeB.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbCall1Reset(::tl2::ab::Call1& item) noexcept;
+void AbCall1Reset(::tlgen::ab::Call1& item) noexcept;
 
-bool AbCall1WriteJSON(std::ostream& s, const ::tl2::ab::Call1& item) noexcept;
-bool AbCall1Read(::basictl::tl_istream & s, ::tl2::ab::Call1& item) noexcept; 
-bool AbCall1Write(::basictl::tl_ostream & s, const ::tl2::ab::Call1& item) noexcept;
-bool AbCall1ReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Call1& item);
-bool AbCall1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Call1& item);
+bool AbCall1WriteJSON(std::ostream& s, const ::tlgen::ab::Call1& item) noexcept;
+bool AbCall1Read(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call1& item) noexcept; 
+bool AbCall1Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call1& item) noexcept;
+bool AbCall1ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call1& item);
+bool AbCall1WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call1& item);
 
-bool AbCall1ReadResult(::basictl::tl_istream & s, ::tl2::ab::Call1& item, ::tl2::ab::TypeB& result);
-bool AbCall1WriteResult(::basictl::tl_ostream & s, ::tl2::ab::Call1& item, ::tl2::ab::TypeB& result);
-		
-}} // namespace tl2::details
+bool AbCall1ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call1& item, ::tlgen::ab::TypeB& result);
+bool AbCall1WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::ab::Call1& item, ::tlgen::ab::TypeB& result);
+    
+}} // namespace tlgen::details
 

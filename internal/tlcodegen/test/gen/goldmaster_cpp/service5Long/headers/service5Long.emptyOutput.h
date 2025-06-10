@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "service5Long/types/service5Long.emptyOutput.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service5LongEmptyOutputReset(::tl2::service5Long::EmptyOutput& item) noexcept;
+void Service5LongEmptyOutputReset(::tlgen::service5Long::EmptyOutput& item) noexcept;
 
-bool Service5LongEmptyOutputWriteJSON(std::ostream& s, const ::tl2::service5Long::EmptyOutput& item) noexcept;
-bool Service5LongEmptyOutputRead(::basictl::tl_istream & s, ::tl2::service5Long::EmptyOutput& item) noexcept; 
-bool Service5LongEmptyOutputWrite(::basictl::tl_ostream & s, const ::tl2::service5Long::EmptyOutput& item) noexcept;
-bool Service5LongEmptyOutputReadBoxed(::basictl::tl_istream & s, ::tl2::service5Long::EmptyOutput& item);
-bool Service5LongEmptyOutputWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service5Long::EmptyOutput& item);
+bool Service5LongEmptyOutputWriteJSON(std::ostream& s, const ::tlgen::service5Long::EmptyOutput& item) noexcept;
+bool Service5LongEmptyOutputRead(::tlgen::basictl::tl_istream & s, ::tlgen::service5Long::EmptyOutput& item) noexcept; 
+bool Service5LongEmptyOutputWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5Long::EmptyOutput& item) noexcept;
+bool Service5LongEmptyOutputReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service5Long::EmptyOutput& item);
+bool Service5LongEmptyOutputWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5Long::EmptyOutput& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

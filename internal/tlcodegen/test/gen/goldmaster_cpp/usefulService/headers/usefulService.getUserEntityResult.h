@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "usefulService/types/usefulService.getUserEntityResult.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UsefulServiceGetUserEntityResultReset(::tl2::usefulService::GetUserEntityResult& item) noexcept;
+void UsefulServiceGetUserEntityResultReset(::tlgen::usefulService::GetUserEntityResult& item) noexcept;
 
-bool UsefulServiceGetUserEntityResultWriteJSON(std::ostream& s, const ::tl2::usefulService::GetUserEntityResult& item, uint32_t nat_fields_mask) noexcept;
-bool UsefulServiceGetUserEntityResultRead(::basictl::tl_istream & s, ::tl2::usefulService::GetUserEntityResult& item, uint32_t nat_fields_mask) noexcept; 
-bool UsefulServiceGetUserEntityResultWrite(::basictl::tl_ostream & s, const ::tl2::usefulService::GetUserEntityResult& item, uint32_t nat_fields_mask) noexcept;
-bool UsefulServiceGetUserEntityResultReadBoxed(::basictl::tl_istream & s, ::tl2::usefulService::GetUserEntityResult& item, uint32_t nat_fields_mask);
-bool UsefulServiceGetUserEntityResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::usefulService::GetUserEntityResult& item, uint32_t nat_fields_mask);
+bool UsefulServiceGetUserEntityResultWriteJSON(std::ostream& s, const ::tlgen::usefulService::GetUserEntityResult& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool UsefulServiceGetUserEntityResultRead(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntityResult& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept; 
+bool UsefulServiceGetUserEntityResultWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::GetUserEntityResult& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool UsefulServiceGetUserEntityResultReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntityResult& item, [[maybe_unused]] uint32_t nat_fields_mask);
+bool UsefulServiceGetUserEntityResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::GetUserEntityResult& item, [[maybe_unused]] uint32_t nat_fields_mask);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool UsefulServiceGetUserEntityResultBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::usefulService::GetUserEntityResult>& item, uint32_t nat_t);
+bool UsefulServiceGetUserEntityResultBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::usefulService::GetUserEntityResult>& item, [[maybe_unused]] uint32_t nat_t);
 
-bool UsefulServiceGetUserEntityResultBoxedMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::usefulService::GetUserEntityResult>& item, uint32_t nat_t);
-bool UsefulServiceGetUserEntityResultBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::usefulService::GetUserEntityResult>& item, uint32_t nat_t);
+bool UsefulServiceGetUserEntityResultBoxedMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult>& item, [[maybe_unused]] uint32_t nat_t);
+bool UsefulServiceGetUserEntityResultBoxedMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::usefulService::GetUserEntityResult>& item, [[maybe_unused]] uint32_t nat_t);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

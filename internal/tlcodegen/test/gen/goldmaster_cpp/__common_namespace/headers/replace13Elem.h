@@ -5,23 +5,23 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace13Elem.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleReplace13ElemLongReset(std::vector<::tl2::Replace13Elem<int64_t>>& item);
+void BuiltinTupleReplace13ElemLongReset(std::vector<::tlgen::Replace13Elem<int64_t>>& item);
 
-bool BuiltinTupleReplace13ElemLongWriteJSON(std::ostream & s, const std::vector<::tl2::Replace13Elem<int64_t>>& item, uint32_t nat_n, uint32_t nat_tn, uint32_t nat_tk);
-bool BuiltinTupleReplace13ElemLongRead(::basictl::tl_istream & s, std::vector<::tl2::Replace13Elem<int64_t>>& item, uint32_t nat_n, uint32_t nat_tn, uint32_t nat_tk);
-bool BuiltinTupleReplace13ElemLongWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Replace13Elem<int64_t>>& item, uint32_t nat_n, uint32_t nat_tn, uint32_t nat_tk);
+bool BuiltinTupleReplace13ElemLongWriteJSON(std::ostream & s, const std::vector<::tlgen::Replace13Elem<int64_t>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_tn, [[maybe_unused]] uint32_t nat_tk);
+bool BuiltinTupleReplace13ElemLongRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Replace13Elem<int64_t>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_tn, [[maybe_unused]] uint32_t nat_tk);
+bool BuiltinTupleReplace13ElemLongWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Replace13Elem<int64_t>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_tn, [[maybe_unused]] uint32_t nat_tk);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace13ElemLongReset(::tl2::Replace13Elem<int64_t>& item) noexcept;
+void Replace13ElemLongReset(::tlgen::Replace13Elem<int64_t>& item) noexcept;
 
-bool Replace13ElemLongWriteJSON(std::ostream& s, const ::tl2::Replace13Elem<int64_t>& item, uint32_t nat_n, uint32_t nat_k) noexcept;
-bool Replace13ElemLongRead(::basictl::tl_istream & s, ::tl2::Replace13Elem<int64_t>& item, uint32_t nat_n, uint32_t nat_k) noexcept; 
-bool Replace13ElemLongWrite(::basictl::tl_ostream & s, const ::tl2::Replace13Elem<int64_t>& item, uint32_t nat_n, uint32_t nat_k) noexcept;
+bool Replace13ElemLongWriteJSON(std::ostream& s, const ::tlgen::Replace13Elem<int64_t>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_k) noexcept;
+bool Replace13ElemLongRead(::tlgen::basictl::tl_istream & s, ::tlgen::Replace13Elem<int64_t>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_k) noexcept; 
+bool Replace13ElemLongWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace13Elem<int64_t>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_k) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

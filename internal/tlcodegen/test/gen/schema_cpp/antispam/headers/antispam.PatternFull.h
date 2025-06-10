@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "antispam/types/antispam.PatternFull.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AntispamPatternFullReset(::tl2::antispam::PatternFull& item) noexcept;
+void AntispamPatternFullReset(::tlgen::antispam::PatternFull& item) noexcept;
 
-bool AntispamPatternFullWriteJSON(std::ostream & s, const ::tl2::antispam::PatternFull& item) noexcept;
-bool AntispamPatternFullReadBoxed(::basictl::tl_istream & s, ::tl2::antispam::PatternFull& item) noexcept;
-bool AntispamPatternFullWriteBoxed(::basictl::tl_ostream & s, const ::tl2::antispam::PatternFull& item) noexcept;
+bool AntispamPatternFullWriteJSON(std::ostream & s, const ::tlgen::antispam::PatternFull& item) noexcept;
+bool AntispamPatternFullReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::PatternFull& item) noexcept;
+bool AntispamPatternFullWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::antispam::PatternFull& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

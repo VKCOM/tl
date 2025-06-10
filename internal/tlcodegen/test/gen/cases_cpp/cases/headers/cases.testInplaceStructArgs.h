@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testInplaceStructArgs.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestInplaceStructArgsReset(::tl2::cases::TestInplaceStructArgs& item) noexcept;
+void CasesTestInplaceStructArgsReset(::tlgen::cases::TestInplaceStructArgs& item) noexcept;
 
-bool CasesTestInplaceStructArgsWriteJSON(std::ostream& s, const ::tl2::cases::TestInplaceStructArgs& item) noexcept;
-bool CasesTestInplaceStructArgsRead(::basictl::tl_istream & s, ::tl2::cases::TestInplaceStructArgs& item) noexcept; 
-bool CasesTestInplaceStructArgsWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestInplaceStructArgs& item) noexcept;
-bool CasesTestInplaceStructArgsReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestInplaceStructArgs& item);
-bool CasesTestInplaceStructArgsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestInplaceStructArgs& item);
+bool CasesTestInplaceStructArgsWriteJSON(std::ostream& s, const ::tlgen::cases::TestInplaceStructArgs& item) noexcept;
+bool CasesTestInplaceStructArgsRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestInplaceStructArgs& item) noexcept; 
+bool CasesTestInplaceStructArgsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestInplaceStructArgs& item) noexcept;
+bool CasesTestInplaceStructArgsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestInplaceStructArgs& item);
+bool CasesTestInplaceStructArgsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestInplaceStructArgs& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

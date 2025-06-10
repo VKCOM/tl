@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/useResponse.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UseResponseReset(::tl2::UseResponse& item) noexcept;
+void UseResponseReset(::tlgen::UseResponse& item) noexcept;
 
-bool UseResponseWriteJSON(std::ostream& s, const ::tl2::UseResponse& item) noexcept;
-bool UseResponseRead(::basictl::tl_istream & s, ::tl2::UseResponse& item) noexcept; 
-bool UseResponseWrite(::basictl::tl_ostream & s, const ::tl2::UseResponse& item) noexcept;
-bool UseResponseReadBoxed(::basictl::tl_istream & s, ::tl2::UseResponse& item);
-bool UseResponseWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UseResponse& item);
+bool UseResponseWriteJSON(std::ostream& s, const ::tlgen::UseResponse& item) noexcept;
+bool UseResponseRead(::tlgen::basictl::tl_istream & s, ::tlgen::UseResponse& item) noexcept; 
+bool UseResponseWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseResponse& item) noexcept;
+bool UseResponseReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UseResponse& item);
+bool UseResponseWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseResponse& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

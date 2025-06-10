@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/useStr.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UseStrReset(::tl2::UseStr& item) noexcept;
+void UseStrReset(::tlgen::UseStr& item) noexcept;
 
-bool UseStrWriteJSON(std::ostream& s, const ::tl2::UseStr& item) noexcept;
-bool UseStrRead(::basictl::tl_istream & s, ::tl2::UseStr& item) noexcept; 
-bool UseStrWrite(::basictl::tl_ostream & s, const ::tl2::UseStr& item) noexcept;
-bool UseStrReadBoxed(::basictl::tl_istream & s, ::tl2::UseStr& item);
-bool UseStrWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UseStr& item);
+bool UseStrWriteJSON(std::ostream& s, const ::tlgen::UseStr& item) noexcept;
+bool UseStrRead(::tlgen::basictl::tl_istream & s, ::tlgen::UseStr& item) noexcept; 
+bool UseStrWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseStr& item) noexcept;
+bool UseStrReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UseStr& item);
+bool UseStrWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseStr& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,27 +5,27 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/innerMaybe.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void InnerMaybeReset(::tl2::InnerMaybe& item) noexcept;
+void InnerMaybeReset(::tlgen::InnerMaybe& item) noexcept;
 
-bool InnerMaybeWriteJSON(std::ostream& s, const ::tl2::InnerMaybe& item, uint32_t nat_X) noexcept;
-bool InnerMaybeRead(::basictl::tl_istream & s, ::tl2::InnerMaybe& item, uint32_t nat_X) noexcept; 
-bool InnerMaybeWrite(::basictl::tl_ostream & s, const ::tl2::InnerMaybe& item, uint32_t nat_X) noexcept;
-bool InnerMaybeReadBoxed(::basictl::tl_istream & s, ::tl2::InnerMaybe& item, uint32_t nat_X);
-bool InnerMaybeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::InnerMaybe& item, uint32_t nat_X);
+bool InnerMaybeWriteJSON(std::ostream& s, const ::tlgen::InnerMaybe& item, [[maybe_unused]] uint32_t nat_X) noexcept;
+bool InnerMaybeRead(::tlgen::basictl::tl_istream & s, ::tlgen::InnerMaybe& item, [[maybe_unused]] uint32_t nat_X) noexcept; 
+bool InnerMaybeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::InnerMaybe& item, [[maybe_unused]] uint32_t nat_X) noexcept;
+bool InnerMaybeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::InnerMaybe& item, [[maybe_unused]] uint32_t nat_X);
+bool InnerMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::InnerMaybe& item, [[maybe_unused]] uint32_t nat_X);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void InnerMaybe0Reset(::tl2::InnerMaybeX<0>& item) noexcept;
+void InnerMaybe0Reset(::tlgen::InnerMaybeX<0>& item) noexcept;
 
-bool InnerMaybe0WriteJSON(std::ostream& s, const ::tl2::InnerMaybeX<0>& item) noexcept;
-bool InnerMaybe0Read(::basictl::tl_istream & s, ::tl2::InnerMaybeX<0>& item) noexcept; 
-bool InnerMaybe0Write(::basictl::tl_ostream & s, const ::tl2::InnerMaybeX<0>& item) noexcept;
-bool InnerMaybe0ReadBoxed(::basictl::tl_istream & s, ::tl2::InnerMaybeX<0>& item);
-bool InnerMaybe0WriteBoxed(::basictl::tl_ostream & s, const ::tl2::InnerMaybeX<0>& item);
+bool InnerMaybe0WriteJSON(std::ostream& s, const ::tlgen::InnerMaybeX<0>& item) noexcept;
+bool InnerMaybe0Read(::tlgen::basictl::tl_istream & s, ::tlgen::InnerMaybeX<0>& item) noexcept; 
+bool InnerMaybe0Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::InnerMaybeX<0>& item) noexcept;
+bool InnerMaybe0ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::InnerMaybeX<0>& item);
+bool InnerMaybe0WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::InnerMaybeX<0>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "service6/types/service6.error.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service6ErrorReset(::tl2::service6::Error& item) noexcept;
+void Service6ErrorReset(::tlgen::service6::Error& item) noexcept;
 
-bool Service6ErrorWriteJSON(std::ostream& s, const ::tl2::service6::Error& item) noexcept;
-bool Service6ErrorRead(::basictl::tl_istream & s, ::tl2::service6::Error& item) noexcept; 
-bool Service6ErrorWrite(::basictl::tl_ostream & s, const ::tl2::service6::Error& item) noexcept;
-bool Service6ErrorReadBoxed(::basictl::tl_istream & s, ::tl2::service6::Error& item);
-bool Service6ErrorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::Error& item);
+bool Service6ErrorWriteJSON(std::ostream& s, const ::tlgen::service6::Error& item) noexcept;
+bool Service6ErrorRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::Error& item) noexcept; 
+bool Service6ErrorWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::Error& item) noexcept;
+bool Service6ErrorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::Error& item);
+bool Service6ErrorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::Error& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

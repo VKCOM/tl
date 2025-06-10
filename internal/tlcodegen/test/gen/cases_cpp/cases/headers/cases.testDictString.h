@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testDictString.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestDictStringReset(::tl2::cases::TestDictString& item) noexcept;
+void CasesTestDictStringReset(::tlgen::cases::TestDictString& item) noexcept;
 
-bool CasesTestDictStringWriteJSON(std::ostream& s, const ::tl2::cases::TestDictString& item) noexcept;
-bool CasesTestDictStringRead(::basictl::tl_istream & s, ::tl2::cases::TestDictString& item) noexcept; 
-bool CasesTestDictStringWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestDictString& item) noexcept;
-bool CasesTestDictStringReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestDictString& item);
-bool CasesTestDictStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestDictString& item);
+bool CasesTestDictStringWriteJSON(std::ostream& s, const ::tlgen::cases::TestDictString& item) noexcept;
+bool CasesTestDictStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestDictString& item) noexcept; 
+bool CasesTestDictStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestDictString& item) noexcept;
+bool CasesTestDictStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestDictString& item);
+bool CasesTestDictStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestDictString& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

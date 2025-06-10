@@ -5,9 +5,9 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { namespace a { 
+namespace tlgen { namespace a { 
 
-	enum { AMyFalse = 0x2, AMyTrue = 0x1 };
+  enum { AMyFalse = 0x2, AMyTrue = 0x1 };
 
-}} // namespace tl2::a
+}} // namespace tlgen::a
 

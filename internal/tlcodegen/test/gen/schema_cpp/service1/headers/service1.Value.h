@@ -5,43 +5,43 @@
 #include "basictl/io_throwable_streams.h"
 #include "service1/types/service1.Value.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple3Service1ValueReset(std::array<::tl2::service1::Value, 3>& item);
+void BuiltinTuple3Service1ValueReset(std::array<::tlgen::service1::Value, 3>& item);
 
-bool BuiltinTuple3Service1ValueWriteJSON(std::ostream & s, const std::array<::tl2::service1::Value, 3>& item);
-bool BuiltinTuple3Service1ValueRead(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item);
-bool BuiltinTuple3Service1ValueWrite(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item);
+bool BuiltinTuple3Service1ValueWriteJSON(std::ostream & s, const std::array<::tlgen::service1::Value, 3>& item);
+bool BuiltinTuple3Service1ValueRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::service1::Value, 3>& item);
+bool BuiltinTuple3Service1ValueWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::service1::Value, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorService1ValueReset(std::vector<::tl2::service1::Value>& item);
+void BuiltinVectorService1ValueReset(std::vector<::tlgen::service1::Value>& item);
 
-bool BuiltinVectorService1ValueWriteJSON(std::ostream & s, const std::vector<::tl2::service1::Value>& item);
-bool BuiltinVectorService1ValueRead(::basictl::tl_istream & s, std::vector<::tl2::service1::Value>& item);
-bool BuiltinVectorService1ValueWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service1::Value>& item);
+bool BuiltinVectorService1ValueWriteJSON(std::ostream & s, const std::vector<::tlgen::service1::Value>& item);
+bool BuiltinVectorService1ValueRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service1::Value>& item);
+bool BuiltinVectorService1ValueWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service1::Value>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1ValueReset(::tl2::service1::Value& item) noexcept;
+void Service1ValueReset(::tlgen::service1::Value& item) noexcept;
 
-bool Service1ValueWriteJSON(std::ostream & s, const ::tl2::service1::Value& item) noexcept;
-bool Service1ValueReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Value& item) noexcept;
-bool Service1ValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Value& item) noexcept;
+bool Service1ValueWriteJSON(std::ostream & s, const ::tlgen::service1::Value& item) noexcept;
+bool Service1ValueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Value& item) noexcept;
+bool Service1ValueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Value& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool Service1ValueBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::service1::Value>& item);
+bool Service1ValueBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::service1::Value>& item);
 
-bool Service1ValueBoxedMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::service1::Value>& item);
-bool Service1ValueBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::service1::Value>& item);
+bool Service1ValueBoxedMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::service1::Value>& item);
+bool Service1ValueBoxedMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::service1::Value>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

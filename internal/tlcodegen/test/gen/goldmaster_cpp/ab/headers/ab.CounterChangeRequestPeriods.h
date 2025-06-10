@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.CounterChangeRequestPeriods.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbCounterChangeRequestPeriodsReset(::tl2::ab::CounterChangeRequestPeriods& item) noexcept;
+void AbCounterChangeRequestPeriodsReset(::tlgen::ab::CounterChangeRequestPeriods& item) noexcept;
 
-bool AbCounterChangeRequestPeriodsWriteJSON(std::ostream & s, const ::tl2::ab::CounterChangeRequestPeriods& item) noexcept;
-bool AbCounterChangeRequestPeriodsReadBoxed(::basictl::tl_istream & s, ::tl2::ab::CounterChangeRequestPeriods& item) noexcept;
-bool AbCounterChangeRequestPeriodsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::CounterChangeRequestPeriods& item) noexcept;
+bool AbCounterChangeRequestPeriodsWriteJSON(std::ostream & s, const ::tlgen::ab::CounterChangeRequestPeriods& item) noexcept;
+bool AbCounterChangeRequestPeriodsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::CounterChangeRequestPeriods& item) noexcept;
+bool AbCounterChangeRequestPeriodsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::CounterChangeRequestPeriods& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -7,33 +7,33 @@
 #include "a/types/a.ColorItems.h"
 
 
-namespace tl2 { namespace a { 
+namespace tlgen { namespace a { 
 struct Color {
-	std::variant<::tl2::a::Color0, ::tl2::a::Red, ::tl2::a::Green, ::tl2::b::Red, ::tl2::a::Blue> value;
+  std::variant<::tlgen::a::Color0, ::tlgen::a::Red, ::tlgen::a::Green, ::tlgen::b::Red, ::tlgen::a::Blue> value;
 
-	bool is_color() const { return value.index() == 0; }
-	bool is_red() const { return value.index() == 1; }
-	bool is_green() const { return value.index() == 2; }
-	bool is_b_red() const { return value.index() == 3; }
-	bool is_blue() const { return value.index() == 4; }
+  bool is_color() const { return value.index() == 0; }
+  bool is_red() const { return value.index() == 1; }
+  bool is_green() const { return value.index() == 2; }
+  bool is_b_red() const { return value.index() == 3; }
+  bool is_blue() const { return value.index() == 4; }
 
-	void set_color() { value.emplace<0>(); }
-	void set_red() { value.emplace<1>(); }
-	void set_green() { value.emplace<2>(); }
-	void set_b_red() { value.emplace<3>(); }
-	void set_blue() { value.emplace<4>(); }
+  void set_color() { value.emplace<0>(); }
+  void set_red() { value.emplace<1>(); }
+  void set_green() { value.emplace<2>(); }
+  void set_b_red() { value.emplace<3>(); }
+  void set_blue() { value.emplace<4>(); }
 
-	std::string_view tl_name() const;
-	uint32_t tl_tag() const;
+  std::string_view tl_name() const;
+  uint32_t tl_tag() const;
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s)const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 };
 
-}} // namespace tl2::a
+}} // namespace tlgen::a
 

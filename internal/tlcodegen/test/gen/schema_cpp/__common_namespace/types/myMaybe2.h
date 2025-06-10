@@ -6,7 +6,7 @@
 #include "__common_namespace/types/myTuple.h"
 
 
-namespace tl2 { 
-using MyMaybe2 = std::optional<::tl2::MyTuplen<10>>;
-} // namespace tl2
+namespace tlgen { 
+using MyMaybe2 = std::optional<::tlgen::MyTuplen<10>>;
+} // namespace tlgen
 

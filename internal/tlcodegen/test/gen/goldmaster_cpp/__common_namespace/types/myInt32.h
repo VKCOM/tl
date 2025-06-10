@@ -6,7 +6,7 @@
 #include "__common_namespace/types/int32.h"
 
 
-namespace tl2 { 
-using MyInt32 = ::tl2::Int32;
-} // namespace tl2
+namespace tlgen { 
+using MyInt32 = ::tlgen::Int32;
+} // namespace tlgen
 

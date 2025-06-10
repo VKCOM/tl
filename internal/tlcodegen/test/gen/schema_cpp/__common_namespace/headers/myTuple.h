@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myTuple.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyTuple10Reset(::tl2::MyTuplen<10>& item) noexcept;
+void MyTuple10Reset(::tlgen::MyTuplen<10>& item) noexcept;
 
-bool MyTuple10WriteJSON(std::ostream& s, const ::tl2::MyTuplen<10>& item) noexcept;
-bool MyTuple10Read(::basictl::tl_istream & s, ::tl2::MyTuplen<10>& item) noexcept; 
-bool MyTuple10Write(::basictl::tl_ostream & s, const ::tl2::MyTuplen<10>& item) noexcept;
-bool MyTuple10ReadBoxed(::basictl::tl_istream & s, ::tl2::MyTuplen<10>& item);
-bool MyTuple10WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyTuplen<10>& item);
+bool MyTuple10WriteJSON(std::ostream& s, const ::tlgen::MyTuplen<10>& item) noexcept;
+bool MyTuple10Read(::tlgen::basictl::tl_istream & s, ::tlgen::MyTuplen<10>& item) noexcept; 
+bool MyTuple10Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyTuplen<10>& item) noexcept;
+bool MyTuple10ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyTuplen<10>& item);
+bool MyTuple10WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyTuplen<10>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool MyTuple10MaybeWriteJSON(std::ostream & s, const std::optional<::tl2::MyTuplen<10>>& item);
+bool MyTuple10MaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::MyTuplen<10>>& item);
 
-bool MyTuple10MaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::MyTuplen<10>>& item);
-bool MyTuple10MaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::MyTuplen<10>>& item);
+bool MyTuple10MaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::MyTuplen<10>>& item);
+bool MyTuple10MaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::MyTuplen<10>>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

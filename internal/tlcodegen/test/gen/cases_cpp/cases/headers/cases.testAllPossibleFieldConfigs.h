@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testAllPossibleFieldConfigs.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestAllPossibleFieldConfigsReset(::tl2::cases::TestAllPossibleFieldConfigs& item) noexcept;
+void CasesTestAllPossibleFieldConfigsReset(::tlgen::cases::TestAllPossibleFieldConfigs& item) noexcept;
 
-bool CasesTestAllPossibleFieldConfigsWriteJSON(std::ostream& s, const ::tl2::cases::TestAllPossibleFieldConfigs& item, uint32_t nat_outer) noexcept;
-bool CasesTestAllPossibleFieldConfigsRead(::basictl::tl_istream & s, ::tl2::cases::TestAllPossibleFieldConfigs& item, uint32_t nat_outer) noexcept; 
-bool CasesTestAllPossibleFieldConfigsWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestAllPossibleFieldConfigs& item, uint32_t nat_outer) noexcept;
-bool CasesTestAllPossibleFieldConfigsReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestAllPossibleFieldConfigs& item, uint32_t nat_outer);
-bool CasesTestAllPossibleFieldConfigsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestAllPossibleFieldConfigs& item, uint32_t nat_outer);
+bool CasesTestAllPossibleFieldConfigsWriteJSON(std::ostream& s, const ::tlgen::cases::TestAllPossibleFieldConfigs& item, [[maybe_unused]] uint32_t nat_outer) noexcept;
+bool CasesTestAllPossibleFieldConfigsRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestAllPossibleFieldConfigs& item, [[maybe_unused]] uint32_t nat_outer) noexcept; 
+bool CasesTestAllPossibleFieldConfigsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestAllPossibleFieldConfigs& item, [[maybe_unused]] uint32_t nat_outer) noexcept;
+bool CasesTestAllPossibleFieldConfigsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestAllPossibleFieldConfigs& item, [[maybe_unused]] uint32_t nat_outer);
+bool CasesTestAllPossibleFieldConfigsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestAllPossibleFieldConfigs& item, [[maybe_unused]] uint32_t nat_outer);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -6,18 +6,18 @@
 #include "service3/functions/service3.restoreProduct.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3RestoreProductReset(::tl2::service3::RestoreProduct& item) noexcept;
+void Service3RestoreProductReset(::tlgen::service3::RestoreProduct& item) noexcept;
 
-bool Service3RestoreProductWriteJSON(std::ostream& s, const ::tl2::service3::RestoreProduct& item) noexcept;
-bool Service3RestoreProductRead(::basictl::tl_istream & s, ::tl2::service3::RestoreProduct& item) noexcept; 
-bool Service3RestoreProductWrite(::basictl::tl_ostream & s, const ::tl2::service3::RestoreProduct& item) noexcept;
-bool Service3RestoreProductReadBoxed(::basictl::tl_istream & s, ::tl2::service3::RestoreProduct& item);
-bool Service3RestoreProductWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::RestoreProduct& item);
+bool Service3RestoreProductWriteJSON(std::ostream& s, const ::tlgen::service3::RestoreProduct& item) noexcept;
+bool Service3RestoreProductRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::RestoreProduct& item) noexcept; 
+bool Service3RestoreProductWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::RestoreProduct& item) noexcept;
+bool Service3RestoreProductReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::RestoreProduct& item);
+bool Service3RestoreProductWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::RestoreProduct& item);
 
-bool Service3RestoreProductReadResult(::basictl::tl_istream & s, ::tl2::service3::RestoreProduct& item, bool& result);
-bool Service3RestoreProductWriteResult(::basictl::tl_ostream & s, ::tl2::service3::RestoreProduct& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service3RestoreProductReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::RestoreProduct& item, bool& result);
+bool Service3RestoreProductWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::RestoreProduct& item, bool& result);
+    
+}} // namespace tlgen::details
 

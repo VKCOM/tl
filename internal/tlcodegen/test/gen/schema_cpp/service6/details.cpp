@@ -12,1095 +12,1198 @@
 #include "__common_namespace/headers/int.h"
 
 
-void tl2::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultReset(std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) {
-	item.resize(0); // TODO - unwrap
+void tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultReset(std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::EitherIntVectorService6FindWithBoundsResultWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::EitherIntVectorService6FindWithBoundsResultWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::EitherIntVectorService6FindWithBoundsResultReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::EitherIntVectorService6FindWithBoundsResultReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::EitherIntVectorService6FindWithBoundsResultWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::EitherIntVectorService6FindWithBoundsResultWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-void tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowReset(std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) {
-	item.resize(0); // TODO - unwrap
+void tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowReset(std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream & s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::EitherService6ErrorVectorService6FindResultRowWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::EitherService6ErrorVectorService6FindResultRowWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::EitherService6ErrorVectorService6FindResultRowReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::EitherService6ErrorVectorService6FindResultRowReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::EitherService6ErrorVectorService6FindResultRowWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::EitherService6ErrorVectorService6FindResultRowWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-void tl2::details::BuiltinVectorService6FindResultRowReset(std::vector<::tl2::service6::FindResultRow>& item) {
-	item.resize(0); // TODO - unwrap
+void tlgen::details::BuiltinVectorService6FindResultRowReset(std::vector<::tlgen::service6::FindResultRow>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorService6FindResultRowWriteJSON(std::ostream & s, const std::vector<::tl2::service6::FindResultRow>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::Service6FindResultRowWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorService6FindResultRowWriteJSON(std::ostream & s, const std::vector<::tlgen::service6::FindResultRow>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::Service6FindResultRowWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindResultRow>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::Service6FindResultRowRead(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindResultRow>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::Service6FindResultRowRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorService6FindResultRowWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindResultRow>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::Service6FindResultRowWrite(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindResultRow>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::Service6FindResultRowWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-void tl2::details::BuiltinVectorService6FindWithBoundsResultReset(std::vector<::tl2::service6::FindWithBoundsResult>& item) {
-	item.resize(0); // TODO - unwrap
+void tlgen::details::BuiltinVectorService6FindWithBoundsResultReset(std::vector<::tlgen::service6::FindWithBoundsResult>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-bool tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::Service6FindWithBoundsResultWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::Service6FindWithBoundsResultWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::Service6FindWithBoundsResultRead(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindWithBoundsResult>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::Service6FindWithBoundsResultRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::Service6FindWithBoundsResultWrite(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::Service6FindWithBoundsResultWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
 static const std::string_view EitherIntVectorService6FindWithBoundsResult_tbl_tl_name[]{"left", "right"};
 static const uint32_t EitherIntVectorService6FindWithBoundsResult_tbl_tl_tag[]{0x0a29cd5d, 0xdf3ecb3b};
 
-void tl2::details::EitherIntVectorService6FindWithBoundsResultReset(::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept{
-	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
+void tlgen::details::EitherIntVectorService6FindWithBoundsResultReset(::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept{
+  item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::EitherIntVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const ::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	s << "{";
-	s << "\"type\":";
-	s << "\"" << EitherIntVectorService6FindWithBoundsResult_tbl_tl_name[item.value.index()] << "\"";
-	switch (item.value.index()) {
-	case 0:
-		s << ",\"value\":";
-		if (!::tl2::details::LeftIntVectorService6FindWithBoundsResultWriteJSON(s, std::get<0>(item.value))) { return false; }
-		break;
-	case 1:
-		s << ",\"value\":";
-		if (!::tl2::details::RightIntVectorService6FindWithBoundsResultWriteJSON(s, std::get<1>(item.value))) { return false; }
-		break;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::EitherIntVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const ::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  s << "{";
+  s << "\"type\":";
+  s << "\"" << EitherIntVectorService6FindWithBoundsResult_tbl_tl_name[item.value.index()] << "\"";
+  switch (item.value.index()) {
+  case 0:
+    s << ",\"value\":";
+    if (!::tlgen::details::LeftIntVectorService6FindWithBoundsResultWriteJSON(s, std::get<0>(item.value))) { return false; }
+    break;
+  case 1:
+    s << ",\"value\":";
+    if (!::tlgen::details::RightIntVectorService6FindWithBoundsResultWriteJSON(s, std::get<1>(item.value))) { return false; }
+    break;
+  }
+  s << "}";
+  return true;
 }
-bool tl2::details::EitherIntVectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, ::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	uint32_t nat;
-	if (!s.nat_read(nat)) { return false; }
-	switch (nat) {
-	case 0x0a29cd5d:
-		if (item.value.index() != 0) { item.value.emplace<0>(); }
-		if (!::tl2::details::LeftIntVectorService6FindWithBoundsResultRead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	case 0xdf3ecb3b:
-		if (item.value.index() != 1) { item.value.emplace<1>(); }
-		if (!::tl2::details::RightIntVectorService6FindWithBoundsResultRead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	default:
-		return s.set_error_union_tag();
+bool tlgen::details::EitherIntVectorService6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  uint32_t nat;
+  if (!s.nat_read(nat)) { return false; }
+  switch (nat) {
+  case 0x0a29cd5d:
+    if (item.value.index() != 0) { item.value.emplace<0>(); }
+    if (!::tlgen::details::LeftIntVectorService6FindWithBoundsResultRead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  case 0xdf3ecb3b:
+    if (item.value.index() != 1) { item.value.emplace<1>(); }
+    if (!::tlgen::details::RightIntVectorService6FindWithBoundsResultRead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  default:
+    return s.set_error_union_tag();
     }
-	return true;
+  return true;
 }
 
-bool tl2::details::EitherIntVectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept{
-	if (!s.nat_write(EitherIntVectorService6FindWithBoundsResult_tbl_tl_tag[item.value.index()])) { return false; }
-	switch (item.value.index()) {
-	case 0:
-		if (!::tl2::details::LeftIntVectorService6FindWithBoundsResultWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	case 1:
-		if (!::tl2::details::RightIntVectorService6FindWithBoundsResultWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	}
-	return true;
+bool tlgen::details::EitherIntVectorService6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept{
+  if (!s.nat_write(EitherIntVectorService6FindWithBoundsResult_tbl_tl_tag[item.value.index()])) { return false; }
+  switch (item.value.index()) {
+  case 0:
+    if (!::tlgen::details::LeftIntVectorService6FindWithBoundsResultWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  case 1:
+    if (!::tlgen::details::RightIntVectorService6FindWithBoundsResultWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  }
+  return true;
 }
 
 static const std::string_view EitherService6ErrorVectorService6FindResultRow_tbl_tl_name[]{"left", "right"};
 static const uint32_t EitherService6ErrorVectorService6FindResultRow_tbl_tl_tag[]{0x0a29cd5d, 0xdf3ecb3b};
 
-void tl2::details::EitherService6ErrorVectorService6FindResultRowReset(::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept{
-	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
+void tlgen::details::EitherService6ErrorVectorService6FindResultRowReset(::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept{
+  item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::EitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream & s, const ::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	s << "{";
-	s << "\"type\":";
-	s << "\"" << EitherService6ErrorVectorService6FindResultRow_tbl_tl_name[item.value.index()] << "\"";
-	switch (item.value.index()) {
-	case 0:
-		s << ",\"value\":";
-		if (!::tl2::details::LeftService6ErrorVectorService6FindResultRowWriteJSON(s, std::get<0>(item.value))) { return false; }
-		break;
-	case 1:
-		s << ",\"value\":";
-		if (!::tl2::details::RightService6ErrorVectorService6FindResultRowWriteJSON(s, std::get<1>(item.value))) { return false; }
-		break;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::EitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream & s, const ::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  s << "{";
+  s << "\"type\":";
+  s << "\"" << EitherService6ErrorVectorService6FindResultRow_tbl_tl_name[item.value.index()] << "\"";
+  switch (item.value.index()) {
+  case 0:
+    s << ",\"value\":";
+    if (!::tlgen::details::LeftService6ErrorVectorService6FindResultRowWriteJSON(s, std::get<0>(item.value))) { return false; }
+    break;
+  case 1:
+    s << ",\"value\":";
+    if (!::tlgen::details::RightService6ErrorVectorService6FindResultRowWriteJSON(s, std::get<1>(item.value))) { return false; }
+    break;
+  }
+  s << "}";
+  return true;
 }
-bool tl2::details::EitherService6ErrorVectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, ::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	uint32_t nat;
-	if (!s.nat_read(nat)) { return false; }
-	switch (nat) {
-	case 0x0a29cd5d:
-		if (item.value.index() != 0) { item.value.emplace<0>(); }
-		if (!::tl2::details::LeftService6ErrorVectorService6FindResultRowRead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	case 0xdf3ecb3b:
-		if (item.value.index() != 1) { item.value.emplace<1>(); }
-		if (!::tl2::details::RightService6ErrorVectorService6FindResultRowRead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	default:
-		return s.set_error_union_tag();
+bool tlgen::details::EitherService6ErrorVectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  uint32_t nat;
+  if (!s.nat_read(nat)) { return false; }
+  switch (nat) {
+  case 0x0a29cd5d:
+    if (item.value.index() != 0) { item.value.emplace<0>(); }
+    if (!::tlgen::details::LeftService6ErrorVectorService6FindResultRowRead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  case 0xdf3ecb3b:
+    if (item.value.index() != 1) { item.value.emplace<1>(); }
+    if (!::tlgen::details::RightService6ErrorVectorService6FindResultRowRead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  default:
+    return s.set_error_union_tag();
     }
-	return true;
+  return true;
 }
 
-bool tl2::details::EitherService6ErrorVectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept{
-	if (!s.nat_write(EitherService6ErrorVectorService6FindResultRow_tbl_tl_tag[item.value.index()])) { return false; }
-	switch (item.value.index()) {
-	case 0:
-		if (!::tl2::details::LeftService6ErrorVectorService6FindResultRowWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	case 1:
-		if (!::tl2::details::RightService6ErrorVectorService6FindResultRowWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	}
-	return true;
+bool tlgen::details::EitherService6ErrorVectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept{
+  if (!s.nat_write(EitherService6ErrorVectorService6FindResultRow_tbl_tl_tag[item.value.index()])) { return false; }
+  switch (item.value.index()) {
+  case 0:
+    if (!::tlgen::details::LeftService6ErrorVectorService6FindResultRowWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  case 1:
+    if (!::tlgen::details::RightService6ErrorVectorService6FindResultRowWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  }
+  return true;
 }
 
-bool tl2::Issue3498::write_json(std::ostream& s)const {
-	if (!::tl2::details::Issue3498WriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::Issue3498::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Issue3498WriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::Issue3498::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Issue3498Read(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::Issue3498::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Issue3498Read(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::Issue3498::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Issue3498Write(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::Issue3498::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Issue3498Write(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::Issue3498::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::Issue3498::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::Issue3498::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::Issue3498::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::Issue3498::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Issue3498ReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::Issue3498::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Issue3498ReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::Issue3498::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Issue3498WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::Issue3498::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Issue3498WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::Issue3498::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::Issue3498::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::Issue3498::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::Issue3498::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Issue3498Reset(::tl2::Issue3498& item) noexcept {
-	item.x.clear();
+void tlgen::details::Issue3498Reset(::tlgen::Issue3498& item) noexcept {
+  (void)item;
+  item.x.clear();
 }
 
-bool tl2::details::Issue3498WriteJSON(std::ostream& s, const ::tl2::Issue3498& item) noexcept {
-	s << "{";
-	if (item.x.size() != 0) {
-		s << "\"x\":";
-		if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item.x)) { return false; }
-	}
-	s << "}";
-	return true;
+bool tlgen::details::Issue3498WriteJSON(std::ostream& s, const ::tlgen::Issue3498& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.x.size() != 0) {
+    s << "\"x\":";
+    if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item.x)) { return false; }
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Issue3498Read(::basictl::tl_istream & s, ::tl2::Issue3498& item) noexcept {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, item.x)) { return false; }
-	return true;
+bool tlgen::details::Issue3498Read(::tlgen::basictl::tl_istream & s, ::tlgen::Issue3498& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, item.x)) { return false; }
+  return true;
 }
 
-bool tl2::details::Issue3498Write(::basictl::tl_ostream & s, const ::tl2::Issue3498& item) noexcept {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(s, item.x)) { return false; }
-	return true;
+bool tlgen::details::Issue3498Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Issue3498& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(s, item.x)) { return false; }
+  return true;
 }
 
-bool tl2::details::Issue3498ReadBoxed(::basictl::tl_istream & s, ::tl2::Issue3498& item) {
-	if (!s.nat_read_exact_tag(0xf54b7b0a)) { return false; }
-	return tl2::details::Issue3498Read(s, item);
+bool tlgen::details::Issue3498ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Issue3498& item) {
+  if (!s.nat_read_exact_tag(0xf54b7b0a)) { return false; }
+  return tlgen::details::Issue3498Read(s, item);
 }
 
-bool tl2::details::Issue3498WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Issue3498& item) {
-	if (!s.nat_write(0xf54b7b0a)) { return false; }
-	return tl2::details::Issue3498Write(s, item);
+bool tlgen::details::Issue3498WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Issue3498& item) {
+  if (!s.nat_write(0xf54b7b0a)) { return false; }
+  return tlgen::details::Issue3498Write(s, item);
 }
 
-void tl2::details::LeftIntVectorService6FindWithBoundsResultReset(::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	item.value = 0;
+void tlgen::details::LeftIntVectorService6FindWithBoundsResultReset(::tlgen::Left<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)item;
+  item.value = 0;
 }
 
-bool tl2::details::LeftIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	s << "{";
-	if (item.value != 0) {
-		s << "\"value\":";
-		s << item.value;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::LeftIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tlgen::Left<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.value != 0) {
+    s << "\"value\":";
+    s << item.value;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::LeftIntVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	if (!s.int_read(item.value)) { return false; }
-	return true;
+bool tlgen::details::LeftIntVectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, ::tlgen::Left<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.value)) { return false; }
+  return true;
 }
 
-bool tl2::details::LeftIntVectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	if (!s.int_write(item.value)) { return false;}
-	return true;
+bool tlgen::details::LeftIntVectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Left<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.value)) { return false;}
+  return true;
 }
 
-bool tl2::details::LeftIntVectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
-	if (!s.nat_read_exact_tag(0x0a29cd5d)) { return false; }
-	return tl2::details::LeftIntVectorService6FindWithBoundsResultRead(s, item);
+bool tlgen::details::LeftIntVectorService6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Left<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) {
+  if (!s.nat_read_exact_tag(0x0a29cd5d)) { return false; }
+  return tlgen::details::LeftIntVectorService6FindWithBoundsResultRead(s, item);
 }
 
-bool tl2::details::LeftIntVectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Left<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
-	if (!s.nat_write(0x0a29cd5d)) { return false; }
-	return tl2::details::LeftIntVectorService6FindWithBoundsResultWrite(s, item);
+bool tlgen::details::LeftIntVectorService6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Left<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) {
+  if (!s.nat_write(0x0a29cd5d)) { return false; }
+  return tlgen::details::LeftIntVectorService6FindWithBoundsResultWrite(s, item);
 }
 
-void tl2::details::LeftService6ErrorVectorService6FindResultRowReset(::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	::tl2::details::Service6ErrorReset(item.value);
+void tlgen::details::LeftService6ErrorVectorService6FindResultRowReset(::tlgen::Left<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)item;
+  ::tlgen::details::Service6ErrorReset(item.value);
 }
 
-bool tl2::details::LeftService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	s << "{";
-	s << "\"value\":";
-	if (!::tl2::details::Service6ErrorWriteJSON(s, item.value)) { return false; }
-	s << "}";
-	return true;
+bool tlgen::details::LeftService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tlgen::Left<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  s << "\"value\":";
+  if (!::tlgen::details::Service6ErrorWriteJSON(s, item.value)) { return false; }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::LeftService6ErrorVectorService6FindResultRowRead(::basictl::tl_istream & s, ::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	if (!::tl2::details::Service6ErrorRead(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::details::LeftService6ErrorVectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, ::tlgen::Left<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::Service6ErrorRead(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-bool tl2::details::LeftService6ErrorVectorService6FindResultRowWrite(::basictl::tl_ostream & s, const ::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	if (!::tl2::details::Service6ErrorWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::details::LeftService6ErrorVectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Left<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::Service6ErrorWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-bool tl2::details::LeftService6ErrorVectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, ::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
-	if (!s.nat_read_exact_tag(0x0a29cd5d)) { return false; }
-	return tl2::details::LeftService6ErrorVectorService6FindResultRowRead(s, item);
+bool tlgen::details::LeftService6ErrorVectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Left<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) {
+  if (!s.nat_read_exact_tag(0x0a29cd5d)) { return false; }
+  return tlgen::details::LeftService6ErrorVectorService6FindResultRowRead(s, item);
 }
 
-bool tl2::details::LeftService6ErrorVectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Left<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
-	if (!s.nat_write(0x0a29cd5d)) { return false; }
-	return tl2::details::LeftService6ErrorVectorService6FindResultRowWrite(s, item);
+bool tlgen::details::LeftService6ErrorVectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Left<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) {
+  if (!s.nat_write(0x0a29cd5d)) { return false; }
+  return tlgen::details::LeftService6ErrorVectorService6FindResultRowWrite(s, item);
 }
 
-void tl2::details::RightIntVectorService6FindWithBoundsResultReset(::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	item.value.clear();
+void tlgen::details::RightIntVectorService6FindWithBoundsResultReset(::tlgen::Right<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)item;
+  item.value.clear();
 }
 
-bool tl2::details::RightIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	s << "{";
-	if (item.value.size() != 0) {
-		s << "\"value\":";
-		if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item.value)) { return false; }
-	}
-	s << "}";
-	return true;
+bool tlgen::details::RightIntVectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tlgen::Right<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.value.size() != 0) {
+    s << "\"value\":";
+    if (!::tlgen::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item.value)) { return false; }
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::RightIntVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultRead(s, item.value)) { return false; }
-	return true;
+bool tlgen::details::RightIntVectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, ::tlgen::Right<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindWithBoundsResultRead(s, item.value)) { return false; }
+  return true;
 }
 
-bool tl2::details::RightIntVectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWrite(s, item.value)) { return false; }
-	return true;
+bool tlgen::details::RightIntVectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Right<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindWithBoundsResultWrite(s, item.value)) { return false; }
+  return true;
 }
 
-bool tl2::details::RightIntVectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
-	if (!s.nat_read_exact_tag(0xdf3ecb3b)) { return false; }
-	return tl2::details::RightIntVectorService6FindWithBoundsResultRead(s, item);
+bool tlgen::details::RightIntVectorService6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Right<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) {
+  if (!s.nat_read_exact_tag(0xdf3ecb3b)) { return false; }
+  return tlgen::details::RightIntVectorService6FindWithBoundsResultRead(s, item);
 }
 
-bool tl2::details::RightIntVectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Right<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>& item) {
-	if (!s.nat_write(0xdf3ecb3b)) { return false; }
-	return tl2::details::RightIntVectorService6FindWithBoundsResultWrite(s, item);
+bool tlgen::details::RightIntVectorService6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Right<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>& item) {
+  if (!s.nat_write(0xdf3ecb3b)) { return false; }
+  return tlgen::details::RightIntVectorService6FindWithBoundsResultWrite(s, item);
 }
 
-void tl2::details::RightService6ErrorVectorService6FindResultRowReset(::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	item.value.clear();
+void tlgen::details::RightService6ErrorVectorService6FindResultRowReset(::tlgen::Right<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)item;
+  item.value.clear();
 }
 
-bool tl2::details::RightService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	s << "{";
-	if (item.value.size() != 0) {
-		s << "\"value\":";
-		if (!::tl2::details::BuiltinVectorService6FindResultRowWriteJSON(s, item.value)) { return false; }
-	}
-	s << "}";
-	return true;
+bool tlgen::details::RightService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const ::tlgen::Right<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.value.size() != 0) {
+    s << "\"value\":";
+    if (!::tlgen::details::BuiltinVectorService6FindResultRowWriteJSON(s, item.value)) { return false; }
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::RightService6ErrorVectorService6FindResultRowRead(::basictl::tl_istream & s, ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindResultRowRead(s, item.value)) { return false; }
-	return true;
+bool tlgen::details::RightService6ErrorVectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, ::tlgen::Right<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindResultRowRead(s, item.value)) { return false; }
+  return true;
 }
 
-bool tl2::details::RightService6ErrorVectorService6FindResultRowWrite(::basictl::tl_ostream & s, const ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindResultRowWrite(s, item.value)) { return false; }
-	return true;
+bool tlgen::details::RightService6ErrorVectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Right<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindResultRowWrite(s, item.value)) { return false; }
+  return true;
 }
 
-bool tl2::details::RightService6ErrorVectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
-	if (!s.nat_read_exact_tag(0xdf3ecb3b)) { return false; }
-	return tl2::details::RightService6ErrorVectorService6FindResultRowRead(s, item);
+bool tlgen::details::RightService6ErrorVectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Right<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) {
+  if (!s.nat_read_exact_tag(0xdf3ecb3b)) { return false; }
+  return tlgen::details::RightService6ErrorVectorService6FindResultRowRead(s, item);
 }
 
-bool tl2::details::RightService6ErrorVectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Right<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>& item) {
-	if (!s.nat_write(0xdf3ecb3b)) { return false; }
-	return tl2::details::RightService6ErrorVectorService6FindResultRowWrite(s, item);
+bool tlgen::details::RightService6ErrorVectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Right<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>& item) {
+  if (!s.nat_write(0xdf3ecb3b)) { return false; }
+  return tlgen::details::RightService6ErrorVectorService6FindResultRowWrite(s, item);
 }
 
-bool tl2::service6::Error::write_json(std::ostream& s)const {
-	if (!::tl2::details::Service6ErrorWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::service6::Error::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Service6ErrorWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::service6::Error::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6ErrorRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::Error::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6ErrorRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::Error::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6ErrorWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::Error::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6ErrorWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::Error::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::service6::Error::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::Error::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::service6::Error::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::service6::Error::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6ErrorReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::Error::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6ErrorReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::Error::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6ErrorWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::Error::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6ErrorWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::Error::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::Error::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::Error::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::Error::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Service6ErrorReset(::tl2::service6::Error& item) noexcept {
-	item.code = 0;
+void tlgen::details::Service6ErrorReset(::tlgen::service6::Error& item) noexcept {
+  (void)item;
+  item.code = 0;
 }
 
-bool tl2::details::Service6ErrorWriteJSON(std::ostream& s, const ::tl2::service6::Error& item) noexcept {
-	s << "{";
-	if (item.code != 0) {
-		s << "\"code\":";
-		s << item.code;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::Service6ErrorWriteJSON(std::ostream& s, const ::tlgen::service6::Error& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.code != 0) {
+    s << "\"code\":";
+    s << item.code;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Service6ErrorRead(::basictl::tl_istream & s, ::tl2::service6::Error& item) noexcept {
-	if (!s.int_read(item.code)) { return false; }
-	return true;
+bool tlgen::details::Service6ErrorRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::Error& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.code)) { return false; }
+  return true;
 }
 
-bool tl2::details::Service6ErrorWrite(::basictl::tl_ostream & s, const ::tl2::service6::Error& item) noexcept {
-	if (!s.int_write(item.code)) { return false;}
-	return true;
+bool tlgen::details::Service6ErrorWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::Error& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.code)) { return false;}
+  return true;
 }
 
-bool tl2::details::Service6ErrorReadBoxed(::basictl::tl_istream & s, ::tl2::service6::Error& item) {
-	if (!s.nat_read_exact_tag(0x738553ef)) { return false; }
-	return tl2::details::Service6ErrorRead(s, item);
+bool tlgen::details::Service6ErrorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::Error& item) {
+  if (!s.nat_read_exact_tag(0x738553ef)) { return false; }
+  return tlgen::details::Service6ErrorRead(s, item);
 }
 
-bool tl2::details::Service6ErrorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::Error& item) {
-	if (!s.nat_write(0x738553ef)) { return false; }
-	return tl2::details::Service6ErrorWrite(s, item);
+bool tlgen::details::Service6ErrorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::Error& item) {
+  if (!s.nat_write(0x738553ef)) { return false; }
+  return tlgen::details::Service6ErrorWrite(s, item);
 }
 
-bool tl2::service6::FindResultRow::write_json(std::ostream& s)const {
-	if (!::tl2::details::Service6FindResultRowWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::service6::FindResultRow::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Service6FindResultRowWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::service6::FindResultRow::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6FindResultRowRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindResultRow::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6FindResultRowRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::FindResultRow::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6FindResultRowWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindResultRow::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6FindResultRowWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::FindResultRow::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindResultRow::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::FindResultRow::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindResultRow::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::service6::FindResultRow::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6FindResultRowReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindResultRow::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6FindResultRowReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::FindResultRow::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6FindResultRowWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindResultRow::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6FindResultRowWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::FindResultRow::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindResultRow::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::FindResultRow::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindResultRow::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Service6FindResultRowReset(::tl2::service6::FindResultRow& item) noexcept {
-	item.x = 0;
+void tlgen::details::Service6FindResultRowReset(::tlgen::service6::FindResultRow& item) noexcept {
+  (void)item;
+  item.x = 0;
 }
 
-bool tl2::details::Service6FindResultRowWriteJSON(std::ostream& s, const ::tl2::service6::FindResultRow& item) noexcept {
-	s << "{";
-	if (item.x != 0) {
-		s << "\"x\":";
-		s << item.x;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::Service6FindResultRowWriteJSON(std::ostream& s, const ::tlgen::service6::FindResultRow& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.x != 0) {
+    s << "\"x\":";
+    s << item.x;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Service6FindResultRowRead(::basictl::tl_istream & s, ::tl2::service6::FindResultRow& item) noexcept {
-	if (!s.int_read(item.x)) { return false; }
-	return true;
+bool tlgen::details::Service6FindResultRowRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::FindResultRow& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.x)) { return false; }
+  return true;
 }
 
-bool tl2::details::Service6FindResultRowWrite(::basictl::tl_ostream & s, const ::tl2::service6::FindResultRow& item) noexcept {
-	if (!s.int_write(item.x)) { return false;}
-	return true;
+bool tlgen::details::Service6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::FindResultRow& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.x)) { return false;}
+  return true;
 }
 
-bool tl2::details::Service6FindResultRowReadBoxed(::basictl::tl_istream & s, ::tl2::service6::FindResultRow& item) {
-	if (!s.nat_read_exact_tag(0xbd3946e3)) { return false; }
-	return tl2::details::Service6FindResultRowRead(s, item);
+bool tlgen::details::Service6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::FindResultRow& item) {
+  if (!s.nat_read_exact_tag(0xbd3946e3)) { return false; }
+  return tlgen::details::Service6FindResultRowRead(s, item);
 }
 
-bool tl2::details::Service6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::FindResultRow& item) {
-	if (!s.nat_write(0xbd3946e3)) { return false; }
-	return tl2::details::Service6FindResultRowWrite(s, item);
+bool tlgen::details::Service6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::FindResultRow& item) {
+  if (!s.nat_write(0xbd3946e3)) { return false; }
+  return tlgen::details::Service6FindResultRowWrite(s, item);
 }
 
-bool tl2::service6::FindWithBoundsResult::write_json(std::ostream& s)const {
-	if (!::tl2::details::Service6FindWithBoundsResultWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::service6::FindWithBoundsResult::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Service6FindWithBoundsResultWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::service6::FindWithBoundsResult::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6FindWithBoundsResultRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindWithBoundsResult::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6FindWithBoundsResultRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::FindWithBoundsResult::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6FindWithBoundsResultWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindWithBoundsResult::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6FindWithBoundsResultWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::FindWithBoundsResult::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindWithBoundsResult::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::FindWithBoundsResult::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindWithBoundsResult::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::service6::FindWithBoundsResult::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6FindWithBoundsResultReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindWithBoundsResult::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6FindWithBoundsResultReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::FindWithBoundsResult::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6FindWithBoundsResultWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::FindWithBoundsResult::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6FindWithBoundsResultWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::FindWithBoundsResult::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindWithBoundsResult::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::FindWithBoundsResult::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::FindWithBoundsResult::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Service6FindWithBoundsResultReset(::tl2::service6::FindWithBoundsResult& item) noexcept {
-	item.x = 0;
+void tlgen::details::Service6FindWithBoundsResultReset(::tlgen::service6::FindWithBoundsResult& item) noexcept {
+  (void)item;
+  item.x = 0;
 }
 
-bool tl2::details::Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::service6::FindWithBoundsResult& item) noexcept {
-	s << "{";
-	if (item.x != 0) {
-		s << "\"x\":";
-		s << item.x;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tlgen::service6::FindWithBoundsResult& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.x != 0) {
+    s << "\"x\":";
+    s << item.x;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Service6FindWithBoundsResultRead(::basictl::tl_istream & s, ::tl2::service6::FindWithBoundsResult& item) noexcept {
-	if (!s.int_read(item.x)) { return false; }
-	return true;
+bool tlgen::details::Service6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::FindWithBoundsResult& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.x)) { return false; }
+  return true;
 }
 
-bool tl2::details::Service6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const ::tl2::service6::FindWithBoundsResult& item) noexcept {
-	if (!s.int_write(item.x)) { return false;}
-	return true;
+bool tlgen::details::Service6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::FindWithBoundsResult& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.x)) { return false;}
+  return true;
 }
 
-bool tl2::details::Service6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, ::tl2::service6::FindWithBoundsResult& item) {
-	if (!s.nat_read_exact_tag(0x3ded850a)) { return false; }
-	return tl2::details::Service6FindWithBoundsResultRead(s, item);
+bool tlgen::details::Service6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::FindWithBoundsResult& item) {
+  if (!s.nat_read_exact_tag(0x3ded850a)) { return false; }
+  return tlgen::details::Service6FindWithBoundsResultRead(s, item);
 }
 
-bool tl2::details::Service6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::FindWithBoundsResult& item) {
-	if (!s.nat_write(0x3ded850a)) { return false; }
-	return tl2::details::Service6FindWithBoundsResultWrite(s, item);
+bool tlgen::details::Service6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::FindWithBoundsResult& item) {
+  if (!s.nat_write(0x3ded850a)) { return false; }
+  return tlgen::details::Service6FindWithBoundsResultWrite(s, item);
 }
 
-bool tl2::service6::MultiFind::write_json(std::ostream& s)const {
-	if (!::tl2::details::Service6MultiFindWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::service6::MultiFind::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Service6MultiFindWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::service6::MultiFind::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6MultiFindRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFind::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6MultiFindRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::MultiFind::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6MultiFindWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFind::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6MultiFindWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::MultiFind::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFind::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::MultiFind::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFind::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::service6::MultiFind::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6MultiFindReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFind::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6MultiFindReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::MultiFind::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6MultiFindWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFind::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6MultiFindWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::MultiFind::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFind::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::MultiFind::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFind::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Service6MultiFindReset(::tl2::service6::MultiFind& item) noexcept {
-	item.clusters.clear();
-	item.limit = 0;
-	item.eq_threshold = 0;
+void tlgen::details::Service6MultiFindReset(::tlgen::service6::MultiFind& item) noexcept {
+  (void)item;
+  item.clusters.clear();
+  item.limit = 0;
+  item.eq_threshold = 0;
 }
 
-bool tl2::details::Service6MultiFindWriteJSON(std::ostream& s, const ::tl2::service6::MultiFind& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.clusters.size() != 0) {
-		add_comma = true;
-		s << "\"clusters\":";
-		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
-	}
-	if (item.limit != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"limit\":";
-		s << item.limit;
-	}
-	if (item.eq_threshold != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"eq_threshold\":";
-		s << item.eq_threshold;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::Service6MultiFindWriteJSON(std::ostream& s, const ::tlgen::service6::MultiFind& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.clusters.size() != 0) {
+    add_comma = true;
+    s << "\"clusters\":";
+    if (!::tlgen::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+  }
+  if (item.limit != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"limit\":";
+    s << item.limit;
+  }
+  if (item.eq_threshold != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"eq_threshold\":";
+    s << item.eq_threshold;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Service6MultiFindRead(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item) noexcept {
-	if (!::tl2::details::BuiltinVectorIntRead(s, item.clusters)) { return false; }
-	if (!s.int_read(item.limit)) { return false; }
-	if (!s.double_read(item.eq_threshold)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorIntRead(s, item.clusters)) { return false; }
+  if (!s.int_read(item.limit)) { return false; }
+  if (!s.double_read(item.eq_threshold)) { return false; }
+  return true;
 }
 
-bool tl2::details::Service6MultiFindWrite(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item) noexcept {
-	if (!::tl2::details::BuiltinVectorIntWrite(s, item.clusters)) { return false; }
-	if (!s.int_write(item.limit)) { return false;}
-	if (!s.double_write(item.eq_threshold)) { return false;}
-	return true;
+bool tlgen::details::Service6MultiFindWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFind& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorIntWrite(s, item.clusters)) { return false; }
+  if (!s.int_write(item.limit)) { return false;}
+  if (!s.double_write(item.eq_threshold)) { return false;}
+  return true;
 }
 
-bool tl2::details::Service6MultiFindReadBoxed(::basictl::tl_istream & s, ::tl2::service6::MultiFind& item) {
-	if (!s.nat_read_exact_tag(0xe62178d8)) { return false; }
-	return tl2::details::Service6MultiFindRead(s, item);
+bool tlgen::details::Service6MultiFindReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item) {
+  if (!s.nat_read_exact_tag(0xe62178d8)) { return false; }
+  return tlgen::details::Service6MultiFindRead(s, item);
 }
 
-bool tl2::details::Service6MultiFindWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::MultiFind& item) {
-	if (!s.nat_write(0xe62178d8)) { return false; }
-	return tl2::details::Service6MultiFindWrite(s, item);
+bool tlgen::details::Service6MultiFindWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFind& item) {
+  if (!s.nat_write(0xe62178d8)) { return false; }
+  return tlgen::details::Service6MultiFindWrite(s, item);
 }
 
-bool tl2::details::Service6MultiFindReadResult(::basictl::tl_istream & s, tl2::service6::MultiFind& item, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& result) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, result)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindReadResult(::tlgen::basictl::tl_istream & s, tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result) {
+  (void)s;
+  (void)item;
+  (void)result;
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, result)) { return false; }
+  return true;
 }
-bool tl2::details::Service6MultiFindWriteResult(::basictl::tl_ostream & s, tl2::service6::MultiFind& item, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& result) {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(s, result)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result) {
+  (void)s;
+  (void)item;
+  (void)result;
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(s, result)) { return false; }
+  return true;
 }
 
-bool tl2::service6::MultiFind::read_result(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result) noexcept {
-	bool success = tl2::details::Service6MultiFindReadResult(s, *this, result);
-	s.last_release();
-	return success;
+bool tlgen::service6::MultiFind::read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) noexcept {
+  bool success = tlgen::details::Service6MultiFindReadResult(s, *this, result);
+  s.sync();
+  return success;
 }
-bool tl2::service6::MultiFind::write_result(::basictl::tl_ostream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result) noexcept {
-	bool success = tl2::details::Service6MultiFindWriteResult(s, *this, result);
-	s.last_release();
-	return success;
+bool tlgen::service6::MultiFind::write_result(::tlgen::basictl::tl_ostream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) noexcept {
+  bool success = tlgen::details::Service6MultiFindWriteResult(s, *this, result);
+  s.sync();
+  return success;
 }
 
-void tl2::service6::MultiFind::read_result_or_throw(::basictl::tl_throwable_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result) {
-	::basictl::tl_istream s2(s);
-	this->read_result(s2, result);
-	s2.pass_data(s);
+void tlgen::service6::MultiFind::read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_result(s2, result);
+  s2.pass_data(s);
 }
-void tl2::service6::MultiFind::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>> & result) {
-	::basictl::tl_ostream s2(s);
-	this->write_result(s2, result);
-	s2.pass_data(s);
+void tlgen::service6::MultiFind::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_result(s2, result);
+  s2.pass_data(s);
 }
 
-bool tl2::service6::MultiFindWithBounds::write_json(std::ostream& s)const {
-	if (!::tl2::details::Service6MultiFindWithBoundsWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::service6::MultiFindWithBounds::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Service6MultiFindWithBoundsWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::service6::MultiFindWithBounds::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6MultiFindWithBoundsRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFindWithBounds::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6MultiFindWithBoundsRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::MultiFindWithBounds::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6MultiFindWithBoundsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFindWithBounds::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6MultiFindWithBoundsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::MultiFindWithBounds::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFindWithBounds::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::MultiFindWithBounds::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFindWithBounds::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::service6::MultiFindWithBounds::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Service6MultiFindWithBoundsReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFindWithBounds::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Service6MultiFindWithBoundsReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::service6::MultiFindWithBounds::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Service6MultiFindWithBoundsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::service6::MultiFindWithBounds::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Service6MultiFindWithBoundsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::service6::MultiFindWithBounds::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFindWithBounds::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::service6::MultiFindWithBounds::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::service6::MultiFindWithBounds::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Service6MultiFindWithBoundsReset(::tl2::service6::MultiFindWithBounds& item) noexcept {
-	item.clusters.clear();
+void tlgen::details::Service6MultiFindWithBoundsReset(::tlgen::service6::MultiFindWithBounds& item) noexcept {
+  (void)item;
+  item.clusters.clear();
 }
 
-bool tl2::details::Service6MultiFindWithBoundsWriteJSON(std::ostream& s, const ::tl2::service6::MultiFindWithBounds& item) noexcept {
-	s << "{";
-	if (item.clusters.size() != 0) {
-		s << "\"clusters\":";
-		if (!::tl2::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
-	}
-	s << "}";
-	return true;
+bool tlgen::details::Service6MultiFindWithBoundsWriteJSON(std::ostream& s, const ::tlgen::service6::MultiFindWithBounds& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.clusters.size() != 0) {
+    s << "\"clusters\":";
+    if (!::tlgen::details::BuiltinVectorIntWriteJSON(s, item.clusters)) { return false; }
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Service6MultiFindWithBoundsRead(::basictl::tl_istream & s, ::tl2::service6::MultiFindWithBounds& item) noexcept {
-	if (!::tl2::details::BuiltinVectorIntRead(s, item.clusters)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindWithBoundsRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFindWithBounds& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorIntRead(s, item.clusters)) { return false; }
+  return true;
 }
 
-bool tl2::details::Service6MultiFindWithBoundsWrite(::basictl::tl_ostream & s, const ::tl2::service6::MultiFindWithBounds& item) noexcept {
-	if (!::tl2::details::BuiltinVectorIntWrite(s, item.clusters)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindWithBoundsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFindWithBounds& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorIntWrite(s, item.clusters)) { return false; }
+  return true;
 }
 
-bool tl2::details::Service6MultiFindWithBoundsReadBoxed(::basictl::tl_istream & s, ::tl2::service6::MultiFindWithBounds& item) {
-	if (!s.nat_read_exact_tag(0x84b168cf)) { return false; }
-	return tl2::details::Service6MultiFindWithBoundsRead(s, item);
+bool tlgen::details::Service6MultiFindWithBoundsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFindWithBounds& item) {
+  if (!s.nat_read_exact_tag(0x84b168cf)) { return false; }
+  return tlgen::details::Service6MultiFindWithBoundsRead(s, item);
 }
 
-bool tl2::details::Service6MultiFindWithBoundsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::MultiFindWithBounds& item) {
-	if (!s.nat_write(0x84b168cf)) { return false; }
-	return tl2::details::Service6MultiFindWithBoundsWrite(s, item);
+bool tlgen::details::Service6MultiFindWithBoundsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFindWithBounds& item) {
+  if (!s.nat_write(0x84b168cf)) { return false; }
+  return tlgen::details::Service6MultiFindWithBoundsWrite(s, item);
 }
 
-bool tl2::details::Service6MultiFindWithBoundsReadResult(::basictl::tl_istream & s, tl2::service6::MultiFindWithBounds& item, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& result) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	if (!::tl2::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(s, result)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindWithBoundsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result) {
+  (void)s;
+  (void)item;
+  (void)result;
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  if (!::tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(s, result)) { return false; }
+  return true;
 }
-bool tl2::details::Service6MultiFindWithBoundsWriteResult(::basictl::tl_ostream & s, tl2::service6::MultiFindWithBounds& item, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>>& result) {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	if (!::tl2::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(s, result)) { return false; }
-	return true;
+bool tlgen::details::Service6MultiFindWithBoundsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result) {
+  (void)s;
+  (void)item;
+  (void)result;
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  if (!::tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultWrite(s, result)) { return false; }
+  return true;
 }
 
-bool tl2::service6::MultiFindWithBounds::read_result(::basictl::tl_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) noexcept {
-	bool success = tl2::details::Service6MultiFindWithBoundsReadResult(s, *this, result);
-	s.last_release();
-	return success;
+bool tlgen::service6::MultiFindWithBounds::read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) noexcept {
+  bool success = tlgen::details::Service6MultiFindWithBoundsReadResult(s, *this, result);
+  s.sync();
+  return success;
 }
-bool tl2::service6::MultiFindWithBounds::write_result(::basictl::tl_ostream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) noexcept {
-	bool success = tl2::details::Service6MultiFindWithBoundsWriteResult(s, *this, result);
-	s.last_release();
-	return success;
+bool tlgen::service6::MultiFindWithBounds::write_result(::tlgen::basictl::tl_ostream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) noexcept {
+  bool success = tlgen::details::Service6MultiFindWithBoundsWriteResult(s, *this, result);
+  s.sync();
+  return success;
 }
 
-void tl2::service6::MultiFindWithBounds::read_result_or_throw(::basictl::tl_throwable_istream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) {
-	::basictl::tl_istream s2(s);
-	this->read_result(s2, result);
-	s2.pass_data(s);
+void tlgen::service6::MultiFindWithBounds::read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_result(s2, result);
+  s2.pass_data(s);
 }
-void tl2::service6::MultiFindWithBounds::write_result_or_throw(::basictl::tl_throwable_ostream & s, std::vector<::tl2::Either<int32_t, std::vector<::tl2::service6::FindWithBoundsResult>>> & result) {
-	::basictl::tl_ostream s2(s);
-	this->write_result(s2, result);
-	s2.pass_data(s);
+void tlgen::service6::MultiFindWithBounds::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_result(s2, result);
+  s2.pass_data(s);
 }
 
-void tl2::details::VectorEitherService6ErrorVectorService6FindResultRowReset(std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept {
-	item.clear();
+void tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowReset(std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept {
+  (void)item;
+  item.clear();
 }
 
-bool tl2::details::VectorEitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorEitherService6ErrorVectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorEitherService6ErrorVectorService6FindResultRowWrite(::basictl::tl_ostream & s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorEitherService6ErrorVectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	return tl2::details::VectorEitherService6ErrorVectorService6FindResultRowRead(s, item);
+bool tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) {
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowRead(s, item);
 }
 
-bool tl2::details::VectorEitherService6ErrorVectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::Either<::tl2::service6::Error, std::vector<::tl2::service6::FindResultRow>>>& item) {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	return tl2::details::VectorEitherService6ErrorVectorService6FindResultRowWrite(s, item);
+bool tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& item) {
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorEitherService6ErrorVectorService6FindResultRowWrite(s, item);
 }
 
-void tl2::details::VectorService6FindResultRowReset(std::vector<::tl2::service6::FindResultRow>& item) noexcept {
-	item.clear();
+void tlgen::details::VectorService6FindResultRowReset(std::vector<::tlgen::service6::FindResultRow>& item) noexcept {
+  (void)item;
+  item.clear();
 }
 
-bool tl2::details::VectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tl2::service6::FindResultRow>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindResultRowWriteJSON(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorService6FindResultRowWriteJSON(std::ostream& s, const std::vector<::tlgen::service6::FindResultRow>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindResultRowWriteJSON(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorService6FindResultRowRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindResultRow>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindResultRowRead(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorService6FindResultRowRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindResultRow>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindResultRowRead(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorService6FindResultRowWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindResultRow>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindResultRowWrite(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorService6FindResultRowWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindResultRow>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindResultRowWrite(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorService6FindResultRowReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service6::FindResultRow>& item) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	return tl2::details::VectorService6FindResultRowRead(s, item);
+bool tlgen::details::VectorService6FindResultRowReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindResultRow>& item) {
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorService6FindResultRowRead(s, item);
 }
 
-bool tl2::details::VectorService6FindResultRowWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindResultRow>& item) {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	return tl2::details::VectorService6FindResultRowWrite(s, item);
+bool tlgen::details::VectorService6FindResultRowWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindResultRow>& item) {
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorService6FindResultRowWrite(s, item);
 }
 
-void tl2::details::VectorService6FindWithBoundsResultReset(std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept {
-	item.clear();
+void tlgen::details::VectorService6FindWithBoundsResultReset(std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept {
+  (void)item;
+  item.clear();
 }
 
-bool tl2::details::VectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorService6FindWithBoundsResultWriteJSON(std::ostream& s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindWithBoundsResultWriteJSON(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultRead(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindWithBoundsResultRead(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorService6FindWithBoundsResultWrite(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorService6FindWithBoundsResultWrite(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorService6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	return tl2::details::VectorService6FindWithBoundsResultRead(s, item);
+bool tlgen::details::VectorService6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindWithBoundsResult>& item) {
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorService6FindWithBoundsResultRead(s, item);
 }
 
-bool tl2::details::VectorService6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item) {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	return tl2::details::VectorService6FindWithBoundsResultWrite(s, item);
+bool tlgen::details::VectorService6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item) {
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorService6FindWithBoundsResultWrite(s, item);
 }

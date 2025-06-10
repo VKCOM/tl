@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "benchmarks/types/benchmarks.vrutoyPositions.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchmarksVrutoyPositionsReset(::tl2::benchmarks::VrutoyPositions& item) noexcept;
+void BenchmarksVrutoyPositionsReset(::tlgen::benchmarks::VrutoyPositions& item) noexcept;
 
-bool BenchmarksVrutoyPositionsWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) noexcept;
-bool BenchmarksVrutoyPositionsRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) noexcept; 
-bool BenchmarksVrutoyPositionsWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n) noexcept;
-bool BenchmarksVrutoyPositionsReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n);
-bool BenchmarksVrutoyPositionsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyPositions& item, uint32_t nat_n);
+bool BenchmarksVrutoyPositionsWriteJSON(std::ostream& s, const ::tlgen::benchmarks::VrutoyPositions& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool BenchmarksVrutoyPositionsRead(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoyPositions& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool BenchmarksVrutoyPositionsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoyPositions& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool BenchmarksVrutoyPositionsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoyPositions& item, [[maybe_unused]] uint32_t nat_n);
+bool BenchmarksVrutoyPositionsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoyPositions& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -6,18 +6,18 @@
 #include "service1/functions/service1.enableExpiration.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1EnableExpirationReset(::tl2::service1::EnableExpiration& item) noexcept;
+void Service1EnableExpirationReset(::tlgen::service1::EnableExpiration& item) noexcept;
 
-bool Service1EnableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::EnableExpiration& item) noexcept;
-bool Service1EnableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item) noexcept; 
-bool Service1EnableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item) noexcept;
-bool Service1EnableExpirationReadBoxed(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item);
-bool Service1EnableExpirationWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::EnableExpiration& item);
+bool Service1EnableExpirationWriteJSON(std::ostream& s, const ::tlgen::service1::EnableExpiration& item) noexcept;
+bool Service1EnableExpirationRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableExpiration& item) noexcept; 
+bool Service1EnableExpirationWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::EnableExpiration& item) noexcept;
+bool Service1EnableExpirationReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableExpiration& item);
+bool Service1EnableExpirationWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::EnableExpiration& item);
 
-bool Service1EnableExpirationReadResult(::basictl::tl_istream & s, ::tl2::service1::EnableExpiration& item, bool& result);
-bool Service1EnableExpirationWriteResult(::basictl::tl_ostream & s, ::tl2::service1::EnableExpiration& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service1EnableExpirationReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableExpiration& item, bool& result);
+bool Service1EnableExpirationWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::EnableExpiration& item, bool& result);
+    
+}} // namespace tlgen::details
 

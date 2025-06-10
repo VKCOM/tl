@@ -2,165 +2,185 @@
 #include "cyc3/headers/cyc3_vector.h"
 #include "cyc1/headers/cyc1.myCycle.h"
 #include "cyc3/headers/cyc3.myCycle.h"
+#include "cyc3/headers/cyc3_cyc1.myCycle.h"
 
 
-bool tl2::cyc3::MyCycle::write_json(std::ostream& s)const {
-	if (!::tl2::details::Cyc3MyCycleWriteJSON(s, *this)) { return false; }
-	return true;
+void tlgen::details::BuiltinVectorCyc1MyCycleReset(std::vector<::tlgen::cyc1::MyCycle>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-bool tl2::cyc3::MyCycle::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Cyc3MyCycleRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::details::BuiltinVectorCyc1MyCycleWriteJSON(std::ostream & s, const std::vector<::tlgen::cyc1::MyCycle>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::Cyc1MyCycleWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::cyc3::MyCycle::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Cyc3MyCycleWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::details::BuiltinVectorCyc1MyCycleRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::cyc1::MyCycle>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::Cyc1MyCycleRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-void tl2::cyc3::MyCycle::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+bool tlgen::details::BuiltinVectorCyc1MyCycleWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::cyc1::MyCycle>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::Cyc1MyCycleWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-void tl2::cyc3::MyCycle::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+bool tlgen::cyc3::MyCycle::write_json(std::ostream& s)const {
+  if (!::tlgen::details::Cyc3MyCycleWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::cyc3::MyCycle::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::Cyc3MyCycleReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::cyc3::MyCycle::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Cyc3MyCycleRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::cyc3::MyCycle::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::Cyc3MyCycleWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::cyc3::MyCycle::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Cyc3MyCycleWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::cyc3::MyCycle::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::cyc3::MyCycle::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::cyc3::MyCycle::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::cyc3::MyCycle::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::Cyc3MyCycleReset(::tl2::cyc3::MyCycle& item) noexcept {
-	item.fields_mask = 0;
-	item.a.clear();
+bool tlgen::cyc3::MyCycle::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::Cyc3MyCycleReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::details::Cyc3MyCycleWriteJSON(std::ostream& s, const ::tl2::cyc3::MyCycle& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.fields_mask != 0) {
-		add_comma = true;
-		s << "\"fields_mask\":";
-		s << item.fields_mask;
-	}
-	if (item.a.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"a\":";
-		if (!::tl2::details::BuiltinVectorCyc1MyCycleWriteJSON(s, item.a)) { return false; }
-	}
-	s << "}";
-	return true;
+bool tlgen::cyc3::MyCycle::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::Cyc3MyCycleWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::details::Cyc3MyCycleRead(::basictl::tl_istream & s, ::tl2::cyc3::MyCycle& item) noexcept {
-	if (!s.nat_read(item.fields_mask)) { return false; }
-	if (!::tl2::details::BuiltinVectorCyc1MyCycleRead(s, item.a)) { return false; }
-	return true;
+void tlgen::cyc3::MyCycle::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::details::Cyc3MyCycleWrite(::basictl::tl_ostream & s, const ::tl2::cyc3::MyCycle& item) noexcept {
-	if (!s.nat_write(item.fields_mask)) { return false;}
-	if (!::tl2::details::BuiltinVectorCyc1MyCycleWrite(s, item.a)) { return false; }
-	return true;
+void tlgen::cyc3::MyCycle::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::details::Cyc3MyCycleReadBoxed(::basictl::tl_istream & s, ::tl2::cyc3::MyCycle& item) {
-	if (!s.nat_read_exact_tag(0x47866860)) { return false; }
-	return tl2::details::Cyc3MyCycleRead(s, item);
+void tlgen::details::Cyc3MyCycleReset(::tlgen::cyc3::MyCycle& item) noexcept {
+  (void)item;
+  item.fields_mask = 0;
+  item.a.clear();
 }
 
-bool tl2::details::Cyc3MyCycleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cyc3::MyCycle& item) {
-	if (!s.nat_write(0x47866860)) { return false; }
-	return tl2::details::Cyc3MyCycleWrite(s, item);
+bool tlgen::details::Cyc3MyCycleWriteJSON(std::ostream& s, const ::tlgen::cyc3::MyCycle& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.fields_mask != 0) {
+    add_comma = true;
+    s << "\"fields_mask\":";
+    s << item.fields_mask;
+  }
+  if (item.a.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"a\":";
+    if (!::tlgen::details::BuiltinVectorCyc1MyCycleWriteJSON(s, item.a)) { return false; }
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::Cyc3MyCycleMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::cyc3::MyCycle>& item) {
-	s << "{";
-	if (item) {
-		s << "\"ok\":true";
-		s << ",\"value\":";
-		if (!::tl2::details::Cyc3MyCycleWriteJSON(s, *item)) { return false; }
-	}
-	s << "}";
-	return true;
-}
-bool tl2::details::Cyc3MyCycleMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::cyc3::MyCycle>& item) {
-	bool has_item = false;
-	if (!s.bool_read(has_item, 0x27930a7b, 0x3f9c8ef8)) { return false; }
-	if (has_item) {
-		if (!item) {
-			item.emplace();
-		}
-		if (!::tl2::details::Cyc3MyCycleRead(s, *item)) { return s.set_error_unknown_scenario(); }
-		return true;
-	}
-	item.reset();
-	return true;
+bool tlgen::details::Cyc3MyCycleRead(::tlgen::basictl::tl_istream & s, ::tlgen::cyc3::MyCycle& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_read(item.fields_mask)) { return false; }
+  if (!::tlgen::details::BuiltinVectorCyc1MyCycleRead(s, item.a)) { return false; }
+  return true;
 }
 
-bool tl2::details::Cyc3MyCycleMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::cyc3::MyCycle>& item) {
-	if (!s.nat_write(item ? 0x3f9c8ef8 : 0x27930a7b)) { return false; }
-	if (item) {
-		if (!::tl2::details::Cyc3MyCycleWrite(s, *item)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::Cyc3MyCycleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cyc3::MyCycle& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_write(item.fields_mask)) { return false;}
+  if (!::tlgen::details::BuiltinVectorCyc1MyCycleWrite(s, item.a)) { return false; }
+  return true;
 }
 
-void tl2::details::VectorCyc1MyCycleReset(std::vector<::tl2::cyc1::MyCycle>& item) noexcept {
-	item.clear();
+bool tlgen::details::Cyc3MyCycleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cyc3::MyCycle& item) {
+  if (!s.nat_read_exact_tag(0x47866860)) { return false; }
+  return tlgen::details::Cyc3MyCycleRead(s, item);
 }
 
-bool tl2::details::VectorCyc1MyCycleWriteJSON(std::ostream& s, const std::vector<::tl2::cyc1::MyCycle>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorCyc1MyCycleWriteJSON(s, item)) { return false; }
-	return true;
+bool tlgen::details::Cyc3MyCycleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cyc3::MyCycle& item) {
+  if (!s.nat_write(0x47866860)) { return false; }
+  return tlgen::details::Cyc3MyCycleWrite(s, item);
 }
 
-bool tl2::details::VectorCyc1MyCycleRead(::basictl::tl_istream & s, std::vector<::tl2::cyc1::MyCycle>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorCyc1MyCycleRead(s, item)) { return false; }
-	return true;
+void tlgen::details::VectorCyc1MyCycleReset(std::vector<::tlgen::cyc1::MyCycle>& item) noexcept {
+  (void)item;
+  item.clear();
 }
 
-bool tl2::details::VectorCyc1MyCycleWrite(::basictl::tl_ostream & s, const std::vector<::tl2::cyc1::MyCycle>& item) noexcept {
-	if (!::tl2::details::BuiltinVectorCyc1MyCycleWrite(s, item)) { return false; }
-	return true;
+bool tlgen::details::VectorCyc1MyCycleWriteJSON(std::ostream& s, const std::vector<::tlgen::cyc1::MyCycle>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorCyc1MyCycleWriteJSON(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorCyc1MyCycleReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::cyc1::MyCycle>& item) {
-	if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
-	return tl2::details::VectorCyc1MyCycleRead(s, item);
+bool tlgen::details::VectorCyc1MyCycleRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::cyc1::MyCycle>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorCyc1MyCycleRead(s, item)) { return false; }
+  return true;
 }
 
-bool tl2::details::VectorCyc1MyCycleWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::cyc1::MyCycle>& item) {
-	if (!s.nat_write(0x1cb5c415)) { return false; }
-	return tl2::details::VectorCyc1MyCycleWrite(s, item);
+bool tlgen::details::VectorCyc1MyCycleWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::cyc1::MyCycle>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinVectorCyc1MyCycleWrite(s, item)) { return false; }
+  return true;
+}
+
+bool tlgen::details::VectorCyc1MyCycleReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::cyc1::MyCycle>& item) {
+  if (!s.nat_read_exact_tag(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorCyc1MyCycleRead(s, item);
+}
+
+bool tlgen::details::VectorCyc1MyCycleWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::cyc1::MyCycle>& item) {
+  if (!s.nat_write(0x1cb5c415)) { return false; }
+  return tlgen::details::VectorCyc1MyCycleWrite(s, item);
 }

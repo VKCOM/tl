@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myZero3.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyZero3Reset(::tl2::MyZero3& item) noexcept;
+void MyZero3Reset(::tlgen::MyZero3& item) noexcept;
 
-bool MyZero3WriteJSON(std::ostream& s, const ::tl2::MyZero3& item) noexcept;
-bool MyZero3Read(::basictl::tl_istream & s, ::tl2::MyZero3& item) noexcept; 
-bool MyZero3Write(::basictl::tl_ostream & s, const ::tl2::MyZero3& item) noexcept;
-bool MyZero3ReadBoxed(::basictl::tl_istream & s, ::tl2::MyZero3& item);
-bool MyZero3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyZero3& item);
+bool MyZero3WriteJSON(std::ostream& s, const ::tlgen::MyZero3& item) noexcept;
+bool MyZero3Read(::tlgen::basictl::tl_istream & s, ::tlgen::MyZero3& item) noexcept; 
+bool MyZero3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyZero3& item) noexcept;
+bool MyZero3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyZero3& item);
+bool MyZero3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyZero3& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

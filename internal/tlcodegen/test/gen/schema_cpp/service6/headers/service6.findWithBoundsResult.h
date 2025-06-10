@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "service6/types/service6.findWithBoundsResult.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorService6FindWithBoundsResultReset(std::vector<::tl2::service6::FindWithBoundsResult>& item);
+void BuiltinVectorService6FindWithBoundsResultReset(std::vector<::tlgen::service6::FindWithBoundsResult>& item);
 
-bool BuiltinVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item);
-bool BuiltinVectorService6FindWithBoundsResultRead(::basictl::tl_istream & s, std::vector<::tl2::service6::FindWithBoundsResult>& item);
-bool BuiltinVectorService6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service6::FindWithBoundsResult>& item);
+bool BuiltinVectorService6FindWithBoundsResultWriteJSON(std::ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item);
+bool BuiltinVectorService6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service6::FindWithBoundsResult>& item);
+bool BuiltinVectorService6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service6::FindWithBoundsResult>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service6FindWithBoundsResultReset(::tl2::service6::FindWithBoundsResult& item) noexcept;
+void Service6FindWithBoundsResultReset(::tlgen::service6::FindWithBoundsResult& item) noexcept;
 
-bool Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tl2::service6::FindWithBoundsResult& item) noexcept;
-bool Service6FindWithBoundsResultRead(::basictl::tl_istream & s, ::tl2::service6::FindWithBoundsResult& item) noexcept; 
-bool Service6FindWithBoundsResultWrite(::basictl::tl_ostream & s, const ::tl2::service6::FindWithBoundsResult& item) noexcept;
-bool Service6FindWithBoundsResultReadBoxed(::basictl::tl_istream & s, ::tl2::service6::FindWithBoundsResult& item);
-bool Service6FindWithBoundsResultWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service6::FindWithBoundsResult& item);
+bool Service6FindWithBoundsResultWriteJSON(std::ostream& s, const ::tlgen::service6::FindWithBoundsResult& item) noexcept;
+bool Service6FindWithBoundsResultRead(::tlgen::basictl::tl_istream & s, ::tlgen::service6::FindWithBoundsResult& item) noexcept; 
+bool Service6FindWithBoundsResultWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::FindWithBoundsResult& item) noexcept;
+bool Service6FindWithBoundsResultReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::FindWithBoundsResult& item);
+bool Service6FindWithBoundsResultWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::FindWithBoundsResult& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/issue3498.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Issue3498Reset(::tl2::Issue3498& item) noexcept;
+void Issue3498Reset(::tlgen::Issue3498& item) noexcept;
 
-bool Issue3498WriteJSON(std::ostream& s, const ::tl2::Issue3498& item) noexcept;
-bool Issue3498Read(::basictl::tl_istream & s, ::tl2::Issue3498& item) noexcept; 
-bool Issue3498Write(::basictl::tl_ostream & s, const ::tl2::Issue3498& item) noexcept;
-bool Issue3498ReadBoxed(::basictl::tl_istream & s, ::tl2::Issue3498& item);
-bool Issue3498WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Issue3498& item);
+bool Issue3498WriteJSON(std::ostream& s, const ::tlgen::Issue3498& item) noexcept;
+bool Issue3498Read(::tlgen::basictl::tl_istream & s, ::tlgen::Issue3498& item) noexcept; 
+bool Issue3498Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Issue3498& item) noexcept;
+bool Issue3498ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Issue3498& item);
+bool Issue3498WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Issue3498& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

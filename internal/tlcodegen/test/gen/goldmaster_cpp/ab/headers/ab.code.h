@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.code.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbCodeReset(::tl2::ab::Code& item) noexcept;
+void AbCodeReset(::tlgen::ab::Code& item) noexcept;
 
-bool AbCodeWriteJSON(std::ostream& s, const ::tl2::ab::Code& item) noexcept;
-bool AbCodeRead(::basictl::tl_istream & s, ::tl2::ab::Code& item) noexcept; 
-bool AbCodeWrite(::basictl::tl_ostream & s, const ::tl2::ab::Code& item) noexcept;
-bool AbCodeReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Code& item);
-bool AbCodeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Code& item);
+bool AbCodeWriteJSON(std::ostream& s, const ::tlgen::ab::Code& item) noexcept;
+bool AbCodeRead(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Code& item) noexcept; 
+bool AbCodeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Code& item) noexcept;
+bool AbCodeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Code& item);
+bool AbCodeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Code& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myBoxedVectorSlice.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyBoxedVectorSliceReset(::tl2::MyBoxedVectorSlice& item) noexcept;
+void MyBoxedVectorSliceReset(::tlgen::MyBoxedVectorSlice& item) noexcept;
 
-bool MyBoxedVectorSliceWriteJSON(std::ostream& s, const ::tl2::MyBoxedVectorSlice& item) noexcept;
-bool MyBoxedVectorSliceRead(::basictl::tl_istream & s, ::tl2::MyBoxedVectorSlice& item) noexcept; 
-bool MyBoxedVectorSliceWrite(::basictl::tl_ostream & s, const ::tl2::MyBoxedVectorSlice& item) noexcept;
-bool MyBoxedVectorSliceReadBoxed(::basictl::tl_istream & s, ::tl2::MyBoxedVectorSlice& item);
-bool MyBoxedVectorSliceWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyBoxedVectorSlice& item);
+bool MyBoxedVectorSliceWriteJSON(std::ostream& s, const ::tlgen::MyBoxedVectorSlice& item) noexcept;
+bool MyBoxedVectorSliceRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyBoxedVectorSlice& item) noexcept; 
+bool MyBoxedVectorSliceWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyBoxedVectorSlice& item) noexcept;
+bool MyBoxedVectorSliceReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyBoxedVectorSlice& item);
+bool MyBoxedVectorSliceWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyBoxedVectorSlice& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

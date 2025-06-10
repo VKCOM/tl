@@ -6,18 +6,18 @@
 #include "service1/functions/service1.getWildcardDict.h"
 #include "__common_namespace/types/dictionaryField.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1GetWildcardDictReset(::tl2::service1::GetWildcardDict& item) noexcept;
+void Service1GetWildcardDictReset(::tlgen::service1::GetWildcardDict& item) noexcept;
 
-bool Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tl2::service1::GetWildcardDict& item) noexcept;
-bool Service1GetWildcardDictRead(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item) noexcept; 
-bool Service1GetWildcardDictWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item) noexcept;
-bool Service1GetWildcardDictReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item);
-bool Service1GetWildcardDictWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::GetWildcardDict& item);
+bool Service1GetWildcardDictWriteJSON(std::ostream& s, const ::tlgen::service1::GetWildcardDict& item) noexcept;
+bool Service1GetWildcardDictRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardDict& item) noexcept; 
+bool Service1GetWildcardDictWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcardDict& item) noexcept;
+bool Service1GetWildcardDictReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardDict& item);
+bool Service1GetWildcardDictWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcardDict& item);
 
-bool Service1GetWildcardDictReadResult(::basictl::tl_istream & s, ::tl2::service1::GetWildcardDict& item, std::map<std::string, std::string>& result);
-bool Service1GetWildcardDictWriteResult(::basictl::tl_ostream & s, ::tl2::service1::GetWildcardDict& item, std::map<std::string, std::string>& result);
-		
-}} // namespace tl2::details
+bool Service1GetWildcardDictReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardDict& item, std::map<std::string, std::string>& result);
+bool Service1GetWildcardDictWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetWildcardDict& item, std::map<std::string, std::string>& result);
+    
+}} // namespace tlgen::details
 

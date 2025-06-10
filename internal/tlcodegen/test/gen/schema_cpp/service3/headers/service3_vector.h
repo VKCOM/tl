@@ -9,93 +9,93 @@
 #include "service3/types/service3.groupSizeLimit.h"
 #include "service3/types/service3.groupCountLimit.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService3GroupCountLimitReset(std::vector<::tl2::service3::GroupCountLimit>& item) noexcept;
+void VectorService3GroupCountLimitReset(std::vector<::tlgen::service3::GroupCountLimit>& item) noexcept;
 
-bool VectorService3GroupCountLimitWriteJSON(std::ostream& s, const std::vector<::tl2::service3::GroupCountLimit>& item) noexcept;
-bool VectorService3GroupCountLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupCountLimit>& item) noexcept; 
-bool VectorService3GroupCountLimitWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service3::GroupCountLimit>& item) noexcept;
-bool VectorService3GroupCountLimitReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupCountLimit>& item);
-bool VectorService3GroupCountLimitWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service3::GroupCountLimit>& item);
+bool VectorService3GroupCountLimitWriteJSON(std::ostream& s, const std::vector<::tlgen::service3::GroupCountLimit>& item) noexcept;
+bool VectorService3GroupCountLimitRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::GroupCountLimit>& item) noexcept; 
+bool VectorService3GroupCountLimitWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::GroupCountLimit>& item) noexcept;
+bool VectorService3GroupCountLimitReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::GroupCountLimit>& item);
+bool VectorService3GroupCountLimitWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::GroupCountLimit>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService3GroupSizeLimitReset(std::vector<::tl2::service3::GroupSizeLimit>& item) noexcept;
+void VectorService3GroupSizeLimitReset(std::vector<::tlgen::service3::GroupSizeLimit>& item) noexcept;
 
-bool VectorService3GroupSizeLimitWriteJSON(std::ostream& s, const std::vector<::tl2::service3::GroupSizeLimit>& item) noexcept;
-bool VectorService3GroupSizeLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupSizeLimit>& item) noexcept; 
-bool VectorService3GroupSizeLimitWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service3::GroupSizeLimit>& item) noexcept;
-bool VectorService3GroupSizeLimitReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupSizeLimit>& item);
-bool VectorService3GroupSizeLimitWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service3::GroupSizeLimit>& item);
+bool VectorService3GroupSizeLimitWriteJSON(std::ostream& s, const std::vector<::tlgen::service3::GroupSizeLimit>& item) noexcept;
+bool VectorService3GroupSizeLimitRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::GroupSizeLimit>& item) noexcept; 
+bool VectorService3GroupSizeLimitWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::GroupSizeLimit>& item) noexcept;
+bool VectorService3GroupSizeLimitReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::GroupSizeLimit>& item);
+bool VectorService3GroupSizeLimitWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::GroupSizeLimit>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService3ProductReset(std::vector<::tl2::service3::Product>& item) noexcept;
+void VectorService3ProductReset(std::vector<::tlgen::service3::Product>& item) noexcept;
 
-bool VectorService3ProductWriteJSON(std::ostream& s, const std::vector<::tl2::service3::Product>& item, uint32_t nat_t) noexcept;
-bool VectorService3ProductRead(::basictl::tl_istream & s, std::vector<::tl2::service3::Product>& item, uint32_t nat_t) noexcept; 
-bool VectorService3ProductWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service3::Product>& item, uint32_t nat_t) noexcept;
-bool VectorService3ProductReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service3::Product>& item, uint32_t nat_t);
-bool VectorService3ProductWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service3::Product>& item, uint32_t nat_t);
+bool VectorService3ProductWriteJSON(std::ostream& s, const std::vector<::tlgen::service3::Product>& item, [[maybe_unused]] uint32_t nat_t) noexcept;
+bool VectorService3ProductRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::Product>& item, [[maybe_unused]] uint32_t nat_t) noexcept; 
+bool VectorService3ProductWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::Product>& item, [[maybe_unused]] uint32_t nat_t) noexcept;
+bool VectorService3ProductReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::Product>& item, [[maybe_unused]] uint32_t nat_t);
+bool VectorService3ProductWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::Product>& item, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService3Product0Reset(std::vector<::tl2::service3::Productmode<0>>& item) noexcept;
+void VectorService3Product0Reset(std::vector<::tlgen::service3::Productmode<0>>& item) noexcept;
 
-bool VectorService3Product0WriteJSON(std::ostream& s, const std::vector<::tl2::service3::Productmode<0>>& item) noexcept;
-bool VectorService3Product0Read(::basictl::tl_istream & s, std::vector<::tl2::service3::Productmode<0>>& item) noexcept; 
-bool VectorService3Product0Write(::basictl::tl_ostream & s, const std::vector<::tl2::service3::Productmode<0>>& item) noexcept;
-bool VectorService3Product0ReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service3::Productmode<0>>& item);
-bool VectorService3Product0WriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service3::Productmode<0>>& item);
+bool VectorService3Product0WriteJSON(std::ostream& s, const std::vector<::tlgen::service3::Productmode<0>>& item) noexcept;
+bool VectorService3Product0Read(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::Productmode<0>>& item) noexcept; 
+bool VectorService3Product0Write(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::Productmode<0>>& item) noexcept;
+bool VectorService3Product0ReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::Productmode<0>>& item);
+bool VectorService3Product0WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::Productmode<0>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool VectorService3Product0MaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::Productmode<0>>>& item);
+bool VectorService3Product0MaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tlgen::service3::Productmode<0>>>& item);
 
-bool VectorService3Product0MaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Productmode<0>>>& item);
-bool VectorService3Product0MaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<std::vector<::tl2::service3::Productmode<0>>>& item);
-
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-bool VectorService3ProductMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::Product>>& item, uint32_t nat_t);
-
-bool VectorService3ProductMaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::Product>>& item, uint32_t nat_t);
-bool VectorService3ProductMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<std::vector<::tl2::service3::Product>>& item, uint32_t nat_t);
+bool VectorService3Product0MaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& item);
+bool VectorService3Product0MaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::Productmode<0>>>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorService3ProductStatsOldReset(std::vector<::tl2::service3::ProductStatsOld>& item) noexcept;
+bool VectorService3ProductMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tlgen::service3::Product>>& item, [[maybe_unused]] uint32_t nat_t);
 
-bool VectorService3ProductStatsOldWriteJSON(std::ostream& s, const std::vector<::tl2::service3::ProductStatsOld>& item) noexcept;
-bool VectorService3ProductStatsOldRead(::basictl::tl_istream & s, std::vector<::tl2::service3::ProductStatsOld>& item) noexcept; 
-bool VectorService3ProductStatsOldWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service3::ProductStatsOld>& item) noexcept;
-bool VectorService3ProductStatsOldReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::service3::ProductStatsOld>& item);
-bool VectorService3ProductStatsOldWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::service3::ProductStatsOld>& item);
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-bool VectorService3ProductStatsOldMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tl2::service3::ProductStatsOld>>& item);
-
-bool VectorService3ProductStatsOldMaybeReadBoxed(::basictl::tl_istream & s, std::optional<std::vector<::tl2::service3::ProductStatsOld>>& item);
-bool VectorService3ProductStatsOldMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<std::vector<::tl2::service3::ProductStatsOld>>& item);
+bool VectorService3ProductMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Product>>& item, [[maybe_unused]] uint32_t nat_t);
+bool VectorService3ProductMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::Product>>& item, [[maybe_unused]] uint32_t nat_t);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void VectorService3ProductStatsOldReset(std::vector<::tlgen::service3::ProductStatsOld>& item) noexcept;
+
+bool VectorService3ProductStatsOldWriteJSON(std::ostream& s, const std::vector<::tlgen::service3::ProductStatsOld>& item) noexcept;
+bool VectorService3ProductStatsOldRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::ProductStatsOld>& item) noexcept; 
+bool VectorService3ProductStatsOldWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::ProductStatsOld>& item) noexcept;
+bool VectorService3ProductStatsOldReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::ProductStatsOld>& item);
+bool VectorService3ProductStatsOldWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::ProductStatsOld>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+bool VectorService3ProductStatsOldMaybeWriteJSON(std::ostream & s, const std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& item);
+
+bool VectorService3ProductStatsOldMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& item);
+bool VectorService3ProductStatsOldMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& item);
+
+
+}} // namespace tlgen::details
 

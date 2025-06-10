@@ -15,8 +15,8 @@ namespace basictl {
             return false;
         }
         auto len = size_t(static_cast<unsigned char>(*ptr));
-        if (len >= TL_BIG_STRING_MARKER) [[unlikely]] {
-            if (len > TL_BIG_STRING_MARKER) [[unlikely]] {
+        if (len >= basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
+            if (len > basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
                 return set_error_sequence_length();
             }
             uint32_t len32 = 0;
@@ -57,8 +57,8 @@ namespace basictl {
         return true;
     }
 
-    void tl_istream::last_release() noexcept {
-        provider->release_buffer(ptr - start_block);
+    void tl_istream::final_advance() noexcept {
+        provider->advance(ptr - start_block);
         start_block = ptr;
     }
 
@@ -99,7 +99,7 @@ namespace basictl {
 
     void tl_istream::grow_buffer() noexcept {
         ptr = end_block;
-        provider->release_buffer(ptr - start_block);
+        provider->advance(ptr - start_block);
         auto new_buffer_request = provider->get_buffer();
         if (new_buffer_request) {
             auto new_buffer = new_buffer_request.value();
@@ -203,11 +203,11 @@ namespace basictl {
 
     bool tl_ostream::string_write(const std::string &value) {
         auto len = value.size();
-        if (len > TL_MAX_TINY_STRING_LEN) [[unlikely]] {
-            if (len > TL_BIG_STRING_LEN) [[unlikely]] {
+        if (len > basictl::TL_MAX_TINY_STRING_LEN) [[unlikely]] {
+            if (len > basictl::TL_BIG_STRING_LEN) [[unlikely]] {
                 return set_error_sequence_length();
             }
-            uint32_t p = (len << 8U) | TL_BIG_STRING_MARKER;
+            uint32_t p = (len << 8U) | basictl::TL_BIG_STRING_MARKER;
             if (!store_data(&p, 4)) [[unlikely]] {
                 return false;
             }
@@ -243,8 +243,8 @@ namespace basictl {
         return true;
     }
 
-    void tl_ostream::last_release() noexcept {
-        provider->release_buffer(ptr - start_block);
+    void tl_ostream::final_advance() noexcept {
+        provider->advance(ptr - start_block);
         start_block = ptr;
     }
 
@@ -287,7 +287,7 @@ namespace basictl {
 
     void tl_ostream::grow_buffer() {
         ptr = end_block;
-        provider->release_buffer(ptr - start_block);
+        provider->advance(ptr - start_block);
         auto new_buffer_request = provider->get_buffer();
         if (new_buffer_request) {
             auto new_buffer = new_buffer_request.value();

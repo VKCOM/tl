@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "benchmarks/types/benchmarks.vrutoytopLevelUnionBig.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchmarksVrutoytopLevelUnionBigReset(::tl2::benchmarks::VrutoytopLevelUnionBig& item) noexcept;
+void BenchmarksVrutoytopLevelUnionBigReset(::tlgen::benchmarks::VrutoytopLevelUnionBig& item) noexcept;
 
-bool BenchmarksVrutoytopLevelUnionBigWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) noexcept;
-bool BenchmarksVrutoytopLevelUnionBigRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoytopLevelUnionBig& item) noexcept; 
-bool BenchmarksVrutoytopLevelUnionBigWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item) noexcept;
-bool BenchmarksVrutoytopLevelUnionBigReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoytopLevelUnionBig& item);
-bool BenchmarksVrutoytopLevelUnionBigWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoytopLevelUnionBig& item);
+bool BenchmarksVrutoytopLevelUnionBigWriteJSON(std::ostream& s, const ::tlgen::benchmarks::VrutoytopLevelUnionBig& item) noexcept;
+bool BenchmarksVrutoytopLevelUnionBigRead(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoytopLevelUnionBig& item) noexcept; 
+bool BenchmarksVrutoytopLevelUnionBigWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoytopLevelUnionBig& item) noexcept;
+bool BenchmarksVrutoytopLevelUnionBigReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoytopLevelUnionBig& item);
+bool BenchmarksVrutoytopLevelUnionBigWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoytopLevelUnionBig& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

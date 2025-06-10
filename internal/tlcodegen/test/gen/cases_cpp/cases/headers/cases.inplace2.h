@@ -7,27 +7,27 @@
 #include "__common_namespace/types/pair.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesInplace2IntReset(::tl2::cases::Inplace2<int32_t>& item) noexcept;
+void CasesInplace2IntReset(::tlgen::cases::Inplace2<int32_t>& item) noexcept;
 
-bool CasesInplace2IntWriteJSON(std::ostream& s, const ::tl2::cases::Inplace2<int32_t>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3) noexcept;
-bool CasesInplace2IntRead(::basictl::tl_istream & s, ::tl2::cases::Inplace2<int32_t>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3) noexcept; 
-bool CasesInplace2IntWrite(::basictl::tl_ostream & s, const ::tl2::cases::Inplace2<int32_t>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3) noexcept;
-bool CasesInplace2IntReadBoxed(::basictl::tl_istream & s, ::tl2::cases::Inplace2<int32_t>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3);
-bool CasesInplace2IntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::Inplace2<int32_t>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3);
+bool CasesInplace2IntWriteJSON(std::ostream& s, const ::tlgen::cases::Inplace2<int32_t>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3) noexcept;
+bool CasesInplace2IntRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::Inplace2<int32_t>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3) noexcept; 
+bool CasesInplace2IntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::Inplace2<int32_t>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3) noexcept;
+bool CasesInplace2IntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::Inplace2<int32_t>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3);
+bool CasesInplace2IntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::Inplace2<int32_t>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesInplace2PairTupleIntTupleIntReset(::tl2::cases::Inplace2<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item) noexcept;
+void CasesInplace2PairTupleIntTupleIntReset(::tlgen::cases::Inplace2<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item) noexcept;
 
-bool CasesInplace2PairTupleIntTupleIntWriteJSON(std::ostream& s, const ::tl2::cases::Inplace2<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3, uint32_t nat_XXn, uint32_t nat_XYn) noexcept;
-bool CasesInplace2PairTupleIntTupleIntRead(::basictl::tl_istream & s, ::tl2::cases::Inplace2<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3, uint32_t nat_XXn, uint32_t nat_XYn) noexcept; 
-bool CasesInplace2PairTupleIntTupleIntWrite(::basictl::tl_ostream & s, const ::tl2::cases::Inplace2<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3, uint32_t nat_XXn, uint32_t nat_XYn) noexcept;
-bool CasesInplace2PairTupleIntTupleIntReadBoxed(::basictl::tl_istream & s, ::tl2::cases::Inplace2<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3, uint32_t nat_XXn, uint32_t nat_XYn);
-bool CasesInplace2PairTupleIntTupleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::Inplace2<::tl2::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, uint32_t nat_a1, uint32_t nat_a2, uint32_t nat_a3, uint32_t nat_XXn, uint32_t nat_XYn);
+bool CasesInplace2PairTupleIntTupleIntWriteJSON(std::ostream& s, const ::tlgen::cases::Inplace2<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3, [[maybe_unused]] uint32_t nat_XXn, [[maybe_unused]] uint32_t nat_XYn) noexcept;
+bool CasesInplace2PairTupleIntTupleIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::Inplace2<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3, [[maybe_unused]] uint32_t nat_XXn, [[maybe_unused]] uint32_t nat_XYn) noexcept; 
+bool CasesInplace2PairTupleIntTupleIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::Inplace2<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3, [[maybe_unused]] uint32_t nat_XXn, [[maybe_unused]] uint32_t nat_XYn) noexcept;
+bool CasesInplace2PairTupleIntTupleIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::Inplace2<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3, [[maybe_unused]] uint32_t nat_XXn, [[maybe_unused]] uint32_t nat_XYn);
+bool CasesInplace2PairTupleIntTupleIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::Inplace2<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>>& item, [[maybe_unused]] uint32_t nat_a1, [[maybe_unused]] uint32_t nat_a2, [[maybe_unused]] uint32_t nat_a3, [[maybe_unused]] uint32_t nat_XXn, [[maybe_unused]] uint32_t nat_XYn);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

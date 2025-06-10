@@ -6,18 +6,18 @@
 #include "service5/functions/service5.insert.h"
 #include "service5/types/service5.Output.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service5InsertReset(::tl2::service5::Insert& item) noexcept;
+void Service5InsertReset(::tlgen::service5::Insert& item) noexcept;
 
-bool Service5InsertWriteJSON(std::ostream& s, const ::tl2::service5::Insert& item) noexcept;
-bool Service5InsertRead(::basictl::tl_istream & s, ::tl2::service5::Insert& item) noexcept; 
-bool Service5InsertWrite(::basictl::tl_ostream & s, const ::tl2::service5::Insert& item) noexcept;
-bool Service5InsertReadBoxed(::basictl::tl_istream & s, ::tl2::service5::Insert& item);
-bool Service5InsertWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service5::Insert& item);
+bool Service5InsertWriteJSON(std::ostream& s, const ::tlgen::service5::Insert& item) noexcept;
+bool Service5InsertRead(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Insert& item) noexcept; 
+bool Service5InsertWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Insert& item) noexcept;
+bool Service5InsertReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Insert& item);
+bool Service5InsertWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Insert& item);
 
-bool Service5InsertReadResult(::basictl::tl_istream & s, ::tl2::service5::Insert& item, ::tl2::service5::Output& result);
-bool Service5InsertWriteResult(::basictl::tl_ostream & s, ::tl2::service5::Insert& item, ::tl2::service5::Output& result);
-		
-}} // namespace tl2::details
+bool Service5InsertReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Insert& item, ::tlgen::service5::Output& result);
+bool Service5InsertWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service5::Insert& item, ::tlgen::service5::Output& result);
+    
+}} // namespace tlgen::details
 

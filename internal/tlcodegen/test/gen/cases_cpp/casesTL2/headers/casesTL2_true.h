@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/true.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorTrueBoxedReset(std::vector<::tl2::True>& item);
+void BuiltinVectorTrueBoxedReset(std::vector<::tlgen::True>& item);
 
-bool BuiltinVectorTrueBoxedWriteJSON(std::ostream & s, const std::vector<::tl2::True>& item);
-bool BuiltinVectorTrueBoxedRead(::basictl::tl_istream & s, std::vector<::tl2::True>& item);
-bool BuiltinVectorTrueBoxedWrite(::basictl::tl_ostream & s, const std::vector<::tl2::True>& item);
+bool BuiltinVectorTrueBoxedWriteJSON(std::ostream & s, const std::vector<::tlgen::True>& item);
+bool BuiltinVectorTrueBoxedRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::True>& item);
+bool BuiltinVectorTrueBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::True>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

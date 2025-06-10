@@ -7,7 +7,7 @@ namespace basictl {
         return tl_connector_result(std::span<const std::byte>{reinterpret_cast<const std::byte*>(buffer.data()) + used_size, buffer.size() - used_size});
     }
 
-    void tl_istream_string::release_buffer(size_t size) noexcept {
+    void tl_istream_string::advance(size_t size) noexcept {
         used_size += size;
     }
 
@@ -19,7 +19,7 @@ namespace basictl {
         return tl_connector_result(std::span<std::byte>{reinterpret_cast<std::byte*>(buffer.data()) + used_size, buffer.size() - used_size});
     }
 
-    void tl_ostream_string::release_buffer(size_t size) noexcept {
+    void tl_ostream_string::advance(size_t size) noexcept {
         used_size += size;
         if (used_size == buffer.size()) {
             buffer.resize(buffer.size() * 3 / 2 + 1024);

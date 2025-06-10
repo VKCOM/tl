@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myNat.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyNatReset(::tl2::MyNat& item) noexcept;
+void MyNatReset(::tlgen::MyNat& item) noexcept;
 
-bool MyNatWriteJSON(std::ostream& s, const ::tl2::MyNat& item) noexcept;
-bool MyNatRead(::basictl::tl_istream & s, ::tl2::MyNat& item) noexcept; 
-bool MyNatWrite(::basictl::tl_ostream & s, const ::tl2::MyNat& item) noexcept;
-bool MyNatReadBoxed(::basictl::tl_istream & s, ::tl2::MyNat& item);
-bool MyNatWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyNat& item);
+bool MyNatWriteJSON(std::ostream& s, const ::tlgen::MyNat& item) noexcept;
+bool MyNatRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyNat& item) noexcept; 
+bool MyNatWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyNat& item) noexcept;
+bool MyNatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyNat& item);
+bool MyNatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyNat& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

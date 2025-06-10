@@ -6,18 +6,18 @@
 #include "service1/functions/service1.disableExpiration.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1DisableExpirationReset(::tl2::service1::DisableExpiration& item) noexcept;
+void Service1DisableExpirationReset(::tlgen::service1::DisableExpiration& item) noexcept;
 
-bool Service1DisableExpirationWriteJSON(std::ostream& s, const ::tl2::service1::DisableExpiration& item) noexcept;
-bool Service1DisableExpirationRead(::basictl::tl_istream & s, ::tl2::service1::DisableExpiration& item) noexcept; 
-bool Service1DisableExpirationWrite(::basictl::tl_ostream & s, const ::tl2::service1::DisableExpiration& item) noexcept;
-bool Service1DisableExpirationReadBoxed(::basictl::tl_istream & s, ::tl2::service1::DisableExpiration& item);
-bool Service1DisableExpirationWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::DisableExpiration& item);
+bool Service1DisableExpirationWriteJSON(std::ostream& s, const ::tlgen::service1::DisableExpiration& item) noexcept;
+bool Service1DisableExpirationRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::DisableExpiration& item) noexcept; 
+bool Service1DisableExpirationWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::DisableExpiration& item) noexcept;
+bool Service1DisableExpirationReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::DisableExpiration& item);
+bool Service1DisableExpirationWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::DisableExpiration& item);
 
-bool Service1DisableExpirationReadResult(::basictl::tl_istream & s, ::tl2::service1::DisableExpiration& item, bool& result);
-bool Service1DisableExpirationWriteResult(::basictl::tl_ostream & s, ::tl2::service1::DisableExpiration& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service1DisableExpirationReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::DisableExpiration& item, bool& result);
+bool Service1DisableExpirationWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::DisableExpiration& item, bool& result);
+    
+}} // namespace tlgen::details
 

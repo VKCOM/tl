@@ -5,35 +5,35 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.myType.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbMyTypeReset(::tl2::ab::MyType& item) noexcept;
+void AbMyTypeReset(::tlgen::ab::MyType& item) noexcept;
 
-bool AbMyTypeWriteJSON(std::ostream& s, const ::tl2::ab::MyType& item) noexcept;
-bool AbMyTypeRead(::basictl::tl_istream & s, ::tl2::ab::MyType& item) noexcept; 
-bool AbMyTypeWrite(::basictl::tl_ostream & s, const ::tl2::ab::MyType& item) noexcept;
-bool AbMyTypeReadBoxed(::basictl::tl_istream & s, ::tl2::ab::MyType& item);
-bool AbMyTypeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::MyType& item);
+bool AbMyTypeWriteJSON(std::ostream& s, const ::tlgen::ab::MyType& item) noexcept;
+bool AbMyTypeRead(::tlgen::basictl::tl_istream & s, ::tlgen::ab::MyType& item) noexcept; 
+bool AbMyTypeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::MyType& item) noexcept;
+bool AbMyTypeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::MyType& item);
+bool AbMyTypeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::MyType& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool AbMyTypeBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::ab::MyType>& item);
+bool AbMyTypeBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::ab::MyType>& item);
 
-bool AbMyTypeBoxedMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::ab::MyType>& item);
-bool AbMyTypeBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::ab::MyType>& item);
-
-
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-bool AbMyTypeMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::ab::MyType>& item);
-
-bool AbMyTypeMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::ab::MyType>& item);
-bool AbMyTypeMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::ab::MyType>& item);
+bool AbMyTypeBoxedMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::ab::MyType>& item);
+bool AbMyTypeBoxedMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::ab::MyType>& item);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+bool AbMyTypeMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::ab::MyType>& item);
+
+bool AbMyTypeMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::ab::MyType>& item);
+bool AbMyTypeMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::ab::MyType>& item);
+
+
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "benchmarks/types/benchmarks.vrutoytopLevelUnionEmpty.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchmarksVrutoytopLevelUnionEmptyReset(::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept;
+void BenchmarksVrutoytopLevelUnionEmptyReset(::tlgen::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept;
 
-bool BenchmarksVrutoytopLevelUnionEmptyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept;
-bool BenchmarksVrutoytopLevelUnionEmptyRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept; 
-bool BenchmarksVrutoytopLevelUnionEmptyWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept;
-bool BenchmarksVrutoytopLevelUnionEmptyReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item);
-bool BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoytopLevelUnionEmpty& item);
+bool BenchmarksVrutoytopLevelUnionEmptyWriteJSON(std::ostream& s, const ::tlgen::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept;
+bool BenchmarksVrutoytopLevelUnionEmptyRead(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept; 
+bool BenchmarksVrutoytopLevelUnionEmptyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoytopLevelUnionEmpty& item) noexcept;
+bool BenchmarksVrutoytopLevelUnionEmptyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoytopLevelUnionEmpty& item);
+bool BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoytopLevelUnionEmpty& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

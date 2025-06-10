@@ -5,11 +5,11 @@
 #include "basictl/io_throwable_streams.h"
 #include "a/types/a.MyBool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 bool AMyBoolWriteJSON(std::ostream & s, bool item);
-bool AMyBoolReadBoxed(::basictl::tl_istream & s, bool& item);
-bool AMyBoolWriteBoxed(::basictl::tl_ostream & s, bool item);
+bool AMyBoolReadBoxed(::tlgen::basictl::tl_istream & s, bool& item);
+bool AMyBoolWriteBoxed(::tlgen::basictl::tl_ostream & s, bool item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

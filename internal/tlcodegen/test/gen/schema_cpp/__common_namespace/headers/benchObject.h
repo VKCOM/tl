@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/benchObject.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchObjectReset(::tl2::BenchObject& item) noexcept;
+void BenchObjectReset(::tlgen::BenchObject& item) noexcept;
 
-bool BenchObjectWriteJSON(std::ostream& s, const ::tl2::BenchObject& item) noexcept;
-bool BenchObjectRead(::basictl::tl_istream & s, ::tl2::BenchObject& item) noexcept; 
-bool BenchObjectWrite(::basictl::tl_ostream & s, const ::tl2::BenchObject& item) noexcept;
-bool BenchObjectReadBoxed(::basictl::tl_istream & s, ::tl2::BenchObject& item);
-bool BenchObjectWriteBoxed(::basictl::tl_ostream & s, const ::tl2::BenchObject& item);
+bool BenchObjectWriteJSON(std::ostream& s, const ::tlgen::BenchObject& item) noexcept;
+bool BenchObjectRead(::tlgen::basictl::tl_istream & s, ::tlgen::BenchObject& item) noexcept; 
+bool BenchObjectWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::BenchObject& item) noexcept;
+bool BenchObjectReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BenchObject& item);
+bool BenchObjectWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BenchObject& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

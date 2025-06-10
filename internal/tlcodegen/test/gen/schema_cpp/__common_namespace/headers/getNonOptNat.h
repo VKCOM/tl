@@ -6,18 +6,18 @@
 #include "__common_namespace/functions/getNonOptNat.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void GetNonOptNatReset(::tl2::GetNonOptNat& item) noexcept;
+void GetNonOptNatReset(::tlgen::GetNonOptNat& item) noexcept;
 
-bool GetNonOptNatWriteJSON(std::ostream& s, const ::tl2::GetNonOptNat& item) noexcept;
-bool GetNonOptNatRead(::basictl::tl_istream & s, ::tl2::GetNonOptNat& item) noexcept; 
-bool GetNonOptNatWrite(::basictl::tl_ostream & s, const ::tl2::GetNonOptNat& item) noexcept;
-bool GetNonOptNatReadBoxed(::basictl::tl_istream & s, ::tl2::GetNonOptNat& item);
-bool GetNonOptNatWriteBoxed(::basictl::tl_ostream & s, const ::tl2::GetNonOptNat& item);
+bool GetNonOptNatWriteJSON(std::ostream& s, const ::tlgen::GetNonOptNat& item) noexcept;
+bool GetNonOptNatRead(::tlgen::basictl::tl_istream & s, ::tlgen::GetNonOptNat& item) noexcept; 
+bool GetNonOptNatWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetNonOptNat& item) noexcept;
+bool GetNonOptNatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetNonOptNat& item);
+bool GetNonOptNatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetNonOptNat& item);
 
-bool GetNonOptNatReadResult(::basictl::tl_istream & s, ::tl2::GetNonOptNat& item, std::vector<int32_t>& result);
-bool GetNonOptNatWriteResult(::basictl::tl_ostream & s, ::tl2::GetNonOptNat& item, std::vector<int32_t>& result);
-		
-}} // namespace tl2::details
+bool GetNonOptNatReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetNonOptNat& item, std::vector<int32_t>& result);
+bool GetNonOptNatWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetNonOptNat& item, std::vector<int32_t>& result);
+    
+}} // namespace tlgen::details
 

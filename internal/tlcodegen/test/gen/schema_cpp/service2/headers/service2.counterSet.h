@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "service2/types/service2.counterSet.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleService2CounterSetReset(std::vector<::tl2::service2::CounterSet>& item);
+void BuiltinTupleService2CounterSetReset(std::vector<::tlgen::service2::CounterSet>& item);
 
-bool BuiltinTupleService2CounterSetWriteJSON(std::ostream & s, const std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_n, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum);
-bool BuiltinTupleService2CounterSetRead(::basictl::tl_istream & s, std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_n, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum);
-bool BuiltinTupleService2CounterSetWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service2::CounterSet>& item, uint32_t nat_n, uint32_t nat_tintCountersNum, uint32_t nat_tfloatCountersNum);
+bool BuiltinTupleService2CounterSetWriteJSON(std::ostream & s, const std::vector<::tlgen::service2::CounterSet>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_tintCountersNum, [[maybe_unused]] uint32_t nat_tfloatCountersNum);
+bool BuiltinTupleService2CounterSetRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service2::CounterSet>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_tintCountersNum, [[maybe_unused]] uint32_t nat_tfloatCountersNum);
+bool BuiltinTupleService2CounterSetWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service2::CounterSet>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_tintCountersNum, [[maybe_unused]] uint32_t nat_tfloatCountersNum);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service2CounterSetReset(::tl2::service2::CounterSet& item) noexcept;
+void Service2CounterSetReset(::tlgen::service2::CounterSet& item) noexcept;
 
-bool Service2CounterSetWriteJSON(std::ostream& s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept;
-bool Service2CounterSetRead(::basictl::tl_istream & s, ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept; 
-bool Service2CounterSetWrite(::basictl::tl_ostream & s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum) noexcept;
-bool Service2CounterSetReadBoxed(::basictl::tl_istream & s, ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum);
-bool Service2CounterSetWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service2::CounterSet& item, uint32_t nat_intCountersNum, uint32_t nat_floatCountersNum);
+bool Service2CounterSetWriteJSON(std::ostream& s, const ::tlgen::service2::CounterSet& item, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) noexcept;
+bool Service2CounterSetRead(::tlgen::basictl::tl_istream & s, ::tlgen::service2::CounterSet& item, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) noexcept; 
+bool Service2CounterSetWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::CounterSet& item, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) noexcept;
+bool Service2CounterSetReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service2::CounterSet& item, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum);
+bool Service2CounterSetWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::CounterSet& item, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

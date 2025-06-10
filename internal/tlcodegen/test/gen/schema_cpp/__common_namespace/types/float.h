@@ -5,7 +5,7 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 using Float = float;
-} // namespace tl2
+} // namespace tlgen
 
