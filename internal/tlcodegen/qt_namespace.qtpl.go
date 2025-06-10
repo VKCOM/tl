@@ -84,29 +84,14 @@ type Handler struct {
 
 `)
 	totalFuns := 0
-	totalFunsTL2 := 0
 	for _, wr := range namespace.types {
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			totalFuns++
-			if fun.wr.wantsTL2 {
-				totalFunsTL2++
-			}
 		}
 	}
 
 	qw422016.N().S(`func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
 `)
-	if gen.options.GenerateTL2 {
-		qw422016.N().S(`	if hctx.Format().IsTl2() {
-`)
-		if totalFunsTL2 != 0 {
-			qw422016.N().S(`    `)
-			streamhandleRequestTL2(qw422016, namespace.types, directImports)
-		}
-		qw422016.N().S(`        return rpc.ErrNoHandler
-	}
-`)
-	}
 	if totalFuns != 0 {
 		qw422016.N().S(`    `)
 		streamhandleRequest(qw422016, namespace.types, directImports)
@@ -277,7 +262,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 `)
 	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
 		qw422016.N().S(`		if extra.PreferTL2 {
-			req.Format.SetTl2()
+			req.BodyFormatTL2 = true
 		}
 `)
 	}
@@ -285,8 +270,10 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)
 	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
-		qw422016.N().S(`	if req.Format.IsTl2() {
-		req.Body, _ = args.WriteTL2(req.Body, nil)
+		qw422016.N().S(`	if req.BodyFormatTL2 {
+	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
+	    tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
 	} else {
 `)
 	}
@@ -314,7 +301,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     if ret != nil {
 `)
 	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
-		qw422016.N().S(`		if resp.Format().IsTl2() {
+		qw422016.N().S(`		if resp.BodyFormatTL2() {
 			resp.Body, err = args.ReadResultTL2(resp.Body, ret)
 		} else {
 `)
@@ -421,7 +408,7 @@ switch tag {
 			qw422016.N().S(`"
     if h.Raw`)
 			qw422016.N().S(funcTypeString)
-			qw422016.N().S(` != nil {
+			qw422016.N().S(` != nil && !hctx.BodyFormatTL2() {
         hctx.Request = r
         err = h.Raw`)
 			qw422016.N().S(funcTypeString)
@@ -442,7 +429,21 @@ switch tag {
         var args `)
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(`
-        if _, err = args.Read(r); err != nil {
+`)
+			if fun.wr.gen.options.GenerateTL2 {
+				qw422016.N().S(`        if hctx.BodyFormatTL2() {
+            tctx := basictl.TL2ReadContext{}
+   			_, err = args.ReadTL2(r, &tctx)
+		} else {
+`)
+			}
+			qw422016.N().S(`            _, err = args.Read(r)
+`)
+			if fun.wr.gen.options.GenerateTL2 {
+				qw422016.N().S(`        }
+`)
+			}
+			qw422016.N().S(`        if err != nil {
             return internal.ErrorServerRead("`)
 			qw422016.N().S(tlName)
 			qw422016.N().S(`", err)
@@ -459,7 +460,21 @@ switch tag {
 			qw422016.N().S(tlName)
 			qw422016.N().S(`", err)
         }
-        if hctx.Response, err = args.WriteResult(hctx.Response, ret); err != nil {
+`)
+			if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+				qw422016.N().S(`        if hctx.BodyFormatTL2() {
+            tctx := basictl.TL2WriteContext{}
+            hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
+        } else {
+`)
+			}
+			qw422016.N().S(`            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+`)
+			if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+				qw422016.N().S(`        }
+`)
+			}
+			qw422016.N().S(`        if err != nil {
             return internal.ErrorServerWriteResult("`)
 			qw422016.N().S(tlName)
 			qw422016.N().S(`", err)
@@ -482,70 +497,6 @@ func writehandleRequest(qq422016 qtio422016.Writer, types []*TypeRWWrapper, dire
 func handleRequest(types []*TypeRWWrapper, directImports *DirectImports) string {
 	qb422016 := qt422016.AcquireByteBuffer()
 	writehandleRequest(qb422016, types, directImports)
-	qs422016 := string(qb422016.B)
-	qt422016.ReleaseByteBuffer(qb422016)
-	return qs422016
-}
-
-func streamhandleRequestTL2(qw422016 *qt422016.Writer, types []*TypeRWWrapper, directImports *DirectImports) {
-	qw422016.N().S(`switch hctx.RequestFunctionName {
-`)
-	for _, wr := range types {
-		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-			tlName := wr.tlName.String()
-
-			if fun.wr.wantsTL2 {
-				qw422016.N().S(`case "`)
-				qw422016.N().S(tlName)
-				qw422016.N().S(`":
-    if h.`)
-				qw422016.N().S(funcTypeString)
-				qw422016.N().S(` != nil {
-        var args `)
-				qw422016.N().S(funcTypeString)
-				qw422016.N().S(`
-        if _, err = args.ReadTL2(hctx.Request); err != nil {
-            return internal.ErrorServerRead("`)
-				qw422016.N().S(tlName)
-				qw422016.N().S(`", err)
-        }
-        ctx = hctx.WithContext(ctx)
-        ret, err := h.`)
-				qw422016.N().S(funcTypeString)
-				qw422016.N().S(`(ctx, args)
-        if rpc.IsHijackedResponse(err)  {
-            return err
-        }
-        if err != nil {
-            return internal.ErrorServerHandle("`)
-				qw422016.N().S(tlName)
-				qw422016.N().S(`", err)
-        }
-        if hctx.Response, _, err = args.WriteResultTL2(hctx.Response, nil, ret); err != nil {
-            return internal.ErrorServerWriteResult("`)
-				qw422016.N().S(tlName)
-				qw422016.N().S(`", err)
-        }
-        return nil
-    }
-`)
-			}
-		}
-	}
-	qw422016.N().S(`}
-`)
-}
-
-func writehandleRequestTL2(qq422016 qtio422016.Writer, types []*TypeRWWrapper, directImports *DirectImports) {
-	qw422016 := qt422016.AcquireWriter(qq422016)
-	streamhandleRequestTL2(qw422016, types, directImports)
-	qt422016.ReleaseWriter(qw422016)
-}
-
-func handleRequestTL2(types []*TypeRWWrapper, directImports *DirectImports) string {
-	qb422016 := qt422016.AcquireByteBuffer()
-	writehandleRequestTL2(qb422016, types, directImports)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016

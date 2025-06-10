@@ -64,11 +64,11 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.StringVar(&opt.BasicRPCPath, "basicRPCPath", "",
 		"path to rpc package")
 	flag.StringVar(&opt.BytesWhiteList, "generateByteVersions", "",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '.' means all.")
-	flag.StringVar(&opt.TypesWhileList, "typesWhiteList", ".",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '.' means all")
-	flag.StringVar(&opt.TL2WhiteList, "tl2WhiteList", ".",
-		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '.' means all")
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
+	flag.StringVar(&opt.TypesWhileList, "typesWhiteList", "*",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
+	flag.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "*",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 	flag.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,
 		"whether to generate methods for random filling structs")
 	flag.BoolVar(&opt.GenerateLegacyJsonRead, "generateLegacyJsonRead", false,

@@ -46,25 +46,13 @@ type Handler struct {
 
     {%- code
         totalFuns := 0
-        totalFunsTL2 := 0
         for _, wr := range namespace.types {
             if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
                 totalFuns++
-                if fun.wr.wantsTL2 {
-                    totalFunsTL2++
-                }
             }
         }
     -%}
 func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err error) {
-{%- if gen.options.GenerateTL2 -%}
-	if hctx.Format().IsTl2() {
-{%- if totalFunsTL2 != 0 -%}
-    {%= handleRequestTL2(namespace.types, directImports) -%}
-{%- endif -%}
-        return rpc.ErrNoHandler
-	}
-{%- endif -%}
 {%- if totalFuns != 0 -%}
     {%= handleRequest(namespace.types, directImports) -%}
 {%- endif -%}
@@ -152,14 +140,16 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
         req.FailIfNoConnection = extra.FailIfNoConnection
 {%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
 		if extra.PreferTL2 {
-			req.Format.SetTl2()
+			req.BodyFormatTL2 = true
 		}
 {%- endif -%}
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 {%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
-	if req.Format.IsTl2() {
-		req.Body, _ = args.WriteTL2(req.Body, nil)
+	if req.BodyFormatTL2 {
+	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
+	    tctx := basictl.TL2WriteContext{}
+		req.Body = args.WriteTL2(req.Body, &tctx)
 	} else {
 {%- endif -%}
         req.Body, err = args.WriteBoxedGeneral(req.Body)
@@ -179,7 +169,7 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
     }
     if ret != nil {
 {%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
-		if resp.Format().IsTl2() {
+		if resp.BodyFormatTL2() {
 			resp.Body, err = args.ReadResultTL2(resp.Body, ret)
 		} else {
 {%- endif -%}
@@ -232,7 +222,7 @@ switch tag {
             -%}
 case {%s= tlTag %}: // {%s= tlName %}
     hctx.RequestFunctionName = "{%s= tlName %}"
-    if h.Raw{%s= funcTypeString %} != nil {
+    if h.Raw{%s= funcTypeString %} != nil && !hctx.BodyFormatTL2() {
         hctx.Request = r
         err = h.Raw{%s= funcTypeString %}(ctx, hctx)
         if rpc.IsHijackedResponse(err) {
@@ -245,56 +235,42 @@ case {%s= tlTag %}: // {%s= tlName %}
     }
     if h.{%s= funcTypeString %} != nil {
         var args {%s= funcTypeString %}
-        if _, err = args.Read(r); err != nil {
-            return internal.ErrorServerRead("{%s= tlName %}", err)
-        }
-        ctx = hctx.WithContext(ctx)
-        ret, err := h.{%s= funcTypeString %}(ctx, args)
-        if rpc.IsHijackedResponse(err)  {
-            return err
-        }
-        if err != nil {
-            return internal.ErrorServerHandle("{%s= tlName %}", err)
-        }
-        if hctx.Response, err = args.WriteResult(hctx.Response, ret); err != nil {
-            return internal.ErrorServerWriteResult("{%s= tlName %}", err)
-        }
-        return nil
-    }
-        {%- endif -%}
-    {%- endfor -%}
-}
-{%- endfunc -%}
-
-{%- func handleRequestTL2(types []*TypeRWWrapper, directImports *DirectImports) -%}
-switch hctx.RequestFunctionName {
-    {%- for _, wr := range types -%}
-        {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
-            {%- code
-                funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
-                tlName := wr.tlName.String()
-            -%}
-{%- if fun.wr.wantsTL2 -%}
-case "{%s= tlName %}":
-    if h.{%s= funcTypeString %} != nil {
-        var args {%s= funcTypeString %}
-        if _, err = args.ReadTL2(hctx.Request); err != nil {
-            return internal.ErrorServerRead("{%s= tlName %}", err)
-        }
-        ctx = hctx.WithContext(ctx)
-        ret, err := h.{%s= funcTypeString %}(ctx, args)
-        if rpc.IsHijackedResponse(err)  {
-            return err
-        }
-        if err != nil {
-            return internal.ErrorServerHandle("{%s= tlName %}", err)
-        }
-        if hctx.Response, _, err = args.WriteResultTL2(hctx.Response, nil, ret); err != nil {
-            return internal.ErrorServerWriteResult("{%s= tlName %}", err)
-        }
-        return nil
-    }
+{%- if fun.wr.gen.options.GenerateTL2 -%}
+        if hctx.BodyFormatTL2() {
+            tctx := basictl.TL2ReadContext{}
+   			_, err = args.ReadTL2(r, &tctx)
+		} else {
 {%- endif -%}
+            _, err = args.Read(r)
+{%- if fun.wr.gen.options.GenerateTL2 -%}
+        }
+{%- endif -%}
+        if err != nil {
+            return internal.ErrorServerRead("{%s= tlName %}", err)
+        }
+        ctx = hctx.WithContext(ctx)
+        ret, err := h.{%s= funcTypeString %}(ctx, args)
+        if rpc.IsHijackedResponse(err)  {
+            return err
+        }
+        if err != nil {
+            return internal.ErrorServerHandle("{%s= tlName %}", err)
+        }
+{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+        if hctx.BodyFormatTL2() {
+            tctx := basictl.TL2WriteContext{}
+            hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
+        } else {
+{%- endif -%}
+            hctx.Response, err = args.WriteResult(hctx.Response, ret)
+{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+        }
+{%- endif -%}
+        if err != nil {
+            return internal.ErrorServerWriteResult("{%s= tlName %}", err)
+        }
+        return nil
+    }
         {%- endif -%}
     {%- endfor -%}
 }

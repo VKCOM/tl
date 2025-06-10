@@ -1621,13 +1621,20 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteResultTL2(w []byte, sizes []int, ret `)
+		qw422016.N().S(`) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret `)
 		qw422016.N().S(retArg)
-		qw422016.N().S(`) (_ []byte, _ []int, err error) {
+		qw422016.N().S(`) (_ []byte, err error) {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
     `)
 		qw422016.N().S(struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", false, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
 		qw422016.N().S(`
-    return w, sizes, nil
+    if ctx != nil {
+        ctx.SizeBuffer = sizes[:0]
+    }
+    return w, nil
 }
 `)
 	}

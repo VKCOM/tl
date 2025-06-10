@@ -765,9 +765,16 @@ func (item *{%s= goName %}) ReadResultTL2(w []byte, ret *{%s= retArg %}) (_ []by
     return w, nil
 }
 
-func (item *{%s= goName %}) WriteResultTL2(w []byte, sizes []int, ret {%s= retArg %}) (_ []byte, _ []int, err error) {
+func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret {%s= retArg %}) (_ []byte, err error) {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
     {%s= struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", false, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)) %}
-    return w, sizes, nil
+    if ctx != nil {
+        ctx.SizeBuffer = sizes[:0]
+    }
+    return w, nil
 }
 {%- endif -%}
 
