@@ -5,25 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cyc3/types/cyc3.myCycle.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Cyc3MyCycleReset(::tl2::cyc3::MyCycle& item) noexcept;
+void Cyc3MyCycleReset(::tlgen::cyc3::MyCycle& item) noexcept;
 
-bool Cyc3MyCycleWriteJSON(std::ostream& s, const ::tl2::cyc3::MyCycle& item) noexcept;
-bool Cyc3MyCycleRead(::basictl::tl_istream & s, ::tl2::cyc3::MyCycle& item) noexcept; 
-bool Cyc3MyCycleWrite(::basictl::tl_ostream & s, const ::tl2::cyc3::MyCycle& item) noexcept;
-bool Cyc3MyCycleReadBoxed(::basictl::tl_istream & s, ::tl2::cyc3::MyCycle& item);
-bool Cyc3MyCycleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cyc3::MyCycle& item);
+bool Cyc3MyCycleWriteJSON(std::ostream& s, const ::tlgen::cyc3::MyCycle& item) noexcept;
+bool Cyc3MyCycleRead(::tlgen::basictl::tl_istream & s, ::tlgen::cyc3::MyCycle& item) noexcept; 
+bool Cyc3MyCycleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cyc3::MyCycle& item) noexcept;
+bool Cyc3MyCycleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cyc3::MyCycle& item);
+bool Cyc3MyCycleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cyc3::MyCycle& item);
 
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-bool Cyc3MyCycleMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::cyc3::MyCycle>& item);
-
-bool Cyc3MyCycleMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::cyc3::MyCycle>& item);
-bool Cyc3MyCycleMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::cyc3::MyCycle>& item);
-
-
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

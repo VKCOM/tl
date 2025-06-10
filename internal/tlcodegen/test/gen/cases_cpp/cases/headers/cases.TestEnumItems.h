@@ -5,39 +5,39 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.TestEnumItems.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestEnum1Reset(::tl2::cases::TestEnum1& item) noexcept;
+void CasesTestEnum1Reset(::tlgen::cases::TestEnum1& item) noexcept;
 
-bool CasesTestEnum1WriteJSON(std::ostream& s, const ::tl2::cases::TestEnum1& item) noexcept;
-bool CasesTestEnum1Read(::basictl::tl_istream & s, ::tl2::cases::TestEnum1& item) noexcept; 
-bool CasesTestEnum1Write(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum1& item) noexcept;
-bool CasesTestEnum1ReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestEnum1& item);
-bool CasesTestEnum1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum1& item);
+bool CasesTestEnum1WriteJSON(std::ostream& s, const ::tlgen::cases::TestEnum1& item) noexcept;
+bool CasesTestEnum1Read(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum1& item) noexcept; 
+bool CasesTestEnum1Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum1& item) noexcept;
+bool CasesTestEnum1ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum1& item);
+bool CasesTestEnum1WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum1& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestEnum2Reset(::tl2::cases::TestEnum2& item) noexcept;
+void CasesTestEnum2Reset(::tlgen::cases::TestEnum2& item) noexcept;
 
-bool CasesTestEnum2WriteJSON(std::ostream& s, const ::tl2::cases::TestEnum2& item) noexcept;
-bool CasesTestEnum2Read(::basictl::tl_istream & s, ::tl2::cases::TestEnum2& item) noexcept; 
-bool CasesTestEnum2Write(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum2& item) noexcept;
-bool CasesTestEnum2ReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestEnum2& item);
-bool CasesTestEnum2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum2& item);
+bool CasesTestEnum2WriteJSON(std::ostream& s, const ::tlgen::cases::TestEnum2& item) noexcept;
+bool CasesTestEnum2Read(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum2& item) noexcept; 
+bool CasesTestEnum2Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum2& item) noexcept;
+bool CasesTestEnum2ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum2& item);
+bool CasesTestEnum2WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum2& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestEnum3Reset(::tl2::cases::TestEnum3& item) noexcept;
+void CasesTestEnum3Reset(::tlgen::cases::TestEnum3& item) noexcept;
 
-bool CasesTestEnum3WriteJSON(std::ostream& s, const ::tl2::cases::TestEnum3& item) noexcept;
-bool CasesTestEnum3Read(::basictl::tl_istream & s, ::tl2::cases::TestEnum3& item) noexcept; 
-bool CasesTestEnum3Write(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum3& item) noexcept;
-bool CasesTestEnum3ReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestEnum3& item);
-bool CasesTestEnum3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum3& item);
+bool CasesTestEnum3WriteJSON(std::ostream& s, const ::tlgen::cases::TestEnum3& item) noexcept;
+bool CasesTestEnum3Read(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum3& item) noexcept; 
+bool CasesTestEnum3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum3& item) noexcept;
+bool CasesTestEnum3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum3& item);
+bool CasesTestEnum3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum3& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

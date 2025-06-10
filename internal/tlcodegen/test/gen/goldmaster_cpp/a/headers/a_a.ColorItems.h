@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "b/types/a.ColorItems.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BRedReset(::tl2::b::Red& item) noexcept;
+void BRedReset(::tlgen::b::Red& item) noexcept;
 
-bool BRedWriteJSON(std::ostream& s, const ::tl2::b::Red& item) noexcept;
-bool BRedRead(::basictl::tl_istream & s, ::tl2::b::Red& item) noexcept; 
-bool BRedWrite(::basictl::tl_ostream & s, const ::tl2::b::Red& item) noexcept;
-bool BRedReadBoxed(::basictl::tl_istream & s, ::tl2::b::Red& item);
-bool BRedWriteBoxed(::basictl::tl_ostream & s, const ::tl2::b::Red& item);
+bool BRedWriteJSON(std::ostream& s, const ::tlgen::b::Red& item) noexcept;
+bool BRedRead(::tlgen::basictl::tl_istream & s, ::tlgen::b::Red& item) noexcept; 
+bool BRedWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::b::Red& item) noexcept;
+bool BRedReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::b::Red& item);
+bool BRedWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::b::Red& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

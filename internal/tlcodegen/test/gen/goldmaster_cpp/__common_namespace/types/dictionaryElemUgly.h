@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename k, typename v>
 struct DictionaryElemUgly {
-	k key{};
-	v value{};
+  k key{};
+  v value{};
 
-	std::string_view tl_name() const { return "dictionaryElemUgly"; }
-	uint32_t tl_tag() const { return 0xe6790546; }
+  std::string_view tl_name() const { return "dictionaryElemUgly"; }
+  uint32_t tl_tag() const { return 0xe6790546; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

@@ -5,7 +5,7 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 using MyDouble = double;
-} // namespace tl2
+} // namespace tlgen
 

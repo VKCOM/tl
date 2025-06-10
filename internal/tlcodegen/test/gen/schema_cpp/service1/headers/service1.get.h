@@ -6,18 +6,18 @@
 #include "service1/functions/service1.get.h"
 #include "service1/types/service1.Value.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1GetReset(::tl2::service1::Get& item) noexcept;
+void Service1GetReset(::tlgen::service1::Get& item) noexcept;
 
-bool Service1GetWriteJSON(std::ostream& s, const ::tl2::service1::Get& item) noexcept;
-bool Service1GetRead(::basictl::tl_istream & s, ::tl2::service1::Get& item) noexcept; 
-bool Service1GetWrite(::basictl::tl_ostream & s, const ::tl2::service1::Get& item) noexcept;
-bool Service1GetReadBoxed(::basictl::tl_istream & s, ::tl2::service1::Get& item);
-bool Service1GetWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::Get& item);
+bool Service1GetWriteJSON(std::ostream& s, const ::tlgen::service1::Get& item) noexcept;
+bool Service1GetRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Get& item) noexcept; 
+bool Service1GetWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Get& item) noexcept;
+bool Service1GetReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Get& item);
+bool Service1GetWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Get& item);
 
-bool Service1GetReadResult(::basictl::tl_istream & s, ::tl2::service1::Get& item, ::tl2::service1::Value& result);
-bool Service1GetWriteResult(::basictl::tl_ostream & s, ::tl2::service1::Get& item, ::tl2::service1::Value& result);
-		
-}} // namespace tl2::details
+bool Service1GetReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Get& item, ::tlgen::service1::Value& result);
+bool Service1GetWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::Get& item, ::tlgen::service1::Value& result);
+    
+}} // namespace tlgen::details
 

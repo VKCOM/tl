@@ -5,35 +5,35 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/inner.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple3InnerBoxedReset(std::array<::tl2::Inner, 3>& item);
+void BuiltinTuple3InnerBoxedReset(std::array<::tlgen::Inner, 3>& item);
 
-bool BuiltinTuple3InnerBoxedWriteJSON(std::ostream & s, const std::array<::tl2::Inner, 3>& item, uint32_t nat_t);
-bool BuiltinTuple3InnerBoxedRead(::basictl::tl_istream & s, std::array<::tl2::Inner, 3>& item, uint32_t nat_t);
-bool BuiltinTuple3InnerBoxedWrite(::basictl::tl_ostream & s, const std::array<::tl2::Inner, 3>& item, uint32_t nat_t);
+bool BuiltinTuple3InnerBoxedWriteJSON(std::ostream & s, const std::array<::tlgen::Inner, 3>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTuple3InnerBoxedRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Inner, 3>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTuple3InnerBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Inner, 3>& item, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleTuple3InnerBoxedReset(std::vector<std::array<::tl2::Inner, 3>>& item);
+void BuiltinTupleTuple3InnerBoxedReset(std::vector<std::array<::tlgen::Inner, 3>>& item);
 
-bool BuiltinTupleTuple3InnerBoxedWriteJSON(std::ostream & s, const std::vector<std::array<::tl2::Inner, 3>>& item, uint32_t nat_n, uint32_t nat_t);
-bool BuiltinTupleTuple3InnerBoxedRead(::basictl::tl_istream & s, std::vector<std::array<::tl2::Inner, 3>>& item, uint32_t nat_n, uint32_t nat_t);
-bool BuiltinTupleTuple3InnerBoxedWrite(::basictl::tl_ostream & s, const std::vector<std::array<::tl2::Inner, 3>>& item, uint32_t nat_n, uint32_t nat_t);
+bool BuiltinTupleTuple3InnerBoxedWriteJSON(std::ostream & s, const std::vector<std::array<::tlgen::Inner, 3>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTupleTuple3InnerBoxedRead(::tlgen::basictl::tl_istream & s, std::vector<std::array<::tlgen::Inner, 3>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTupleTuple3InnerBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<::tlgen::Inner, 3>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void InnerReset(::tl2::Inner& item) noexcept;
+void InnerReset(::tlgen::Inner& item) noexcept;
 
-bool InnerWriteJSON(std::ostream& s, const ::tl2::Inner& item, uint32_t nat_X) noexcept;
-bool InnerRead(::basictl::tl_istream & s, ::tl2::Inner& item, uint32_t nat_X) noexcept; 
-bool InnerWrite(::basictl::tl_ostream & s, const ::tl2::Inner& item, uint32_t nat_X) noexcept;
-bool InnerReadBoxed(::basictl::tl_istream & s, ::tl2::Inner& item, uint32_t nat_X);
-bool InnerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Inner& item, uint32_t nat_X);
+bool InnerWriteJSON(std::ostream& s, const ::tlgen::Inner& item, [[maybe_unused]] uint32_t nat_X) noexcept;
+bool InnerRead(::tlgen::basictl::tl_istream & s, ::tlgen::Inner& item, [[maybe_unused]] uint32_t nat_X) noexcept; 
+bool InnerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Inner& item, [[maybe_unused]] uint32_t nat_X) noexcept;
+bool InnerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Inner& item, [[maybe_unused]] uint32_t nat_X);
+bool InnerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Inner& item, [[maybe_unused]] uint32_t nat_X);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

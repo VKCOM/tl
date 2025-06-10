@@ -6,18 +6,18 @@
 #include "ab/functions/ab.call11.h"
 #include "a/types/a.Color.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbCall11Reset(::tl2::ab::Call11& item) noexcept;
+void AbCall11Reset(::tlgen::ab::Call11& item) noexcept;
 
-bool AbCall11WriteJSON(std::ostream& s, const ::tl2::ab::Call11& item) noexcept;
-bool AbCall11Read(::basictl::tl_istream & s, ::tl2::ab::Call11& item) noexcept; 
-bool AbCall11Write(::basictl::tl_ostream & s, const ::tl2::ab::Call11& item) noexcept;
-bool AbCall11ReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Call11& item);
-bool AbCall11WriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Call11& item);
+bool AbCall11WriteJSON(std::ostream& s, const ::tlgen::ab::Call11& item) noexcept;
+bool AbCall11Read(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call11& item) noexcept; 
+bool AbCall11Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call11& item) noexcept;
+bool AbCall11ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call11& item);
+bool AbCall11WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call11& item);
 
-bool AbCall11ReadResult(::basictl::tl_istream & s, ::tl2::ab::Call11& item, ::tl2::a::Color& result);
-bool AbCall11WriteResult(::basictl::tl_ostream & s, ::tl2::ab::Call11& item, ::tl2::a::Color& result);
-		
-}} // namespace tl2::details
+bool AbCall11ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call11& item, ::tlgen::a::Color& result);
+bool AbCall11WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::ab::Call11& item, ::tlgen::a::Color& result);
+    
+}} // namespace tlgen::details
 

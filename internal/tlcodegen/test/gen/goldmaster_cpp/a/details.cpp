@@ -14,7 +14,6 @@
 #include "__common_namespace/headers/int.h"
 #include "a/headers/a_int32.h"
 #include "__common_namespace/headers/Bool.h"
-#include "a/headers/a.Color.h"
 #include "a/headers/a.top2.h"
 #include "a/headers/a.MyUnion.h"
 #include "au/headers/au.nionA.h"
@@ -22,2663 +21,2798 @@
 #include "a/headers/a.MyBool.h"
 #include "a/headers/a.middle.h"
 #include "a/headers/a.inner.h"
+#include "a/headers/a.Color.h"
 #include "a/headers/a_a.ColorItems.h"
 #include "a/headers/a.ColorItems.h"
 
 
-bool tl2::a::Blue::write_json(std::ostream& s)const {
-	if (!::tl2::details::ABlueWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::Blue::write_json(std::ostream& s)const {
+  if (!::tlgen::details::ABlueWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::a::Blue::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::ABlueRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Blue::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::ABlueRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Blue::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::ABlueWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Blue::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::ABlueWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Blue::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::a::Blue::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Blue::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::a::Blue::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Blue::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::ABlueReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Blue::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::ABlueReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Blue::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::ABlueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Blue::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::ABlueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Blue::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Blue::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Blue::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Blue::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::ABlueReset(::tl2::a::Blue& item) noexcept {
+void tlgen::details::ABlueReset(::tlgen::a::Blue& item) noexcept {
+  (void)item;
 }
 
-bool tl2::details::ABlueWriteJSON(std::ostream& s, const ::tl2::a::Blue& item) noexcept {
-	s << "true";
-	return true;
+bool tlgen::details::ABlueWriteJSON(std::ostream& s, const ::tlgen::a::Blue& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "true";
+  return true;
 }
 
-bool tl2::details::ABlueRead(::basictl::tl_istream & s, ::tl2::a::Blue& item) noexcept {
-	return true;
+bool tlgen::details::ABlueRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Blue& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::ABlueWrite(::basictl::tl_ostream & s, const ::tl2::a::Blue& item) noexcept {
-	return true;
+bool tlgen::details::ABlueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Blue& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::ABlueReadBoxed(::basictl::tl_istream & s, ::tl2::a::Blue& item) {
-	if (!s.nat_read_exact_tag(0x623360f3)) { return false; }
-	return tl2::details::ABlueRead(s, item);
+bool tlgen::details::ABlueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Blue& item) {
+  if (!s.nat_read_exact_tag(0x623360f3)) { return false; }
+  return tlgen::details::ABlueRead(s, item);
 }
 
-bool tl2::details::ABlueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Blue& item) {
-	if (!s.nat_write(0x623360f3)) { return false; }
-	return tl2::details::ABlueWrite(s, item);
+bool tlgen::details::ABlueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Blue& item) {
+  if (!s.nat_write(0x623360f3)) { return false; }
+  return tlgen::details::ABlueWrite(s, item);
 }
 
 static const std::string_view AColor_tbl_tl_name[]{"a.color", "a.red", "a.green", "b.red", "a.blue"};
 static const uint32_t AColor_tbl_tl_tag[]{0xf35d7a69, 0xb83a723d, 0x6127e7b8, 0xa9471844, 0x623360f3};
 
-bool tl2::a::Color::write_json(std::ostream & s)const {
-	if (!::tl2::details::AColorWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::Color::write_json(std::ostream & s)const {
+  if (!::tlgen::details::AColorWriteJSON(s, *this)) { return false; }
+  return true;
 }
-bool tl2::a::Color::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AColorReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::a::Color::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AColorReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
-bool tl2::a::Color::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AColorWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-void tl2::a::Color::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+bool tlgen::a::Color::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AColorWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-void tl2::a::Color::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Color::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-std::string_view tl2::a::Color::tl_name() const {
-	return AColor_tbl_tl_name[value.index()];
+void tlgen::a::Color::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
-uint32_t tl2::a::Color::tl_tag() const {
-	return AColor_tbl_tl_tag[value.index()];
+
+std::string_view tlgen::a::Color::tl_name() const {
+  return AColor_tbl_tl_name[value.index()];
+}
+uint32_t tlgen::a::Color::tl_tag() const {
+  return AColor_tbl_tl_tag[value.index()];
 }
 
 
-void tl2::details::AColorReset(::tl2::a::Color& item) noexcept{
-	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
+void tlgen::details::AColorReset(::tlgen::a::Color& item) noexcept{
+  item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::AColorWriteJSON(std::ostream & s, const ::tl2::a::Color& item) noexcept {
-	s << "\"" << AColor_tbl_tl_name[item.value.index()] << "\"";
-	return true;
+bool tlgen::details::AColorWriteJSON(std::ostream & s, const ::tlgen::a::Color& item) noexcept {
+  s << "\"" << AColor_tbl_tl_name[item.value.index()] << "\"";
+  return true;
 }
-bool tl2::details::AColorReadBoxed(::basictl::tl_istream & s, ::tl2::a::Color& item) noexcept {
-	uint32_t nat;
-	if (!s.nat_read(nat)) { return false; }
-	switch (nat) {
-	case 0xf35d7a69:
-		if (item.value.index() != 0) { item.value.emplace<0>(); }
-		break;
-	case 0xb83a723d:
-		if (item.value.index() != 1) { item.value.emplace<1>(); }
-		break;
-	case 0x6127e7b8:
-		if (item.value.index() != 2) { item.value.emplace<2>(); }
-		break;
-	case 0xa9471844:
-		if (item.value.index() != 3) { item.value.emplace<3>(); }
-		break;
-	case 0x623360f3:
-		if (item.value.index() != 4) { item.value.emplace<4>(); }
-		break;
-	default:
-		return s.set_error_union_tag();
+bool tlgen::details::AColorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color& item) noexcept {
+  uint32_t nat;
+  if (!s.nat_read(nat)) { return false; }
+  switch (nat) {
+  case 0xf35d7a69:
+    if (item.value.index() != 0) { item.value.emplace<0>(); }
+    break;
+  case 0xb83a723d:
+    if (item.value.index() != 1) { item.value.emplace<1>(); }
+    break;
+  case 0x6127e7b8:
+    if (item.value.index() != 2) { item.value.emplace<2>(); }
+    break;
+  case 0xa9471844:
+    if (item.value.index() != 3) { item.value.emplace<3>(); }
+    break;
+  case 0x623360f3:
+    if (item.value.index() != 4) { item.value.emplace<4>(); }
+    break;
+  default:
+    return s.set_error_union_tag();
     }
-	return true;
+  return true;
 }
 
-bool tl2::details::AColorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Color& item) noexcept{
-	if (!s.nat_write(AColor_tbl_tl_tag[item.value.index()])) { return false; }
-	switch (item.value.index()) {
-	}
-	return true;
+bool tlgen::details::AColorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Color& item) noexcept{
+  if (!s.nat_write(AColor_tbl_tl_tag[item.value.index()])) { return false; }
+  switch (item.value.index()) {
+  }
+  return true;
 }
 
-bool tl2::a::Color0::write_json(std::ostream& s)const {
-	if (!::tl2::details::AColor0WriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::Color0::write_json(std::ostream& s)const {
+  if (!::tlgen::details::AColor0WriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::a::Color0::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AColor0Read(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Color0::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AColor0Read(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Color0::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AColor0Write(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Color0::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AColor0Write(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Color0::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::a::Color0::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Color0::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::a::Color0::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Color0::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AColor0ReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Color0::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AColor0ReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Color0::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AColor0WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Color0::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AColor0WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Color0::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Color0::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Color0::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Color0::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::AColor0Reset(::tl2::a::Color0& item) noexcept {
+void tlgen::details::AColor0Reset(::tlgen::a::Color0& item) noexcept {
+  (void)item;
 }
 
-bool tl2::details::AColor0WriteJSON(std::ostream& s, const ::tl2::a::Color0& item) noexcept {
-	s << "true";
-	return true;
+bool tlgen::details::AColor0WriteJSON(std::ostream& s, const ::tlgen::a::Color0& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "true";
+  return true;
 }
 
-bool tl2::details::AColor0Read(::basictl::tl_istream & s, ::tl2::a::Color0& item) noexcept {
-	return true;
+bool tlgen::details::AColor0Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color0& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::AColor0Write(::basictl::tl_ostream & s, const ::tl2::a::Color0& item) noexcept {
-	return true;
+bool tlgen::details::AColor0Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Color0& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::AColor0ReadBoxed(::basictl::tl_istream & s, ::tl2::a::Color0& item) {
-	if (!s.nat_read_exact_tag(0xf35d7a69)) { return false; }
-	return tl2::details::AColor0Read(s, item);
+bool tlgen::details::AColor0ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color0& item) {
+  if (!s.nat_read_exact_tag(0xf35d7a69)) { return false; }
+  return tlgen::details::AColor0Read(s, item);
 }
 
-bool tl2::details::AColor0WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Color0& item) {
-	if (!s.nat_write(0xf35d7a69)) { return false; }
-	return tl2::details::AColor0Write(s, item);
+bool tlgen::details::AColor0WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Color0& item) {
+  if (!s.nat_write(0xf35d7a69)) { return false; }
+  return tlgen::details::AColor0Write(s, item);
 }
 
-bool tl2::details::AColorBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::a::Color>& item) {
-	s << "{";
-	if (item) {
-		s << "\"ok\":true";
-		s << ",\"value\":";
-		if (!::tl2::details::AColorWriteJSON(s, *item)) { return false; }
-	}
-	s << "}";
-	return true;
-}
-bool tl2::details::AColorBoxedMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::a::Color>& item) {
-	bool has_item = false;
-	if (!s.bool_read(has_item, 0x27930a7b, 0x3f9c8ef8)) { return false; }
-	if (has_item) {
-		if (!item) {
-			item.emplace();
-		}
-		if (!::tl2::details::AColorReadBoxed(s, *item)) { return s.set_error_unknown_scenario(); }
-		return true;
-	}
-	item.reset();
-	return true;
+bool tlgen::a::Green::write_json(std::ostream& s)const {
+  if (!::tlgen::details::AGreenWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::details::AColorBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::a::Color>& item) {
-	if (!s.nat_write(item ? 0x3f9c8ef8 : 0x27930a7b)) { return false; }
-	if (item) {
-		if (!::tl2::details::AColorWriteBoxed(s, *item)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::a::Green::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AGreenRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Green::write_json(std::ostream& s)const {
-	if (!::tl2::details::AGreenWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::Green::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AGreenWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Green::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AGreenRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Green::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Green::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AGreenWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Green::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Green::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+bool tlgen::a::Green::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AGreenReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Green::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+bool tlgen::a::Green::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AGreenWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Green::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AGreenReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Green::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Green::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AGreenWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Green::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Green::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::details::AGreenReset(::tlgen::a::Green& item) noexcept {
+  (void)item;
 }
 
-void tl2::a::Green::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+bool tlgen::details::AGreenWriteJSON(std::ostream& s, const ::tlgen::a::Green& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "true";
+  return true;
 }
 
-void tl2::details::AGreenReset(::tl2::a::Green& item) noexcept {
+bool tlgen::details::AGreenRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Green& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::AGreenWriteJSON(std::ostream& s, const ::tl2::a::Green& item) noexcept {
-	s << "true";
-	return true;
+bool tlgen::details::AGreenWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Green& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::AGreenRead(::basictl::tl_istream & s, ::tl2::a::Green& item) noexcept {
-	return true;
+bool tlgen::details::AGreenReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Green& item) {
+  if (!s.nat_read_exact_tag(0x6127e7b8)) { return false; }
+  return tlgen::details::AGreenRead(s, item);
 }
 
-bool tl2::details::AGreenWrite(::basictl::tl_ostream & s, const ::tl2::a::Green& item) noexcept {
-	return true;
+bool tlgen::details::AGreenWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Green& item) {
+  if (!s.nat_write(0x6127e7b8)) { return false; }
+  return tlgen::details::AGreenWrite(s, item);
 }
 
-bool tl2::details::AGreenReadBoxed(::basictl::tl_istream & s, ::tl2::a::Green& item) {
-	if (!s.nat_read_exact_tag(0x6127e7b8)) { return false; }
-	return tl2::details::AGreenRead(s, item);
+bool tlgen::a::Inner::write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_I)const {
+  if (!::tlgen::details::AInnerWriteJSON(s, *this, nat_I)) { return false; }
+  return true;
 }
 
-bool tl2::details::AGreenWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Green& item) {
-	if (!s.nat_write(0x6127e7b8)) { return false; }
-	return tl2::details::AGreenWrite(s, item);
+bool tlgen::a::Inner::read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_I) noexcept {
+  if (!::tlgen::details::AInnerRead(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Inner::write_json(std::ostream& s, uint32_t nat_I)const {
-	if (!::tl2::details::AInnerWriteJSON(s, *this, nat_I)) { return false; }
-	return true;
+bool tlgen::a::Inner::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_I)const noexcept {
+  if (!::tlgen::details::AInnerWrite(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Inner::read(::basictl::tl_istream & s, uint32_t nat_I) noexcept {
-	if (!::tl2::details::AInnerRead(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Inner::read(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_I) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2, nat_I);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Inner::write(::basictl::tl_ostream & s, uint32_t nat_I)const noexcept {
-	if (!::tl2::details::AInnerWrite(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Inner::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2, nat_I);
+  s2.pass_data(s);
 }
 
-void tl2::a::Inner::read_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_I) {
-	::basictl::tl_istream s2(s);
-	this->read(s2, nat_I);
-	s2.pass_data(s);
+bool tlgen::a::Inner::read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_I) noexcept {
+  if (!::tlgen::details::AInnerReadBoxed(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Inner::write_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_I)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2, nat_I);
-	s2.pass_data(s);
+bool tlgen::a::Inner::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_I)const noexcept {
+  if (!::tlgen::details::AInnerWriteBoxed(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Inner::read_boxed(::basictl::tl_istream & s, uint32_t nat_I) noexcept {
-	if (!::tl2::details::AInnerReadBoxed(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Inner::read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_I) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2, nat_I);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Inner::write_boxed(::basictl::tl_ostream & s, uint32_t nat_I)const noexcept {
-	if (!::tl2::details::AInnerWriteBoxed(s, *this, nat_I)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Inner::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2, nat_I);
+  s2.pass_data(s);
 }
 
-void tl2::a::Inner::read_boxed_or_throw(::basictl::tl_throwable_istream & s, uint32_t nat_I) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2, nat_I);
-	s2.pass_data(s);
+void tlgen::details::AInnerReset(::tlgen::a::Inner& item) noexcept {
+  (void)item;
+  item.a.clear();
 }
 
-void tl2::a::Inner::write_boxed_or_throw(::basictl::tl_throwable_ostream & s, uint32_t nat_I)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2, nat_I);
-	s2.pass_data(s);
+bool tlgen::details::AInnerWriteJSON(std::ostream& s, const ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if ((item.a.size() != 0) || (nat_I != 0)) {
+    s << "\"a\":";
+    if (!::tlgen::details::BuiltinTupleIntWriteJSON(s, item.a, nat_I)) { return false; }
+  }
+  s << "}";
+  return true;
 }
 
-void tl2::details::AInnerReset(::tl2::a::Inner& item) noexcept {
-	item.a.clear();
+bool tlgen::details::AInnerRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleIntRead(s, item.a, nat_I)) { return false; }
+  return true;
 }
 
-bool tl2::details::AInnerWriteJSON(std::ostream& s, const ::tl2::a::Inner& item, uint32_t nat_I) noexcept {
-	s << "{";
-	if ((item.a.size() != 0) || (nat_I != 0)) {
-		s << "\"a\":";
-		if (!::tl2::details::BuiltinTupleIntWriteJSON(s, item.a, nat_I)) { return false; }
-	}
-	s << "}";
-	return true;
+bool tlgen::details::AInnerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleIntWrite(s, item.a, nat_I)) { return false; }
+  return true;
 }
 
-bool tl2::details::AInnerRead(::basictl::tl_istream & s, ::tl2::a::Inner& item, uint32_t nat_I) noexcept {
-	if (!::tl2::details::BuiltinTupleIntRead(s, item.a, nat_I)) { return false; }
-	return true;
+bool tlgen::details::AInnerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) {
+  if (!s.nat_read_exact_tag(0xec5089b9)) { return false; }
+  return tlgen::details::AInnerRead(s, item, nat_I);
 }
 
-bool tl2::details::AInnerWrite(::basictl::tl_ostream & s, const ::tl2::a::Inner& item, uint32_t nat_I) noexcept {
-	if (!::tl2::details::BuiltinTupleIntWrite(s, item.a, nat_I)) { return false; }
-	return true;
+bool tlgen::details::AInnerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Inner& item, [[maybe_unused]] uint32_t nat_I) {
+  if (!s.nat_write(0xec5089b9)) { return false; }
+  return tlgen::details::AInnerWrite(s, item, nat_I);
 }
 
-bool tl2::details::AInnerReadBoxed(::basictl::tl_istream & s, ::tl2::a::Inner& item, uint32_t nat_I) {
-	if (!s.nat_read_exact_tag(0xec5089b9)) { return false; }
-	return tl2::details::AInnerRead(s, item, nat_I);
+void tlgen::details::AInner3Reset(::tlgen::a::InnerI<3>& item) noexcept {
+  (void)item;
+  ::tlgen::details::BuiltinTuple3IntReset(item.a);
 }
 
-bool tl2::details::AInnerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Inner& item, uint32_t nat_I) {
-	if (!s.nat_write(0xec5089b9)) { return false; }
-	return tl2::details::AInnerWrite(s, item, nat_I);
+bool tlgen::details::AInner3WriteJSON(std::ostream& s, const ::tlgen::a::InnerI<3>& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  s << "\"a\":";
+  if (!::tlgen::details::BuiltinTuple3IntWriteJSON(s, item.a)) { return false; }
+  s << "}";
+  return true;
 }
 
-void tl2::details::AInner3Reset(::tl2::a::InnerI<3>& item) noexcept {
-	::tl2::details::BuiltinTuple3IntReset(item.a);
+bool tlgen::details::AInner3Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::InnerI<3>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTuple3IntRead(s, item.a)) { return false; }
+  return true;
 }
 
-bool tl2::details::AInner3WriteJSON(std::ostream& s, const ::tl2::a::InnerI<3>& item) noexcept {
-	s << "{";
-	s << "\"a\":";
-	if (!::tl2::details::BuiltinTuple3IntWriteJSON(s, item.a)) { return false; }
-	s << "}";
-	return true;
+bool tlgen::details::AInner3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::InnerI<3>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTuple3IntWrite(s, item.a)) { return false; }
+  return true;
 }
 
-bool tl2::details::AInner3Read(::basictl::tl_istream & s, ::tl2::a::InnerI<3>& item) noexcept {
-	if (!::tl2::details::BuiltinTuple3IntRead(s, item.a)) { return false; }
-	return true;
+bool tlgen::details::AInner3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::InnerI<3>& item) {
+  if (!s.nat_read_exact_tag(0xec5089b9)) { return false; }
+  return tlgen::details::AInner3Read(s, item);
 }
 
-bool tl2::details::AInner3Write(::basictl::tl_ostream & s, const ::tl2::a::InnerI<3>& item) noexcept {
-	if (!::tl2::details::BuiltinTuple3IntWrite(s, item.a)) { return false; }
-	return true;
+bool tlgen::details::AInner3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::InnerI<3>& item) {
+  if (!s.nat_write(0xec5089b9)) { return false; }
+  return tlgen::details::AInner3Write(s, item);
 }
 
-bool tl2::details::AInner3ReadBoxed(::basictl::tl_istream & s, ::tl2::a::InnerI<3>& item) {
-	if (!s.nat_read_exact_tag(0xec5089b9)) { return false; }
-	return tl2::details::AInner3Read(s, item);
+void tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Reset(::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item) noexcept {
+  (void)item;
+  ::tlgen::details::AInnerReset(item.a);
+  ::tlgen::details::PairPairAInnerAInnerAInnerBoxed3Reset(item.b);
 }
 
-bool tl2::details::AInner3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::InnerI<3>& item) {
-	if (!s.nat_write(0xec5089b9)) { return false; }
-	return tl2::details::AInner3Write(s, item);
+bool tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"a\":";
+  if (!::tlgen::details::AInnerWriteJSON(s, item.a, nat_W)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"b\":";
+  if (!::tlgen::details::PairPairAInnerAInnerAInnerBoxed3WriteJSON(s, item.b, nat_PXI, nat_PYI)) { return false; }
+  s << "}";
+  return true;
 }
 
-void tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Reset(::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item) noexcept {
-	::tl2::details::AInnerReset(item.a);
-	::tl2::details::PairPairAInnerAInnerAInnerBoxed3Reset(item.b);
+bool tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::AInnerRead(s, item.a, nat_W)) { return s.set_error_unknown_scenario(); }
+  if (!::tlgen::details::PairPairAInnerAInnerAInnerBoxed3Read(s, item.b, nat_PXI, nat_PYI)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-bool tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"a\":";
-	if (!::tl2::details::AInnerWriteJSON(s, item.a, nat_W)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"b\":";
-	if (!::tl2::details::PairPairAInnerAInnerAInnerBoxed3WriteJSON(s, item.b, nat_PXI, nat_PYI)) { return false; }
-	s << "}";
-	return true;
+bool tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::AInnerWrite(s, item.a, nat_W)) { return s.set_error_unknown_scenario(); }
+  if (!::tlgen::details::PairPairAInnerAInnerAInnerBoxed3Write(s, item.b, nat_PXI, nat_PYI)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-bool tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Read(::basictl::tl_istream & s, ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) noexcept {
-	if (!::tl2::details::AInnerRead(s, item.a, nat_W)) { return s.set_error_unknown_scenario(); }
-	if (!::tl2::details::PairPairAInnerAInnerAInnerBoxed3Read(s, item.b, nat_PXI, nat_PYI)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) {
+  if (!s.nat_read_exact_tag(0xaf5e2b14)) { return false; }
+  return tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Read(s, item, nat_W, nat_PXI, nat_PYI);
 }
 
-bool tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Write(::basictl::tl_ostream & s, const ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) noexcept {
-	if (!::tl2::details::AInnerWrite(s, item.a, nat_W)) { return s.set_error_unknown_scenario(); }
-	if (!::tl2::details::PairPairAInnerAInnerAInnerBoxed3Write(s, item.b, nat_PXI, nat_PYI)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Middle<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_W, [[maybe_unused]] uint32_t nat_PXI, [[maybe_unused]] uint32_t nat_PYI) {
+  if (!s.nat_write(0xaf5e2b14)) { return false; }
+  return tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Write(s, item, nat_W, nat_PXI, nat_PYI);
 }
 
-bool tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3ReadBoxed(::basictl::tl_istream & s, ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) {
-	if (!s.nat_read_exact_tag(0xaf5e2b14)) { return false; }
-	return tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Read(s, item, nat_W, nat_PXI, nat_PYI);
+bool tlgen::details::AMyBoolWriteJSON(std::ostream & s, bool item) {
+  if (item) {
+    s << "true";
+  } else {
+    s << "false";
+  }
+  return true;
 }
 
-bool tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Middle<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_W, uint32_t nat_PXI, uint32_t nat_PYI) {
-	if (!s.nat_write(0xaf5e2b14)) { return false; }
-	return tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Write(s, item, nat_W, nat_PXI, nat_PYI);
+bool tlgen::details::AMyBoolReadBoxed(::tlgen::basictl::tl_istream & s, bool& item) {
+  return s.bool_read(item, 0x2, 0x1);
 }
 
-bool tl2::details::AMyBoolWriteJSON(std::ostream & s, bool item) {
-	if (item) {
-		s << "true";
-	} else {
-		s << "false";
-	}
-	return true;
-}
-
-bool tl2::details::AMyBoolReadBoxed(::basictl::tl_istream & s, bool& item) {
-	return s.bool_read(item, 0x2, 0x1);
-}
-
-bool tl2::details::AMyBoolWriteBoxed(::basictl::tl_ostream & s, bool item) {
-	return s.nat_write(item ? 0x1 : 0x2);
+bool tlgen::details::AMyBoolWriteBoxed(::tlgen::basictl::tl_ostream & s, bool item) {
+  return s.nat_write(item ? 0x1 : 0x2);
 }
 
 static const std::string_view AMyUnion_tbl_tl_name[]{"a.uNionA", "au.nionA"};
 static const uint32_t AMyUnion_tbl_tl_tag[]{0xa7662843, 0xdf61f632};
 
-bool tl2::a::MyUnion::write_json(std::ostream & s)const {
-	if (!::tl2::details::AMyUnionWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::MyUnion::write_json(std::ostream & s)const {
+  if (!::tlgen::details::AMyUnionWriteJSON(s, *this)) { return false; }
+  return true;
 }
-bool tl2::a::MyUnion::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AMyUnionReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::a::MyUnion::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AMyUnionReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
-bool tl2::a::MyUnion::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AMyUnionWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-void tl2::a::MyUnion::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+bool tlgen::a::MyUnion::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AMyUnionWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-void tl2::a::MyUnion::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::MyUnion::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-std::string_view tl2::a::MyUnion::tl_name() const {
-	return AMyUnion_tbl_tl_name[value.index()];
+void tlgen::a::MyUnion::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
-uint32_t tl2::a::MyUnion::tl_tag() const {
-	return AMyUnion_tbl_tl_tag[value.index()];
+
+std::string_view tlgen::a::MyUnion::tl_name() const {
+  return AMyUnion_tbl_tl_name[value.index()];
+}
+uint32_t tlgen::a::MyUnion::tl_tag() const {
+  return AMyUnion_tbl_tl_tag[value.index()];
 }
 
 
-void tl2::details::AMyUnionReset(::tl2::a::MyUnion& item) noexcept{
-	item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
+void tlgen::details::AMyUnionReset(::tlgen::a::MyUnion& item) noexcept{
+  item.value.emplace<0>(); // TODO - optimize, if already 0, call Reset function
 }
 
-bool tl2::details::AMyUnionWriteJSON(std::ostream & s, const ::tl2::a::MyUnion& item) noexcept {
-	s << "{";
-	s << "\"type\":";
-	s << "\"" << AMyUnion_tbl_tl_name[item.value.index()] << "\"";
-	switch (item.value.index()) {
-	case 0:
-		s << ",\"value\":";
-		if (!::tl2::details::AUNionAWriteJSON(s, std::get<0>(item.value))) { return false; }
-		break;
-	case 1:
-		s << ",\"value\":";
-		if (!::tl2::details::AuNionAWriteJSON(s, std::get<1>(item.value))) { return false; }
-		break;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::AMyUnionWriteJSON(std::ostream & s, const ::tlgen::a::MyUnion& item) noexcept {
+  s << "{";
+  s << "\"type\":";
+  s << "\"" << AMyUnion_tbl_tl_name[item.value.index()] << "\"";
+  switch (item.value.index()) {
+  case 0:
+    s << ",\"value\":";
+    if (!::tlgen::details::AUNionAWriteJSON(s, std::get<0>(item.value))) { return false; }
+    break;
+  case 1:
+    s << ",\"value\":";
+    if (!::tlgen::details::AuNionAWriteJSON(s, std::get<1>(item.value))) { return false; }
+    break;
+  }
+  s << "}";
+  return true;
 }
-bool tl2::details::AMyUnionReadBoxed(::basictl::tl_istream & s, ::tl2::a::MyUnion& item) noexcept {
-	uint32_t nat;
-	if (!s.nat_read(nat)) { return false; }
-	switch (nat) {
-	case 0xa7662843:
-		if (item.value.index() != 0) { item.value.emplace<0>(); }
-		if (!::tl2::details::AUNionARead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	case 0xdf61f632:
-		if (item.value.index() != 1) { item.value.emplace<1>(); }
-		if (!::tl2::details::AuNionARead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	default:
-		return s.set_error_union_tag();
+bool tlgen::details::AMyUnionReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::MyUnion& item) noexcept {
+  uint32_t nat;
+  if (!s.nat_read(nat)) { return false; }
+  switch (nat) {
+  case 0xa7662843:
+    if (item.value.index() != 0) { item.value.emplace<0>(); }
+    if (!::tlgen::details::AUNionARead(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  case 0xdf61f632:
+    if (item.value.index() != 1) { item.value.emplace<1>(); }
+    if (!::tlgen::details::AuNionARead(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  default:
+    return s.set_error_union_tag();
     }
-	return true;
+  return true;
 }
 
-bool tl2::details::AMyUnionWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::MyUnion& item) noexcept{
-	if (!s.nat_write(AMyUnion_tbl_tl_tag[item.value.index()])) { return false; }
-	switch (item.value.index()) {
-	case 0:
-		if (!::tl2::details::AUNionAWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	case 1:
-		if (!::tl2::details::AuNionAWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
-		break;
-	}
-	return true;
+bool tlgen::details::AMyUnionWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::MyUnion& item) noexcept{
+  if (!s.nat_write(AMyUnion_tbl_tl_tag[item.value.index()])) { return false; }
+  switch (item.value.index()) {
+  case 0:
+    if (!::tlgen::details::AUNionAWrite(s, std::get<0>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  case 1:
+    if (!::tlgen::details::AuNionAWrite(s, std::get<1>(item.value))) { return s.set_error_unknown_scenario(); }
+    break;
+  }
+  return true;
 }
 
-bool tl2::a::Red::write_json(std::ostream& s)const {
-	if (!::tl2::details::ARedWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::Red::write_json(std::ostream& s)const {
+  if (!::tlgen::details::ARedWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::a::Red::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::ARedRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Red::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::ARedRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Red::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::ARedWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Red::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::ARedWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Red::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::a::Red::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Red::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+void tlgen::a::Red::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-bool tl2::a::Red::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::ARedReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Red::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::ARedReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Red::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::ARedWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Red::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::ARedWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-void tl2::a::Red::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Red::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Red::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Red::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::details::ARedReset(::tl2::a::Red& item) noexcept {
+void tlgen::details::ARedReset(::tlgen::a::Red& item) noexcept {
+  (void)item;
 }
 
-bool tl2::details::ARedWriteJSON(std::ostream& s, const ::tl2::a::Red& item) noexcept {
-	s << "true";
-	return true;
+bool tlgen::details::ARedWriteJSON(std::ostream& s, const ::tlgen::a::Red& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "true";
+  return true;
 }
 
-bool tl2::details::ARedRead(::basictl::tl_istream & s, ::tl2::a::Red& item) noexcept {
-	return true;
+bool tlgen::details::ARedRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Red& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::ARedWrite(::basictl::tl_ostream & s, const ::tl2::a::Red& item) noexcept {
-	return true;
+bool tlgen::details::ARedWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Red& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::ARedReadBoxed(::basictl::tl_istream & s, ::tl2::a::Red& item) {
-	if (!s.nat_read_exact_tag(0xb83a723d)) { return false; }
-	return tl2::details::ARedRead(s, item);
+bool tlgen::details::ARedReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Red& item) {
+  if (!s.nat_read_exact_tag(0xb83a723d)) { return false; }
+  return tlgen::details::ARedRead(s, item);
 }
 
-bool tl2::details::ARedWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Red& item) {
-	if (!s.nat_write(0xb83a723d)) { return false; }
-	return tl2::details::ARedWrite(s, item);
+bool tlgen::details::ARedWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Red& item) {
+  if (!s.nat_write(0xb83a723d)) { return false; }
+  return tlgen::details::ARedWrite(s, item);
 }
 
-bool tl2::a::Top2::write_json(std::ostream& s)const {
-	if (!::tl2::details::ATop2WriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::Top2::write_json(std::ostream& s)const {
+  if (!::tlgen::details::ATop2WriteJSON(s, *this)) { return false; }
+  return true;
+}
+
+bool tlgen::a::Top2::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::ATop2Read(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Top2::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::ATop2Read(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Top2::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::ATop2Write(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Top2::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::ATop2Write(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Top2::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Top2::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::a::Top2::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Top2::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+bool tlgen::a::Top2::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::ATop2ReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Top2::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::ATop2ReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::Top2::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::ATop2WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::Top2::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::ATop2WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::Top2::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Top2::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::Top2::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::Top2::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::details::ATop2Reset(::tlgen::a::Top2& item) noexcept {
+  (void)item;
+  item.n = 0;
+  item.m = 0;
+  ::tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Reset(item.c);
 }
 
-void tl2::details::ATop2Reset(::tl2::a::Top2& item) noexcept {
-	item.n = 0;
-	item.m = 0;
-	::tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Reset(item.c);
+bool tlgen::details::ATop2WriteJSON(std::ostream& s, const ::tlgen::a::Top2& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.n != 0) {
+    add_comma = true;
+    s << "\"n\":";
+    s << item.n;
+  }
+  if (item.m != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"m\":";
+    s << item.m;
+  }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"c\":";
+  if (!::tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3WriteJSON(s, item.c, item.m, item.n, item.n)) { return false; }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::ATop2WriteJSON(std::ostream& s, const ::tl2::a::Top2& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.n != 0) {
-		add_comma = true;
-		s << "\"n\":";
-		s << item.n;
-	}
-	if (item.m != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"m\":";
-		s << item.m;
-	}
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"c\":";
-	if (!::tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3WriteJSON(s, item.c, item.m, item.n, item.n)) { return false; }
-	s << "}";
-	return true;
+bool tlgen::details::ATop2Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::Top2& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_read(item.n)) { return false; }
+  if (!s.nat_read(item.m)) { return false; }
+  if (!::tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Read(s, item.c, item.m, item.n, item.n)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-bool tl2::details::ATop2Read(::basictl::tl_istream & s, ::tl2::a::Top2& item) noexcept {
-	if (!s.nat_read(item.n)) { return false; }
-	if (!s.nat_read(item.m)) { return false; }
-	if (!::tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Read(s, item.c, item.m, item.n, item.n)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::details::ATop2Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Top2& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_write(item.n)) { return false;}
+  if (!s.nat_write(item.m)) { return false;}
+  if (!::tlgen::details::AMiddlePairAInnerAInnerAInnerBoxed3Write(s, item.c, item.m, item.n, item.n)) { return s.set_error_unknown_scenario(); }
+  return true;
 }
 
-bool tl2::details::ATop2Write(::basictl::tl_ostream & s, const ::tl2::a::Top2& item) noexcept {
-	if (!s.nat_write(item.n)) { return false;}
-	if (!s.nat_write(item.m)) { return false;}
-	if (!::tl2::details::AMiddlePairAInnerAInnerAInnerBoxed3Write(s, item.c, item.m, item.n, item.n)) { return s.set_error_unknown_scenario(); }
-	return true;
+bool tlgen::details::ATop2ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Top2& item) {
+  if (!s.nat_read_exact_tag(0x7082d18f)) { return false; }
+  return tlgen::details::ATop2Read(s, item);
 }
 
-bool tl2::details::ATop2ReadBoxed(::basictl::tl_istream & s, ::tl2::a::Top2& item) {
-	if (!s.nat_read_exact_tag(0x7082d18f)) { return false; }
-	return tl2::details::ATop2Read(s, item);
+bool tlgen::details::ATop2WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Top2& item) {
+  if (!s.nat_write(0x7082d18f)) { return false; }
+  return tlgen::details::ATop2Write(s, item);
 }
 
-bool tl2::details::ATop2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Top2& item) {
-	if (!s.nat_write(0x7082d18f)) { return false; }
-	return tl2::details::ATop2Write(s, item);
+bool tlgen::a::UNionA::write_json(std::ostream& s)const {
+  if (!::tlgen::details::AUNionAWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::a::UNionA::write_json(std::ostream& s)const {
-	if (!::tl2::details::AUNionAWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::a::UNionA::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AUNionARead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::UNionA::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AUNionARead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::UNionA::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AUNionAWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::UNionA::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AUNionAWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::UNionA::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::UNionA::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::a::UNionA::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::UNionA::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+bool tlgen::a::UNionA::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::AUNionAReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::UNionA::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::AUNionAReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::a::UNionA::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::AUNionAWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::a::UNionA::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::AUNionAWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::a::UNionA::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::UNionA::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::a::UNionA::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::a::UNionA::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::details::AUNionAReset(::tlgen::a::UNionA& item) noexcept {
+  (void)item;
+  item.a = 0;
 }
 
-void tl2::details::AUNionAReset(::tl2::a::UNionA& item) noexcept {
-	item.a = 0;
+bool tlgen::details::AUNionAWriteJSON(std::ostream& s, const ::tlgen::a::UNionA& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "{";
+  if (item.a != 0) {
+    s << "\"a\":";
+    s << item.a;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::AUNionAWriteJSON(std::ostream& s, const ::tl2::a::UNionA& item) noexcept {
-	s << "{";
-	if (item.a != 0) {
-		s << "\"a\":";
-		s << item.a;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::AUNionARead(::tlgen::basictl::tl_istream & s, ::tlgen::a::UNionA& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.a)) { return false; }
+  return true;
 }
 
-bool tl2::details::AUNionARead(::basictl::tl_istream & s, ::tl2::a::UNionA& item) noexcept {
-	if (!s.int_read(item.a)) { return false; }
-	return true;
+bool tlgen::details::AUNionAWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::UNionA& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.a)) { return false;}
+  return true;
 }
 
-bool tl2::details::AUNionAWrite(::basictl::tl_ostream & s, const ::tl2::a::UNionA& item) noexcept {
-	if (!s.int_write(item.a)) { return false;}
-	return true;
+bool tlgen::details::AUNionAReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::UNionA& item) {
+  if (!s.nat_read_exact_tag(0xa7662843)) { return false; }
+  return tlgen::details::AUNionARead(s, item);
 }
 
-bool tl2::details::AUNionAReadBoxed(::basictl::tl_istream & s, ::tl2::a::UNionA& item) {
-	if (!s.nat_read_exact_tag(0xa7662843)) { return false; }
-	return tl2::details::AUNionARead(s, item);
+bool tlgen::details::AUNionAWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::UNionA& item) {
+  if (!s.nat_write(0xa7662843)) { return false; }
+  return tlgen::details::AUNionAWrite(s, item);
 }
 
-bool tl2::details::AUNionAWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::UNionA& item) {
-	if (!s.nat_write(0xa7662843)) { return false; }
-	return tl2::details::AUNionAWrite(s, item);
+bool tlgen::b::Red::write_json(std::ostream& s)const {
+  if (!::tlgen::details::BRedWriteJSON(s, *this)) { return false; }
+  return true;
 }
 
-bool tl2::b::Red::write_json(std::ostream& s)const {
-	if (!::tl2::details::BRedWriteJSON(s, *this)) { return false; }
-	return true;
+bool tlgen::b::Red::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::BRedRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::b::Red::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BRedRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::b::Red::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::BRedWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::b::Red::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BRedWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::b::Red::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
 }
 
-void tl2::b::Red::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
+void tlgen::b::Red::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
 }
 
-void tl2::b::Red::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
+bool tlgen::b::Red::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::BRedReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::b::Red::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::BRedReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+bool tlgen::b::Red::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::BRedWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
 }
 
-bool tl2::b::Red::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::BRedWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
+void tlgen::b::Red::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::b::Red::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
+void tlgen::b::Red::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
 }
 
-void tl2::b::Red::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
+void tlgen::details::BRedReset(::tlgen::b::Red& item) noexcept {
+  (void)item;
 }
 
-void tl2::details::BRedReset(::tl2::b::Red& item) noexcept {
+bool tlgen::details::BRedWriteJSON(std::ostream& s, const ::tlgen::b::Red& item) noexcept {
+  (void)s;
+  (void)item;
+  s << "true";
+  return true;
 }
 
-bool tl2::details::BRedWriteJSON(std::ostream& s, const ::tl2::b::Red& item) noexcept {
-	s << "true";
-	return true;
+bool tlgen::details::BRedRead(::tlgen::basictl::tl_istream & s, ::tlgen::b::Red& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::BRedRead(::basictl::tl_istream & s, ::tl2::b::Red& item) noexcept {
-	return true;
+bool tlgen::details::BRedWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::b::Red& item) noexcept {
+  (void)s;
+  (void)item;
+  return true;
 }
 
-bool tl2::details::BRedWrite(::basictl::tl_ostream & s, const ::tl2::b::Red& item) noexcept {
-	return true;
+bool tlgen::details::BRedReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::b::Red& item) {
+  if (!s.nat_read_exact_tag(0xa9471844)) { return false; }
+  return tlgen::details::BRedRead(s, item);
 }
 
-bool tl2::details::BRedReadBoxed(::basictl::tl_istream & s, ::tl2::b::Red& item) {
-	if (!s.nat_read_exact_tag(0xa9471844)) { return false; }
-	return tl2::details::BRedRead(s, item);
+bool tlgen::details::BRedWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::b::Red& item) {
+  if (!s.nat_write(0xa9471844)) { return false; }
+  return tlgen::details::BRedWrite(s, item);
 }
 
-bool tl2::details::BRedWriteBoxed(::basictl::tl_ostream & s, const ::tl2::b::Red& item) {
-	if (!s.nat_write(0xa9471844)) { return false; }
-	return tl2::details::BRedWrite(s, item);
+void tlgen::details::BuiltinTuple3Int32Reset(std::array<::tlgen::Int32, 3>& item) {
+  for(auto && el : item) {
+    ::tlgen::details::Int32Reset(el);
+  }
 }
 
-void tl2::details::BuiltinTuple3Int32Reset(std::array<::tl2::Int32, 3>& item) {
-	for(auto && el : item) {
-		::tl2::details::Int32Reset(el);
-	}
+bool tlgen::details::BuiltinTuple3Int32WriteJSON(std::ostream &s, const std::array<::tlgen::Int32, 3>& item) {
+  s << "[";
+  size_t index = 0;
+  for(auto && el : item) {
+    if (!::tlgen::details::Int32WriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3Int32WriteJSON(std::ostream &s, const std::array<::tl2::Int32, 3>& item) {
-	s << "[";
-	size_t index = 0;
-	for(auto && el : item) {
-		if (!::tl2::details::Int32WriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinTuple3Int32Read(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Int32, 3>& item) {
+  for(auto && el : item) {
+    if (!::tlgen::details::Int32Read(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3Int32Read(::basictl::tl_istream & s, std::array<::tl2::Int32, 3>& item) {
-	for(auto && el : item) {
-		if (!::tl2::details::Int32Read(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinTuple3Int32Write(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Int32, 3>& item) {
+  for(const auto & el : item) {
+    if (!::tlgen::details::Int32Write(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3Int32Write(::basictl::tl_ostream & s, const std::array<::tl2::Int32, 3>& item) {
-	for(const auto & el : item) {
-		if (!::tl2::details::Int32Write(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinTuple3Int32BoxedReset(std::array<::tlgen::Int32, 3>& item) {
+  for(auto && el : item) {
+    ::tlgen::details::Int32Reset(el);
+  }
 }
 
-void tl2::details::BuiltinTuple3Int32BoxedReset(std::array<::tl2::Int32, 3>& item) {
-	for(auto && el : item) {
-		::tl2::details::Int32Reset(el);
-	}
+bool tlgen::details::BuiltinTuple3Int32BoxedWriteJSON(std::ostream &s, const std::array<::tlgen::Int32, 3>& item) {
+  s << "[";
+  size_t index = 0;
+  for(auto && el : item) {
+    if (!::tlgen::details::Int32WriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3Int32BoxedWriteJSON(std::ostream &s, const std::array<::tl2::Int32, 3>& item) {
-	s << "[";
-	size_t index = 0;
-	for(auto && el : item) {
-		if (!::tl2::details::Int32WriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinTuple3Int32BoxedRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Int32, 3>& item) {
+  for(auto && el : item) {
+    if (!::tlgen::details::Int32ReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3Int32BoxedRead(::basictl::tl_istream & s, std::array<::tl2::Int32, 3>& item) {
-	for(auto && el : item) {
-		if (!::tl2::details::Int32ReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinTuple3Int32BoxedWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Int32, 3>& item) {
+  for(const auto & el : item) {
+    if (!::tlgen::details::Int32WriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3Int32BoxedWrite(::basictl::tl_ostream & s, const std::array<::tl2::Int32, 3>& item) {
-	for(const auto & el : item) {
-		if (!::tl2::details::Int32WriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinTuple3MyInt32Reset(std::array<::tlgen::MyInt32, 3>& item) {
+  for(auto && el : item) {
+    ::tlgen::details::MyInt32Reset(el);
+  }
 }
 
-void tl2::details::BuiltinTuple3MyInt32Reset(std::array<::tl2::MyInt32, 3>& item) {
-	for(auto && el : item) {
-		::tl2::details::MyInt32Reset(el);
-	}
+bool tlgen::details::BuiltinTuple3MyInt32WriteJSON(std::ostream &s, const std::array<::tlgen::MyInt32, 3>& item) {
+  s << "[";
+  size_t index = 0;
+  for(auto && el : item) {
+    if (!::tlgen::details::MyInt32WriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3MyInt32WriteJSON(std::ostream &s, const std::array<::tl2::MyInt32, 3>& item) {
-	s << "[";
-	size_t index = 0;
-	for(auto && el : item) {
-		if (!::tl2::details::MyInt32WriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinTuple3MyInt32Read(::tlgen::basictl::tl_istream & s, std::array<::tlgen::MyInt32, 3>& item) {
+  for(auto && el : item) {
+    if (!::tlgen::details::MyInt32Read(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3MyInt32Read(::basictl::tl_istream & s, std::array<::tl2::MyInt32, 3>& item) {
-	for(auto && el : item) {
-		if (!::tl2::details::MyInt32Read(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinTuple3MyInt32Write(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::MyInt32, 3>& item) {
+  for(const auto & el : item) {
+    if (!::tlgen::details::MyInt32Write(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3MyInt32Write(::basictl::tl_ostream & s, const std::array<::tl2::MyInt32, 3>& item) {
-	for(const auto & el : item) {
-		if (!::tl2::details::MyInt32Write(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinTuple3MyInt32BoxedReset(std::array<::tlgen::MyInt32, 3>& item) {
+  for(auto && el : item) {
+    ::tlgen::details::MyInt32Reset(el);
+  }
 }
 
-void tl2::details::BuiltinTuple3MyInt32BoxedReset(std::array<::tl2::MyInt32, 3>& item) {
-	for(auto && el : item) {
-		::tl2::details::MyInt32Reset(el);
-	}
+bool tlgen::details::BuiltinTuple3MyInt32BoxedWriteJSON(std::ostream &s, const std::array<::tlgen::MyInt32, 3>& item) {
+  s << "[";
+  size_t index = 0;
+  for(auto && el : item) {
+    if (!::tlgen::details::MyInt32WriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3MyInt32BoxedWriteJSON(std::ostream &s, const std::array<::tl2::MyInt32, 3>& item) {
-	s << "[";
-	size_t index = 0;
-	for(auto && el : item) {
-		if (!::tl2::details::MyInt32WriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinTuple3MyInt32BoxedRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::MyInt32, 3>& item) {
+  for(auto && el : item) {
+    if (!::tlgen::details::MyInt32ReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3MyInt32BoxedRead(::basictl::tl_istream & s, std::array<::tl2::MyInt32, 3>& item) {
-	for(auto && el : item) {
-		if (!::tl2::details::MyInt32ReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinTuple3MyInt32BoxedWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::MyInt32, 3>& item) {
+  for(const auto & el : item) {
+    if (!::tlgen::details::MyInt32WriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTuple3MyInt32BoxedWrite(::basictl::tl_ostream & s, const std::array<::tl2::MyInt32, 3>& item) {
-	for(const auto & el : item) {
-		if (!::tl2::details::MyInt32WriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinTupleStringReset(std::vector<std::string>& item) {
+  item.resize(0);
 }
 
-void tl2::details::BuiltinTupleStringReset(std::vector<std::string>& item) {
-	item.resize(0);
+bool tlgen::details::BuiltinTupleStringWriteJSON(std::ostream & s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) {
+  if (item.size() != nat_n) { return false; }
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << "\"" << el << "\"";
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinTupleStringWriteJSON(std::ostream & s, const std::vector<std::string>& item, uint32_t nat_n) {
-	if (item.size() != nat_n) { return false; }
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		s << "\"" << el << "\"";
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinTupleStringRead(::tlgen::basictl::tl_istream & s, std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) {
+  // TODO - check length sanity
+  item.resize(nat_n);
+  for(auto && el : item) {
+    if (!s.string_read(el)) { return false; }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTupleStringRead(::basictl::tl_istream & s, std::vector<std::string>& item, uint32_t nat_n) {
-	// TODO - check length sanity
-	item.resize(nat_n);
-	for(auto && el : item) {
-		if (!s.string_read(el)) { return false; }
-	}
-	return true;
+bool tlgen::details::BuiltinTupleStringWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) {
+  if (item.size() != nat_n) { return s.set_error_sequence_length(); }
+  for(const auto & el : item) {
+    if (!s.string_write(el)) { return false;}
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinTupleStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item, uint32_t nat_n) {
-	if (item.size() != nat_n) { return s.set_error_sequence_length(); }
-	for(const auto & el : item) {
-		if (!s.string_write(el)) { return false;}
-	}
-	return true;
+void tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntReset(std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  item.clear(); // TODO - unwrap
 }
 
-void tl2::details::BuiltinVectorAColorReset(std::vector<::tl2::a::Color>& item) {
-	item.resize(0); // TODO - unwrap
+bool tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  s << "{";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << el.first;
+    s << ":";
+    if (!::tlgen::details::PairIntIntWriteJSON(s, el.second)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorAColorWriteJSON(std::ostream & s, const std::vector<::tl2::a::Color>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::AColorWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntRead(::tlgen::basictl::tl_istream & s, std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  item.clear();
+  for(uint32_t i = 0; i < len; i++) {
+    ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>> el;
+    if (!::tlgen::details::DictionaryElemIntPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+    item[el.key] = el.value;
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorAColorRead(::basictl::tl_istream & s, std::vector<::tl2::a::Color>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::AColorReadBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
+    if (!::tlgen::details::DictionaryElemIntPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorAColorWrite(::basictl::tl_ostream & s, const std::vector<::tl2::a::Color>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::AColorWriteBoxed(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntReset(std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  item.clear(); // TODO - unwrap
 }
 
-void tl2::details::BuiltinVectorDictionaryElemIntPairIntIntReset(std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	item.clear(); // TODO - unwrap
+bool tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  s << "{";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << el.first;
+    s << ":";
+    if (!::tlgen::details::PairIntIntWriteJSON(s, el.second)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "}";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	s << "{";
-	size_t index = 0;
-	for(const auto & el : item) {
-		s << el.first;
-		s << ":";
-		if (!::tl2::details::PairIntIntWriteJSON(s, el.second)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntRead(::tlgen::basictl::tl_istream & s, std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  item.clear();
+  for(uint32_t i = 0; i < len; i++) {
+    ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>> el;
+    if (!::tlgen::details::DictionaryElemLongPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+    item[el.key] = el.value;
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	item.clear();
-	for(uint32_t i = 0; i < len; i++) {
-		::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>> el;
-		if (!::tl2::details::DictionaryElemIntPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-		item[el.key] = el.value;
-	}
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
+    if (!::tlgen::details::DictionaryElemLongPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
-		if (!::tl2::details::DictionaryElemIntPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-void tl2::details::BuiltinVectorDictionaryElemLongPairIntIntReset(std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	item.clear(); // TODO - unwrap
+bool tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairBoolAColorIntWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	s << "{";
-	size_t index = 0;
-	for(const auto & el : item) {
-		s << el.first;
-		s << ":";
-		if (!::tl2::details::PairIntIntWriteJSON(s, el.second)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "}";
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::DictionaryElemPairBoolAColorIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	item.clear();
-	for(uint32_t i = 0; i < len; i++) {
-		::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>> el;
-		if (!::tl2::details::DictionaryElemLongPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-		item[el.key] = el.value;
-	}
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairBoolAColorIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
-		if (!::tl2::details::DictionaryElemLongPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-void tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item) {
-	item.resize(0); // TODO - unwrap
+bool tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairFloatDoubleIntWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairBoolAColorIntWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::DictionaryElemPairFloatDoubleIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::DictionaryElemPairBoolAColorIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairFloatDoubleIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairBoolAColorIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-void tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item) {
-	item.resize(0); // TODO - unwrap
+bool tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairIntIntIntWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairFloatDoubleIntWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::DictionaryElemPairIntIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::DictionaryElemPairFloatDoubleIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+bool tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairIntIntIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairFloatDoubleIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
+void tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item) {
+  item.resize(0); // TODO - unwrap
 }
 
-void tl2::details::BuiltinVectorDictionaryElemPairIntIntIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item) {
-	item.resize(0); // TODO - unwrap
+bool tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairIntPairMultiPointStringIntWriteJSON(s, el)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::DictionaryElemPairIntPairMultiPointStringIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
 }
 
-bool tl2::details::BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairIntIntIntWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemPairIntIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::DictionaryElemPairIntIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemPairIntIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairIntIntIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-void tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item) {
-	item.resize(0); // TODO - unwrap
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairIntPairMultiPointStringIntWriteJSON(s, el)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::DictionaryElemPairIntPairMultiPointStringIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemPairIntPairMultiPointStringIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-void tl2::details::BuiltinVectorDictionaryElemStrangeStringReset(std::map<uint32_t, std::string>& item) {
-	item.clear(); // TODO - unwrap
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemStrangeStringWriteJSON(std::ostream & s, const std::map<uint32_t, std::string>& item) {
-	s << "{";
-	size_t index = 0;
-	for(const auto & el : item) {
-		s << el.first;
-		s << ":";
-		s << "\"" << el.second << "\"";
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemStrangeStringRead(::basictl::tl_istream & s, std::map<uint32_t, std::string>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	item.clear();
-	for(uint32_t i = 0; i < len; i++) {
-		::tl2::DictionaryElemStrange<std::string> el;
-		if (!::tl2::details::DictionaryElemStrangeStringRead(s, el)) { return s.set_error_unknown_scenario(); }
-		item[el.key] = el.value;
-	}
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemStrangeStringWrite(::basictl::tl_ostream & s, const std::map<uint32_t, std::string>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		::tl2::DictionaryElemStrange<std::string> el2{.key= el.first, .value= el.second};
-		if (!::tl2::details::DictionaryElemStrangeStringWrite(s, el2)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-void tl2::details::BuiltinVectorDictionaryElemStringPairIntIntReset(std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
-	item.clear(); // TODO - unwrap
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
-	s << "{";
-	size_t index = 0;
-	for(const auto & el : item) {
-		s << "\"" << el.first << "\"";
-		s << ":";
-		if (!::tl2::details::PairIntIntWriteJSON(s, el.second)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	item.clear();
-	for(uint32_t i = 0; i < len; i++) {
-		::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>> el;
-		if (!::tl2::details::DictionaryElemStringPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
-		item[el.key] = el.value;
-	}
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
-		if (!::tl2::details::DictionaryElemStringPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-void tl2::details::BuiltinVectorDictionaryElemTupleStringIntReset(std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item) {
-	item.resize(0); // TODO - unwrap
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemTupleStringIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item, uint32_t nat_t) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemTupleStringIntWriteJSON(s, el, nat_t)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemTupleStringIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item, uint32_t nat_t) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::DictionaryElemTupleStringIntRead(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemTupleStringIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item, uint32_t nat_t) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemTupleStringIntWrite(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-void tl2::details::BuiltinVectorDictionaryElemUglyIntStringReset(std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item) {
-	item.resize(0); // TODO - unwrap
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemUglyIntStringWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item, uint32_t nat_t) {
-	s << "[";
-	size_t index = 0;
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemUglyIntStringWriteJSON(s, el, nat_t)) { return false; }
-		if (index != item.size() - 1) {
-			s << ",";
-		}
-		index++;
-	}
-	s << "]";
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemUglyIntStringRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item, uint32_t nat_t) {
-	uint32_t len = 0;
-	if (!s.nat_read(len)) { return false; }
-	// TODO - check length sanity
-	item.resize(len);
-	for(auto && el : item) {
-		if (!::tl2::details::DictionaryElemUglyIntStringRead(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-bool tl2::details::BuiltinVectorDictionaryElemUglyIntStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item, uint32_t nat_t) {
-	if (!s.nat_write(item.size())) { return false; }
-	for(const auto & el : item) {
-		if (!::tl2::details::DictionaryElemUglyIntStringWrite(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
-	}
-	return true;
-}
-
-void tl2::details::DictionaryElemIntPairIntIntReset(::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	item.key = 0;
-	::tl2::details::PairIntIntReset(item.value);
-}
-
-bool tl2::details::DictionaryElemIntPairIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.key != 0) {
-		add_comma = true;
-		s << "\"key\":";
-		s << item.key;
-	}
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"value\":";
-	if (!::tl2::details::PairIntIntWriteJSON(s, item.value)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	if (!s.int_read(item.key)) { return false; }
-	if (!::tl2::details::PairIntIntRead(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::DictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	if (!s.int_write(item.key)) { return false;}
-	if (!::tl2::details::PairIntIntWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::DictionaryElemIntPairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemIntPairIntIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemIntPairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemIntPairIntIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemLongPairIntIntReset(::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	item.key = 0;
-	::tl2::details::PairIntIntReset(item.value);
-}
-
-bool tl2::details::DictionaryElemLongPairIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.key != 0) {
-		add_comma = true;
-		s << "\"key\":";
-		s << item.key;
-	}
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"value\":";
-	if (!::tl2::details::PairIntIntWriteJSON(s, item.value)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	if (!s.long_read(item.key)) { return false; }
-	if (!::tl2::details::PairIntIntRead(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::DictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	if (!s.long_write(item.key)) { return false;}
-	if (!::tl2::details::PairIntIntWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::DictionaryElemLongPairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemLongPairIntIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemLongPairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemLongPairIntIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemPairBoolAColorIntReset(::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept {
-	::tl2::details::PairBoolAColorReset(item.key);
-	item.value = 0;
-}
-
-bool tl2::details::DictionaryElemPairBoolAColorIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"key\":";
-	if (!::tl2::details::PairBoolAColorWriteJSON(s, item.key)) { return false; }
-	if (item.value != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << item.value;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairBoolAColorIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairBoolAColorRead(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_read(item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairBoolAColorIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairBoolAColorWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_write(item.value)) { return false;}
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairBoolAColorIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairBoolAColorIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemPairBoolAColorIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairBoolAColorIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemPairFloatDoubleIntReset(::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept {
-	::tl2::details::PairFloatDoubleReset(item.key);
-	item.value = 0;
-}
-
-bool tl2::details::DictionaryElemPairFloatDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"key\":";
-	if (!::tl2::details::PairFloatDoubleWriteJSON(s, item.key)) { return false; }
-	if (item.value != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << item.value;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairFloatDoubleIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairFloatDoubleRead(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_read(item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairFloatDoubleIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairFloatDoubleWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_write(item.value)) { return false;}
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairFloatDoubleIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairFloatDoubleIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemPairFloatDoubleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairFloatDoubleIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemPairIntIntIntReset(::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
-	::tl2::details::PairIntIntReset(item.key);
-	item.value = 0;
-}
-
-bool tl2::details::DictionaryElemPairIntIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"key\":";
-	if (!::tl2::details::PairIntIntWriteJSON(s, item.key)) { return false; }
-	if (item.value != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << item.value;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairIntIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairIntIntRead(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_read(item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairIntIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairIntIntWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_write(item.value)) { return false;}
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairIntIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairIntIntIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemPairIntIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairIntIntIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemPairIntPairMultiPointStringIntReset(::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept {
-	::tl2::details::PairIntPairMultiPointStringReset(item.key);
-	item.value = 0;
-}
-
-bool tl2::details::DictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"key\":";
-	if (!::tl2::details::PairIntPairMultiPointStringWriteJSON(s, item.key)) { return false; }
-	if (item.value != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << item.value;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairIntPairMultiPointStringIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairIntPairMultiPointStringRead(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_read(item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairIntPairMultiPointStringIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept {
-	if (!::tl2::details::PairIntPairMultiPointStringWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
-	if (!s.int_write(item.value)) { return false;}
-	return true;
-}
-
-bool tl2::details::DictionaryElemPairIntPairMultiPointStringIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairIntPairMultiPointStringIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemPairIntPairMultiPointStringIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemPairIntPairMultiPointStringIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemStringPairIntIntReset(::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	item.key.clear();
-	::tl2::details::PairIntIntReset(item.value);
-}
-
-bool tl2::details::DictionaryElemStringPairIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.key.size() != 0) {
-		add_comma = true;
-		s << "\"key\":";
-		s << "\"" << item.key << "\"";
-	}
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"value\":";
-	if (!::tl2::details::PairIntIntWriteJSON(s, item.value)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	if (!s.string_read(item.key)) { return false; }
-	if (!::tl2::details::PairIntIntRead(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::DictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept {
-	if (!s.string_write(item.key)) { return false;}
-	if (!::tl2::details::PairIntIntWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::DictionaryElemStringPairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemStringPairIntIntRead(s, item);
-}
-
-bool tl2::details::DictionaryElemStringPairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemStringPairIntIntWrite(s, item);
-}
-
-void tl2::details::DictionaryElemTupleStringIntReset(::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item) noexcept {
-	item.key.clear();
-	item.value = 0;
-}
-
-bool tl2::details::DictionaryElemTupleStringIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if ((item.key.size() != 0) || (nat_k != 0)) {
-		add_comma = true;
-		s << "\"key\":";
-		if (!::tl2::details::BuiltinTupleStringWriteJSON(s, item.key, nat_k)) { return false; }
-	}
-	if (item.value != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << item.value;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemTupleStringIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) noexcept {
-	if (!::tl2::details::BuiltinTupleStringRead(s, item.key, nat_k)) { return false; }
-	if (!s.int_read(item.value)) { return false; }
-	return true;
-}
-
-bool tl2::details::DictionaryElemTupleStringIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) noexcept {
-	if (!::tl2::details::BuiltinTupleStringWrite(s, item.key, nat_k)) { return false; }
-	if (!s.int_write(item.value)) { return false;}
-	return true;
-}
-
-bool tl2::details::DictionaryElemTupleStringIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) {
-	if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemTupleStringIntRead(s, item, nat_k);
-}
-
-bool tl2::details::DictionaryElemTupleStringIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) {
-	if (!s.nat_write(0xa69d7dd0)) { return false; }
-	return tl2::details::DictionaryElemTupleStringIntWrite(s, item, nat_k);
-}
-
-void tl2::details::DictionaryElemUglyIntStringReset(::tl2::DictionaryElemUgly<int32_t, std::string>& item) noexcept {
-	item.key = 0;
-	item.value.clear();
-}
-
-bool tl2::details::DictionaryElemUglyIntStringWriteJSON(std::ostream& s, const ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if ((nat_f & (1<<0)) != 0) {
-		add_comma = true;
-		s << "\"key\":";
-		s << item.key;
-	}
-	if ((nat_f & (1<<1)) != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"value\":";
-		s << "\"" << item.value << "\"";
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::DictionaryElemUglyIntStringRead(::basictl::tl_istream & s, ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) noexcept {
-	if ((nat_f & (1<<0)) != 0) {
-		if (!s.int_read(item.key)) { return false; }
-	} else {
-			item.key = 0;
-	}
-	if ((nat_f & (1<<1)) != 0) {
-		if (!s.string_read(item.value)) { return false; }
-	} else {
-			item.value.clear();
-	}
-	return true;
-}
-
-bool tl2::details::DictionaryElemUglyIntStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) noexcept {
-	if ((nat_f & (1<<0)) != 0) {
-			if (!s.int_write(item.key)) { return false;}
-	}
-	if ((nat_f & (1<<1)) != 0) {
-			if (!s.string_write(item.value)) { return false;}
-	}
-	return true;
-}
-
-bool tl2::details::DictionaryElemUglyIntStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) {
-	if (!s.nat_read_exact_tag(0xe6790546)) { return false; }
-	return tl2::details::DictionaryElemUglyIntStringRead(s, item, nat_f);
-}
-
-bool tl2::details::DictionaryElemUglyIntStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) {
-	if (!s.nat_write(0xe6790546)) { return false; }
-	return tl2::details::DictionaryElemUglyIntStringWrite(s, item, nat_f);
-}
-
-bool tl2::MultiPoint::write_json(std::ostream& s)const {
-	if (!::tl2::details::MultiPointWriteJSON(s, *this)) { return false; }
-	return true;
-}
-
-bool tl2::MultiPoint::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::MultiPointRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-bool tl2::MultiPoint::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::MultiPointWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-void tl2::MultiPoint::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
-}
-
-void tl2::MultiPoint::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
-}
-
-bool tl2::MultiPoint::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::MultiPointReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-bool tl2::MultiPoint::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::MultiPointWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-void tl2::MultiPoint::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
-}
-
-void tl2::MultiPoint::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
-}
-
-void tl2::details::MultiPointReset(::tl2::MultiPoint& item) noexcept {
-	::tl2::details::BuiltinTuple3IntReset(item.a);
-	::tl2::details::BuiltinTuple3IntBoxedReset(item.b);
-	::tl2::details::BuiltinTuple3Int32Reset(item.c);
-	::tl2::details::BuiltinTuple3Int32BoxedReset(item.d);
-	::tl2::details::BuiltinTuple3MyInt32Reset(item.e);
-	::tl2::details::BuiltinTuple3MyInt32BoxedReset(item.f);
-}
-
-bool tl2::details::MultiPointWriteJSON(std::ostream& s, const ::tl2::MultiPoint& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"a\":";
-	if (!::tl2::details::BuiltinTuple3IntWriteJSON(s, item.a)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"b\":";
-	if (!::tl2::details::BuiltinTuple3IntBoxedWriteJSON(s, item.b)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"c\":";
-	if (!::tl2::details::BuiltinTuple3Int32WriteJSON(s, item.c)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"d\":";
-	if (!::tl2::details::BuiltinTuple3Int32BoxedWriteJSON(s, item.d)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"e\":";
-	if (!::tl2::details::BuiltinTuple3MyInt32WriteJSON(s, item.e)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"f\":";
-	if (!::tl2::details::BuiltinTuple3MyInt32BoxedWriteJSON(s, item.f)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::MultiPointRead(::basictl::tl_istream & s, ::tl2::MultiPoint& item) noexcept {
-	if (!::tl2::details::BuiltinTuple3IntRead(s, item.a)) { return false; }
-	if (!::tl2::details::BuiltinTuple3IntBoxedRead(s, item.b)) { return false; }
-	if (!::tl2::details::BuiltinTuple3Int32Read(s, item.c)) { return false; }
-	if (!::tl2::details::BuiltinTuple3Int32BoxedRead(s, item.d)) { return false; }
-	if (!::tl2::details::BuiltinTuple3MyInt32Read(s, item.e)) { return false; }
-	if (!::tl2::details::BuiltinTuple3MyInt32BoxedRead(s, item.f)) { return false; }
-	return true;
-}
-
-bool tl2::details::MultiPointWrite(::basictl::tl_ostream & s, const ::tl2::MultiPoint& item) noexcept {
-	if (!::tl2::details::BuiltinTuple3IntWrite(s, item.a)) { return false; }
-	if (!::tl2::details::BuiltinTuple3IntBoxedWrite(s, item.b)) { return false; }
-	if (!::tl2::details::BuiltinTuple3Int32Write(s, item.c)) { return false; }
-	if (!::tl2::details::BuiltinTuple3Int32BoxedWrite(s, item.d)) { return false; }
-	if (!::tl2::details::BuiltinTuple3MyInt32Write(s, item.e)) { return false; }
-	if (!::tl2::details::BuiltinTuple3MyInt32BoxedWrite(s, item.f)) { return false; }
-	return true;
-}
-
-bool tl2::details::MultiPointReadBoxed(::basictl::tl_istream & s, ::tl2::MultiPoint& item) {
-	if (!s.nat_read_exact_tag(0x0e1ae81e)) { return false; }
-	return tl2::details::MultiPointRead(s, item);
-}
-
-bool tl2::details::MultiPointWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MultiPoint& item) {
-	if (!s.nat_write(0x0e1ae81e)) { return false; }
-	return tl2::details::MultiPointWrite(s, item);
-}
-
-void tl2::details::PairAInnerAInnerReset(::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item) noexcept {
-	::tl2::details::AInnerReset(item.a);
-	::tl2::details::AInnerReset(item.b);
-}
-
-bool tl2::details::PairAInnerAInnerWriteJSON(std::ostream& s, const ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"a\":";
-	if (!::tl2::details::AInnerWriteJSON(s, item.a, nat_X)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"b\":";
-	if (!::tl2::details::AInnerWriteJSON(s, item.b, nat_Y)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairAInnerAInnerRead(::basictl::tl_istream & s, ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) noexcept {
-	if (!::tl2::details::AInnerRead(s, item.a, nat_X)) { return s.set_error_unknown_scenario(); }
-	if (!::tl2::details::AInnerRead(s, item.b, nat_Y)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairAInnerAInnerWrite(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) noexcept {
-	if (!::tl2::details::AInnerWrite(s, item.a, nat_X)) { return s.set_error_unknown_scenario(); }
-	if (!::tl2::details::AInnerWrite(s, item.b, nat_Y)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairAInnerAInnerReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairAInnerAInnerRead(s, item, nat_X, nat_Y);
-}
-
-bool tl2::details::PairAInnerAInnerWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>& item, uint32_t nat_X, uint32_t nat_Y) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairAInnerAInnerWrite(s, item, nat_X, nat_Y);
-}
-
-void tl2::details::PairBoolAColorReset(::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept {
-	item.a = false;
-	::tl2::details::AColorReset(item.b);
-}
-
-bool tl2::details::PairBoolAColorWriteJSON(std::ostream& s, const ::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.a) {
-		add_comma = true;
-		s << "\"a\":";
-		if (!::tl2::details::BoolWriteJSON(s, item.a)) { return false; }
-	}
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"b\":";
-	if (!::tl2::details::AColorWriteJSON(s, item.b)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairBoolAColorRead(::basictl::tl_istream & s, ::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept {
-	if (!::tl2::details::BoolReadBoxed(s, item.a)) { return false; }
-	if (!::tl2::details::AColorReadBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairBoolAColorWrite(::basictl::tl_ostream & s, const ::tl2::Pair<bool, ::tl2::a::Color>& item) noexcept {
-	if (!::tl2::details::BoolWriteBoxed(s, item.a)) { return false; }
-	if (!::tl2::details::AColorWriteBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairBoolAColorReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<bool, ::tl2::a::Color>& item) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairBoolAColorRead(s, item);
-}
-
-bool tl2::details::PairBoolAColorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<bool, ::tl2::a::Color>& item) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairBoolAColorWrite(s, item);
-}
-
-void tl2::details::PairFloatDoubleReset(::tl2::Pair<float, double>& item) noexcept {
-	item.a = 0;
-	item.b = 0;
-}
-
-bool tl2::details::PairFloatDoubleWriteJSON(std::ostream& s, const ::tl2::Pair<float, double>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.a != 0) {
-		add_comma = true;
-		s << "\"a\":";
-		s << item.a;
-	}
-	if (item.b != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"b\":";
-		s << item.b;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairFloatDoubleRead(::basictl::tl_istream & s, ::tl2::Pair<float, double>& item) noexcept {
-	if (!s.float_read(item.a)) { return false; }
-	if (!s.double_read(item.b)) { return false; }
-	return true;
-}
-
-bool tl2::details::PairFloatDoubleWrite(::basictl::tl_ostream & s, const ::tl2::Pair<float, double>& item) noexcept {
-	if (!s.float_write(item.a)) { return false;}
-	if (!s.double_write(item.b)) { return false;}
-	return true;
-}
-
-bool tl2::details::PairFloatDoubleReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<float, double>& item) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairFloatDoubleRead(s, item);
-}
-
-bool tl2::details::PairFloatDoubleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<float, double>& item) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairFloatDoubleWrite(s, item);
-}
-
-void tl2::details::PairIntIntReset(::tl2::Pair<int32_t, int32_t>& item) noexcept {
-	item.a = 0;
-	item.b = 0;
-}
-
-bool tl2::details::PairIntIntWriteJSON(std::ostream& s, const ::tl2::Pair<int32_t, int32_t>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.a != 0) {
-		add_comma = true;
-		s << "\"a\":";
-		s << item.a;
-	}
-	if (item.b != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"b\":";
-		s << item.b;
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairIntIntRead(::basictl::tl_istream & s, ::tl2::Pair<int32_t, int32_t>& item) noexcept {
-	if (!s.int_read(item.a)) { return false; }
-	if (!s.int_read(item.b)) { return false; }
-	return true;
-}
-
-bool tl2::details::PairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, int32_t>& item) noexcept {
-	if (!s.int_write(item.a)) { return false;}
-	if (!s.int_write(item.b)) { return false;}
-	return true;
-}
-
-bool tl2::details::PairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<int32_t, int32_t>& item) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairIntIntRead(s, item);
-}
-
-bool tl2::details::PairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, int32_t>& item) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairIntIntWrite(s, item);
-}
-
-void tl2::details::PairIntPairMultiPointStringReset(::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept {
-	item.a = 0;
-	::tl2::details::PairMultiPointStringReset(item.b);
-}
-
-bool tl2::details::PairIntPairMultiPointStringWriteJSON(std::ostream& s, const ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.a != 0) {
-		add_comma = true;
-		s << "\"a\":";
-		s << item.a;
-	}
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"b\":";
-	if (!::tl2::details::PairMultiPointStringWriteJSON(s, item.b)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairIntPairMultiPointStringRead(::basictl::tl_istream & s, ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept {
-	if (!s.int_read(item.a)) { return false; }
-	if (!::tl2::details::PairMultiPointStringRead(s, item.b)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairIntPairMultiPointStringWrite(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) noexcept {
-	if (!s.int_write(item.a)) { return false;}
-	if (!::tl2::details::PairMultiPointStringWrite(s, item.b)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairIntPairMultiPointStringReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairIntPairMultiPointStringRead(s, item);
-}
-
-bool tl2::details::PairIntPairMultiPointStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>& item) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairIntPairMultiPointStringWrite(s, item);
-}
-
-void tl2::details::PairMultiPointStringReset(::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept {
-	::tl2::details::MultiPointReset(item.a);
-	item.b.clear();
-}
-
-bool tl2::details::PairMultiPointStringWriteJSON(std::ostream& s, const ::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"a\":";
-	if (!::tl2::details::MultiPointWriteJSON(s, item.a)) { return false; }
-	if (item.b.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"b\":";
-		s << "\"" << item.b << "\"";
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairMultiPointStringRead(::basictl::tl_istream & s, ::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept {
-	if (!::tl2::details::MultiPointRead(s, item.a)) { return s.set_error_unknown_scenario(); }
-	if (!s.string_read(item.b)) { return false; }
-	return true;
-}
-
-bool tl2::details::PairMultiPointStringWrite(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::MultiPoint, std::string>& item) noexcept {
-	if (!::tl2::details::MultiPointWrite(s, item.a)) { return s.set_error_unknown_scenario(); }
-	if (!s.string_write(item.b)) { return false;}
-	return true;
-}
-
-bool tl2::details::PairMultiPointStringReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<::tl2::MultiPoint, std::string>& item) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairMultiPointStringRead(s, item);
-}
-
-bool tl2::details::PairMultiPointStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::MultiPoint, std::string>& item) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairMultiPointStringWrite(s, item);
-}
-
-void tl2::details::PairPairAInnerAInnerAInnerBoxed3Reset(::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item) noexcept {
-	::tl2::details::PairAInnerAInnerReset(item.a);
-	::tl2::details::AInner3Reset(item.b);
-}
-
-bool tl2::details::PairPairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) noexcept {
-	auto add_comma = false;
-	s << "{";
-	add_comma = true;
-	s << "\"a\":";
-	if (!::tl2::details::PairAInnerAInnerWriteJSON(s, item.a, nat_XXI, nat_XYI)) { return false; }
-	if (add_comma) {
-		s << ",";
-	}
-	add_comma = true;
-	s << "\"b\":";
-	if (!::tl2::details::AInner3WriteJSON(s, item.b)) { return false; }
-	s << "}";
-	return true;
-}
-
-bool tl2::details::PairPairAInnerAInnerAInnerBoxed3Read(::basictl::tl_istream & s, ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) noexcept {
-	if (!::tl2::details::PairAInnerAInnerRead(s, item.a, nat_XXI, nat_XYI)) { return s.set_error_unknown_scenario(); }
-	if (!::tl2::details::AInner3ReadBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairPairAInnerAInnerAInnerBoxed3Write(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) noexcept {
-	if (!::tl2::details::PairAInnerAInnerWrite(s, item.a, nat_XXI, nat_XYI)) { return s.set_error_unknown_scenario(); }
-	if (!::tl2::details::AInner3WriteBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
-	return true;
-}
-
-bool tl2::details::PairPairAInnerAInnerAInnerBoxed3ReadBoxed(::basictl::tl_istream & s, ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) {
-	if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
-	return tl2::details::PairPairAInnerAInnerAInnerBoxed3Read(s, item, nat_XXI, nat_XYI);
-}
-
-bool tl2::details::PairPairAInnerAInnerAInnerBoxed3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Pair<::tl2::Pair<::tl2::a::Inner, ::tl2::a::Inner>, ::tl2::a::InnerI<3>>& item, uint32_t nat_XXI, uint32_t nat_XYI) {
-	if (!s.nat_write(0x0f3c47ab)) { return false; }
-	return tl2::details::PairPairAInnerAInnerAInnerBoxed3Write(s, item, nat_XXI, nat_XYI);
-}
-
-void tl2::details::TupleStringReset(std::vector<std::string>& item) noexcept {
-	item.clear();
-}
-
-bool tl2::details::TupleStringWriteJSON(std::ostream& s, const std::vector<std::string>& item, uint32_t nat_n) noexcept {
-	if (!::tl2::details::BuiltinTupleStringWriteJSON(s, item, nat_n)) { return false; }
-	return true;
-}
-
-bool tl2::details::TupleStringRead(::basictl::tl_istream & s, std::vector<std::string>& item, uint32_t nat_n) noexcept {
-	if (!::tl2::details::BuiltinTupleStringRead(s, item, nat_n)) { return false; }
-	return true;
-}
-
-bool tl2::details::TupleStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item, uint32_t nat_n) noexcept {
-	if (!::tl2::details::BuiltinTupleStringWrite(s, item, nat_n)) { return false; }
-	return true;
-}
-
-bool tl2::details::TupleStringReadBoxed(::basictl::tl_istream & s, std::vector<std::string>& item, uint32_t nat_n) {
-	if (!s.nat_read_exact_tag(0x9770768a)) { return false; }
-	return tl2::details::TupleStringRead(s, item, nat_n);
-}
-
-bool tl2::details::TupleStringWriteBoxed(::basictl::tl_ostream & s, const std::vector<std::string>& item, uint32_t nat_n) {
-	if (!s.nat_write(0x9770768a)) { return false; }
-	return tl2::details::TupleStringWrite(s, item, nat_n);
-}
-
-bool tl2::UseDictUgly::write_json(std::ostream& s)const {
-	if (!::tl2::details::UseDictUglyWriteJSON(s, *this)) { return false; }
-	return true;
-}
-
-bool tl2::UseDictUgly::read(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::UseDictUglyRead(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-bool tl2::UseDictUgly::write(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::UseDictUglyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-void tl2::UseDictUgly::read_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read(s2);
-	s2.pass_data(s);
-}
-
-void tl2::UseDictUgly::write_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write(s2);
-	s2.pass_data(s);
-}
-
-bool tl2::UseDictUgly::read_boxed(::basictl::tl_istream & s) noexcept {
-	if (!::tl2::details::UseDictUglyReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-bool tl2::UseDictUgly::write_boxed(::basictl::tl_ostream & s)const noexcept {
-	if (!::tl2::details::UseDictUglyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
-	s.last_release();
-	return true;
-}
-
-void tl2::UseDictUgly::read_boxed_or_throw(::basictl::tl_throwable_istream & s) {
-	::basictl::tl_istream s2(s);
-	this->read_boxed(s2);
-	s2.pass_data(s);
-}
-
-void tl2::UseDictUgly::write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const {
-	::basictl::tl_ostream s2(s);
-	this->write_boxed(s2);
-	s2.pass_data(s);
-}
-
-void tl2::details::UseDictUglyReset(::tl2::UseDictUgly& item) noexcept {
-	item.n = 0;
-	item.a.clear();
-	item.b.clear();
-	item.c.clear();
-	item.d.clear();
-	item.e.clear();
-	item.f.clear();
-	item.g.clear();
-	item.x.clear();
-	item.y.clear();
-	item.z.clear();
-}
-
-bool tl2::details::UseDictUglyWriteJSON(std::ostream& s, const ::tl2::UseDictUgly& item) noexcept {
-	auto add_comma = false;
-	s << "{";
-	if (item.n != 0) {
-		add_comma = true;
-		s << "\"n\":";
-		s << item.n;
-	}
-	if (item.a.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"a\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemUglyIntStringWriteJSON(s, item.a, item.n)) { return false; }
-	}
-	if (item.b.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"b\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemStrangeStringWriteJSON(s, item.b)) { return false; }
-	}
-	if (item.c.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"c\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(s, item.c)) { return false; }
-	}
-	if (item.d.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"d\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemTupleStringIntWriteJSON(s, item.d, item.n)) { return false; }
-	}
-	if (item.e.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"e\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(s, item.e)) { return false; }
-	}
-	if (item.f.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"f\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(s, item.f)) { return false; }
-	}
-	if (item.g.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"g\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(s, item.g)) { return false; }
-	}
-	if (item.x.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"x\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(s, item.x)) { return false; }
-	}
-	if (item.y.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"y\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(s, item.y)) { return false; }
-	}
-	if (item.z.size() != 0) {
-		if (add_comma) {
-			s << ",";
-		}
-		add_comma = true;
-		s << "\"z\":";
-		if (!::tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(s, item.z)) { return false; }
-	}
-	s << "}";
-	return true;
-}
-
-bool tl2::details::UseDictUglyRead(::basictl::tl_istream & s, ::tl2::UseDictUgly& item) noexcept {
-	if (!s.nat_read(item.n)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemUglyIntStringRead(s, item.a, item.n)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemStrangeStringRead(s, item.b)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairIntIntIntRead(s, item.c)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemTupleStringIntRead(s, item.d, item.n)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntRead(s, item.e)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntRead(s, item.f)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(s, item.g)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemIntPairIntIntRead(s, item.x)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemLongPairIntIntRead(s, item.y)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemStringPairIntIntRead(s, item.z)) { return false; }
-	return true;
-}
-
-bool tl2::details::UseDictUglyWrite(::basictl::tl_ostream & s, const ::tl2::UseDictUgly& item) noexcept {
-	if (!s.nat_write(item.n)) { return false;}
-	if (!::tl2::details::BuiltinVectorDictionaryElemUglyIntStringWrite(s, item.a, item.n)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemStrangeStringWrite(s, item.b)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairIntIntIntWrite(s, item.c)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemTupleStringIntWrite(s, item.d, item.n)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairBoolAColorIntWrite(s, item.e)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(s, item.f)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(s, item.g)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemIntPairIntIntWrite(s, item.x)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemLongPairIntIntWrite(s, item.y)) { return false; }
-	if (!::tl2::details::BuiltinVectorDictionaryElemStringPairIntIntWrite(s, item.z)) { return false; }
-	return true;
-}
-
-bool tl2::details::UseDictUglyReadBoxed(::basictl::tl_istream & s, ::tl2::UseDictUgly& item) {
-	if (!s.nat_read_exact_tag(0xfb9ce817)) { return false; }
-	return tl2::details::UseDictUglyRead(s, item);
-}
-
-bool tl2::details::UseDictUglyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UseDictUgly& item) {
-	if (!s.nat_write(0xfb9ce817)) { return false; }
-	return tl2::details::UseDictUglyWrite(s, item);
+bool tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemPairIntPairMultiPointStringIntWrite(s, el)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+void tlgen::details::BuiltinVectorDictionaryElemStrangeStringReset(std::map<uint32_t, std::string>& item) {
+  item.clear(); // TODO - unwrap
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemStrangeStringWriteJSON(std::ostream & s, const std::map<uint32_t, std::string>& item) {
+  s << "{";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << el.first;
+    s << ":";
+    s << "\"" << el.second << "\"";
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemStrangeStringRead(::tlgen::basictl::tl_istream & s, std::map<uint32_t, std::string>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  item.clear();
+  for(uint32_t i = 0; i < len; i++) {
+    ::tlgen::DictionaryElemStrange<std::string> el;
+    if (!::tlgen::details::DictionaryElemStrangeStringRead(s, el)) { return s.set_error_unknown_scenario(); }
+    item[el.key] = el.value;
+  }
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemStrangeStringWrite(::tlgen::basictl::tl_ostream & s, const std::map<uint32_t, std::string>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    ::tlgen::DictionaryElemStrange<std::string> el2{.key= el.first, .value= el.second};
+    if (!::tlgen::details::DictionaryElemStrangeStringWrite(s, el2)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+void tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntReset(std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  item.clear(); // TODO - unwrap
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  s << "{";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << "\"" << el.first << "\"";
+    s << ":";
+    if (!::tlgen::details::PairIntIntWriteJSON(s, el.second)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntRead(::tlgen::basictl::tl_istream & s, std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  item.clear();
+  for(uint32_t i = 0; i < len; i++) {
+    ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>> el;
+    if (!::tlgen::details::DictionaryElemStringPairIntIntRead(s, el)) { return s.set_error_unknown_scenario(); }
+    item[el.key] = el.value;
+  }
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>> el2{.key= el.first, .value= el.second};
+    if (!::tlgen::details::DictionaryElemStringPairIntIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+void tlgen::details::BuiltinVectorDictionaryElemTupleStringIntReset(std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item) {
+  item.resize(0); // TODO - unwrap
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemTupleStringIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item, [[maybe_unused]] uint32_t nat_t) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemTupleStringIntWriteJSON(s, el, nat_t)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemTupleStringIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item, [[maybe_unused]] uint32_t nat_t) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::DictionaryElemTupleStringIntRead(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemTupleStringIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item, [[maybe_unused]] uint32_t nat_t) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemTupleStringIntWrite(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+void tlgen::details::BuiltinVectorDictionaryElemUglyIntStringReset(std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item) {
+  item.resize(0); // TODO - unwrap
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemUglyIntStringWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item, [[maybe_unused]] uint32_t nat_t) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemUglyIntStringWriteJSON(s, el, nat_t)) { return false; }
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemUglyIntStringRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item, [[maybe_unused]] uint32_t nat_t) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!::tlgen::details::DictionaryElemUglyIntStringRead(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorDictionaryElemUglyIntStringWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item, [[maybe_unused]] uint32_t nat_t) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!::tlgen::details::DictionaryElemUglyIntStringWrite(s, el, nat_t)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+void tlgen::details::DictionaryElemIntPairIntIntReset(::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)item;
+  item.key = 0;
+  ::tlgen::details::PairIntIntReset(item.value);
+}
+
+bool tlgen::details::DictionaryElemIntPairIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.key != 0) {
+    add_comma = true;
+    s << "\"key\":";
+    s << item.key;
+  }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"value\":";
+  if (!::tlgen::details::PairIntIntWriteJSON(s, item.value)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemIntPairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.key)) { return false; }
+  if (!::tlgen::details::PairIntIntRead(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemIntPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.key)) { return false;}
+  if (!::tlgen::details::PairIntIntWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemIntPairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemIntPairIntIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemIntPairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemIntPairIntIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemLongPairIntIntReset(::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)item;
+  item.key = 0;
+  ::tlgen::details::PairIntIntReset(item.value);
+}
+
+bool tlgen::details::DictionaryElemLongPairIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.key != 0) {
+    add_comma = true;
+    s << "\"key\":";
+    s << item.key;
+  }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"value\":";
+  if (!::tlgen::details::PairIntIntWriteJSON(s, item.value)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemLongPairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.long_read(item.key)) { return false; }
+  if (!::tlgen::details::PairIntIntRead(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemLongPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.long_write(item.key)) { return false;}
+  if (!::tlgen::details::PairIntIntWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemLongPairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemLongPairIntIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemLongPairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemLongPairIntIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemPairBoolAColorIntReset(::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept {
+  (void)item;
+  ::tlgen::details::PairBoolAColorReset(item.key);
+  item.value = 0;
+}
+
+bool tlgen::details::DictionaryElemPairBoolAColorIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"key\":";
+  if (!::tlgen::details::PairBoolAColorWriteJSON(s, item.key)) { return false; }
+  if (item.value != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"value\":";
+    s << item.value;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairBoolAColorIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairBoolAColorRead(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_read(item.value)) { return false; }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairBoolAColorIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairBoolAColorWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_write(item.value)) { return false;}
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairBoolAColorIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairBoolAColorIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemPairBoolAColorIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairBoolAColorIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemPairFloatDoubleIntReset(::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept {
+  (void)item;
+  ::tlgen::details::PairFloatDoubleReset(item.key);
+  item.value = 0;
+}
+
+bool tlgen::details::DictionaryElemPairFloatDoubleIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"key\":";
+  if (!::tlgen::details::PairFloatDoubleWriteJSON(s, item.key)) { return false; }
+  if (item.value != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"value\":";
+    s << item.value;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairFloatDoubleIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairFloatDoubleRead(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_read(item.value)) { return false; }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairFloatDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairFloatDoubleWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_write(item.value)) { return false;}
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairFloatDoubleIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairFloatDoubleIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemPairFloatDoubleIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairFloatDoubleIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemPairIntIntIntReset(::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
+  (void)item;
+  ::tlgen::details::PairIntIntReset(item.key);
+  item.value = 0;
+}
+
+bool tlgen::details::DictionaryElemPairIntIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"key\":";
+  if (!::tlgen::details::PairIntIntWriteJSON(s, item.key)) { return false; }
+  if (item.value != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"value\":";
+    s << item.value;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairIntIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairIntIntRead(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_read(item.value)) { return false; }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairIntIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairIntIntWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_write(item.value)) { return false;}
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairIntIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairIntIntIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemPairIntIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairIntIntIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemPairIntPairMultiPointStringIntReset(::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept {
+  (void)item;
+  ::tlgen::details::PairIntPairMultiPointStringReset(item.key);
+  item.value = 0;
+}
+
+bool tlgen::details::DictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"key\":";
+  if (!::tlgen::details::PairIntPairMultiPointStringWriteJSON(s, item.key)) { return false; }
+  if (item.value != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"value\":";
+    s << item.value;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairIntPairMultiPointStringIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairIntPairMultiPointStringRead(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_read(item.value)) { return false; }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairIntPairMultiPointStringIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairIntPairMultiPointStringWrite(s, item.key)) { return s.set_error_unknown_scenario(); }
+  if (!s.int_write(item.value)) { return false;}
+  return true;
+}
+
+bool tlgen::details::DictionaryElemPairIntPairMultiPointStringIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairIntPairMultiPointStringIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemPairIntPairMultiPointStringIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemPairIntPairMultiPointStringIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemStringPairIntIntReset(::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)item;
+  item.key.clear();
+  ::tlgen::details::PairIntIntReset(item.value);
+}
+
+bool tlgen::details::DictionaryElemStringPairIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.key.size() != 0) {
+    add_comma = true;
+    s << "\"key\":";
+    s << "\"" << item.key << "\"";
+  }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"value\":";
+  if (!::tlgen::details::PairIntIntWriteJSON(s, item.value)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemStringPairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.string_read(item.key)) { return false; }
+  if (!::tlgen::details::PairIntIntRead(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemStringPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.string_write(item.key)) { return false;}
+  if (!::tlgen::details::PairIntIntWrite(s, item.value)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemStringPairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemStringPairIntIntRead(s, item);
+}
+
+bool tlgen::details::DictionaryElemStringPairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemStringPairIntIntWrite(s, item);
+}
+
+void tlgen::details::DictionaryElemTupleStringIntReset(::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item) noexcept {
+  (void)item;
+  item.key.clear();
+  item.value = 0;
+}
+
+bool tlgen::details::DictionaryElemTupleStringIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if ((item.key.size() != 0) || (nat_k != 0)) {
+    add_comma = true;
+    s << "\"key\":";
+    if (!::tlgen::details::BuiltinTupleStringWriteJSON(s, item.key, nat_k)) { return false; }
+  }
+  if (item.value != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"value\":";
+    s << item.value;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemTupleStringIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleStringRead(s, item.key, nat_k)) { return false; }
+  if (!s.int_read(item.value)) { return false; }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemTupleStringIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleStringWrite(s, item.key, nat_k)) { return false; }
+  if (!s.int_write(item.value)) { return false;}
+  return true;
+}
+
+bool tlgen::details::DictionaryElemTupleStringIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) {
+  if (!s.nat_read_exact_tag(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemTupleStringIntRead(s, item, nat_k);
+}
+
+bool tlgen::details::DictionaryElemTupleStringIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) {
+  if (!s.nat_write(0xa69d7dd0)) { return false; }
+  return tlgen::details::DictionaryElemTupleStringIntWrite(s, item, nat_k);
+}
+
+void tlgen::details::DictionaryElemUglyIntStringReset(::tlgen::DictionaryElemUgly<int32_t, std::string>& item) noexcept {
+  (void)item;
+  item.key = 0;
+  item.value.clear();
+}
+
+bool tlgen::details::DictionaryElemUglyIntStringWriteJSON(std::ostream& s, const ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if ((nat_f & (1<<0)) != 0) {
+    add_comma = true;
+    s << "\"key\":";
+    s << item.key;
+  }
+  if ((nat_f & (1<<1)) != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"value\":";
+    s << "\"" << item.value << "\"";
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::DictionaryElemUglyIntStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) noexcept {
+  (void)s;
+  (void)item;
+  if ((nat_f & (1<<0)) != 0) {
+    if (!s.int_read(item.key)) { return false; }
+  } else {
+      item.key = 0;
+  }
+  if ((nat_f & (1<<1)) != 0) {
+    if (!s.string_read(item.value)) { return false; }
+  } else {
+      item.value.clear();
+  }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemUglyIntStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) noexcept {
+  (void)s;
+  (void)item;
+  if ((nat_f & (1<<0)) != 0) {
+      if (!s.int_write(item.key)) { return false;}
+  }
+  if ((nat_f & (1<<1)) != 0) {
+      if (!s.string_write(item.value)) { return false;}
+  }
+  return true;
+}
+
+bool tlgen::details::DictionaryElemUglyIntStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) {
+  if (!s.nat_read_exact_tag(0xe6790546)) { return false; }
+  return tlgen::details::DictionaryElemUglyIntStringRead(s, item, nat_f);
+}
+
+bool tlgen::details::DictionaryElemUglyIntStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) {
+  if (!s.nat_write(0xe6790546)) { return false; }
+  return tlgen::details::DictionaryElemUglyIntStringWrite(s, item, nat_f);
+}
+
+bool tlgen::MultiPoint::write_json(std::ostream& s)const {
+  if (!::tlgen::details::MultiPointWriteJSON(s, *this)) { return false; }
+  return true;
+}
+
+bool tlgen::MultiPoint::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::MultiPointRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+bool tlgen::MultiPoint::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::MultiPointWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+void tlgen::MultiPoint::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
+}
+
+void tlgen::MultiPoint::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
+}
+
+bool tlgen::MultiPoint::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::MultiPointReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+bool tlgen::MultiPoint::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::MultiPointWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+void tlgen::MultiPoint::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
+}
+
+void tlgen::MultiPoint::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
+}
+
+void tlgen::details::MultiPointReset(::tlgen::MultiPoint& item) noexcept {
+  (void)item;
+  ::tlgen::details::BuiltinTuple3IntReset(item.a);
+  ::tlgen::details::BuiltinTuple3IntBoxedReset(item.b);
+  ::tlgen::details::BuiltinTuple3Int32Reset(item.c);
+  ::tlgen::details::BuiltinTuple3Int32BoxedReset(item.d);
+  ::tlgen::details::BuiltinTuple3MyInt32Reset(item.e);
+  ::tlgen::details::BuiltinTuple3MyInt32BoxedReset(item.f);
+}
+
+bool tlgen::details::MultiPointWriteJSON(std::ostream& s, const ::tlgen::MultiPoint& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"a\":";
+  if (!::tlgen::details::BuiltinTuple3IntWriteJSON(s, item.a)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"b\":";
+  if (!::tlgen::details::BuiltinTuple3IntBoxedWriteJSON(s, item.b)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"c\":";
+  if (!::tlgen::details::BuiltinTuple3Int32WriteJSON(s, item.c)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"d\":";
+  if (!::tlgen::details::BuiltinTuple3Int32BoxedWriteJSON(s, item.d)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"e\":";
+  if (!::tlgen::details::BuiltinTuple3MyInt32WriteJSON(s, item.e)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"f\":";
+  if (!::tlgen::details::BuiltinTuple3MyInt32BoxedWriteJSON(s, item.f)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::MultiPointRead(::tlgen::basictl::tl_istream & s, ::tlgen::MultiPoint& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTuple3IntRead(s, item.a)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3IntBoxedRead(s, item.b)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3Int32Read(s, item.c)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3Int32BoxedRead(s, item.d)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3MyInt32Read(s, item.e)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3MyInt32BoxedRead(s, item.f)) { return false; }
+  return true;
+}
+
+bool tlgen::details::MultiPointWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MultiPoint& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTuple3IntWrite(s, item.a)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3IntBoxedWrite(s, item.b)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3Int32Write(s, item.c)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3Int32BoxedWrite(s, item.d)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3MyInt32Write(s, item.e)) { return false; }
+  if (!::tlgen::details::BuiltinTuple3MyInt32BoxedWrite(s, item.f)) { return false; }
+  return true;
+}
+
+bool tlgen::details::MultiPointReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MultiPoint& item) {
+  if (!s.nat_read_exact_tag(0x0e1ae81e)) { return false; }
+  return tlgen::details::MultiPointRead(s, item);
+}
+
+bool tlgen::details::MultiPointWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MultiPoint& item) {
+  if (!s.nat_write(0x0e1ae81e)) { return false; }
+  return tlgen::details::MultiPointWrite(s, item);
+}
+
+void tlgen::details::PairAInnerAInnerReset(::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item) noexcept {
+  (void)item;
+  ::tlgen::details::AInnerReset(item.a);
+  ::tlgen::details::AInnerReset(item.b);
+}
+
+bool tlgen::details::PairAInnerAInnerWriteJSON(std::ostream& s, const ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"a\":";
+  if (!::tlgen::details::AInnerWriteJSON(s, item.a, nat_X)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"b\":";
+  if (!::tlgen::details::AInnerWriteJSON(s, item.b, nat_Y)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairAInnerAInnerRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::AInnerRead(s, item.a, nat_X)) { return s.set_error_unknown_scenario(); }
+  if (!::tlgen::details::AInnerRead(s, item.b, nat_Y)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairAInnerAInnerWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::AInnerWrite(s, item.a, nat_X)) { return s.set_error_unknown_scenario(); }
+  if (!::tlgen::details::AInnerWrite(s, item.b, nat_Y)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairAInnerAInnerReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairAInnerAInnerRead(s, item, nat_X, nat_Y);
+}
+
+bool tlgen::details::PairAInnerAInnerWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>& item, [[maybe_unused]] uint32_t nat_X, [[maybe_unused]] uint32_t nat_Y) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairAInnerAInnerWrite(s, item, nat_X, nat_Y);
+}
+
+void tlgen::details::PairBoolAColorReset(::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept {
+  (void)item;
+  item.a = false;
+  ::tlgen::details::AColorReset(item.b);
+}
+
+bool tlgen::details::PairBoolAColorWriteJSON(std::ostream& s, const ::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.a) {
+    add_comma = true;
+    s << "\"a\":";
+    if (!::tlgen::details::BoolWriteJSON(s, item.a)) { return false; }
+  }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"b\":";
+  if (!::tlgen::details::AColorWriteJSON(s, item.b)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairBoolAColorRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BoolReadBoxed(s, item.a)) { return false; }
+  if (!::tlgen::details::AColorReadBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairBoolAColorWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<bool, ::tlgen::a::Color>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BoolWriteBoxed(s, item.a)) { return false; }
+  if (!::tlgen::details::AColorWriteBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairBoolAColorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<bool, ::tlgen::a::Color>& item) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairBoolAColorRead(s, item);
+}
+
+bool tlgen::details::PairBoolAColorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<bool, ::tlgen::a::Color>& item) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairBoolAColorWrite(s, item);
+}
+
+void tlgen::details::PairFloatDoubleReset(::tlgen::Pair<float, double>& item) noexcept {
+  (void)item;
+  item.a = 0;
+  item.b = 0;
+}
+
+bool tlgen::details::PairFloatDoubleWriteJSON(std::ostream& s, const ::tlgen::Pair<float, double>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.a != 0) {
+    add_comma = true;
+    s << "\"a\":";
+    s << item.a;
+  }
+  if (item.b != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"b\":";
+    s << item.b;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairFloatDoubleRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<float, double>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.float_read(item.a)) { return false; }
+  if (!s.double_read(item.b)) { return false; }
+  return true;
+}
+
+bool tlgen::details::PairFloatDoubleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<float, double>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.float_write(item.a)) { return false;}
+  if (!s.double_write(item.b)) { return false;}
+  return true;
+}
+
+bool tlgen::details::PairFloatDoubleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<float, double>& item) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairFloatDoubleRead(s, item);
+}
+
+bool tlgen::details::PairFloatDoubleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<float, double>& item) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairFloatDoubleWrite(s, item);
+}
+
+void tlgen::details::PairIntIntReset(::tlgen::Pair<int32_t, int32_t>& item) noexcept {
+  (void)item;
+  item.a = 0;
+  item.b = 0;
+}
+
+bool tlgen::details::PairIntIntWriteJSON(std::ostream& s, const ::tlgen::Pair<int32_t, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.a != 0) {
+    add_comma = true;
+    s << "\"a\":";
+    s << item.a;
+  }
+  if (item.b != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"b\":";
+    s << item.b;
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.a)) { return false; }
+  if (!s.int_read(item.b)) { return false; }
+  return true;
+}
+
+bool tlgen::details::PairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, int32_t>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.a)) { return false;}
+  if (!s.int_write(item.b)) { return false;}
+  return true;
+}
+
+bool tlgen::details::PairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, int32_t>& item) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairIntIntRead(s, item);
+}
+
+bool tlgen::details::PairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, int32_t>& item) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairIntIntWrite(s, item);
+}
+
+void tlgen::details::PairIntPairMultiPointStringReset(::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept {
+  (void)item;
+  item.a = 0;
+  ::tlgen::details::PairMultiPointStringReset(item.b);
+}
+
+bool tlgen::details::PairIntPairMultiPointStringWriteJSON(std::ostream& s, const ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.a != 0) {
+    add_comma = true;
+    s << "\"a\":";
+    s << item.a;
+  }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"b\":";
+  if (!::tlgen::details::PairMultiPointStringWriteJSON(s, item.b)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairIntPairMultiPointStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_read(item.a)) { return false; }
+  if (!::tlgen::details::PairMultiPointStringRead(s, item.b)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairIntPairMultiPointStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.int_write(item.a)) { return false;}
+  if (!::tlgen::details::PairMultiPointStringWrite(s, item.b)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairIntPairMultiPointStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairIntPairMultiPointStringRead(s, item);
+}
+
+bool tlgen::details::PairIntPairMultiPointStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>& item) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairIntPairMultiPointStringWrite(s, item);
+}
+
+void tlgen::details::PairMultiPointStringReset(::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept {
+  (void)item;
+  ::tlgen::details::MultiPointReset(item.a);
+  item.b.clear();
+}
+
+bool tlgen::details::PairMultiPointStringWriteJSON(std::ostream& s, const ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"a\":";
+  if (!::tlgen::details::MultiPointWriteJSON(s, item.a)) { return false; }
+  if (item.b.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"b\":";
+    s << "\"" << item.b << "\"";
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairMultiPointStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::MultiPointRead(s, item.a)) { return s.set_error_unknown_scenario(); }
+  if (!s.string_read(item.b)) { return false; }
+  return true;
+}
+
+bool tlgen::details::PairMultiPointStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::MultiPointWrite(s, item.a)) { return s.set_error_unknown_scenario(); }
+  if (!s.string_write(item.b)) { return false;}
+  return true;
+}
+
+bool tlgen::details::PairMultiPointStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairMultiPointStringRead(s, item);
+}
+
+bool tlgen::details::PairMultiPointStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::MultiPoint, std::string>& item) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairMultiPointStringWrite(s, item);
+}
+
+void tlgen::details::PairPairAInnerAInnerAInnerBoxed3Reset(::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item) noexcept {
+  (void)item;
+  ::tlgen::details::PairAInnerAInnerReset(item.a);
+  ::tlgen::details::AInner3Reset(item.b);
+}
+
+bool tlgen::details::PairPairAInnerAInnerAInnerBoxed3WriteJSON(std::ostream& s, const ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  add_comma = true;
+  s << "\"a\":";
+  if (!::tlgen::details::PairAInnerAInnerWriteJSON(s, item.a, nat_XXI, nat_XYI)) { return false; }
+  if (add_comma) {
+    s << ",";
+  }
+  add_comma = true;
+  s << "\"b\":";
+  if (!::tlgen::details::AInner3WriteJSON(s, item.b)) { return false; }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::PairPairAInnerAInnerAInnerBoxed3Read(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairAInnerAInnerRead(s, item.a, nat_XXI, nat_XYI)) { return s.set_error_unknown_scenario(); }
+  if (!::tlgen::details::AInner3ReadBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairPairAInnerAInnerAInnerBoxed3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::PairAInnerAInnerWrite(s, item.a, nat_XXI, nat_XYI)) { return s.set_error_unknown_scenario(); }
+  if (!::tlgen::details::AInner3WriteBoxed(s, item.b)) { return s.set_error_unknown_scenario(); }
+  return true;
+}
+
+bool tlgen::details::PairPairAInnerAInnerAInnerBoxed3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) {
+  if (!s.nat_read_exact_tag(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairPairAInnerAInnerAInnerBoxed3Read(s, item, nat_XXI, nat_XYI);
+}
+
+bool tlgen::details::PairPairAInnerAInnerAInnerBoxed3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Pair<::tlgen::Pair<::tlgen::a::Inner, ::tlgen::a::Inner>, ::tlgen::a::InnerI<3>>& item, [[maybe_unused]] uint32_t nat_XXI, [[maybe_unused]] uint32_t nat_XYI) {
+  if (!s.nat_write(0x0f3c47ab)) { return false; }
+  return tlgen::details::PairPairAInnerAInnerAInnerBoxed3Write(s, item, nat_XXI, nat_XYI);
+}
+
+void tlgen::details::TupleStringReset(std::vector<std::string>& item) noexcept {
+  (void)item;
+  item.clear();
+}
+
+bool tlgen::details::TupleStringWriteJSON(std::ostream& s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleStringWriteJSON(s, item, nat_n)) { return false; }
+  return true;
+}
+
+bool tlgen::details::TupleStringRead(::tlgen::basictl::tl_istream & s, std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleStringRead(s, item, nat_n)) { return false; }
+  return true;
+}
+
+bool tlgen::details::TupleStringWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) noexcept {
+  (void)s;
+  (void)item;
+  if (!::tlgen::details::BuiltinTupleStringWrite(s, item, nat_n)) { return false; }
+  return true;
+}
+
+bool tlgen::details::TupleStringReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) {
+  if (!s.nat_read_exact_tag(0x9770768a)) { return false; }
+  return tlgen::details::TupleStringRead(s, item, nat_n);
+}
+
+bool tlgen::details::TupleStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n) {
+  if (!s.nat_write(0x9770768a)) { return false; }
+  return tlgen::details::TupleStringWrite(s, item, nat_n);
+}
+
+bool tlgen::UseDictUgly::write_json(std::ostream& s)const {
+  if (!::tlgen::details::UseDictUglyWriteJSON(s, *this)) { return false; }
+  return true;
+}
+
+bool tlgen::UseDictUgly::read(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::UseDictUglyRead(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+bool tlgen::UseDictUgly::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::UseDictUglyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+void tlgen::UseDictUgly::read(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read(s2);
+  s2.pass_data(s);
+}
+
+void tlgen::UseDictUgly::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write(s2);
+  s2.pass_data(s);
+}
+
+bool tlgen::UseDictUgly::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
+  if (!::tlgen::details::UseDictUglyReadBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+bool tlgen::UseDictUgly::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+  if (!::tlgen::details::UseDictUglyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
+  s.sync();
+  return true;
+}
+
+void tlgen::UseDictUgly::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
+  ::tlgen::basictl::tl_istream s2(s);
+  this->read_boxed(s2);
+  s2.pass_data(s);
+}
+
+void tlgen::UseDictUgly::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+  ::tlgen::basictl::tl_ostream s2(s);
+  this->write_boxed(s2);
+  s2.pass_data(s);
+}
+
+void tlgen::details::UseDictUglyReset(::tlgen::UseDictUgly& item) noexcept {
+  (void)item;
+  item.n = 0;
+  item.a.clear();
+  item.b.clear();
+  item.c.clear();
+  item.d.clear();
+  item.e.clear();
+  item.f.clear();
+  item.g.clear();
+  item.x.clear();
+  item.y.clear();
+  item.z.clear();
+}
+
+bool tlgen::details::UseDictUglyWriteJSON(std::ostream& s, const ::tlgen::UseDictUgly& item) noexcept {
+  (void)s;
+  (void)item;
+  auto add_comma = false;
+  s << "{";
+  if (item.n != 0) {
+    add_comma = true;
+    s << "\"n\":";
+    s << item.n;
+  }
+  if (item.a.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"a\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemUglyIntStringWriteJSON(s, item.a, item.n)) { return false; }
+  }
+  if (item.b.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"b\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemStrangeStringWriteJSON(s, item.b)) { return false; }
+  }
+  if (item.c.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"c\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(s, item.c)) { return false; }
+  }
+  if (item.d.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"d\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemTupleStringIntWriteJSON(s, item.d, item.n)) { return false; }
+  }
+  if (item.e.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"e\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(s, item.e)) { return false; }
+  }
+  if (item.f.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"f\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(s, item.f)) { return false; }
+  }
+  if (item.g.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"g\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(s, item.g)) { return false; }
+  }
+  if (item.x.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"x\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(s, item.x)) { return false; }
+  }
+  if (item.y.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"y\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(s, item.y)) { return false; }
+  }
+  if (item.z.size() != 0) {
+    if (add_comma) {
+      s << ",";
+    }
+    add_comma = true;
+    s << "\"z\":";
+    if (!::tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(s, item.z)) { return false; }
+  }
+  s << "}";
+  return true;
+}
+
+bool tlgen::details::UseDictUglyRead(::tlgen::basictl::tl_istream & s, ::tlgen::UseDictUgly& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_read(item.n)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemUglyIntStringRead(s, item.a, item.n)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemStrangeStringRead(s, item.b)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntRead(s, item.c)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemTupleStringIntRead(s, item.d, item.n)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntRead(s, item.e)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntRead(s, item.f)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(s, item.g)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntRead(s, item.x)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntRead(s, item.y)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntRead(s, item.z)) { return false; }
+  return true;
+}
+
+bool tlgen::details::UseDictUglyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseDictUgly& item) noexcept {
+  (void)s;
+  (void)item;
+  if (!s.nat_write(item.n)) { return false;}
+  if (!::tlgen::details::BuiltinVectorDictionaryElemUglyIntStringWrite(s, item.a, item.n)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemStrangeStringWrite(s, item.b)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairIntIntIntWrite(s, item.c)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemTupleStringIntWrite(s, item.d, item.n)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairBoolAColorIntWrite(s, item.e)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(s, item.f)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(s, item.g)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemIntPairIntIntWrite(s, item.x)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemLongPairIntIntWrite(s, item.y)) { return false; }
+  if (!::tlgen::details::BuiltinVectorDictionaryElemStringPairIntIntWrite(s, item.z)) { return false; }
+  return true;
+}
+
+bool tlgen::details::UseDictUglyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UseDictUgly& item) {
+  if (!s.nat_read_exact_tag(0xfb9ce817)) { return false; }
+  return tlgen::details::UseDictUglyRead(s, item);
+}
+
+bool tlgen::details::UseDictUglyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseDictUgly& item) {
+  if (!s.nat_write(0xfb9ce817)) { return false; }
+  return tlgen::details::UseDictUglyWrite(s, item);
 }

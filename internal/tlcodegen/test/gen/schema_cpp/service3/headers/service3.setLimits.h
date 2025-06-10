@@ -6,18 +6,18 @@
 #include "service3/functions/service3.setLimits.h"
 #include "__common_namespace/types/boolStat.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3SetLimitsReset(::tl2::service3::SetLimits& item) noexcept;
+void Service3SetLimitsReset(::tlgen::service3::SetLimits& item) noexcept;
 
-bool Service3SetLimitsWriteJSON(std::ostream& s, const ::tl2::service3::SetLimits& item) noexcept;
-bool Service3SetLimitsRead(::basictl::tl_istream & s, ::tl2::service3::SetLimits& item) noexcept; 
-bool Service3SetLimitsWrite(::basictl::tl_ostream & s, const ::tl2::service3::SetLimits& item) noexcept;
-bool Service3SetLimitsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::SetLimits& item);
-bool Service3SetLimitsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::SetLimits& item);
+bool Service3SetLimitsWriteJSON(std::ostream& s, const ::tlgen::service3::SetLimits& item) noexcept;
+bool Service3SetLimitsRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::SetLimits& item) noexcept; 
+bool Service3SetLimitsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::SetLimits& item) noexcept;
+bool Service3SetLimitsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::SetLimits& item);
+bool Service3SetLimitsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::SetLimits& item);
 
-bool Service3SetLimitsReadResult(::basictl::tl_istream & s, ::tl2::service3::SetLimits& item, ::tl2::BoolStat& result);
-bool Service3SetLimitsWriteResult(::basictl::tl_ostream & s, ::tl2::service3::SetLimits& item, ::tl2::BoolStat& result);
-		
-}} // namespace tl2::details
+bool Service3SetLimitsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::SetLimits& item, ::tlgen::BoolStat& result);
+bool Service3SetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::SetLimits& item, ::tlgen::BoolStat& result);
+    
+}} // namespace tlgen::details
 

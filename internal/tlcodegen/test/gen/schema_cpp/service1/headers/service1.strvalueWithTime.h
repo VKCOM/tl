@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "service1/types/service1.strvalueWithTime.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1StrvalueWithTimeReset(::tl2::service1::StrvalueWithTime& item) noexcept;
+void Service1StrvalueWithTimeReset(::tlgen::service1::StrvalueWithTime& item) noexcept;
 
-bool Service1StrvalueWithTimeWriteJSON(std::ostream& s, const ::tl2::service1::StrvalueWithTime& item) noexcept;
-bool Service1StrvalueWithTimeRead(::basictl::tl_istream & s, ::tl2::service1::StrvalueWithTime& item) noexcept; 
-bool Service1StrvalueWithTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::StrvalueWithTime& item) noexcept;
-bool Service1StrvalueWithTimeReadBoxed(::basictl::tl_istream & s, ::tl2::service1::StrvalueWithTime& item);
-bool Service1StrvalueWithTimeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::StrvalueWithTime& item);
+bool Service1StrvalueWithTimeWriteJSON(std::ostream& s, const ::tlgen::service1::StrvalueWithTime& item) noexcept;
+bool Service1StrvalueWithTimeRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::StrvalueWithTime& item) noexcept; 
+bool Service1StrvalueWithTimeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::StrvalueWithTime& item) noexcept;
+bool Service1StrvalueWithTimeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::StrvalueWithTime& item);
+bool Service1StrvalueWithTimeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::StrvalueWithTime& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

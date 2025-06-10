@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myMcValueVector.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyMcValueVectorReset(::tl2::MyMcValueVector& item) noexcept;
+void MyMcValueVectorReset(::tlgen::MyMcValueVector& item) noexcept;
 
-bool MyMcValueVectorWriteJSON(std::ostream& s, const ::tl2::MyMcValueVector& item) noexcept;
-bool MyMcValueVectorRead(::basictl::tl_istream & s, ::tl2::MyMcValueVector& item) noexcept; 
-bool MyMcValueVectorWrite(::basictl::tl_ostream & s, const ::tl2::MyMcValueVector& item) noexcept;
-bool MyMcValueVectorReadBoxed(::basictl::tl_istream & s, ::tl2::MyMcValueVector& item);
-bool MyMcValueVectorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyMcValueVector& item);
+bool MyMcValueVectorWriteJSON(std::ostream& s, const ::tlgen::MyMcValueVector& item) noexcept;
+bool MyMcValueVectorRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyMcValueVector& item) noexcept; 
+bool MyMcValueVectorWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyMcValueVector& item) noexcept;
+bool MyMcValueVectorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyMcValueVector& item);
+bool MyMcValueVectorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyMcValueVector& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

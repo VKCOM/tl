@@ -6,12 +6,12 @@
 #include "__common_namespace/types/pair.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X>
 struct Replace11Elem {
-	std::array<::tl2::Pair<int32_t, X>, 3> b{};
-	std::vector<int32_t> c;
+  std::array<::tlgen::Pair<int32_t, X>, 3> b{};
+  std::vector<int32_t> c;
 };
 
-} // namespace tl2
+} // namespace tlgen
 

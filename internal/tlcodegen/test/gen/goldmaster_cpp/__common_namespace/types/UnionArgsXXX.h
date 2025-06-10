@@ -7,18 +7,18 @@
 #include "__common_namespace/types/unionArgsXXX1.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X>
 struct UnionArgsXXX {
-	std::variant<::tl2::UnionArgsXXX1<X>, ::tl2::UnionArgsXXX2<X>> value;
+  std::variant<::tlgen::UnionArgsXXX1<X>, ::tlgen::UnionArgsXXX2<X>> value;
 
-	bool is_1() const { return value.index() == 0; }
-	bool is_2() const { return value.index() == 1; }
+  bool is_1() const { return value.index() == 0; }
+  bool is_2() const { return value.index() == 1; }
 
 
-	std::string_view tl_name() const;
-	uint32_t tl_tag() const;
+  std::string_view tl_name() const;
+  uint32_t tl_tag() const;
 };
 
-} // namespace tl2
+} // namespace tlgen
 

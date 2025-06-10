@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "casesTL2/types/casesTL2.testObject.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTL2TestObjectReset(::tl2::casesTL2::TestObject& item) noexcept;
+void CasesTL2TestObjectReset(::tlgen::casesTL2::TestObject& item) noexcept;
 
-bool CasesTL2TestObjectWriteJSON(std::ostream& s, const ::tl2::casesTL2::TestObject& item) noexcept;
-bool CasesTL2TestObjectRead(::basictl::tl_istream & s, ::tl2::casesTL2::TestObject& item) noexcept; 
-bool CasesTL2TestObjectWrite(::basictl::tl_ostream & s, const ::tl2::casesTL2::TestObject& item) noexcept;
-bool CasesTL2TestObjectReadBoxed(::basictl::tl_istream & s, ::tl2::casesTL2::TestObject& item);
-bool CasesTL2TestObjectWriteBoxed(::basictl::tl_ostream & s, const ::tl2::casesTL2::TestObject& item);
+bool CasesTL2TestObjectWriteJSON(std::ostream& s, const ::tlgen::casesTL2::TestObject& item) noexcept;
+bool CasesTL2TestObjectRead(::tlgen::basictl::tl_istream & s, ::tlgen::casesTL2::TestObject& item) noexcept; 
+bool CasesTL2TestObjectWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::casesTL2::TestObject& item) noexcept;
+bool CasesTL2TestObjectReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::casesTL2::TestObject& item);
+bool CasesTL2TestObjectWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::casesTL2::TestObject& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

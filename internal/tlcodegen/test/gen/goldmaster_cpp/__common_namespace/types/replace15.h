@@ -8,35 +8,35 @@
 #include "__common_namespace/types/replace15Elem.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct Replace15 {
-	uint32_t n = 0;
-	std::vector<::tl2::Replace15Elem> a;
-	std::vector<::tl2::Replace15Elem1> b;
-	std::vector<::tl2::Replace15Elem2> c;
+  uint32_t n = 0;
+  std::vector<::tlgen::Replace15Elem> a;
+  std::vector<::tlgen::Replace15Elem1> b;
+  std::vector<::tlgen::Replace15Elem2> c;
 
-	std::string_view tl_name() const { return "replace15"; }
-	uint32_t tl_tag() const { return 0x2280e430; }
+  std::string_view tl_name() const { return "replace15"; }
+  uint32_t tl_tag() const { return 0x2280e430; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const Replace15& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const Replace15& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

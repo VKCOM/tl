@@ -5,7 +5,7 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 using MyDictOfInt = std::map<std::string, int32_t>;
-} // namespace tl2
+} // namespace tlgen
 

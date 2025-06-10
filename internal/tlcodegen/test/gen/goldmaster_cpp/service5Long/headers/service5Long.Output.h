@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "service5Long/types/service5Long.Output.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service5LongOutputReset(::tl2::service5Long::Output& item) noexcept;
+void Service5LongOutputReset(::tlgen::service5Long::Output& item) noexcept;
 
-bool Service5LongOutputWriteJSON(std::ostream & s, const ::tl2::service5Long::Output& item) noexcept;
-bool Service5LongOutputReadBoxed(::basictl::tl_istream & s, ::tl2::service5Long::Output& item) noexcept;
-bool Service5LongOutputWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service5Long::Output& item) noexcept;
+bool Service5LongOutputWriteJSON(std::ostream & s, const ::tlgen::service5Long::Output& item) noexcept;
+bool Service5LongOutputReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service5Long::Output& item) noexcept;
+bool Service5LongOutputWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5Long::Output& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -6,18 +6,18 @@
 #include "__common_namespace/functions/boxedVector32BoxedElem.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BoxedVector32BoxedElemReset(::tl2::BoxedVector32BoxedElem& item) noexcept;
+void BoxedVector32BoxedElemReset(::tlgen::BoxedVector32BoxedElem& item) noexcept;
 
-bool BoxedVector32BoxedElemWriteJSON(std::ostream& s, const ::tl2::BoxedVector32BoxedElem& item) noexcept;
-bool BoxedVector32BoxedElemRead(::basictl::tl_istream & s, ::tl2::BoxedVector32BoxedElem& item) noexcept; 
-bool BoxedVector32BoxedElemWrite(::basictl::tl_ostream & s, const ::tl2::BoxedVector32BoxedElem& item) noexcept;
-bool BoxedVector32BoxedElemReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedVector32BoxedElem& item);
-bool BoxedVector32BoxedElemWriteBoxed(::basictl::tl_ostream & s, const ::tl2::BoxedVector32BoxedElem& item);
+bool BoxedVector32BoxedElemWriteJSON(std::ostream& s, const ::tlgen::BoxedVector32BoxedElem& item) noexcept;
+bool BoxedVector32BoxedElemRead(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32BoxedElem& item) noexcept; 
+bool BoxedVector32BoxedElemWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVector32BoxedElem& item) noexcept;
+bool BoxedVector32BoxedElemReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32BoxedElem& item);
+bool BoxedVector32BoxedElemWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVector32BoxedElem& item);
 
-bool BoxedVector32BoxedElemReadResult(::basictl::tl_istream & s, ::tl2::BoxedVector32BoxedElem& item, std::vector<int32_t>& result);
-bool BoxedVector32BoxedElemWriteResult(::basictl::tl_ostream & s, ::tl2::BoxedVector32BoxedElem& item, std::vector<int32_t>& result);
-		
-}} // namespace tl2::details
+bool BoxedVector32BoxedElemReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32BoxedElem& item, std::vector<int32_t>& result);
+bool BoxedVector32BoxedElemWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedVector32BoxedElem& item, std::vector<int32_t>& result);
+    
+}} // namespace tlgen::details
 

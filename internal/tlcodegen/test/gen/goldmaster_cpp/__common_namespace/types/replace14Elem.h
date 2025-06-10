@@ -6,12 +6,12 @@
 #include "__common_namespace/types/replace14ElemElem.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X>
 struct Replace14Elem {
-	std::array<::tl2::Replace14ElemElem<X>, 3> b{};
-	int32_t c = 0;
+  std::array<::tlgen::Replace14ElemElem<X>, 3> b{};
+  int32_t c = 0;
 };
 
-} // namespace tl2
+} // namespace tlgen
 

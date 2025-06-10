@@ -18,7 +18,7 @@ bool test_case(std::string type_name, std::string& testing_bytes);
 bool test_case_throwable(std::string type_name, std::string& testing_bytes);
 
 int main() {
-    tl2::factory::set_all_factories();
+    tlgen::factory::set_all_factories();
 
     std::ifstream f("../data/test-objects-bytes.json");
     json data = json::parse(f);
@@ -58,15 +58,15 @@ int main() {
 
 
 bool test_case(std::string type_name, std::string& testing_bytes) {
-    auto test_object = tl2::meta::get_item_by_name(std::move(type_name)).value().create_object();
+    auto test_object = tlgen::meta::get_item_by_name(std::move(type_name)).value().create_object();
     auto expected_output = hex::parse_hex_to_bytes(testing_bytes);
 
-    basictl::tl_istream_string input_connector{expected_output};
-    basictl::tl_istream input{input_connector};
+    tlgen::basictl::tl_istream_string input_connector{expected_output};
+    tlgen::basictl::tl_istream input{input_connector};
 
     std::string out_string;
-    basictl::tl_ostream_string output_connector{out_string};
-    basictl::tl_ostream output{output_connector};
+    tlgen::basictl::tl_ostream_string output_connector{out_string};
+    tlgen::basictl::tl_ostream output{output_connector};
 
     bool read_result = test_object->read(input);
     bool write_result = test_object->write(output);
@@ -92,19 +92,19 @@ bool test_case(std::string type_name, std::string& testing_bytes) {
 
 
 bool test_case_throwable(std::string type_name, std::string& testing_bytes) {
-    auto test_object = tl2::meta::get_item_by_name(std::move(type_name)).value().create_object();
+    auto test_object = tlgen::meta::get_item_by_name(std::move(type_name)).value().create_object();
     auto expected_output = hex::parse_hex_to_bytes(testing_bytes);
 
-    basictl::tl_istream_string input_connector{expected_output};
-    basictl::tl_throwable_istream input{input_connector};
+    tlgen::basictl::tl_istream_string input_connector{expected_output};
+    tlgen::basictl::tl_throwable_istream input{input_connector};
 
     std::string out_string;
-    basictl::tl_ostream_string output_connector{out_string};
-    basictl::tl_throwable_ostream output{output_connector};
+    tlgen::basictl::tl_ostream_string output_connector{out_string};
+    tlgen::basictl::tl_throwable_ostream output{output_connector};
 
     try {
-        test_object->read_or_throw(input);
-        test_object->write_or_throw(output);
+        test_object->read(input);
+        test_object->write(output);
 
         std::cout << "SUCCESS (THROWABLE)";
         return true;

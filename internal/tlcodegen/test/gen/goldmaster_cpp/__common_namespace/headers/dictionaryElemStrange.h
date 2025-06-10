@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/dictionaryElemStrange.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemStrangeStringReset(::tl2::DictionaryElemStrange<std::string>& item) noexcept;
+void DictionaryElemStrangeStringReset(::tlgen::DictionaryElemStrange<std::string>& item) noexcept;
 
-bool DictionaryElemStrangeStringWriteJSON(std::ostream& s, const ::tl2::DictionaryElemStrange<std::string>& item) noexcept;
-bool DictionaryElemStrangeStringRead(::basictl::tl_istream & s, ::tl2::DictionaryElemStrange<std::string>& item) noexcept; 
-bool DictionaryElemStrangeStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElemStrange<std::string>& item) noexcept;
-bool DictionaryElemStrangeStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElemStrange<std::string>& item);
-bool DictionaryElemStrangeStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElemStrange<std::string>& item);
+bool DictionaryElemStrangeStringWriteJSON(std::ostream& s, const ::tlgen::DictionaryElemStrange<std::string>& item) noexcept;
+bool DictionaryElemStrangeStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElemStrange<std::string>& item) noexcept; 
+bool DictionaryElemStrangeStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElemStrange<std::string>& item) noexcept;
+bool DictionaryElemStrangeStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElemStrange<std::string>& item);
+bool DictionaryElemStrangeStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElemStrange<std::string>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

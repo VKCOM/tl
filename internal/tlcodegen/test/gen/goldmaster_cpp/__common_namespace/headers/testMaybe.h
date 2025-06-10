@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/testMaybe.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TestMaybeReset(::tl2::TestMaybe& item) noexcept;
+void TestMaybeReset(::tlgen::TestMaybe& item) noexcept;
 
-bool TestMaybeWriteJSON(std::ostream& s, const ::tl2::TestMaybe& item) noexcept;
-bool TestMaybeRead(::basictl::tl_istream & s, ::tl2::TestMaybe& item) noexcept; 
-bool TestMaybeWrite(::basictl::tl_ostream & s, const ::tl2::TestMaybe& item) noexcept;
-bool TestMaybeReadBoxed(::basictl::tl_istream & s, ::tl2::TestMaybe& item);
-bool TestMaybeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::TestMaybe& item);
+bool TestMaybeWriteJSON(std::ostream& s, const ::tlgen::TestMaybe& item) noexcept;
+bool TestMaybeRead(::tlgen::basictl::tl_istream & s, ::tlgen::TestMaybe& item) noexcept; 
+bool TestMaybeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::TestMaybe& item) noexcept;
+bool TestMaybeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::TestMaybe& item);
+bool TestMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::TestMaybe& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

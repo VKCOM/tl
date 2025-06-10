@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myMcValueTuple.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyMcValueTupleReset(::tl2::MyMcValueTuple& item) noexcept;
+void MyMcValueTupleReset(::tlgen::MyMcValueTuple& item) noexcept;
 
-bool MyMcValueTupleWriteJSON(std::ostream& s, const ::tl2::MyMcValueTuple& item) noexcept;
-bool MyMcValueTupleRead(::basictl::tl_istream & s, ::tl2::MyMcValueTuple& item) noexcept; 
-bool MyMcValueTupleWrite(::basictl::tl_ostream & s, const ::tl2::MyMcValueTuple& item) noexcept;
-bool MyMcValueTupleReadBoxed(::basictl::tl_istream & s, ::tl2::MyMcValueTuple& item);
-bool MyMcValueTupleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyMcValueTuple& item);
+bool MyMcValueTupleWriteJSON(std::ostream& s, const ::tlgen::MyMcValueTuple& item) noexcept;
+bool MyMcValueTupleRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyMcValueTuple& item) noexcept; 
+bool MyMcValueTupleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyMcValueTuple& item) noexcept;
+bool MyMcValueTupleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyMcValueTuple& item);
+bool MyMcValueTupleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyMcValueTuple& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

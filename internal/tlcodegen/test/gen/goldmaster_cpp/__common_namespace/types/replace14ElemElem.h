@@ -5,12 +5,12 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X>
 struct Replace14ElemElem {
-	int32_t x = 0;
-	std::vector<X> y;
+  int32_t x = 0;
+  std::vector<X> y;
 };
 
-} // namespace tl2
+} // namespace tlgen
 

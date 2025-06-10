@@ -6,18 +6,18 @@
 #include "tasks/functions/tasks.getQueueTypes.h"
 #include "tasks/types/tasks.queueTypeInfo.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksGetQueueTypesReset(::tl2::tasks::GetQueueTypes& item) noexcept;
+void TasksGetQueueTypesReset(::tlgen::tasks::GetQueueTypes& item) noexcept;
 
-bool TasksGetQueueTypesWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueTypes& item) noexcept;
-bool TasksGetQueueTypesRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueTypes& item) noexcept; 
-bool TasksGetQueueTypesWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueTypes& item) noexcept;
-bool TasksGetQueueTypesReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::GetQueueTypes& item);
-bool TasksGetQueueTypesWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueTypes& item);
+bool TasksGetQueueTypesWriteJSON(std::ostream& s, const ::tlgen::tasks::GetQueueTypes& item) noexcept;
+bool TasksGetQueueTypesRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueTypes& item) noexcept; 
+bool TasksGetQueueTypesWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetQueueTypes& item) noexcept;
+bool TasksGetQueueTypesReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueTypes& item);
+bool TasksGetQueueTypesWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetQueueTypes& item);
 
-bool TasksGetQueueTypesReadResult(::basictl::tl_istream & s, ::tl2::tasks::GetQueueTypes& item, std::vector<::tl2::tasks::QueueTypeInfo>& result);
-bool TasksGetQueueTypesWriteResult(::basictl::tl_ostream & s, ::tl2::tasks::GetQueueTypes& item, std::vector<::tl2::tasks::QueueTypeInfo>& result);
-		
-}} // namespace tl2::details
+bool TasksGetQueueTypesReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueTypes& item, std::vector<::tlgen::tasks::QueueTypeInfo>& result);
+bool TasksGetQueueTypesWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::tasks::GetQueueTypes& item, std::vector<::tlgen::tasks::QueueTypeInfo>& result);
+    
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testVector.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestVectorReset(::tl2::cases::TestVector& item) noexcept;
+void CasesTestVectorReset(::tlgen::cases::TestVector& item) noexcept;
 
-bool CasesTestVectorWriteJSON(std::ostream& s, const ::tl2::cases::TestVector& item) noexcept;
-bool CasesTestVectorRead(::basictl::tl_istream & s, ::tl2::cases::TestVector& item) noexcept; 
-bool CasesTestVectorWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestVector& item) noexcept;
-bool CasesTestVectorReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestVector& item);
-bool CasesTestVectorWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestVector& item);
+bool CasesTestVectorWriteJSON(std::ostream& s, const ::tlgen::cases::TestVector& item) noexcept;
+bool CasesTestVectorRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestVector& item) noexcept; 
+bool CasesTestVectorWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestVector& item) noexcept;
+bool CasesTestVectorReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestVector& item);
+bool CasesTestVectorWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestVector& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

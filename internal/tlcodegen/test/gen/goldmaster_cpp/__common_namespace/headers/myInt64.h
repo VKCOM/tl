@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myInt64.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyInt64Reset(::tl2::MyInt64& item) noexcept;
+void MyInt64Reset(::tlgen::MyInt64& item) noexcept;
 
-bool MyInt64WriteJSON(std::ostream& s, const ::tl2::MyInt64& item) noexcept;
-bool MyInt64Read(::basictl::tl_istream & s, ::tl2::MyInt64& item) noexcept; 
-bool MyInt64Write(::basictl::tl_ostream & s, const ::tl2::MyInt64& item) noexcept;
-bool MyInt64ReadBoxed(::basictl::tl_istream & s, ::tl2::MyInt64& item);
-bool MyInt64WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyInt64& item);
+bool MyInt64WriteJSON(std::ostream& s, const ::tlgen::MyInt64& item) noexcept;
+bool MyInt64Read(::tlgen::basictl::tl_istream & s, ::tlgen::MyInt64& item) noexcept; 
+bool MyInt64Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyInt64& item) noexcept;
+bool MyInt64ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyInt64& item);
+bool MyInt64WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyInt64& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

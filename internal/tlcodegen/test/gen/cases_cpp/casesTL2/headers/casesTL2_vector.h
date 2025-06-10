@@ -8,39 +8,39 @@
 #include "__common_namespace/types/Bool.h"
 #include "benchmarks/types/benchmarks.VrutoyTopLevelUnion.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorBenchmarksVrutoyTopLevelUnionReset(std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item) noexcept;
+void VectorBenchmarksVrutoyTopLevelUnionReset(std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion>& item) noexcept;
 
-bool VectorBenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream& s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item) noexcept;
-bool VectorBenchmarksVrutoyTopLevelUnionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item) noexcept; 
-bool VectorBenchmarksVrutoyTopLevelUnionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item) noexcept;
-bool VectorBenchmarksVrutoyTopLevelUnionReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
-bool VectorBenchmarksVrutoyTopLevelUnionWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
+bool VectorBenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream& s, const std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion>& item) noexcept;
+bool VectorBenchmarksVrutoyTopLevelUnionRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion>& item) noexcept; 
+bool VectorBenchmarksVrutoyTopLevelUnionWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion>& item) noexcept;
+bool VectorBenchmarksVrutoyTopLevelUnionReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion>& item);
+bool VectorBenchmarksVrutoyTopLevelUnionWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::benchmarks::VrutoyTopLevelUnion>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void VectorBoolReset(std::vector<bool>& item) noexcept;
 
 bool VectorBoolWriteJSON(std::ostream& s, const std::vector<bool>& item) noexcept;
-bool VectorBoolRead(::basictl::tl_istream & s, std::vector<bool>& item) noexcept; 
-bool VectorBoolWrite(::basictl::tl_ostream & s, const std::vector<bool>& item) noexcept;
-bool VectorBoolReadBoxed(::basictl::tl_istream & s, std::vector<bool>& item);
-bool VectorBoolWriteBoxed(::basictl::tl_ostream & s, const std::vector<bool>& item);
+bool VectorBoolRead(::tlgen::basictl::tl_istream & s, std::vector<bool>& item) noexcept; 
+bool VectorBoolWrite(::tlgen::basictl::tl_ostream & s, const std::vector<bool>& item) noexcept;
+bool VectorBoolReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<bool>& item);
+bool VectorBoolWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<bool>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorTrueBoxedReset(std::vector<::tl2::True>& item) noexcept;
+void VectorTrueBoxedReset(std::vector<::tlgen::True>& item) noexcept;
 
-bool VectorTrueBoxedWriteJSON(std::ostream& s, const std::vector<::tl2::True>& item) noexcept;
-bool VectorTrueBoxedRead(::basictl::tl_istream & s, std::vector<::tl2::True>& item) noexcept; 
-bool VectorTrueBoxedWrite(::basictl::tl_ostream & s, const std::vector<::tl2::True>& item) noexcept;
-bool VectorTrueBoxedReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::True>& item);
-bool VectorTrueBoxedWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::True>& item);
+bool VectorTrueBoxedWriteJSON(std::ostream& s, const std::vector<::tlgen::True>& item) noexcept;
+bool VectorTrueBoxedRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::True>& item) noexcept; 
+bool VectorTrueBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::True>& item) noexcept;
+bool VectorTrueBoxedReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::True>& item);
+bool VectorTrueBoxedWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::True>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,7 +5,7 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { namespace ab { 
+namespace tlgen { namespace ab { 
 using Alias = int32_t;
-}} // namespace tl2::ab
+}} // namespace tlgen::ab
 

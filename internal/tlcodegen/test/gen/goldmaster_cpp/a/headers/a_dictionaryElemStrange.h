@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/dictionaryElemStrange.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinVectorDictionaryElemStrangeStringReset(std::map<uint32_t, std::string>& item);
 
 bool BuiltinVectorDictionaryElemStrangeStringWriteJSON(std::ostream & s, const std::map<uint32_t, std::string>& item);
-bool BuiltinVectorDictionaryElemStrangeStringRead(::basictl::tl_istream & s, std::map<uint32_t, std::string>& item);
-bool BuiltinVectorDictionaryElemStrangeStringWrite(::basictl::tl_ostream & s, const std::map<uint32_t, std::string>& item);
+bool BuiltinVectorDictionaryElemStrangeStringRead(::tlgen::basictl::tl_istream & s, std::map<uint32_t, std::string>& item);
+bool BuiltinVectorDictionaryElemStrangeStringWrite(::tlgen::basictl::tl_ostream & s, const std::map<uint32_t, std::string>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

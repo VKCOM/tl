@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testOutFieldMask.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestOutFieldMaskReset(::tl2::cases::TestOutFieldMask& item) noexcept;
+void CasesTestOutFieldMaskReset(::tlgen::cases::TestOutFieldMask& item) noexcept;
 
-bool CasesTestOutFieldMaskWriteJSON(std::ostream& s, const ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f) noexcept;
-bool CasesTestOutFieldMaskRead(::basictl::tl_istream & s, ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f) noexcept; 
-bool CasesTestOutFieldMaskWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f) noexcept;
-bool CasesTestOutFieldMaskReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f);
-bool CasesTestOutFieldMaskWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestOutFieldMask& item, uint32_t nat_f);
+bool CasesTestOutFieldMaskWriteJSON(std::ostream& s, const ::tlgen::cases::TestOutFieldMask& item, [[maybe_unused]] uint32_t nat_f) noexcept;
+bool CasesTestOutFieldMaskRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestOutFieldMask& item, [[maybe_unused]] uint32_t nat_f) noexcept; 
+bool CasesTestOutFieldMaskWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestOutFieldMask& item, [[maybe_unused]] uint32_t nat_f) noexcept;
+bool CasesTestOutFieldMaskReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestOutFieldMask& item, [[maybe_unused]] uint32_t nat_f);
+bool CasesTestOutFieldMaskWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestOutFieldMask& item, [[maybe_unused]] uint32_t nat_f);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -81,9 +81,9 @@ func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInclu
 
 		hppDet.WriteString(fmt.Sprintf(`
 bool %[1]sWriteJSON(std::ostream & s, bool item);
-bool %[1]sReadBoxed(::basictl::tl_istream & s, bool& item);
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, bool item);
-`, addBytes(trw.wr.goGlobalName, bytesVersion)))
+bool %[1]sReadBoxed(::%[2]s::tl_istream & s, bool& item);
+bool %[1]sWriteBoxed(::%[2]s::tl_ostream & s, bool item);
+`, addBytes(trw.wr.goGlobalName, bytesVersion), trw.wr.gen.cppBasictlNamespace()))
 
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
 	}
@@ -99,14 +99,20 @@ bool %[6]s::%[1]sWriteJSON(std::ostream & s, bool item) {
 	return true;
 }
 
-bool %[6]s::%[1]sReadBoxed(::basictl::tl_istream & s, bool& item) {
+bool %[6]s::%[1]sReadBoxed(::%[7]s::tl_istream & s, bool& item) {
 	return s.bool_read(item, 0x%[2]x, 0x%[3]x);
 }
 
-bool %[6]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, bool item) {
+bool %[6]s::%[1]sWriteBoxed(::%[7]s::tl_ostream & s, bool item) {
 	return s.nat_write(item ? 0x%[3]x : 0x%[2]x);
 }
-`, addBytes(trw.wr.goGlobalName, bytesVersion), trw.falseTag, trw.trueTag, trw.falseGoName, trw.trueGoName, trw.wr.gen.DetailsCPPNamespace))
-
+`,
+			addBytes(trw.wr.goGlobalName, bytesVersion),
+			trw.falseTag,
+			trw.trueTag,
+			trw.falseGoName,
+			trw.trueGoName,
+			trw.wr.gen.DetailsCPPNamespace,
+			trw.wr.gen.cppBasictlNamespace()))
 	}
 }

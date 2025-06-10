@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/useTrue.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UseTrueReset(::tl2::UseTrue& item) noexcept;
+void UseTrueReset(::tlgen::UseTrue& item) noexcept;
 
-bool UseTrueWriteJSON(std::ostream& s, const ::tl2::UseTrue& item) noexcept;
-bool UseTrueRead(::basictl::tl_istream & s, ::tl2::UseTrue& item) noexcept; 
-bool UseTrueWrite(::basictl::tl_ostream & s, const ::tl2::UseTrue& item) noexcept;
-bool UseTrueReadBoxed(::basictl::tl_istream & s, ::tl2::UseTrue& item);
-bool UseTrueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UseTrue& item);
+bool UseTrueWriteJSON(std::ostream& s, const ::tlgen::UseTrue& item) noexcept;
+bool UseTrueRead(::tlgen::basictl::tl_istream & s, ::tlgen::UseTrue& item) noexcept; 
+bool UseTrueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseTrue& item) noexcept;
+bool UseTrueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UseTrue& item);
+bool UseTrueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseTrue& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,27 +5,27 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace4.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace4Reset(::tl2::Replace4& item) noexcept;
+void Replace4Reset(::tlgen::Replace4& item) noexcept;
 
-bool Replace4WriteJSON(std::ostream& s, const ::tl2::Replace4& item, uint32_t nat_n) noexcept;
-bool Replace4Read(::basictl::tl_istream & s, ::tl2::Replace4& item, uint32_t nat_n) noexcept; 
-bool Replace4Write(::basictl::tl_ostream & s, const ::tl2::Replace4& item, uint32_t nat_n) noexcept;
-bool Replace4ReadBoxed(::basictl::tl_istream & s, ::tl2::Replace4& item, uint32_t nat_n);
-bool Replace4WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Replace4& item, uint32_t nat_n);
+bool Replace4WriteJSON(std::ostream& s, const ::tlgen::Replace4& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool Replace4Read(::tlgen::basictl::tl_istream & s, ::tlgen::Replace4& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool Replace4Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace4& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool Replace4ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Replace4& item, [[maybe_unused]] uint32_t nat_n);
+bool Replace4WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace4& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace43Reset(::tl2::Replace4n<3>& item) noexcept;
+void Replace43Reset(::tlgen::Replace4n<3>& item) noexcept;
 
-bool Replace43WriteJSON(std::ostream& s, const ::tl2::Replace4n<3>& item) noexcept;
-bool Replace43Read(::basictl::tl_istream & s, ::tl2::Replace4n<3>& item) noexcept; 
-bool Replace43Write(::basictl::tl_ostream & s, const ::tl2::Replace4n<3>& item) noexcept;
-bool Replace43ReadBoxed(::basictl::tl_istream & s, ::tl2::Replace4n<3>& item);
-bool Replace43WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Replace4n<3>& item);
+bool Replace43WriteJSON(std::ostream& s, const ::tlgen::Replace4n<3>& item) noexcept;
+bool Replace43Read(::tlgen::basictl::tl_istream & s, ::tlgen::Replace4n<3>& item) noexcept; 
+bool Replace43Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace4n<3>& item) noexcept;
+bool Replace43ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Replace4n<3>& item);
+bool Replace43WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace4n<3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

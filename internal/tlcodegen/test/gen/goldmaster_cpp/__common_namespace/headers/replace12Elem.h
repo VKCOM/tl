@@ -5,33 +5,33 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace12Elem.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple3Replace12ElemReset(std::array<::tl2::Replace12Elem, 3>& item);
+void BuiltinTuple3Replace12ElemReset(std::array<::tlgen::Replace12Elem, 3>& item);
 
-bool BuiltinTuple3Replace12ElemWriteJSON(std::ostream & s, const std::array<::tl2::Replace12Elem, 3>& item, uint32_t nat_t);
-bool BuiltinTuple3Replace12ElemRead(::basictl::tl_istream & s, std::array<::tl2::Replace12Elem, 3>& item, uint32_t nat_t);
-bool BuiltinTuple3Replace12ElemWrite(::basictl::tl_ostream & s, const std::array<::tl2::Replace12Elem, 3>& item, uint32_t nat_t);
+bool BuiltinTuple3Replace12ElemWriteJSON(std::ostream & s, const std::array<::tlgen::Replace12Elem, 3>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTuple3Replace12ElemRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::Replace12Elem, 3>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTuple3Replace12ElemWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::Replace12Elem, 3>& item, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleTuple3Replace12ElemReset(std::vector<std::array<::tl2::Replace12Elem, 3>>& item);
+void BuiltinTupleTuple3Replace12ElemReset(std::vector<std::array<::tlgen::Replace12Elem, 3>>& item);
 
-bool BuiltinTupleTuple3Replace12ElemWriteJSON(std::ostream & s, const std::vector<std::array<::tl2::Replace12Elem, 3>>& item, uint32_t nat_n, uint32_t nat_t);
-bool BuiltinTupleTuple3Replace12ElemRead(::basictl::tl_istream & s, std::vector<std::array<::tl2::Replace12Elem, 3>>& item, uint32_t nat_n, uint32_t nat_t);
-bool BuiltinTupleTuple3Replace12ElemWrite(::basictl::tl_ostream & s, const std::vector<std::array<::tl2::Replace12Elem, 3>>& item, uint32_t nat_n, uint32_t nat_t);
+bool BuiltinTupleTuple3Replace12ElemWriteJSON(std::ostream & s, const std::vector<std::array<::tlgen::Replace12Elem, 3>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTupleTuple3Replace12ElemRead(::tlgen::basictl::tl_istream & s, std::vector<std::array<::tlgen::Replace12Elem, 3>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinTupleTuple3Replace12ElemWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::array<::tlgen::Replace12Elem, 3>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace12ElemReset(::tl2::Replace12Elem& item) noexcept;
+void Replace12ElemReset(::tlgen::Replace12Elem& item) noexcept;
 
-bool Replace12ElemWriteJSON(std::ostream& s, const ::tl2::Replace12Elem& item, uint32_t nat_n) noexcept;
-bool Replace12ElemRead(::basictl::tl_istream & s, ::tl2::Replace12Elem& item, uint32_t nat_n) noexcept; 
-bool Replace12ElemWrite(::basictl::tl_ostream & s, const ::tl2::Replace12Elem& item, uint32_t nat_n) noexcept;
+bool Replace12ElemWriteJSON(std::ostream& s, const ::tlgen::Replace12Elem& item, [[maybe_unused]] uint32_t nat_n) noexcept;
+bool Replace12ElemRead(::tlgen::basictl::tl_istream & s, ::tlgen::Replace12Elem& item, [[maybe_unused]] uint32_t nat_n) noexcept; 
+bool Replace12ElemWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace12Elem& item, [[maybe_unused]] uint32_t nat_n) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

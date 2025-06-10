@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "tasks/types/tasks.cronTaskWithId.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksCronTaskWithIdReset(::tl2::tasks::CronTaskWithId& item) noexcept;
+void TasksCronTaskWithIdReset(::tlgen::tasks::CronTaskWithId& item) noexcept;
 
-bool TasksCronTaskWithIdWriteJSON(std::ostream& s, const ::tl2::tasks::CronTaskWithId& item) noexcept;
-bool TasksCronTaskWithIdRead(::basictl::tl_istream & s, ::tl2::tasks::CronTaskWithId& item) noexcept; 
-bool TasksCronTaskWithIdWrite(::basictl::tl_ostream & s, const ::tl2::tasks::CronTaskWithId& item) noexcept;
-bool TasksCronTaskWithIdReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::CronTaskWithId& item);
-bool TasksCronTaskWithIdWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::CronTaskWithId& item);
+bool TasksCronTaskWithIdWriteJSON(std::ostream& s, const ::tlgen::tasks::CronTaskWithId& item) noexcept;
+bool TasksCronTaskWithIdRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::CronTaskWithId& item) noexcept; 
+bool TasksCronTaskWithIdWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::CronTaskWithId& item) noexcept;
+bool TasksCronTaskWithIdReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::CronTaskWithId& item);
+bool TasksCronTaskWithIdWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::CronTaskWithId& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

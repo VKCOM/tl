@@ -6,18 +6,18 @@
 #include "service3/functions/service3.deleteAllProducts.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3DeleteAllProductsReset(::tl2::service3::DeleteAllProducts& item) noexcept;
+void Service3DeleteAllProductsReset(::tlgen::service3::DeleteAllProducts& item) noexcept;
 
-bool Service3DeleteAllProductsWriteJSON(std::ostream& s, const ::tl2::service3::DeleteAllProducts& item) noexcept;
-bool Service3DeleteAllProductsRead(::basictl::tl_istream & s, ::tl2::service3::DeleteAllProducts& item) noexcept; 
-bool Service3DeleteAllProductsWrite(::basictl::tl_ostream & s, const ::tl2::service3::DeleteAllProducts& item) noexcept;
-bool Service3DeleteAllProductsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::DeleteAllProducts& item);
-bool Service3DeleteAllProductsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::DeleteAllProducts& item);
+bool Service3DeleteAllProductsWriteJSON(std::ostream& s, const ::tlgen::service3::DeleteAllProducts& item) noexcept;
+bool Service3DeleteAllProductsRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteAllProducts& item) noexcept; 
+bool Service3DeleteAllProductsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteAllProducts& item) noexcept;
+bool Service3DeleteAllProductsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteAllProducts& item);
+bool Service3DeleteAllProductsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteAllProducts& item);
 
-bool Service3DeleteAllProductsReadResult(::basictl::tl_istream & s, ::tl2::service3::DeleteAllProducts& item, bool& result);
-bool Service3DeleteAllProductsWriteResult(::basictl::tl_ostream & s, ::tl2::service3::DeleteAllProducts& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service3DeleteAllProductsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteAllProducts& item, bool& result);
+bool Service3DeleteAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::DeleteAllProducts& item, bool& result);
+    
+}} // namespace tlgen::details
 

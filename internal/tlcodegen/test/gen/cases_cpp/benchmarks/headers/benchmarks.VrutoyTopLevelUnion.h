@@ -5,23 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "benchmarks/types/benchmarks.VrutoyTopLevelUnion.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchmarksVrutoyTopLevelUnionReset(::tl2::benchmarks::VrutoyTopLevelUnion& item) noexcept;
+void BenchmarksVrutoyTopLevelUnionReset(::tlgen::benchmarks::VrutoyTopLevelUnion& item) noexcept;
 
-bool BenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, const ::tl2::benchmarks::VrutoyTopLevelUnion& item) noexcept;
-bool BenchmarksVrutoyTopLevelUnionReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelUnion& item) noexcept;
-bool BenchmarksVrutoyTopLevelUnionWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelUnion& item) noexcept;
+bool BenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, const ::tlgen::benchmarks::VrutoyTopLevelUnion& item) noexcept;
+bool BenchmarksVrutoyTopLevelUnionReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoyTopLevelUnion& item) noexcept;
+bool BenchmarksVrutoyTopLevelUnionWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoyTopLevelUnion& item) noexcept;
 
-}} // namespace tl2::details
-
-namespace tl2 { namespace details { 
-
-void BuiltinVectorBenchmarksVrutoyTopLevelUnionReset(std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
-
-bool BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSON(std::ostream & s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
-bool BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
-bool BuiltinVectorBenchmarksVrutoyTopLevelUnionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::VrutoyTopLevelUnion>& item);
-
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

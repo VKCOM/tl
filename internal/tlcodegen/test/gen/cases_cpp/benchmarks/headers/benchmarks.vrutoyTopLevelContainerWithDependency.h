@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "benchmarks/types/benchmarks.vrutoyTopLevelContainerWithDependency.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchmarksVrutoyTopLevelContainerWithDependencyReset(::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept;
+void BenchmarksVrutoyTopLevelContainerWithDependencyReset(::tlgen::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept;
 
-bool BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(std::ostream& s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept;
-bool BenchmarksVrutoyTopLevelContainerWithDependencyRead(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept; 
-bool BenchmarksVrutoyTopLevelContainerWithDependencyWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept;
-bool BenchmarksVrutoyTopLevelContainerWithDependencyReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item);
-bool BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::VrutoyTopLevelContainerWithDependency& item);
+bool BenchmarksVrutoyTopLevelContainerWithDependencyWriteJSON(std::ostream& s, const ::tlgen::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept;
+bool BenchmarksVrutoyTopLevelContainerWithDependencyRead(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept; 
+bool BenchmarksVrutoyTopLevelContainerWithDependencyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoyTopLevelContainerWithDependency& item) noexcept;
+bool BenchmarksVrutoyTopLevelContainerWithDependencyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::VrutoyTopLevelContainerWithDependency& item);
+bool BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::VrutoyTopLevelContainerWithDependency& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

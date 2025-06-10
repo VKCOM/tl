@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.empty.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbEmptyReset(::tl2::ab::Empty& item) noexcept;
+void AbEmptyReset(::tlgen::ab::Empty& item) noexcept;
 
-bool AbEmptyWriteJSON(std::ostream& s, const ::tl2::ab::Empty& item) noexcept;
-bool AbEmptyRead(::basictl::tl_istream & s, ::tl2::ab::Empty& item) noexcept; 
-bool AbEmptyWrite(::basictl::tl_ostream & s, const ::tl2::ab::Empty& item) noexcept;
-bool AbEmptyReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Empty& item);
-bool AbEmptyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Empty& item);
+bool AbEmptyWriteJSON(std::ostream& s, const ::tlgen::ab::Empty& item) noexcept;
+bool AbEmptyRead(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Empty& item) noexcept; 
+bool AbEmptyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Empty& item) noexcept;
+bool AbEmptyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Empty& item);
+bool AbEmptyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Empty& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

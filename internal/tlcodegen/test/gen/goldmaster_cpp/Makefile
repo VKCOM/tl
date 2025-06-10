@@ -1,14 +1,15 @@
-
+# compiler options
 CC = g++
-CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror=return-type -Wno-unused-parameter
-# compile all object files together
-all: main.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/ab.o __build/au.o __build/cd.o __build/cyc1.o __build/cyc2.o __build/cyc3.o __build/service5.o __build/service5Long.o __build/usefulService.o 
-	@mkdir -p __build
-	$(CC) $(CFLAGS) -o all main.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/ab.o __build/au.o __build/cd.o __build/cyc1.o __build/cyc2.o __build/cyc3.o __build/service5.o __build/service5Long.o __build/usefulService.o 
+CFLAGS = -std=c++20 -O3 -Wno-noexcept-type -g -Wall -Wextra -Werror -Wunused-parameter
 
-main.o: main.cpp
+# compile all object files together
+all: __build/main.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/ab.o __build/au.o __build/cd.o __build/cyc1.o __build/cyc2.o __build/cyc3.o __build/service5.o __build/service5Long.o __build/usefulService.o 
 	@mkdir -p __build
-	$(CC) $(CFLAGS) -c main.cpp
+	$(CC) $(CFLAGS) -o all __build/main.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/ab.o __build/au.o __build/cd.o __build/cyc1.o __build/cyc2.o __build/cyc3.o __build/service5.o __build/service5Long.o __build/usefulService.o 
+
+__build/main.o: main.cpp
+	@mkdir -p __build
+	$(CC) $(CFLAGS) -c main.cpp -o __build/main.o
 
 # compile meta data collection
 __build/__meta.o: __meta/headers.h __meta/details.cpp __build
@@ -31,84 +32,37 @@ __build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp
 
-# create object files for individual namespaces
-__build/__common_namespace.o: __common_namespace/details.cpp __common_namespace/details.cpp __common_namespace/headers/Bool.h __common_namespace/headers/MyNat2.h __common_namespace/headers/MyNat3.h __common_namespace/headers/UnionArgsXXX.h __common_namespace/headers/cycleTuple.h __common_namespace/headers/dictionaryElemStrange.h __common_namespace/headers/dictionaryField.h __common_namespace/headers/hren.h __common_namespace/headers/inner.h __common_namespace/headers/innerMaybe.h __common_namespace/headers/int.h __common_namespace/headers/int32.h __common_namespace/headers/int64.h __common_namespace/headers/long.h __common_namespace/headers/maybeTest1.h __common_namespace/headers/maybeWrapper.h __common_namespace/headers/myInt32.h __common_namespace/headers/myInt64.h __common_namespace/headers/myNat.h __common_namespace/headers/myPlus.h __common_namespace/headers/myPlus3.h __common_namespace/headers/myZero.h __common_namespace/headers/myZero3.h __common_namespace/headers/nativeWrappers.h __common_namespace/headers/noStr.h __common_namespace/headers/pair.h __common_namespace/headers/replace.h __common_namespace/headers/replace1.h __common_namespace/headers/replace10.h __common_namespace/headers/replace10Elem.h __common_namespace/headers/replace11.h __common_namespace/headers/replace11Elem.h __common_namespace/headers/replace12.h __common_namespace/headers/replace12Elem.h __common_namespace/headers/replace13.h __common_namespace/headers/replace13Elem.h __common_namespace/headers/replace14.h __common_namespace/headers/replace14Elem.h __common_namespace/headers/replace14ElemElem.h __common_namespace/headers/replace15.h __common_namespace/headers/replace15Elem.h __common_namespace/headers/replace15Elem1.h __common_namespace/headers/replace15Elem2.h __common_namespace/headers/replace17.h __common_namespace/headers/replace18.h __common_namespace/headers/replace2.h __common_namespace/headers/replace3.h __common_namespace/headers/replace4.h __common_namespace/headers/replace5.h __common_namespace/headers/replace6.h __common_namespace/headers/replace7.h __common_namespace/headers/replace8.h __common_namespace/headers/replace9.h __common_namespace/headers/testMaybe.h __common_namespace/headers/true.h __common_namespace/headers/tuple.h __common_namespace/headers/typeA.h __common_namespace/headers/unionArgsUse.h __common_namespace/headers/unionArgsXXX1.h __common_namespace/headers/unionArgsXXX2.h __common_namespace/headers/useStr.h __common_namespace/headers/useTrue.h __common_namespace/headers/vector.h
+# build object files for individual namespaces
+__build/__common_namespace.o: __common_namespace/details.cpp  __common_namespace/headers/Bool.h __common_namespace/headers/MyNat2.h __common_namespace/headers/MyNat3.h __common_namespace/headers/UnionArgsXXX.h __common_namespace/headers/cycleTuple.h __common_namespace/headers/dictionaryElemStrange.h __common_namespace/headers/dictionaryField.h __common_namespace/headers/hren.h __common_namespace/headers/inner.h __common_namespace/headers/innerMaybe.h __common_namespace/headers/int.h __common_namespace/headers/int32.h __common_namespace/headers/int64.h __common_namespace/headers/long.h __common_namespace/headers/maybeTest1.h __common_namespace/headers/maybeWrapper.h __common_namespace/headers/myInt32.h __common_namespace/headers/myInt64.h __common_namespace/headers/myNat.h __common_namespace/headers/myPlus.h __common_namespace/headers/myPlus3.h __common_namespace/headers/myZero.h __common_namespace/headers/myZero3.h __common_namespace/headers/nativeWrappers.h __common_namespace/headers/noStr.h __common_namespace/headers/pair.h __common_namespace/headers/replace.h __common_namespace/headers/replace1.h __common_namespace/headers/replace10.h __common_namespace/headers/replace10Elem.h __common_namespace/headers/replace11.h __common_namespace/headers/replace11Elem.h __common_namespace/headers/replace12.h __common_namespace/headers/replace12Elem.h __common_namespace/headers/replace13.h __common_namespace/headers/replace13Elem.h __common_namespace/headers/replace14.h __common_namespace/headers/replace14Elem.h __common_namespace/headers/replace14ElemElem.h __common_namespace/headers/replace15.h __common_namespace/headers/replace15Elem.h __common_namespace/headers/replace15Elem1.h __common_namespace/headers/replace15Elem2.h __common_namespace/headers/replace17.h __common_namespace/headers/replace18.h __common_namespace/headers/replace2.h __common_namespace/headers/replace3.h __common_namespace/headers/replace4.h __common_namespace/headers/replace5.h __common_namespace/headers/replace6.h __common_namespace/headers/replace7.h __common_namespace/headers/replace8.h __common_namespace/headers/replace9.h __common_namespace/headers/testMaybe.h __common_namespace/headers/true.h __common_namespace/headers/tuple.h __common_namespace/headers/typeA.h __common_namespace/headers/unionArgsUse.h __common_namespace/headers/unionArgsXXX1.h __common_namespace/headers/unionArgsXXX2.h __common_namespace/headers/useStr.h __common_namespace/headers/useTrue.h __common_namespace/headers/vector.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/__common_namespace.o -c __common_namespace/details.cpp
-__build/a.o: a/details.cpp a/details.cpp a/headers/a.Color.h a/headers/a.ColorItems.h a/headers/a.MyBool.h a/headers/a.MyUnion.h a/headers/a.inner.h a/headers/a.middle.h a/headers/a.top2.h a/headers/a.uNionA.h a/headers/a_a.ColorItems.h a/headers/a_dictionaryElem.h a/headers/a_dictionaryElemStrange.h a/headers/a_dictionaryElemUgly.h a/headers/a_int32.h a/headers/a_multiPoint.h a/headers/a_myInt32.h a/headers/a_pair.h a/headers/a_string.h a/headers/a_tuple.h a/headers/a_useDictUgly.h
+__build/a.o: a/details.cpp  a/headers/a.Color.h a/headers/a.ColorItems.h a/headers/a.MyBool.h a/headers/a.MyUnion.h a/headers/a.inner.h a/headers/a.middle.h a/headers/a.top2.h a/headers/a.uNionA.h a/headers/a_a.ColorItems.h a/headers/a_dictionaryElem.h a/headers/a_dictionaryElemStrange.h a/headers/a_dictionaryElemUgly.h a/headers/a_int32.h a/headers/a_multiPoint.h a/headers/a_myInt32.h a/headers/a_pair.h a/headers/a_string.h a/headers/a_tuple.h a/headers/a_useDictUgly.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/a.o -c a/details.cpp
-__build/ab.o: ab/details.cpp ab/details.cpp ab/headers/ab.CounterChangeRequestPeriods.h ab/headers/ab.Response.h ab/headers/ab.alias.h ab/headers/ab.call1.h ab/headers/ab.call10.h ab/headers/ab.call11.h ab/headers/ab.call2.h ab/headers/ab.call3.h ab/headers/ab.call4.h ab/headers/ab.call5.h ab/headers/ab.call6.h ab/headers/ab.call7.h ab/headers/ab.call8.h ab/headers/ab.call9.h ab/headers/ab.code.h ab/headers/ab.counterChangeRequestPeriodsMany.h ab/headers/ab.counterChangeRequestPeriodsOne.h ab/headers/ab.empty.h ab/headers/ab.myType.h ab/headers/ab.testMaybe.h ab/headers/ab.topLevel1.h ab/headers/ab.topLevel2.h ab/headers/ab.typeA.h ab/headers/ab.typeB.h ab/headers/ab.typeC.h ab/headers/ab.typeD.h ab/headers/ab.useCycle.h ab/headers/ab.useDictString.h ab/headers/ab_dictionary.h ab/headers/ab_dictionaryField.h ab/headers/ab_testMaybe2.h ab/headers/ab_typeB.h ab/headers/ab_typeC.h ab/headers/ab_useResponse.h ab/headers/ab_vector.h
+__build/ab.o: ab/details.cpp  ab/headers/ab.CounterChangeRequestPeriods.h ab/headers/ab.Response.h ab/headers/ab.alias.h ab/headers/ab.call1.h ab/headers/ab.call10.h ab/headers/ab.call11.h ab/headers/ab.call2.h ab/headers/ab.call3.h ab/headers/ab.call4.h ab/headers/ab.call5.h ab/headers/ab.call6.h ab/headers/ab.call7.h ab/headers/ab.call8.h ab/headers/ab.call9.h ab/headers/ab.code.h ab/headers/ab.counterChangeRequestPeriodsMany.h ab/headers/ab.counterChangeRequestPeriodsOne.h ab/headers/ab.empty.h ab/headers/ab.myType.h ab/headers/ab.testMaybe.h ab/headers/ab.topLevel1.h ab/headers/ab.topLevel2.h ab/headers/ab.typeA.h ab/headers/ab.typeB.h ab/headers/ab.typeC.h ab/headers/ab.typeD.h ab/headers/ab.useCycle.h ab/headers/ab.useDictString.h ab/headers/ab_a.Color.h ab/headers/ab_cd.myType.h ab/headers/ab_dictionary.h ab/headers/ab_dictionaryField.h ab/headers/ab_testMaybe2.h ab/headers/ab_typeB.h ab/headers/ab_typeC.h ab/headers/ab_useResponse.h ab/headers/ab_vector.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/ab.o -c ab/details.cpp
-__build/au.o: au/details.cpp au/details.cpp au/headers/au.nionA.h
+__build/au.o: au/details.cpp  au/headers/au.nionA.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/au.o -c au/details.cpp
-__build/cd.o: cd/details.cpp cd/details.cpp cd/headers/cd.myType.h cd/headers/cd.response.h cd/headers/cd.topLevel3.h cd/headers/cd.typeA.h cd/headers/cd.typeB.h cd/headers/cd.typeC.h cd/headers/cd.typeD.h cd/headers/cd.useCycle.h cd/headers/cd_halfStr.h cd/headers/cd_typeD.h
+__build/cd.o: cd/details.cpp  cd/headers/cd.myType.h cd/headers/cd.response.h cd/headers/cd.topLevel3.h cd/headers/cd.typeA.h cd/headers/cd.typeB.h cd/headers/cd.typeC.h cd/headers/cd.typeD.h cd/headers/cd.useCycle.h cd/headers/cd_a.Color.h cd/headers/cd_halfStr.h cd/headers/cd_typeD.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/cd.o -c cd/details.cpp
-__build/cyc1.o: cyc1/details.cpp cyc1/details.cpp cyc1/headers/cyc1.myCycle.h
+__build/cyc1.o: cyc1/details.cpp  cyc1/headers/cyc1.myCycle.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/cyc1.o -c cyc1/details.cpp
-__build/cyc2.o: cyc2/details.cpp cyc2/details.cpp cyc2/headers/cyc2.myCycle.h
+__build/cyc2.o: cyc2/details.cpp  cyc2/headers/cyc2.myCycle.h cyc2/headers/cyc2_cyc3.myCycle.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/cyc2.o -c cyc2/details.cpp
-__build/cyc3.o: cyc3/details.cpp cyc3/details.cpp cyc3/headers/cyc3.myCycle.h cyc3/headers/cyc3_vector.h
+__build/cyc3.o: cyc3/details.cpp  cyc3/headers/cyc3.myCycle.h cyc3/headers/cyc3_cyc1.myCycle.h cyc3/headers/cyc3_vector.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/cyc3.o -c cyc3/details.cpp
-__build/service5.o: service5/details.cpp service5/details.cpp service5/headers/service5.Output.h service5/headers/service5.emptyOutput.h service5/headers/service5.stringOutput.h
+__build/service5.o: service5/details.cpp  service5/headers/service5.Output.h service5/headers/service5.emptyOutput.h service5/headers/service5.stringOutput.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/service5.o -c service5/details.cpp
-__build/service5Long.o: service5Long/details.cpp service5Long/details.cpp service5Long/headers/service5Long.Output.h service5Long/headers/service5Long.emptyOutput.h service5Long/headers/service5Long.stringOutput.h
+__build/service5Long.o: service5Long/details.cpp  service5Long/headers/service5Long.Output.h service5Long/headers/service5Long.emptyOutput.h service5Long/headers/service5Long.stringOutput.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/service5Long.o -c service5Long/details.cpp
-__build/usefulService.o: usefulService/details.cpp usefulService/details.cpp usefulService/headers/usefulService.getUserEntity.h usefulService/headers/usefulService.getUserEntityResult.h usefulService/headers/usefulService.userEntityPaymentItem.h usefulService/headers/usefulService.userEntityPaymentItemPromo.h usefulService/headers/usefulService_dictionary.h usefulService/headers/usefulService_dictionaryField.h usefulService/headers/usefulService_vector.h
+__build/usefulService.o: usefulService/details.cpp  usefulService/headers/usefulService.getUserEntity.h usefulService/headers/usefulService.getUserEntityResult.h usefulService/headers/usefulService.userEntityPaymentItem.h usefulService/headers/usefulService.userEntityPaymentItemPromo.h usefulService/headers/usefulService_dictionary.h usefulService/headers/usefulService_dictionaryField.h usefulService/headers/usefulService_vector.h
 	@mkdir -p __build
 	$(CC) $(CFLAGS) -I. -o __build/usefulService.o -c usefulService/details.cpp
-# compile individual namespaces
-__compile/__common_namespace: main.o __build/__common_namespace.o __build/io_streams.o __build/io_throwable_streams.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/__common_namespace main.o __build/__common_namespace.o __build/io_streams.o __build/io_throwable_streams.o
-
-__compile/a: main.o __build/a.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/au.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/a main.o __build/a.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/au.o
-
-__compile/ab: main.o __build/ab.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cd.o __build/cyc1.o __build/cyc2.o __build/cyc3.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/ab main.o __build/ab.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cd.o __build/cyc1.o __build/cyc2.o __build/cyc3.o
-
-__compile/au: main.o __build/au.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/au main.o __build/au.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-
-__compile/cd: main.o __build/cd.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/ab.o __build/au.o __build/cyc1.o __build/cyc2.o __build/cyc3.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/cd main.o __build/cd.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/ab.o __build/au.o __build/cyc1.o __build/cyc2.o __build/cyc3.o
-
-__compile/cyc1: main.o __build/cyc1.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cyc2.o __build/cyc3.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/cyc1 main.o __build/cyc1.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cyc2.o __build/cyc3.o
-
-__compile/cyc2: main.o __build/cyc2.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cyc1.o __build/cyc3.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/cyc2 main.o __build/cyc2.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cyc1.o __build/cyc3.o
-
-__compile/cyc3: main.o __build/cyc3.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cyc1.o __build/cyc2.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/cyc3 main.o __build/cyc3.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o __build/a.o __build/au.o __build/cyc1.o __build/cyc2.o
-
-__compile/service5: main.o __build/service5.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/service5 main.o __build/service5.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-
-__compile/service5Long: main.o __build/service5Long.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/service5Long main.o __build/service5Long.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-
-__compile/usefulService: main.o __build/usefulService.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-	@mkdir -p __compile
-	$(CC) $(CFLAGS) -o __compile/usefulService main.o __build/usefulService.o __build/io_streams.o __build/io_throwable_streams.o __build/__common_namespace.o
-
-# compile all namespaces (for test purposes)
-compile-all: __compile/__common_namespace __compile/a __compile/ab __compile/au __compile/cd __compile/cyc1 __compile/cyc2 __compile/cyc3 __compile/service5 __compile/service5Long __compile/usefulService

@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "service3/types/service3.productStatsOld.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorService3ProductStatsOldReset(std::vector<::tl2::service3::ProductStatsOld>& item);
+void BuiltinVectorService3ProductStatsOldReset(std::vector<::tlgen::service3::ProductStatsOld>& item);
 
-bool BuiltinVectorService3ProductStatsOldWriteJSON(std::ostream & s, const std::vector<::tl2::service3::ProductStatsOld>& item);
-bool BuiltinVectorService3ProductStatsOldRead(::basictl::tl_istream & s, std::vector<::tl2::service3::ProductStatsOld>& item);
-bool BuiltinVectorService3ProductStatsOldWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service3::ProductStatsOld>& item);
+bool BuiltinVectorService3ProductStatsOldWriteJSON(std::ostream & s, const std::vector<::tlgen::service3::ProductStatsOld>& item);
+bool BuiltinVectorService3ProductStatsOldRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::ProductStatsOld>& item);
+bool BuiltinVectorService3ProductStatsOldWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::ProductStatsOld>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3ProductStatsOldReset(::tl2::service3::ProductStatsOld& item) noexcept;
+void Service3ProductStatsOldReset(::tlgen::service3::ProductStatsOld& item) noexcept;
 
-bool Service3ProductStatsOldWriteJSON(std::ostream& s, const ::tl2::service3::ProductStatsOld& item) noexcept;
-bool Service3ProductStatsOldRead(::basictl::tl_istream & s, ::tl2::service3::ProductStatsOld& item) noexcept; 
-bool Service3ProductStatsOldWrite(::basictl::tl_ostream & s, const ::tl2::service3::ProductStatsOld& item) noexcept;
-bool Service3ProductStatsOldReadBoxed(::basictl::tl_istream & s, ::tl2::service3::ProductStatsOld& item);
-bool Service3ProductStatsOldWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::ProductStatsOld& item);
+bool Service3ProductStatsOldWriteJSON(std::ostream& s, const ::tlgen::service3::ProductStatsOld& item) noexcept;
+bool Service3ProductStatsOldRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::ProductStatsOld& item) noexcept; 
+bool Service3ProductStatsOldWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::ProductStatsOld& item) noexcept;
+bool Service3ProductStatsOldReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::ProductStatsOld& item);
+bool Service3ProductStatsOldWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::ProductStatsOld& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

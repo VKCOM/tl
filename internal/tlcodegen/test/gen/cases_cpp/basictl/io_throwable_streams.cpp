@@ -3,14 +3,14 @@
 #include "basictl/io_streams.h"
 #include "basictl/io_throwable_streams.h"
 
-namespace basictl {
+namespace tlgen::basictl {
     tl_throwable_istream::tl_throwable_istream(tl_input_connector &provider) : provider(&provider) {}
 
     void tl_throwable_istream::string_read(std::string &value) {
         ensure_byte();
         auto len = size_t(static_cast<unsigned char>(*ptr));
-        if (len >= TL_BIG_STRING_MARKER) [[unlikely]] {
-            if (len > TL_BIG_STRING_MARKER) [[unlikely]] {
+        if (len >= tlgen::basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
+            if (len > tlgen::basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
                 throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t len32 = 0;
@@ -40,14 +40,14 @@ namespace basictl {
         ptr += fullLen;
     }
 
-    void tl_throwable_istream::last_release() noexcept {
-        provider->release_buffer(ptr - start_block);
+    void tl_throwable_istream::sync() noexcept {
+        provider->advance(ptr - start_block);
         start_block = ptr;
     }
 
     void tl_throwable_istream::grow_buffer() {
         ptr = end_block;
-        provider->release_buffer(ptr - start_block);
+        provider->advance(ptr - start_block);
         auto new_buffer_request = provider->get_buffer();
         if (new_buffer_request) {
             auto new_buffer = new_buffer_request.value();
@@ -127,11 +127,11 @@ namespace basictl {
 
     void tl_throwable_ostream::string_write(const std::string &value) {
         auto len = value.size();
-        if (len > TL_MAX_TINY_STRING_LEN) [[unlikely]] {
-            if (len > TL_BIG_STRING_LEN) [[unlikely]] {
+        if (len > tlgen::basictl::TL_MAX_TINY_STRING_LEN) [[unlikely]] {
+            if (len > tlgen::basictl::TL_BIG_STRING_LEN) [[unlikely]] {
                 throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
-            uint32_t p = (len << 8U) | TL_BIG_STRING_MARKER;
+            uint32_t p = (len << 8U) | tlgen::basictl::TL_BIG_STRING_MARKER;
             store_data(&p, 4);
             store_data(value.data(), value.size());
             store_pad((-len) & 3);
@@ -154,15 +154,15 @@ namespace basictl {
         ptr += fullLen;
     }
 
-    void tl_throwable_ostream::last_release() noexcept {
-        provider->release_buffer(ptr - start_block);
+    void tl_throwable_ostream::sync() noexcept {
+        provider->advance(ptr - start_block);
         start_block = ptr;
     }
 
 
     void tl_throwable_ostream::grow_buffer() {
         ptr = end_block;
-        provider->release_buffer(ptr - start_block);
+        provider->advance(ptr - start_block);
         auto new_buffer_request = provider->get_buffer();
         if (new_buffer_request) {
             auto new_buffer = new_buffer_request.value();
@@ -222,4 +222,4 @@ namespace basictl {
         to.start_block = start_block;
         to.end_block = end_block;
     }
-} // namespace basictl
+} // namespace tlgen::basictl

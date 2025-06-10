@@ -6,18 +6,18 @@
 #include "ab/functions/ab.call4.h"
 #include "ab/types/ab.typeB.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbCall4Reset(::tl2::ab::Call4& item) noexcept;
+void AbCall4Reset(::tlgen::ab::Call4& item) noexcept;
 
-bool AbCall4WriteJSON(std::ostream& s, const ::tl2::ab::Call4& item) noexcept;
-bool AbCall4Read(::basictl::tl_istream & s, ::tl2::ab::Call4& item) noexcept; 
-bool AbCall4Write(::basictl::tl_ostream & s, const ::tl2::ab::Call4& item) noexcept;
-bool AbCall4ReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Call4& item);
-bool AbCall4WriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Call4& item);
+bool AbCall4WriteJSON(std::ostream& s, const ::tlgen::ab::Call4& item) noexcept;
+bool AbCall4Read(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call4& item) noexcept; 
+bool AbCall4Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call4& item) noexcept;
+bool AbCall4ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call4& item);
+bool AbCall4WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call4& item);
 
-bool AbCall4ReadResult(::basictl::tl_istream & s, ::tl2::ab::Call4& item, ::tl2::ab::TypeB& result);
-bool AbCall4WriteResult(::basictl::tl_ostream & s, ::tl2::ab::Call4& item, ::tl2::ab::TypeB& result);
-		
-}} // namespace tl2::details
+bool AbCall4ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call4& item, ::tlgen::ab::TypeB& result);
+bool AbCall4WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::ab::Call4& item, ::tlgen::ab::TypeB& result);
+    
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "a/types/a.top2.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void ATop2Reset(::tl2::a::Top2& item) noexcept;
+void ATop2Reset(::tlgen::a::Top2& item) noexcept;
 
-bool ATop2WriteJSON(std::ostream& s, const ::tl2::a::Top2& item) noexcept;
-bool ATop2Read(::basictl::tl_istream & s, ::tl2::a::Top2& item) noexcept; 
-bool ATop2Write(::basictl::tl_ostream & s, const ::tl2::a::Top2& item) noexcept;
-bool ATop2ReadBoxed(::basictl::tl_istream & s, ::tl2::a::Top2& item);
-bool ATop2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Top2& item);
+bool ATop2WriteJSON(std::ostream& s, const ::tlgen::a::Top2& item) noexcept;
+bool ATop2Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::Top2& item) noexcept; 
+bool ATop2Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Top2& item) noexcept;
+bool ATop2ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Top2& item);
+bool ATop2WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Top2& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -11,7 +11,7 @@ namespace basictl {
         explicit tl_istream_string(const std::string & buffer) : buffer(buffer) {}
 
         tl_connector_result<std::span<const std::byte>> get_buffer() noexcept override;
-        void release_buffer(size_t size) noexcept override;
+        void advance(size_t size) noexcept override;
 
         std::span<const std::byte> used_buffer();
     private:
@@ -24,7 +24,7 @@ namespace basictl {
         explicit tl_ostream_string(std::string & buffer) : buffer(buffer) {}
 
         tl_connector_result<std::span<std::byte>> get_buffer() noexcept override;
-        void release_buffer(size_t size) noexcept override;
+        void advance(size_t size) noexcept override;
 
         std::span<std::byte> used_buffer();
     private:

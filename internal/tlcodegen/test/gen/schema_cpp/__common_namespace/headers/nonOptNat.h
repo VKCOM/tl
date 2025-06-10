@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/nonOptNat.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void NonOptNatReset(::tl2::NonOptNat& item) noexcept;
+void NonOptNatReset(::tlgen::NonOptNat& item) noexcept;
 
-bool NonOptNatWriteJSON(std::ostream& s, const ::tl2::NonOptNat& item) noexcept;
-bool NonOptNatRead(::basictl::tl_istream & s, ::tl2::NonOptNat& item) noexcept; 
-bool NonOptNatWrite(::basictl::tl_ostream & s, const ::tl2::NonOptNat& item) noexcept;
-bool NonOptNatReadBoxed(::basictl::tl_istream & s, ::tl2::NonOptNat& item);
-bool NonOptNatWriteBoxed(::basictl::tl_ostream & s, const ::tl2::NonOptNat& item);
+bool NonOptNatWriteJSON(std::ostream& s, const ::tlgen::NonOptNat& item) noexcept;
+bool NonOptNatRead(::tlgen::basictl::tl_istream & s, ::tlgen::NonOptNat& item) noexcept; 
+bool NonOptNatWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::NonOptNat& item) noexcept;
+bool NonOptNatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::NonOptNat& item);
+bool NonOptNatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::NonOptNat& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

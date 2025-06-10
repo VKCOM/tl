@@ -6,18 +6,18 @@
 #include "__common_namespace/functions/boxedTuple.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BoxedTupleReset(::tl2::BoxedTuple& item) noexcept;
+void BoxedTupleReset(::tlgen::BoxedTuple& item) noexcept;
 
-bool BoxedTupleWriteJSON(std::ostream& s, const ::tl2::BoxedTuple& item) noexcept;
-bool BoxedTupleRead(::basictl::tl_istream & s, ::tl2::BoxedTuple& item) noexcept; 
-bool BoxedTupleWrite(::basictl::tl_ostream & s, const ::tl2::BoxedTuple& item) noexcept;
-bool BoxedTupleReadBoxed(::basictl::tl_istream & s, ::tl2::BoxedTuple& item);
-bool BoxedTupleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::BoxedTuple& item);
+bool BoxedTupleWriteJSON(std::ostream& s, const ::tlgen::BoxedTuple& item) noexcept;
+bool BoxedTupleRead(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedTuple& item) noexcept; 
+bool BoxedTupleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedTuple& item) noexcept;
+bool BoxedTupleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedTuple& item);
+bool BoxedTupleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedTuple& item);
 
-bool BoxedTupleReadResult(::basictl::tl_istream & s, ::tl2::BoxedTuple& item, std::array<int32_t, 3>& result);
-bool BoxedTupleWriteResult(::basictl::tl_ostream & s, ::tl2::BoxedTuple& item, std::array<int32_t, 3>& result);
-		
-}} // namespace tl2::details
+bool BoxedTupleReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedTuple& item, std::array<int32_t, 3>& result);
+bool BoxedTupleWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedTuple& item, std::array<int32_t, 3>& result);
+    
+}} // namespace tlgen::details
 

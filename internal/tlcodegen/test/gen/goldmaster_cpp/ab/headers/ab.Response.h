@@ -5,23 +5,23 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.Response.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbResponseReset(::tl2::ab::Response& item) noexcept;
+void AbResponseReset(::tlgen::ab::Response& item) noexcept;
 
-bool AbResponseWriteJSON(std::ostream & s, const ::tl2::ab::Response& item) noexcept;
-bool AbResponseReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Response& item) noexcept;
-bool AbResponseWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Response& item) noexcept;
+bool AbResponseWriteJSON(std::ostream & s, const ::tlgen::ab::Response& item) noexcept;
+bool AbResponseReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Response& item) noexcept;
+bool AbResponseWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Response& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleAbResponseReset(std::vector<::tl2::ab::Response>& item);
+void BuiltinTupleAbResponseReset(std::vector<::tlgen::ab::Response>& item);
 
-bool BuiltinTupleAbResponseWriteJSON(std::ostream & s, const std::vector<::tl2::ab::Response>& item, uint32_t nat_n);
-bool BuiltinTupleAbResponseRead(::basictl::tl_istream & s, std::vector<::tl2::ab::Response>& item, uint32_t nat_n);
-bool BuiltinTupleAbResponseWrite(::basictl::tl_ostream & s, const std::vector<::tl2::ab::Response>& item, uint32_t nat_n);
+bool BuiltinTupleAbResponseWriteJSON(std::ostream & s, const std::vector<::tlgen::ab::Response>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleAbResponseRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::ab::Response>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleAbResponseWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::ab::Response>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

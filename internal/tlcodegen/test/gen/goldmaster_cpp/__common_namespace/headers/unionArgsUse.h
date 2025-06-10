@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/unionArgsUse.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UnionArgsUseReset(::tl2::UnionArgsUse& item) noexcept;
+void UnionArgsUseReset(::tlgen::UnionArgsUse& item) noexcept;
 
-bool UnionArgsUseWriteJSON(std::ostream& s, const ::tl2::UnionArgsUse& item) noexcept;
-bool UnionArgsUseRead(::basictl::tl_istream & s, ::tl2::UnionArgsUse& item) noexcept; 
-bool UnionArgsUseWrite(::basictl::tl_ostream & s, const ::tl2::UnionArgsUse& item) noexcept;
-bool UnionArgsUseReadBoxed(::basictl::tl_istream & s, ::tl2::UnionArgsUse& item);
-bool UnionArgsUseWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UnionArgsUse& item);
+bool UnionArgsUseWriteJSON(std::ostream& s, const ::tlgen::UnionArgsUse& item) noexcept;
+bool UnionArgsUseRead(::tlgen::basictl::tl_istream & s, ::tlgen::UnionArgsUse& item) noexcept; 
+bool UnionArgsUseWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::UnionArgsUse& item) noexcept;
+bool UnionArgsUseReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UnionArgsUse& item);
+bool UnionArgsUseWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UnionArgsUse& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

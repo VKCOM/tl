@@ -5,51 +5,51 @@
 #include "basictl/io_throwable_streams.h"
 #include "a/types/a.ColorItems.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void ABlueReset(::tl2::a::Blue& item) noexcept;
+void ABlueReset(::tlgen::a::Blue& item) noexcept;
 
-bool ABlueWriteJSON(std::ostream& s, const ::tl2::a::Blue& item) noexcept;
-bool ABlueRead(::basictl::tl_istream & s, ::tl2::a::Blue& item) noexcept; 
-bool ABlueWrite(::basictl::tl_ostream & s, const ::tl2::a::Blue& item) noexcept;
-bool ABlueReadBoxed(::basictl::tl_istream & s, ::tl2::a::Blue& item);
-bool ABlueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Blue& item);
+bool ABlueWriteJSON(std::ostream& s, const ::tlgen::a::Blue& item) noexcept;
+bool ABlueRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Blue& item) noexcept; 
+bool ABlueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Blue& item) noexcept;
+bool ABlueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Blue& item);
+bool ABlueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Blue& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AColor0Reset(::tl2::a::Color0& item) noexcept;
+void AColor0Reset(::tlgen::a::Color0& item) noexcept;
 
-bool AColor0WriteJSON(std::ostream& s, const ::tl2::a::Color0& item) noexcept;
-bool AColor0Read(::basictl::tl_istream & s, ::tl2::a::Color0& item) noexcept; 
-bool AColor0Write(::basictl::tl_ostream & s, const ::tl2::a::Color0& item) noexcept;
-bool AColor0ReadBoxed(::basictl::tl_istream & s, ::tl2::a::Color0& item);
-bool AColor0WriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Color0& item);
+bool AColor0WriteJSON(std::ostream& s, const ::tlgen::a::Color0& item) noexcept;
+bool AColor0Read(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color0& item) noexcept; 
+bool AColor0Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Color0& item) noexcept;
+bool AColor0ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color0& item);
+bool AColor0WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Color0& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AGreenReset(::tl2::a::Green& item) noexcept;
+void AGreenReset(::tlgen::a::Green& item) noexcept;
 
-bool AGreenWriteJSON(std::ostream& s, const ::tl2::a::Green& item) noexcept;
-bool AGreenRead(::basictl::tl_istream & s, ::tl2::a::Green& item) noexcept; 
-bool AGreenWrite(::basictl::tl_ostream & s, const ::tl2::a::Green& item) noexcept;
-bool AGreenReadBoxed(::basictl::tl_istream & s, ::tl2::a::Green& item);
-bool AGreenWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Green& item);
+bool AGreenWriteJSON(std::ostream& s, const ::tlgen::a::Green& item) noexcept;
+bool AGreenRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Green& item) noexcept; 
+bool AGreenWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Green& item) noexcept;
+bool AGreenReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Green& item);
+bool AGreenWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Green& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void ARedReset(::tl2::a::Red& item) noexcept;
+void ARedReset(::tlgen::a::Red& item) noexcept;
 
-bool ARedWriteJSON(std::ostream& s, const ::tl2::a::Red& item) noexcept;
-bool ARedRead(::basictl::tl_istream & s, ::tl2::a::Red& item) noexcept; 
-bool ARedWrite(::basictl::tl_ostream & s, const ::tl2::a::Red& item) noexcept;
-bool ARedReadBoxed(::basictl::tl_istream & s, ::tl2::a::Red& item);
-bool ARedWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::Red& item);
+bool ARedWriteJSON(std::ostream& s, const ::tlgen::a::Red& item) noexcept;
+bool ARedRead(::tlgen::basictl::tl_istream & s, ::tlgen::a::Red& item) noexcept; 
+bool ARedWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Red& item) noexcept;
+bool ARedReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::Red& item);
+bool ARedWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Red& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

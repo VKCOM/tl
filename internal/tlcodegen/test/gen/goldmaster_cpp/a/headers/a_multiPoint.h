@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/multiPoint.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MultiPointReset(::tl2::MultiPoint& item) noexcept;
+void MultiPointReset(::tlgen::MultiPoint& item) noexcept;
 
-bool MultiPointWriteJSON(std::ostream& s, const ::tl2::MultiPoint& item) noexcept;
-bool MultiPointRead(::basictl::tl_istream & s, ::tl2::MultiPoint& item) noexcept; 
-bool MultiPointWrite(::basictl::tl_ostream & s, const ::tl2::MultiPoint& item) noexcept;
-bool MultiPointReadBoxed(::basictl::tl_istream & s, ::tl2::MultiPoint& item);
-bool MultiPointWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MultiPoint& item);
+bool MultiPointWriteJSON(std::ostream& s, const ::tlgen::MultiPoint& item) noexcept;
+bool MultiPointRead(::tlgen::basictl::tl_istream & s, ::tlgen::MultiPoint& item) noexcept; 
+bool MultiPointWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MultiPoint& item) noexcept;
+bool MultiPointReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MultiPoint& item);
+bool MultiPointWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MultiPoint& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

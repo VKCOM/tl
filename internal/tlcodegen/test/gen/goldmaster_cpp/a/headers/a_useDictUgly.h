@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/useDictUgly.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UseDictUglyReset(::tl2::UseDictUgly& item) noexcept;
+void UseDictUglyReset(::tlgen::UseDictUgly& item) noexcept;
 
-bool UseDictUglyWriteJSON(std::ostream& s, const ::tl2::UseDictUgly& item) noexcept;
-bool UseDictUglyRead(::basictl::tl_istream & s, ::tl2::UseDictUgly& item) noexcept; 
-bool UseDictUglyWrite(::basictl::tl_ostream & s, const ::tl2::UseDictUgly& item) noexcept;
-bool UseDictUglyReadBoxed(::basictl::tl_istream & s, ::tl2::UseDictUgly& item);
-bool UseDictUglyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::UseDictUgly& item);
+bool UseDictUglyWriteJSON(std::ostream& s, const ::tlgen::UseDictUgly& item) noexcept;
+bool UseDictUglyRead(::tlgen::basictl::tl_istream & s, ::tlgen::UseDictUgly& item) noexcept; 
+bool UseDictUglyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseDictUgly& item) noexcept;
+bool UseDictUglyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::UseDictUgly& item);
+bool UseDictUglyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::UseDictUgly& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

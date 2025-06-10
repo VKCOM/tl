@@ -7,15 +7,15 @@
 #include "usefulService/types/usefulService.userEntityPaymentItem.h"
 #include "__common_namespace/types/dictionaryField.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item) noexcept;
+void VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>& item) noexcept;
 
-bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(std::ostream& s, const std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept;
-bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept; 
-bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t) noexcept;
-bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadBoxed(::basictl::tl_istream & s, std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t);
-bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::usefulService::UserEntityPaymentItem>& item, uint32_t nat_t);
+bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(std::ostream& s, const std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>& item, [[maybe_unused]] uint32_t nat_t) noexcept;
+bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(::tlgen::basictl::tl_istream & s, std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>& item, [[maybe_unused]] uint32_t nat_t) noexcept; 
+bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWrite(::tlgen::basictl::tl_ostream & s, const std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>& item, [[maybe_unused]] uint32_t nat_t) noexcept;
+bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadBoxed(::tlgen::basictl::tl_istream & s, std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>& item, [[maybe_unused]] uint32_t nat_t);
+bool VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>& item, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

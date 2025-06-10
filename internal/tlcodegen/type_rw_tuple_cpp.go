@@ -155,8 +155,8 @@ func (trw *TypeRWBrackets) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectI
 void %[1]sReset(std::array<%[2]s, %[3]d>& item);
 
 bool %[1]sWriteJSON(std::ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
-bool %[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s);
-bool %[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
+bool %[1]sRead(::%[5]s::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s);
+bool %[1]sWrite(::%[5]s::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s);
 `
 	cppCode := `
 void %[8]s::%[1]sReset(std::array<%[2]s, %[3]d>& item) {
@@ -179,14 +179,14 @@ bool %[8]s::%[1]sWriteJSON(std::ostream &s, const std::array<%[2]s, %[3]d>& item
 	return true;
 }
 
-bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s) {
+bool %[8]s::%[1]sRead(::%[10]s::tl_istream & s, std::array<%[2]s, %[3]d>& item%[4]s) {
 	for(auto && el : item) {
 	%[5]s
 	}
 	return true;
 }
 
-bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s) {
+bool %[8]s::%[1]sWrite(::%[10]s::tl_ostream & s, const std::array<%[2]s, %[3]d>& item%[4]s) {
 	for(const auto & el : item) {
 	%[6]s
 	}
@@ -255,8 +255,8 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::array<%[2]s, %[3]d>
 void %[1]sReset(std::vector<%[2]s>& item);
 
 bool %[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s);
-bool %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
-bool %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
+bool %[1]sRead(::%[5]s::tl_istream & s, std::vector<%[2]s>& item%[4]s);
+bool %[1]sWrite(::%[5]s::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
 `
 		cppCode = `
 void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
@@ -277,7 +277,7 @@ bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s
 	return true;
 }
 
-bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
+bool %[8]s::%[1]sRead(::%[10]s::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
 	// TODO - check length sanity
@@ -288,7 +288,7 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) 
 	return true;
 }
 
-bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
+bool %[8]s::%[1]sWrite(::%[10]s::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
 	%[6]s
@@ -301,8 +301,8 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 void %[1]sReset(std::vector<%[2]s>& item);
 
 bool %[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s);
-bool %[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s);
-bool %[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
+bool %[1]sRead(::%[5]s::tl_istream & s, std::vector<%[2]s>& item%[4]s);
+bool %[1]sWrite(::%[5]s::tl_ostream & s, const std::vector<%[2]s>& item%[4]s);
 `
 		cppCode = `
 void %[8]s::%[1]sReset(std::vector<%[2]s>& item) {
@@ -324,7 +324,7 @@ bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::vector<%[2]s>& item%[4]s
 	return true;
 }
 
-bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
+bool %[8]s::%[1]sRead(::%[10]s::tl_istream & s, std::vector<%[2]s>& item%[4]s) {
 	// TODO - check length sanity
 	item.resize(nat_n);
 	for(auto && el : item) {
@@ -333,7 +333,7 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::vector<%[2]s>& item%[4]s) 
 	return true;
 }
 
-bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
+bool %[8]s::%[1]sWrite(::%[10]s::tl_ostream & s, const std::vector<%[2]s>& item%[4]s) {
 	if (item.size() != nat_n) { return s.set_error_sequence_length(); }
 	for(const auto & el : item) {
 	%[6]s
@@ -390,6 +390,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 			trw.element.t.CPPTypeStringInNamespace(bytesVersion, &DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}),
 			trw.size,
 			formatNatArgsDeclCPP(trw.wr.NatParams),
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
@@ -419,6 +420,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::vector<%[2]s>& item
 			trw.element.t.trw.CPPTypeResettingCode(bytesVersion, "el"),
 			trw.wr.gen.DetailsCPPNamespace,
 			trw.element.t.trw.CPPTypeWritingJsonCode(bytesVersion, "el", false, formatNatArgsCPP(nil, trw.element.natArgs), false),
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 	}
 }
@@ -436,14 +438,15 @@ func (trw *TypeRWBrackets) CPPGenerateCodeMap(hpp *strings.Builder, hppInc *Dire
 void %[1]sReset(std::map<%[5]s, %[2]s>& item);
 
 bool %[1]sWriteJSON(std::ostream & s, const std::map<%[5]s, %[2]s>& item%[4]s);
-bool %[1]sRead(::basictl::tl_istream & s, std::map<%[5]s, %[2]s>& item%[4]s);
-bool %[1]sWrite(::basictl::tl_ostream & s, const std::map<%[5]s, %[2]s>& item%[4]s);
+bool %[1]sRead(::%[6]s::tl_istream & s, std::map<%[5]s, %[2]s>& item%[4]s);
+bool %[1]sWrite(::%[6]s::tl_ostream & s, const std::map<%[5]s, %[2]s>& item%[4]s);
 `,
 			addBytes(trw.wr.goGlobalName, bytesVersion),
 			valueType.t.CPPTypeStringInNamespace(bytesVersion, hppDetInc),
 			"",
 			formatNatArgsDeclCPP(trw.wr.NatParams),
 			keyValue.t.CPPTypeStringInNamespace(bytesVersion, hppDetInc),
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
@@ -471,7 +474,7 @@ bool %[8]s::%[1]sWriteJSON(std::ostream & s, const std::map<%[13]s, %[2]s>& item
 	return true;
 }
 
-bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::map<%[13]s, %[2]s>& item%[4]s) {
+bool %[8]s::%[1]sRead(::%[18]s::tl_istream & s, std::map<%[13]s, %[2]s>& item%[4]s) {
 	uint32_t len = 0;
 	if (!s.nat_read(len)) { return false; }
 	item.clear();
@@ -483,7 +486,7 @@ bool %[8]s::%[1]sRead(::basictl::tl_istream & s, std::map<%[13]s, %[2]s>& item%[
 	return true;
 }
 
-bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>& item%[4]s) {
+bool %[8]s::%[1]sWrite(::%[18]s::tl_ostream & s, const std::map<%[13]s, %[2]s>& item%[4]s) {
 	if (!s.nat_write(item.size())) { return false; }
 	for(const auto & el : item) {
 		%[14]s el2{.%[15]s= el.first, .%[16]s= el.second};
@@ -523,6 +526,7 @@ bool %[8]s::%[1]sWrite(::basictl::tl_ostream & s, const std::map<%[13]s, %[2]s>&
 			trw.element.t.trw.CPPTypeWritingCode(bytesVersion, "el2",
 				trw.element.Bare(), formatNatArgsCPP(nil, trw.element.natArgs),
 				false), // 17
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 	}
 }

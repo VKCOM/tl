@@ -5,18 +5,18 @@
 #include "basictl/io_throwable_streams.h"
 #include "tasks/functions/tasks.addTask.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksAddTaskReset(::tl2::tasks::AddTask& item) noexcept;
+void TasksAddTaskReset(::tlgen::tasks::AddTask& item) noexcept;
 
-bool TasksAddTaskWriteJSON(std::ostream& s, const ::tl2::tasks::AddTask& item) noexcept;
-bool TasksAddTaskRead(::basictl::tl_istream & s, ::tl2::tasks::AddTask& item) noexcept; 
-bool TasksAddTaskWrite(::basictl::tl_ostream & s, const ::tl2::tasks::AddTask& item) noexcept;
-bool TasksAddTaskReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::AddTask& item);
-bool TasksAddTaskWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::AddTask& item);
+bool TasksAddTaskWriteJSON(std::ostream& s, const ::tlgen::tasks::AddTask& item) noexcept;
+bool TasksAddTaskRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::AddTask& item) noexcept; 
+bool TasksAddTaskWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::AddTask& item) noexcept;
+bool TasksAddTaskReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::AddTask& item);
+bool TasksAddTaskWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::AddTask& item);
 
-bool TasksAddTaskReadResult(::basictl::tl_istream & s, ::tl2::tasks::AddTask& item, int64_t& result);
-bool TasksAddTaskWriteResult(::basictl::tl_ostream & s, ::tl2::tasks::AddTask& item, int64_t& result);
-		
-}} // namespace tl2::details
+bool TasksAddTaskReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::AddTask& item, int64_t& result);
+bool TasksAddTaskWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::tasks::AddTask& item, int64_t& result);
+    
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "antispam/types/antispam.patternNotFound.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AntispamPatternNotFoundReset(::tl2::antispam::PatternNotFound& item) noexcept;
+void AntispamPatternNotFoundReset(::tlgen::antispam::PatternNotFound& item) noexcept;
 
-bool AntispamPatternNotFoundWriteJSON(std::ostream& s, const ::tl2::antispam::PatternNotFound& item) noexcept;
-bool AntispamPatternNotFoundRead(::basictl::tl_istream & s, ::tl2::antispam::PatternNotFound& item) noexcept; 
-bool AntispamPatternNotFoundWrite(::basictl::tl_ostream & s, const ::tl2::antispam::PatternNotFound& item) noexcept;
-bool AntispamPatternNotFoundReadBoxed(::basictl::tl_istream & s, ::tl2::antispam::PatternNotFound& item);
-bool AntispamPatternNotFoundWriteBoxed(::basictl::tl_ostream & s, const ::tl2::antispam::PatternNotFound& item);
+bool AntispamPatternNotFoundWriteJSON(std::ostream& s, const ::tlgen::antispam::PatternNotFound& item) noexcept;
+bool AntispamPatternNotFoundRead(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::PatternNotFound& item) noexcept; 
+bool AntispamPatternNotFoundWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::antispam::PatternNotFound& item) noexcept;
+bool AntispamPatternNotFoundReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::PatternNotFound& item);
+bool AntispamPatternNotFoundWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::antispam::PatternNotFound& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

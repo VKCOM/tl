@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/replace3.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Replace3Reset(::tl2::Replace3& item) noexcept;
+void Replace3Reset(::tlgen::Replace3& item) noexcept;
 
-bool Replace3WriteJSON(std::ostream& s, const ::tl2::Replace3& item) noexcept;
-bool Replace3Read(::basictl::tl_istream & s, ::tl2::Replace3& item) noexcept; 
-bool Replace3Write(::basictl::tl_ostream & s, const ::tl2::Replace3& item) noexcept;
-bool Replace3ReadBoxed(::basictl::tl_istream & s, ::tl2::Replace3& item);
-bool Replace3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::Replace3& item);
+bool Replace3WriteJSON(std::ostream& s, const ::tlgen::Replace3& item) noexcept;
+bool Replace3Read(::tlgen::basictl::tl_istream & s, ::tlgen::Replace3& item) noexcept; 
+bool Replace3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace3& item) noexcept;
+bool Replace3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Replace3& item);
+bool Replace3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Replace3& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

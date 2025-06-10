@@ -7,30 +7,30 @@
 #include "__common_namespace/types/myZero3.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct MyPlus3;
-} // namespace tl2
+} // namespace tlgen
 
-namespace tl2 { 
+namespace tlgen { 
 struct MyNat3 {
-	std::variant<::tl2::MyZero3, ::tl2::MyPlus3> value;
+  std::variant<::tlgen::MyZero3, ::tlgen::MyPlus3> value;
 
-	bool is_myZero3() const { return value.index() == 0; }
-	bool is_myPlus3() const { return value.index() == 1; }
+  bool is_myZero3() const { return value.index() == 0; }
+  bool is_myPlus3() const { return value.index() == 1; }
 
-	void set_myZero3() { value.emplace<0>(); }
+  void set_myZero3() { value.emplace<0>(); }
 
-	std::string_view tl_name() const;
-	uint32_t tl_tag() const;
+  std::string_view tl_name() const;
+  uint32_t tl_tag() const;
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s)const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 };
 
-} // namespace tl2
+} // namespace tlgen
 

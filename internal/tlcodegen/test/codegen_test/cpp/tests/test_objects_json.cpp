@@ -14,7 +14,7 @@
 using json = nlohmann::json;
 
 int main() {
-    tl2::factory::set_all_factories();
+    tlgen::factory::set_all_factories();
 
     std::ifstream f("../data/test-objects-json-and-bytes.json");
     json data = json::parse(f);
@@ -25,7 +25,7 @@ int main() {
         for (auto& test_data_input: test_data["Successes"]) {
             std::cout << "\tTestData [" << test_data_input.at("DataAsBytes") << "]: ";
 
-            auto test_object_generator = tl2::meta::get_item_by_name(test_data.at("TestingType"));
+            auto test_object_generator = tlgen::meta::get_item_by_name(test_data.at("TestingType"));
             if (!test_object_generator) {
                 continue;
             }
@@ -33,8 +33,8 @@ int main() {
             auto bytes_input = hex::parse_hex_to_bytes(test_data_input.at("DataAsBytes"));
             std::string expected_json_output = test_data_input.at("DataAsJson");
 
-            basictl::tl_istream_string input_connector{bytes_input};
-            basictl::tl_istream input{input_connector};
+            tlgen::basictl::tl_istream_string input_connector{bytes_input};
+            tlgen::basictl::tl_istream input{input_connector};
 
             std::stringstream output;
 

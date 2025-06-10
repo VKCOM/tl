@@ -6,27 +6,27 @@
 #include "__common_namespace/types/dictionaryAny.h"
 #include "__common_namespace/types/dictionaryFieldAny.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryAnyDoubleIntReset(::tl2::DictionaryAny<double, int32_t>& item) noexcept;
+void DictionaryAnyDoubleIntReset(::tlgen::DictionaryAny<double, int32_t>& item) noexcept;
 
-bool DictionaryAnyDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryAny<double, int32_t>& item) noexcept;
-bool DictionaryAnyDoubleIntRead(::basictl::tl_istream & s, ::tl2::DictionaryAny<double, int32_t>& item) noexcept; 
-bool DictionaryAnyDoubleIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryAny<double, int32_t>& item) noexcept;
-bool DictionaryAnyDoubleIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryAny<double, int32_t>& item);
-bool DictionaryAnyDoubleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryAny<double, int32_t>& item);
+bool DictionaryAnyDoubleIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryAny<double, int32_t>& item) noexcept;
+bool DictionaryAnyDoubleIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryAny<double, int32_t>& item) noexcept; 
+bool DictionaryAnyDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryAny<double, int32_t>& item) noexcept;
+bool DictionaryAnyDoubleIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryAny<double, int32_t>& item);
+bool DictionaryAnyDoubleIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryAny<double, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void DictionaryAnyIntIntReset(std::map<int32_t, int32_t>& item) noexcept;
 
 bool DictionaryAnyIntIntWriteJSON(std::ostream& s, const std::map<int32_t, int32_t>& item) noexcept;
-bool DictionaryAnyIntIntRead(::basictl::tl_istream & s, std::map<int32_t, int32_t>& item) noexcept; 
-bool DictionaryAnyIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item) noexcept;
-bool DictionaryAnyIntIntReadBoxed(::basictl::tl_istream & s, std::map<int32_t, int32_t>& item);
-bool DictionaryAnyIntIntWriteBoxed(::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item);
+bool DictionaryAnyIntIntRead(::tlgen::basictl::tl_istream & s, std::map<int32_t, int32_t>& item) noexcept; 
+bool DictionaryAnyIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item) noexcept;
+bool DictionaryAnyIntIntReadBoxed(::tlgen::basictl::tl_istream & s, std::map<int32_t, int32_t>& item);
+bool DictionaryAnyIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::map<int32_t, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

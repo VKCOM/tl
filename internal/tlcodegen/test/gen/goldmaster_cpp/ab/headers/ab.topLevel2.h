@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.topLevel2.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbTopLevel2Reset(::tl2::ab::TopLevel2& item) noexcept;
+void AbTopLevel2Reset(::tlgen::ab::TopLevel2& item) noexcept;
 
-bool AbTopLevel2WriteJSON(std::ostream& s, const ::tl2::ab::TopLevel2& item) noexcept;
-bool AbTopLevel2Read(::basictl::tl_istream & s, ::tl2::ab::TopLevel2& item) noexcept; 
-bool AbTopLevel2Write(::basictl::tl_ostream & s, const ::tl2::ab::TopLevel2& item) noexcept;
-bool AbTopLevel2ReadBoxed(::basictl::tl_istream & s, ::tl2::ab::TopLevel2& item);
-bool AbTopLevel2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::TopLevel2& item);
+bool AbTopLevel2WriteJSON(std::ostream& s, const ::tlgen::ab::TopLevel2& item) noexcept;
+bool AbTopLevel2Read(::tlgen::basictl::tl_istream & s, ::tlgen::ab::TopLevel2& item) noexcept; 
+bool AbTopLevel2Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::TopLevel2& item) noexcept;
+bool AbTopLevel2ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::TopLevel2& item);
+bool AbTopLevel2WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::TopLevel2& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

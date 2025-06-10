@@ -24,18 +24,18 @@ namespace basictl {
 
         tl_istream &operator=(tl_istream &&) = delete;
 
-        ~tl_istream() { last_release(); };
+        ~tl_istream() { final_advance(); };
 
         friend class tl_throwable_istream;
 
         void pass_data(tl_throwable_istream &to);
 
         bool nat_read(uint32_t &value) noexcept {
-            if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
-                return fetch_data2(&value, TL_UINT32_SIZE);
+            if (ptr + basictl::TL_UINT32_SIZE > end_block) [[unlikely]] {
+                return fetch_data2(&value, basictl::TL_UINT32_SIZE);
             }
-            std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_UINT32_SIZE);
-            ptr += TL_UINT32_SIZE;
+            std::memcpy(reinterpret_cast<char *>(&value), ptr, basictl::TL_UINT32_SIZE);
+            ptr += basictl::TL_UINT32_SIZE;
             return true;
         }
 
@@ -51,38 +51,38 @@ namespace basictl {
         }
 
         bool int_read(int32_t &value) noexcept {
-            if (ptr + TL_INT32_SIZE > end_block) [[unlikely]] {
-                return fetch_data2(&value, TL_INT32_SIZE);
+            if (ptr + basictl::TL_INT32_SIZE > end_block) [[unlikely]] {
+                return fetch_data2(&value, basictl::TL_INT32_SIZE);
             }
-            std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_INT32_SIZE);
-            ptr += TL_INT32_SIZE;
+            std::memcpy(reinterpret_cast<char *>(&value), ptr, basictl::TL_INT32_SIZE);
+            ptr += basictl::TL_INT32_SIZE;
             return true;
         };
 
         bool long_read(int64_t &value) noexcept {
-            if (ptr + TL_INT64_SIZE > end_block) [[unlikely]] {
-                return fetch_data2(&value, TL_INT64_SIZE);
+            if (ptr + basictl::TL_INT64_SIZE > end_block) [[unlikely]] {
+                return fetch_data2(&value, basictl::TL_INT64_SIZE);
             }
-            std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_INT64_SIZE);
-            ptr += TL_INT64_SIZE;
+            std::memcpy(reinterpret_cast<char *>(&value), ptr, basictl::TL_INT64_SIZE);
+            ptr += basictl::TL_INT64_SIZE;
             return true;
         };
 
         bool float_read(float &value) noexcept {
-            if (ptr + TL_FLOAT32_SIZE > end_block) [[unlikely]] {
-                return fetch_data2(&value, TL_FLOAT32_SIZE);
+            if (ptr + basictl::TL_FLOAT32_SIZE > end_block) [[unlikely]] {
+                return fetch_data2(&value, basictl::TL_FLOAT32_SIZE);
             }
-            std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_FLOAT32_SIZE);
-            ptr += TL_FLOAT32_SIZE;
+            std::memcpy(reinterpret_cast<char *>(&value), ptr, basictl::TL_FLOAT32_SIZE);
+            ptr += basictl::TL_FLOAT32_SIZE;
             return true;
         };
 
         bool double_read(double &value) noexcept {
-            if (ptr + TL_FLOAT64_SIZE > end_block) [[unlikely]] {
-                return fetch_data2(&value, TL_FLOAT64_SIZE);
+            if (ptr + basictl::TL_FLOAT64_SIZE > end_block) [[unlikely]] {
+                return fetch_data2(&value, basictl::TL_FLOAT64_SIZE);
             }
-            std::memcpy(reinterpret_cast<char *>(&value), ptr, TL_FLOAT64_SIZE);
-            ptr += TL_FLOAT64_SIZE;
+            std::memcpy(reinterpret_cast<char *>(&value), ptr, basictl::TL_FLOAT64_SIZE);
+            ptr += basictl::TL_FLOAT64_SIZE;
             return true;
         }
 
@@ -104,7 +104,7 @@ namespace basictl {
 
         bool string_read(std::string &value) noexcept;
 
-        void last_release() noexcept;
+        void final_advance() noexcept;
 
         [[nodiscard]] bool has_error() const noexcept;
 
@@ -161,60 +161,60 @@ namespace basictl {
 
         tl_ostream &operator=(tl_ostream &&) = delete;
 
-        ~tl_ostream() { last_release(); };
+        ~tl_ostream() { final_advance(); };
 
         friend class tl_throwable_ostream;
 
         void pass_data(tl_throwable_ostream &to);
 
         bool nat_write(uint32_t value) {
-            if (ptr + TL_UINT32_SIZE > end_block) [[unlikely]] {
-                return store_data2(&value, TL_UINT32_SIZE);
+            if (ptr + basictl::TL_UINT32_SIZE > end_block) [[unlikely]] {
+                return store_data2(&value, basictl::TL_UINT32_SIZE);
             }
-            std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_UINT32_SIZE);
-            ptr += TL_UINT32_SIZE;
+            std::memcpy(ptr, reinterpret_cast<const char *>(&value), basictl::TL_UINT32_SIZE);
+            ptr += basictl::TL_UINT32_SIZE;
             return true;
         };
 
         bool int_write(int32_t value) {
-            if (ptr + TL_INT32_SIZE > end_block) [[unlikely]] {
-                return store_data2(&value, TL_INT32_SIZE);
+            if (ptr + basictl::TL_INT32_SIZE > end_block) [[unlikely]] {
+                return store_data2(&value, basictl::TL_INT32_SIZE);
             }
-            std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_INT32_SIZE);
-            ptr += TL_INT32_SIZE;
+            std::memcpy(ptr, reinterpret_cast<const char *>(&value), basictl::TL_INT32_SIZE);
+            ptr += basictl::TL_INT32_SIZE;
             return true;
         };
 
         bool long_write(int64_t value) {
-            if (ptr + TL_INT64_SIZE > end_block) [[unlikely]] {
-                return store_data2(&value, TL_INT64_SIZE);
+            if (ptr + basictl::TL_INT64_SIZE > end_block) [[unlikely]] {
+                return store_data2(&value, basictl::TL_INT64_SIZE);
             }
-            std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_INT64_SIZE);
-            ptr += TL_INT64_SIZE;
+            std::memcpy(ptr, reinterpret_cast<const char *>(&value), basictl::TL_INT64_SIZE);
+            ptr += basictl::TL_INT64_SIZE;
             return true;
         };
 
         bool float_write(float value) {
-            if (ptr + TL_FLOAT32_SIZE > end_block) [[unlikely]] {
-                return store_data2(&value, TL_FLOAT32_SIZE);
+            if (ptr + basictl::TL_FLOAT32_SIZE > end_block) [[unlikely]] {
+                return store_data2(&value, basictl::TL_FLOAT32_SIZE);
             }
-            std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_FLOAT32_SIZE);
-            ptr += TL_FLOAT32_SIZE;
+            std::memcpy(ptr, reinterpret_cast<const char *>(&value), basictl::TL_FLOAT32_SIZE);
+            ptr += basictl::TL_FLOAT32_SIZE;
             return true;
         };
 
         bool double_write(double value) {
-            if (ptr + TL_FLOAT64_SIZE > end_block) [[unlikely]] {
-                return store_data2(&value, TL_FLOAT64_SIZE);
+            if (ptr + basictl::TL_FLOAT64_SIZE > end_block) [[unlikely]] {
+                return store_data2(&value, basictl::TL_FLOAT64_SIZE);
             }
-            std::memcpy(ptr, reinterpret_cast<const char *>(&value), TL_FLOAT64_SIZE);
-            ptr += TL_FLOAT64_SIZE;
+            std::memcpy(ptr, reinterpret_cast<const char *>(&value), basictl::TL_FLOAT64_SIZE);
+            ptr += basictl::TL_FLOAT64_SIZE;
             return true;
         };
 
         bool string_write(const std::string &value);
 
-        void last_release() noexcept;
+        void final_advance() noexcept;
 
         [[nodiscard]] bool has_error() const noexcept;
 

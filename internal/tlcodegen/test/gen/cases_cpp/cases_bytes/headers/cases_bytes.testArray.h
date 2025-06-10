@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases_bytes/types/cases_bytes.testArray.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesBytesTestArrayReset(::tl2::cases_bytes::TestArray& item) noexcept;
+void CasesBytesTestArrayReset(::tlgen::cases_bytes::TestArray& item) noexcept;
 
-bool CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tl2::cases_bytes::TestArray& item) noexcept;
-bool CasesBytesTestArrayRead(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item) noexcept; 
-bool CasesBytesTestArrayWrite(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item) noexcept;
-bool CasesBytesTestArrayReadBoxed(::basictl::tl_istream & s, ::tl2::cases_bytes::TestArray& item);
-bool CasesBytesTestArrayWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases_bytes::TestArray& item);
+bool CasesBytesTestArrayWriteJSON(std::ostream& s, const ::tlgen::cases_bytes::TestArray& item) noexcept;
+bool CasesBytesTestArrayRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases_bytes::TestArray& item) noexcept; 
+bool CasesBytesTestArrayWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases_bytes::TestArray& item) noexcept;
+bool CasesBytesTestArrayReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases_bytes::TestArray& item);
+bool CasesBytesTestArrayWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases_bytes::TestArray& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

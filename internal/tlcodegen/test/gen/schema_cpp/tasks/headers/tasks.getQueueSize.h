@@ -6,18 +6,18 @@
 #include "tasks/functions/tasks.getQueueSize.h"
 #include "tasks/types/tasks.queueStats.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksGetQueueSizeReset(::tl2::tasks::GetQueueSize& item) noexcept;
+void TasksGetQueueSizeReset(::tlgen::tasks::GetQueueSize& item) noexcept;
 
-bool TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tl2::tasks::GetQueueSize& item) noexcept;
-bool TasksGetQueueSizeRead(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item) noexcept; 
-bool TasksGetQueueSizeWrite(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item) noexcept;
-bool TasksGetQueueSizeReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item);
-bool TasksGetQueueSizeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::GetQueueSize& item);
+bool TasksGetQueueSizeWriteJSON(std::ostream& s, const ::tlgen::tasks::GetQueueSize& item) noexcept;
+bool TasksGetQueueSizeRead(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueSize& item) noexcept; 
+bool TasksGetQueueSizeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetQueueSize& item) noexcept;
+bool TasksGetQueueSizeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueSize& item);
+bool TasksGetQueueSizeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetQueueSize& item);
 
-bool TasksGetQueueSizeReadResult(::basictl::tl_istream & s, ::tl2::tasks::GetQueueSize& item, ::tl2::tasks::QueueStats& result);
-bool TasksGetQueueSizeWriteResult(::basictl::tl_ostream & s, ::tl2::tasks::GetQueueSize& item, ::tl2::tasks::QueueStats& result);
-		
-}} // namespace tl2::details
+bool TasksGetQueueSizeReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueSize& item, ::tlgen::tasks::QueueStats& result);
+bool TasksGetQueueSizeWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::tasks::GetQueueSize& item, ::tlgen::tasks::QueueStats& result);
+    
+}} // namespace tlgen::details
 

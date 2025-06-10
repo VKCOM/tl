@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/halfStr.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void HalfStrReset(::tl2::HalfStr& item) noexcept;
+void HalfStrReset(::tlgen::HalfStr& item) noexcept;
 
-bool HalfStrWriteJSON(std::ostream& s, const ::tl2::HalfStr& item) noexcept;
-bool HalfStrRead(::basictl::tl_istream & s, ::tl2::HalfStr& item) noexcept; 
-bool HalfStrWrite(::basictl::tl_ostream & s, const ::tl2::HalfStr& item) noexcept;
-bool HalfStrReadBoxed(::basictl::tl_istream & s, ::tl2::HalfStr& item);
-bool HalfStrWriteBoxed(::basictl::tl_ostream & s, const ::tl2::HalfStr& item);
+bool HalfStrWriteJSON(std::ostream& s, const ::tlgen::HalfStr& item) noexcept;
+bool HalfStrRead(::tlgen::basictl::tl_istream & s, ::tlgen::HalfStr& item) noexcept; 
+bool HalfStrWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::HalfStr& item) noexcept;
+bool HalfStrReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::HalfStr& item);
+bool HalfStrWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::HalfStr& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "benchmarks/types/benchmarks.vruhash.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BenchmarksVruHashReset(::tl2::benchmarks::Vruhash& item) noexcept;
+void BenchmarksVruHashReset(::tlgen::benchmarks::Vruhash& item) noexcept;
 
-bool BenchmarksVruHashWriteJSON(std::ostream& s, const ::tl2::benchmarks::Vruhash& item) noexcept;
-bool BenchmarksVruHashRead(::basictl::tl_istream & s, ::tl2::benchmarks::Vruhash& item) noexcept; 
-bool BenchmarksVruHashWrite(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruhash& item) noexcept;
-bool BenchmarksVruHashReadBoxed(::basictl::tl_istream & s, ::tl2::benchmarks::Vruhash& item);
-bool BenchmarksVruHashWriteBoxed(::basictl::tl_ostream & s, const ::tl2::benchmarks::Vruhash& item);
+bool BenchmarksVruHashWriteJSON(std::ostream& s, const ::tlgen::benchmarks::Vruhash& item) noexcept;
+bool BenchmarksVruHashRead(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::Vruhash& item) noexcept; 
+bool BenchmarksVruHashWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::Vruhash& item) noexcept;
+bool BenchmarksVruHashReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::benchmarks::Vruhash& item);
+bool BenchmarksVruHashWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::benchmarks::Vruhash& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

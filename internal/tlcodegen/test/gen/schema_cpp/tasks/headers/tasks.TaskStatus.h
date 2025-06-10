@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "tasks/types/tasks.TaskStatus.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TasksTaskStatusReset(::tl2::tasks::TaskStatus& item) noexcept;
+void TasksTaskStatusReset(::tlgen::tasks::TaskStatus& item) noexcept;
 
-bool TasksTaskStatusWriteJSON(std::ostream & s, const ::tl2::tasks::TaskStatus& item) noexcept;
-bool TasksTaskStatusReadBoxed(::basictl::tl_istream & s, ::tl2::tasks::TaskStatus& item) noexcept;
-bool TasksTaskStatusWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tasks::TaskStatus& item) noexcept;
+bool TasksTaskStatusWriteJSON(std::ostream & s, const ::tlgen::tasks::TaskStatus& item) noexcept;
+bool TasksTaskStatusReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::TaskStatus& item) noexcept;
+bool TasksTaskStatusWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::TaskStatus& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

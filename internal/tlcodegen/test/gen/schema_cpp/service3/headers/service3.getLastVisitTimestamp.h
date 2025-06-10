@@ -6,18 +6,18 @@
 #include "service3/functions/service3.getLastVisitTimestamp.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3GetLastVisitTimestampReset(::tl2::service3::GetLastVisitTimestamp& item) noexcept;
+void Service3GetLastVisitTimestampReset(::tlgen::service3::GetLastVisitTimestamp& item) noexcept;
 
-bool Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tl2::service3::GetLastVisitTimestamp& item) noexcept;
-bool Service3GetLastVisitTimestampRead(::basictl::tl_istream & s, ::tl2::service3::GetLastVisitTimestamp& item) noexcept; 
-bool Service3GetLastVisitTimestampWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetLastVisitTimestamp& item) noexcept;
-bool Service3GetLastVisitTimestampReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GetLastVisitTimestamp& item);
-bool Service3GetLastVisitTimestampWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GetLastVisitTimestamp& item);
+bool Service3GetLastVisitTimestampWriteJSON(std::ostream& s, const ::tlgen::service3::GetLastVisitTimestamp& item) noexcept;
+bool Service3GetLastVisitTimestampRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLastVisitTimestamp& item) noexcept; 
+bool Service3GetLastVisitTimestampWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetLastVisitTimestamp& item) noexcept;
+bool Service3GetLastVisitTimestampReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLastVisitTimestamp& item);
+bool Service3GetLastVisitTimestampWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetLastVisitTimestamp& item);
 
-bool Service3GetLastVisitTimestampReadResult(::basictl::tl_istream & s, ::tl2::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
-bool Service3GetLastVisitTimestampWriteResult(::basictl::tl_ostream & s, ::tl2::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
-		
-}} // namespace tl2::details
+bool Service3GetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
+bool Service3GetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
+    
+}} // namespace tlgen::details
 

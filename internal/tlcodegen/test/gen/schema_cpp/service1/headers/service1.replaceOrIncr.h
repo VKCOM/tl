@@ -6,18 +6,18 @@
 #include "service1/functions/service1.replaceOrIncr.h"
 #include "service1/types/service1.Value.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1ReplaceOrIncrReset(::tl2::service1::ReplaceOrIncr& item) noexcept;
+void Service1ReplaceOrIncrReset(::tlgen::service1::ReplaceOrIncr& item) noexcept;
 
-bool Service1ReplaceOrIncrWriteJSON(std::ostream& s, const ::tl2::service1::ReplaceOrIncr& item) noexcept;
-bool Service1ReplaceOrIncrRead(::basictl::tl_istream & s, ::tl2::service1::ReplaceOrIncr& item) noexcept; 
-bool Service1ReplaceOrIncrWrite(::basictl::tl_ostream & s, const ::tl2::service1::ReplaceOrIncr& item) noexcept;
-bool Service1ReplaceOrIncrReadBoxed(::basictl::tl_istream & s, ::tl2::service1::ReplaceOrIncr& item);
-bool Service1ReplaceOrIncrWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::ReplaceOrIncr& item);
+bool Service1ReplaceOrIncrWriteJSON(std::ostream& s, const ::tlgen::service1::ReplaceOrIncr& item) noexcept;
+bool Service1ReplaceOrIncrRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::ReplaceOrIncr& item) noexcept; 
+bool Service1ReplaceOrIncrWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::ReplaceOrIncr& item) noexcept;
+bool Service1ReplaceOrIncrReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::ReplaceOrIncr& item);
+bool Service1ReplaceOrIncrWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::ReplaceOrIncr& item);
 
-bool Service1ReplaceOrIncrReadResult(::basictl::tl_istream & s, ::tl2::service1::ReplaceOrIncr& item, ::tl2::service1::Value& result);
-bool Service1ReplaceOrIncrWriteResult(::basictl::tl_ostream & s, ::tl2::service1::ReplaceOrIncr& item, ::tl2::service1::Value& result);
-		
-}} // namespace tl2::details
+bool Service1ReplaceOrIncrReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::ReplaceOrIncr& item, ::tlgen::service1::Value& result);
+bool Service1ReplaceOrIncrWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::ReplaceOrIncr& item, ::tlgen::service1::Value& result);
+    
+}} // namespace tlgen::details
 

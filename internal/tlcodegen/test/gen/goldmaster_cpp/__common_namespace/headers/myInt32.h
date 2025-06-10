@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myInt32.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyInt32Reset(::tl2::MyInt32& item) noexcept;
+void MyInt32Reset(::tlgen::MyInt32& item) noexcept;
 
-bool MyInt32WriteJSON(std::ostream& s, const ::tl2::MyInt32& item) noexcept;
-bool MyInt32Read(::basictl::tl_istream & s, ::tl2::MyInt32& item) noexcept; 
-bool MyInt32Write(::basictl::tl_ostream & s, const ::tl2::MyInt32& item) noexcept;
-bool MyInt32ReadBoxed(::basictl::tl_istream & s, ::tl2::MyInt32& item);
-bool MyInt32WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyInt32& item);
+bool MyInt32WriteJSON(std::ostream& s, const ::tlgen::MyInt32& item) noexcept;
+bool MyInt32Read(::tlgen::basictl::tl_istream & s, ::tlgen::MyInt32& item) noexcept; 
+bool MyInt32Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyInt32& item) noexcept;
+bool MyInt32ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyInt32& item);
+bool MyInt32WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyInt32& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

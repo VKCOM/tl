@@ -15,7 +15,7 @@
 using json = nlohmann::json;
 
 int main() {
-    tl2::factory::set_all_factories();
+    tlgen::factory::set_all_factories();
 
     std::ifstream f("../data/test-functions-bytes.json");
     json data = json::parse(f);
@@ -24,19 +24,19 @@ int main() {
     for (auto &test_data: tests) {
         std::cout << "Run [" << test_data.at("FunctionName") << ", " << test_data.at("FunctionBodyBytes") << "]: ";
 
-        auto test_function = tl2::meta::get_item_by_name(test_data.at("FunctionName")).value().create_function();
+        auto test_function = tlgen::meta::get_item_by_name(test_data.at("FunctionName")).value().create_function();
         auto function_body_input = hex::parse_hex_to_bytes(test_data.at("FunctionBodyBytes"));
         auto expected_result_output = hex::parse_hex_to_bytes(test_data.at("ResultBytes"));
 
-        basictl::tl_istream_string input1_connector{function_body_input};
-        basictl::tl_istream input1{input1_connector};
+        tlgen::basictl::tl_istream_string input1_connector{function_body_input};
+        tlgen::basictl::tl_istream input1{input1_connector};
 
-        basictl::tl_istream_string input2_connector{expected_result_output};
-        basictl::tl_istream input2{input2_connector};
+        tlgen::basictl::tl_istream_string input2_connector{expected_result_output};
+        tlgen::basictl::tl_istream input2{input2_connector};
 
         std::string out_string;
-        basictl::tl_ostream_string output_connector{out_string};
-        basictl::tl_ostream output{output_connector};
+        tlgen::basictl::tl_ostream_string output_connector{out_string};
+        tlgen::basictl::tl_ostream output{output_connector};
 
 
         bool read_result = test_function->read(input1);

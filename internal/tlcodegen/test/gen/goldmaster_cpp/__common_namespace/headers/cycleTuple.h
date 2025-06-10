@@ -5,35 +5,35 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/cycleTuple.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTuple2CycleTupleReset(std::array<::tl2::CycleTuple, 2>& item);
+void BuiltinTuple2CycleTupleReset(std::array<::tlgen::CycleTuple, 2>& item);
 
-bool BuiltinTuple2CycleTupleWriteJSON(std::ostream & s, const std::array<::tl2::CycleTuple, 2>& item);
-bool BuiltinTuple2CycleTupleRead(::basictl::tl_istream & s, std::array<::tl2::CycleTuple, 2>& item);
-bool BuiltinTuple2CycleTupleWrite(::basictl::tl_ostream & s, const std::array<::tl2::CycleTuple, 2>& item);
+bool BuiltinTuple2CycleTupleWriteJSON(std::ostream & s, const std::array<::tlgen::CycleTuple, 2>& item);
+bool BuiltinTuple2CycleTupleRead(::tlgen::basictl::tl_istream & s, std::array<::tlgen::CycleTuple, 2>& item);
+bool BuiltinTuple2CycleTupleWrite(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::CycleTuple, 2>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinTupleCycleTupleReset(std::vector<::tl2::CycleTuple>& item);
+void BuiltinTupleCycleTupleReset(std::vector<::tlgen::CycleTuple>& item);
 
-bool BuiltinTupleCycleTupleWriteJSON(std::ostream & s, const std::vector<::tl2::CycleTuple>& item, uint32_t nat_n);
-bool BuiltinTupleCycleTupleRead(::basictl::tl_istream & s, std::vector<::tl2::CycleTuple>& item, uint32_t nat_n);
-bool BuiltinTupleCycleTupleWrite(::basictl::tl_ostream & s, const std::vector<::tl2::CycleTuple>& item, uint32_t nat_n);
+bool BuiltinTupleCycleTupleWriteJSON(std::ostream & s, const std::vector<::tlgen::CycleTuple>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleCycleTupleRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::CycleTuple>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleCycleTupleWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::CycleTuple>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CycleTupleReset(::tl2::CycleTuple& item) noexcept;
+void CycleTupleReset(::tlgen::CycleTuple& item) noexcept;
 
-bool CycleTupleWriteJSON(std::ostream& s, const ::tl2::CycleTuple& item) noexcept;
-bool CycleTupleRead(::basictl::tl_istream & s, ::tl2::CycleTuple& item) noexcept; 
-bool CycleTupleWrite(::basictl::tl_ostream & s, const ::tl2::CycleTuple& item) noexcept;
-bool CycleTupleReadBoxed(::basictl::tl_istream & s, ::tl2::CycleTuple& item);
-bool CycleTupleWriteBoxed(::basictl::tl_ostream & s, const ::tl2::CycleTuple& item);
+bool CycleTupleWriteJSON(std::ostream& s, const ::tlgen::CycleTuple& item) noexcept;
+bool CycleTupleRead(::tlgen::basictl::tl_istream & s, ::tlgen::CycleTuple& item) noexcept; 
+bool CycleTupleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::CycleTuple& item) noexcept;
+bool CycleTupleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::CycleTuple& item);
+bool CycleTupleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::CycleTuple& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

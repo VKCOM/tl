@@ -6,15 +6,15 @@
 #include "__common_namespace/types/replace11Elem.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X>
 struct Replace11 {
-	uint32_t k = 0;
-	std::vector<::tl2::Replace11Elem<X>> a;
+  uint32_t k = 0;
+  std::vector<::tlgen::Replace11Elem<X>> a;
 
-	std::string_view tl_name() const { return "replace11"; }
-	uint32_t tl_tag() const { return 0xbf5944e6; }
+  std::string_view tl_name() const { return "replace11"; }
+  uint32_t tl_tag() const { return 0xbf5944e6; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

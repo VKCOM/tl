@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "usefulService/types/usefulService.userEntityPaymentItemPromo.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void UsefulServiceUserEntityPaymentItemPromoReset(::tl2::usefulService::UserEntityPaymentItemPromo& item) noexcept;
+void UsefulServiceUserEntityPaymentItemPromoReset(::tlgen::usefulService::UserEntityPaymentItemPromo& item) noexcept;
 
-bool UsefulServiceUserEntityPaymentItemPromoWriteJSON(std::ostream& s, const ::tl2::usefulService::UserEntityPaymentItemPromo& item, uint32_t nat_fields_mask) noexcept;
-bool UsefulServiceUserEntityPaymentItemPromoRead(::basictl::tl_istream & s, ::tl2::usefulService::UserEntityPaymentItemPromo& item, uint32_t nat_fields_mask) noexcept; 
-bool UsefulServiceUserEntityPaymentItemPromoWrite(::basictl::tl_ostream & s, const ::tl2::usefulService::UserEntityPaymentItemPromo& item, uint32_t nat_fields_mask) noexcept;
-bool UsefulServiceUserEntityPaymentItemPromoReadBoxed(::basictl::tl_istream & s, ::tl2::usefulService::UserEntityPaymentItemPromo& item, uint32_t nat_fields_mask);
-bool UsefulServiceUserEntityPaymentItemPromoWriteBoxed(::basictl::tl_ostream & s, const ::tl2::usefulService::UserEntityPaymentItemPromo& item, uint32_t nat_fields_mask);
+bool UsefulServiceUserEntityPaymentItemPromoWriteJSON(std::ostream& s, const ::tlgen::usefulService::UserEntityPaymentItemPromo& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool UsefulServiceUserEntityPaymentItemPromoRead(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::UserEntityPaymentItemPromo& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept; 
+bool UsefulServiceUserEntityPaymentItemPromoWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::UserEntityPaymentItemPromo& item, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
+bool UsefulServiceUserEntityPaymentItemPromoReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::UserEntityPaymentItemPromo& item, [[maybe_unused]] uint32_t nat_fields_mask);
+bool UsefulServiceUserEntityPaymentItemPromoWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::UserEntityPaymentItemPromo& item, [[maybe_unused]] uint32_t nat_fields_mask);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-bool UsefulServiceUserEntityPaymentItemPromoBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tl2::usefulService::UserEntityPaymentItemPromo>& item, uint32_t nat_t);
+bool UsefulServiceUserEntityPaymentItemPromoBoxedMaybeWriteJSON(std::ostream & s, const std::optional<::tlgen::usefulService::UserEntityPaymentItemPromo>& item, [[maybe_unused]] uint32_t nat_t);
 
-bool UsefulServiceUserEntityPaymentItemPromoBoxedMaybeReadBoxed(::basictl::tl_istream & s, std::optional<::tl2::usefulService::UserEntityPaymentItemPromo>& item, uint32_t nat_t);
-bool UsefulServiceUserEntityPaymentItemPromoBoxedMaybeWriteBoxed(::basictl::tl_ostream & s, const std::optional<::tl2::usefulService::UserEntityPaymentItemPromo>& item, uint32_t nat_t);
+bool UsefulServiceUserEntityPaymentItemPromoBoxedMaybeReadBoxed(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::usefulService::UserEntityPaymentItemPromo>& item, [[maybe_unused]] uint32_t nat_t);
+bool UsefulServiceUserEntityPaymentItemPromoBoxedMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::usefulService::UserEntityPaymentItemPromo>& item, [[maybe_unused]] uint32_t nat_t);
 
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

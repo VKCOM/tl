@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.alias.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbAliasReset(::tl2::ab::Alias& item) noexcept;
+void AbAliasReset(::tlgen::ab::Alias& item) noexcept;
 
-bool AbAliasWriteJSON(std::ostream& s, const ::tl2::ab::Alias& item) noexcept;
-bool AbAliasRead(::basictl::tl_istream & s, ::tl2::ab::Alias& item) noexcept; 
-bool AbAliasWrite(::basictl::tl_ostream & s, const ::tl2::ab::Alias& item) noexcept;
-bool AbAliasReadBoxed(::basictl::tl_istream & s, ::tl2::ab::Alias& item);
-bool AbAliasWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::Alias& item);
+bool AbAliasWriteJSON(std::ostream& s, const ::tlgen::ab::Alias& item) noexcept;
+bool AbAliasRead(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Alias& item) noexcept; 
+bool AbAliasWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Alias& item) noexcept;
+bool AbAliasReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Alias& item);
+bool AbAliasWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Alias& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

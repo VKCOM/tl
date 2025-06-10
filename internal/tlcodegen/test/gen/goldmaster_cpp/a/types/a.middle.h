@@ -7,15 +7,15 @@
 #include "a/types/a.inner.h"
 
 
-namespace tl2 { namespace a { 
+namespace tlgen { namespace a { 
 template<typename P, typename Q>
 struct Middle {
-	::tl2::a::Inner a{};
-	::tl2::Pair<P, Q> b{};
+  ::tlgen::a::Inner a{};
+  ::tlgen::Pair<P, Q> b{};
 
-	std::string_view tl_name() const { return "a.middle"; }
-	uint32_t tl_tag() const { return 0xaf5e2b14; }
+  std::string_view tl_name() const { return "a.middle"; }
+  uint32_t tl_tag() const { return 0xaf5e2b14; }
 };
 
-}} // namespace tl2::a
+}} // namespace tlgen::a
 

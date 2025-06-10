@@ -10,179 +10,179 @@
 #include "__common_namespace/types/Bool.h"
 #include "a/types/a.Color.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemIntPairIntIntReset(std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
+void BuiltinVectorDictionaryElemIntPairIntIntReset(std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(std::ostream & s, const std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemIntPairIntIntRead(::tlgen::basictl::tl_istream & s, std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemIntPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemLongPairIntIntReset(std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
+void BuiltinVectorDictionaryElemLongPairIntIntReset(std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const std::map<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(std::ostream & s, const std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemLongPairIntIntRead(::tlgen::basictl::tl_istream & s, std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemLongPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemPairBoolAColorIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item);
+void BuiltinVectorDictionaryElemPairBoolAColorIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairBoolAColorIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairBoolAColorIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairBoolAColorIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairBoolAColorIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemPairFloatDoubleIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item);
+void BuiltinVectorDictionaryElemPairFloatDoubleIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairFloatDoubleIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairFloatDoubleIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemPairIntIntIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item);
+void BuiltinVectorDictionaryElemPairIntIntIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairIntIntIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairIntIntIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairIntIntIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairIntIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReset(std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item);
+void BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReset(std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item);
-bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item);
+bool BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemStringPairIntIntReset(std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
+void BuiltinVectorDictionaryElemStringPairIntIntReset(std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
-bool BuiltinVectorDictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const std::map<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(std::ostream & s, const std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemStringPairIntIntRead(::tlgen::basictl::tl_istream & s, std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool BuiltinVectorDictionaryElemStringPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const std::map<std::string, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemTupleStringIntReset(std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item);
+void BuiltinVectorDictionaryElemTupleStringIntReset(std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item);
 
-bool BuiltinVectorDictionaryElemTupleStringIntWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item, uint32_t nat_t);
-bool BuiltinVectorDictionaryElemTupleStringIntRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item, uint32_t nat_t);
-bool BuiltinVectorDictionaryElemTupleStringIntWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElem<std::vector<std::string>, int32_t>>& item, uint32_t nat_t);
+bool BuiltinVectorDictionaryElemTupleStringIntWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinVectorDictionaryElemTupleStringIntRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinVectorDictionaryElemTupleStringIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElem<std::vector<std::string>, int32_t>>& item, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemIntPairIntIntReset(::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
+void DictionaryElemIntPairIntIntReset(::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
 
-bool DictionaryElemIntPairIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
-bool DictionaryElemIntPairIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept; 
-bool DictionaryElemIntPairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
-bool DictionaryElemIntPairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
-bool DictionaryElemIntPairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int32_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool DictionaryElemIntPairIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
+bool DictionaryElemIntPairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept; 
+bool DictionaryElemIntPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
+bool DictionaryElemIntPairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool DictionaryElemIntPairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int32_t, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemLongPairIntIntReset(::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
+void DictionaryElemLongPairIntIntReset(::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
 
-bool DictionaryElemLongPairIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
-bool DictionaryElemLongPairIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept; 
-bool DictionaryElemLongPairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
-bool DictionaryElemLongPairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
-bool DictionaryElemLongPairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<int64_t, ::tl2::Pair<int32_t, int32_t>>& item);
+bool DictionaryElemLongPairIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
+bool DictionaryElemLongPairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept; 
+bool DictionaryElemLongPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
+bool DictionaryElemLongPairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool DictionaryElemLongPairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<int64_t, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemPairBoolAColorIntReset(::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept;
+void DictionaryElemPairBoolAColorIntReset(::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept;
 
-bool DictionaryElemPairBoolAColorIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept;
-bool DictionaryElemPairBoolAColorIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept; 
-bool DictionaryElemPairBoolAColorIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item) noexcept;
-bool DictionaryElemPairBoolAColorIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item);
-bool DictionaryElemPairBoolAColorIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<bool, ::tl2::a::Color>, int32_t>& item);
+bool DictionaryElemPairBoolAColorIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept;
+bool DictionaryElemPairBoolAColorIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept; 
+bool DictionaryElemPairBoolAColorIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item) noexcept;
+bool DictionaryElemPairBoolAColorIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item);
+bool DictionaryElemPairBoolAColorIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<bool, ::tlgen::a::Color>, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemPairFloatDoubleIntReset(::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept;
+void DictionaryElemPairFloatDoubleIntReset(::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept;
 
-bool DictionaryElemPairFloatDoubleIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept;
-bool DictionaryElemPairFloatDoubleIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept; 
-bool DictionaryElemPairFloatDoubleIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item) noexcept;
-bool DictionaryElemPairFloatDoubleIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item);
-bool DictionaryElemPairFloatDoubleIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<float, double>, int32_t>& item);
+bool DictionaryElemPairFloatDoubleIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept;
+bool DictionaryElemPairFloatDoubleIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept; 
+bool DictionaryElemPairFloatDoubleIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item) noexcept;
+bool DictionaryElemPairFloatDoubleIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item);
+bool DictionaryElemPairFloatDoubleIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<float, double>, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemPairIntIntIntReset(::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept;
+void DictionaryElemPairIntIntIntReset(::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept;
 
-bool DictionaryElemPairIntIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept;
-bool DictionaryElemPairIntIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept; 
-bool DictionaryElemPairIntIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item) noexcept;
-bool DictionaryElemPairIntIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item);
-bool DictionaryElemPairIntIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, int32_t>, int32_t>& item);
+bool DictionaryElemPairIntIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept;
+bool DictionaryElemPairIntIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept; 
+bool DictionaryElemPairIntIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item) noexcept;
+bool DictionaryElemPairIntIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item);
+bool DictionaryElemPairIntIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, int32_t>, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemPairIntPairMultiPointStringIntReset(::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept;
+void DictionaryElemPairIntPairMultiPointStringIntReset(::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept;
 
-bool DictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept;
-bool DictionaryElemPairIntPairMultiPointStringIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept; 
-bool DictionaryElemPairIntPairMultiPointStringIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item) noexcept;
-bool DictionaryElemPairIntPairMultiPointStringIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item);
-bool DictionaryElemPairIntPairMultiPointStringIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<::tl2::Pair<int32_t, ::tl2::Pair<::tl2::MultiPoint, std::string>>, int32_t>& item);
+bool DictionaryElemPairIntPairMultiPointStringIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept;
+bool DictionaryElemPairIntPairMultiPointStringIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept; 
+bool DictionaryElemPairIntPairMultiPointStringIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item) noexcept;
+bool DictionaryElemPairIntPairMultiPointStringIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item);
+bool DictionaryElemPairIntPairMultiPointStringIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<::tlgen::Pair<int32_t, ::tlgen::Pair<::tlgen::MultiPoint, std::string>>, int32_t>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemStringPairIntIntReset(::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
+void DictionaryElemStringPairIntIntReset(::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
 
-bool DictionaryElemStringPairIntIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
-bool DictionaryElemStringPairIntIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept; 
-bool DictionaryElemStringPairIntIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item) noexcept;
-bool DictionaryElemStringPairIntIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
-bool DictionaryElemStringPairIntIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::string, ::tl2::Pair<int32_t, int32_t>>& item);
+bool DictionaryElemStringPairIntIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
+bool DictionaryElemStringPairIntIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept; 
+bool DictionaryElemStringPairIntIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item) noexcept;
+bool DictionaryElemStringPairIntIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item);
+bool DictionaryElemStringPairIntIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::string, ::tlgen::Pair<int32_t, int32_t>>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemTupleStringIntReset(::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item) noexcept;
+void DictionaryElemTupleStringIntReset(::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item) noexcept;
 
-bool DictionaryElemTupleStringIntWriteJSON(std::ostream& s, const ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) noexcept;
-bool DictionaryElemTupleStringIntRead(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) noexcept; 
-bool DictionaryElemTupleStringIntWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k) noexcept;
-bool DictionaryElemTupleStringIntReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k);
-bool DictionaryElemTupleStringIntWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElem<std::vector<std::string>, int32_t>& item, uint32_t nat_k);
+bool DictionaryElemTupleStringIntWriteJSON(std::ostream& s, const ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) noexcept;
+bool DictionaryElemTupleStringIntRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) noexcept; 
+bool DictionaryElemTupleStringIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k) noexcept;
+bool DictionaryElemTupleStringIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k);
+bool DictionaryElemTupleStringIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElem<std::vector<std::string>, int32_t>& item, [[maybe_unused]] uint32_t nat_k);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

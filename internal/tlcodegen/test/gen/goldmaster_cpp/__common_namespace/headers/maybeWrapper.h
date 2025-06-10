@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/maybeWrapper.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MaybeWrapperInt3Reset(::tl2::MaybeWrapperN<int32_t, 3>& item) noexcept;
+void MaybeWrapperInt3Reset(::tlgen::MaybeWrapperN<int32_t, 3>& item) noexcept;
 
-bool MaybeWrapperInt3WriteJSON(std::ostream& s, const ::tl2::MaybeWrapperN<int32_t, 3>& item) noexcept;
-bool MaybeWrapperInt3Read(::basictl::tl_istream & s, ::tl2::MaybeWrapperN<int32_t, 3>& item) noexcept; 
-bool MaybeWrapperInt3Write(::basictl::tl_ostream & s, const ::tl2::MaybeWrapperN<int32_t, 3>& item) noexcept;
-bool MaybeWrapperInt3ReadBoxed(::basictl::tl_istream & s, ::tl2::MaybeWrapperN<int32_t, 3>& item);
-bool MaybeWrapperInt3WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MaybeWrapperN<int32_t, 3>& item);
+bool MaybeWrapperInt3WriteJSON(std::ostream& s, const ::tlgen::MaybeWrapperN<int32_t, 3>& item) noexcept;
+bool MaybeWrapperInt3Read(::tlgen::basictl::tl_istream & s, ::tlgen::MaybeWrapperN<int32_t, 3>& item) noexcept; 
+bool MaybeWrapperInt3Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::MaybeWrapperN<int32_t, 3>& item) noexcept;
+bool MaybeWrapperInt3ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MaybeWrapperN<int32_t, 3>& item);
+bool MaybeWrapperInt3WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MaybeWrapperN<int32_t, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

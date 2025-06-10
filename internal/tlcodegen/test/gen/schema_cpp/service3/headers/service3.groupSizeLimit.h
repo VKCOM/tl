@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "service3/types/service3.groupSizeLimit.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorService3GroupSizeLimitReset(std::vector<::tl2::service3::GroupSizeLimit>& item);
+void BuiltinVectorService3GroupSizeLimitReset(std::vector<::tlgen::service3::GroupSizeLimit>& item);
 
-bool BuiltinVectorService3GroupSizeLimitWriteJSON(std::ostream & s, const std::vector<::tl2::service3::GroupSizeLimit>& item);
-bool BuiltinVectorService3GroupSizeLimitRead(::basictl::tl_istream & s, std::vector<::tl2::service3::GroupSizeLimit>& item);
-bool BuiltinVectorService3GroupSizeLimitWrite(::basictl::tl_ostream & s, const std::vector<::tl2::service3::GroupSizeLimit>& item);
+bool BuiltinVectorService3GroupSizeLimitWriteJSON(std::ostream & s, const std::vector<::tlgen::service3::GroupSizeLimit>& item);
+bool BuiltinVectorService3GroupSizeLimitRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::service3::GroupSizeLimit>& item);
+bool BuiltinVectorService3GroupSizeLimitWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::service3::GroupSizeLimit>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3GroupSizeLimitReset(::tl2::service3::GroupSizeLimit& item) noexcept;
+void Service3GroupSizeLimitReset(::tlgen::service3::GroupSizeLimit& item) noexcept;
 
-bool Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tl2::service3::GroupSizeLimit& item) noexcept;
-bool Service3GroupSizeLimitRead(::basictl::tl_istream & s, ::tl2::service3::GroupSizeLimit& item) noexcept; 
-bool Service3GroupSizeLimitWrite(::basictl::tl_ostream & s, const ::tl2::service3::GroupSizeLimit& item) noexcept;
-bool Service3GroupSizeLimitReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GroupSizeLimit& item);
-bool Service3GroupSizeLimitWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GroupSizeLimit& item);
+bool Service3GroupSizeLimitWriteJSON(std::ostream& s, const ::tlgen::service3::GroupSizeLimit& item) noexcept;
+bool Service3GroupSizeLimitRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GroupSizeLimit& item) noexcept; 
+bool Service3GroupSizeLimitWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GroupSizeLimit& item) noexcept;
+bool Service3GroupSizeLimitReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GroupSizeLimit& item);
+bool Service3GroupSizeLimitWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GroupSizeLimit& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

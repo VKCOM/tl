@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.TestUnion.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestUnionReset(::tl2::cases::TestUnion& item) noexcept;
+void CasesTestUnionReset(::tlgen::cases::TestUnion& item) noexcept;
 
-bool CasesTestUnionWriteJSON(std::ostream & s, const ::tl2::cases::TestUnion& item) noexcept;
-bool CasesTestUnionReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestUnion& item) noexcept;
-bool CasesTestUnionWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestUnion& item) noexcept;
+bool CasesTestUnionWriteJSON(std::ostream & s, const ::tlgen::cases::TestUnion& item) noexcept;
+bool CasesTestUnionReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestUnion& item) noexcept;
+bool CasesTestUnionWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestUnion& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

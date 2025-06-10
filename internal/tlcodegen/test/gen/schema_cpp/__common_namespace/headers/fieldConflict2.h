@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/fieldConflict2.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void FieldConflict2Reset(::tl2::FieldConflict2& item) noexcept;
+void FieldConflict2Reset(::tlgen::FieldConflict2& item) noexcept;
 
-bool FieldConflict2WriteJSON(std::ostream& s, const ::tl2::FieldConflict2& item) noexcept;
-bool FieldConflict2Read(::basictl::tl_istream & s, ::tl2::FieldConflict2& item) noexcept; 
-bool FieldConflict2Write(::basictl::tl_ostream & s, const ::tl2::FieldConflict2& item) noexcept;
-bool FieldConflict2ReadBoxed(::basictl::tl_istream & s, ::tl2::FieldConflict2& item);
-bool FieldConflict2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::FieldConflict2& item);
+bool FieldConflict2WriteJSON(std::ostream& s, const ::tlgen::FieldConflict2& item) noexcept;
+bool FieldConflict2Read(::tlgen::basictl::tl_istream & s, ::tlgen::FieldConflict2& item) noexcept; 
+bool FieldConflict2Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::FieldConflict2& item) noexcept;
+bool FieldConflict2ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::FieldConflict2& item);
+bool FieldConflict2WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::FieldConflict2& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

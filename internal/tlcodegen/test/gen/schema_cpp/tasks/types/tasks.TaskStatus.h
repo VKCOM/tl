@@ -6,31 +6,31 @@
 #include "tasks/types/tasks.TaskStatusItems.h"
 
 
-namespace tl2 { namespace tasks { 
+namespace tlgen { namespace tasks { 
 struct TaskStatus {
-	std::variant<::tl2::tasks::TaskStatusNotCurrentlyInEngine, ::tl2::tasks::TaskStatusScheduled, ::tl2::tasks::TaskStatusWaiting, ::tl2::tasks::TaskStatusInProgress> value;
+  std::variant<::tlgen::tasks::TaskStatusNotCurrentlyInEngine, ::tlgen::tasks::TaskStatusScheduled, ::tlgen::tasks::TaskStatusWaiting, ::tlgen::tasks::TaskStatusInProgress> value;
 
-	bool is_NotCurrentlyInEngine() const { return value.index() == 0; }
-	bool is_Scheduled() const { return value.index() == 1; }
-	bool is_Waiting() const { return value.index() == 2; }
-	bool is_InProgress() const { return value.index() == 3; }
+  bool is_NotCurrentlyInEngine() const { return value.index() == 0; }
+  bool is_Scheduled() const { return value.index() == 1; }
+  bool is_Waiting() const { return value.index() == 2; }
+  bool is_InProgress() const { return value.index() == 3; }
 
-	void set_NotCurrentlyInEngine() { value.emplace<0>(); }
-	void set_Scheduled() { value.emplace<1>(); }
-	void set_Waiting() { value.emplace<2>(); }
-	void set_InProgress() { value.emplace<3>(); }
+  void set_NotCurrentlyInEngine() { value.emplace<0>(); }
+  void set_Scheduled() { value.emplace<1>(); }
+  void set_Waiting() { value.emplace<2>(); }
+  void set_InProgress() { value.emplace<3>(); }
 
-	std::string_view tl_name() const;
-	uint32_t tl_tag() const;
+  std::string_view tl_name() const;
+  uint32_t tl_tag() const;
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s)const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 };
 
-}} // namespace tl2::tasks
+}} // namespace tlgen::tasks
 

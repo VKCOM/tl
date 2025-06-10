@@ -10,49 +10,49 @@
 #include "basictl/io_streams.h"
 #include "basictl/io_throwable_streams.h"
 
-namespace tl2 {
-    namespace meta {
-        struct tl_object {
-            virtual bool read(::basictl::tl_istream &s) = 0;
-            virtual bool write(::basictl::tl_ostream &s) = 0;
+namespace tlgen {
+  namespace meta {
+    struct tl_object {
+      virtual bool read(::tlgen::basictl::tl_istream &s) = 0;
+      virtual bool write(::tlgen::basictl::tl_ostream &s) = 0;
 
-			virtual void read_or_throw(::basictl::tl_throwable_istream &s) = 0;
-            virtual void write_or_throw(::basictl::tl_throwable_ostream &s) = 0;
+      virtual void read(::tlgen::basictl::tl_throwable_istream &s) = 0;
+      virtual void write(::tlgen::basictl::tl_throwable_ostream &s) = 0;
 
-            virtual bool read_boxed(::basictl::tl_istream &s) = 0;
-            virtual bool write_boxed(::basictl::tl_ostream &s) = 0;
+      virtual bool read_boxed(::tlgen::basictl::tl_istream &s) = 0;
+      virtual bool write_boxed(::tlgen::basictl::tl_ostream &s) = 0;
 
-			virtual void read_boxed_or_throw(::basictl::tl_throwable_istream &s) = 0;
-            virtual void write_boxed_or_throw(::basictl::tl_throwable_ostream &s) = 0;
-			
-			virtual bool write_json(std::ostream &s) = 0;
+      virtual void read_boxed(::tlgen::basictl::tl_throwable_istream &s) = 0;
+      virtual void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) = 0;
 
-            virtual ~tl_object() = default;
-        };
+      virtual bool write_json(std::ostream &s) = 0;
 
-        struct tl_function : public tl_object {
-            virtual bool read_write_result(::basictl::tl_istream &in, ::basictl::tl_ostream &out) = 0;
+      virtual ~tl_object() = default;
+    };
 
-            virtual ~tl_function() = default;
-        };
+    struct tl_function : public tl_object {
+      virtual bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) = 0;
 
-        struct tl_item {
-            uint32_t tag{};
-            uint32_t annotations{};
-            std::string name;
-			
-			bool has_create_object = false;
-			bool has_create_function = false;
+      virtual ~tl_function() = default;
+    };
 
-            std::function<std::unique_ptr<tl2::meta::tl_object>()> create_object;
-            std::function<std::unique_ptr<tl2::meta::tl_function>()> create_function;
-        };
+    struct tl_item {
+      uint32_t tag{};
+      uint32_t annotations{};
+      std::string name;
 
-		std::optional<tl2::meta::tl_item> get_item_by_name(std::string &&s);
-		std::optional<tl2::meta::tl_item> get_item_by_tag(uint32_t &&tag);
+      bool has_create_object = false;
+      bool has_create_function = false;
 
-		void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_object>()> &&factory);
-		void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tl2::meta::tl_function>()> &&factory);
-        
-    }
+      std::function<std::unique_ptr<tlgen::meta::tl_object>()> create_object;
+      std::function<std::unique_ptr<tlgen::meta::tl_function>()> create_function;
+    };
+
+    std::optional<tlgen::meta::tl_item> get_item_by_name(std::string &&s);
+    std::optional<tlgen::meta::tl_item> get_item_by_tag(uint32_t &&tag);
+
+    void set_create_object_by_name(std::string &&s, std::function<std::unique_ptr<tlgen::meta::tl_object>()> &&factory);
+    void set_create_function_by_name(std::string &&s, std::function<std::unique_ptr<tlgen::meta::tl_function>()> &&factory);
+
+  }
 }

@@ -5,14 +5,14 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename T, uint32_t N>
 struct MaybeWrapperN {
-	std::optional<std::array<T, N>> a;
+  std::optional<std::array<T, N>> a;
 
-	std::string_view tl_name() const { return "maybeWrapper"; }
-	uint32_t tl_tag() const { return 0x723390c4; }
+  std::string_view tl_name() const { return "maybeWrapper"; }
+  uint32_t tl_tag() const { return 0x723390c4; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

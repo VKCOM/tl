@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/string.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void BuiltinTupleStringReset(std::vector<std::string>& item);
 
-bool BuiltinTupleStringWriteJSON(std::ostream & s, const std::vector<std::string>& item, uint32_t nat_n);
-bool BuiltinTupleStringRead(::basictl::tl_istream & s, std::vector<std::string>& item, uint32_t nat_n);
-bool BuiltinTupleStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item, uint32_t nat_n);
+bool BuiltinTupleStringWriteJSON(std::ostream & s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleStringRead(::tlgen::basictl::tl_istream & s, std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleStringWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::string>& item, [[maybe_unused]] uint32_t nat_n);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

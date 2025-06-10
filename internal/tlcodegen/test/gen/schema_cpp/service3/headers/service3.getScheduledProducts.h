@@ -7,18 +7,18 @@
 #include "__common_namespace/types/vector.h"
 #include "service3/types/service3.product.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3GetScheduledProductsReset(::tl2::service3::GetScheduledProducts& item) noexcept;
+void Service3GetScheduledProductsReset(::tlgen::service3::GetScheduledProducts& item) noexcept;
 
-bool Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tl2::service3::GetScheduledProducts& item) noexcept;
-bool Service3GetScheduledProductsRead(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item) noexcept; 
-bool Service3GetScheduledProductsWrite(::basictl::tl_ostream & s, const ::tl2::service3::GetScheduledProducts& item) noexcept;
-bool Service3GetScheduledProductsReadBoxed(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item);
-bool Service3GetScheduledProductsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::GetScheduledProducts& item);
+bool Service3GetScheduledProductsWriteJSON(std::ostream& s, const ::tlgen::service3::GetScheduledProducts& item) noexcept;
+bool Service3GetScheduledProductsRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetScheduledProducts& item) noexcept; 
+bool Service3GetScheduledProductsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetScheduledProducts& item) noexcept;
+bool Service3GetScheduledProductsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetScheduledProducts& item);
+bool Service3GetScheduledProductsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetScheduledProducts& item);
 
-bool Service3GetScheduledProductsReadResult(::basictl::tl_istream & s, ::tl2::service3::GetScheduledProducts& item, std::optional<std::vector<::tl2::service3::Productmode<0>>>& result);
-bool Service3GetScheduledProductsWriteResult(::basictl::tl_ostream & s, ::tl2::service3::GetScheduledProducts& item, std::optional<std::vector<::tl2::service3::Productmode<0>>>& result);
-		
-}} // namespace tl2::details
+bool Service3GetScheduledProductsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result);
+bool Service3GetScheduledProductsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result);
+    
+}} // namespace tlgen::details
 

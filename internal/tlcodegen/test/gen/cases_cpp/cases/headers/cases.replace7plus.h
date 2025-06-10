@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.replace7plus.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesReplace7plusReset(::tl2::cases::Replace7plus& item) noexcept;
+void CasesReplace7plusReset(::tlgen::cases::Replace7plus& item) noexcept;
 
-bool CasesReplace7plusWriteJSON(std::ostream& s, const ::tl2::cases::Replace7plus& item) noexcept;
-bool CasesReplace7plusRead(::basictl::tl_istream & s, ::tl2::cases::Replace7plus& item) noexcept; 
-bool CasesReplace7plusWrite(::basictl::tl_ostream & s, const ::tl2::cases::Replace7plus& item) noexcept;
-bool CasesReplace7plusReadBoxed(::basictl::tl_istream & s, ::tl2::cases::Replace7plus& item);
-bool CasesReplace7plusWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::Replace7plus& item);
+bool CasesReplace7plusWriteJSON(std::ostream& s, const ::tlgen::cases::Replace7plus& item) noexcept;
+bool CasesReplace7plusRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::Replace7plus& item) noexcept; 
+bool CasesReplace7plusWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::Replace7plus& item) noexcept;
+bool CasesReplace7plusReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::Replace7plus& item);
+bool CasesReplace7plusWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::Replace7plus& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

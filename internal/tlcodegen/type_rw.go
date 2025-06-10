@@ -376,10 +376,17 @@ func mapToPairArray[L comparable, R any](m *map[L]R) (res []Pair[L, R]) {
 }
 
 func (d DirectIncludesCPP) sortedIncludes(componentOrder []int, typeToFile func(wrapper *TypeRWWrapper) string) (result []string) {
+	result, _ = d.sortedIncludesWithMap(componentOrder, typeToFile)
+	return
+}
+
+func (d DirectIncludesCPP) sortedIncludesWithMap(componentOrder []int, typeToFile func(wrapper *TypeRWWrapper) string) (result []string, mapping map[string][]*TypeRWWrapper) {
 	includeNamesToTypes := make(map[string]int)
+	mapping = make(map[string][]*TypeRWWrapper)
 
 	for tp := range d.ns {
 		include := typeToFile(tp)
+		mapping[include] = append(mapping[include], tp)
 		if _, ok := includeNamesToTypes[include]; !ok {
 			includeNamesToTypes[include] = tp.typeComponent
 		} else {
@@ -1216,7 +1223,7 @@ func formatNatArgsCallCPP(natArgs []string) string {
 func formatNatArgsDeclCPP(natArgs []string) string {
 	var s strings.Builder
 	for _, arg := range natArgs {
-		s.WriteString(fmt.Sprintf(", uint32_t nat_%s", arg))
+		s.WriteString(fmt.Sprintf(", [[maybe_unused]] uint32_t nat_%s", arg))
 	}
 	return s.String()
 }

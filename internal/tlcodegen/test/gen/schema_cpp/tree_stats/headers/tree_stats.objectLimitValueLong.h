@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "tree_stats/types/tree_stats.objectLimitValueLong.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TreeStatsObjectLimitValueLongReset(::tl2::tree_stats::ObjectLimitValueLong& item) noexcept;
+void TreeStatsObjectLimitValueLongReset(::tlgen::tree_stats::ObjectLimitValueLong& item) noexcept;
 
-bool TreeStatsObjectLimitValueLongWriteJSON(std::ostream& s, const ::tl2::tree_stats::ObjectLimitValueLong& item) noexcept;
-bool TreeStatsObjectLimitValueLongRead(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueLong& item) noexcept; 
-bool TreeStatsObjectLimitValueLongWrite(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueLong& item) noexcept;
-bool TreeStatsObjectLimitValueLongReadBoxed(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValueLong& item);
-bool TreeStatsObjectLimitValueLongWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValueLong& item);
+bool TreeStatsObjectLimitValueLongWriteJSON(std::ostream& s, const ::tlgen::tree_stats::ObjectLimitValueLong& item) noexcept;
+bool TreeStatsObjectLimitValueLongRead(::tlgen::basictl::tl_istream & s, ::tlgen::tree_stats::ObjectLimitValueLong& item) noexcept; 
+bool TreeStatsObjectLimitValueLongWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tree_stats::ObjectLimitValueLong& item) noexcept;
+bool TreeStatsObjectLimitValueLongReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tree_stats::ObjectLimitValueLong& item);
+bool TreeStatsObjectLimitValueLongWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tree_stats::ObjectLimitValueLong& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

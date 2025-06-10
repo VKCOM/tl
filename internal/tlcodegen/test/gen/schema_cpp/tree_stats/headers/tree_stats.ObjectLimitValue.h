@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "tree_stats/types/tree_stats.ObjectLimitValue.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TreeStatsObjectLimitValueReset(::tl2::tree_stats::ObjectLimitValue& item) noexcept;
+void TreeStatsObjectLimitValueReset(::tlgen::tree_stats::ObjectLimitValue& item) noexcept;
 
-bool TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) noexcept;
-bool TreeStatsObjectLimitValueReadBoxed(::basictl::tl_istream & s, ::tl2::tree_stats::ObjectLimitValue& item) noexcept;
-bool TreeStatsObjectLimitValueWriteBoxed(::basictl::tl_ostream & s, const ::tl2::tree_stats::ObjectLimitValue& item) noexcept;
+bool TreeStatsObjectLimitValueWriteJSON(std::ostream & s, const ::tlgen::tree_stats::ObjectLimitValue& item) noexcept;
+bool TreeStatsObjectLimitValueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tree_stats::ObjectLimitValue& item) noexcept;
+bool TreeStatsObjectLimitValueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tree_stats::ObjectLimitValue& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,38 +5,38 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 struct MyNat2;
-} // namespace tl2
+} // namespace tlgen
 
-namespace tl2 { 
+namespace tlgen { 
 struct MyPlus {
-	std::shared_ptr<::tl2::MyNat2> a{};
+  std::shared_ptr<::tlgen::MyNat2> a{};
 
-	~MyPlus() {}
+  ~MyPlus() {}
 
-	std::string_view tl_name() const { return "myPlus"; }
-	uint32_t tl_tag() const { return 0x79e0c6df; }
+  std::string_view tl_name() const { return "myPlus"; }
+  uint32_t tl_tag() const { return 0x79e0c6df; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const MyPlus& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const MyPlus& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

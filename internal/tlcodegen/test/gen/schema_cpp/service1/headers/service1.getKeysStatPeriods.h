@@ -6,18 +6,18 @@
 #include "service1/functions/service1.getKeysStatPeriods.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1GetKeysStatPeriodsReset(::tl2::service1::GetKeysStatPeriods& item) noexcept;
+void Service1GetKeysStatPeriodsReset(::tlgen::service1::GetKeysStatPeriods& item) noexcept;
 
-bool Service1GetKeysStatPeriodsWriteJSON(std::ostream& s, const ::tl2::service1::GetKeysStatPeriods& item) noexcept;
-bool Service1GetKeysStatPeriodsRead(::basictl::tl_istream & s, ::tl2::service1::GetKeysStatPeriods& item) noexcept; 
-bool Service1GetKeysStatPeriodsWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetKeysStatPeriods& item) noexcept;
-bool Service1GetKeysStatPeriodsReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetKeysStatPeriods& item);
-bool Service1GetKeysStatPeriodsWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::GetKeysStatPeriods& item);
+bool Service1GetKeysStatPeriodsWriteJSON(std::ostream& s, const ::tlgen::service1::GetKeysStatPeriods& item) noexcept;
+bool Service1GetKeysStatPeriodsRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetKeysStatPeriods& item) noexcept; 
+bool Service1GetKeysStatPeriodsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetKeysStatPeriods& item) noexcept;
+bool Service1GetKeysStatPeriodsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetKeysStatPeriods& item);
+bool Service1GetKeysStatPeriodsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetKeysStatPeriods& item);
 
-bool Service1GetKeysStatPeriodsReadResult(::basictl::tl_istream & s, ::tl2::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
-bool Service1GetKeysStatPeriodsWriteResult(::basictl::tl_ostream & s, ::tl2::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
-		
-}} // namespace tl2::details
+bool Service1GetKeysStatPeriodsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
+bool Service1GetKeysStatPeriodsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
+    
+}} // namespace tlgen::details
 

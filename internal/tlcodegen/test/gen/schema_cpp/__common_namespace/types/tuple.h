@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename t>
 using Tuple = std::vector<t>;
-} // namespace tl2
+} // namespace tlgen
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename t, uint32_t n>
 using Tuplen = std::array<t, n>;
-} // namespace tl2
+} // namespace tlgen
 

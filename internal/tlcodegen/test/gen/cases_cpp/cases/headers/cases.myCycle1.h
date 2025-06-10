@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.myCycle1.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesMyCycle1Reset(::tl2::cases::MyCycle1& item) noexcept;
+void CasesMyCycle1Reset(::tlgen::cases::MyCycle1& item) noexcept;
 
-bool CasesMyCycle1WriteJSON(std::ostream& s, const ::tl2::cases::MyCycle1& item) noexcept;
-bool CasesMyCycle1Read(::basictl::tl_istream & s, ::tl2::cases::MyCycle1& item) noexcept; 
-bool CasesMyCycle1Write(::basictl::tl_ostream & s, const ::tl2::cases::MyCycle1& item) noexcept;
-bool CasesMyCycle1ReadBoxed(::basictl::tl_istream & s, ::tl2::cases::MyCycle1& item);
-bool CasesMyCycle1WriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::MyCycle1& item);
+bool CasesMyCycle1WriteJSON(std::ostream& s, const ::tlgen::cases::MyCycle1& item) noexcept;
+bool CasesMyCycle1Read(::tlgen::basictl::tl_istream & s, ::tlgen::cases::MyCycle1& item) noexcept; 
+bool CasesMyCycle1Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::MyCycle1& item) noexcept;
+bool CasesMyCycle1ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::MyCycle1& item);
+bool CasesMyCycle1WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::MyCycle1& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

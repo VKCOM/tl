@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/dictionaryField.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryFieldStringReset(::tl2::DictionaryField<std::string>& item) noexcept;
+void DictionaryFieldStringReset(::tlgen::DictionaryField<std::string>& item) noexcept;
 
-bool DictionaryFieldStringWriteJSON(std::ostream& s, const ::tl2::DictionaryField<std::string>& item) noexcept;
-bool DictionaryFieldStringRead(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item) noexcept; 
-bool DictionaryFieldStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item) noexcept;
-bool DictionaryFieldStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryField<std::string>& item);
-bool DictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryField<std::string>& item);
+bool DictionaryFieldStringWriteJSON(std::ostream& s, const ::tlgen::DictionaryField<std::string>& item) noexcept;
+bool DictionaryFieldStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryField<std::string>& item) noexcept; 
+bool DictionaryFieldStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryField<std::string>& item) noexcept;
+bool DictionaryFieldStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryField<std::string>& item);
+bool DictionaryFieldStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryField<std::string>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/myBoxedArray.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyBoxedArrayReset(::tl2::MyBoxedArray& item) noexcept;
+void MyBoxedArrayReset(::tlgen::MyBoxedArray& item) noexcept;
 
-bool MyBoxedArrayWriteJSON(std::ostream& s, const ::tl2::MyBoxedArray& item) noexcept;
-bool MyBoxedArrayRead(::basictl::tl_istream & s, ::tl2::MyBoxedArray& item) noexcept; 
-bool MyBoxedArrayWrite(::basictl::tl_ostream & s, const ::tl2::MyBoxedArray& item) noexcept;
-bool MyBoxedArrayReadBoxed(::basictl::tl_istream & s, ::tl2::MyBoxedArray& item);
-bool MyBoxedArrayWriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyBoxedArray& item);
+bool MyBoxedArrayWriteJSON(std::ostream& s, const ::tlgen::MyBoxedArray& item) noexcept;
+bool MyBoxedArrayRead(::tlgen::basictl::tl_istream & s, ::tlgen::MyBoxedArray& item) noexcept; 
+bool MyBoxedArrayWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyBoxedArray& item) noexcept;
+bool MyBoxedArrayReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyBoxedArray& item);
+bool MyBoxedArrayWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyBoxedArray& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

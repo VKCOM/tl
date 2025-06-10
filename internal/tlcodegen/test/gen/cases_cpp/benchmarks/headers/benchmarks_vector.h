@@ -6,15 +6,15 @@
 #include "__common_namespace/types/vector.h"
 #include "benchmarks/types/benchmarks.vruposition.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void VectorBenchmarksVruPositionReset(std::vector<::tl2::benchmarks::Vruposition>& item) noexcept;
+void VectorBenchmarksVruPositionReset(std::vector<::tlgen::benchmarks::Vruposition>& item) noexcept;
 
-bool VectorBenchmarksVruPositionWriteJSON(std::ostream& s, const std::vector<::tl2::benchmarks::Vruposition>& item) noexcept;
-bool VectorBenchmarksVruPositionRead(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item) noexcept; 
-bool VectorBenchmarksVruPositionWrite(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item) noexcept;
-bool VectorBenchmarksVruPositionReadBoxed(::basictl::tl_istream & s, std::vector<::tl2::benchmarks::Vruposition>& item);
-bool VectorBenchmarksVruPositionWriteBoxed(::basictl::tl_ostream & s, const std::vector<::tl2::benchmarks::Vruposition>& item);
+bool VectorBenchmarksVruPositionWriteJSON(std::ostream& s, const std::vector<::tlgen::benchmarks::Vruposition>& item) noexcept;
+bool VectorBenchmarksVruPositionRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::benchmarks::Vruposition>& item) noexcept; 
+bool VectorBenchmarksVruPositionWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::benchmarks::Vruposition>& item) noexcept;
+bool VectorBenchmarksVruPositionReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::benchmarks::Vruposition>& item);
+bool VectorBenchmarksVruPositionWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::benchmarks::Vruposition>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

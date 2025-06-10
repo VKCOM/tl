@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/nativeWrappers.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void NativeWrappersReset(::tl2::NativeWrappers& item) noexcept;
+void NativeWrappersReset(::tlgen::NativeWrappers& item) noexcept;
 
-bool NativeWrappersWriteJSON(std::ostream& s, const ::tl2::NativeWrappers& item) noexcept;
-bool NativeWrappersRead(::basictl::tl_istream & s, ::tl2::NativeWrappers& item) noexcept; 
-bool NativeWrappersWrite(::basictl::tl_ostream & s, const ::tl2::NativeWrappers& item) noexcept;
-bool NativeWrappersReadBoxed(::basictl::tl_istream & s, ::tl2::NativeWrappers& item);
-bool NativeWrappersWriteBoxed(::basictl::tl_ostream & s, const ::tl2::NativeWrappers& item);
+bool NativeWrappersWriteJSON(std::ostream& s, const ::tlgen::NativeWrappers& item) noexcept;
+bool NativeWrappersRead(::tlgen::basictl::tl_istream & s, ::tlgen::NativeWrappers& item) noexcept; 
+bool NativeWrappersWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::NativeWrappers& item) noexcept;
+bool NativeWrappersReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::NativeWrappers& item);
+bool NativeWrappersWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::NativeWrappers& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

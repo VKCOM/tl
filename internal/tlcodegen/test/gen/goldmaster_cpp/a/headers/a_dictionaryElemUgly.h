@@ -5,25 +5,25 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/dictionaryElemUgly.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void BuiltinVectorDictionaryElemUglyIntStringReset(std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item);
+void BuiltinVectorDictionaryElemUglyIntStringReset(std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item);
 
-bool BuiltinVectorDictionaryElemUglyIntStringWriteJSON(std::ostream & s, const std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item, uint32_t nat_t);
-bool BuiltinVectorDictionaryElemUglyIntStringRead(::basictl::tl_istream & s, std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item, uint32_t nat_t);
-bool BuiltinVectorDictionaryElemUglyIntStringWrite(::basictl::tl_ostream & s, const std::vector<::tl2::DictionaryElemUgly<int32_t, std::string>>& item, uint32_t nat_t);
+bool BuiltinVectorDictionaryElemUglyIntStringWriteJSON(std::ostream & s, const std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinVectorDictionaryElemUglyIntStringRead(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item, [[maybe_unused]] uint32_t nat_t);
+bool BuiltinVectorDictionaryElemUglyIntStringWrite(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::DictionaryElemUgly<int32_t, std::string>>& item, [[maybe_unused]] uint32_t nat_t);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void DictionaryElemUglyIntStringReset(::tl2::DictionaryElemUgly<int32_t, std::string>& item) noexcept;
+void DictionaryElemUglyIntStringReset(::tlgen::DictionaryElemUgly<int32_t, std::string>& item) noexcept;
 
-bool DictionaryElemUglyIntStringWriteJSON(std::ostream& s, const ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) noexcept;
-bool DictionaryElemUglyIntStringRead(::basictl::tl_istream & s, ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) noexcept; 
-bool DictionaryElemUglyIntStringWrite(::basictl::tl_ostream & s, const ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f) noexcept;
-bool DictionaryElemUglyIntStringReadBoxed(::basictl::tl_istream & s, ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f);
-bool DictionaryElemUglyIntStringWriteBoxed(::basictl::tl_ostream & s, const ::tl2::DictionaryElemUgly<int32_t, std::string>& item, uint32_t nat_f);
+bool DictionaryElemUglyIntStringWriteJSON(std::ostream& s, const ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) noexcept;
+bool DictionaryElemUglyIntStringRead(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) noexcept; 
+bool DictionaryElemUglyIntStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f) noexcept;
+bool DictionaryElemUglyIntStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f);
+bool DictionaryElemUglyIntStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::DictionaryElemUgly<int32_t, std::string>& item, [[maybe_unused]] uint32_t nat_f);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

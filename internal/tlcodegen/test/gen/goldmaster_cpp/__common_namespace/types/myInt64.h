@@ -6,7 +6,7 @@
 #include "__common_namespace/types/int64.h"
 
 
-namespace tl2 { 
-using MyInt64 = ::tl2::Int64;
-} // namespace tl2
+namespace tlgen { 
+using MyInt64 = ::tlgen::Int64;
+} // namespace tlgen
 

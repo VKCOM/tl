@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "a/types/a.uNionA.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AUNionAReset(::tl2::a::UNionA& item) noexcept;
+void AUNionAReset(::tlgen::a::UNionA& item) noexcept;
 
-bool AUNionAWriteJSON(std::ostream& s, const ::tl2::a::UNionA& item) noexcept;
-bool AUNionARead(::basictl::tl_istream & s, ::tl2::a::UNionA& item) noexcept; 
-bool AUNionAWrite(::basictl::tl_ostream & s, const ::tl2::a::UNionA& item) noexcept;
-bool AUNionAReadBoxed(::basictl::tl_istream & s, ::tl2::a::UNionA& item);
-bool AUNionAWriteBoxed(::basictl::tl_ostream & s, const ::tl2::a::UNionA& item);
+bool AUNionAWriteJSON(std::ostream& s, const ::tlgen::a::UNionA& item) noexcept;
+bool AUNionARead(::tlgen::basictl::tl_istream & s, ::tlgen::a::UNionA& item) noexcept; 
+bool AUNionAWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::UNionA& item) noexcept;
+bool AUNionAReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::a::UNionA& item);
+bool AUNionAWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::UNionA& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

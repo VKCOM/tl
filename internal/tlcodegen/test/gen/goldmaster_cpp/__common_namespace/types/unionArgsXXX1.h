@@ -5,14 +5,14 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 template<typename X>
 struct UnionArgsXXX1 {
-	std::vector<X> x;
+  std::vector<X> x;
 
-	std::string_view tl_name() const { return "unionArgsXXX1"; }
-	uint32_t tl_tag() const { return 0xe7978c97; }
+  std::string_view tl_name() const { return "unionArgsXXX1"; }
+  uint32_t tl_tag() const { return 0xe7978c97; }
 };
 
-} // namespace tl2
+} // namespace tlgen
 

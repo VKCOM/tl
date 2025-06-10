@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "__common_namespace/types/MyNat2.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void MyNat2Reset(::tl2::MyNat2& item) noexcept;
+void MyNat2Reset(::tlgen::MyNat2& item) noexcept;
 
-bool MyNat2WriteJSON(std::ostream & s, const ::tl2::MyNat2& item) noexcept;
-bool MyNat2ReadBoxed(::basictl::tl_istream & s, ::tl2::MyNat2& item) noexcept;
-bool MyNat2WriteBoxed(::basictl::tl_ostream & s, const ::tl2::MyNat2& item) noexcept;
+bool MyNat2WriteJSON(std::ostream & s, const ::tlgen::MyNat2& item) noexcept;
+bool MyNat2ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::MyNat2& item) noexcept;
+bool MyNat2WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyNat2& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

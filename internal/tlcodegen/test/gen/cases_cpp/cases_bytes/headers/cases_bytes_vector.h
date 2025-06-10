@@ -7,27 +7,27 @@
 #include "__common_namespace/types/string.h"
 #include "__common_namespace/types/dictionaryField.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void VectorDictionaryFieldStringReset(std::map<std::string, std::string>& item) noexcept;
 
 bool VectorDictionaryFieldStringWriteJSON(std::ostream& s, const std::map<std::string, std::string>& item) noexcept;
-bool VectorDictionaryFieldStringRead(::basictl::tl_istream & s, std::map<std::string, std::string>& item) noexcept; 
-bool VectorDictionaryFieldStringWrite(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) noexcept;
-bool VectorDictionaryFieldStringReadBoxed(::basictl::tl_istream & s, std::map<std::string, std::string>& item);
-bool VectorDictionaryFieldStringWriteBoxed(::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringRead(::tlgen::basictl::tl_istream & s, std::map<std::string, std::string>& item) noexcept; 
+bool VectorDictionaryFieldStringWrite(::tlgen::basictl::tl_ostream & s, const std::map<std::string, std::string>& item) noexcept;
+bool VectorDictionaryFieldStringReadBoxed(::tlgen::basictl::tl_istream & s, std::map<std::string, std::string>& item);
+bool VectorDictionaryFieldStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::map<std::string, std::string>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
 void VectorStringReset(std::vector<std::string>& item) noexcept;
 
 bool VectorStringWriteJSON(std::ostream& s, const std::vector<std::string>& item) noexcept;
-bool VectorStringRead(::basictl::tl_istream & s, std::vector<std::string>& item) noexcept; 
-bool VectorStringWrite(::basictl::tl_ostream & s, const std::vector<std::string>& item) noexcept;
-bool VectorStringReadBoxed(::basictl::tl_istream & s, std::vector<std::string>& item);
-bool VectorStringWriteBoxed(::basictl::tl_ostream & s, const std::vector<std::string>& item);
+bool VectorStringRead(::tlgen::basictl::tl_istream & s, std::vector<std::string>& item) noexcept; 
+bool VectorStringWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::string>& item) noexcept;
+bool VectorStringReadBoxed(::tlgen::basictl::tl_istream & s, std::vector<std::string>& item);
+bool VectorStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const std::vector<std::string>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

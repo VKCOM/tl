@@ -6,35 +6,35 @@
 #include "cases/types/cases.inplace1.h"
 
 
-namespace tl2 { namespace cases { 
+namespace tlgen { namespace cases { 
 struct TestInplaceStructArgs {
-	uint32_t a1 = 0;
-	uint32_t a2 = 0;
-	uint32_t a3 = 0;
-	::tl2::cases::Inplace1<int32_t> arg{};
+  uint32_t a1 = 0;
+  uint32_t a2 = 0;
+  uint32_t a3 = 0;
+  ::tlgen::cases::Inplace1<int32_t> arg{};
 
-	std::string_view tl_name() const { return "cases.testInplaceStructArgs"; }
-	uint32_t tl_tag() const { return 0xa9e4441e; }
+  std::string_view tl_name() const { return "cases.testInplaceStructArgs"; }
+  uint32_t tl_tag() const { return 0xa9e4441e; }
 
-	bool write_json(std::ostream& s)const;
+  bool write_json(std::ostream& s) const;
 
-	bool read(::basictl::tl_istream & s) noexcept;
-	bool write(::basictl::tl_ostream & s)const noexcept;
+  bool read(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write(::tlgen::basictl::tl_ostream & s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s)const;
+  void read(::tlgen::basictl::tl_throwable_istream & s);
+  void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-	bool read_boxed(::basictl::tl_istream & s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s)const noexcept;
-	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s)const;
+  bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  
+  void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
 
-	friend std::ostream& operator<<(std::ostream& s, const TestInplaceStructArgs& rhs) {
-		rhs.write_json(s);
-		return s;
-	}
+  friend std::ostream& operator<<(std::ostream& s, const TestInplaceStructArgs& rhs) {
+    rhs.write_json(s);
+    return s;
+  }
 };
 
-}} // namespace tl2::cases
+}} // namespace tlgen::cases
 

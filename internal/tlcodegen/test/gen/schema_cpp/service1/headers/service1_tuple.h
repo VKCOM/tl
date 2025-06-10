@@ -6,15 +6,15 @@
 #include "__common_namespace/types/tuple.h"
 #include "service1/types/service1.Value.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void TupleService1Value3Reset(std::array<::tl2::service1::Value, 3>& item) noexcept;
+void TupleService1Value3Reset(std::array<::tlgen::service1::Value, 3>& item) noexcept;
 
-bool TupleService1Value3WriteJSON(std::ostream& s, const std::array<::tl2::service1::Value, 3>& item) noexcept;
-bool TupleService1Value3Read(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item) noexcept; 
-bool TupleService1Value3Write(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item) noexcept;
-bool TupleService1Value3ReadBoxed(::basictl::tl_istream & s, std::array<::tl2::service1::Value, 3>& item);
-bool TupleService1Value3WriteBoxed(::basictl::tl_ostream & s, const std::array<::tl2::service1::Value, 3>& item);
+bool TupleService1Value3WriteJSON(std::ostream& s, const std::array<::tlgen::service1::Value, 3>& item) noexcept;
+bool TupleService1Value3Read(::tlgen::basictl::tl_istream & s, std::array<::tlgen::service1::Value, 3>& item) noexcept; 
+bool TupleService1Value3Write(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::service1::Value, 3>& item) noexcept;
+bool TupleService1Value3ReadBoxed(::tlgen::basictl::tl_istream & s, std::array<::tlgen::service1::Value, 3>& item);
+bool TupleService1Value3WriteBoxed(::tlgen::basictl::tl_ostream & s, const std::array<::tlgen::service1::Value, 3>& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

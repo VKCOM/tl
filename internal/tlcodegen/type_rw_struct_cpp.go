@@ -246,31 +246,33 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 			if len(myArgsDecl) == 0 {
 				// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 				hpp.WriteString(fmt.Sprintf(`
-	bool write_json(std::ostream& s%[1]s)const;
+	bool write_json(std::ostream& s%[1]s) const;
 
-	bool read(::basictl::tl_istream & s%[1]s) noexcept;
-	bool write(::basictl::tl_ostream & s%[1]s)const noexcept;
+	bool read(::%[6]s::tl_istream & s%[1]s) noexcept;
+	bool write(::%[6]s::tl_ostream & s%[1]s) const noexcept;
 
-	void read_or_throw(::basictl::tl_throwable_istream & s%[1]s);
-	void write_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const;
+	void read(::%[6]s::tl_throwable_istream & s%[1]s);
+	void write(::%[6]s::tl_throwable_ostream & s%[1]s) const;
 `,
 					formatNatArgsDeclCPP(trw.wr.NatParams),
 					trw.CPPTypeResettingCode(bytesVersion, "*this"),
 					trw.CPPTypeReadingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
 					trw.CPPTypeWritingCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
-					trw.wr.cppLocalName))
+					trw.wr.cppLocalName,
+					trw.wr.gen.cppBasictlNamespace()))
 				if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
 					hpp.WriteString(fmt.Sprintf(`
-	bool read_boxed(::basictl::tl_istream & s%[1]s) noexcept;
-	bool write_boxed(::basictl::tl_ostream & s%[1]s)const noexcept;
+	bool read_boxed(::%[5]s::tl_istream & s%[1]s) noexcept;
+	bool write_boxed(::%[5]s::tl_ostream & s%[1]s)const noexcept;
 	
-	void read_boxed_or_throw(::basictl::tl_throwable_istream & s%[1]s);
-	void write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const;
+	void read_boxed(::%[5]s::tl_throwable_istream & s%[1]s);
+	void write_boxed(::%[5]s::tl_throwable_ostream & s%[1]s)const;
 `,
 						formatNatArgsDeclCPP(trw.wr.NatParams),
 						trw.CPPTypeResettingCode(bytesVersion, "*this"),
 						trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
-						trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true)))
+						trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
+						trw.wr.gen.cppBasictlNamespace()))
 				}
 				if trw.ResultType != nil {
 					hppIncByResult := DirectIncludesCPP{ns: map[*TypeRWWrapper]CppIncludeInfo{}}
@@ -287,13 +289,14 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 						hppInc.ns[includeType] = includeInfo
 					}
 					hpp.WriteString(fmt.Sprintf(`
-	bool read_result(::basictl::tl_istream & s, %[1]s & result) noexcept;
-	bool write_result(::basictl::tl_ostream & s, %[1]s & result) noexcept;
+	bool read_result(::%[2]s::tl_istream & s, %[1]s & result) noexcept;
+	bool write_result(::%[2]s::tl_ostream & s, %[1]s & result) noexcept;
 
-	void read_result_or_throw(::basictl::tl_throwable_istream & s, %[1]s & result);
-	void write_result_or_throw(::basictl::tl_throwable_ostream & s, %[1]s & result);
+	void read_result(::%[2]s::tl_throwable_istream & s, %[1]s & result);
+	void write_result(::%[2]s::tl_throwable_ostream & s, %[1]s & result);
 `,
 						trw.ResultType.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed),
+						trw.wr.gen.cppBasictlNamespace(),
 					))
 				}
 				if len(trw.wr.NatParams) == 0 {
@@ -321,25 +324,30 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 void %[1]sReset(%[2]s& item) noexcept;
 
 bool %[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s) noexcept;
-bool %[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept; 
-bool %[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept;
-`, goGlobalName, myFullType, formatNatArgsDeclCPP(trw.wr.NatParams)))
+bool %[1]sRead(::%[4]s::tl_istream & s, %[2]s& item%[3]s) noexcept; 
+bool %[1]sWrite(::%[4]s::tl_ostream & s, const %[2]s& item%[3]s) noexcept;
+`,
+			goGlobalName,
+			myFullType,
+			formatNatArgsDeclCPP(trw.wr.NatParams),
+			trw.wr.gen.cppBasictlNamespace()))
 
 		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
-			hppDet.WriteString(fmt.Sprintf(`bool %[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s);
-bool %[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s);
+			hppDet.WriteString(fmt.Sprintf(`bool %[1]sReadBoxed(::%[4]s::tl_istream & s, %[2]s& item%[3]s);
+bool %[1]sWriteBoxed(::%[4]s::tl_ostream & s, const %[2]s& item%[3]s);
 `,
 				goGlobalName,
 				myFullType,
-				formatNatArgsDeclCPP(trw.wr.NatParams)))
+				formatNatArgsDeclCPP(trw.wr.NatParams),
+				trw.wr.gen.cppBasictlNamespace()))
 		}
 
 		if trw.ResultType != nil {
 			resultType := trw.ResultType.trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
 			hppDet.WriteString(fmt.Sprintf(`
-bool %[1]sReadResult(::basictl::tl_istream & s, %[2]s& item, %[3]s& result);
-bool %[1]sWriteResult(::basictl::tl_ostream & s, %[2]s& item, %[3]s& result);
-		`, goGlobalName, myFullType, resultType))
+bool %[1]sReadResult(::%[4]s::tl_istream & s, %[2]s& item, %[3]s& result);
+bool %[1]sWriteResult(::%[4]s::tl_ostream & s, %[2]s& item, %[3]s& result);
+		`, goGlobalName, myFullType, resultType, trw.wr.gen.cppBasictlNamespace()))
 		}
 
 		cppFinishNamespace(hppDet, trw.wr.gen.DetailsCPPNamespaceElements)
@@ -355,26 +363,26 @@ bool %[5]s::write_json(std::ostream& s%[1]s)const {
 	return true;
 }
 
-bool %[5]s::read(::basictl::tl_istream & s%[1]s) noexcept {
+bool %[5]s::read(::%[8]s::tl_istream & s%[1]s) noexcept {
 %[3]s
-	s.last_release();
+	s.sync();
 	return true;
 }
 
-bool %[5]s::write(::basictl::tl_ostream & s%[1]s)const noexcept {
+bool %[5]s::write(::%[8]s::tl_ostream & s%[1]s)const noexcept {
 %[4]s
-	s.last_release();
+	s.sync();
 	return true;
 }
 
-void %[5]s::read_or_throw(::basictl::tl_throwable_istream & s%[1]s) {
-	::basictl::tl_istream s2(s);
+void %[5]s::read(::%[8]s::tl_throwable_istream & s%[1]s) {
+	::%[8]s::tl_istream s2(s);
 	this->read(s2%[7]s);
 	s2.pass_data(s);
 }
 
-void %[5]s::write_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const {
-	::basictl::tl_ostream s2(s);
+void %[5]s::write(::%[8]s::tl_throwable_ostream & s%[1]s)const {
+	::%[8]s::tl_ostream s2(s);
 	this->write(s2%[7]s);
 	s2.pass_data(s);
 }
@@ -386,29 +394,30 @@ void %[5]s::write_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const {
 					myFullTypeNoPrefix,
 					trw.CPPTypeWritingJsonCode(bytesVersion, "*this", true, formatNatArgsAddNat(trw.wr.NatParams), true),
 					formatNatArgsCallCPP(trw.wr.NatParams),
+					trw.wr.gen.cppBasictlNamespace(),
 				))
 				if trw.wr.tlTag != 0 {
 					cppDet.WriteString(fmt.Sprintf(`
-bool %[5]s::read_boxed(::basictl::tl_istream & s%[1]s) noexcept {
+bool %[5]s::read_boxed(::%[7]s::tl_istream & s%[1]s) noexcept {
 %[3]s
-	s.last_release();
+	s.sync();
 	return true;
 }
 
-bool %[5]s::write_boxed(::basictl::tl_ostream & s%[1]s)const noexcept {
+bool %[5]s::write_boxed(::%[7]s::tl_ostream & s%[1]s)const noexcept {
 %[4]s
-	s.last_release();
+	s.sync();
 	return true;
 }
 
-void %[5]s::read_boxed_or_throw(::basictl::tl_throwable_istream & s%[1]s) {
-	::basictl::tl_istream s2(s);
+void %[5]s::read_boxed(::%[7]s::tl_throwable_istream & s%[1]s) {
+	::%[7]s::tl_istream s2(s);
 	this->read_boxed(s2%[6]s);
 	s2.pass_data(s);
 }
 
-void %[5]s::write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const {
-	::basictl::tl_ostream s2(s);
+void %[5]s::write_boxed(::%[7]s::tl_throwable_ostream & s%[1]s)const {
+	::%[7]s::tl_ostream s2(s);
 	this->write_boxed(s2%[6]s);
 	s2.pass_data(s);
 }
@@ -418,23 +427,31 @@ void %[5]s::write_boxed_or_throw(::basictl::tl_throwable_ostream & s%[1]s)const 
 						trw.CPPTypeReadingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 						trw.CPPTypeWritingCode(bytesVersion, "*this", false, formatNatArgsAddNat(trw.wr.NatParams), true),
 						myFullTypeNoPrefix,
-						formatNatArgsCallCPP(trw.wr.NatParams)))
+						formatNatArgsCallCPP(trw.wr.NatParams),
+						trw.wr.gen.cppBasictlNamespace()))
 				}
 			}
 		}
 		cppDet.WriteString(fmt.Sprintf(`
 void %[7]s::%[1]sReset(%[2]s& item) noexcept {
+	(void)item;
 %[4]s}
 
 bool %[7]s::%[1]sWriteJSON(std::ostream& s, const %[2]s& item%[3]s) noexcept {
+	(void)s;
+	(void)item;
 %[8]s	return true;
 }
 
-bool %[7]s::%[1]sRead(::basictl::tl_istream & s, %[2]s& item%[3]s) noexcept {
+bool %[7]s::%[1]sRead(::%[9]s::tl_istream & s, %[2]s& item%[3]s) noexcept {
+	(void)s;
+	(void)item;
 %[5]s	return true;
 }
 
-bool %[7]s::%[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexcept {
+bool %[7]s::%[1]sWrite(::%[9]s::tl_ostream & s, const %[2]s& item%[3]s) noexcept {
+	(void)s;
+	(void)item;
 %[6]s	return true;
 }
 `,
@@ -446,16 +463,17 @@ bool %[7]s::%[1]sWrite(::basictl::tl_ostream & s, const %[2]s& item%[3]s) noexce
 			trw.CPPWriteFields(bytesVersion),
 			trw.wr.gen.DetailsCPPNamespace,
 			trw.CPPWriteJsonFields(bytesVersion),
+			trw.wr.gen.cppBasictlNamespace(),
 		))
 
 		if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
 			cppDet.WriteString(fmt.Sprintf(`
-bool %[7]s::%[1]sReadBoxed(::basictl::tl_istream & s, %[2]s& item%[3]s) {
+bool %[7]s::%[1]sReadBoxed(::%[10]s::tl_istream & s, %[2]s& item%[3]s) {
 	if (!s.nat_read_exact_tag(0x%08[9]x)) { return false; }
 	return %[7]s::%[1]sRead(s, item%[8]s);
 }
 
-bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
+bool %[7]s::%[1]sWriteBoxed(::%[10]s::tl_ostream & s, const %[2]s& item%[3]s) {
 	if (!s.nat_write(0x%08[9]x)) { return false; }
 	return %[7]s::%[1]sWrite(s, item%[8]s);
 }
@@ -469,6 +487,7 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 				trw.wr.gen.DetailsCPPNamespace,
 				formatNatArgsCallCPP(trw.wr.NatParams),
 				trw.wr.tlTag,
+				trw.wr.gen.cppBasictlNamespace(),
 			))
 		}
 
@@ -485,33 +504,39 @@ bool %[7]s::%[1]sWriteBoxed(::basictl::tl_ostream & s, const %[2]s& item%[3]s) {
 			resultType := trw.ResultType.trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
 
 			cppDet.WriteString(fmt.Sprintf(`
-bool %[8]s::%[6]sReadResult(::basictl::tl_istream & s, %[2]s& item, %[1]s& result) {
+bool %[8]s::%[6]sReadResult(::%[9]s::tl_istream & s, %[2]s& item, %[1]s& result) {
+	(void)s;
+	(void)item;
+	(void)result;
 %[3]s
 	return true;
 }
-bool %[8]s::%[6]sWriteResult(::basictl::tl_ostream & s, %[2]s& item, %[1]s& result) {
+bool %[8]s::%[6]sWriteResult(::%[9]s::tl_ostream & s, %[2]s& item, %[1]s& result) {
+	(void)s;
+	(void)item;
+	(void)result;
 %[7]s
 	return true;
 }
 
-bool %[2]s::read_result(::basictl::tl_istream & s, %[1]s & result) noexcept {
+bool %[2]s::read_result(::%[9]s::tl_istream & s, %[1]s & result) noexcept {
 	bool success = %[8]s::%[6]sReadResult(s, *this, result);
-	s.last_release();
+	s.sync();
 	return success;
 }
-bool %[2]s::write_result(::basictl::tl_ostream & s, %[1]s & result) noexcept {
+bool %[2]s::write_result(::%[9]s::tl_ostream & s, %[1]s & result) noexcept {
 	bool success = %[8]s::%[6]sWriteResult(s, *this, result);
-	s.last_release();
+	s.sync();
 	return success;
 }
 
-void %[2]s::read_result_or_throw(::basictl::tl_throwable_istream & s, %[1]s & result) {
-	::basictl::tl_istream s2(s);
+void %[2]s::read_result(::%[9]s::tl_throwable_istream & s, %[1]s & result) {
+	::%[9]s::tl_istream s2(s);
 	this->read_result(s2, result);
 	s2.pass_data(s);
 }
-void %[2]s::write_result_or_throw(::basictl::tl_throwable_ostream & s, %[1]s & result) {
-	::basictl::tl_ostream s2(s);
+void %[2]s::write_result(::%[9]s::tl_throwable_ostream & s, %[1]s & result) {
+	::%[9]s::tl_ostream s2(s);
 	this->write_result(s2, result);
 	s2.pass_data(s);
 }
@@ -524,6 +549,7 @@ void %[2]s::write_result_or_throw(::basictl::tl_throwable_ostream & s, %[1]s & r
 				goGlobalName,
 				trw.ResultType.trw.CPPTypeWritingCode(bytesVersion, "result", false, formatNatArgsCPP(trw.Fields, trw.ResultNatArgs), false),
 				trw.wr.gen.DetailsCPPNamespace,
+				trw.wr.gen.cppBasictlNamespace(),
 			))
 		}
 	}

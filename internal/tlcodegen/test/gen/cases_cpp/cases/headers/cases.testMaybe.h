@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testMaybe.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestMaybeReset(::tl2::cases::TestMaybe& item) noexcept;
+void CasesTestMaybeReset(::tlgen::cases::TestMaybe& item) noexcept;
 
-bool CasesTestMaybeWriteJSON(std::ostream& s, const ::tl2::cases::TestMaybe& item) noexcept;
-bool CasesTestMaybeRead(::basictl::tl_istream & s, ::tl2::cases::TestMaybe& item) noexcept; 
-bool CasesTestMaybeWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestMaybe& item) noexcept;
-bool CasesTestMaybeReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestMaybe& item);
-bool CasesTestMaybeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestMaybe& item);
+bool CasesTestMaybeWriteJSON(std::ostream& s, const ::tlgen::cases::TestMaybe& item) noexcept;
+bool CasesTestMaybeRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestMaybe& item) noexcept; 
+bool CasesTestMaybeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestMaybe& item) noexcept;
+bool CasesTestMaybeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestMaybe& item);
+bool CasesTestMaybeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestMaybe& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

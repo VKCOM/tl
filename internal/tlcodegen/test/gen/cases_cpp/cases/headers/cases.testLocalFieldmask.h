@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.testLocalFieldmask.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestLocalFieldmaskReset(::tl2::cases::TestLocalFieldmask& item) noexcept;
+void CasesTestLocalFieldmaskReset(::tlgen::cases::TestLocalFieldmask& item) noexcept;
 
-bool CasesTestLocalFieldmaskWriteJSON(std::ostream& s, const ::tl2::cases::TestLocalFieldmask& item) noexcept;
-bool CasesTestLocalFieldmaskRead(::basictl::tl_istream & s, ::tl2::cases::TestLocalFieldmask& item) noexcept; 
-bool CasesTestLocalFieldmaskWrite(::basictl::tl_ostream & s, const ::tl2::cases::TestLocalFieldmask& item) noexcept;
-bool CasesTestLocalFieldmaskReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestLocalFieldmask& item);
-bool CasesTestLocalFieldmaskWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestLocalFieldmask& item);
+bool CasesTestLocalFieldmaskWriteJSON(std::ostream& s, const ::tlgen::cases::TestLocalFieldmask& item) noexcept;
+bool CasesTestLocalFieldmaskRead(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestLocalFieldmask& item) noexcept; 
+bool CasesTestLocalFieldmaskWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestLocalFieldmask& item) noexcept;
+bool CasesTestLocalFieldmaskReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestLocalFieldmask& item);
+bool CasesTestLocalFieldmaskWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestLocalFieldmask& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

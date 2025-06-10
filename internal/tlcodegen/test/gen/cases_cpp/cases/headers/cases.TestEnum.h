@@ -5,13 +5,13 @@
 #include "basictl/io_throwable_streams.h"
 #include "cases/types/cases.TestEnum.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void CasesTestEnumReset(::tl2::cases::TestEnum& item) noexcept;
+void CasesTestEnumReset(::tlgen::cases::TestEnum& item) noexcept;
 
-bool CasesTestEnumWriteJSON(std::ostream & s, const ::tl2::cases::TestEnum& item) noexcept;
-bool CasesTestEnumReadBoxed(::basictl::tl_istream & s, ::tl2::cases::TestEnum& item) noexcept;
-bool CasesTestEnumWriteBoxed(::basictl::tl_ostream & s, const ::tl2::cases::TestEnum& item) noexcept;
+bool CasesTestEnumWriteJSON(std::ostream & s, const ::tlgen::cases::TestEnum& item) noexcept;
+bool CasesTestEnumReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::cases::TestEnum& item) noexcept;
+bool CasesTestEnumWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::cases::TestEnum& item) noexcept;
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 

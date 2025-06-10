@@ -6,18 +6,18 @@
 #include "service3/functions/service3.deleteProduct.h"
 #include "__common_namespace/types/Bool.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service3DeleteProductReset(::tl2::service3::DeleteProduct& item) noexcept;
+void Service3DeleteProductReset(::tlgen::service3::DeleteProduct& item) noexcept;
 
-bool Service3DeleteProductWriteJSON(std::ostream& s, const ::tl2::service3::DeleteProduct& item) noexcept;
-bool Service3DeleteProductRead(::basictl::tl_istream & s, ::tl2::service3::DeleteProduct& item) noexcept; 
-bool Service3DeleteProductWrite(::basictl::tl_ostream & s, const ::tl2::service3::DeleteProduct& item) noexcept;
-bool Service3DeleteProductReadBoxed(::basictl::tl_istream & s, ::tl2::service3::DeleteProduct& item);
-bool Service3DeleteProductWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service3::DeleteProduct& item);
+bool Service3DeleteProductWriteJSON(std::ostream& s, const ::tlgen::service3::DeleteProduct& item) noexcept;
+bool Service3DeleteProductRead(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteProduct& item) noexcept; 
+bool Service3DeleteProductWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteProduct& item) noexcept;
+bool Service3DeleteProductReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteProduct& item);
+bool Service3DeleteProductWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteProduct& item);
 
-bool Service3DeleteProductReadResult(::basictl::tl_istream & s, ::tl2::service3::DeleteProduct& item, bool& result);
-bool Service3DeleteProductWriteResult(::basictl::tl_ostream & s, ::tl2::service3::DeleteProduct& item, bool& result);
-		
-}} // namespace tl2::details
+bool Service3DeleteProductReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteProduct& item, bool& result);
+bool Service3DeleteProductWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::DeleteProduct& item, bool& result);
+    
+}} // namespace tlgen::details
 

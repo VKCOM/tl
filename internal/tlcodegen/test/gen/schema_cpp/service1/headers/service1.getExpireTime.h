@@ -6,18 +6,18 @@
 #include "service1/functions/service1.getExpireTime.h"
 #include "__common_namespace/types/int.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void Service1GetExpireTimeReset(::tl2::service1::GetExpireTime& item) noexcept;
+void Service1GetExpireTimeReset(::tlgen::service1::GetExpireTime& item) noexcept;
 
-bool Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tl2::service1::GetExpireTime& item) noexcept;
-bool Service1GetExpireTimeRead(::basictl::tl_istream & s, ::tl2::service1::GetExpireTime& item) noexcept; 
-bool Service1GetExpireTimeWrite(::basictl::tl_ostream & s, const ::tl2::service1::GetExpireTime& item) noexcept;
-bool Service1GetExpireTimeReadBoxed(::basictl::tl_istream & s, ::tl2::service1::GetExpireTime& item);
-bool Service1GetExpireTimeWriteBoxed(::basictl::tl_ostream & s, const ::tl2::service1::GetExpireTime& item);
+bool Service1GetExpireTimeWriteJSON(std::ostream& s, const ::tlgen::service1::GetExpireTime& item) noexcept;
+bool Service1GetExpireTimeRead(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetExpireTime& item) noexcept; 
+bool Service1GetExpireTimeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetExpireTime& item) noexcept;
+bool Service1GetExpireTimeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetExpireTime& item);
+bool Service1GetExpireTimeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetExpireTime& item);
 
-bool Service1GetExpireTimeReadResult(::basictl::tl_istream & s, ::tl2::service1::GetExpireTime& item, std::optional<int32_t>& result);
-bool Service1GetExpireTimeWriteResult(::basictl::tl_ostream & s, ::tl2::service1::GetExpireTime& item, std::optional<int32_t>& result);
-		
-}} // namespace tl2::details
+bool Service1GetExpireTimeReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetExpireTime& item, std::optional<int32_t>& result);
+bool Service1GetExpireTimeWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetExpireTime& item, std::optional<int32_t>& result);
+    
+}} // namespace tlgen::details
 

@@ -5,9 +5,9 @@
 #include "basictl/io_throwable_streams.h"
 
 
-namespace tl2 { 
+namespace tlgen { 
 
-	enum { BoolFalse = 0xbc799737, BoolTrue = 0x997275b5 };
+  enum { BoolFalse = 0xbc799737, BoolTrue = 0x997275b5 };
 
-} // namespace tl2
+} // namespace tlgen
 

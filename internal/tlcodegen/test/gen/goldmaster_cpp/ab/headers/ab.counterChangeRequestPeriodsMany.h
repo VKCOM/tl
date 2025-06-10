@@ -5,15 +5,15 @@
 #include "basictl/io_throwable_streams.h"
 #include "ab/types/ab.counterChangeRequestPeriodsMany.h"
 
-namespace tl2 { namespace details { 
+namespace tlgen { namespace details { 
 
-void AbCounterChangeRequestPeriodsManyReset(::tl2::ab::CounterChangeRequestPeriodsMany& item) noexcept;
+void AbCounterChangeRequestPeriodsManyReset(::tlgen::ab::CounterChangeRequestPeriodsMany& item) noexcept;
 
-bool AbCounterChangeRequestPeriodsManyWriteJSON(std::ostream& s, const ::tl2::ab::CounterChangeRequestPeriodsMany& item) noexcept;
-bool AbCounterChangeRequestPeriodsManyRead(::basictl::tl_istream & s, ::tl2::ab::CounterChangeRequestPeriodsMany& item) noexcept; 
-bool AbCounterChangeRequestPeriodsManyWrite(::basictl::tl_ostream & s, const ::tl2::ab::CounterChangeRequestPeriodsMany& item) noexcept;
-bool AbCounterChangeRequestPeriodsManyReadBoxed(::basictl::tl_istream & s, ::tl2::ab::CounterChangeRequestPeriodsMany& item);
-bool AbCounterChangeRequestPeriodsManyWriteBoxed(::basictl::tl_ostream & s, const ::tl2::ab::CounterChangeRequestPeriodsMany& item);
+bool AbCounterChangeRequestPeriodsManyWriteJSON(std::ostream& s, const ::tlgen::ab::CounterChangeRequestPeriodsMany& item) noexcept;
+bool AbCounterChangeRequestPeriodsManyRead(::tlgen::basictl::tl_istream & s, ::tlgen::ab::CounterChangeRequestPeriodsMany& item) noexcept; 
+bool AbCounterChangeRequestPeriodsManyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::CounterChangeRequestPeriodsMany& item) noexcept;
+bool AbCounterChangeRequestPeriodsManyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::CounterChangeRequestPeriodsMany& item);
+bool AbCounterChangeRequestPeriodsManyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::CounterChangeRequestPeriodsMany& item);
 
-}} // namespace tl2::details
+}} // namespace tlgen::details
 
