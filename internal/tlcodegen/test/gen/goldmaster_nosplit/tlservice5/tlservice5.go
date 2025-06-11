@@ -18,6 +18,4 @@ type (
 	ListService5Output = internal.ListService5Output
 	Output             = internal.Service5Output
 	StringOutput       = internal.Service5StringOutput
-
-	InsertList__Result = internal.ListService5Output
 )
