@@ -119,6 +119,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlVectorIntMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTypeB"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeB"
 )
 
 type (
@@ -245,6 +247,13 @@ type (
 	VectorInt                                    = tlVectorInt.VectorInt
 	VectorIntBoxedMaybe                          = tlVectorIntBoxedMaybe.VectorIntBoxedMaybe
 	VectorIntMaybe                               = tlVectorIntMaybe.VectorIntMaybe
+
+	Call1__Result = tlAbTypeB.AbTypeB
+	Call2__Result = tlCdTypeB.CdTypeB
+	Call4__Result = tlAbTypeB.AbTypeB
+	Call5__Result = tlCdTypeB.CdTypeB
+	Call7__Result = tlAbTypeB.AbTypeB
+	Call8__Result = tlCdTypeB.CdTypeB
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {

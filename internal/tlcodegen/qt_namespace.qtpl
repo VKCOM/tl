@@ -75,6 +75,23 @@ type(
                 {%- endif -%}
             {%- endif -%}
         {%- endfor -%}
+
+    {%- for _, wr := range types  -%}
+        {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
+            {%- code
+                 _, ourResultType := ourTypes[fun.ResultType]
+                ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+        		myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+                _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+            -%}
+        {%- if !ourResultType && len(myImports.ns) != 0 -%}
+    {%s= wr.TypeString2(false, directImports, nil, true, true) %}__Result = {%s= fun.ResultType.TypeString2(false, directImports, nil, false, false) %}
+                {%- if wr.wantsBytesVersion && wr.hasBytesVersion && fun.ResultType.hasBytesVersion -%}
+    {%s= wr.TypeString2(true, directImports, nil, true, true) %}__Result = {%s= fun.ResultType.TypeString2(true, directImports, nil, false, false) %}
+                {%- endif -%}
+        {%- endif -%}
+        {%- endif -%}
+    {%- endfor -%}
 )
     {%- endif -%}
     {%- for _, wr := range types -%}
@@ -125,10 +142,18 @@ func {%s= localTypeString %}WriteBoxed(w []byte, v bool) []byte {
          _, ourResultType := ourTypes[fun.ResultType]
          ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
          ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
-         typeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
+         funcTypeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
+         myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+         _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+         if !ourResultType && len(myImports.ns) != 0 {
+            ret = funcTypeString + "__Result"
+            if bytesVersion && !fun.ResultType.hasBytesVersion {
+                ret = wr.TypeString2(false, directImports, nil, true, true) + "__Result"
+            }
+         }
          tlName := wr.tlName.String()
     -%}
-func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {
+func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeString %}, extra *rpc.InvokeReqExtra, ret *{%s= ret %}) (err error) {
     req := c.Client.GetRequest()
     req.ActorID = c.ActorID
     {%- if fun.wr.HasAnnotation("read") -%}
@@ -194,6 +219,11 @@ func (c *Client) {%s= typeString %}(ctx context.Context, args {%s= typeString %}
                  ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
                 ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+                _ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+                if !ourResultType && len(myImports.ns) != 0 {
+                    ret = funcTypeString + "__Result"
+                }
             -%}
 {%s= funcTypeString %} func(ctx context.Context, args {%s= funcTypeString %}) ({%s= ret %}, error) // {%s= tlName %}
         {%- endif -%}
