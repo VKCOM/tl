@@ -140,6 +140,33 @@ func streamtypesAlias(qw422016 *qt422016.Writer, anyTypeAlias bool, namespace st
 				}
 			}
 		}
+		qw422016.N().S(`
+`)
+		for _, wr := range types {
+			if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
+				_, ourResultType := ourTypes[fun.ResultType]
+				ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+				myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+				_ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+
+				if !ourResultType && len(myImports.ns) != 0 {
+					qw422016.N().S(`    `)
+					qw422016.N().S(wr.TypeString2(false, directImports, nil, true, true))
+					qw422016.N().S(`__Result = `)
+					qw422016.N().S(fun.ResultType.TypeString2(false, directImports, nil, false, false))
+					qw422016.N().S(`
+`)
+					if wr.wantsBytesVersion && wr.hasBytesVersion && fun.ResultType.hasBytesVersion {
+						qw422016.N().S(`    `)
+						qw422016.N().S(wr.TypeString2(true, directImports, nil, true, true))
+						qw422016.N().S(`__Result = `)
+						qw422016.N().S(fun.ResultType.TypeString2(true, directImports, nil, false, false))
+						qw422016.N().S(`
+`)
+					}
+				}
+			}
+		}
 		qw422016.N().S(`)
 `)
 	}
@@ -236,13 +263,21 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	_, ourResultType := ourTypes[fun.ResultType]
 	ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
 	ret := fun.ResultType.TypeString2(bytesVersion, directImports, nil, ourResultType, false)
-	typeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
+	funcTypeString := wr.TypeString2(bytesVersion, directImports, nil, true, true)
+	myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+	_ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+	if !ourResultType && len(myImports.ns) != 0 {
+		ret = funcTypeString + "__Result"
+		if bytesVersion && !fun.ResultType.hasBytesVersion {
+			ret = wr.TypeString2(false, directImports, nil, true, true) + "__Result"
+		}
+	}
 	tlName := wr.tlName.String()
 
 	qw422016.N().S(`func (c *Client) `)
-	qw422016.N().S(typeString)
+	qw422016.N().S(funcTypeString)
 	qw422016.N().S(`(ctx context.Context, args `)
-	qw422016.N().S(typeString)
+	qw422016.N().S(funcTypeString)
 	qw422016.N().S(`, extra *rpc.InvokeReqExtra, ret *`)
 	qw422016.N().S(ret)
 	qw422016.N().S(`) (err error) {
@@ -345,6 +380,11 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, shortPackageName string, na
 			ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
 			ret := fun.ResultType.TypeString2(false, directImports, nil, ourResultType, false)
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+			myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+			_ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+			if !ourResultType && len(myImports.ns) != 0 {
+				ret = funcTypeString + "__Result"
+			}
 
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(` func(ctx context.Context, args `)

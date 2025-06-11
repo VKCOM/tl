@@ -45,4 +45,13 @@ type (
 	UseCycle                        = internal.AbUseCycle
 	UseDictString                   = internal.AbUseDictString
 	UseDictStringBytes              = internal.AbUseDictStringBytes
+
+	Call10__Result = internal.AColor
+	Call11__Result = internal.AColor
+	Call2__Result  = internal.CdTypeB
+	Call3__Result  = internal.TypeB
+	Call5__Result  = internal.CdTypeB
+	Call6__Result  = internal.TypeB
+	Call8__Result  = internal.CdTypeB
+	Call9__Result  = internal.TypeB
 )
