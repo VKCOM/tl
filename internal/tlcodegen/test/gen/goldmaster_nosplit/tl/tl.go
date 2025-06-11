@@ -135,13 +135,6 @@ type (
 	VectorInt                                    = internal.VectorInt
 	VectorIntBoxedMaybe                          = internal.VectorIntBoxedMaybe
 	VectorIntMaybe                               = internal.VectorIntMaybe
-
-	Call1__Result = internal.AbTypeB
-	Call2__Result = internal.CdTypeB
-	Call4__Result = internal.AbTypeB
-	Call5__Result = internal.CdTypeB
-	Call7__Result = internal.AbTypeB
-	Call8__Result = internal.CdTypeB
 )
 
 func BoolReadBoxed(w []byte, v *bool) ([]byte, error) {

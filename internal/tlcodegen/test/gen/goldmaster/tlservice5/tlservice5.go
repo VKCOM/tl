@@ -21,6 +21,4 @@ type (
 	ListService5Output = tlListService5Output.ListService5Output
 	Output             = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
 	StringOutput       = cycle_16847572a0831d4cd4c0c0fb513151f3.Service5StringOutput
-
-	InsertList__Result = tlListService5Output.ListService5Output
 )

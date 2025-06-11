@@ -25,7 +25,7 @@ import (
         ourTypes := map[*TypeRWWrapper]struct{}{}
     -%}
 
-{%= typesAlias(anyTypeAlias, name, namespace.types, directImports, ourTypes) %}
+{%= typesAlias(gen, anyTypeAlias, name, namespace.types, directImports, ourTypes) %}
 
     {%- if !gen.options.GenerateRPCCode || !anyFunctions -%}
         {%- return -%}
@@ -61,7 +61,7 @@ func (h *Handler) Handle(ctx context.Context, hctx *rpc.HandlerContext) (err err
 
 {%- endfunc -%}
 
-{%- func typesAlias(anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{})-%}
+{%- func typesAlias(gen *Gen2, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{})-%}
     {%- if anyTypeAlias -%}
 type(
         {%- for _, wr := range types -%}
@@ -76,6 +76,7 @@ type(
             {%- endif -%}
         {%- endfor -%}
 
+    {%- if gen.options.GenerateRPCCode -%}
     {%- for _, wr := range types  -%}
         {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
             {%- code
@@ -92,6 +93,7 @@ type(
         {%- endif -%}
         {%- endif -%}
     {%- endfor -%}
+    {%- endif -%}
 )
     {%- endif -%}
     {%- for _, wr := range types -%}

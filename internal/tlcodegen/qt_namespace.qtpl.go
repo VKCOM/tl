@@ -57,7 +57,7 @@ import (
 
 	qw422016.N().S(`
 `)
-	streamtypesAlias(qw422016, anyTypeAlias, name, namespace.types, directImports, ourTypes)
+	streamtypesAlias(qw422016, gen, anyTypeAlias, name, namespace.types, directImports, ourTypes)
 	qw422016.N().S(`
 
 `)
@@ -116,7 +116,7 @@ func (gen *Gen2) generateNamespacesCode(anyTypeAlias bool, anyFunctions bool, na
 	return qs422016
 }
 
-func streamtypesAlias(qw422016 *qt422016.Writer, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) {
+func streamtypesAlias(qw422016 *qt422016.Writer, gen *Gen2, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) {
 	if anyTypeAlias {
 		qw422016.N().S(`type(
 `)
@@ -142,27 +142,29 @@ func streamtypesAlias(qw422016 *qt422016.Writer, anyTypeAlias bool, namespace st
 		}
 		qw422016.N().S(`
 `)
-		for _, wr := range types {
-			if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
-				_, ourResultType := ourTypes[fun.ResultType]
-				ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
-				myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
-				_ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
+		if gen.options.GenerateRPCCode {
+			for _, wr := range types {
+				if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
+					_, ourResultType := ourTypes[fun.ResultType]
+					ourResultType = ourResultType && wr.tlName.Namespace == fun.ResultType.tlName.Namespace // false for vectors moved into our namespace
+					myImports := &DirectImports{ns: map[*InternalNamespace]struct{}{}}
+					_ = fun.ResultType.TypeString2(false, myImports, nil, false, false)
 
-				if !ourResultType && len(myImports.ns) != 0 {
-					qw422016.N().S(`    `)
-					qw422016.N().S(wr.TypeString2(false, directImports, nil, true, true))
-					qw422016.N().S(`__Result = `)
-					qw422016.N().S(fun.ResultType.TypeString2(false, directImports, nil, false, false))
-					qw422016.N().S(`
-`)
-					if wr.wantsBytesVersion && wr.hasBytesVersion && fun.ResultType.hasBytesVersion {
+					if !ourResultType && len(myImports.ns) != 0 {
 						qw422016.N().S(`    `)
-						qw422016.N().S(wr.TypeString2(true, directImports, nil, true, true))
+						qw422016.N().S(wr.TypeString2(false, directImports, nil, true, true))
 						qw422016.N().S(`__Result = `)
-						qw422016.N().S(fun.ResultType.TypeString2(true, directImports, nil, false, false))
+						qw422016.N().S(fun.ResultType.TypeString2(false, directImports, nil, false, false))
 						qw422016.N().S(`
 `)
+						if wr.wantsBytesVersion && wr.hasBytesVersion && fun.ResultType.hasBytesVersion {
+							qw422016.N().S(`    `)
+							qw422016.N().S(wr.TypeString2(true, directImports, nil, true, true))
+							qw422016.N().S(`__Result = `)
+							qw422016.N().S(fun.ResultType.TypeString2(true, directImports, nil, false, false))
+							qw422016.N().S(`
+`)
+						}
 					}
 				}
 			}
@@ -213,15 +215,15 @@ func `)
 	}
 }
 
-func writetypesAlias(qq422016 qtio422016.Writer, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) {
+func writetypesAlias(qq422016 qtio422016.Writer, gen *Gen2, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) {
 	qw422016 := qt422016.AcquireWriter(qq422016)
-	streamtypesAlias(qw422016, anyTypeAlias, namespace, types, directImports, ourTypes)
+	streamtypesAlias(qw422016, gen, anyTypeAlias, namespace, types, directImports, ourTypes)
 	qt422016.ReleaseWriter(qw422016)
 }
 
-func typesAlias(anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) string {
+func typesAlias(gen *Gen2, anyTypeAlias bool, namespace string, types []*TypeRWWrapper, directImports *DirectImports, ourTypes map[*TypeRWWrapper]struct{}) string {
 	qb422016 := qt422016.AcquireByteBuffer()
-	writetypesAlias(qb422016, anyTypeAlias, namespace, types, directImports, ourTypes)
+	writetypesAlias(qb422016, gen, anyTypeAlias, namespace, types, directImports, ourTypes)
 	qs422016 := string(qb422016.B)
 	qt422016.ReleaseByteBuffer(qb422016)
 	return qs422016
