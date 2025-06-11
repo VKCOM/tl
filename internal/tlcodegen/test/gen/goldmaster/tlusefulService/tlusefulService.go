@@ -31,6 +31,4 @@ type (
 	UserEntityPaymentItemPromo                                   = tlUsefulServiceUserEntityPaymentItemPromo.UsefulServiceUserEntityPaymentItemPromo
 	UserEntityPaymentItemPromoBoxedMaybe                         = tlUsefulServiceUserEntityPaymentItemPromoBoxedMaybe.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
 	VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed = tlVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
-
-	GetUserEntity__Result = tlUsefulServiceGetUserEntityResultBoxedMaybe.UsefulServiceGetUserEntityResultBoxedMaybe
 )

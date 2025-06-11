@@ -22,6 +22,4 @@ type (
 	UserEntityPaymentItemPromo                                   = internal.UsefulServiceUserEntityPaymentItemPromo
 	UserEntityPaymentItemPromoBoxedMaybe                         = internal.UsefulServiceUserEntityPaymentItemPromoBoxedMaybe
 	VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed = internal.VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
-
-	GetUserEntity__Result = internal.UsefulServiceGetUserEntityResultBoxedMaybe
 )

@@ -12,8 +12,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_b62dd5050d0a18c7485fd980c087f32c"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAbMyTypeBoxedMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlAbMyTypeMaybe"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTypeB"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tla/tlAColor"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall10"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbCall11"
@@ -35,7 +33,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbTypeD"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseCycle"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlab/tlAbUseDictString"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tlcd/tlCdTypeB"
 )
 
 type (
@@ -72,13 +69,4 @@ type (
 	UseCycle                        = tlAbUseCycle.AbUseCycle
 	UseDictString                   = tlAbUseDictString.AbUseDictString
 	UseDictStringBytes              = tlAbUseDictString.AbUseDictStringBytes
-
-	Call10__Result = tlAColor.AColor
-	Call11__Result = tlAColor.AColor
-	Call2__Result  = tlCdTypeB.CdTypeB
-	Call3__Result  = tlTypeB.TypeB
-	Call5__Result  = tlCdTypeB.CdTypeB
-	Call6__Result  = tlTypeB.TypeB
-	Call8__Result  = tlCdTypeB.CdTypeB
-	Call9__Result  = tlTypeB.TypeB
 )
