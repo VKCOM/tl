@@ -546,6 +546,52 @@
 				}
 			]
 		},
+		"Tl2TestArrayFlexibleBool": {
+			"TestingType": "casesTL2.testArrayFlexibleBool",
+			"Successes": [
+				{
+					"Bytes": "00000000",
+					"BytesTL2": "00",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "00000002 bc799737 997275b5",
+					"BytesTL2": "08 06 02 00 00 00 02 02 02",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "00000008 bc799737 997275b5 bc799737 997275b5 997275b5 bc799737 bc799737 997275b5",
+					"BytesTL2": "08 06 08 00 00 00 02 08 9a",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "0000000a bc799737 997275b5 bc799737 997275b5 997275b5 bc799737 bc799737 997275b5 bc799737 997275b5",
+					"BytesTL2": "09 06 0a 00 00 00 03 0a 9a 02",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "0000000f bc799737 997275b5 bc799737 997275b5 997275b5 bc799737 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5 997275b5 bc799737 bc799737 997275b5",
+					"BytesTL2": "09 06 0f 00 00 00 03 0f 9a 1a",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				}
+			]
+		},
+		"Tl2TestFixedArray": {
+			"TestingType": "casesTL2.testArrayFixedBool",
+			"Successes": [
+				{
+					"Bytes": "bc799737 997275b5 997275b5 bc799737 bc799737 997275b5 bc799737 997275b5 997275b5 997275b5 bc799737 bc799737 997275b5 bc799737 997275b5 997275b5 997275b5 997275b5 bc799737 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5 bc799737 bc799737 bc799737 997275b5 997275b5 997275b5 997275b5 bc799737 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5 bc799737 bc799737 997275b5 bc799737",
+					"BytesTL2": "12 7a 02 01 00 02 07 53 02 08 d3 03 0b 53 01 03 10 9e 4a",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				}
+			]
+		},
 		"Tl2TestObject": {
 			"TestingType": "casesTL2.testObject",
 			"Successes": [
@@ -569,7 +615,7 @@
 				},
 				{
 					"Bytes": "00000000 bc799737 00000002 bc799737 997275b5 00000000",
-					"BytesTL2": "05 10 03 02 00 01",
+					"BytesTL2": "04 10 02 02 02",
 					"IsTLBytesBoxed": false,
 					"IsTL2DataFixed": false
 				},
@@ -582,6 +628,41 @@
 				{
 					"Bytes": "00000000 bc799737 00000000 00000002 ce27c770 ef556bee 00000001 00000000 00000000 00000000 00000030 00000000 00000000 00000020 00000000 00000000 00000000 00000000",
 					"BytesTL2": "1f 80 1d 02 02 01 01 18 02 16 01 14 00 03 30 00 00 00 00 00 00 00 09 02 00 00 00 00 20 00 00 00",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				}
+			]
+		},
+		"Tl2TestVectorBool": {
+			"TestingType": "casesTL2.testVectorBool",
+			"Successes": [
+				{
+					"Bytes": "00000000",
+					"BytesTL2": "00",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "00000001 bc799737",
+					"BytesTL2": "04 02 02 01 00",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "00000002 bc799737 997275b5",
+					"BytesTL2": "04 02 02 02 02",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "00000008 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5",
+					"BytesTL2": "04 02 02 08 aa",
+					"IsTLBytesBoxed": false,
+					"IsTL2DataFixed": false
+				},
+				{
+					"Bytes": "00000009 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5 bc799737 997275b5 bc799737",
+					"BytesTL2": "05 02 03 09 aa 00",
 					"IsTLBytesBoxed": false,
 					"IsTL2DataFixed": false
 				}
