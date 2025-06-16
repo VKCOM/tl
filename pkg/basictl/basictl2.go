@@ -171,11 +171,41 @@ func ByteReadTL2(r []byte, b *byte) ([]byte, error) {
 	return r[1:], nil
 }
 
-func BoolReadTL2(r []byte, b *bool) (_ []byte, err error) {
-	var byt byte
-	if r, err = ByteReadTL2(r, &byt); err != nil {
+func MaybeBoolWriteTL2(w []byte, b bool) []byte {
+	if b {
+		w = append(w, 2, 1<<0+1<<1, 1)
+	} else {
+		w = append(w, 2, 1<<0, 1)
+	}
+	return w
+}
+
+func MaybeBoolReadTL2(r []byte, b *bool) (_ []byte, err error) {
+	var l int
+	if r, err = TL2ReadSize(r, &l); err != nil {
 		return r, err
 	}
-	*b = byt == 1
+	if l == 0 {
+		*b = false
+	} else {
+		curR := r[:l]
+		r = r[l:]
+
+		var block byte
+		if curR, err = ByteReadTL2(curR, &block); err != nil {
+			return curR, err
+		}
+
+		var constructor int
+		if curR, err = TL2ReadSize(curR, &constructor); err != nil {
+			return curR, err
+		}
+
+		if constructor != 1 {
+			return curR, TL2Error("unknown constructor %d", constructor)
+		}
+
+		*b = (block & (1 << 1)) != 0
+	}
 	return r, err
 }

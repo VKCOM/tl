@@ -36,14 +36,10 @@ func (trw *TypeRWBool) writeTL2Call(
 	if canDependOnLocalBit {
 		return "" // fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
 	}
-	return fmt.Sprintf(`if %[2]s {
-	%[3]s = append(%[3]s, 1)
-} else {
-	%[3]s = append(%[3]s, 0)
-}`,
-		targetSizes,
+	return fmt.Sprintf(`%[2]s = basictl.MaybeBoolWriteTL2(%[2]s, %[1]s)`,
 		targetObject,
-		targetBytes)
+		targetBytes,
+		targetSizes)
 }
 
 func (trw *TypeRWBool) readTL2Call(
@@ -59,7 +55,7 @@ func (trw *TypeRWBool) readTL2Call(
 	if canDependOnLocalBit {
 		return fmt.Sprintf("%[1]s = true", targetObject)
 	}
-	return fmt.Sprintf(`if %[2]s, err = basictl.BoolReadTL2(%[2]s, %[1]s); err != nil { return %[2]s, err }`,
+	return fmt.Sprintf(`if %[2]s, err = basictl.MaybeBoolReadTL2(%[2]s, %[1]s); err != nil { return %[2]s, err }`,
 		addAmpersand(refObject, targetObject),
 		targetBytes)
 }
@@ -92,5 +88,5 @@ func (trw *TypeRWBool) tl2TrivialSize(targetObject string, canDependOnLocalBit b
 	if canDependOnLocalBit {
 		return true, "0"
 	}
-	return true, "1"
+	return true, "3"
 }

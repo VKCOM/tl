@@ -161,3 +161,16 @@ casesTL2.testObject
     f6:vector<benchmarks.VrutoyTopLevelUnion>
     f7:n.14?vector<True>
     = casesTL2.TestObject;
+
+casesTL2.testVectorBool x:vector<Bool> = casesTL2.TestVectorBool;
+casesTL2.testArrayFixedBool
+    a1:1*[Bool]
+    a2:0*[Bool]
+    a3:7*[Bool]
+    a4:8*[Bool]
+    a5:11*[Bool]
+    a6:16*[Bool] = casesTL2.TestArrayFixedBool;
+
+casesTL2.testArrayFlexibleBool
+    n:#
+    arr:n*[Bool] = casesTL2.TestArrayFlexibleBool;
