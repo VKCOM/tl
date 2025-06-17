@@ -76,7 +76,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
         {%- endif -%}
-        {%s= maybe.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
         {%- code
             sizeValue := "sizes[currentPosition]"
             if len(trivialSize) != 0 {

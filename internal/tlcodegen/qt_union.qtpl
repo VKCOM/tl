@@ -139,7 +139,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
             {%- endif -%}
         {%- else -%}
-        {%s= field.t.CalculateLayout(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
         {%- endif -%}
     {%- endfor -%}
     }
@@ -184,8 +184,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     return w, sizes
 }
 {%- endif -%}
-    {%- if len(natArgsDecl) == 0 -%}
-func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= natArgsDecl %}) []byte {
 {%- if !union.wr.wantsTL2 -%}
     return w
 {%- else -%}
@@ -193,15 +192,14 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0])
-    w, _ = item.InternalWriteTL2(w, sizes)
+    sizes = item.CalculateLayout(sizes[:0]{%s= natArgsCall%})
+    w, _ = item.InternalWriteTL2(w, sizes{%s= natArgsCall%})
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
     return w
 {%- endif -%}
 }
-    {%- endif -%}
 
 func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
 {%- if !union.wr.wantsTL2 -%}
@@ -252,15 +250,13 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
 {%- endif -%}
 }
 
-{%- if len(natArgsDecl) == 0 -%}
-func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext{%s= natArgsDecl %}) ([]byte, error) {
     {%- if !union.wr.wantsTL2 -%}
     return r, nil
     {%- else -%}
-    return item.InternalReadTL2(r)
+    return item.InternalReadTL2(r{%s= natArgsCall%})
     {%- endif -%}
 }
-{%- endif -%}
 {%- endif -%}
 
 {%- if union.wr.gen.options.GenerateLegacyJsonRead -%}

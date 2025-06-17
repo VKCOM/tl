@@ -52,21 +52,23 @@ func BuiltinTupleReplace11ElemLongWrite(w []byte, vec []tlReplace11ElemLong.Repl
 }
 
 func BuiltinTupleReplace11ElemLongCalculateLayout(sizes []int, vec *[]tlReplace11ElemLong.Replace11ElemLong, nat_n uint32, nat_tn uint32, nat_tk uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_tn, nat_tk)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -74,10 +76,11 @@ func BuiltinTupleReplace11ElemLongCalculateLayout(sizes []int, vec *[]tlReplace1
 		var elem tlReplace11ElemLong.Replace11ElemLong
 		currentPosition := len(sizes)
 		sizes = elem.CalculateLayout(sizes, nat_tn, nat_tk)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -104,7 +107,6 @@ func BuiltinTupleReplace11ElemLongInternalWriteTL2(w []byte, sizes []int, vec *[
 		var elem tlReplace11ElemLong.Replace11ElemLong
 		w, sizes = elem.InternalWriteTL2(w, sizes, nat_tn, nat_tk)
 	}
-
 	return w, sizes
 }
 

@@ -44,19 +44,21 @@ func BuiltinTuple3InnerBoxedWrite(w []byte, vec *[3]Inner, nat_t uint32) []byte 
 }
 
 func BuiltinTuple3InnerBoxedCalculateLayout(sizes []int, vec *[3]Inner, nat_t uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 3 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+		currentSize += basictl.TL2CalculateSize(3)
 	}
 
 	for i := 0; i < 3; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -98,7 +100,6 @@ func BuiltinTuple3InnerBoxedInternalReadTL2(r []byte, vec *[3]Inner, nat_t uint3
 	if lastIndex > 3 {
 		lastIndex = 3
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
 			return currentR, err
@@ -189,21 +190,23 @@ func BuiltinTupleTuple3InnerBoxedWrite(w []byte, vec [][3]Inner, nat_n uint32, n
 }
 
 func BuiltinTupleTuple3InnerBoxedCalculateLayout(sizes []int, vec *[][3]Inner, nat_n uint32, nat_t uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = BuiltinTuple3InnerBoxedCalculateLayout(sizes, &(*vec)[i], nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -211,10 +214,11 @@ func BuiltinTupleTuple3InnerBoxedCalculateLayout(sizes []int, vec *[][3]Inner, n
 		var elem [3]Inner
 		currentPosition := len(sizes)
 		sizes = BuiltinTuple3InnerBoxedCalculateLayout(sizes, &elem, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -241,7 +245,6 @@ func BuiltinTupleTuple3InnerBoxedInternalWriteTL2(w []byte, sizes []int, vec *[]
 		var elem [3]Inner
 		w, sizes = BuiltinTuple3InnerBoxedInternalWriteTL2(w, sizes, &elem, nat_t)
 	}
-
 	return w, sizes
 }
 
@@ -487,6 +490,19 @@ func (item *Inner) InternalWriteTL2(w []byte, sizes []int, nat_X uint32) ([]byte
 	return w, sizes
 }
 
+func (item *Inner) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_X uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_X)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_X)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *Inner) InternalReadTL2(r []byte, nat_X uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -530,4 +546,8 @@ func (item *Inner) InternalReadTL2(r []byte, nat_X uint32) (_ []byte, err error)
 	}
 
 	return r, nil
+}
+
+func (item *Inner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_X uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_X)
 }

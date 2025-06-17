@@ -228,6 +228,19 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, size
 	return w, sizes
 }
 
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_W uint32, nat_PXI uint32, nat_PYI uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_W, nat_PXI, nat_PYI)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_W, nat_PXI, nat_PYI)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -280,4 +293,8 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte, nat_W
 	}
 
 	return r, nil
+}
+
+func (item *AMiddlePairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_W uint32, nat_PXI uint32, nat_PYI uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_W, nat_PXI, nat_PYI)
 }

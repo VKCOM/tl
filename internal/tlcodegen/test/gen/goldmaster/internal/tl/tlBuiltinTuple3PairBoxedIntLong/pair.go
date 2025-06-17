@@ -47,19 +47,21 @@ func BuiltinTuple3PairBoxedIntLongWrite(w []byte, vec *[3]tlPairIntLong.PairIntL
 }
 
 func BuiltinTuple3PairBoxedIntLongCalculateLayout(sizes []int, vec *[3]tlPairIntLong.PairIntLong) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 3 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+		currentSize += basictl.TL2CalculateSize(3)
 	}
 
 	for i := 0; i < 3; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -101,7 +103,6 @@ func BuiltinTuple3PairBoxedIntLongInternalReadTL2(r []byte, vec *[3]tlPairIntLon
 	if lastIndex > 3 {
 		lastIndex = 3
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err

@@ -51,21 +51,23 @@ func BuiltinTupleTuple3InnerBoxedWrite(w []byte, vec [][3]tlInner.Inner, nat_n u
 }
 
 func BuiltinTupleTuple3InnerBoxedCalculateLayout(sizes []int, vec *[][3]tlInner.Inner, nat_n uint32, nat_t uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = tlBuiltinTuple3InnerBoxed.BuiltinTuple3InnerBoxedCalculateLayout(sizes, &(*vec)[i], nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -73,10 +75,11 @@ func BuiltinTupleTuple3InnerBoxedCalculateLayout(sizes []int, vec *[][3]tlInner.
 		var elem [3]tlInner.Inner
 		currentPosition := len(sizes)
 		sizes = tlBuiltinTuple3InnerBoxed.BuiltinTuple3InnerBoxedCalculateLayout(sizes, &elem, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -103,7 +106,6 @@ func BuiltinTupleTuple3InnerBoxedInternalWriteTL2(w []byte, sizes []int, vec *[]
 		var elem [3]tlInner.Inner
 		w, sizes = tlBuiltinTuple3InnerBoxed.BuiltinTuple3InnerBoxedInternalWriteTL2(w, sizes, &elem, nat_t)
 	}
-
 	return w, sizes
 }
 

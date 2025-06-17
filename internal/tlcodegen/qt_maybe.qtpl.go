@@ -155,7 +155,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(maybe.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
 			qw422016.N().S(`
 `)
 			sizeValue := "sizes[currentPosition]"

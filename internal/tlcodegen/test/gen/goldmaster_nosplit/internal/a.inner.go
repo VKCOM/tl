@@ -184,6 +184,19 @@ func (item *AInner) InternalWriteTL2(w []byte, sizes []int, nat_I uint32) ([]byt
 	return w, sizes
 }
 
+func (item *AInner) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_I uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_I)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_I)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *AInner) InternalReadTL2(r []byte, nat_I uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -227,6 +240,10 @@ func (item *AInner) InternalReadTL2(r []byte, nat_I uint32) (_ []byte, err error
 	}
 
 	return r, nil
+}
+
+func (item *AInner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_I uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_I)
 }
 
 type AInner3 struct {

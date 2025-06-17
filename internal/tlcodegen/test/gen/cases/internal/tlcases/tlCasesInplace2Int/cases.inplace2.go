@@ -179,6 +179,19 @@ func (item *CasesInplace2Int) InternalWriteTL2(w []byte, sizes []int, nat_a1 uin
 	return w, sizes
 }
 
+func (item *CasesInplace2Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_a1, nat_a2, nat_a3)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_a1, nat_a2, nat_a3)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *CasesInplace2Int) InternalReadTL2(r []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -222,4 +235,8 @@ func (item *CasesInplace2Int) InternalReadTL2(r []byte, nat_a1 uint32, nat_a2 ui
 	}
 
 	return r, nil
+}
+
+func (item *CasesInplace2Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_a1, nat_a2, nat_a3)
 }

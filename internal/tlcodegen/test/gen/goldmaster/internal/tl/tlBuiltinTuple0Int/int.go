@@ -46,17 +46,19 @@ func BuiltinTuple0IntWrite(w []byte, vec *[0]int32) []byte {
 }
 
 func BuiltinTuple0IntCalculateLayout(sizes []int, vec *[0]int32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 0 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(0)
+		currentSize += basictl.TL2CalculateSize(0)
 	}
 
 	for i := 0; i < 0; i++ {
 
-		sizes[sizePosition] += 4
+		currentSize += 4
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -98,7 +100,6 @@ func BuiltinTuple0IntInternalReadTL2(r []byte, vec *[0]int32) (_ []byte, err err
 	if lastIndex > 0 {
 		lastIndex = 0
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = basictl.IntRead(currentR, &(*vec)[i]); err != nil {
 			return currentR, err

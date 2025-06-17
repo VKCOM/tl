@@ -50,21 +50,23 @@ func BuiltinTuplePairBoxedIntLongWrite(w []byte, vec []tlPairIntLong.PairIntLong
 }
 
 func BuiltinTuplePairBoxedIntLongCalculateLayout(sizes []int, vec *[]tlPairIntLong.PairIntLong, nat_n uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -72,10 +74,11 @@ func BuiltinTuplePairBoxedIntLongCalculateLayout(sizes []int, vec *[]tlPairIntLo
 		var elem tlPairIntLong.PairIntLong
 		currentPosition := len(sizes)
 		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -102,7 +105,6 @@ func BuiltinTuplePairBoxedIntLongInternalWriteTL2(w []byte, sizes []int, vec *[]
 		var elem tlPairIntLong.PairIntLong
 		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
-
 	return w, sizes
 }
 

@@ -49,7 +49,17 @@ const (
 	CasesTestUnion2                                 = 0x464f96c4 // cases.testUnion2
 	CasesTestUnionContainer                         = 0x4497a381 // cases.testUnionContainer
 	CasesTestVector                                 = 0x4975695c // cases.testVector
+	CasesTL2TestArrayFixedBool                      = 0xf704cf4e // casesTL2.testArrayFixedBool
+	CasesTL2TestArrayFlexibleBool                   = 0x974a9b29 // casesTL2.testArrayFlexibleBool
+	CasesTL2TestFunctionNoDep1                      = 0x1b8b9feb // casesTL2.testFunctionNoDep1
+	CasesTL2TestFunctionNoDep2                      = 0x0a2c0bf9 // casesTL2.testFunctionNoDep2
+	CasesTL2TestFunctionNoDep3                      = 0xf020849b // casesTL2.testFunctionNoDep3
+	CasesTL2TestFunctionNoDep4                      = 0x5a933a50 // casesTL2.testFunctionNoDep4
+	CasesTL2TestFunctionNoDep5                      = 0x2b47b925 // casesTL2.testFunctionNoDep5
+	CasesTL2TestFunctionWithDep1                    = 0xb6c63b07 // casesTL2.testFunctionWithDep1
+	CasesTL2TestFunctionWithDep2                    = 0x9d44a2fd // casesTL2.testFunctionWithDep2
 	CasesTL2TestObject                              = 0x4f96dd95 // casesTL2.testObject
+	CasesTL2TestVectorBool                          = 0x644bb447 // casesTL2.testVectorBool
 	CasesBytesTestArray                             = 0x3762fb81 // cases_bytes.testArray
 	CasesBytesTestDictAny                           = 0x5a5fce57 // cases_bytes.testDictAny
 	CasesBytesTestDictInt                           = 0x453ace07 // cases_bytes.testDictInt

@@ -252,6 +252,19 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 	return w, sizes
 }
 
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) InternalReadTL2(r []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -304,4 +317,8 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 	}
 
 	return r, nil
+}
+
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
 }

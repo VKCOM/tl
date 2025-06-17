@@ -297,12 +297,64 @@ func (item *UseTrue) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
+	var trueA tlTrue.True
+	// calculate layout for trueA
+	currentPosition := len(sizes)
+	if item.Fm&(1<<0) != 0 {
+		sizes = trueA.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	var trueB tlTrue.True
+	// calculate layout for trueB
+	currentPosition = len(sizes)
+	if item.Fm&(1<<1) != 0 {
+		sizes = trueB.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	var trueC tlTrue.True
+	// calculate layout for trueC
+	currentPosition = len(sizes)
+	sizes = trueC.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	var trueD tlTrue.True
+	// calculate layout for trueD
+	currentPosition = len(sizes)
+	sizes = trueD.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
 	// calculate layout for item.E
 	if item.Fm&(1<<2) != 0 {
 		if item.E {
 
 			lastUsedByte = 1
-			currentSize += 1
+			currentSize += 3
 		}
 	}
 
@@ -340,17 +392,57 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 			w = basictl.NatWrite(w, item.Fm)
 		}
 	}
+	var trueA tlTrue.True
+	// write trueA
+	if item.Fm&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = trueA.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	var trueB tlTrue.True
+	// write trueB
+	if item.Fm&(1<<1) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = trueB.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
+	var trueC tlTrue.True
+	// write trueC
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 4)
+		w, sizes = trueC.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
+	}
+	var trueD tlTrue.True
+	// write trueD
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 5)
+		w, sizes = trueD.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
+	}
 	// write item.E
 	if item.Fm&(1<<2) != 0 {
 		if item.E {
-			serializedSize += 1
-			if 1 != 0 {
+			serializedSize += 3
+			if 3 != 0 {
 				currentBlock |= (1 << 6)
-				if item.E {
-					w = append(w, 1)
-				} else {
-					w = append(w, 0)
-				}
+				w = basictl.MaybeBoolWriteTL2(w, item.E)
 			}
 		}
 	}
@@ -413,10 +505,58 @@ func (item *UseTrue) InternalReadTL2(r []byte) (_ []byte, err error) {
 		item.Fm = 0
 	}
 
+	var trueA tlTrue.True
+	// read trueA
+	if block&(1<<2) != 0 {
+		if item.Fm&(1<<0) != 0 {
+			if currentR, err = trueA.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+		}
+	} else {
+		trueA.Reset()
+	}
+
+	var trueB tlTrue.True
+	// read trueB
+	if block&(1<<3) != 0 {
+		if item.Fm&(1<<1) != 0 {
+			if currentR, err = trueB.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "B" + "is presented but depending bit is absent")
+		}
+	} else {
+		trueB.Reset()
+	}
+
+	var trueC tlTrue.True
+	// read trueC
+	if block&(1<<4) != 0 {
+		if currentR, err = trueC.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		trueC.Reset()
+	}
+
+	var trueD tlTrue.True
+	// read trueD
+	if block&(1<<5) != 0 {
+		if currentR, err = trueD.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		trueD.Reset()
+	}
+
 	// read item.E
 	if block&(1<<6) != 0 {
 		if item.Fm&(1<<2) != 0 {
-			if currentR, err = basictl.BoolReadTL2(currentR, &item.E); err != nil {
+			if currentR, err = basictl.MaybeBoolReadTL2(currentR, &item.E); err != nil {
 				return currentR, err
 			}
 		} else {

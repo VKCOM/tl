@@ -230,6 +230,19 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalWriteTL2(w []byte, sizes
 	return w, sizes
 }
 
+func (item *UsefulServiceUserEntityPaymentItem) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_fields_mask uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_fields_mask)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_fields_mask)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *UsefulServiceUserEntityPaymentItem) InternalReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -282,4 +295,8 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalReadTL2(r []byte, nat_fi
 	}
 
 	return r, nil
+}
+
+func (item *UsefulServiceUserEntityPaymentItem) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_fields_mask)
 }

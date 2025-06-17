@@ -190,6 +190,19 @@ func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	return w, sizes
 }
 
+func (item *UnionArgsXXX1Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *UnionArgsXXX1Int) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
 	currentR := r
 
@@ -203,6 +216,38 @@ func (item *UnionArgsXXX1Int) InternalReadTL2(r []byte, block byte, nat_Y uint32
 	}
 
 	return r, nil
+}
+
+func (item *UnionArgsXXX1Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 0 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
+	}
+	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	return r, err
 }
 
 func (item UnionArgsXXX1Long) AsUnion() UnionArgsXXXLong {
@@ -382,6 +427,19 @@ func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 	return w, sizes
 }
 
+func (item *UnionArgsXXX1Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
 	currentR := r
 
@@ -395,6 +453,38 @@ func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte, nat_Y uint3
 	}
 
 	return r, nil
+}
+
+func (item *UnionArgsXXX1Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 0 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
+	}
+	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	return r, err
 }
 
 func (item UnionArgsXXX2Int) AsUnion() UnionArgsXXXInt {
@@ -565,6 +655,19 @@ func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	return w, sizes
 }
 
+func (item *UnionArgsXXX2Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *UnionArgsXXX2Int) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
 	currentR := r
 
@@ -578,6 +681,38 @@ func (item *UnionArgsXXX2Int) InternalReadTL2(r []byte, block byte, nat_Y uint32
 	}
 
 	return r, nil
+}
+
+func (item *UnionArgsXXX2Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 1 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
+	}
+	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	return r, err
 }
 
 func (item UnionArgsXXX2Long) AsUnion() UnionArgsXXXLong {
@@ -748,6 +883,19 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 	return w, sizes
 }
 
+func (item *UnionArgsXXX2Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
 	currentR := r
 
@@ -761,6 +909,38 @@ func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte, nat_Y uint3
 	}
 
 	return r, nil
+}
+
+func (item *UnionArgsXXX2Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+	currentSize := 0
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
+		return r, err
+	}
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	var block byte
+	var index int
+	if currentSize == 0 {
+		index = 0
+	} else {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+		if (block & 1) != 0 {
+			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
+				return r, err
+			}
+		} else {
+			index = 0
+		}
+	}
+	if index != 1 {
+		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
+	}
+	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	return r, err
 }
 
 var _UnionArgsXXXInt = [2]UnionElement{
@@ -880,6 +1060,18 @@ func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int, nat_Y uint3
 	}
 	return w, sizes
 }
+func (item *UnionArgsXXXInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
 
 func (item *UnionArgsXXXInt) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
 	currentSize := 0
@@ -916,6 +1108,10 @@ func (item *UnionArgsXXXInt) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, 
 		}
 	}
 	return r, nil
+}
+
+func (item *UnionArgsXXXInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) ([]byte, error) {
+	return item.InternalReadTL2(r, nat_Y)
 }
 
 func (item *UnionArgsXXXInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
@@ -1108,6 +1304,18 @@ func (item *UnionArgsXXXLong) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	}
 	return w, sizes
 }
+func (item *UnionArgsXXXLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
 
 func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
 	currentSize := 0
@@ -1144,6 +1352,10 @@ func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte,
 		}
 	}
 	return r, nil
+}
+
+func (item *UnionArgsXXXLong) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) ([]byte, error) {
+	return item.InternalReadTL2(r, nat_Y)
 }
 
 func (item *UnionArgsXXXLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {

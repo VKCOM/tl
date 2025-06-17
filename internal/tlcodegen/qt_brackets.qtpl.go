@@ -145,7 +145,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         sizes[sizePosition] += `)
 					qw422016.N().S(sizeValue)
@@ -775,7 +775,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         sizes[sizePosition] += `)
 					qw422016.N().S(sizeValue)
@@ -1312,7 +1312,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -1699,7 +1699,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -1733,7 +1733,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -2165,7 +2165,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)

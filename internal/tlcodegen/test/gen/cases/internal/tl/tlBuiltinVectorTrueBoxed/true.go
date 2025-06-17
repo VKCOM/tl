@@ -52,16 +52,20 @@ func BuiltinVectorTrueBoxedWrite(w []byte, vec []tlTrue.True) []byte {
 }
 
 func BuiltinVectorTrueBoxedCalculateLayout(sizes []int, vec *[]tlTrue.True) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
-
-		sizes[sizePosition] += 0
+		currentPosition := len(sizes)
+		elem := (*vec)[i]
+		sizes = elem.CalculateLayout(sizes)
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -75,7 +79,8 @@ func BuiltinVectorTrueBoxedInternalWriteTL2(w []byte, sizes []int, vec *[]tlTrue
 	}
 
 	for i := 0; i < len(*vec); i++ {
-
+		elem := (*vec)[i]
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
@@ -94,7 +99,7 @@ func BuiltinVectorTrueBoxedInternalReadTL2(r []byte, vec *[]tlTrue.True) (_ []by
 
 	elementCount := 0
 	if currentSize != 0 {
-		if _, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
+		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
 	}
@@ -104,7 +109,9 @@ func BuiltinVectorTrueBoxedInternalReadTL2(r []byte, vec *[]tlTrue.True) (_ []by
 	}
 	*vec = (*vec)[:elementCount]
 	for i := 0; i < elementCount; i++ {
-
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
 	}
 	return r, nil
 }

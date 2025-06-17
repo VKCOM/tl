@@ -51,16 +51,17 @@ func BuiltinVectorIntWrite(w []byte, vec []int32) []byte {
 }
 
 func BuiltinVectorIntCalculateLayout(sizes []int, vec *[]int32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 
-		sizes[sizePosition] += 4
+		currentSize += 4
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 

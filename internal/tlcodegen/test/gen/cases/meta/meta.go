@@ -159,6 +159,7 @@ func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLon
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
 
 // Annotations
+func (item TLItem) AnnotationRead() bool { return item.annotations&0x1 != 0 }
 
 // TLItem serves as a single type for all enum values
 func (item *TLItem) Reset()                                {}
@@ -334,7 +335,17 @@ func init() {
 	fillObject("cases.replace7#6ccce4be", "#6ccce4be", &TLItem{tag: 0x6ccce4be, annotations: 0x0, tlName: "cases.replace7", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.replace7plus#197858f5", "#197858f5", &TLItem{tag: 0x197858f5, annotations: 0x0, tlName: "cases.replace7plus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.replace7plusplus#abc39b68", "#abc39b68", &TLItem{tag: 0xabc39b68, annotations: 0x0, tlName: "cases.replace7plusplus", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("casesTL2.testArrayFixedBool#f704cf4e", "#f704cf4e", &TLItem{tag: 0xf704cf4e, annotations: 0x0, tlName: "casesTL2.testArrayFixedBool", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("casesTL2.testArrayFlexibleBool#974a9b29", "#974a9b29", &TLItem{tag: 0x974a9b29, annotations: 0x0, tlName: "casesTL2.testArrayFlexibleBool", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep1#1b8b9feb", "#1b8b9feb", &TLItem{tag: 0x1b8b9feb, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep2#0a2c0bf9", "#0a2c0bf9", &TLItem{tag: 0x0a2c0bf9, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep3#f020849b", "#f020849b", &TLItem{tag: 0xf020849b, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep4#5a933a50", "#5a933a50", &TLItem{tag: 0x5a933a50, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep4", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep5#2b47b925", "#2b47b925", &TLItem{tag: 0x2b47b925, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep5", resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionWithDep1#b6c63b07", "#b6c63b07", &TLItem{tag: 0xb6c63b07, annotations: 0x1, tlName: "casesTL2.testFunctionWithDep1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionWithDep2#9d44a2fd", "#9d44a2fd", &TLItem{tag: 0x9d44a2fd, annotations: 0x1, tlName: "casesTL2.testFunctionWithDep2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("casesTL2.testObject#4f96dd95", "#4f96dd95", &TLItem{tag: 0x4f96dd95, annotations: 0x0, tlName: "casesTL2.testObject", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("casesTL2.testVectorBool#644bb447", "#644bb447", &TLItem{tag: 0x644bb447, annotations: 0x0, tlName: "casesTL2.testVectorBool", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testAllPossibleFieldConfigsContainer#e3fae936", "#e3fae936", &TLItem{tag: 0xe3fae936, annotations: 0x0, tlName: "cases.testAllPossibleFieldConfigsContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testArray#a888030d", "#a888030d", &TLItem{tag: 0xa888030d, annotations: 0x0, tlName: "cases.testArray", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testBeforeReadBitValidation#9b2396db", "#9b2396db", &TLItem{tag: 0x9b2396db, annotations: 0x0, tlName: "cases.testBeforeReadBitValidation", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

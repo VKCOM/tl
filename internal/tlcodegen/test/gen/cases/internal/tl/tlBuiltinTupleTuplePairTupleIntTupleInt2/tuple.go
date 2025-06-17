@@ -53,21 +53,23 @@ func BuiltinTupleTuplePairTupleIntTupleInt2Write(w []byte, vec [][2]tlPairTupleI
 }
 
 func BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes []int, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &(*vec)[i], nat_ttXn, nat_ttYn)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -75,10 +77,11 @@ func BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes []int, vec *[][
 		var elem [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
 		currentPosition := len(sizes)
 		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &elem, nat_ttXn, nat_ttYn)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -105,7 +108,6 @@ func BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w []byte, sizes []in
 		var elem [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
 		w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, &elem, nat_ttXn, nat_ttYn)
 	}
-
 	return w, sizes
 }
 

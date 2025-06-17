@@ -52,19 +52,20 @@ func BuiltinVectorVectorVectorIntWrite(w []byte, vec [][][]int32) []byte {
 }
 
 func BuiltinVectorVectorVectorIntCalculateLayout(sizes []int, vec *[][][]int32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = tlBuiltinVectorVectorInt.BuiltinVectorVectorIntCalculateLayout(sizes, &elem)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 

@@ -174,3 +174,12 @@ casesTL2.testArrayFixedBool
 casesTL2.testArrayFlexibleBool
     n:#
     arr:n*[Bool] = casesTL2.TestArrayFlexibleBool;
+
+@read casesTL2.testFunctionNoDep1 x:int => Int;
+@read casesTL2.testFunctionNoDep2 x:int => True;
+@read casesTL2.testFunctionNoDep3 x:int => Vector<int>;
+@read casesTL2.testFunctionNoDep4 x:int => Bool;
+@read casesTL2.testFunctionNoDep5 x:int => casesTL2.TestObject;
+
+@read casesTL2.testFunctionWithDep1 n:# => Tuple<int, n>;
+@read casesTL2.testFunctionWithDep2 n:# => benchmarks.VrutoyPositions n;

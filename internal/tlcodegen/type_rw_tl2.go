@@ -1,7 +1,7 @@
 package tlcodegen
 
 type TypeRWTL2 interface {
-	calculateLayout(
+	calculateLayoutCall(
 		directImports *DirectImports,
 		bytesVersion bool,
 		targetSizes string,
@@ -46,7 +46,7 @@ type TypeRWTL2 interface {
 	doesReadTL2UseBytes(canDependOnLocalBit bool) bool
 }
 
-func (w *TypeRWWrapper) CalculateLayout(
+func (w *TypeRWWrapper) CalculateLayoutCall(
 	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
@@ -57,7 +57,7 @@ func (w *TypeRWWrapper) CalculateLayout(
 	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.calculateLayout(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.calculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
 }
 
 func (w *TypeRWWrapper) WriteTL2Call(
