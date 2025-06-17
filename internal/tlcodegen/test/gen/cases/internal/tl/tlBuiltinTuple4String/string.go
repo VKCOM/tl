@@ -46,18 +46,20 @@ func BuiltinTuple4StringWrite(w []byte, vec *[4]string) []byte {
 }
 
 func BuiltinTuple4StringCalculateLayout(sizes []int, vec *[4]string) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 4 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(4)
+		currentSize += basictl.TL2CalculateSize(4)
 	}
 
 	for i := 0; i < 4; i++ {
 
-		sizes[sizePosition] += len((*vec)[i])
-		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
+		currentSize += len((*vec)[i])
+		currentSize += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -99,7 +101,6 @@ func BuiltinTuple4StringInternalReadTL2(r []byte, vec *[4]string) (_ []byte, err
 	if lastIndex > 4 {
 		lastIndex = 4
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = basictl.StringReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
@@ -184,18 +185,20 @@ func BuiltinTuple4StringBytesWrite(w []byte, vec *[4][]byte) []byte {
 }
 
 func BuiltinTuple4StringBytesCalculateLayout(sizes []int, vec *[4][]byte) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 4 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(4)
+		currentSize += basictl.TL2CalculateSize(4)
 	}
 
 	for i := 0; i < 4; i++ {
 
-		sizes[sizePosition] += len((*vec)[i])
-		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
+		currentSize += len((*vec)[i])
+		currentSize += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -237,7 +240,6 @@ func BuiltinTuple4StringBytesInternalReadTL2(r []byte, vec *[4][]byte) (_ []byte
 	if lastIndex > 4 {
 		lastIndex = 4
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = basictl.StringReadBytesTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err

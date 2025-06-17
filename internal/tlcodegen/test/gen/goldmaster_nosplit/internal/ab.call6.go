@@ -66,11 +66,36 @@ func (item *AbCall6) WriteResult(w []byte, ret TypeB) (_ []byte, err error) {
 	return w, nil
 }
 
-func (item *AbCall6) ReadResultTL2(w []byte, ret *TypeB) (_ []byte, err error) {
-	if w, err = ret.InternalReadTL2(w); err != nil {
-		return w, err
+func (item *AbCall6) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *TypeB) (_ []byte, err error) {
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
 	}
-	return w, nil
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	// first field mask
+	block := byte(0)
+	if currentSize != 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+	}
+
+	// check no of constructor
+	if block&(1<<0) != 0 {
+		return currentR, basictl.TL2Error("unknown union type")
+	}
+
+	if block&(1<<1) != 0 {
+		if currentR, err = ret.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		ret.Reset()
+	}
+	return r, nil
 }
 
 func (item *AbCall6) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret TypeB) (_ []byte, err error) {
@@ -78,7 +103,18 @@ func (item *AbCall6) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret 
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	w, sizes = ret.InternalWriteTL2(w, sizes)
+	// write structured result
+	sizes = ret.CalculateLayout(sizes)
+	totalSize := 0
+	totalSize += 1
+	totalSize += sizes[0]
+	totalSize += basictl.TL2CalculateSize(sizes[0])
+	w = basictl.TL2WriteSize(w, totalSize)
+	if totalSize != 0 {
+		w = append(w, 1<<1)
+		w, sizes = ret.InternalWriteTL2(w, sizes)
+	}
+
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}

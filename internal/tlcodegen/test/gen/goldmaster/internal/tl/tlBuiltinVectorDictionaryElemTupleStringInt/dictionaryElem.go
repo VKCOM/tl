@@ -54,19 +54,20 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []tlDictionary
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 

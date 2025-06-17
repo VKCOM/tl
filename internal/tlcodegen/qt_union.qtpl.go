@@ -277,7 +277,7 @@ func (item *`)
 						}
 					} else {
 						qw422016.N().S(`        `)
-						qw422016.N().S(field.t.CalculateLayout(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
+						qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)))
 						qw422016.N().S(`
 `)
 					}
@@ -342,31 +342,34 @@ func (item *`)
 }
 `)
 		}
-		if len(natArgsDecl) == 0 {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) []byte {
 `)
-			if !union.wr.wantsTL2 {
-				qw422016.N().S(`    return w
+		if !union.wr.wantsTL2 {
+			qw422016.N().S(`    return w
 `)
-			} else {
-				qw422016.N().S(`    var sizes []int
+		} else {
+			qw422016.N().S(`    var sizes []int
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0])
-    w, _ = item.InternalWriteTL2(w, sizes)
+    sizes = item.CalculateLayout(sizes[:0]`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
+    w, _ = item.InternalWriteTL2(w, sizes`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
     return w
 `)
-			}
-			qw422016.N().S(`}
-`)
 		}
-		qw422016.N().S(`
+		qw422016.N().S(`}
+
 func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) InternalReadTL2(r []byte`)
@@ -446,22 +449,23 @@ func (item *`)
 		}
 		qw422016.N().S(`}
 
+func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) ([]byte, error) {
 `)
-		if len(natArgsDecl) == 0 {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+		if !union.wr.wantsTL2 {
+			qw422016.N().S(`    return r, nil
 `)
-			if !union.wr.wantsTL2 {
-				qw422016.N().S(`    return r, nil
-`)
-			} else {
-				qw422016.N().S(`    return item.InternalReadTL2(r)
-`)
-			}
-			qw422016.N().S(`}
+		} else {
+			qw422016.N().S(`    return item.InternalReadTL2(r`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 `)
 		}
+		qw422016.N().S(`}
+`)
 	}
 	qw422016.N().S(`
 `)

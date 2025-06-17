@@ -496,19 +496,20 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntWrite(w []byte, vec []Dictionar
 }
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairBoolAColorInt) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -638,19 +639,20 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntWrite(w []byte, vec []Dictiona
 }
 
 func BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairFloatDoubleInt) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -780,19 +782,20 @@ func BuiltinVectorDictionaryElemPairIntIntIntWrite(w []byte, vec []DictionaryEle
 }
 
 func BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairIntIntInt) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -922,19 +925,20 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWrite(w []byte, ve
 }
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes []int, vec *[]DictionaryElemPairIntPairMultiPointStringInt) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -1270,19 +1274,20 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []DictionaryEl
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]DictionaryElemTupleStringInt, nat_t uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -3551,6 +3556,19 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 	return w, sizes
 }
 
+func (item *DictionaryElemTupleStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_k uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_k)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_k)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -3603,4 +3621,8 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32
 	}
 
 	return r, nil
+}
+
+func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_k uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_k)
 }

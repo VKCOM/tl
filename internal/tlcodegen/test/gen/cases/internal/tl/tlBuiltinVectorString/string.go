@@ -51,18 +51,19 @@ func BuiltinVectorStringWrite(w []byte, vec []string) []byte {
 }
 
 func BuiltinVectorStringCalculateLayout(sizes []int, vec *[]string) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
 
-		sizes[sizePosition] += len(elem)
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
+		currentSize += len(elem)
+		currentSize += basictl.TL2CalculateSize(len(elem))
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -189,18 +190,19 @@ func BuiltinVectorStringBytesWrite(w []byte, vec [][]byte) []byte {
 }
 
 func BuiltinVectorStringBytesCalculateLayout(sizes []int, vec *[][]byte) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
 
-		sizes[sizePosition] += len(elem)
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
+		currentSize += len(elem)
+		currentSize += basictl.TL2CalculateSize(len(elem))
 	}
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 

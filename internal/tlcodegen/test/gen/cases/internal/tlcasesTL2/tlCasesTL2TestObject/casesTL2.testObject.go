@@ -407,6 +407,20 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
+	var trueF1 tlTrue.True
+	// calculate layout for trueF1
+	currentPosition := len(sizes)
+	if item.N&(1<<0) != 0 {
+		sizes = trueF1.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
 	// calculate layout for item.F2
 	if item.F2 {
 
@@ -415,7 +429,7 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F3
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.F3) != 0 {
 		sizes = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, &item.F3)
 		if sizes[currentPosition] != 0 {
@@ -443,7 +457,7 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 		if item.F5 {
 
 			lastUsedByte = 1
-			currentSize += 1
+			currentSize += 3
 		}
 	}
 
@@ -509,6 +523,18 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 			w = basictl.NatWrite(w, item.N)
 		}
 	}
+	var trueF1 tlTrue.True
+	// write trueF1
+	if item.N&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = trueF1.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
 	// write item.F2
 	if item.F2 {
 		serializedSize += 0
@@ -538,14 +564,10 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	// write item.F5
 	if item.N&(1<<1) != 0 {
 		if item.F5 {
-			serializedSize += 1
-			if 1 != 0 {
+			serializedSize += 3
+			if 3 != 0 {
 				currentBlock |= (1 << 6)
-				if item.F5 {
-					w = append(w, 1)
-				} else {
-					w = append(w, 0)
-				}
+				w = basictl.MaybeBoolWriteTL2(w, item.F5)
 			}
 		}
 	}
@@ -643,6 +665,20 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 		item.N = 0
 	}
 
+	var trueF1 tlTrue.True
+	// read trueF1
+	if block&(1<<2) != 0 {
+		if item.N&(1<<0) != 0 {
+			if currentR, err = trueF1.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
+		}
+	} else {
+		trueF1.Reset()
+	}
+
 	// read item.F2
 	if block&(1<<3) != 0 {
 		item.F2 = true
@@ -671,7 +707,7 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 	// read item.F5
 	if block&(1<<6) != 0 {
 		if item.N&(1<<1) != 0 {
-			if currentR, err = basictl.BoolReadTL2(currentR, &item.F5); err != nil {
+			if currentR, err = basictl.MaybeBoolReadTL2(currentR, &item.F5); err != nil {
 				return currentR, err
 			}
 		} else {

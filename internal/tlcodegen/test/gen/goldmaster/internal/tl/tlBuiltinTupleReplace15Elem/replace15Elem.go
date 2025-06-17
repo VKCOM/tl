@@ -50,21 +50,23 @@ func BuiltinTupleReplace15ElemWrite(w []byte, vec []tlReplace15Elem.Replace15Ele
 }
 
 func BuiltinTupleReplace15ElemCalculateLayout(sizes []int, vec *[]tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -72,10 +74,11 @@ func BuiltinTupleReplace15ElemCalculateLayout(sizes []int, vec *[]tlReplace15Ele
 		var elem tlReplace15Elem.Replace15Elem
 		currentPosition := len(sizes)
 		sizes = elem.CalculateLayout(sizes, nat_t)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -102,7 +105,6 @@ func BuiltinTupleReplace15ElemInternalWriteTL2(w []byte, sizes []int, vec *[]tlR
 		var elem tlReplace15Elem.Replace15Elem
 		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
 	}
-
 	return w, sizes
 }
 

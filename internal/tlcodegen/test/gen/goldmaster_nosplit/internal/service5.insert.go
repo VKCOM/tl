@@ -84,11 +84,36 @@ func (item *Service5Insert) WriteResult(w []byte, ret Service5Output) (_ []byte,
 	return w, nil
 }
 
-func (item *Service5Insert) ReadResultTL2(w []byte, ret *Service5Output) (_ []byte, err error) {
-	if w, err = ret.InternalReadTL2(w); err != nil {
-		return w, err
+func (item *Service5Insert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *Service5Output) (_ []byte, err error) {
+	currentSize := 0
+	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+		return r, err
 	}
-	return w, nil
+
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
+	// first field mask
+	block := byte(0)
+	if currentSize != 0 {
+		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+			return r, err
+		}
+	}
+
+	// check no of constructor
+	if block&(1<<0) != 0 {
+		return currentR, basictl.TL2Error("unknown union type")
+	}
+
+	if block&(1<<1) != 0 {
+		if currentR, err = ret.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		ret.Reset()
+	}
+	return r, nil
 }
 
 func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret Service5Output) (_ []byte, err error) {
@@ -96,7 +121,18 @@ func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	w, sizes = ret.InternalWriteTL2(w, sizes)
+	// write structured result
+	sizes = ret.CalculateLayout(sizes)
+	totalSize := 0
+	totalSize += 1
+	totalSize += sizes[0]
+	totalSize += basictl.TL2CalculateSize(sizes[0])
+	w = basictl.TL2WriteSize(w, totalSize)
+	if totalSize != 0 {
+		w = append(w, 1<<1)
+		w, sizes = ret.InternalWriteTL2(w, sizes)
+	}
+
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
@@ -255,6 +291,20 @@ func (item *Service5Insert) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
+	var truePersistent True
+	// calculate layout for truePersistent
+	currentPosition := len(sizes)
+	if item.Flags&(1<<0) != 0 {
+		sizes = truePersistent.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
 		currentSize += lastUsedByte
@@ -287,6 +337,18 @@ func (item *Service5Insert) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 		if 4 != 0 {
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.Flags)
+		}
+	}
+	var truePersistent True
+	// write truePersistent
+	if item.Flags&(1<<0) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = truePersistent.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -346,6 +408,20 @@ func (item *Service5Insert) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 	} else {
 		item.Flags = 0
+	}
+
+	var truePersistent True
+	// read truePersistent
+	if block&(1<<2) != 0 {
+		if item.Flags&(1<<0) != 0 {
+			if currentR, err = truePersistent.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "Persistent" + "is presented but depending bit is absent")
+		}
+	} else {
+		truePersistent.Reset()
 	}
 
 	return r, nil

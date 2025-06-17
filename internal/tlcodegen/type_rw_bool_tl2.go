@@ -6,7 +6,7 @@ import "fmt"
 BOOL = BYTE or BIT in STRUCT
 */
 
-func (trw *TypeRWBool) calculateLayout(
+func (trw *TypeRWBool) calculateLayoutCall(
 	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
@@ -53,7 +53,7 @@ func (trw *TypeRWBool) readTL2Call(
 	natArgs []string,
 ) string {
 	if canDependOnLocalBit {
-		return fmt.Sprintf("%[1]s = true", targetObject)
+		return fmt.Sprintf("%[1]s = true", addAsterisk(refObject, targetObject))
 	}
 	return fmt.Sprintf(`if %[2]s, err = basictl.MaybeBoolReadTL2(%[2]s, %[1]s); err != nil { return %[2]s, err }`,
 		addAmpersand(refObject, targetObject),

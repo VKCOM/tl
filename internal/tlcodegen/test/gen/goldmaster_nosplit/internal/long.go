@@ -50,27 +50,30 @@ func BuiltinTupleLongWrite(w []byte, vec []int64, nat_n uint32) (_ []byte, err e
 }
 
 func BuiltinTupleLongCalculateLayout(sizes []int, vec *[]int64, nat_n uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 
-		sizes[sizePosition] += 8
+		currentSize += 8
 	}
 
 	// append empty objects if not enough
 	for i := lastIndex; i < nat_n; i++ {
 
-		sizes[sizePosition] += 8
+		currentSize += 8
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -97,7 +100,6 @@ func BuiltinTupleLongInternalWriteTL2(w []byte, sizes []int, vec *[]int64, nat_n
 		var elem int64
 		w = basictl.LongWrite(w, elem)
 	}
-
 	return w, sizes
 }
 

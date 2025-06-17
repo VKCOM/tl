@@ -49,19 +49,21 @@ func BuiltinTuple2CycleTupleWrite(w []byte, vec *[2]CycleTuple) (_ []byte, err e
 }
 
 func BuiltinTuple2CycleTupleCalculateLayout(sizes []int, vec *[2]CycleTuple) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 2 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(2)
+		currentSize += basictl.TL2CalculateSize(2)
 	}
 
 	for i := 0; i < 2; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -103,7 +105,6 @@ func BuiltinTuple2CycleTupleInternalReadTL2(r []byte, vec *[2]CycleTuple) (_ []b
 	if lastIndex > 2 {
 		lastIndex = 2
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -195,21 +196,23 @@ func BuiltinTupleCycleTupleWrite(w []byte, vec []CycleTuple, nat_n uint32) (_ []
 }
 
 func BuiltinTupleCycleTupleCalculateLayout(sizes []int, vec *[]CycleTuple, nat_n uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
 	// append empty objects if not enough
@@ -217,10 +220,11 @@ func BuiltinTupleCycleTupleCalculateLayout(sizes []int, vec *[]CycleTuple, nat_n
 		var elem CycleTuple
 		currentPosition := len(sizes)
 		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -247,7 +251,6 @@ func BuiltinTupleCycleTupleInternalWriteTL2(w []byte, sizes []int, vec *[]CycleT
 		var elem CycleTuple
 		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
-
 	return w, sizes
 }
 

@@ -98,10 +98,27 @@ func (item *TupleString) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) (
 	return w, sizes
 }
 
+func (item *TupleString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_n uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_n)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_n)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *TupleString) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]string)(item)
 	if r, err = tlBuiltinTupleString.BuiltinTupleStringInternalReadTL2(r, ptr, nat_n); err != nil {
 		return r, err
 	}
 	return r, nil
+}
+
+func (item *TupleString) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_n uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_n)
 }

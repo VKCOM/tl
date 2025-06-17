@@ -49,30 +49,33 @@ func BuiltinTupleStringWrite(w []byte, vec []string, nat_n uint32) (_ []byte, er
 }
 
 func BuiltinTupleStringCalculateLayout(sizes []int, vec *[]string, nat_n uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 
-		sizes[sizePosition] += len((*vec)[i])
-		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
+		currentSize += len((*vec)[i])
+		currentSize += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 
 	// append empty objects if not enough
 	for i := lastIndex; i < nat_n; i++ {
 		var elem string
 
-		sizes[sizePosition] += len(elem)
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
+		currentSize += len(elem)
+		currentSize += basictl.TL2CalculateSize(len(elem))
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -99,7 +102,6 @@ func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string, na
 		var elem string
 		w = basictl.StringWriteTL2(w, elem)
 	}
-
 	return w, sizes
 }
 
@@ -227,30 +229,33 @@ func BuiltinTupleStringBytesWrite(w []byte, vec [][]byte, nat_n uint32) (_ []byt
 }
 
 func BuiltinTupleStringBytesCalculateLayout(sizes []int, vec *[][]byte, nat_n uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if nat_n != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(int(nat_n))
+		currentSize += basictl.TL2CalculateSize(int(nat_n))
 	}
 
 	lastIndex := uint32(len(*vec))
 	if lastIndex > nat_n {
 		lastIndex = nat_n
 	}
+
 	for i := uint32(0); i < lastIndex; i++ {
 
-		sizes[sizePosition] += len((*vec)[i])
-		sizes[sizePosition] += basictl.TL2CalculateSize(len((*vec)[i]))
+		currentSize += len((*vec)[i])
+		currentSize += basictl.TL2CalculateSize(len((*vec)[i]))
 	}
 
 	// append empty objects if not enough
 	for i := lastIndex; i < nat_n; i++ {
 		var elem []byte
 
-		sizes[sizePosition] += len(elem)
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(elem))
+		currentSize += len(elem)
+		currentSize += basictl.TL2CalculateSize(len(elem))
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -277,7 +282,6 @@ func BuiltinTupleStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[][]byt
 		var elem []byte
 		w = basictl.StringBytesWriteTL2(w, elem)
 	}
-
 	return w, sizes
 }
 

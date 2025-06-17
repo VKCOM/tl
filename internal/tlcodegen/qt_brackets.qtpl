@@ -85,7 +85,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}{%s= valu
         {%- if tuple.element.t.trw.doesCalculateLayoutUseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         sizes[sizePosition] += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -427,7 +427,7 @@ func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         sizes[sizePosition] += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -727,7 +727,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if tuple.element.t.trw.doesCalculateLayoutUseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -963,7 +963,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -985,7 +985,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -1246,7 +1246,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayout(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})

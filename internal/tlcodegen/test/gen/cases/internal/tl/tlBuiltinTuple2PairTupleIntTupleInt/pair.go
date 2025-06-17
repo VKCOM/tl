@@ -49,19 +49,21 @@ func BuiltinTuple2PairTupleIntTupleIntWrite(w []byte, vec *[2]tlPairTupleIntTupl
 }
 
 func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 2 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(2)
+		currentSize += basictl.TL2CalculateSize(2)
 	}
 
 	for i := 0; i < 2; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_tXn, nat_tYn)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -103,7 +105,6 @@ func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTu
 	if lastIndex > 2 {
 		lastIndex = 2
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_tXn, nat_tYn); err != nil {
 			return currentR, err

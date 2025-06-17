@@ -10,6 +10,7 @@ package tlCasesTestOutFieldMask
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinTupleInt"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -207,8 +208,22 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int, nat_f uint32) []
 		}
 	}
 
-	// calculate layout for item.F3
+	var trueF2 tlTrue.True
+	// calculate layout for trueF2
 	currentPosition := len(sizes)
+	if nat_f&(1<<3) != 0 {
+		sizes = trueF2.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
+	}
+
+	// calculate layout for item.F3
+	currentPosition = len(sizes)
 	if len(item.F3) != 0 {
 		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F3, nat_f)
 		if sizes[currentPosition] != 0 {
@@ -256,6 +271,18 @@ func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, nat_f
 			}
 		}
 	}
+	var trueF2 tlTrue.True
+	// write trueF2
+	if nat_f&(1<<3) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = trueF2.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
 	// write item.F3
 	if len(item.F3) != 0 {
 		serializedSize += sizes[0]
@@ -269,6 +296,19 @@ func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, nat_f
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
+}
+
+func (item *CasesTestOutFieldMask) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_f uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_f)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_f)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte, nat_f uint32) (_ []byte, err error) {
@@ -317,6 +357,20 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte, nat_f uint32) (_ []
 		item.F1 = 0
 	}
 
+	var trueF2 tlTrue.True
+	// read trueF2
+	if block&(1<<2) != 0 {
+		if nat_f&(1<<3) != 0 {
+			if currentR, err = trueF2.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F2" + "is presented but depending bit is absent")
+		}
+	} else {
+		trueF2.Reset()
+	}
+
 	// read item.F3
 	if block&(1<<3) != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F3, nat_f); err != nil {
@@ -327,4 +381,8 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte, nat_f uint32) (_ []
 	}
 
 	return r, nil
+}
+
+func (item *CasesTestOutFieldMask) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_f uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_f)
 }

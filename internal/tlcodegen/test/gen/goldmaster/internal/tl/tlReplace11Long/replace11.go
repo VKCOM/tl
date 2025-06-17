@@ -230,6 +230,19 @@ func (item *Replace11Long) InternalWriteTL2(w []byte, sizes []int, nat_n uint32)
 	return w, sizes
 }
 
+func (item *Replace11Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_n uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_n)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_n)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *Replace11Long) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -282,4 +295,8 @@ func (item *Replace11Long) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, er
 	}
 
 	return r, nil
+}
+
+func (item *Replace11Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_n uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_n)
 }

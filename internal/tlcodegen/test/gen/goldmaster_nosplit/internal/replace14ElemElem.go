@@ -46,19 +46,21 @@ func BuiltinTuple3Replace14ElemElemLongWrite(w []byte, vec *[3]Replace14ElemElem
 }
 
 func BuiltinTuple3Replace14ElemElemLongCalculateLayout(sizes []int, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) []int {
+	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if 3 != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(3)
+		currentSize += basictl.TL2CalculateSize(3)
 	}
 
 	for i := 0; i < 3; i++ {
 		currentPosition := len(sizes)
 		sizes = (*vec)[i].CalculateLayout(sizes, nat_tn, nat_tk)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
 
+	sizes[sizePosition] = currentSize
 	return sizes
 }
 
@@ -100,7 +102,6 @@ func BuiltinTuple3Replace14ElemElemLongInternalReadTL2(r []byte, vec *[3]Replace
 	if lastIndex > 3 {
 		lastIndex = 3
 	}
-
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_tn, nat_tk); err != nil {
 			return currentR, err
@@ -349,6 +350,19 @@ func (item *Replace14ElemElemLong) InternalWriteTL2(w []byte, sizes []int, nat_n
 	return w, sizes
 }
 
+func (item *Replace14ElemElemLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_n uint32, nat_k uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_n, nat_k)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_n, nat_k)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
+}
+
 func (item *Replace14ElemElemLong) InternalReadTL2(r []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -401,4 +415,8 @@ func (item *Replace14ElemElemLong) InternalReadTL2(r []byte, nat_n uint32, nat_k
 	}
 
 	return r, nil
+}
+
+func (item *Replace14ElemElemLong) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_n uint32, nat_k uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_n, nat_k)
 }

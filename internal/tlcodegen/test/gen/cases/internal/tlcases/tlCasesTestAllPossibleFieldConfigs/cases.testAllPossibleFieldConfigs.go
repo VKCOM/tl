@@ -665,8 +665,20 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 		currentSize += 4
 	}
 
-	// calculate layout for item.F02
+	var trueF01 tlTrue.True
+	// calculate layout for trueF01
 	currentPosition := len(sizes)
+	sizes = trueF01.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
+	}
+
+	// calculate layout for item.F02
+	currentPosition = len(sizes)
 	if len(item.F02) != 0 {
 		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F02, item.Local)
 		if sizes[currentPosition] != 0 {
@@ -697,6 +709,20 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 
 			lastUsedByte = 1
 			currentSize += 4
+		}
+	}
+
+	var trueF11 tlTrue.True
+	// calculate layout for trueF11
+	currentPosition = len(sizes)
+	if item.Local&(1<<1) != 0 {
+		sizes = trueF11.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
@@ -736,6 +762,20 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, nat_o
 
 			lastUsedByte = 2
 			currentSize += 4
+		}
+	}
+
+	var trueF21 tlTrue.True
+	// calculate layout for trueF21
+	currentPosition = len(sizes)
+	if nat_outer&(1<<1) != 0 {
+		sizes = trueF21.CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 2
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
@@ -811,6 +851,16 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			w = basictl.IntWrite(w, item.F00)
 		}
 	}
+	var trueF01 tlTrue.True
+	// write trueF01
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 3)
+		w, sizes = trueF01.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
+	}
 	// write item.F02
 	if len(item.F02) != 0 {
 		serializedSize += sizes[0]
@@ -841,6 +891,18 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 				currentBlock |= (1 << 6)
 				w = basictl.IntWrite(w, item.F10)
 			}
+		}
+	}
+	var trueF11 tlTrue.True
+	// write trueF11
+	if item.Local&(1<<1) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 7)
+			w, sizes = trueF11.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 
@@ -890,6 +952,18 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			}
 		}
 	}
+	var trueF21 tlTrue.True
+	// write trueF21
+	if nat_outer&(1<<1) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = trueF21.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
+	}
 	// write item.F22
 	if nat_outer&(1<<2) != 0 {
 		if len(item.F22) != 0 {
@@ -918,6 +992,19 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
+}
+
+func (item *CasesTestAllPossibleFieldConfigs) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_outer uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_outer)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_outer)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte, nat_outer uint32) (_ []byte, err error) {
@@ -971,6 +1058,16 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte, nat_oute
 		item.F00 = 0
 	}
 
+	var trueF01 tlTrue.True
+	// read trueF01
+	if block&(1<<3) != 0 {
+		if currentR, err = trueF01.InternalReadTL2(currentR); err != nil {
+			return currentR, err
+		}
+	} else {
+		trueF01.Reset()
+	}
+
 	// read item.F02
 	if block&(1<<4) != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F02, item.Local); err != nil {
@@ -1000,6 +1097,20 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte, nat_oute
 		}
 	} else {
 		item.F10 = 0
+	}
+
+	var trueF11 tlTrue.True
+	// read trueF11
+	if block&(1<<7) != 0 {
+		if item.Local&(1<<1) != 0 {
+			if currentR, err = trueF11.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F11" + "is presented but depending bit is absent")
+		}
+	} else {
+		trueF11.Reset()
 	}
 
 	// read next block for fields 8..15
@@ -1050,6 +1161,20 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte, nat_oute
 		item.F20 = 0
 	}
 
+	var trueF21 tlTrue.True
+	// read trueF21
+	if block&(1<<3) != 0 {
+		if nat_outer&(1<<1) != 0 {
+			if currentR, err = trueF21.InternalReadTL2(currentR); err != nil {
+				return currentR, err
+			}
+		} else {
+			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F21" + "is presented but depending bit is absent")
+		}
+	} else {
+		trueF21.Reset()
+	}
+
 	// read item.F22
 	if block&(1<<4) != 0 {
 		if nat_outer&(1<<2) != 0 {
@@ -1077,4 +1202,8 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte, nat_oute
 	}
 
 	return r, nil
+}
+
+func (item *CasesTestAllPossibleFieldConfigs) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_outer uint32) (_ []byte, err error) {
+	return item.InternalReadTL2(r, nat_outer)
 }

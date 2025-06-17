@@ -2,7 +2,7 @@ package tlcodegen
 
 import "fmt"
 
-func (trw *TypeRWBrackets) calculateLayout(
+func (trw *TypeRWBrackets) calculateLayoutCall(
 	directImports *DirectImports,
 	bytesVersion bool,
 	targetSizes string,
