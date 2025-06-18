@@ -818,18 +818,6 @@ func (item *AbResponse) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	}
 	return w, sizes
 }
-func (item *AbResponse) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer
-	}
-	sizes = item.CalculateLayout(sizes[:0])
-	w, _ = item.InternalWriteTL2(w, sizes)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
-	}
-	return w
-}
 
 func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
@@ -872,6 +860,18 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 	}
 	return r, nil
+}
+func (item *AbResponse) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *AbResponse) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
@@ -1162,18 +1162,6 @@ func (item *AbResponseBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 	}
 	return w, sizes
 }
-func (item *AbResponseBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer
-	}
-	sizes = item.CalculateLayout(sizes[:0])
-	w, _ = item.InternalWriteTL2(w, sizes)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
-	}
-	return w
-}
 
 func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
@@ -1216,6 +1204,18 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 	}
 	return r, nil
+}
+func (item *AbResponseBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *AbResponseBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {

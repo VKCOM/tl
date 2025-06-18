@@ -8,8 +8,6 @@
 package tlcasesTL2
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVrutoyPositions"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestArrayFixedBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestArrayFlexibleBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep1"
@@ -35,7 +33,4 @@ type (
 	TestFunctionWithDep2  = tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2
 	TestObject            = tlCasesTL2TestObject.CasesTL2TestObject
 	TestVectorBool        = tlCasesTL2TestVectorBool.CasesTL2TestVectorBool
-
-	TestFunctionNoDep2__Result   = tlTrue.True
-	TestFunctionWithDep2__Result = tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions
 )
