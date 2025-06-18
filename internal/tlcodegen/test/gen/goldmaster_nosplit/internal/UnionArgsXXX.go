@@ -1060,18 +1060,6 @@ func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int, nat_Y uint3
 	}
 	return w, sizes
 }
-func (item *UnionArgsXXXInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
-	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer
-	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
-	}
-	return w
-}
 
 func (item *UnionArgsXXXInt) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
 	currentSize := 0
@@ -1108,6 +1096,18 @@ func (item *UnionArgsXXXInt) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, 
 		}
 	}
 	return r, nil
+}
+func (item *UnionArgsXXXInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *UnionArgsXXXInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) ([]byte, error) {
@@ -1304,18 +1304,6 @@ func (item *UnionArgsXXXLong) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	}
 	return w, sizes
 }
-func (item *UnionArgsXXXLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
-	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer
-	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
-	}
-	return w
-}
 
 func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
 	currentSize := 0
@@ -1352,6 +1340,18 @@ func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte,
 		}
 	}
 	return r, nil
+}
+func (item *UnionArgsXXXLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0], nat_Y)
+	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *UnionArgsXXXLong) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) ([]byte, error) {

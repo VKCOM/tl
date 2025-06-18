@@ -128,18 +128,6 @@ func (item *AMyUnion) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	}
 	return w, sizes
 }
-func (item *AMyUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
-	if ctx != nil {
-		sizes = ctx.SizeBuffer
-	}
-	sizes = item.CalculateLayout(sizes[:0])
-	w, _ = item.InternalWriteTL2(w, sizes)
-	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
-	}
-	return w
-}
 
 func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
@@ -176,6 +164,18 @@ func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 	}
 	return r, nil
+}
+func (item *AMyUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
+	var sizes []int
+	if ctx != nil {
+		sizes = ctx.SizeBuffer
+	}
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
+	if ctx != nil {
+		ctx.SizeBuffer = sizes[:0]
+	}
+	return w
 }
 
 func (item *AMyUnion) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {

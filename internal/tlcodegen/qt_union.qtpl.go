@@ -340,51 +340,13 @@ func (item *`)
 			}
 			qw422016.N().S(`    return w, sizes
 }
-`)
-		}
-		qw422016.N().S(`func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []byte {
-`)
-		if !union.wr.wantsTL2 {
-			qw422016.N().S(`    return w
-`)
-		} else {
-			qw422016.N().S(`    var sizes []int
-    if ctx != nil {
-        sizes = ctx.SizeBuffer
-    }
-    sizes = item.CalculateLayout(sizes[:0]`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-    w, _ = item.InternalWriteTL2(w, sizes`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-    if ctx != nil {
-        ctx.SizeBuffer = sizes[:0]
-    }
-    return w
-`)
-		}
-		qw422016.N().S(`}
 
 func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalReadTL2(r []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
-`)
-		if !union.wr.wantsTL2 {
-			qw422016.N().S(`    return r, `)
-			qw422016.N().S(union.wr.gen.InternalPrefix())
-			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(tlName)
-			qw422016.N().S(`)
-`)
-		} else {
-			qw422016.N().S(`    currentSize := 0
+			qw422016.N().S(goName)
+			qw422016.N().S(`) InternalReadTL2(r []byte`)
+			qw422016.N().S(natArgsDecl)
+			qw422016.N().S(`) (_ []byte, err error) {
+    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
 
     currentR := r[:currentSize]
@@ -445,6 +407,33 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    return r, nil
+}
+`)
+		}
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) []byte {
+`)
+		if !union.wr.wantsTL2 {
+			qw422016.N().S(`    return w
+`)
+		} else {
+			qw422016.N().S(`    var sizes []int
+    if ctx != nil {
+        sizes = ctx.SizeBuffer
+    }
+    sizes = item.CalculateLayout(sizes[:0]`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
+    w, _ = item.InternalWriteTL2(w, sizes`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
+    if ctx != nil {
+        ctx.SizeBuffer = sizes[:0]
+    }
+    return w
 `)
 		}
 		qw422016.N().S(`}
@@ -456,7 +445,11 @@ func (item *`)
 		qw422016.N().S(`) ([]byte, error) {
 `)
 		if !union.wr.wantsTL2 {
-			qw422016.N().S(`    return r, nil
+			qw422016.N().S(`    return r, `)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`)
 `)
 		} else {
 			qw422016.N().S(`    return item.InternalReadTL2(r`)

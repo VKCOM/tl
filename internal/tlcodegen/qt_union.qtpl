@@ -183,28 +183,8 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     {%- endif -%}
     return w, sizes
 }
-{%- endif -%}
-func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= natArgsDecl %}) []byte {
-{%- if !union.wr.wantsTL2 -%}
-    return w
-{%- else -%}
-    var sizes []int
-    if ctx != nil {
-        sizes = ctx.SizeBuffer
-    }
-    sizes = item.CalculateLayout(sizes[:0]{%s= natArgsCall%})
-    w, _ = item.InternalWriteTL2(w, sizes{%s= natArgsCall%})
-    if ctx != nil {
-        ctx.SizeBuffer = sizes[:0]
-    }
-    return w
-{%- endif -%}
-}
 
 func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
-{%- if !union.wr.wantsTL2 -%}
-    return r, {%s= union.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
-{%- else -%}
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
 
@@ -247,12 +227,28 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
     }
     {%- endif -%}
     return r, nil
+}
+{%- endif -%}
+func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= natArgsDecl %}) []byte {
+{%- if !union.wr.wantsTL2 -%}
+    return w
+{%- else -%}
+    var sizes []int
+    if ctx != nil {
+        sizes = ctx.SizeBuffer
+    }
+    sizes = item.CalculateLayout(sizes[:0]{%s= natArgsCall%})
+    w, _ = item.InternalWriteTL2(w, sizes{%s= natArgsCall%})
+    if ctx != nil {
+        ctx.SizeBuffer = sizes[:0]
+    }
+    return w
 {%- endif -%}
 }
 
 func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext{%s= natArgsDecl %}) ([]byte, error) {
     {%- if !union.wr.wantsTL2 -%}
-    return r, nil
+    return r, {%s= union.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
     return item.InternalReadTL2(r{%s= natArgsCall%})
     {%- endif -%}
