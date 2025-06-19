@@ -144,17 +144,17 @@ func parseVarIdent(tokens tokenIterator, outer Position) (string, tokenIterator,
 	return "", tokens, parseErrToken(fmt.Errorf("name without namespace expected"), rest.front(), outer)
 }
 
-// functionModifier := @any  | @internal  | @kphp | @read | @readwrite | @write
+// annotation := @any  | @internal  | @kphp | @read | @readwrite | @write
 func parseModifiers(tokens tokenIterator, outer Position) ([]Modifier, tokenIterator) {
 	var res []Modifier
 	rest := tokens
 	for {
 		mod := Modifier{PR: rest.skipWS(outer)}
-		if !rest.checkToken(functionModifier) {
+		if !rest.checkToken(annotation) {
 			break
 		}
 		mod.Name = rest.front().val[1:] // always safe
-		rest.expectOrPanic(functionModifier)
+		rest.expectOrPanic(annotation)
 		mod.PR.End = rest.front().pos
 		res = append(res, mod)
 	}
@@ -543,7 +543,7 @@ func parseFuncDecl(tokens tokenIterator, outer Position) (TypeRef, tokenIterator
 
 // type := constructor [templateArgument] ... [field] ...  '=' typeDecl ';'
 // or
-// function := [ functionModifier ] constructor [templateArgument] ... [field] ... '=' apply;'
+// function := [ annotation ] constructor [templateArgument] ... [field] ... '=' apply;'
 // but also => marks function independent of section
 func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunction bool, allowBuiltin bool) (Combinator, tokenIterator, error) {
 	rest := tokens
@@ -615,10 +615,10 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 }
 
 func ParseTL(str string) (TL, error) {
-	return ParseTLFile(str, "", LexerOptions{AllowMLC: true}, os.Stdout)
+	return ParseTLFile(str, "", LexerOptions{AllowMLC: true, LexerLanguage: tl1}, os.Stdout)
 }
 
-// ParseTL2 TL := TypesSection [ type ... ] FunctionSection [ function ... ]
+// ParseTLFile TL := TypesSection [ type ... ] FunctionSection [ function ... ]
 func ParseTLFile(str, file string, opts LexerOptions, errorWriter io.Writer) (TL, error) {
 	lex := newLexer(str, file, opts)
 	allTokens, err := lex.generateTokens()
