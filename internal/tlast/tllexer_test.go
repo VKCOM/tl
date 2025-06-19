@@ -99,4 +99,11 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 			require.Equal(t, str, recombined)
 		}
 	})
+
+	t.Run("Banned symbol from tl2", func(t *testing.T) {
+		str := "|"
+		lex := newLexer(str, "", LexerOptions{})
+		_, err := lex.generateTokens()
+		require.Error(t, err)
+	})
 }

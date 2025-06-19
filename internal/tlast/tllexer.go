@@ -15,7 +15,7 @@ const (
 	typesSection     = -1
 	functionsSection = -2
 	crc32hash        = -3
-	functionModifier = -4
+	annotation       = -4
 	numberSign       = -5
 	number           = -6
 	comment          = -7
@@ -50,6 +50,7 @@ const (
 	asterisk       = '*'
 	plus           = '+'
 	exclamation    = '!'
+	verticalBar    = '|'
 )
 
 // TODO - support windows line endings (by skipping '\r')
@@ -133,7 +134,16 @@ type LexerOptions struct {
 	AllowBuiltin bool // allows constructor to start from '_' (underscore), used only internally by tlgen
 	AllowDirty   bool // allows to use '_' (underscore) as constructor name, will be removed after combined.tl is cleaned up
 	AllowMLC     bool // allow multiline comments. They are treated as warnings.
+
+	LexerLanguage // default value is tl1
 }
+
+type LexerLanguage int
+
+const (
+	tl1 LexerLanguage = iota
+	tl2
+)
 
 type lexer struct {
 	opts   LexerOptions
@@ -156,6 +166,43 @@ func (l *lexer) generateTokens() ([]token, error) {
 		}
 	}
 	l.advance(0, eof)
+	return l.validateTokens()
+}
+
+func (l *lexer) validateTokens() ([]token, error) {
+	for i, curToken := range l.tokens {
+		var err error
+		switch l.opts.LexerLanguage {
+		case tl1:
+			switch curToken.tokenType {
+			case verticalBar:
+				err = parseErrToken(fmt.Errorf("illegal token for tl1: \"%s\"", curToken.val), curToken, curToken.pos)
+				break
+			}
+		case tl2:
+			switch curToken.tokenType {
+			case lCurlyBracket, rCurlyBracket,
+				exclamation,
+				lRoundBracket, rRoundBracket:
+				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\"", curToken.val), curToken, curToken.pos)
+			case plus, asterisk:
+				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - ariphmetic operations are mot allowed", curToken.val), curToken, curToken.pos)
+			case percentSign:
+				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - boxed types are not supported in tl2", curToken.val), curToken, curToken.pos)
+			case typesSection, functionsSection:
+				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - sections are not supported in tl2", curToken.val), curToken, curToken.pos)
+			case comment:
+				if strings.HasPrefix(curToken.val, "/*") {
+					err = parseErrToken(fmt.Errorf("multiline comments are not allowed in tl2: \"%s\"", curToken.val), curToken, curToken.pos)
+				}
+			}
+		default:
+			return l.tokens, fmt.Errorf("unknown language code \"%d\"", l.opts.LexerLanguage)
+		}
+		if err != nil {
+			return l.tokens[:i+1], err
+		}
+	}
 	return l.tokens, nil
 }
 
@@ -187,7 +234,7 @@ func (l *lexer) checkPrimitive() bool {
 		dotSign, plus, asterisk, exclamation,
 		colon, semiColon, whiteSpace,
 		tab, questionMark, percentSign,
-		commaSign:
+		commaSign, verticalBar:
 		l.advance(1, int(c))
 		return true
 	case newLine:
@@ -252,7 +299,7 @@ func (l *lexer) lexFunctionModifier() error {
 		tok := l.advance(1+len(w), undefined)
 		return parseErrToken(fmt.Errorf("combinator modifier should start from lower case letter"), tok, tok.pos)
 	}
-	l.advance(1+len(w), functionModifier)
+	l.advance(1+len(w), annotation)
 	return nil
 }
 

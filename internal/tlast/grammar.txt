@@ -2,7 +2,7 @@
 TypesSection := ---types---
 FunctionSection := ---functions---
 CRC32 := #[a-f0-9]{8}
-functionModifier := @any  | @internal  | @kphp
+annotation := @any  | @internal  | @kphp
                     @read | @readwrite | @write
 number := \d+
 word := \w+
@@ -45,6 +45,6 @@ type := constructor [templateArgument] ... [field] ...  '=' typeDecl ';'
 
 funcDecl := apply | '(' apply ')' | '%' T | fullName '<' aot ',' ... '>'
 
-function := [ functionModifier ] constructor [templateArgument] ... [field] ... '=' apply;'
+function := [ annotation ] constructor [templateArgument] ... [field] ... '=' apply;'
 
 TL := TypesSection [ type ... ] FunctionSection [ function ... ]
