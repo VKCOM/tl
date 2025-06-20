@@ -1,39 +1,29 @@
 TL2File := TL2Combinator* EOF;
-TL2Combinator := TL2Annotations (TL2TypeDeclaration | TL2FuncDeclaration) scl;
+TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName TL2Fields funEq TL2TypeDefinition;
-TL2TypeDeclaration := TL2TypeName TL2TypeArgumentsDefinition? eq TL2TypeDefinition;
+TL2FuncDeclaration := TL2TypeName TL2Field* funEq TL2TypeDefinition;
+TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? eq TL2TypeDefinition;
 
-TL2TypeDefinition := TL2Type | TL2Fields | TL2UnionType;
+TL2TypeDefinition := TL2Type | TL2Field* | TL2UnionType;
 
 TL2UnionType := TL2UnionTypeVariant (vb TL2UnionTypeVariant)+;
 TL2UnionTypeVariant := TL2Type | TL2UnionConstructor;
-TL2UnionConstructor := TL2UnionConstructorName TL2Fields;
-TL2UnionConstructorName := ucName;
+TL2UnionConstructor := ucName TL2Field*;
 
-TL2Fields := TL2Field*
-TL2Field := TL2FieldName qm? cl TL2Typ;
+TL2Field := lcName qm? cl TL2Type;
 
 TL2Type := TL2TypeApplication | TL2BracketType;
 
-TL2TypeApplication := TL2TypeName TL2TypeArguments?;
+TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts)?;
 TL2BracketType := lsb TL2TypeArgument? rsb TL2Type;
 
-TL2TypeArguments := lts TL2TypeArgument (cm TL2TypeArgument)* gts;
 TL2TypeArgument := TL2Type | number;
+TL2TypeArgumentDeclaration := lcName cl lcName;
 
-TL2TypeArgumentsDefinition := lts TL2TypeArgumentsDefinitionList gts;
-TL2TypeArgumentsDefinitionList := TL2TypeArgumentDefinition (cm TL2TypeArgumentDefinition)*;
-TL2TypeArgumentDefinition := lcName cl lcName;
-TL2TypeArgumentCategory := lcName;
-
-TL2TypeName := TL2Namespace? lcName;
-TL2Namespace := lcName dot;
-
-TL2Annotations := annotation*;
+TL2TypeName := (lcName dot)? lcName;
+TL2Annotation := at lcName;
 
 // tokens
-annotation := at lcName;
 number := [0-9]+;
 ucName := [A-Z][a-zA-Z0-9_]*;
 lcName := [a-z][a-zA-Z0-9_]*;
