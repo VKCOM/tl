@@ -1,8 +1,8 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName TL2Field* funEq TL2TypeDefinition;
-TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? eq TL2TypeDefinition;
+TL2FuncDeclaration := TL2TypeName TL2Field* funEq TL2TypeDefinition?;
+TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? eq TL2TypeDefinition?;
 
 TL2TypeDefinition := TL2Type | TL2Field* | TL2UnionType;
 
@@ -18,7 +18,7 @@ TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts
 TL2BracketType := lsb TL2TypeArgument? rsb TL2Type;
 
 TL2TypeArgument := TL2Type | number;
-TL2TypeArgumentDeclaration := lcName cl lcName;
+TL2TypeTemplate := lcName cl lcName;
 
 TL2TypeName := (lcName dot)? lcName;
 TL2Annotation := at lcName;
