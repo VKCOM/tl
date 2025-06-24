@@ -82,7 +82,7 @@ func TestParseTL2(t *testing.T) {
 			_, it := setupIterator(` testNs.TestName  `)
 			state, newIt, _ := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
-			assert.NoError(t, state.Error)
+			assert.Error(t, state.Error)
 			assert.True(t, newIt.expect(ucIdentNS))
 		})
 	})
