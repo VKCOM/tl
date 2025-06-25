@@ -1,8 +1,8 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName TL2Field* funEq TL2TypeDefinition?;
-TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? eq TL2TypeDefinition?;
+TL2FuncDeclaration := TL2TypeName CRC32? TL2Field* funEq TL2TypeDefinition?;
+TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? CRC32? eq TL2TypeDefinition?;
 
 TL2TypeDefinition := TL2Type | TL2Field* | TL2UnionType;
 
@@ -10,7 +10,7 @@ TL2UnionType := TL2UnionTypeVariant (vb TL2UnionTypeVariant)+;
 TL2UnionTypeVariant := TL2Type | TL2UnionConstructor;
 TL2UnionConstructor := ucName TL2Field*;
 
-TL2Field := lcName qm? cl TL2Type;
+TL2Field := ((lcName qm?) | usc) cl TL2Type;
 
 TL2Type := TL2TypeApplication | TL2BracketType;
 
@@ -24,6 +24,7 @@ TL2TypeName := (lcName dot)? lcName;
 TL2Annotation := at lcName;
 
 // tokens
+CRC32 := #[a-f0-9]{8};
 number := [0-9]+;
 ucName := [A-Z][a-zA-Z0-9_]*;
 lcName := [a-z][a-zA-Z0-9_]*;
@@ -40,3 +41,4 @@ rsb := \];
 lts := <;
 gts := >;
 at := @;
+usc := _;

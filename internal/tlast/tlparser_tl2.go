@@ -50,6 +50,7 @@ type TL2Type struct {
 type TL2Field struct {
 	Name       string
 	IsOptional bool
+	IsIgnored  bool
 	Type       TL2Type
 
 	PR     PositionRange
@@ -76,7 +77,7 @@ type TL2UnionConstructor struct {
 }
 
 type TL2UnionTypeVariant struct {
-	TypeDef     TL2Type
+	TypeAlias   TL2Type
 	Constructor TL2UnionConstructor
 
 	IsConstructor bool
@@ -101,18 +102,22 @@ type TL2TypeTemplate struct {
 
 type TL2TypeDeclaration struct {
 	Name              TL2TypeName
+	ID                *uint32
 	TemplateArguments []TL2TypeTemplate
 	Type              TL2TypeDefinition
 
-	PR PositionRange
+	PR   PositionRange
+	PRID PositionRange
 }
 
 type TL2FuncDeclaration struct {
 	Name       TL2TypeName
+	ID         *uint32
 	Arguments  []TL2Field
 	ReturnType TL2TypeDefinition
 
-	PR PositionRange
+	PR   PositionRange
+	PRID PositionRange
 }
 
 type TL2Combinator struct {

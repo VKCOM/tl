@@ -51,6 +51,7 @@ const (
 	plus           = '+'
 	exclamation    = '!'
 	verticalBar    = '|'
+	underscore     = '_'
 )
 
 // TODO - support windows line endings (by skipping '\r')
@@ -175,7 +176,7 @@ func (l *lexer) validateTokens() ([]token, error) {
 		switch l.opts.LexerLanguage {
 		case tl1:
 			switch curToken.tokenType {
-			case verticalBar:
+			case verticalBar, underscore:
 				err = parseErrToken(fmt.Errorf("illegal token for tl1: \"%s\"", curToken.val), curToken, curToken.pos)
 				break
 			}
@@ -268,6 +269,10 @@ func (l *lexer) nextToken() error {
 	case l.str[0] == '#':
 		return l.lexNumberSign()
 	case l.str[0] == '_':
+		if l.opts.LexerLanguage == tl2 {
+			l.advance(1, int(underscore))
+			return nil
+		}
 		if l.opts.AllowBuiltin {
 			w := builtinIdent(l.str)
 			if w == "_" {
