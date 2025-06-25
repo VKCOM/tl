@@ -17,13 +17,16 @@ func TestTL2Lexer(t *testing.T) {
 		testIncorrectCase(t, `@read @write typeName = int | Green | MyConstructor x:int; /* some comment */
 `)
 	})
-	t.Run("Check some symbols ar banned", func(t *testing.T) {
+	t.Run("Check some symbols are banned", func(t *testing.T) {
 		symbols := []string{"{", "}", "(", ")", "+", "*", "!", "%"}
 		for _, symbol := range symbols {
 			t.Run(symbol, func(t *testing.T) {
 				testIncorrectCase(t, symbol)
 			})
 		}
+	})
+	t.Run("Check underscore", func(t *testing.T) {
+		testCorrectCase(t, "_")
 	})
 }
 

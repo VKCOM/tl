@@ -40,6 +40,13 @@ func (state *OptionalState) Fail(error string) {
 	}
 }
 
+func (state *OptionalState) FailWithError(error error) {
+	state.StartProcessing = true
+	if state.Error == nil {
+		state.Error = error
+	}
+}
+
 func (state *OptionalState) HasProgress() bool {
 	return state.StartProcessing && state.Error == nil
 }
@@ -186,11 +193,24 @@ func parseTL2TypeName(tokens tokenIterator, position Position) (state OptionalSt
 	return
 }
 
-// TL2FuncDeclaration := TL2TypeName TL2Field* funEq TL2TypeDefinition?;
+// TL2FuncDeclaration := TL2TypeName CRC32? TL2Field* funEq TL2TypeDefinition?;
 func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position, name TL2TypeName) (state OptionalState, restTokens tokenIterator, result TL2FuncDeclaration) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 	result.Name = name
+
+	if restTokens.checkToken(crc32hash) {
+		result.PRID = restTokens.skipWS(position)
+		crcToken := restTokens.popFront()
+		value, err := strconv.ParseUint(crcToken.val[1:], 16, 32)
+		if err != nil {
+			state.FailWithError(err)
+			return
+		}
+		result.ID = new(uint32)
+		*result.ID = uint32(value)
+		result.PRID.End = restTokens.front().pos
+	}
 
 	state, restTokens, result.Arguments = zeroOrMore(parseTL2Field)(restTokens, position)
 	if state.IsFailed() {
@@ -214,7 +234,7 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 	return
 }
 
-// TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? eq TL2TypeDefinition?;
+// TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? CRC32? eq TL2TypeDefinition?;
 func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position, name TL2TypeName) (state OptionalState, restTokens tokenIterator, result TL2TypeDeclaration) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -248,12 +268,27 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 			return
 		}
 	}
+
+	if restTokens.checkToken(crc32hash) {
+		result.PRID = restTokens.skipWS(position)
+		crcToken := restTokens.popFront()
+		value, err := strconv.ParseUint(crcToken.val[1:], 16, 32)
+		if err != nil {
+			state.FailWithError(err)
+			return
+		}
+		result.ID = new(uint32)
+		*result.ID = uint32(value)
+		result.PRID.End = restTokens.front().pos
+	}
+
 	if restTokens.expect(equalSign) {
 		state.StartProcessing = true
 	} else {
 		restTokens = tokens
 		return
 	}
+
 	var localState OptionalState
 	localState, restTokens, result.Type = parseTL2TypeDefinition(restTokens, position)
 	state.Inherit(localState)
@@ -345,7 +380,7 @@ func parseTL2UnionTypeVariant(tokens tokenIterator, position Position) (state Op
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
-	state, restTokens, result.TypeDef = parseTL2Type(restTokens, position)
+	state, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
 	if !state.StartProcessing {
 		state, restTokens, result.Constructor = parseTL2UnionConstructor(restTokens, position)
 		result.IsConstructor = state.StartProcessing
@@ -376,7 +411,7 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 	return
 }
 
-// TL2Field := (lcName qm? cl) TL2Type;
+// TL2Field := ((lcName qm?) | ucs) cl TL2Type;
 func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2Field) {
 	defer func() {
 		if !state.StartProcessing {
@@ -387,15 +422,24 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 	switch {
-	case restTokens.checkToken(lcIdent):
+	case restTokens.checkToken(lcIdent) || restTokens.checkToken(underscore):
 		result.PRName = restTokens.skipWS(position)
 
-		result.Name = restTokens.popFront().val
+		nameToken := restTokens.popFront()
+		result.Name = nameToken.val
+		if nameToken.tokenType == underscore {
+			result.IsIgnored = true
+		}
 		result.PRName.End = restTokens.front().pos
 
 		if restTokens.expect(questionMark) {
-			result.IsOptional = true
-			state.StartProcessing = true
+			if result.IsIgnored {
+				state.Fail("ignored field can't be optional")
+				break
+			} else {
+				result.IsOptional = true
+				state.StartProcessing = true
+			}
 		}
 		if !restTokens.expect(colon) {
 			if state.StartProcessing {
