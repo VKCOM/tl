@@ -54,7 +54,7 @@ func (t *TL2FuncDeclaration) Print(sb *strings.Builder) {
 		sb.WriteString(" ")
 		argument.Print(sb)
 	}
-	sb.WriteString("=>")
+	sb.WriteString(" => ")
 	t.ReturnType.Print(sb)
 }
 
@@ -75,7 +75,7 @@ func (t *TL2TypeDeclaration) Print(sb *strings.Builder) {
 	if t.ID != nil {
 		sb.WriteString(fmt.Sprintf("#%08x", *t.ID))
 	}
-	sb.WriteString("=")
+	sb.WriteString(" = ")
 	t.Type.Print(sb)
 }
 
@@ -83,7 +83,7 @@ func (t *TL2TypeDefinition) Print(sb *strings.Builder) {
 	if t.IsUnionType {
 		for i, variant := range t.UnionType.Variants {
 			if i != 0 {
-				sb.WriteString("|")
+				sb.WriteString(" | ")
 			}
 			variant.Print(sb)
 		}

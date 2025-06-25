@@ -193,7 +193,7 @@ func parseTL2TypeName(tokens tokenIterator, position Position) (state OptionalSt
 	return
 }
 
-// TL2FuncDeclaration := TL2TypeName CRC32? TL2Field* funEq TL2TypeDefinition?;
+// TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
 func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position, name TL2TypeName) (state OptionalState, restTokens tokenIterator, result TL2FuncDeclaration) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -210,6 +210,9 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 		result.ID = new(uint32)
 		*result.ID = uint32(value)
 		result.PRID.End = restTokens.front().pos
+	} else {
+		state.StartProcessing = false
+		return
 	}
 
 	state, restTokens, result.Arguments = zeroOrMore(parseTL2Field)(restTokens, position)
