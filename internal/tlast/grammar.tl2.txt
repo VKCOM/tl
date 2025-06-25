@@ -1,7 +1,7 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName CRC32? TL2Field* funEq TL2TypeDefinition?;
+TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
 TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? CRC32? eq TL2TypeDefinition?;
 
 TL2TypeDefinition := TL2Type | TL2Field* | TL2UnionType;

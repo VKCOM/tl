@@ -302,7 +302,7 @@ func TestParseTL2(t *testing.T) {
 
 	t.Run("function declration", func(t *testing.T) {
 		t.Run("simple function", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName x:int => int; `)
+			_, it := setupIterator(` testNs.testName#09123456 x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -324,6 +324,12 @@ func TestParseTL2(t *testing.T) {
 			assert.Equal(t, "int", comb.FuncDecl.ReturnType.TypeAlias.String())
 		})
 
+		t.Run("function without tag", func(t *testing.T) {
+			_, it := setupIterator(` testNs.testName x:int => int; `)
+			_, _, err := parseTL2Combinator(it)
+			assert.Error(t, err)
+		})
+
 		t.Run("simple function with crc32", func(t *testing.T) {
 			_, it := setupIterator(` testNs.testName#90abcdef x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
@@ -337,7 +343,7 @@ func TestParseTL2(t *testing.T) {
 		})
 
 		t.Run("simple function no arguments", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName => int; `)
+			_, it := setupIterator(` testNs.testName#09123456 => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -351,7 +357,7 @@ func TestParseTL2(t *testing.T) {
 		})
 
 		t.Run("function with union type result", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName x:int => int | NonFound | Found name:string _:int; `)
+			_, it := setupIterator(` testNs.testName#09123456 x:int => int | NonFound | Found name:string _:int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -509,7 +515,7 @@ func TestParseTL2(t *testing.T) {
 			_, it := setupIterator(` testNs.testName <x:int,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
 			comb, _, _ := parseTL2Combinator(it)
 			assert.Equal(t,
-				`testNs.testName<x:int,y:type>#09abcdef=Green x:int|Red|string;`,
+				`testNs.testName<x:int,y:type>#09abcdef = Green x:int | Red | string;`,
 				comb.String(),
 			)
 		})
@@ -521,12 +527,12 @@ testNs.testName <x:int,  y:type  > =
 	| Red _:int
 	| string // my comment  
 ; 
-@x@r testFunc a:uint32 t:vector<vector < int>> 
+@x@r testFunc#09123456 a:uint32 t:vector<vector < int>> 
 	=> int;`
 			combs, _ := ParseTL2(str)
 			assert.Equal(t,
-				`testNs.testName<x:int,y:type>=Green x:int|Red _:int|string;
-@x @r testFunc a:uint32 t:vector<vector<int>>=>int;
+				`testNs.testName<x:int,y:type> = Green x:int | Red _:int | string;
+@x @r testFunc#09123456 a:uint32 t:vector<vector<int>> => int;
 `,
 				combs.String(),
 			)
