@@ -1,6 +1,7 @@
 package tlast
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -265,6 +266,45 @@ func TestParseTL2(t *testing.T) {
 				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
 			})
 
+			t.Run("union with constructors", func(t *testing.T) {
+				_, it := setupIterator(`
+testNs.testName = 
+	| Green x:int 
+	| Red 
+	| string
+	;`)
+				comb, newIt, err := parseTL2Combinator(it)
+				assert.NoError(t, err)
+				assert.True(t, newIt.expect(eof))
+				assert.False(t, comb.IsFunction)
+				assert.Equal(t, "testNs", comb.TypeDecl.Name.Namespace)
+				assert.Equal(t, "testName", comb.TypeDecl.Name.Name)
+
+				assert.False(t, comb.TypeDecl.Type.IsConstructorFields)
+				assert.True(t, comb.TypeDecl.Type.IsUnionType)
+
+				union := comb.TypeDecl.Type.UnionType
+
+				assert.Equal(t, 3, len(union.Variants))
+
+				// variant 0
+				assert.True(t, union.Variants[0].IsConstructor)
+				assert.Equal(t, "Green", union.Variants[0].Constructor.Name)
+				assert.Equal(t, 1, len(union.Variants[0].Constructor.Fields))
+
+				assert.Equal(t, "", union.Variants[0].Constructor.Fields[0].Type.SomeType.Name.Namespace)
+				assert.Equal(t, "int", union.Variants[0].Constructor.Fields[0].Type.SomeType.Name.Name)
+
+				// variant 1
+				assert.True(t, union.Variants[1].IsConstructor)
+				assert.Equal(t, "Red", union.Variants[1].Constructor.Name)
+				assert.Equal(t, 0, len(union.Variants[1].Constructor.Fields))
+
+				// variant 2
+				assert.Equal(t, "", union.Variants[2].TypeAlias.SomeType.Name.Namespace)
+				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
+			})
+
 			t.Run("basic definition with templates", func(t *testing.T) {
 				_, it := setupIterator(` testNs.testName<x:type> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
@@ -277,6 +317,13 @@ func TestParseTL2(t *testing.T) {
 
 				assert.Equal(t, "x", arg.Name)
 				assert.Equal(t, "type", arg.Category)
+			})
+
+			t.Run("union", func(t *testing.T) {
+				_, it := setupIterator(` testNs.testName<x:type> = |; `)
+				_, _, err := parseTL2Combinator(it)
+				fmt.Println(err)
+				assert.Error(t, err)
 			})
 
 			t.Run("basic definition with multiple templates", func(t *testing.T) {

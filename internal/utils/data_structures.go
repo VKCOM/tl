@@ -25,6 +25,14 @@ func Keys[K comparable, V any](m map[K]V) (res []K) {
 }
 
 // unstable
+func Values[K comparable, V any](m map[K]V) (res []V) {
+	for _, v := range m {
+		res = append(res, v)
+	}
+	return
+}
+
+// unstable
 func SetToSlice[T comparable](s map[T]bool) []T {
 	m := make([]T, 0)
 	for k := range s {

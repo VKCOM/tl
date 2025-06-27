@@ -304,7 +304,7 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 	return
 }
 
-// TL2TypeDefinition = TL2Type | TL2Field* | TL2UnionType;
+// TL2TypeDefinition = TL2TypeRef | TL2Field* | TL2UnionType;
 func parseTL2TypeDefinition(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeDefinition) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -325,7 +325,7 @@ func parseTL2TypeDefinition(tokens tokenIterator, position Position) (state Opti
 	return
 }
 
-// TL2UnionType := TL2UnionTypeVariant (vb TL2UnionTypeVariant)+;
+// TL2UnionType := vb? TL2UnionTypeVariant (vb TL2UnionTypeVariant)+;
 func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionType) {
 	defer func() {
 		if !state.StartProcessing {
@@ -336,13 +336,24 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
+	if restTokens.expect(verticalBar) {
+		state.StartProcessing = true
+	}
+
 	result.Variants = make([]TL2UnionTypeVariant, 1)
-	state, restTokens, result.Variants[0] = parseTL2UnionTypeVariant(restTokens, position)
-	if !state.HasProgress() {
+	var localState OptionalState
+	localState, restTokens, result.Variants[0] = parseTL2UnionTypeVariant(restTokens, position)
+	if localState.IsFailed() {
+		state.Fail("can't parse first variant")
+		return
+	} else if state.StartProcessing && !state.IsOmitted() {
+		state.Fail("expected first variant of union")
 		return
 	}
 
-	if !result.Variants[0].IsConstructor {
+	state.Inherit(localState)
+
+	if !state.StartProcessing && !result.Variants[0].IsConstructor {
 		// maybe typedef
 		state.StartProcessing = false
 	}
@@ -378,7 +389,7 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	return
 }
 
-// TL2UnionTypeVariant := TL2Type | TL2UnionConstructor;
+// TL2UnionTypeVariant := TL2TypeRef | TL2UnionConstructor;
 func parseTL2UnionTypeVariant(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionTypeVariant) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -414,7 +425,7 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 	return
 }
 
-// TL2Field := ((lcName qm?) | ucs) cl TL2Type;
+// TL2Field := ((lcName qm?) | ucs) cl TL2TypeRef;
 func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2Field) {
 	defer func() {
 		if !state.StartProcessing {
@@ -466,8 +477,8 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 	return
 }
 
-// TL2Type := TL2TypeApplication | TL2BracketType;
-func parseTL2Type(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2Type) {
+// TL2TypeRef := TL2TypeApplication | TL2BracketType;
+func parseTL2Type(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeRef) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
@@ -531,7 +542,7 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 	return
 }
 
-// TL2BracketType := lsb TL2TypeArgument? rsb TL2Type;
+// TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;
 func parseTL2BracketType(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2BracketType) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -570,7 +581,7 @@ func parseTL2BracketType(tokens tokenIterator, position Position) (state Optiona
 	return
 }
 
-// TL2TypeArgument := TL2Type | number;
+// TL2TypeArgument := TL2TypeRef | number;
 func parseTL2TypeArgument(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeArgument) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -613,10 +624,13 @@ func parseTL2TypeArgumentDeclaration(tokens tokenIterator, position Position) (s
 			break
 		}
 
-		result.Category = restTokens.front().val
+		result.Category = TL2TypeCategory(restTokens.front().val)
 		result.PRCategory = restTokens.skipWS(position)
 		result.PRCategory.End = restTokens.front().pos
 		restTokens.popFront()
+		if !result.Category.IsLegalCategory() {
+			state.FailWithError(fmt.Errorf("unknown category of template: %s (allowed options: \"type\", \"uint32\")", result.Category))
+		}
 	default:
 		state.StartProcessing = false
 	}
