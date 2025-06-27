@@ -18,7 +18,7 @@ func (t *TL2Combinator) String() string {
 	return sb.String()
 }
 
-func (t *TL2Type) String() string {
+func (t *TL2TypeRef) String() string {
 	sb := strings.Builder{}
 	t.Print(&sb)
 	return sb.String()
@@ -68,7 +68,7 @@ func (t *TL2TypeDeclaration) Print(sb *strings.Builder) {
 			}
 			sb.WriteString(argument.Name)
 			sb.WriteString(":")
-			sb.WriteString(argument.Category)
+			sb.WriteString(string(argument.Category))
 		}
 		sb.WriteString(">")
 	}
@@ -124,7 +124,7 @@ func (t *TL2Field) Print(sb *strings.Builder) {
 	t.Type.Print(sb)
 }
 
-func (t *TL2Type) Print(sb *strings.Builder) {
+func (t *TL2TypeRef) Print(sb *strings.Builder) {
 	if t.IsBracket {
 		t.BracketType.Print(sb)
 	} else {

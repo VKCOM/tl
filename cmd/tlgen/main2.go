@@ -49,6 +49,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// General TL2
 	flag.BoolVar(&opt.GenerateTL2, "tl2-generate", false,
 		"generate code for tl2 methods (currently work only for golang)")
+	flag.StringVar(&opt.TL2MigrationFile, "tl2-migration-file", "",
+		"file to create .tl2 file with migrated files")
 
 	// Linter
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
@@ -199,6 +201,17 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 		if err = gen.WriteToDir(opt.Outdir); err != nil {
 			return err // Context is already in err
+		}
+	}
+	if opt.TL2MigrationFile != "" {
+		file := gen.MigrateToTL2()
+		sb := strings.Builder{}
+		file.Print(&sb)
+		if opt.Verbose {
+			log.Print("generating TL2 file...")
+		}
+		if err := os.WriteFile(opt.TL2MigrationFile, []byte(sb.String()), 0644); err != nil {
+			return fmt.Errorf("error writing tl2 file: %w", err)
 		}
 	}
 	if opt.TLOPath != "" {

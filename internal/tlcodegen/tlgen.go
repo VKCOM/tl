@@ -316,8 +316,9 @@ type Gen2Options struct {
 	AddFactoryData    bool
 
 	// TL2
-	GenerateTL2  bool
-	TL2WhiteList string
+	GenerateTL2      bool
+	TL2MigrationFile string
+	TL2WhiteList     string
 
 	// Linter
 	Schema2Compare string
@@ -459,6 +460,15 @@ func (info *NatUsagesInfo) GetAffectedBitsNatField(combinator tlast.Name, fieldI
 		}
 	}
 	return make(map[int]bool)
+}
+
+func (info *NatUsagesInfo) GetInfluencedNatFieldsToTemplate(combinator tlast.Name, templateId int) map[tlast.Name]map[int]bool {
+	if m, ok := info.TypeNameAndArgToAffectingCombinatorsNatFields[combinator]; ok && len(m) != 0 {
+		if natFields, ok := m[templateId]; ok && len(natFields) != 0 {
+			return natFields
+		}
+	}
+	return make(map[tlast.Name]map[int]bool)
 }
 
 func checkNatUsages(tl *tlast.TL) NatUsagesInfo {

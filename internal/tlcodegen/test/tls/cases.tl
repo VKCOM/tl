@@ -175,6 +175,13 @@ casesTL2.testArrayFlexibleBool
     n:#
     arr:n*[Bool] = casesTL2.TestArrayFlexibleBool;
 
+casesTL2.testFixedParam
+    x: casesTL2.testObjectWithParam<4> = casesTL2.TestFixedParam;
+
+casesTL2.testObjectWithParam {n:#}
+    x:n.0?int
+    y:n*[int] = casesTL2.TestObjectWithParam n;
+
 @read casesTL2.testFunctionNoDep1 x:int => Int;
 @read casesTL2.testFunctionNoDep2 x:int => True;
 @read casesTL2.testFunctionNoDep3 x:int => Vector<int>;

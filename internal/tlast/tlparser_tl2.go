@@ -15,7 +15,7 @@ type TL2Annotation struct {
 }
 
 type TL2TypeArgument struct {
-	Type   TL2Type
+	Type   TL2TypeRef
 	Number uint32
 
 	IsNumber bool
@@ -33,12 +33,12 @@ type TL2TypeApplication struct {
 
 type TL2BracketType struct {
 	IndexType *TL2TypeArgument // nil means that it is vector
-	ArrayType TL2Type
+	ArrayType TL2TypeRef
 
 	PR PositionRange
 }
 
-type TL2Type struct {
+type TL2TypeRef struct {
 	SomeType    *TL2TypeApplication
 	BracketType *TL2BracketType
 
@@ -51,14 +51,14 @@ type TL2Field struct {
 	Name       string
 	IsOptional bool
 	IsIgnored  bool
-	Type       TL2Type
+	Type       TL2TypeRef
 
 	PR     PositionRange
 	PRName PositionRange
 }
 
 type TL2TypeDefinition struct {
-	TypeAlias         TL2Type
+	TypeAlias         TL2TypeRef
 	ConstructorFields []TL2Field
 	UnionType         TL2UnionType
 
@@ -77,7 +77,7 @@ type TL2UnionConstructor struct {
 }
 
 type TL2UnionTypeVariant struct {
-	TypeAlias   TL2Type
+	TypeAlias   TL2TypeRef
 	Constructor TL2UnionConstructor
 
 	IsConstructor bool
@@ -91,9 +91,11 @@ type TL2UnionType struct {
 	PR PositionRange
 }
 
+type TL2TypeCategory string
+
 type TL2TypeTemplate struct {
 	Name     string
-	Category string
+	Category TL2TypeCategory
 
 	PR         PositionRange
 	PRName     PositionRange
@@ -148,4 +150,16 @@ func (t TL2TypeName) String() string {
 
 func (t TL2TypeDefinition) IsAlias() bool {
 	return !t.IsUnionType && !t.IsConstructorFields
+}
+
+func (c TL2TypeCategory) IsType() bool {
+	return c == "type"
+}
+
+func (c TL2TypeCategory) IsUint32() bool {
+	return c == "uint32"
+}
+
+func (c TL2TypeCategory) IsLegalCategory() bool {
+	return c.IsUint32() || c.IsType()
 }
