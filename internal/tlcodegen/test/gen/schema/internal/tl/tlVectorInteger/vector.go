@@ -32,7 +32,6 @@ func (item *VectorInteger) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorInteger.BuiltinVectorIntegerRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorInteger) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *VectorInteger) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorInteger) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

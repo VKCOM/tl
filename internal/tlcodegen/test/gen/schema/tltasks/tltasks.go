@@ -9,6 +9,7 @@ package tltasks
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTasksTaskInfoMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorTasksQueueTypeInfo"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksAddTask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTask"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tltasks/tlTasksCronTaskWithId"
@@ -32,23 +33,24 @@ import (
 )
 
 type (
-	AddTask           = tlTasksAddTask.TasksAddTask
-	CronTask          = tlTasksCronTask.TasksCronTask
-	CronTaskWithId    = tlTasksCronTaskWithId.TasksCronTaskWithId
-	CronTime          = tlTasksCronTime.TasksCronTime
-	FullFilledCron    = tlTasksFullFilledCron.TasksFullFilledCron
-	GetAnyTask        = tlTasksGetAnyTask.TasksGetAnyTask
-	GetQueueSize      = tlTasksGetQueueSize.TasksGetQueueSize
-	GetQueueTypes     = tlTasksGetQueueTypes.TasksGetQueueTypes
-	GetTaskFromQueue  = tlTasksGetTaskFromQueue.TasksGetTaskFromQueue
-	QueueStats        = tlTasksQueueStats.TasksQueueStats
-	QueueTypeInfo     = tlTasksQueueTypeInfo.TasksQueueTypeInfo
-	QueueTypeSettings = tlTasksQueueTypeSettings.TasksQueueTypeSettings
-	QueueTypeStats    = tlTasksQueueTypeStats.TasksQueueTypeStats
-	Task              = tlTasksTask.TasksTask
-	TaskInfo          = tlTasksTaskInfo.TasksTaskInfo
-	TaskInfoMaybe     = tlTasksTaskInfoMaybe.TasksTaskInfoMaybe
-	TaskStatus        = tlTasksTaskStatus.TasksTaskStatus
+	AddTask                  = tlTasksAddTask.TasksAddTask
+	CronTask                 = tlTasksCronTask.TasksCronTask
+	CronTaskWithId           = tlTasksCronTaskWithId.TasksCronTaskWithId
+	CronTime                 = tlTasksCronTime.TasksCronTime
+	FullFilledCron           = tlTasksFullFilledCron.TasksFullFilledCron
+	GetAnyTask               = tlTasksGetAnyTask.TasksGetAnyTask
+	GetQueueSize             = tlTasksGetQueueSize.TasksGetQueueSize
+	GetQueueTypes            = tlTasksGetQueueTypes.TasksGetQueueTypes
+	GetTaskFromQueue         = tlTasksGetTaskFromQueue.TasksGetTaskFromQueue
+	QueueStats               = tlTasksQueueStats.TasksQueueStats
+	QueueTypeInfo            = tlTasksQueueTypeInfo.TasksQueueTypeInfo
+	QueueTypeSettings        = tlTasksQueueTypeSettings.TasksQueueTypeSettings
+	QueueTypeStats           = tlTasksQueueTypeStats.TasksQueueTypeStats
+	Task                     = tlTasksTask.TasksTask
+	TaskInfo                 = tlTasksTaskInfo.TasksTaskInfo
+	TaskInfoMaybe            = tlTasksTaskInfoMaybe.TasksTaskInfoMaybe
+	TaskStatus               = tlTasksTaskStatus.TasksTaskStatus
+	VectorTasksQueueTypeInfo = tlVectorTasksQueueTypeInfo.VectorTasksQueueTypeInfo
 )
 
 func TaskStatusInProgress() TaskStatus {

@@ -37,7 +37,6 @@ func (item *TasksGetTaskFromQueue) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.QueueId)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TasksGetTaskFromQueue) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -55,7 +54,6 @@ func (item *TasksGetTaskFromQueue) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TasksGetTaskFromQueue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

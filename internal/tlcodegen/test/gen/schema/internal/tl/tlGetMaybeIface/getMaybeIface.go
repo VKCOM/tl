@@ -32,7 +32,6 @@ func (item *GetMaybeIface) Read(w []byte) (_ []byte, err error) {
 	return item.X.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *GetMaybeIface) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *GetMaybeIface) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *GetMaybeIface) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

@@ -30,7 +30,6 @@ func (item *Pkg2Foo) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Pkg2Foo) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -47,7 +46,6 @@ func (item *Pkg2Foo) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Pkg2Foo) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

@@ -39,7 +39,6 @@ func (item *MyInt) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Val1)
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -57,7 +56,6 @@ func (item *MyInt) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -162,7 +160,6 @@ func (item *MyString) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Val2)
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyString) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -180,7 +177,6 @@ func (item *MyString) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyString) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -330,7 +326,6 @@ func (item *MyValue) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyValue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

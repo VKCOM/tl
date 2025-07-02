@@ -32,7 +32,6 @@ func (item *VectorEitherIntVectorService6FindWithBoundsResult) Read(w []byte) (_
 	return tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *VectorEitherIntVectorService6FindWithBoundsResult) ReadBoxed(w []byt
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

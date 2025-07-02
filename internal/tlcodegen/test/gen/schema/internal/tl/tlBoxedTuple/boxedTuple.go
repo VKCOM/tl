@@ -34,7 +34,6 @@ func (item *BoxedTuple) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple3Int.BuiltinTuple3IntRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *BoxedTuple) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -52,7 +51,6 @@ func (item *BoxedTuple) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BoxedTuple) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

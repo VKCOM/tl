@@ -41,7 +41,6 @@ func (item *Service1Longvalue) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Flags)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1Longvalue) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -59,7 +58,6 @@ func (item *Service1Longvalue) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1Longvalue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -190,7 +188,6 @@ func (item *Service1LongvalueWithTime) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.ModificationTime)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1LongvalueWithTime) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -209,7 +206,6 @@ func (item *Service1LongvalueWithTime) ReadBoxed(w []byte) (_ []byte, err error)
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1LongvalueWithTime) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -344,7 +340,6 @@ func (item *Service1NotFound) Reset() {}
 
 func (item *Service1NotFound) Read(w []byte) (_ []byte, err error) { return w, nil }
 
-// This method is general version of Write, use it instead!
 func (item *Service1NotFound) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -360,7 +355,6 @@ func (item *Service1NotFound) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1NotFound) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -441,7 +435,6 @@ func (item *Service1Strvalue) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Flags)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1Strvalue) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -459,7 +452,6 @@ func (item *Service1Strvalue) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1Strvalue) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -590,7 +582,6 @@ func (item *Service1StrvalueWithTime) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.ModificationTime)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1StrvalueWithTime) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -609,7 +600,6 @@ func (item *Service1StrvalueWithTime) ReadBoxed(w []byte) (_ []byte, err error) 
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1StrvalueWithTime) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -856,7 +846,6 @@ func (item *Service1Value) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1Value) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

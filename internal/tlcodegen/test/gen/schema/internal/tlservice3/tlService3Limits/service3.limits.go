@@ -49,7 +49,6 @@ func (item *Service3Limits) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitRead(w, &item.CustomGroupCountLimits)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service3Limits) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -69,7 +68,6 @@ func (item *Service3Limits) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service3Limits) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

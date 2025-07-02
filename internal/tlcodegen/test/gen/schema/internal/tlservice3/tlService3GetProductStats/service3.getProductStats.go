@@ -37,7 +37,6 @@ func (item *Service3GetProductStats) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Types)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service3GetProductStats) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -55,7 +54,6 @@ func (item *Service3GetProductStats) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service3GetProductStats) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

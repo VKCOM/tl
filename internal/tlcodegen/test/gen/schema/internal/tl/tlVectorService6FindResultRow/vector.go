@@ -32,7 +32,6 @@ func (item *VectorService6FindResultRow) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *VectorService6FindResultRow) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

@@ -42,6 +42,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestVector"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestArrayFixedBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestArrayFlexibleBool"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFixedParam"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep3"
@@ -50,6 +51,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestObject"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestParamsGeneration"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestVectorBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases_bytes/tlCasesBytesTestArray"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases_bytes/tlCasesBytesTestDictAny"
@@ -121,6 +123,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytes(0xabc39b68, func() meta.Object { var ret tlCasesReplace7plusplus.CasesReplace7plusplus; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xf704cf4e, func() meta.Object { var ret tlCasesTL2TestArrayFixedBool.CasesTL2TestArrayFixedBool; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x974a9b29, func() meta.Object { var ret tlCasesTL2TestArrayFlexibleBool.CasesTL2TestArrayFlexibleBool; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0x22c48297, func() meta.Object { var ret tlCasesTL2TestFixedParam.CasesTL2TestFixedParam; return &ret })
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x1b8b9feb, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep1.CasesTL2TestFunctionNoDep1; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep1.CasesTL2TestFunctionNoDep1; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x0a2c0bf9, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep2.CasesTL2TestFunctionNoDep2; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep2.CasesTL2TestFunctionNoDep2; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0xf020849b, func() meta.Object { var ret tlCasesTL2TestFunctionNoDep3.CasesTL2TestFunctionNoDep3; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionNoDep3.CasesTL2TestFunctionNoDep3; return &ret }, nil)
@@ -129,6 +132,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForFunctionBytes(0xb6c63b07, func() meta.Object { var ret tlCasesTL2TestFunctionWithDep1.CasesTL2TestFunctionWithDep1; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionWithDep1.CasesTL2TestFunctionWithDep1; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x9d44a2fd, func() meta.Object { var ret tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2; return &ret }, func() meta.Function { var ret tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForObjectBytes(0x4f96dd95, func() meta.Object { var ret tlCasesTL2TestObject.CasesTL2TestObject; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0xaac2f033, func() meta.Object { var ret tlCasesTL2TestParamsGeneration.CasesTL2TestParamsGeneration; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x644bb447, func() meta.Object { var ret tlCasesTL2TestVectorBool.CasesTL2TestVectorBool; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xe3fae936, func() meta.Object {
 		var ret tlCasesTestAllPossibleFieldConfigsContainer.CasesTestAllPossibleFieldConfigsContainer

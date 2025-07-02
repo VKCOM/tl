@@ -91,7 +91,6 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) 
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -214,7 +213,6 @@ func (item *LeftService6ErrorVectorService6FindResultRow) Read(w []byte) (_ []by
 	return item.Value.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -231,7 +229,6 @@ func (item *LeftService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (_
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -329,7 +326,6 @@ func (item *RightService6ErrorVectorService6FindResultRow) Read(w []byte) (_ []b
 	return tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *RightService6ErrorVectorService6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -346,7 +342,6 @@ func (item *RightService6ErrorVectorService6FindResultRow) ReadBoxed(w []byte) (
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *RightService6ErrorVectorService6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

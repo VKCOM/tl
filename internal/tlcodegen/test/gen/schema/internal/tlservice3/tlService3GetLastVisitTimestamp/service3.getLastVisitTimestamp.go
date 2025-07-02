@@ -31,7 +31,6 @@ func (item *Service3GetLastVisitTimestamp) Read(w []byte) (_ []byte, err error) 
 	return basictl.IntRead(w, &item.UserId)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service3GetLastVisitTimestamp) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -48,7 +47,6 @@ func (item *Service3GetLastVisitTimestamp) ReadBoxed(w []byte) (_ []byte, err er
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service3GetLastVisitTimestamp) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

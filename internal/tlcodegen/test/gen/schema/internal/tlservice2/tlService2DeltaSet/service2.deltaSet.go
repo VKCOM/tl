@@ -37,7 +37,6 @@ func (item *Service2DeltaSet) Read(w []byte, nat_objectIdLength uint32, nat_intC
 	return item.Counters.Read(w, nat_intCountersNum, nat_floatCountersNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service2DeltaSet) WriteGeneral(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	return item.Write(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
@@ -59,7 +58,6 @@ func (item *Service2DeltaSet) ReadBoxed(w []byte, nat_objectIdLength uint32, nat
 	return item.Read(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service2DeltaSet) WriteBoxedGeneral(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }

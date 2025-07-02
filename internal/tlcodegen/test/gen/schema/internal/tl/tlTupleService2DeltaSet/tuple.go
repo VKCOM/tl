@@ -32,7 +32,6 @@ func (item *TupleService2DeltaSet) Read(w []byte, nat_tobjectIdLength uint32, na
 	return tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetRead(w, ptr, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleService2DeltaSet) WriteGeneral(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
@@ -49,7 +48,6 @@ func (item *TupleService2DeltaSet) ReadBoxed(w []byte, nat_tobjectIdLength uint3
 	return item.Read(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleService2DeltaSet) WriteBoxedGeneral(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }

@@ -32,7 +32,6 @@ func (item *MyMcValueVector) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorService1Value.BuiltinVectorService1ValueRead(w, &item.Xs)
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyMcValueVector) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *MyMcValueVector) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyMcValueVector) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

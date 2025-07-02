@@ -30,7 +30,6 @@ func (item *UniqueStringToInt) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Key)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UniqueStringToInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -47,7 +46,6 @@ func (item *UniqueStringToInt) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UniqueStringToInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

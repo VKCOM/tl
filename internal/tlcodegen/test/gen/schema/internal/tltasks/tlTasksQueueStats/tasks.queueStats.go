@@ -103,7 +103,6 @@ func (item *TasksQueueStats) Read(w []byte, nat_fields_mask uint32) (_ []byte, e
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *TasksQueueStats) WriteGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	return item.Write(w, nat_fields_mask), nil
 }
@@ -128,7 +127,6 @@ func (item *TasksQueueStats) ReadBoxed(w []byte, nat_fields_mask uint32) (_ []by
 	return item.Read(w, nat_fields_mask)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TasksQueueStats) WriteBoxedGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_fields_mask), nil
 }

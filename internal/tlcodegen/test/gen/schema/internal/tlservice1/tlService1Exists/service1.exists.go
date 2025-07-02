@@ -31,7 +31,6 @@ func (item *Service1Exists) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Key)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1Exists) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -48,7 +47,6 @@ func (item *Service1Exists) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1Exists) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

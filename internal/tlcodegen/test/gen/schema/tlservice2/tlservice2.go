@@ -8,6 +8,8 @@
 package tlservice2
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService2CounterSet"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService2DeltaSet"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2AddOrIncrMany"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2CounterSet"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice2/tlService2DeltaSet"
@@ -17,10 +19,12 @@ import (
 )
 
 type (
-	AddOrIncrMany = tlService2AddOrIncrMany.Service2AddOrIncrMany
-	CounterSet    = tlService2CounterSet.Service2CounterSet
-	DeltaSet      = tlService2DeltaSet.Service2DeltaSet
-	ObjectId      = tlService2ObjectId.Service2ObjectId
-	Set           = tlService2Set.Service2Set
-	SetObjectTtl  = tlService2SetObjectTtl.Service2SetObjectTtl
+	AddOrIncrMany           = tlService2AddOrIncrMany.Service2AddOrIncrMany
+	CounterSet              = tlService2CounterSet.Service2CounterSet
+	DeltaSet                = tlService2DeltaSet.Service2DeltaSet
+	ObjectId                = tlService2ObjectId.Service2ObjectId
+	Set                     = tlService2Set.Service2Set
+	SetObjectTtl            = tlService2SetObjectTtl.Service2SetObjectTtl
+	TupleService2CounterSet = tlTupleService2CounterSet.TupleService2CounterSet
+	TupleService2DeltaSet   = tlTupleService2DeltaSet.TupleService2DeltaSet
 )

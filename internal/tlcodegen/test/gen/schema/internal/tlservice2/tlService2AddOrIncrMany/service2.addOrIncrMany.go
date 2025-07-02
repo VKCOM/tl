@@ -65,7 +65,6 @@ func (item *Service2AddOrIncrMany) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetRead(w, &item.Deltas, item.ObjectsNum, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service2AddOrIncrMany) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -94,7 +93,6 @@ func (item *Service2AddOrIncrMany) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service2AddOrIncrMany) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }

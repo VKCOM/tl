@@ -8,6 +8,12 @@
 package tlservice6
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_e0e20d17984738a60e3bf741bd7db2e9"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_ea8339e8d6257cc96a27be3f42a07a87"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorEitherIntVectorService6FindWithBoundsResult"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorEitherService6ErrorVectorService6FindResultRow"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService6FindResultRow"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService6FindWithBoundsResult"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6Error"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6FindResultRow"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice6/tlService6FindWithBoundsResult"
@@ -16,9 +22,19 @@ import (
 )
 
 type (
-	Error                = tlService6Error.Service6Error
-	FindResultRow        = tlService6FindResultRow.Service6FindResultRow
-	FindWithBoundsResult = tlService6FindWithBoundsResult.Service6FindWithBoundsResult
-	MultiFind            = tlService6MultiFind.Service6MultiFind
-	MultiFindWithBounds  = tlService6MultiFindWithBounds.Service6MultiFindWithBounds
+	EitherIntVectorService6FindWithBoundsResult          = cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult
+	EitherService6ErrorVectorService6FindResultRow       = cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow
+	Error                                                = tlService6Error.Service6Error
+	FindResultRow                                        = tlService6FindResultRow.Service6FindResultRow
+	FindWithBoundsResult                                 = tlService6FindWithBoundsResult.Service6FindWithBoundsResult
+	LeftIntVectorService6FindWithBoundsResult            = cycle_ea8339e8d6257cc96a27be3f42a07a87.LeftIntVectorService6FindWithBoundsResult
+	LeftService6ErrorVectorService6FindResultRow         = cycle_e0e20d17984738a60e3bf741bd7db2e9.LeftService6ErrorVectorService6FindResultRow
+	MultiFind                                            = tlService6MultiFind.Service6MultiFind
+	MultiFindWithBounds                                  = tlService6MultiFindWithBounds.Service6MultiFindWithBounds
+	RightIntVectorService6FindWithBoundsResult           = cycle_ea8339e8d6257cc96a27be3f42a07a87.RightIntVectorService6FindWithBoundsResult
+	RightService6ErrorVectorService6FindResultRow        = cycle_e0e20d17984738a60e3bf741bd7db2e9.RightService6ErrorVectorService6FindResultRow
+	VectorEitherIntVectorService6FindWithBoundsResult    = tlVectorEitherIntVectorService6FindWithBoundsResult.VectorEitherIntVectorService6FindWithBoundsResult
+	VectorEitherService6ErrorVectorService6FindResultRow = tlVectorEitherService6ErrorVectorService6FindResultRow.VectorEitherService6ErrorVectorService6FindResultRow
+	VectorService6FindResultRow                          = tlVectorService6FindResultRow.VectorService6FindResultRow
+	VectorService6FindWithBoundsResult                   = tlVectorService6FindWithBoundsResult.VectorService6FindWithBoundsResult
 )

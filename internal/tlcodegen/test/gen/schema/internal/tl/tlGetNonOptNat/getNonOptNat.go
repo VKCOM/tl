@@ -39,7 +39,6 @@ func (item *GetNonOptNat) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.Xs, item.N)
 }
 
-// This method is general version of Write, use it instead!
 func (item *GetNonOptNat) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -60,7 +59,6 @@ func (item *GetNonOptNat) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *GetNonOptNat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }

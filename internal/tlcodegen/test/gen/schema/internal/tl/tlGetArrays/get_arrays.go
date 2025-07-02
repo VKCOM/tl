@@ -42,7 +42,6 @@ func (item *GetArrays) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple5Int.BuiltinTuple5IntRead(w, &item.B)
 }
 
-// This method is general version of Write, use it instead!
 func (item *GetArrays) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -63,7 +62,6 @@ func (item *GetArrays) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *GetArrays) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }

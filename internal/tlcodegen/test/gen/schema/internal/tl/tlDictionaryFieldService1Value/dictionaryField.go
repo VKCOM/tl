@@ -36,7 +36,6 @@ func (item *DictionaryFieldService1Value) Read(w []byte) (_ []byte, err error) {
 	return item.Value.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *DictionaryFieldService1Value) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -54,7 +53,6 @@ func (item *DictionaryFieldService1Value) ReadBoxed(w []byte) (_ []byte, err err
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *DictionaryFieldService1Value) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

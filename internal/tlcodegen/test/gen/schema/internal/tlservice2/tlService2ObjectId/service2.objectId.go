@@ -31,7 +31,6 @@ func (item *Service2ObjectId) Read(w []byte, nat_objectIdLength uint32) (_ []byt
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.Id, nat_objectIdLength)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service2ObjectId) WriteGeneral(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	return item.Write(w, nat_objectIdLength)
 }
@@ -50,7 +49,6 @@ func (item *Service2ObjectId) ReadBoxed(w []byte, nat_objectIdLength uint32) (_ 
 	return item.Read(w, nat_objectIdLength)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service2ObjectId) WriteBoxedGeneral(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_objectIdLength)
 }

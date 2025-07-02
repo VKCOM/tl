@@ -31,7 +31,6 @@ func (item *Service5EmptyOutput) Reset() {}
 
 func (item *Service5EmptyOutput) Read(w []byte) (_ []byte, err error) { return w, nil }
 
-// This method is general version of Write, use it instead!
 func (item *Service5EmptyOutput) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -47,7 +46,6 @@ func (item *Service5EmptyOutput) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5EmptyOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -161,7 +159,6 @@ func (item *Service5Output) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5Output) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -279,7 +276,6 @@ func (item *Service5StringOutput) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Response)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service5StringOutput) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -297,7 +293,6 @@ func (item *Service5StringOutput) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5StringOutput) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

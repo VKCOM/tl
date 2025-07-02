@@ -32,7 +32,6 @@ func (item *Service3SetLimits) Read(w []byte) (_ []byte, err error) {
 	return item.Limits.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service3SetLimits) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *Service3SetLimits) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service3SetLimits) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

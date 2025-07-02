@@ -31,7 +31,6 @@ func (item *VectorDictionaryFieldDictionaryInt) Read(w []byte) (_ []byte, err er
 	return tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *VectorDictionaryFieldDictionaryInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -48,7 +47,6 @@ func (item *VectorDictionaryFieldDictionaryInt) ReadBoxed(w []byte) (_ []byte, e
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorDictionaryFieldDictionaryInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

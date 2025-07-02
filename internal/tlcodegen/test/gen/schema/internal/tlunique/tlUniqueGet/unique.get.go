@@ -31,7 +31,6 @@ func (item *UniqueGet) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Key)
 }
 
-// This method is general version of Write, use it instead!
 func (item *UniqueGet) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -48,7 +47,6 @@ func (item *UniqueGet) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *UniqueGet) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
