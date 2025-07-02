@@ -178,7 +178,6 @@ func (l *lexer) validateTokens() ([]token, error) {
 			switch curToken.tokenType {
 			case verticalBar, underscore:
 				err = parseErrToken(fmt.Errorf("illegal token for tl1: \"%s\"", curToken.val), curToken, curToken.pos)
-				break
 			}
 		case tl2:
 			switch curToken.tokenType {

@@ -36,7 +36,7 @@ func (state *OptionalState) ExpectProgress(orError string) bool {
 func (state *OptionalState) Fail(error string) {
 	state.StartProcessing = true
 	if state.Error == nil {
-		state.Error = fmt.Errorf(error)
+		state.Error = fmt.Errorf("%s", error)
 	}
 }
 
