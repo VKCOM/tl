@@ -266,7 +266,7 @@ func TestParseTL2(t *testing.T) {
 				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
 			})
 
-			t.Run("union with constructors", func(t *testing.T) {
+			t.Run("union with constructors and traling |", func(t *testing.T) {
 				_, it := setupIterator(`
 testNs.testName = 
 	| Green x:int 
@@ -305,6 +305,30 @@ testNs.testName =
 				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
 			})
 
+			t.Run("union with constructors with one constructor", func(t *testing.T) {
+				_, it := setupIterator(`
+testNs.testName = | Green x:int
+	;`)
+				_, _, err := parseTL2Combinator(it)
+				assert.Error(t, err)
+			})
+
+			t.Run("union with constructors with zero constructor", func(t *testing.T) {
+				_, it := setupIterator(`
+testNs.testName = |
+	;`)
+				_, _, err := parseTL2Combinator(it)
+				assert.Error(t, err)
+			})
+
+			t.Run("union with constructors with one constructor", func(t *testing.T) {
+				_, it := setupIterator(`
+testNs.testName = Green x:int |
+	;`)
+				_, _, err := parseTL2Combinator(it)
+				assert.Error(t, err)
+			})
+
 			t.Run("basic definition with templates", func(t *testing.T) {
 				_, it := setupIterator(` testNs.testName<x:type> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
@@ -316,18 +340,32 @@ testNs.testName =
 				arg := comb.TypeDecl.TemplateArguments[0]
 
 				assert.Equal(t, "x", arg.Name)
-				assert.Equal(t, "type", arg.Category)
+				assert.Equal(t, TL2TypeCategory("type"), arg.Category)
 			})
 
-			t.Run("union", func(t *testing.T) {
+			t.Run("union without variant declarations", func(t *testing.T) {
 				_, it := setupIterator(` testNs.testName<x:type> = |; `)
 				_, _, err := parseTL2Combinator(it)
 				fmt.Println(err)
 				assert.Error(t, err)
 			})
 
+			t.Run("correct categories", func(t *testing.T) {
+				_, it := setupIterator(` testNs.testName<x:type, y:uint32> = ; `)
+				_, _, err := parseTL2Combinator(it)
+				fmt.Println(err)
+				assert.NoError(t, err)
+			})
+
+			t.Run("incorrect categories", func(t *testing.T) {
+				_, it := setupIterator(` testNs.testName<x:type, y:int> = ; `)
+				_, _, err := parseTL2Combinator(it)
+				fmt.Println(err)
+				assert.Error(t, err)
+			})
+
 			t.Run("basic definition with multiple templates", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName<x:type, y:int> = x:int; `)
+				_, it := setupIterator(` testNs.testName<x:type, y:uint32> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -337,12 +375,12 @@ testNs.testName =
 				arg := comb.TypeDecl.TemplateArguments[0]
 
 				assert.Equal(t, "x", arg.Name)
-				assert.Equal(t, "type", arg.Category)
+				assert.Equal(t, TL2TypeCategory("type"), arg.Category)
 
 				arg = comb.TypeDecl.TemplateArguments[1]
 
 				assert.Equal(t, "y", arg.Name)
-				assert.Equal(t, "int", arg.Category)
+				assert.Equal(t, TL2TypeCategory("uint32"), arg.Category)
 			})
 		})
 	})
@@ -559,10 +597,11 @@ testNs.testName =
 
 	t.Run("check print", func(t *testing.T) {
 		t.Run("combinator", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName <x:int,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
-			comb, _, _ := parseTL2Combinator(it)
+			_, it := setupIterator(` testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
+			comb, _, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
 			assert.Equal(t,
-				`testNs.testName<x:int,y:type>#09abcdef = Green x:int | Red | string;`,
+				`testNs.testName<x:uint32,y:type>#09abcdef = Green x:int | Red | string;`,
 				comb.String(),
 			)
 		})

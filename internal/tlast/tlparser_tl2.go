@@ -5,8 +5,6 @@ package tlast
 type TL2TypeName struct {
 	Namespace string
 	Name      string
-
-	PR PositionRange
 }
 
 type TL2Annotation struct {
@@ -28,6 +26,7 @@ type TL2TypeApplication struct {
 	Arguments []TL2TypeArgument
 
 	PR          PositionRange
+	PRName      PositionRange
 	PRArguments PositionRange
 }
 
@@ -108,8 +107,9 @@ type TL2TypeDeclaration struct {
 	TemplateArguments []TL2TypeTemplate
 	Type              TL2TypeDefinition
 
-	PR   PositionRange
-	PRID PositionRange
+	PR     PositionRange
+	PRName PositionRange
+	PRID   PositionRange
 }
 
 type TL2FuncDeclaration struct {
@@ -118,8 +118,9 @@ type TL2FuncDeclaration struct {
 	Arguments  []TL2Field
 	ReturnType TL2TypeDefinition
 
-	PR   PositionRange
-	PRID PositionRange
+	PR     PositionRange
+	PRName PositionRange
+	PRID   PositionRange
 }
 
 type TL2Combinator struct {

@@ -97,33 +97,12 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 		}
 	}
 
-	// print for debug
-	if false {
-		for combinator, wrappers := range associatedWrappers {
-			fmt.Println(">>>>>")
-			fmt.Println(combinator)
-			fmt.Printf("[info] isBuiltin:%t, isFunction:%t\n", combinator.Builtin, combinator.IsFunction)
-			fmt.Println("[")
-			for _, wrapper := range wrappers {
-				fmt.Print("\t")
-				fmt.Print(wrapper.goGlobalName)
-				fmt.Println(",")
-			}
-			fmt.Println("]")
-		}
-	}
-
 	var combinedTL tlast.TL = utils.Values(info.AllConstructors)
 	natUsage := checkNatUsages(&combinedTL)
 
 	typeNames := utils.Keys(info.Types)
 	sort.Slice(typeNames, func(i, j int) bool {
-		emptyI, emptyJ := typeNames[i].Namespace == "", typeNames[j].Namespace == ""
-		if emptyI == emptyJ {
-			return strings.Compare(typeNames[i].String(), typeNames[j].String()) <= 0
-		} else {
-			return emptyI
-		}
+		return compareNames(typeNames[i], typeNames[j])
 	})
 
 	lowerFirst := func(s string) string {
@@ -361,5 +340,128 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 		}
 		file.Combinators = append(file.Combinators, tl2Combinator)
 	}
+
+	printDebugInfo(associatedWrappers, natUsage, info)
+
 	return file
+}
+
+func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, natUsage NatUsagesInfo, info AstInfo) {
+	// print for debug
+	if false {
+		for combinator, wrappers := range associatedWrappers {
+			fmt.Println(">>>>>")
+			fmt.Println(combinator)
+			fmt.Printf("[info] isBuiltin:%t, isFunction:%t\n", combinator.Builtin, combinator.IsFunction)
+			fmt.Println("[")
+			for _, wrapper := range wrappers {
+				fmt.Print("\t")
+				fmt.Print(wrapper.goGlobalName)
+				fmt.Println(",")
+			}
+			fmt.Println("]")
+		}
+	}
+
+	// print for debug
+	if false {
+		for name, m := range natUsage.TypeNameAndArgToAffectingConstants {
+			fmt.Printf(">>>>>>\n%s: \n[\n", name)
+			for index, cs := range m {
+				fmt.Printf("\t%d: [", index)
+				for c := range cs {
+					fmt.Printf("%d, ", c)
+				}
+				fmt.Printf("],\n")
+			}
+			fmt.Print("]\n")
+		}
+	}
+
+	// print for debug
+	if false {
+		var tl tlast.TL = utils.Values(info.AllConstructors)
+		sort.Slice(tl, func(i, j int) bool {
+			return compareNames(tl[i].Construct.Name, tl[j].Construct.Name)
+		})
+		fmt.Println(tl)
+	}
+
+	// print for debug
+	if false {
+		for tp, args := range natUsage.TypeArgumentToArraySizeReference {
+			fmt.Printf(">>>>>>\n%s:\n[\n", tp.String())
+			for arg, refs := range args {
+				fmt.Printf("\t%d: [\n", arg)
+				for ref, fields := range refs {
+					for field, path := range fields {
+						pathStr := ""
+						for _, edge := range path {
+							pathStr += fmt.Sprintf(" <- ((%s, %d), %d)", edge.Type, edge.ArgIndex, edge.FieldIndex)
+						}
+						fmt.Printf("\t\t(\"%s\", %d)%s,\n", ref.String(), field, pathStr)
+					}
+				}
+				fmt.Println("\t],")
+			}
+			fmt.Println("]")
+		}
+	}
+
+	// print for debug
+	if false {
+		for tp, args := range natUsage.CombinatorsNatFieldsToArraySizeReference {
+			fmt.Printf("<<<<<<\n%s:\n[\n", tp.String())
+			for arg, refs := range args {
+				fmt.Printf("\t%d: [\n", arg)
+				for ref, fields := range refs {
+					for field := range fields {
+						fmt.Printf("\t\t(\"%s\", %d),\n", ref.String(), field)
+					}
+				}
+				fmt.Println("\t],")
+			}
+			fmt.Println("]")
+		}
+	}
+
+	// print for debug
+	if false {
+		fmt.Println("--------")
+
+		for comb, fields := range natUsage.CombinatorsNatFieldIndexToBitsUsed {
+			for field, bits := range fields {
+				if len(bits) == 0 {
+					continue
+				}
+				sizeRefs := natUsage.GetArraySizeReferenceForField(comb, field)
+				if len(sizeRefs) != 0 {
+					fmt.Printf("WARNING: %s's field #%d is used as a field mask and as array size !!!!!\n", comb.String(), field)
+				}
+			}
+		}
+
+		fmt.Println("--------")
+
+		for typ, args := range natUsage.TypeNameAndArgIndexToBitsUsedByNat {
+			for arg, bits := range args {
+				if len(bits) == 0 {
+					continue
+				}
+				sizeRefs := natUsage.GetArgumentUsagesAsSize(typ, arg)
+				if len(sizeRefs) != 0 {
+					fmt.Printf("WARNING: %s's template argument #%d is used as a field mask and as array size !!!!!\n", typ.String(), arg)
+				}
+			}
+		}
+	}
+}
+
+func compareNames(name1, name2 tlast.Name) bool {
+	emptyI, emptyJ := name1.Namespace == "", name2.Namespace == ""
+	if emptyI == emptyJ {
+		return strings.Compare(name1.String(), name2.String()) <= 0
+	} else {
+		return emptyI
+	}
 }

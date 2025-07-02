@@ -19,8 +19,9 @@
 {%- func (ta TemplateArgument) String() -%}
   {%- if ta.IsNat -%}
     {{%s= ta.FieldName %}:#}
+  {%- else -%}
+    {{%s= ta.FieldName %}:Type}
   {%- endif -%}
-  {{%s= ta.FieldName %}:Type}
 {%- endfunc -%}
 
 {%- func (t TypeRef) String() -%}
@@ -150,7 +151,7 @@
 
 {%- func (descriptor Combinator) String() -%}
   {%- for _, x := range descriptor.Modifiers -%}
-    {%s= x.Name %}{% space %}
+    @{%s= x.Name %}{% space %}
   {%- endfor -%}
   {%= descriptor.Construct.String() %}{% space %}
   {%- for _, x := range descriptor.TemplateArguments -%}

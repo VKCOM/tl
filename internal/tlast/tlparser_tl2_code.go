@@ -125,7 +125,9 @@ func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, error) 
 	}
 
 	var name TL2TypeName
+	prName := rest.skipWS(outer)
 	state, rest, name = parseTL2TypeName(rest, outer)
+	prName.End = rest.front().pos
 	if !state.ExpectProgress("expected type name") {
 		return TL2Combinator{}, tokenIterator{}, state.Error
 	}
@@ -139,9 +141,12 @@ func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, error) 
 		state.Inherit(funcDeclState)
 		if funcDeclState.StartProcessing {
 			combinator.IsFunction = true
+			combinator.FuncDecl.PRName = prName
 		} else {
 			state.Fail("expected either function or type declaration")
 		}
+	} else {
+		combinator.TypeDecl.PRName = prName
 	}
 
 	if !rest.expect(semiColon) {
@@ -172,24 +177,20 @@ func parseTL2Annotation(tokens tokenIterator, position Position) (state Optional
 func parseTL2TypeName(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeName) {
 	restTokens = tokens
 	state.StartProcessing = true
-	result.PR = restTokens.skipWS(position)
 	switch {
 	case restTokens.checkToken(lcIdent):
 		result.Name = restTokens.popFront().val
-		result.PR.End = restTokens.front().pos
 	case restTokens.checkToken(lcIdentNS):
 		value := restTokens.popFront().val
 		dotIndex := strings.Index(value, ".")
 
 		result.Namespace = value[:dotIndex]
 		result.Name = value[dotIndex+1:]
-		result.PR.End = restTokens.front().pos
 	case restTokens.checkToken(ucIdentNS):
 		state.Fail("tl2 type names can't start from uppercase")
 	default:
 		state.StartProcessing = false
 	}
-	result.PR.End = restTokens.front().pos
 	return
 }
 
@@ -346,7 +347,7 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	if localState.IsFailed() {
 		state.Fail("can't parse first variant")
 		return
-	} else if state.StartProcessing && !state.IsOmitted() {
+	} else if state.StartProcessing && localState.IsOmitted() {
 		state.Fail("expected first variant of union")
 		return
 	}
@@ -368,7 +369,8 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 		localState, restTokens, variant = parseTL2UnionTypeVariant(restTokens, position)
 		result.Variants = append(result.Variants, variant)
 		state.Inherit(localState)
-		if !state.ExpectProgress("expected union variant definition after vertical var") {
+		if !localState.ExpectProgress("expected union variant definition after vertical var") {
+			state.FailWithError(localState.Error)
 			return
 		}
 	}
@@ -503,10 +505,12 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
+	result.PRName = restTokens.skipWS(position)
 	state, restTokens, result.Name = parseTL2TypeName(tokens, position)
 	if !state.HasProgress() {
 		return
 	}
+	result.PRName.End = restTokens.front().pos
 
 	if restTokens.expect(lAngleBracket) {
 		result.Arguments = make([]TL2TypeArgument, 1)
