@@ -446,15 +446,23 @@ type NatUsagesInfo struct {
 	// which bits are affected by all passing through nat values for selected template argument
 	TypeNameAndArgIndexToBitsUsedByNat map[tlast.Name]map[int]map[int]bool
 	// which bits are used in schema for selected nat field in some combinator
-	CombinatorAndNatFieldIndexToBitsUsed map[tlast.Name]map[int]map[int]bool
+	CombinatorsNatFieldIndexToBitsUsed map[tlast.Name]map[int]map[int]bool
 	// which bits affected in type layout for selected template argument
 	TypeNameAndArgIndexToBitsUsedInLayout map[tlast.Name]map[int]map[int]bool
 	// which nat fields passing through selected template argument
 	TypeNameAndArgToAffectingCombinatorsNatFields map[tlast.Name]map[int]map[tlast.Name]map[int]bool
+	// which constant passing throw selected type nat template
+	TypeNameAndArgToAffectingConstants map[tlast.Name]map[int]map[uint32]bool
+	// type references on tuples and path to it for selected type and its argument
+	// (will be calculated if all scales are replaces with BuiltinTuple)
+	TypeArgumentToArraySizeReference map[tlast.Name]map[int]map[tlast.Name]map[int][]RefEdge
+	// type references on tuples and path to it for selected combinator and its nat field
+	// (will be calculated if all scales are replaces with BuiltinTuple)
+	CombinatorsNatFieldsToArraySizeReference map[tlast.Name]map[int]map[tlast.Name]map[int][]RefEdge
 }
 
 func (info *NatUsagesInfo) GetAffectedBitsNatField(combinator tlast.Name, fieldId int) map[int]bool {
-	if m, ok := info.CombinatorAndNatFieldIndexToBitsUsed[combinator]; ok && len(m) != 0 {
+	if m, ok := info.CombinatorsNatFieldIndexToBitsUsed[combinator]; ok && len(m) != 0 {
 		if bits, ok := m[fieldId]; ok && len(bits) != 0 {
 			return bits
 		}
@@ -462,13 +470,47 @@ func (info *NatUsagesInfo) GetAffectedBitsNatField(combinator tlast.Name, fieldI
 	return make(map[int]bool)
 }
 
-func (info *NatUsagesInfo) GetInfluencedNatFieldsToTemplate(combinator tlast.Name, templateId int) map[tlast.Name]map[int]bool {
-	if m, ok := info.TypeNameAndArgToAffectingCombinatorsNatFields[combinator]; ok && len(m) != 0 {
+func (info *NatUsagesInfo) GetInfluencedNatFieldsToTemplate(typeName tlast.Name, templateId int) map[tlast.Name]map[int]bool {
+	if m, ok := info.TypeNameAndArgToAffectingCombinatorsNatFields[typeName]; ok && len(m) != 0 {
 		if natFields, ok := m[templateId]; ok && len(natFields) != 0 {
 			return natFields
 		}
 	}
 	return make(map[tlast.Name]map[int]bool)
+}
+
+func (info *NatUsagesInfo) GetConstantsPassingThroughArgument(typeName tlast.Name, templateId int) map[uint32]bool {
+	if m, ok := info.TypeNameAndArgToAffectingConstants[typeName]; ok && len(m) != 0 {
+		if natFields, ok := m[templateId]; ok && len(natFields) != 0 {
+			return natFields
+		}
+	}
+	return make(map[uint32]bool)
+}
+
+func (info *NatUsagesInfo) GetArgumentUsagesAsSize(typeName tlast.Name, templateId int) map[tlast.Name]map[int][]RefEdge {
+	if m, ok := info.TypeArgumentToArraySizeReference[typeName]; ok && len(m) != 0 {
+		if refs, ok := m[templateId]; ok && len(refs) != 0 {
+			return refs
+		}
+	}
+	return make(map[tlast.Name]map[int][]RefEdge)
+}
+
+func (info *NatUsagesInfo) GetArraySizeReferenceForField(combinator tlast.Name, fieldId int) map[tlast.Name]map[int][]RefEdge {
+	if m, ok := info.CombinatorsNatFieldsToArraySizeReference[combinator]; ok && len(m) != 0 {
+		if refs, ok := m[fieldId]; ok && len(refs) != 0 {
+			return refs
+		}
+	}
+	return make(map[tlast.Name]map[int][]RefEdge)
+}
+
+type RefEdge struct {
+	Type       tlast.Name
+	ArgIndex   int // template id for type or field id if IsArgField = true
+	IsArgField bool
+	FieldIndex int
 }
 
 func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
@@ -490,13 +532,14 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 
 	typeNameToTypeArguments := make(map[tlast.Name]map[int]map[int]bool)
 	typeArgumentToAffectedTypeArguments := make(map[tlast.Name]map[int]map[tlast.Name]map[int]bool)
+	typeArgumentToAffectedTypeArgumentsWithPaths := make(map[tlast.Name]map[int]map[tlast.Name]map[int][]RefEdge)
 
 	{
 		dfsQueue := make(map[tlast.Name]map[int]bool)
 		initIfNotVisited := true
 
 		var fillUsages func(tlast.Name, int)
-		var iterateTypeRefArgs func(*tlast.TypeRef, tlast.Name, int)
+		var iterateTypeRefArgs func(*tlast.TypeRef, tlast.Name, int, int, tlast.Name)
 
 		fillUsages = func(typeName tlast.Name, i int) {
 			if _, ok := dfsQueue[typeName]; !ok {
@@ -504,6 +547,7 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 				if initIfNotVisited {
 					typeNameToTypeArguments[typeName] = make(map[int]map[int]bool)
 					typeArgumentToAffectedTypeArguments[typeName] = make(map[int]map[tlast.Name]map[int]bool)
+					typeArgumentToAffectedTypeArgumentsWithPaths[typeName] = make(map[int]map[tlast.Name]map[int][]RefEdge)
 				}
 			}
 			if _, ok := dfsQueue[typeName][i]; !ok {
@@ -511,69 +555,81 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 				if initIfNotVisited {
 					typeNameToTypeArguments[typeName][i] = make(map[int]bool)
 					typeArgumentToAffectedTypeArguments[typeName][i] = make(map[tlast.Name]map[int]bool)
+					typeArgumentToAffectedTypeArgumentsWithPaths[typeName][i] = make(map[tlast.Name]map[int][]RefEdge)
 				}
 
 				for _, combinator := range types[typeName] {
-					for _, field := range combinator.Fields {
+					for fieldIndex, field := range combinator.Fields {
 						// add used bit
 						if field.Mask != nil && field.Mask.MaskName == combinator.TemplateArguments[i].FieldName {
 							typeNameToTypeArguments[typeName][i][int(field.Mask.BitNumber)] = true
 						}
-						iterateTypeRefArgs(&field.FieldType, typeName, i)
+						iterateTypeRefArgs(&field.FieldType, typeName, i, fieldIndex, combinator.Construct.Name)
 					}
 				}
 			}
 		}
 
-		iterateTypeRefArgs = func(ref *tlast.TypeRef, filledType tlast.Name, filledIndex int) {
+		iterateTypeRefArgs = func(ref *tlast.TypeRef, filledType tlast.Name, filledIndex int, refFieldIndex int, refCombinator tlast.Name) {
 			searchingArgument := types[filledType][0].TemplateArguments[filledIndex].FieldName
 			typeName, ok := typeRefsToTypeNames[ref.Type]
-			if !ok {
-				return
-			}
 			for i, arg := range ref.Args {
 				if !arg.IsArith {
 					if arg.T.Type.String() == searchingArgument {
-						if _, ok := dfsQueue[typeName]; !ok {
-							dfsQueue[typeName] = make(map[int]bool)
-							if initIfNotVisited {
-								typeNameToTypeArguments[typeName] = make(map[int]map[int]bool)
-								typeArgumentToAffectedTypeArguments[typeName] = make(map[int]map[tlast.Name]map[int]bool)
+						if ok {
+							if _, ok := dfsQueue[typeName]; !ok {
+								dfsQueue[typeName] = make(map[int]bool)
+								if initIfNotVisited {
+									typeNameToTypeArguments[typeName] = make(map[int]map[int]bool)
+									typeArgumentToAffectedTypeArguments[typeName] = make(map[int]map[tlast.Name]map[int]bool)
+									typeArgumentToAffectedTypeArgumentsWithPaths[typeName] = make(map[int]map[tlast.Name]map[int][]RefEdge)
+								}
 							}
-						}
-						if _, ok := dfsQueue[typeName][i]; !ok {
-							fillUsages(typeName, i)
-						}
-
-						{
-							for bit := range typeNameToTypeArguments[typeName][i] {
-								typeNameToTypeArguments[filledType][filledIndex][bit] = true
-							}
-						}
-						{
-							if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex]; !ok {
-								typeArgumentToAffectedTypeArguments[filledType][filledIndex] = make(map[tlast.Name]map[int]bool)
-							}
-							if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName]; !ok {
-								typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName] = make(map[int]bool)
+							if _, ok := dfsQueue[typeName][i]; !ok {
+								fillUsages(typeName, i)
 							}
 
-							typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName][i] = true
-
-							for affectedType, affectedNats := range typeArgumentToAffectedTypeArguments[typeName][i] {
+							{
+								for bit := range typeNameToTypeArguments[typeName][i] {
+									typeNameToTypeArguments[filledType][filledIndex][bit] = true
+								}
+							}
+							{
 								if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex]; !ok {
 									typeArgumentToAffectedTypeArguments[filledType][filledIndex] = make(map[tlast.Name]map[int]bool)
+									typeArgumentToAffectedTypeArgumentsWithPaths[filledType][filledIndex] = make(map[tlast.Name]map[int][]RefEdge)
 								}
-								if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType]; !ok {
-									typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType] = make(map[int]bool)
+								if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName]; !ok {
+									typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName] = make(map[int]bool)
+									typeArgumentToAffectedTypeArgumentsWithPaths[filledType][filledIndex][typeName] = make(map[int][]RefEdge)
 								}
-								for affectedNat := range affectedNats {
-									typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType][affectedNat] = true
+
+								currentEdge := RefEdge{Type: refCombinator, FieldIndex: refFieldIndex, ArgIndex: filledIndex}
+
+								typeArgumentToAffectedTypeArguments[filledType][filledIndex][typeName][i] = true
+								typeArgumentToAffectedTypeArgumentsWithPaths[filledType][filledIndex][typeName][i] = []RefEdge{currentEdge}
+
+								for affectedType, affectedNats := range typeArgumentToAffectedTypeArguments[typeName][i] {
+									if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex]; !ok {
+										typeArgumentToAffectedTypeArguments[filledType][filledIndex] = make(map[tlast.Name]map[int]bool)
+										typeArgumentToAffectedTypeArgumentsWithPaths[filledType][filledIndex] = make(map[tlast.Name]map[int][]RefEdge)
+									}
+									if _, ok := typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType]; !ok {
+										typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType] = make(map[int]bool)
+										typeArgumentToAffectedTypeArgumentsWithPaths[filledType][filledIndex][affectedType] = make(map[int][]RefEdge)
+									}
+									for affectedNat := range affectedNats {
+										typeArgumentToAffectedTypeArguments[filledType][filledIndex][affectedType][affectedNat] = true
+									}
+									for affectedNat, path := range typeArgumentToAffectedTypeArgumentsWithPaths[typeName][i][affectedType] {
+										path = append(path, currentEdge)
+										typeArgumentToAffectedTypeArgumentsWithPaths[filledType][filledIndex][affectedType][affectedNat] = path
+									}
 								}
 							}
 						}
 					} else {
-						iterateTypeRefArgs(&arg.T, filledType, filledIndex)
+						iterateTypeRefArgs(&arg.T, filledType, filledIndex, refFieldIndex, refCombinator)
 					}
 				}
 			}
@@ -609,56 +665,55 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 		var searchNat func(*tlast.TypeRef, string, tlast.Name, int)
 		searchNat = func(ref *tlast.TypeRef, searchingArgument string, filledCombinator tlast.Name, filledIndex int) {
 			typeName, ok := typeRefsToTypeNames[ref.Type]
-			if !ok {
-				return
-			}
 			for i, arg := range ref.Args {
 				if !arg.IsArith {
 					if arg.T.Type.String() == searchingArgument {
-						if _, ok := combinatorsNatFieldToAffectedBits[filledCombinator]; !ok {
-							combinatorsNatFieldToAffectedBits[filledCombinator] = make(map[int]map[int]bool)
-						}
-						if _, ok := combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex]; !ok {
-							combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] = make(map[int]bool)
-						}
-						if affectedArgs, ok := typeNameToTypeArguments[typeName]; ok {
-							if affectedBits, ok := affectedArgs[i]; ok {
-								for bit := range affectedBits {
-									combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex][bit] = true
+						if ok {
+							if _, ok := combinatorsNatFieldToAffectedBits[filledCombinator]; !ok {
+								combinatorsNatFieldToAffectedBits[filledCombinator] = make(map[int]map[int]bool)
+							}
+							if _, ok := combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex]; !ok {
+								combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] = make(map[int]bool)
+							}
+							if affectedArgs, ok := typeNameToTypeArguments[typeName]; ok {
+								if affectedBits, ok := affectedArgs[i]; ok {
+									for bit := range affectedBits {
+										combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex][bit] = true
+									}
 								}
 							}
-						}
 
-						// add this combinator and field to pool of all affected type args
-						{
-							if _, ok := typeArgumentToAffectingCombinatorsNatFields[typeName]; !ok {
-								typeArgumentToAffectingCombinatorsNatFields[typeName] = make(map[int]map[tlast.Name]map[int]bool)
-							}
-							if _, ok := typeArgumentToAffectingCombinatorsNatFields[typeName][i]; !ok {
-								typeArgumentToAffectingCombinatorsNatFields[typeName][i] = make(map[tlast.Name]map[int]bool)
-							}
+							// add this combinator and field to pool of all affected type args
+							{
+								if _, ok := typeArgumentToAffectingCombinatorsNatFields[typeName]; !ok {
+									typeArgumentToAffectingCombinatorsNatFields[typeName] = make(map[int]map[tlast.Name]map[int]bool)
+								}
+								if _, ok := typeArgumentToAffectingCombinatorsNatFields[typeName][i]; !ok {
+									typeArgumentToAffectingCombinatorsNatFields[typeName][i] = make(map[tlast.Name]map[int]bool)
+								}
 
-							if _, ok := typeArgumentToAffectingCombinatorsNatFields[typeName][i][filledCombinator]; !ok {
-								typeArgumentToAffectingCombinatorsNatFields[typeName][i][filledCombinator] = make(map[int]bool)
-							}
+								if _, ok := typeArgumentToAffectingCombinatorsNatFields[typeName][i][filledCombinator]; !ok {
+									typeArgumentToAffectingCombinatorsNatFields[typeName][i][filledCombinator] = make(map[int]bool)
+								}
 
-							typeArgumentToAffectingCombinatorsNatFields[typeName][i][filledCombinator][filledIndex] = true
+								typeArgumentToAffectingCombinatorsNatFields[typeName][i][filledCombinator][filledIndex] = true
 
-							if _, ok := typeArgumentToAffectedTypeArguments[typeName]; ok {
-								for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
-									for affectedArg := range affectedArgs {
-										if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType]; !ok {
-											typeArgumentToAffectingCombinatorsNatFields[affectedType] = make(map[int]map[tlast.Name]map[int]bool)
+								if _, ok := typeArgumentToAffectedTypeArguments[typeName]; ok {
+									for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
+										for affectedArg := range affectedArgs {
+											if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType]; !ok {
+												typeArgumentToAffectingCombinatorsNatFields[affectedType] = make(map[int]map[tlast.Name]map[int]bool)
+											}
+											if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg]; !ok {
+												typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg] = make(map[tlast.Name]map[int]bool)
+											}
+
+											if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg][filledCombinator]; !ok {
+												typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg][filledCombinator] = make(map[int]bool)
+											}
+
+											typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg][filledCombinator][filledIndex] = true
 										}
-										if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg]; !ok {
-											typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg] = make(map[tlast.Name]map[int]bool)
-										}
-
-										if _, ok := typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg][filledCombinator]; !ok {
-											typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg][filledCombinator] = make(map[int]bool)
-										}
-
-										typeArgumentToAffectingCombinatorsNatFields[affectedType][affectedArg][filledCombinator][filledIndex] = true
 									}
 								}
 							}
@@ -720,35 +775,34 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 		var searchNat func(*tlast.TypeRef, string, tlast.Name, int)
 		searchNat = func(ref *tlast.TypeRef, searchingArgument string, filledCombinator tlast.Name, filledIndex int) {
 			typeName, ok := typeRefsToTypeNames[ref.Type]
-			if !ok {
-				return
-			}
 			for i, arg := range ref.Args {
 				if !arg.IsArith {
 					if arg.T.Type.String() == searchingArgument {
-						// all affected by this type indirrect
-						for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
-							for affectedArg := range affectedArgs {
-								if _, ok := typeNameToVisitingTypeArguments[affectedType]; !ok {
-									typeNameToVisitingTypeArguments[affectedType] = make(map[int]map[int]bool)
-								}
-								if _, ok := typeNameToVisitingTypeArguments[affectedType][affectedArg]; !ok {
-									typeNameToVisitingTypeArguments[affectedType][affectedArg] = make(map[int]bool)
-								}
-								for bit := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
-									typeNameToVisitingTypeArguments[affectedType][affectedArg][bit] = true
+						if ok {
+							// all affected by this type indirrect
+							for affectedType, affectedArgs := range typeArgumentToAffectedTypeArguments[typeName][i] {
+								for affectedArg := range affectedArgs {
+									if _, ok := typeNameToVisitingTypeArguments[affectedType]; !ok {
+										typeNameToVisitingTypeArguments[affectedType] = make(map[int]map[int]bool)
+									}
+									if _, ok := typeNameToVisitingTypeArguments[affectedType][affectedArg]; !ok {
+										typeNameToVisitingTypeArguments[affectedType][affectedArg] = make(map[int]bool)
+									}
+									for bit := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
+										typeNameToVisitingTypeArguments[affectedType][affectedArg][bit] = true
+									}
 								}
 							}
-						}
-						// and itself is affected
-						if _, ok := typeNameToVisitingTypeArguments[typeName]; !ok {
-							typeNameToVisitingTypeArguments[typeName] = make(map[int]map[int]bool)
-						}
-						if _, ok := typeNameToVisitingTypeArguments[typeName][i]; !ok {
-							typeNameToVisitingTypeArguments[typeName][i] = make(map[int]bool)
-						}
-						for bit := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
-							typeNameToVisitingTypeArguments[typeName][i][bit] = true
+							// and itself is affected
+							if _, ok := typeNameToVisitingTypeArguments[typeName]; !ok {
+								typeNameToVisitingTypeArguments[typeName] = make(map[int]map[int]bool)
+							}
+							if _, ok := typeNameToVisitingTypeArguments[typeName][i]; !ok {
+								typeNameToVisitingTypeArguments[typeName][i] = make(map[int]bool)
+							}
+							for bit := range combinatorsNatFieldToAffectedBits[filledCombinator][filledIndex] {
+								typeNameToVisitingTypeArguments[typeName][i][bit] = true
+							}
 						}
 					} else {
 						searchNat(&arg.T, searchingArgument, filledCombinator, filledIndex)
@@ -785,11 +839,267 @@ func checkNatUsages(tl *tlast.TL) NatUsagesInfo {
 		}
 	}
 
+	typeNameAndArgToAffectingConstants := make(map[tlast.Name]map[int]map[uint32]bool)
+	typeArgumentToDirectUsedConstants := make(map[tlast.Name]map[int]map[uint32]bool)
+
+	{
+		var iterateTypeRefArgs func(*tlast.TypeRef)
+		iterateTypeRefArgs = func(ref *tlast.TypeRef) {
+			typeName, ok := typeRefsToTypeNames[ref.Type]
+			for i, arg := range ref.Args {
+				if arg.IsArith {
+					if ok {
+						if _, ok := typeArgumentToDirectUsedConstants[typeName]; !ok {
+							typeArgumentToDirectUsedConstants[typeName] = make(map[int]map[uint32]bool)
+						}
+						if _, ok := typeArgumentToDirectUsedConstants[typeName][i]; !ok {
+							typeArgumentToDirectUsedConstants[typeName][i] = make(map[uint32]bool)
+						}
+						typeArgumentToDirectUsedConstants[typeName][i][arg.Arith.Res] = true
+					}
+				} else {
+					iterateTypeRefArgs(&arg.T)
+				}
+			}
+		}
+
+		for _, typeName := range order {
+			for _, combinator := range types[typeName] {
+				for i := range combinator.Fields {
+					iterateTypeRefArgs(&combinator.Fields[i].FieldType)
+				}
+			}
+		}
+
+		for _, combinator := range functions {
+			for i := range combinator.Fields {
+				iterateTypeRefArgs(&combinator.Fields[i].FieldType)
+			}
+			iterateTypeRefArgs(&combinator.FuncDecl)
+		}
+
+		// f(T, n) = {(T', n') | typeArgumentToAffectedTypeArguments[T][n][T'][n'] = true}
+		// P(T, n, c) = (typeNameAndArgToAffectingConstants[T][n][c] == true)
+		// P0(T, n, c) = (typeArgumentToDirectUsedConstants[T][n][c] == true)
+		// \Forall (T, n, c): P(T, n, c) -> P0(T, n, c) or \Exists (T', n'). P0(T', n', c) and (T, n) \in f(T', n')
+		for tp, arg := range typeArgumentToDirectUsedConstants {
+			for n, cs := range arg {
+				if _, ok := typeNameAndArgToAffectingConstants[tp]; !ok {
+					typeNameAndArgToAffectingConstants[tp] = make(map[int]map[uint32]bool)
+				}
+				if _, ok := typeNameAndArgToAffectingConstants[tp][n]; !ok {
+					typeNameAndArgToAffectingConstants[tp][n] = make(map[uint32]bool)
+				}
+				for c := range cs {
+					typeNameAndArgToAffectingConstants[tp][n][c] = true
+					if m1, ok := typeArgumentToAffectedTypeArguments[tp]; ok {
+						if m2, ok := m1[n]; ok {
+							for affectedType, affectedArgs := range m2 {
+								for affectedArg := range affectedArgs {
+									if _, ok := typeNameAndArgToAffectingConstants[affectedType]; !ok {
+										typeNameAndArgToAffectingConstants[affectedType] = make(map[int]map[uint32]bool)
+									}
+									if _, ok := typeNameAndArgToAffectingConstants[affectedType][affectedArg]; !ok {
+										typeNameAndArgToAffectingConstants[affectedType][affectedArg] = make(map[uint32]bool)
+									}
+									typeNameAndArgToAffectingConstants[affectedType][affectedArg][c] = true
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	typeArgumentToDirectArraySizeReference := make(map[tlast.Name]map[int]map[tlast.Name]map[int]bool)
+	typeArgumentToArraySizeReference := make(map[tlast.Name]map[int]map[tlast.Name]map[int][]RefEdge)
+	combinatorsNatFieldsToArraySizeReference := make(map[tlast.Name]map[int]map[tlast.Name]map[int][]RefEdge)
+
+	{
+		{
+			var iterateTypeRefArgs func(*tlast.TypeRef, string, tlast.Name, int, *map[tlast.Name]map[int]map[tlast.Name]map[int]bool, int)
+			iterateTypeRefArgs = func(ref *tlast.TypeRef, searchingArg string, filledType tlast.Name, filledIndex int, fillingMap *map[tlast.Name]map[int]map[tlast.Name]map[int]bool, refFieldIndex int) {
+				ok := true
+				refType := filledType
+				filledType, ok = typeRefsToTypeNames[filledType]
+				if !ok {
+					return
+				}
+				if ref.Type.String() == BuiltinTupleName {
+					if len(ref.Args) == 2 && !ref.Args[0].IsArith && ref.Args[0].String() == searchingArg {
+						if _, ok := (*fillingMap)[filledType]; !ok {
+							(*fillingMap)[filledType] = make(map[int]map[tlast.Name]map[int]bool)
+						}
+						if _, ok := (*fillingMap)[filledType][filledIndex]; !ok {
+							(*fillingMap)[filledType][filledIndex] = make(map[tlast.Name]map[int]bool)
+						}
+						if _, ok := (*fillingMap)[filledType][filledIndex][refType]; !ok {
+							(*fillingMap)[filledType][filledIndex][refType] = make(map[int]bool)
+						}
+						(*fillingMap)[filledType][filledIndex][refType][refFieldIndex] = true
+					}
+				}
+				for _, arg := range ref.Args {
+					if !arg.IsArith {
+						iterateTypeRefArgs(&arg.T, searchingArg, refType, filledIndex, fillingMap, refFieldIndex)
+					}
+				}
+			}
+
+			// init direct edges
+			for _, typeName := range order {
+				for _, combinator := range types[typeName] {
+					for i, argument := range combinator.TemplateArguments {
+						if !argument.IsNat {
+							continue
+						}
+						for j := range combinator.Fields {
+							iterateTypeRefArgs(&combinator.Fields[j].FieldType, argument.FieldName, combinator.Construct.Name, i, &typeArgumentToDirectArraySizeReference, j)
+						}
+					}
+				}
+			}
+
+			// push direct edges
+			for tp, args := range typeArgumentToDirectArraySizeReference {
+				for arg, refs := range args {
+					for ref, fields := range refs {
+						if _, ok := typeArgumentToArraySizeReference[tp]; !ok {
+							typeArgumentToArraySizeReference[tp] = make(map[int]map[tlast.Name]map[int][]RefEdge)
+						}
+						if _, ok := typeArgumentToArraySizeReference[tp][arg]; !ok {
+							typeArgumentToArraySizeReference[tp][arg] = make(map[tlast.Name]map[int][]RefEdge)
+						}
+						if _, ok := typeArgumentToArraySizeReference[tp][arg][ref]; !ok {
+							typeArgumentToArraySizeReference[tp][arg][ref] = make(map[int][]RefEdge)
+						}
+						for field := range fields {
+							typeArgumentToArraySizeReference[tp][arg][ref][field] = []RefEdge{{
+								Type:       ref,
+								ArgIndex:   arg,
+								FieldIndex: field,
+							}}
+						}
+					}
+				}
+			}
+
+			// push transitive edges
+			for tp, args := range typeArgumentToAffectedTypeArgumentsWithPaths {
+				for arg, affectedTps := range args {
+					for affectedTp, affectedArgs := range affectedTps {
+						for affectedArg, path := range affectedArgs {
+							if _, ok := typeArgumentToDirectArraySizeReference[affectedTp]; ok {
+								if _, ok := typeArgumentToDirectArraySizeReference[affectedTp][affectedArg]; ok {
+									for ref, fields := range typeArgumentToDirectArraySizeReference[affectedTp][affectedArg] {
+										if _, ok := typeArgumentToArraySizeReference[tp]; !ok {
+											typeArgumentToArraySizeReference[tp] = make(map[int]map[tlast.Name]map[int][]RefEdge)
+										}
+										if _, ok := typeArgumentToArraySizeReference[tp][arg]; !ok {
+											typeArgumentToArraySizeReference[tp][arg] = make(map[tlast.Name]map[int][]RefEdge)
+										}
+										if _, ok := typeArgumentToArraySizeReference[tp][arg][ref]; !ok {
+											typeArgumentToArraySizeReference[tp][arg][ref] = make(map[int][]RefEdge)
+										}
+										for field := range fields {
+											typeArgumentToArraySizeReference[tp][arg][ref][field] = path
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// new iterate method
+			var iterateTypeRefArgsForNatFieldUsage func(ref *tlast.TypeRef, searchingArg string, filledType tlast.Name, filledIndex int, refFieldIndex int)
+			iterateTypeRefArgsForNatFieldUsage = func(ref *tlast.TypeRef, searchingArg string, filledType tlast.Name, filledIndex int, refFieldIndex int) {
+				typeName, ok := typeRefsToTypeNames[ref.Type]
+				currentEdge := RefEdge{Type: filledType, FieldIndex: refFieldIndex, ArgIndex: filledIndex, IsArgField: true}
+				if typeName.String() == BuiltinTupleName {
+					if len(ref.Args) == 2 && !ref.Args[0].IsArith && ref.Args[0].String() == searchingArg {
+						if _, ok := (combinatorsNatFieldsToArraySizeReference)[filledType]; !ok {
+							(combinatorsNatFieldsToArraySizeReference)[filledType] = make(map[int]map[tlast.Name]map[int][]RefEdge)
+						}
+						if _, ok := (combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex]; !ok {
+							(combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex] = make(map[tlast.Name]map[int][]RefEdge)
+						}
+						if _, ok := (combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex][filledType]; !ok {
+							(combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex][filledType] = make(map[int][]RefEdge)
+						}
+						(combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex][filledType][refFieldIndex] = []RefEdge{currentEdge}
+					}
+				}
+				for i, arg := range ref.Args {
+					if searchingArg == arg.String() {
+						if ok {
+							if m1, ok := typeArgumentToArraySizeReference[typeName]; ok {
+								if m2, ok := m1[i]; ok {
+									for targetRef, fields := range m2 {
+										if _, ok := (combinatorsNatFieldsToArraySizeReference)[filledType]; !ok {
+											(combinatorsNatFieldsToArraySizeReference)[filledType] = make(map[int]map[tlast.Name]map[int][]RefEdge)
+										}
+										if _, ok := (combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex]; !ok {
+											(combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex] = make(map[tlast.Name]map[int][]RefEdge)
+										}
+										if _, ok := (combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex][targetRef]; !ok {
+											(combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex][targetRef] = make(map[int][]RefEdge)
+										}
+										for field, path := range fields {
+											path = append(path, currentEdge)
+											(combinatorsNatFieldsToArraySizeReference)[filledType][filledIndex][targetRef][field] = path
+										}
+									}
+								}
+							}
+						}
+					}
+					if !arg.IsArith {
+						iterateTypeRefArgsForNatFieldUsage(&arg.T, searchingArg, filledType, filledIndex, refFieldIndex)
+					}
+				}
+			}
+
+			// nat fields collect
+			for _, typeName := range order {
+				for _, combinator := range types[typeName] {
+					for i := range combinator.Fields {
+						searchItem := combinator.Fields[i].FieldName
+						if combinator.Fields[i].FieldType.Type.String() != "#" {
+							continue
+						}
+						for j := i + 1; j < len(combinator.Fields); j++ {
+							iterateTypeRefArgsForNatFieldUsage(&combinator.Fields[j].FieldType, searchItem, combinator.Construct.Name, i, j)
+						}
+					}
+				}
+			}
+
+			for _, combinator := range functions {
+				for i := range combinator.Fields {
+					searchItem := combinator.Fields[i].FieldName
+					if combinator.Fields[i].FieldType.Type.String() != "#" {
+						continue
+					}
+					for j := i + 1; j < len(combinator.Fields); j++ {
+						iterateTypeRefArgsForNatFieldUsage(&combinator.Fields[j].FieldType, searchItem, combinator.Construct.Name, i, j)
+					}
+					iterateTypeRefArgsForNatFieldUsage(&combinator.FuncDecl, searchItem, combinator.Construct.Name, i, -1)
+				}
+			}
+		}
+	}
+
 	return NatUsagesInfo{
 		TypeNameAndArgIndexToBitsUsedByNat:            typeNameToVisitingTypeArguments,
-		CombinatorAndNatFieldIndexToBitsUsed:          combinatorsNatFieldToAffectedBits,
+		CombinatorsNatFieldIndexToBitsUsed:            combinatorsNatFieldToAffectedBits,
 		TypeNameAndArgIndexToBitsUsedInLayout:         typeNameToTypeArguments,
 		TypeNameAndArgToAffectingCombinatorsNatFields: typeArgumentToAffectingCombinatorsNatFields,
+		TypeNameAndArgToAffectingConstants:            typeNameAndArgToAffectingConstants,
+		TypeArgumentToArraySizeReference:              typeArgumentToArraySizeReference,
+		CombinatorsNatFieldsToArraySizeReference:      combinatorsNatFieldsToArraySizeReference,
 	}
 }
 
@@ -1261,9 +1571,9 @@ func getUsedBitsForFieldMask(combinator *tlast.Combinator, fieldId int, oldInfo,
 					if _, ok := newInfo.TypeNameAndArgToAffectingCombinatorsNatFields[combinator.TypeDecl.Name][templateIndex]; ok {
 						for comb, fields := range newInfo.TypeNameAndArgToAffectingCombinatorsNatFields[combinator.TypeDecl.Name][templateIndex] {
 							for field := range fields {
-								if _, ok := oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb]; ok {
-									if _, ok := oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb][field]; ok {
-										for bit := range oldInfo.CombinatorAndNatFieldIndexToBitsUsed[comb][field] {
+								if _, ok := oldInfo.CombinatorsNatFieldIndexToBitsUsed[comb]; ok {
+									if _, ok := oldInfo.CombinatorsNatFieldIndexToBitsUsed[comb][field]; ok {
+										for bit := range oldInfo.CombinatorsNatFieldIndexToBitsUsed[comb][field] {
 											used[bit] = true
 										}
 									}
@@ -1284,7 +1594,7 @@ func getUsedBitsForFieldMask(combinator *tlast.Combinator, fieldId int, oldInfo,
 			}
 		}
 		var innerUsage map[int]bool
-		if innerUsageForType, ok := oldInfo.CombinatorAndNatFieldIndexToBitsUsed[combinator.Construct.Name]; ok {
+		if innerUsageForType, ok := oldInfo.CombinatorsNatFieldIndexToBitsUsed[combinator.Construct.Name]; ok {
 			innerUsage = innerUsageForType[natIndexAsField]
 		}
 		if len(innerUsage) != 0 {

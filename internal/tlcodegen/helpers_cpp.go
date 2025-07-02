@@ -22,7 +22,7 @@ const CommonGroup = SpecialGroupPrefix + "common_namespace"
 const IndependentTypes = CommonGroup
 const GhostTypes = SpecialGroupPrefix + "ghosts"
 
-const CppPrintGraphvizRepresentation = true
+const CppPrintGraphvizRepresentation = false
 const CppPrintNamespaceDependencies = false
 
 func cppIsSpecialNamespace(namespace string) bool {

@@ -67,10 +67,11 @@ func (ta TemplateArgument) StreamString(qw422016 *qt422016.Writer) {
 		qw422016.N().S(`{`)
 		qw422016.N().S(ta.FieldName)
 		qw422016.N().S(`:#}`)
+	} else {
+		qw422016.N().S(`{`)
+		qw422016.N().S(ta.FieldName)
+		qw422016.N().S(`:Type}`)
 	}
-	qw422016.N().S(`{`)
-	qw422016.N().S(ta.FieldName)
-	qw422016.N().S(`:Type}`)
 }
 
 func (ta TemplateArgument) WriteString(qq422016 qtio422016.Writer) {
@@ -379,6 +380,7 @@ func (d TypeDeclaration) String() string {
 
 func (descriptor Combinator) StreamString(qw422016 *qt422016.Writer) {
 	for _, x := range descriptor.Modifiers {
+		qw422016.N().S(`@`)
 		qw422016.N().S(x.Name)
 		qw422016.N().S(` `)
 	}
