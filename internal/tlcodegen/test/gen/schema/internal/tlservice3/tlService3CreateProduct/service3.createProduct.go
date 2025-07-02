@@ -57,7 +57,6 @@ func (item *Service3CreateProduct) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.ExpirationDate)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service3CreateProduct) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -79,7 +78,6 @@ func (item *Service3CreateProduct) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service3CreateProduct) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

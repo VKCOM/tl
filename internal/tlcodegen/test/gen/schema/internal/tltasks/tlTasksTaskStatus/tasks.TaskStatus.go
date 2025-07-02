@@ -33,17 +33,17 @@ func (item TasksTaskStatus) TLTag() uint32  { return _TasksTaskStatus[item.index
 
 func (item *TasksTaskStatus) Reset() { item.index = 0 }
 
-func (item *TasksTaskStatus) IsNotCurrentlyInEngine() bool { return item.index == 0 }
-func (item *TasksTaskStatus) SetNotCurrentlyInEngine()     { item.index = 0 }
+func (item TasksTaskStatus) IsNotCurrentlyInEngine() bool { return item.index == 0 }
+func (item *TasksTaskStatus) SetNotCurrentlyInEngine()    { item.index = 0 }
 
-func (item *TasksTaskStatus) IsScheduled() bool { return item.index == 1 }
-func (item *TasksTaskStatus) SetScheduled()     { item.index = 1 }
+func (item TasksTaskStatus) IsScheduled() bool { return item.index == 1 }
+func (item *TasksTaskStatus) SetScheduled()    { item.index = 1 }
 
-func (item *TasksTaskStatus) IsWaiting() bool { return item.index == 2 }
-func (item *TasksTaskStatus) SetWaiting()     { item.index = 2 }
+func (item TasksTaskStatus) IsWaiting() bool { return item.index == 2 }
+func (item *TasksTaskStatus) SetWaiting()    { item.index = 2 }
 
-func (item *TasksTaskStatus) IsInProgress() bool { return item.index == 3 }
-func (item *TasksTaskStatus) SetInProgress()     { item.index = 3 }
+func (item TasksTaskStatus) IsInProgress() bool { return item.index == 3 }
+func (item *TasksTaskStatus) SetInProgress()    { item.index = 3 }
 
 func (item *TasksTaskStatus) ReadBoxed(w []byte) (_ []byte, err error) {
 	var tag uint32
@@ -68,7 +68,6 @@ func (item *TasksTaskStatus) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TasksTaskStatus) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

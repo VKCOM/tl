@@ -32,7 +32,6 @@ func (item *TupleService1Value3) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleService1Value3) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -49,7 +48,6 @@ func (item *TupleService1Value3) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleService1Value3) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

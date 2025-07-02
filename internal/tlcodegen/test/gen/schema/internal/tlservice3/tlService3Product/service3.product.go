@@ -78,7 +78,6 @@ func (item *Service3Product) Read(w []byte, nat_mode uint32) (_ []byte, err erro
 	return w, nil
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service3Product) WriteGeneral(w []byte, nat_mode uint32) (_ []byte, err error) {
 	return item.Write(w, nat_mode), nil
 }
@@ -102,7 +101,6 @@ func (item *Service3Product) ReadBoxed(w []byte, nat_mode uint32) (_ []byte, err
 	return item.Read(w, nat_mode)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service3Product) WriteBoxedGeneral(w []byte, nat_mode uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_mode), nil
 }

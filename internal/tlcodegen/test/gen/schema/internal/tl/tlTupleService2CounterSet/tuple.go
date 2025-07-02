@@ -32,7 +32,6 @@ func (item *TupleService2CounterSet) Read(w []byte, nat_tintCountersNum uint32, 
 	return tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetRead(w, ptr, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleService2CounterSet) WriteGeneral(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
@@ -49,7 +48,6 @@ func (item *TupleService2CounterSet) ReadBoxed(w []byte, nat_tintCountersNum uin
 	return item.Read(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleService2CounterSet) WriteBoxedGeneral(w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	return item.WriteBoxed(w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }

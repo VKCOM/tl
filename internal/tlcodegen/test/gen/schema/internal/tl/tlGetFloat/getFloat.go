@@ -30,7 +30,6 @@ func (item *GetFloat) Read(w []byte) (_ []byte, err error) {
 	return basictl.FloatRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *GetFloat) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -47,7 +46,6 @@ func (item *GetFloat) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *GetFloat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

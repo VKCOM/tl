@@ -58,7 +58,6 @@ func (item *Service2Set) Read(w []byte) (_ []byte, err error) {
 	return item.NewValues.Read(w, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service2Set) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -86,7 +85,6 @@ func (item *Service2Set) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service2Set) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }

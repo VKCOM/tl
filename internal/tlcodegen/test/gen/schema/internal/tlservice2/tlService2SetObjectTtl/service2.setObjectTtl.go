@@ -42,7 +42,6 @@ func (item *Service2SetObjectTtl) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Ttl)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service2SetObjectTtl) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -63,7 +62,6 @@ func (item *Service2SetObjectTtl) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service2SetObjectTtl) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }

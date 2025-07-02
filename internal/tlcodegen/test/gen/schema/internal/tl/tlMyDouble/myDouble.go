@@ -33,7 +33,6 @@ func (item *MyDouble) Read(w []byte) (_ []byte, err error) {
 	return basictl.DoubleRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *MyDouble) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -51,7 +50,6 @@ func (item *MyDouble) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *MyDouble) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

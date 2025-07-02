@@ -90,7 +90,6 @@ func (item *EitherIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ 
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *EitherIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -213,7 +212,6 @@ func (item *LeftIntVectorService6FindWithBoundsResult) Read(w []byte) (_ []byte,
 	return basictl.IntRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -230,7 +228,6 @@ func (item *LeftIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ []
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -332,7 +329,6 @@ func (item *RightIntVectorService6FindWithBoundsResult) Read(w []byte) (_ []byte
 	return tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultRead(w, &item.Value)
 }
 
-// This method is general version of Write, use it instead!
 func (item *RightIntVectorService6FindWithBoundsResult) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -349,7 +345,6 @@ func (item *RightIntVectorService6FindWithBoundsResult) ReadBoxed(w []byte) (_ [
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *RightIntVectorService6FindWithBoundsResult) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

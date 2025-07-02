@@ -31,7 +31,6 @@ func (item *BoxedTupleSlice2) Read(w []byte) (_ []byte, err error) {
 	return item.X.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *BoxedTupleSlice2) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -50,7 +49,6 @@ func (item *BoxedTupleSlice2) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BoxedTupleSlice2) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }

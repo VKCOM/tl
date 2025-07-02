@@ -36,7 +36,6 @@ func (item *VectorService3ProductStatsOldMaybe) ReadBoxed(w []byte) (_ []byte, e
 	return w, nil
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *VectorService3ProductStatsOldMaybe) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

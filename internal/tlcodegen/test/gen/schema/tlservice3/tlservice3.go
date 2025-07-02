@@ -8,6 +8,14 @@
 package tlservice3
 
 import (
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3GroupCountLimit"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3GroupSizeLimit"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3Product"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3Product0"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3Product0Maybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3ProductMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3ProductStatsOld"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService3ProductStatsOldMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice3/tlService3CreateProduct"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice3/tlService3DeleteAllProducts"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice3/tlService3DeleteGroupedProducts"
@@ -31,24 +39,32 @@ import (
 )
 
 type (
-	CreateProduct          = tlService3CreateProduct.Service3CreateProduct
-	DeleteAllProducts      = tlService3DeleteAllProducts.Service3DeleteAllProducts
-	DeleteGroupedProducts  = tlService3DeleteGroupedProducts.Service3DeleteGroupedProducts
-	DeleteProduct          = tlService3DeleteProduct.Service3DeleteProduct
-	GetLastVisitTimestamp  = tlService3GetLastVisitTimestamp.Service3GetLastVisitTimestamp
-	GetLimits              = tlService3GetLimits.Service3GetLimits
-	GetProductStats        = tlService3GetProductStats.Service3GetProductStats
-	GetProducts            = tlService3GetProducts.Service3GetProducts
-	GetScheduledProducts   = tlService3GetScheduledProducts.Service3GetScheduledProducts
-	GroupCountLimit        = tlService3GroupCountLimit.Service3GroupCountLimit
-	GroupSizeLimit         = tlService3GroupSizeLimit.Service3GroupSizeLimit
-	Limits                 = tlService3Limits.Service3Limits
-	Product                = tlService3Product.Service3Product
-	Product0               = tlService3Product0.Service3Product0
-	ProductStatsOld        = tlService3ProductStatsOld.Service3ProductStatsOld
-	RestoreAllProducts     = tlService3RestoreAllProducts.Service3RestoreAllProducts
-	RestoreGroupedProducts = tlService3RestoreGroupedProducts.Service3RestoreGroupedProducts
-	RestoreProduct         = tlService3RestoreProduct.Service3RestoreProduct
-	SetLastVisitTimestamp  = tlService3SetLastVisitTimestamp.Service3SetLastVisitTimestamp
-	SetLimits              = tlService3SetLimits.Service3SetLimits
+	CreateProduct                      = tlService3CreateProduct.Service3CreateProduct
+	DeleteAllProducts                  = tlService3DeleteAllProducts.Service3DeleteAllProducts
+	DeleteGroupedProducts              = tlService3DeleteGroupedProducts.Service3DeleteGroupedProducts
+	DeleteProduct                      = tlService3DeleteProduct.Service3DeleteProduct
+	GetLastVisitTimestamp              = tlService3GetLastVisitTimestamp.Service3GetLastVisitTimestamp
+	GetLimits                          = tlService3GetLimits.Service3GetLimits
+	GetProductStats                    = tlService3GetProductStats.Service3GetProductStats
+	GetProducts                        = tlService3GetProducts.Service3GetProducts
+	GetScheduledProducts               = tlService3GetScheduledProducts.Service3GetScheduledProducts
+	GroupCountLimit                    = tlService3GroupCountLimit.Service3GroupCountLimit
+	GroupSizeLimit                     = tlService3GroupSizeLimit.Service3GroupSizeLimit
+	Limits                             = tlService3Limits.Service3Limits
+	Product                            = tlService3Product.Service3Product
+	Product0                           = tlService3Product0.Service3Product0
+	ProductStatsOld                    = tlService3ProductStatsOld.Service3ProductStatsOld
+	RestoreAllProducts                 = tlService3RestoreAllProducts.Service3RestoreAllProducts
+	RestoreGroupedProducts             = tlService3RestoreGroupedProducts.Service3RestoreGroupedProducts
+	RestoreProduct                     = tlService3RestoreProduct.Service3RestoreProduct
+	SetLastVisitTimestamp              = tlService3SetLastVisitTimestamp.Service3SetLastVisitTimestamp
+	SetLimits                          = tlService3SetLimits.Service3SetLimits
+	VectorService3GroupCountLimit      = tlVectorService3GroupCountLimit.VectorService3GroupCountLimit
+	VectorService3GroupSizeLimit       = tlVectorService3GroupSizeLimit.VectorService3GroupSizeLimit
+	VectorService3Product              = tlVectorService3Product.VectorService3Product
+	VectorService3Product0             = tlVectorService3Product0.VectorService3Product0
+	VectorService3Product0Maybe        = tlVectorService3Product0Maybe.VectorService3Product0Maybe
+	VectorService3ProductMaybe         = tlVectorService3ProductMaybe.VectorService3ProductMaybe
+	VectorService3ProductStatsOld      = tlVectorService3ProductStatsOld.VectorService3ProductStatsOld
+	VectorService3ProductStatsOldMaybe = tlVectorService3ProductStatsOldMaybe.VectorService3ProductStatsOldMaybe
 )

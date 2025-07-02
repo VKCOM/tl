@@ -33,7 +33,6 @@ func (item *Service6MultiFindWithBounds) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorInt.BuiltinVectorIntRead(w, &item.Clusters)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service6MultiFindWithBounds) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -50,7 +49,6 @@ func (item *Service6MultiFindWithBounds) ReadBoxed(w []byte) (_ []byte, err erro
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service6MultiFindWithBounds) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

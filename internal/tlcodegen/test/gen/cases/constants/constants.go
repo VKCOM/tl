@@ -51,6 +51,7 @@ const (
 	CasesTestVector                                 = 0x4975695c // cases.testVector
 	CasesTL2TestArrayFixedBool                      = 0xf704cf4e // casesTL2.testArrayFixedBool
 	CasesTL2TestArrayFlexibleBool                   = 0x974a9b29 // casesTL2.testArrayFlexibleBool
+	CasesTL2TestFixedParam                          = 0x22c48297 // casesTL2.testFixedParam
 	CasesTL2TestFunctionNoDep1                      = 0x1b8b9feb // casesTL2.testFunctionNoDep1
 	CasesTL2TestFunctionNoDep2                      = 0x0a2c0bf9 // casesTL2.testFunctionNoDep2
 	CasesTL2TestFunctionNoDep3                      = 0xf020849b // casesTL2.testFunctionNoDep3
@@ -59,6 +60,9 @@ const (
 	CasesTL2TestFunctionWithDep1                    = 0xb6c63b07 // casesTL2.testFunctionWithDep1
 	CasesTL2TestFunctionWithDep2                    = 0x9d44a2fd // casesTL2.testFunctionWithDep2
 	CasesTL2TestObject                              = 0x4f96dd95 // casesTL2.testObject
+	CasesTL2TestObjectWithMuiltiParams              = 0xfbdfdaa3 // casesTL2.testObjectWithMuiltiParams
+	CasesTL2TestObjectWithParam                     = 0xd0ce3a42 // casesTL2.testObjectWithParam
+	CasesTL2TestParamsGeneration                    = 0xaac2f033 // casesTL2.testParamsGeneration
 	CasesTL2TestVectorBool                          = 0x644bb447 // casesTL2.testVectorBool
 	CasesBytesTestArray                             = 0x3762fb81 // cases_bytes.testArray
 	CasesBytesTestDictAny                           = 0x5a5fce57 // cases_bytes.testDictAny

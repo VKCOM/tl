@@ -34,7 +34,6 @@ func (item *BoxedVector32BoxedElem) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *BoxedVector32BoxedElem) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -52,7 +51,6 @@ func (item *BoxedVector32BoxedElem) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BoxedVector32BoxedElem) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

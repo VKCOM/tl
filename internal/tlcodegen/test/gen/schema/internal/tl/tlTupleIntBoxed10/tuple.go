@@ -31,7 +31,6 @@ func (item *TupleIntBoxed10) Read(w []byte) (_ []byte, err error) {
 	return tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedRead(w, ptr)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TupleIntBoxed10) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -48,7 +47,6 @@ func (item *TupleIntBoxed10) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TupleIntBoxed10) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

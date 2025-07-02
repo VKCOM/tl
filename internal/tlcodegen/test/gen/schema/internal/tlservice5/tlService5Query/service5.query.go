@@ -37,7 +37,6 @@ func (item *Service5Query) Read(w []byte) (_ []byte, err error) {
 	return item.Params.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service5Query) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -55,7 +54,6 @@ func (item *Service5Query) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service5Query) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

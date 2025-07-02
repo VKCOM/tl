@@ -9,8 +9,13 @@ package tlservice1
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/cycle_6ca945392bbf8b14f24e5653edc8b214"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryFieldService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlDictionaryService1Value"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlService1KeysStatMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlService1ValueBoxedMaybe"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlTupleService1Value3"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorDictionaryFieldService1Value"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tl/tlVectorService1Value"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1Add"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1AddOrGet"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/schema/internal/tlservice1/tlService1AddOrIncr"
@@ -41,39 +46,44 @@ import (
 )
 
 type (
-	Add                  = tlService1Add.Service1Add
-	AddOrGet             = tlService1AddOrGet.Service1AddOrGet
-	AddOrIncr            = tlService1AddOrIncr.Service1AddOrIncr
-	Append               = tlService1Append.Service1Append
-	Cas                  = tlService1Cas.Service1Cas
-	Decr                 = tlService1Decr.Service1Decr
-	Delete               = tlService1Delete.Service1Delete
-	DisableExpiration    = tlService1DisableExpiration.Service1DisableExpiration
-	DisableKeysStat      = tlService1DisableKeysStat.Service1DisableKeysStat
-	EnableExpiration     = tlService1EnableExpiration.Service1EnableExpiration
-	EnableKeysStat       = tlService1EnableKeysStat.Service1EnableKeysStat
-	Exists               = tlService1Exists.Service1Exists
-	Get                  = tlService1Get.Service1Get
-	GetExpireTime        = tlService1GetExpireTime.Service1GetExpireTime
-	GetKeysStat          = tlService1GetKeysStat.Service1GetKeysStat
-	GetKeysStatPeriods   = tlService1GetKeysStatPeriods.Service1GetKeysStatPeriods
-	GetWildcard          = tlService1GetWildcard.Service1GetWildcard
-	GetWildcardDict      = tlService1GetWildcardDict.Service1GetWildcardDict
-	GetWildcardList      = tlService1GetWildcardList.Service1GetWildcardList
-	GetWildcardWithFlags = tlService1GetWildcardWithFlags.Service1GetWildcardWithFlags
-	Incr                 = tlService1Incr.Service1Incr
-	KeysStat             = tlService1KeysStat.Service1KeysStat
-	KeysStatMaybe        = tlService1KeysStatMaybe.Service1KeysStatMaybe
-	Longvalue            = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Longvalue
-	LongvalueWithTime    = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1LongvalueWithTime
-	NotFound             = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1NotFound
-	Replace              = tlService1Replace.Service1Replace
-	ReplaceOrIncr        = tlService1ReplaceOrIncr.Service1ReplaceOrIncr
-	Set                  = tlService1Set.Service1Set
-	SetOrIncr            = tlService1SetOrIncr.Service1SetOrIncr
-	Strvalue             = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Strvalue
-	StrvalueWithTime     = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1StrvalueWithTime
-	Touch                = tlService1Touch.Service1Touch
-	Value                = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
-	ValueBoxedMaybe      = tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe
+	Add                                = tlService1Add.Service1Add
+	AddOrGet                           = tlService1AddOrGet.Service1AddOrGet
+	AddOrIncr                          = tlService1AddOrIncr.Service1AddOrIncr
+	Append                             = tlService1Append.Service1Append
+	Cas                                = tlService1Cas.Service1Cas
+	Decr                               = tlService1Decr.Service1Decr
+	Delete                             = tlService1Delete.Service1Delete
+	DictionaryFieldService1Value       = tlDictionaryFieldService1Value.DictionaryFieldService1Value
+	DictionaryService1Value            = tlDictionaryService1Value.DictionaryService1Value
+	DisableExpiration                  = tlService1DisableExpiration.Service1DisableExpiration
+	DisableKeysStat                    = tlService1DisableKeysStat.Service1DisableKeysStat
+	EnableExpiration                   = tlService1EnableExpiration.Service1EnableExpiration
+	EnableKeysStat                     = tlService1EnableKeysStat.Service1EnableKeysStat
+	Exists                             = tlService1Exists.Service1Exists
+	Get                                = tlService1Get.Service1Get
+	GetExpireTime                      = tlService1GetExpireTime.Service1GetExpireTime
+	GetKeysStat                        = tlService1GetKeysStat.Service1GetKeysStat
+	GetKeysStatPeriods                 = tlService1GetKeysStatPeriods.Service1GetKeysStatPeriods
+	GetWildcard                        = tlService1GetWildcard.Service1GetWildcard
+	GetWildcardDict                    = tlService1GetWildcardDict.Service1GetWildcardDict
+	GetWildcardList                    = tlService1GetWildcardList.Service1GetWildcardList
+	GetWildcardWithFlags               = tlService1GetWildcardWithFlags.Service1GetWildcardWithFlags
+	Incr                               = tlService1Incr.Service1Incr
+	KeysStat                           = tlService1KeysStat.Service1KeysStat
+	KeysStatMaybe                      = tlService1KeysStatMaybe.Service1KeysStatMaybe
+	Longvalue                          = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Longvalue
+	LongvalueWithTime                  = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1LongvalueWithTime
+	NotFound                           = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1NotFound
+	Replace                            = tlService1Replace.Service1Replace
+	ReplaceOrIncr                      = tlService1ReplaceOrIncr.Service1ReplaceOrIncr
+	Set                                = tlService1Set.Service1Set
+	SetOrIncr                          = tlService1SetOrIncr.Service1SetOrIncr
+	Strvalue                           = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Strvalue
+	StrvalueWithTime                   = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1StrvalueWithTime
+	Touch                              = tlService1Touch.Service1Touch
+	TupleService1Value3                = tlTupleService1Value3.TupleService1Value3
+	Value                              = cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
+	ValueBoxedMaybe                    = tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe
+	VectorDictionaryFieldService1Value = tlVectorDictionaryFieldService1Value.VectorDictionaryFieldService1Value
+	VectorService1Value                = tlVectorService1Value.VectorService1Value
 )

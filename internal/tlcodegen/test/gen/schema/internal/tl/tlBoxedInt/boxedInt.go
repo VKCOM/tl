@@ -33,7 +33,6 @@ func (item *BoxedInt) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *BoxedInt) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -51,7 +50,6 @@ func (item *BoxedInt) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *BoxedInt) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

@@ -42,7 +42,6 @@ func (item *TasksAddTask) Read(w []byte) (_ []byte, err error) {
 	return item.Task.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TasksAddTask) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -61,7 +60,6 @@ func (item *TasksAddTask) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TasksAddTask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

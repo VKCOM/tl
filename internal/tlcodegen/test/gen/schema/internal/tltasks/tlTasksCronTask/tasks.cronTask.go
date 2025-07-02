@@ -48,7 +48,6 @@ func (item *TasksCronTask) Read(w []byte) (_ []byte, err error) {
 	return item.Time.Read(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TasksCronTask) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -68,7 +67,6 @@ func (item *TasksCronTask) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TasksCronTask) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

@@ -30,7 +30,6 @@ func (item *Service6FindResultRow) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.X)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service6FindResultRow) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -47,7 +46,6 @@ func (item *Service6FindResultRow) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service6FindResultRow) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

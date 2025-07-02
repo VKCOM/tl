@@ -36,7 +36,6 @@ func (item *Service1Touch) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Delay)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1Touch) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -54,7 +53,6 @@ func (item *Service1Touch) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1Touch) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

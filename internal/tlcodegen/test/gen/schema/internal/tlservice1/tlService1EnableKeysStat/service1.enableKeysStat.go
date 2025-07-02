@@ -31,7 +31,6 @@ func (item *Service1EnableKeysStat) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Period)
 }
 
-// This method is general version of Write, use it instead!
 func (item *Service1EnableKeysStat) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -48,7 +47,6 @@ func (item *Service1EnableKeysStat) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *Service1EnableKeysStat) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }

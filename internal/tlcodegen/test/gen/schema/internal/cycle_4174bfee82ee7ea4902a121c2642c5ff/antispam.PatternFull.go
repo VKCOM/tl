@@ -56,7 +56,6 @@ func (item *AntispamPatternFound) Read(w []byte) (_ []byte, err error) {
 	return basictl.StringRead(w, &item.Text)
 }
 
-// This method is general version of Write, use it instead!
 func (item *AntispamPatternFound) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -77,7 +76,6 @@ func (item *AntispamPatternFound) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AntispamPatternFound) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -293,7 +291,6 @@ func (item *AntispamPatternFull) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AntispamPatternFull) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -401,7 +398,6 @@ func (item *AntispamPatternNotFound) Reset() {}
 
 func (item *AntispamPatternNotFound) Read(w []byte) (_ []byte, err error) { return w, nil }
 
-// This method is general version of Write, use it instead!
 func (item *AntispamPatternNotFound) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -417,7 +413,6 @@ func (item *AntispamPatternNotFound) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *AntispamPatternNotFound) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
