@@ -6,17 +6,17 @@ import (
 	"testing"
 )
 
-func setupIterator(str string) (error, tokenIterator) {
+func setupIterator(str string) (tokenIterator, error) {
 	lex := newLexer(str, "", LexerOptions{LexerLanguage: tl2})
 	allTokens, err := lex.generateTokens()
 
-	return err, tokenIterator{tokens: allTokens}
+	return tokenIterator{tokens: allTokens}, err
 }
 
 func TestParseTL2(t *testing.T) {
 	t.Run("optional parse annotations", func(t *testing.T) {
 		t.Run("success", func(t *testing.T) {
-			_, it := setupIterator(`   @gigi    `)
+			it, _ := setupIterator(`   @gigi    `)
 			state, newIt, ann := parseTL2Annotation(it, Position{})
 			assert.True(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
@@ -25,7 +25,7 @@ func TestParseTL2(t *testing.T) {
 		})
 
 		t.Run("don't start processing", func(t *testing.T) {
-			_, it := setupIterator(`   #11111111    `)
+			it, _ := setupIterator(`   #11111111    `)
 			state, newIt, ann := parseTL2Annotation(it, Position{})
 			assert.False(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
@@ -34,7 +34,7 @@ func TestParseTL2(t *testing.T) {
 		})
 
 		t.Run("parse several", func(t *testing.T) {
-			_, it := setupIterator(` @gigi @gaga #12345678  `)
+			it, _ := setupIterator(` @gigi @gaga #12345678  `)
 			state, newIt, anns := zeroOrMore(parseTL2Annotation)(it, Position{})
 			assert.True(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
@@ -45,7 +45,7 @@ func TestParseTL2(t *testing.T) {
 		})
 
 		t.Run("parse zero", func(t *testing.T) {
-			_, it := setupIterator(` #12345678  `)
+			it, _ := setupIterator(` #12345678  `)
 			state, newIt, anns := zeroOrMore(parseTL2Annotation)(it, Position{})
 			assert.False(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
@@ -56,7 +56,7 @@ func TestParseTL2(t *testing.T) {
 
 	t.Run("optional parse type name", func(t *testing.T) {
 		t.Run("success without namespace", func(t *testing.T) {
-			_, it := setupIterator(` testName  `)
+			it, _ := setupIterator(` testName  `)
 			state, newIt, testName := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
@@ -64,7 +64,7 @@ func TestParseTL2(t *testing.T) {
 			assert.True(t, newIt.expect(eof))
 		})
 		t.Run("success with namespace", func(t *testing.T) {
-			_, it := setupIterator(` testNS.testName  `)
+			it, _ := setupIterator(` testNS.testName  `)
 			state, newIt, testName := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
@@ -73,14 +73,14 @@ func TestParseTL2(t *testing.T) {
 			assert.True(t, newIt.expect(eof))
 		})
 		t.Run("don't start processing", func(t *testing.T) {
-			_, it := setupIterator(` TestName  `)
+			it, _ := setupIterator(` TestName  `)
 			state, newIt, _ := parseTL2TypeName(it, Position{})
 			assert.False(t, state.StartProcessing)
 			assert.NoError(t, state.Error)
 			assert.True(t, newIt.expect(ucIdent))
 		})
 		t.Run("fail because of ucName", func(t *testing.T) {
-			_, it := setupIterator(` testNs.TestName  `)
+			it, _ := setupIterator(` testNs.TestName  `)
 			state, newIt, _ := parseTL2TypeName(it, Position{})
 			assert.True(t, state.StartProcessing)
 			assert.Error(t, state.Error)
@@ -91,7 +91,7 @@ func TestParseTL2(t *testing.T) {
 	t.Run("combinator", func(t *testing.T) {
 		t.Run("type declaration", func(t *testing.T) {
 			t.Run("basic definition", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = x:int; `)
+				it, _ := setupIterator(` testNs.testName = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -113,7 +113,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("basic definition with crc32", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName #90abcdef = x:int; `)
+				it, _ := setupIterator(` testNs.testName #90abcdef = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -125,7 +125,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("basic definition with optional field", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = x?:int; `)
+				it, _ := setupIterator(` testNs.testName = x?:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -148,7 +148,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("basic definition with ignored field", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = _:int; `)
+				it, _ := setupIterator(` testNs.testName = _:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -171,13 +171,13 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("basic definition with ignored optional field", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = _?:int; `)
+				it, _ := setupIterator(` testNs.testName = _?:int; `)
 				_, _, err := parseTL2Combinator(it)
 				assert.Error(t, err)
 			})
 
 			t.Run("empty definition", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = ; `)
+				it, _ := setupIterator(` testNs.testName = ; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -192,7 +192,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("type alias", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = int; `)
+				it, _ := setupIterator(` testNs.testName = int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -211,7 +211,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("union", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = int | string; `)
+				it, _ := setupIterator(` testNs.testName = int | string; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -233,7 +233,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("union with constructors", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName = Green x:int | Red | string; `)
+				it, _ := setupIterator(` testNs.testName = Green x:int | Red | string; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -267,7 +267,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("union with constructors and traling |", func(t *testing.T) {
-				_, it := setupIterator(`
+				it, _ := setupIterator(`
 testNs.testName = 
 	| Green x:int 
 	| Red 
@@ -306,7 +306,7 @@ testNs.testName =
 			})
 
 			t.Run("union with constructors with one constructor", func(t *testing.T) {
-				_, it := setupIterator(`
+				it, _ := setupIterator(`
 testNs.testName = | Green x:int
 	;`)
 				_, _, err := parseTL2Combinator(it)
@@ -314,7 +314,7 @@ testNs.testName = | Green x:int
 			})
 
 			t.Run("union with constructors with zero constructor", func(t *testing.T) {
-				_, it := setupIterator(`
+				it, _ := setupIterator(`
 testNs.testName = |
 	;`)
 				_, _, err := parseTL2Combinator(it)
@@ -322,7 +322,7 @@ testNs.testName = |
 			})
 
 			t.Run("union with constructors with one constructor", func(t *testing.T) {
-				_, it := setupIterator(`
+				it, _ := setupIterator(`
 testNs.testName = Green x:int |
 	;`)
 				_, _, err := parseTL2Combinator(it)
@@ -330,7 +330,7 @@ testNs.testName = Green x:int |
 			})
 
 			t.Run("basic definition with templates", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName<x:type> = x:int; `)
+				it, _ := setupIterator(` testNs.testName<x:type> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -344,28 +344,28 @@ testNs.testName = Green x:int |
 			})
 
 			t.Run("union without variant declarations", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName<x:type> = |; `)
+				it, _ := setupIterator(` testNs.testName<x:type> = |; `)
 				_, _, err := parseTL2Combinator(it)
 				fmt.Println(err)
 				assert.Error(t, err)
 			})
 
 			t.Run("correct categories", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName<x:type, y:uint32> = ; `)
+				it, _ := setupIterator(` testNs.testName<x:type, y:uint32> = ; `)
 				_, _, err := parseTL2Combinator(it)
 				fmt.Println(err)
 				assert.NoError(t, err)
 			})
 
 			t.Run("incorrect categories", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName<x:type, y:int> = ; `)
+				it, _ := setupIterator(` testNs.testName<x:type, y:int> = ; `)
 				_, _, err := parseTL2Combinator(it)
 				fmt.Println(err)
 				assert.Error(t, err)
 			})
 
 			t.Run("basic definition with multiple templates", func(t *testing.T) {
-				_, it := setupIterator(` testNs.testName<x:type, y:uint32> = x:int; `)
+				it, _ := setupIterator(` testNs.testName<x:type, y:uint32> = x:int; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -387,7 +387,7 @@ testNs.testName = Green x:int |
 
 	t.Run("function declration", func(t *testing.T) {
 		t.Run("simple function", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName#09123456 x:int => int; `)
+			it, _ := setupIterator(` testNs.testName#09123456 x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -410,13 +410,13 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("function without tag", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName x:int => int; `)
+			it, _ := setupIterator(` testNs.testName x:int => int; `)
 			_, _, err := parseTL2Combinator(it)
 			assert.Error(t, err)
 		})
 
 		t.Run("simple function with crc32", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName#90abcdef x:int => int; `)
+			it, _ := setupIterator(` testNs.testName#90abcdef x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -428,7 +428,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("simple function no arguments", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName#09123456 => int; `)
+			it, _ := setupIterator(` testNs.testName#09123456 => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -442,7 +442,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("function with union type result", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName#09123456 x:int => int | NonFound | Found name:string _:int; `)
+			it, _ := setupIterator(` testNs.testName#09123456 x:int => int | NonFound | Found name:string _:int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -487,7 +487,7 @@ testNs.testName = Green x:int |
 
 	t.Run("type reference", func(t *testing.T) {
 		t.Run("simple type", func(t *testing.T) {
-			_, it := setupIterator(` int `)
+			it, _ := setupIterator(` int `)
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
@@ -502,7 +502,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("simple type with namespace", func(t *testing.T) {
-			_, it := setupIterator(` ns.int `)
+			it, _ := setupIterator(` ns.int `)
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
@@ -517,7 +517,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("vector type", func(t *testing.T) {
-			_, it := setupIterator(` []int `)
+			it, _ := setupIterator(` []int `)
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
@@ -535,7 +535,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("fixed array type", func(t *testing.T) {
-			_, it := setupIterator(` [4]int `)
+			it, _ := setupIterator(` [4]int `)
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
@@ -555,7 +555,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("fixed array type with generic", func(t *testing.T) {
-			_, it := setupIterator(` [n]int `)
+			it, _ := setupIterator(` [n]int `)
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
@@ -575,7 +575,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("deep type", func(t *testing.T) {
-			_, it := setupIterator(`[[]list<[]int>]array<2, [][]string> `)
+			it, _ := setupIterator(`[[]list<[]int>]array<2, [][]string> `)
 			state, newIt, typeRef := parseTL2Type(it, Position{})
 
 			assert.True(t, state.StartProcessing)
@@ -597,7 +597,7 @@ testNs.testName = Green x:int |
 
 	t.Run("check print", func(t *testing.T) {
 		t.Run("combinator", func(t *testing.T) {
-			_, it := setupIterator(` testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
+			it, _ := setupIterator(` testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
 			comb, _, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.Equal(t,

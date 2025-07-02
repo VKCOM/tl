@@ -278,10 +278,6 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 			}
 		}
 
-		if name.String() == "Tuple" {
-			print("debug")
-		}
-
 		allConstableArgsSubSets := utils.SetSubSets(combinatorConstableArgs)
 		sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
 			if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
