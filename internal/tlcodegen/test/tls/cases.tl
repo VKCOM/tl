@@ -182,6 +182,21 @@ casesTL2.testObjectWithParam {n:#}
     x:n.0?int
     y:n*[int] = casesTL2.TestObjectWithParam n;
 
+casesTL2.testParamsGeneration
+    n1:#
+    n2:#
+    x1: casesTL2.testObjectWithMuiltiParams<4, 1>
+    x2: casesTL2.testObjectWithMuiltiParams<n1, 2>
+    x3: casesTL2.testObjectWithMuiltiParams<3, n2>
+    x4: casesTL2.testObjectWithMuiltiParams<n1, n2>
+    = casesTL2.TestParamsGeneration;
+
+casesTL2.testObjectWithMuiltiParams {n:#} {m:#}
+    f1:n.0?n*[int]
+    f2:m.0?m*[int]
+    y:n*[m*[int]] = casesTL2.TestObjectWithMuiltiParams n m;
+
+
 @read casesTL2.testFunctionNoDep1 x:int => Int;
 @read casesTL2.testFunctionNoDep2 x:int => True;
 @read casesTL2.testFunctionNoDep3 x:int => Vector<int>;

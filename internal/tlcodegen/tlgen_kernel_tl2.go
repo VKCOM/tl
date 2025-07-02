@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
+	"golang.org/x/exp/slices"
 	"sort"
 	"strings"
 )
@@ -119,8 +120,8 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 		return strings.ToUpper(s[:1]) + s[1:]
 	}
 
-	var resolveType func(ref tlast.TypeRef, natIsConstant map[string]bool) (newRef tlast.TL2TypeRef)
-	resolveType = func(ref tlast.TypeRef, natIsConstant map[string]bool) (newRef tlast.TL2TypeRef) {
+	var resolveType func(ref tlast.TypeRef, natIsConstant map[string]bool, natTemples map[string]bool) (newRef tlast.TL2TypeRef)
+	resolveType = func(ref tlast.TypeRef, natIsConstant map[string]bool, natTemples map[string]bool) (newRef tlast.TL2TypeRef) {
 		if ref.Type.String() == "#" {
 			newRef.SomeType = &tlast.TL2TypeApplication{
 				Name: tlast.TL2TypeName{
@@ -153,7 +154,7 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 						}
 					}
 				}
-				newRef.BracketType.ArrayType = resolveType(ref.Args[arrayIndex].T, natIsConstant)
+				newRef.BracketType.ArrayType = resolveType(ref.Args[arrayIndex].T, natIsConstant, natTemples)
 			} else {
 				newRef.SomeType = &tlast.TL2TypeApplication{
 					Name: tlast.TL2TypeName{
@@ -162,15 +163,19 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 					},
 				}
 				for i, arg := range ref.Args {
-					if len(natUsage.GetInfluencedNatFieldsToTemplate(tname, i)) > 0 {
-						continue
+					if arg.IsArith || natTemples[arg.String()] {
+						if arg.IsArith || natIsConstant[arg.String()] {
+							newRef.SomeType.Name.Name += "_" + upperFirst(associatedCombinator[ref.Type].TemplateArguments[i].FieldName)
+						} else {
+							continue
+						}
 					}
 					newArg := tlast.TL2TypeArgument{}
 					if arg.IsArith {
 						newArg.IsNumber = true
 						newArg.Number = arg.Arith.Res
 					} else {
-						newArg.Type = resolveType(arg.T, natIsConstant)
+						newArg.Type = resolveType(arg.T, natIsConstant, natTemples)
 					}
 					newRef.SomeType.Arguments = append(newRef.SomeType.Arguments, newArg)
 				}
@@ -185,7 +190,8 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 		return
 	}
 
-	addFields := func(oldFields []tlast.Field, natIsConstant map[string]bool) (newFields []tlast.TL2Field) {
+	addFields := func(oldFields []tlast.Field, natIsConstant map[string]bool, natTemples map[string]bool) (newFields []tlast.TL2Field) {
+		natTemples = utils.CopyMap(natTemples)
 		for _, field := range oldFields {
 			newField := tlast.TL2Field{}
 			newField.Name = lowerFirst(field.FieldName)
@@ -238,7 +244,10 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 					}
 				}
 			}
-			*calculatingType = resolveType(field.FieldType, natIsConstant)
+			*calculatingType = resolveType(field.FieldType, natIsConstant, natTemples)
+			if field.FieldType.String() == "#" {
+				natTemples[field.FieldName] = true
+			}
 			newFields = append(newFields, newField)
 		}
 		return
@@ -250,66 +259,122 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 			continue
 		}
 		combinator0 := combinators[0]
-		tl2Combinator := tlast.TL2Combinator{IsFunction: false}
-		// init name
-		tl2Combinator.TypeDecl.Name.Namespace = name.Namespace
-		tl2Combinator.TypeDecl.Name.Name = lowerFirst(name.Name)
-		// init templates
-		natTemplates := make(map[string]int)
-		natIsConstant := make(map[string]bool)
-		generic := make(map[string]bool)
 
+		combinatorConstableArgs := make(map[int]bool)
 		for i, argument := range combinator0.TemplateArguments {
-			category := "type"
 			if argument.IsNat {
-				category = "uint32"
-				natTemplates[argument.FieldName] = i
-				if len(natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)) > 0 {
-					continue
+				if len(natUsage.GetConstantsPassingThroughArgument(name, i)) > 0 {
+					combinatorConstableArgs[i] = true
 				}
-			} else {
-				generic[argument.FieldName] = true
 			}
-
-			natIsConstant[argument.FieldName] = true
-			tl2Combinator.TypeDecl.TemplateArguments = append(tl2Combinator.TypeDecl.TemplateArguments,
-				tlast.TL2TypeTemplate{
-					Name:     lowerFirst(argument.FieldName),
-					Category: tlast.TL2TypeCategory(category),
-				},
-			)
 		}
-		//// init magic
-		//if combinator0.Construct.ID != nil {
-		//	tl2Combinator.TypeDecl.ID = new(uint32)
-		//	*tl2Combinator.TypeDecl.ID = *combinator0.Construct.ID
-		//}
 
-		if len(combinators) == 1 {
-			if len(combinator0.Fields) == 1 && combinator0.Fields[0].FieldName == "" {
-				tl2Combinator.TypeDecl.Type.TypeAlias = resolveType(combinator0.Fields[0].FieldType, natIsConstant)
-			} else {
-				tl2Combinator.TypeDecl.Type.IsConstructorFields = true
-				tl2Combinator.TypeDecl.Type.ConstructorFields = addFields(combinator0.Fields, natIsConstant)
+		minimalConstableArgsSubSet := make(map[int]bool)
+		for i, argument := range combinator0.TemplateArguments {
+			if argument.IsNat {
+				if len(natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)) == 0 {
+					minimalConstableArgsSubSet[i] = true
+				}
 			}
-		} else {
-			tl2Combinator.TypeDecl.Type.IsUnionType = true
-			for _, combinator := range combinators {
-				newVariant := tlast.TL2UnionTypeVariant{}
-				if len(combinator.Fields) == 1 && combinator.Fields[0].FieldName == "" {
-					newVariant.TypeAlias = resolveType(combinator.Fields[0].FieldType, natIsConstant)
-				} else {
-					newVariant.IsConstructor = true
-					newVariant.Constructor = tlast.TL2UnionConstructor{
-						Name: upperFirst(combinator.Construct.Name.Name),
+		}
+
+		if name.String() == "Tuple" {
+			print("debug")
+		}
+
+		allConstableArgsSubSets := utils.SetSubSets(combinatorConstableArgs)
+		sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
+			if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
+				iList := utils.Keys(allConstableArgsSubSets[i])
+				sort.Ints(iList)
+				jList := utils.Keys(allConstableArgsSubSets[j])
+				sort.Ints(jList)
+				return slices.Compare(iList, jList) > 0
+			}
+			return len(allConstableArgsSubSets[i]) > len(allConstableArgsSubSets[j])
+		})
+
+		allConstableArgsSubSets = utils.FilterSlice(
+			allConstableArgsSubSets,
+			func(m map[int]bool) bool {
+				for i := range minimalConstableArgsSubSet {
+					if !m[i] {
+						return false
 					}
-					newVariant.Constructor.Fields = addFields(combinator.Fields, natIsConstant)
 				}
-				tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
-			}
-		}
+				return true
+			},
+		)
 
-		file.Combinators = append(file.Combinators, tl2Combinator)
+		for _, setOfConstantNatArgs := range allConstableArgsSubSets {
+			tl2Combinator := tlast.TL2Combinator{IsFunction: false}
+			// init name
+			tl2Combinator.TypeDecl.Name.Namespace = name.Namespace
+			tl2Combinator.TypeDecl.Name.Name = lowerFirst(name.Name)
+
+			constantArgs := utils.Keys(setOfConstantNatArgs)
+			sort.Ints(constantArgs)
+			for _, arg := range constantArgs {
+				tl2Combinator.TypeDecl.Name.Name += "_" + upperFirst(combinator0.TypeDecl.Arguments[arg])
+			}
+
+			// init templates
+			natTemplates := make(map[string]bool)
+			natIsConstant := make(map[string]bool)
+			generic := make(map[string]bool)
+
+			for i, argument := range combinator0.TemplateArguments {
+				category := "type"
+				if argument.IsNat {
+					category = "uint32"
+					natTemplates[argument.FieldName] = true
+					if !setOfConstantNatArgs[i] {
+						continue
+					}
+					natIsConstant[argument.FieldName] = true
+				} else {
+					generic[argument.FieldName] = true
+				}
+
+				tl2Combinator.TypeDecl.TemplateArguments = append(tl2Combinator.TypeDecl.TemplateArguments,
+					tlast.TL2TypeTemplate{
+						Name:     lowerFirst(argument.FieldName),
+						Category: tlast.TL2TypeCategory(category),
+					},
+				)
+			}
+			//// init magic
+			//if combinator0.Construct.ID != nil {
+			//	tl2Combinator.TypeDecl.ID = new(uint32)
+			//	*tl2Combinator.TypeDecl.ID = *combinator0.Construct.ID
+			//}
+
+			if len(combinators) == 1 {
+				if len(combinator0.Fields) == 1 && combinator0.Fields[0].FieldName == "" {
+					tl2Combinator.TypeDecl.Type.TypeAlias = resolveType(combinator0.Fields[0].FieldType, natIsConstant, natTemplates)
+				} else {
+					tl2Combinator.TypeDecl.Type.IsConstructorFields = true
+					tl2Combinator.TypeDecl.Type.ConstructorFields = addFields(combinator0.Fields, natIsConstant, natTemplates)
+				}
+			} else {
+				tl2Combinator.TypeDecl.Type.IsUnionType = true
+				for _, combinator := range combinators {
+					newVariant := tlast.TL2UnionTypeVariant{}
+					if len(combinator.Fields) == 1 && combinator.Fields[0].FieldName == "" {
+						newVariant.TypeAlias = resolveType(combinator.Fields[0].FieldType, natIsConstant, natTemplates)
+					} else {
+						newVariant.IsConstructor = true
+						newVariant.Constructor = tlast.TL2UnionConstructor{
+							Name: upperFirst(combinator.Construct.Name.Name),
+						}
+						newVariant.Constructor.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
+					}
+					tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
+				}
+			}
+
+			file.Combinators = append(file.Combinators, tl2Combinator)
+		}
 	}
 
 	for _, function := range info.Functions {
@@ -333,10 +398,16 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 			*tl2Combinator.FuncDecl.ID = *function.Construct.ID
 		}
 		// add arguments
-		tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool))
+		tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool), make(map[string]bool))
 		// add return type
+		nats := make(map[string]bool)
+		for _, field := range function.Fields {
+			if field.FieldType.String() == "#" {
+				nats[field.FieldName] = true
+			}
+		}
 		tl2Combinator.FuncDecl.ReturnType = tlast.TL2TypeDefinition{
-			TypeAlias: resolveType(function.FuncDecl, make(map[string]bool)),
+			TypeAlias: resolveType(function.FuncDecl, make(map[string]bool), nats),
 		}
 		file.Combinators = append(file.Combinators, tl2Combinator)
 	}
