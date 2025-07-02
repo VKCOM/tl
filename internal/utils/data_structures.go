@@ -1,5 +1,30 @@
 package utils
 
+// WARINING: USE IF S IS SMALL AND IF YOU NOT FACE ALLOCATION PROBLEM
+func SetSubSets[T comparable](s map[T]bool) (values []map[T]bool) {
+	if len(s) == 0 {
+		values = append(values, make(map[T]bool))
+	} else {
+		var e T
+		for x := range s {
+			e = x
+			break
+		}
+		copyS := CopyMap(s)
+		delete(copyS, e)
+		copySSubsets := SetSubSets(copyS)
+		for _, subset := range copySSubsets {
+			values = append(values, CopyMap(subset))
+		}
+		for _, subset := range copySSubsets {
+			c := CopyMap(subset)
+			c[e] = true
+			values = append(values, c)
+		}
+	}
+	return
+}
+
 func SliceToSet[T comparable](s []T) map[T]bool {
 	m := make(map[T]bool)
 	for _, e := range s {
