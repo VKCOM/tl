@@ -608,7 +608,7 @@ testNs.testName = Green x:int |
 		t.Run("combinators", func(t *testing.T) {
 			str := ` 
 
-testNs.testName <x:int,  y:type  > =
+testNs.testName <x:uint32,  y:type  > =
 	  Green x:int 
 	| Red _:int
 	| string // my comment  
@@ -617,7 +617,7 @@ testNs.testName <x:int,  y:type  > =
 	=> int;`
 			combs, _ := ParseTL2(str)
 			assert.Equal(t,
-				`testNs.testName<x:int,y:type> = Green x:int | Red _:int | string;
+				`testNs.testName<x:uint32,y:type> = Green x:int | Red _:int | string;
 @x @r testFunc#09123456 a:uint32 t:vector<vector<int>> => int;
 `,
 				combs.String(),
