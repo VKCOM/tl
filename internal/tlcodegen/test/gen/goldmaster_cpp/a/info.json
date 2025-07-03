@@ -1,4 +1,4 @@
 {
-	"io": ["basictl/io_streams.cpp", "basictl/io_throwable_streams.cpp"],
+	"io": ["basictl"],
 	"dependencies":["__common_namespace", "au"]
 }

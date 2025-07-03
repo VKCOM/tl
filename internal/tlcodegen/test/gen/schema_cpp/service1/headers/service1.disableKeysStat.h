@@ -16,8 +16,8 @@ bool Service1DisableKeysStatWrite(::tlgen::basictl::tl_ostream & s, const ::tlge
 bool Service1DisableKeysStatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::DisableKeysStat& item);
 bool Service1DisableKeysStatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::DisableKeysStat& item);
 
-bool Service1DisableKeysStatReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::DisableKeysStat& item, bool& result);
-bool Service1DisableKeysStatWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::DisableKeysStat& item, bool& result);
+bool Service1DisableKeysStatReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::DisableKeysStat& item, bool& result);
+bool Service1DisableKeysStatWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::DisableKeysStat& item, const bool& result);
     
 }} // namespace tlgen::details
 

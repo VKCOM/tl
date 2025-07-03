@@ -16,8 +16,8 @@ bool BoxedVector32Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVe
 bool BoxedVector32ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32& item);
 bool BoxedVector32WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVector32& item);
 
-bool BoxedVector32ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedVector32& item, std::vector<int32_t>& result);
-bool BoxedVector32WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedVector32& item, std::vector<int32_t>& result);
+bool BoxedVector32ReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::BoxedVector32& item, std::vector<int32_t>& result);
+bool BoxedVector32WriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedVector32& item, const std::vector<int32_t>& result);
     
 }} // namespace tlgen::details
 

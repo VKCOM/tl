@@ -16,8 +16,8 @@ bool Service3DeleteGroupedProductsWrite(::tlgen::basictl::tl_ostream & s, const 
 bool Service3DeleteGroupedProductsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteGroupedProducts& item);
 bool Service3DeleteGroupedProductsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteGroupedProducts& item);
 
-bool Service3DeleteGroupedProductsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteGroupedProducts& item, bool& result);
-bool Service3DeleteGroupedProductsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::DeleteGroupedProducts& item, bool& result);
+bool Service3DeleteGroupedProductsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::DeleteGroupedProducts& item, bool& result);
+bool Service3DeleteGroupedProductsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteGroupedProducts& item, const bool& result);
     
 }} // namespace tlgen::details
 

@@ -16,8 +16,8 @@ bool GetArraysWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::Get_arrays&
 bool GetArraysReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::Get_arrays& item);
 bool GetArraysWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::Get_arrays& item);
 
-bool GetArraysReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::Get_arrays& item, std::array<int32_t, 5>& result);
-bool GetArraysWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::Get_arrays& item, std::array<int32_t, 5>& result);
+bool GetArraysReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::Get_arrays& item, std::array<int32_t, 5>& result);
+bool GetArraysWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::Get_arrays& item, const std::array<int32_t, 5>& result);
     
 }} // namespace tlgen::details
 

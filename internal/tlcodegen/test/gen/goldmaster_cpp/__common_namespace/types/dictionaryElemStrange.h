@@ -11,8 +11,12 @@ struct DictionaryElemStrange {
   uint32_t key = 0;
   v value{};
 
-  std::string_view tl_name() const { return "dictionaryElemStrange"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xe3b2385c;
+  static constexpr std::string_view TL_NAME = "dictionaryElemStrange";
+
   uint32_t tl_tag() const { return 0xe3b2385c; }
+  std::string_view tl_name() const { return "dictionaryElemStrange"; }
 };
 
 } // namespace tlgen

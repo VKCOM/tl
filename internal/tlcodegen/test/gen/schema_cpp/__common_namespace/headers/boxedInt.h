@@ -15,8 +15,8 @@ bool BoxedIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedInt& it
 bool BoxedIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedInt& item);
 bool BoxedIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedInt& item);
 
-bool BoxedIntReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedInt& item, int32_t& result);
-bool BoxedIntWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedInt& item, int32_t& result);
+bool BoxedIntReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::BoxedInt& item, int32_t& result);
+bool BoxedIntWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedInt& item, const int32_t& result);
     
 }} // namespace tlgen::details
 

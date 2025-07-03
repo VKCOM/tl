@@ -16,8 +16,8 @@ bool GetStatsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetStats& it
 bool GetStatsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetStats& item);
 bool GetStatsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetStats& item);
 
-bool GetStatsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetStats& item, ::tlgen::tasks::QueueTypeStats& result);
-bool GetStatsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetStats& item, ::tlgen::tasks::QueueTypeStats& result);
+bool GetStatsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetStats& item, ::tlgen::tasks::QueueTypeStats& result);
+bool GetStatsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetStats& item, const ::tlgen::tasks::QueueTypeStats& result);
     
 }} // namespace tlgen::details
 

@@ -133,7 +133,7 @@ bool tlgen::tree_stats::ObjectLimitValueLong::read(::tlgen::basictl::tl_istream 
   return true;
 }
 
-bool tlgen::tree_stats::ObjectLimitValueLong::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::tree_stats::ObjectLimitValueLong::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::TreeStatsObjectLimitValueLongWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -145,7 +145,7 @@ void tlgen::tree_stats::ObjectLimitValueLong::read(::tlgen::basictl::tl_throwabl
   s2.pass_data(s);
 }
 
-void tlgen::tree_stats::ObjectLimitValueLong::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::tree_stats::ObjectLimitValueLong::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -157,7 +157,7 @@ bool tlgen::tree_stats::ObjectLimitValueLong::read_boxed(::tlgen::basictl::tl_is
   return true;
 }
 
-bool tlgen::tree_stats::ObjectLimitValueLong::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::tree_stats::ObjectLimitValueLong::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::TreeStatsObjectLimitValueLongWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -169,7 +169,7 @@ void tlgen::tree_stats::ObjectLimitValueLong::read_boxed(::tlgen::basictl::tl_th
   s2.pass_data(s);
 }
 
-void tlgen::tree_stats::ObjectLimitValueLong::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::tree_stats::ObjectLimitValueLong::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

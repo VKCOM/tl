@@ -16,8 +16,8 @@ bool Service3CreateProductWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen:
 bool Service3CreateProductReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::CreateProduct& item);
 bool Service3CreateProductWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::CreateProduct& item);
 
-bool Service3CreateProductReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::CreateProduct& item, bool& result);
-bool Service3CreateProductWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::CreateProduct& item, bool& result);
+bool Service3CreateProductReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::CreateProduct& item, bool& result);
+bool Service3CreateProductWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::CreateProduct& item, const bool& result);
     
 }} // namespace tlgen::details
 

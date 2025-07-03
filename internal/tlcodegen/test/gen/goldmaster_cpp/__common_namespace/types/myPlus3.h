@@ -15,9 +15,14 @@ struct MyPlus3 {
 
   ~MyPlus3() {}
 
-  std::string_view tl_name() const { return "myPlus3"; }
-  uint32_t tl_tag() const { return 0x692c291b; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x692c291b;
+  static constexpr std::string_view TL_NAME = "myPlus3";
 
+  uint32_t tl_tag() const { return 0x692c291b; }
+  std::string_view tl_name() const { return "myPlus3"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -27,10 +32,10 @@ struct MyPlus3 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const MyPlus3& rhs) {
     rhs.write_json(s);

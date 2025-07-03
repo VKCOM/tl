@@ -11,8 +11,12 @@ struct DictionaryField {
   std::string key;
   t value{};
 
-  std::string_view tl_name() const { return "dictionaryField"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x239c1b62;
+  static constexpr std::string_view TL_NAME = "dictionaryField";
+
   uint32_t tl_tag() const { return 0x239c1b62; }
+  std::string_view tl_name() const { return "dictionaryField"; }
 };
 
 } // namespace tlgen

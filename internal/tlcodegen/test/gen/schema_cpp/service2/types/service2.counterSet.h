@@ -10,9 +10,14 @@ struct CounterSet {
   std::vector<int32_t> intCounters;
   std::vector<double> floatCounters;
 
-  std::string_view tl_name() const { return "service2.counterSet"; }
-  uint32_t tl_tag() const { return 0xf5403fd9; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xf5403fd9;
+  static constexpr std::string_view TL_NAME = "service2.counterSet";
 
+  uint32_t tl_tag() const { return 0xf5403fd9; }
+  std::string_view tl_name() const { return "service2.counterSet"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) noexcept;
@@ -22,10 +27,10 @@ struct CounterSet {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_intCountersNum, [[maybe_unused]] uint32_t nat_floatCountersNum) const;
 };
 
 }} // namespace tlgen::service2

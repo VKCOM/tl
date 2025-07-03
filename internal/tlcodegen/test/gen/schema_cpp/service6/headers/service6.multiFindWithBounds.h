@@ -17,8 +17,8 @@ bool Service6MultiFindWithBoundsWrite(::tlgen::basictl::tl_ostream & s, const ::
 bool Service6MultiFindWithBoundsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFindWithBounds& item);
 bool Service6MultiFindWithBoundsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFindWithBounds& item);
 
-bool Service6MultiFindWithBoundsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result);
-bool Service6MultiFindWithBoundsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result);
+bool Service6MultiFindWithBoundsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result);
+bool Service6MultiFindWithBoundsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFindWithBounds& item, const std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result);
     
 }} // namespace tlgen::details
 

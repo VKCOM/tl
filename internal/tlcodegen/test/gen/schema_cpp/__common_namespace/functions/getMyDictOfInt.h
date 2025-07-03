@@ -10,9 +10,14 @@ namespace tlgen {
 struct GetMyDictOfInt {
   ::tlgen::MyDictOfInt x{};
 
-  std::string_view tl_name() const { return "getMyDictOfInt"; }
-  uint32_t tl_tag() const { return 0x166f962c; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x166f962c;
+  static constexpr std::string_view TL_NAME = "getMyDictOfInt";
 
+  uint32_t tl_tag() const { return 0x166f962c; }
+  std::string_view tl_name() const { return "getMyDictOfInt"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,16 +27,19 @@ struct GetMyDictOfInt {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::MyDictOfInt & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::MyDictOfInt & result) noexcept;
+  // function methods and properties
+  using ResultType = ::tlgen::MyDictOfInt;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::MyDictOfInt & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::MyDictOfInt & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::MyDictOfInt & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyDictOfInt & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::MyDictOfInt & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::MyDictOfInt & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetMyDictOfInt& rhs) {
     rhs.write_json(s);

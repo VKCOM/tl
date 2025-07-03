@@ -11,9 +11,14 @@ struct GetUserEntity {
   uint32_t fields_mask = 0;
   std::string stage_id;
 
-  std::string_view tl_name() const { return "usefulService.getUserEntity"; }
-  uint32_t tl_tag() const { return 0x3c857e52; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x3c857e52;
+  static constexpr std::string_view TL_NAME = "usefulService.getUserEntity";
 
+  uint32_t tl_tag() const { return 0x3c857e52; }
+  std::string_view tl_name() const { return "usefulService.getUserEntity"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -23,16 +28,19 @@ struct GetUserEntity {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) noexcept;
+  // function methods and properties
+  using ResultType = std::optional<::tlgen::usefulService::GetUserEntityResult>;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetUserEntity& rhs) {
     rhs.write_json(s);

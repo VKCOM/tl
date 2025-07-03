@@ -16,8 +16,8 @@ bool Service1GetWildcardWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::s
 bool Service1GetWildcardReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcard& item);
 bool Service1GetWildcardWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcard& item);
 
-bool Service1GetWildcardReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcard& item, std::vector<::tlgen::Map<std::string, std::string>>& result);
-bool Service1GetWildcardWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetWildcard& item, std::vector<::tlgen::Map<std::string, std::string>>& result);
+bool Service1GetWildcardReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::GetWildcard& item, std::vector<::tlgen::Map<std::string, std::string>>& result);
+bool Service1GetWildcardWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcard& item, const std::vector<::tlgen::Map<std::string, std::string>>& result);
     
 }} // namespace tlgen::details
 

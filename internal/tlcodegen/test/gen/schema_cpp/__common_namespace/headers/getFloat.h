@@ -15,8 +15,8 @@ bool GetFloatWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetFloat& it
 bool GetFloatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetFloat& item);
 bool GetFloatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetFloat& item);
 
-bool GetFloatReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetFloat& item, float& result);
-bool GetFloatWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetFloat& item, float& result);
+bool GetFloatReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetFloat& item, float& result);
+bool GetFloatWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetFloat& item, const float& result);
     
 }} // namespace tlgen::details
 

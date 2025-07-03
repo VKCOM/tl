@@ -16,8 +16,8 @@ bool Service1GetKeysStatPeriodsWrite(::tlgen::basictl::tl_ostream & s, const ::t
 bool Service1GetKeysStatPeriodsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetKeysStatPeriods& item);
 bool Service1GetKeysStatPeriodsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetKeysStatPeriods& item);
 
-bool Service1GetKeysStatPeriodsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
-bool Service1GetKeysStatPeriodsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
+bool Service1GetKeysStatPeriodsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::GetKeysStatPeriods& item, std::vector<int32_t>& result);
+bool Service1GetKeysStatPeriodsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetKeysStatPeriods& item, const std::vector<int32_t>& result);
     
 }} // namespace tlgen::details
 

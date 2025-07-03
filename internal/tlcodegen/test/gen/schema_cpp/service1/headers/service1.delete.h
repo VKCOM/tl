@@ -16,8 +16,8 @@ bool Service1DeleteWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::servic
 bool Service1DeleteReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Delete& item);
 bool Service1DeleteWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Delete& item);
 
-bool Service1DeleteReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Delete& item, bool& result);
-bool Service1DeleteWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::Delete& item, bool& result);
+bool Service1DeleteReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::Delete& item, bool& result);
+bool Service1DeleteWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Delete& item, const bool& result);
     
 }} // namespace tlgen::details
 

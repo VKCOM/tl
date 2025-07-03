@@ -15,8 +15,8 @@ bool BoxedStringWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedStri
 bool BoxedStringReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedString& item);
 bool BoxedStringWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedString& item);
 
-bool BoxedStringReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedString& item, std::string& result);
-bool BoxedStringWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedString& item, std::string& result);
+bool BoxedStringReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::BoxedString& item, std::string& result);
+bool BoxedStringWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedString& item, const std::string& result);
     
 }} // namespace tlgen::details
 

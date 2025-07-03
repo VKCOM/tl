@@ -35,7 +35,7 @@ bool tlgen::BoolStat::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::BoolStat::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::BoolStat::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BoolStatWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -47,7 +47,7 @@ void tlgen::BoolStat::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::BoolStat::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::BoolStat::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -59,7 +59,7 @@ bool tlgen::BoolStat::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::BoolStat::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::BoolStat::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BoolStatWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -71,7 +71,7 @@ void tlgen::BoolStat::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::BoolStat::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::BoolStat::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -338,7 +338,7 @@ bool tlgen::service3::CreateProduct::read(::tlgen::basictl::tl_istream & s) noex
   return true;
 }
 
-bool tlgen::service3::CreateProduct::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::CreateProduct::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3CreateProductWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -350,7 +350,7 @@ void tlgen::service3::CreateProduct::read(::tlgen::basictl::tl_throwable_istream
   s2.pass_data(s);
 }
 
-void tlgen::service3::CreateProduct::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::CreateProduct::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -362,7 +362,7 @@ bool tlgen::service3::CreateProduct::read_boxed(::tlgen::basictl::tl_istream & s
   return true;
 }
 
-bool tlgen::service3::CreateProduct::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::CreateProduct::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3CreateProductWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -374,7 +374,7 @@ void tlgen::service3::CreateProduct::read_boxed(::tlgen::basictl::tl_throwable_i
   s2.pass_data(s);
 }
 
-void tlgen::service3::CreateProduct::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::CreateProduct::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -478,14 +478,14 @@ bool tlgen::details::Service3CreateProductWriteBoxed(::tlgen::basictl::tl_ostrea
   return tlgen::details::Service3CreateProductWrite(s, item);
 }
 
-bool tlgen::details::Service3CreateProductReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::CreateProduct& item, bool& result) {
+bool tlgen::details::Service3CreateProductReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::CreateProduct& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3CreateProductWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::CreateProduct& item, bool& result) {
+bool tlgen::details::Service3CreateProductWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::CreateProduct& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -493,23 +493,23 @@ bool tlgen::details::Service3CreateProductWriteResult(::tlgen::basictl::tl_ostre
   return true;
 }
 
-bool tlgen::service3::CreateProduct::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::CreateProduct::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3CreateProductReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::CreateProduct::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::CreateProduct::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3CreateProductWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::CreateProduct::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::CreateProduct::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::CreateProduct::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::CreateProduct::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -526,7 +526,7 @@ bool tlgen::service3::DeleteAllProducts::read(::tlgen::basictl::tl_istream & s) 
   return true;
 }
 
-bool tlgen::service3::DeleteAllProducts::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::DeleteAllProducts::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3DeleteAllProductsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -538,7 +538,7 @@ void tlgen::service3::DeleteAllProducts::read(::tlgen::basictl::tl_throwable_ist
   s2.pass_data(s);
 }
 
-void tlgen::service3::DeleteAllProducts::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::DeleteAllProducts::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -550,7 +550,7 @@ bool tlgen::service3::DeleteAllProducts::read_boxed(::tlgen::basictl::tl_istream
   return true;
 }
 
-bool tlgen::service3::DeleteAllProducts::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::DeleteAllProducts::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3DeleteAllProductsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -562,7 +562,7 @@ void tlgen::service3::DeleteAllProducts::read_boxed(::tlgen::basictl::tl_throwab
   s2.pass_data(s);
 }
 
-void tlgen::service3::DeleteAllProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::DeleteAllProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -644,14 +644,14 @@ bool tlgen::details::Service3DeleteAllProductsWriteBoxed(::tlgen::basictl::tl_os
   return tlgen::details::Service3DeleteAllProductsWrite(s, item);
 }
 
-bool tlgen::details::Service3DeleteAllProductsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::DeleteAllProducts& item, bool& result) {
+bool tlgen::details::Service3DeleteAllProductsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::DeleteAllProducts& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3DeleteAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::DeleteAllProducts& item, bool& result) {
+bool tlgen::details::Service3DeleteAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::DeleteAllProducts& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -659,23 +659,23 @@ bool tlgen::details::Service3DeleteAllProductsWriteResult(::tlgen::basictl::tl_o
   return true;
 }
 
-bool tlgen::service3::DeleteAllProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::DeleteAllProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3DeleteAllProductsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::DeleteAllProducts::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::DeleteAllProducts::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3DeleteAllProductsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::DeleteAllProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::DeleteAllProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::DeleteAllProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::DeleteAllProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -692,7 +692,7 @@ bool tlgen::service3::DeleteGroupedProducts::read(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service3::DeleteGroupedProducts::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::DeleteGroupedProducts::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3DeleteGroupedProductsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -704,7 +704,7 @@ void tlgen::service3::DeleteGroupedProducts::read(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service3::DeleteGroupedProducts::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::DeleteGroupedProducts::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -716,7 +716,7 @@ bool tlgen::service3::DeleteGroupedProducts::read_boxed(::tlgen::basictl::tl_ist
   return true;
 }
 
-bool tlgen::service3::DeleteGroupedProducts::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::DeleteGroupedProducts::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3DeleteGroupedProductsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -728,7 +728,7 @@ void tlgen::service3::DeleteGroupedProducts::read_boxed(::tlgen::basictl::tl_thr
   s2.pass_data(s);
 }
 
-void tlgen::service3::DeleteGroupedProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::DeleteGroupedProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -821,14 +821,14 @@ bool tlgen::details::Service3DeleteGroupedProductsWriteBoxed(::tlgen::basictl::t
   return tlgen::details::Service3DeleteGroupedProductsWrite(s, item);
 }
 
-bool tlgen::details::Service3DeleteGroupedProductsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::DeleteGroupedProducts& item, bool& result) {
+bool tlgen::details::Service3DeleteGroupedProductsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::DeleteGroupedProducts& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3DeleteGroupedProductsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::DeleteGroupedProducts& item, bool& result) {
+bool tlgen::details::Service3DeleteGroupedProductsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::DeleteGroupedProducts& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -836,23 +836,23 @@ bool tlgen::details::Service3DeleteGroupedProductsWriteResult(::tlgen::basictl::
   return true;
 }
 
-bool tlgen::service3::DeleteGroupedProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::DeleteGroupedProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3DeleteGroupedProductsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::DeleteGroupedProducts::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::DeleteGroupedProducts::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3DeleteGroupedProductsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::DeleteGroupedProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::DeleteGroupedProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::DeleteGroupedProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::DeleteGroupedProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -869,7 +869,7 @@ bool tlgen::service3::DeleteProduct::read(::tlgen::basictl::tl_istream & s) noex
   return true;
 }
 
-bool tlgen::service3::DeleteProduct::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::DeleteProduct::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3DeleteProductWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -881,7 +881,7 @@ void tlgen::service3::DeleteProduct::read(::tlgen::basictl::tl_throwable_istream
   s2.pass_data(s);
 }
 
-void tlgen::service3::DeleteProduct::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::DeleteProduct::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -893,7 +893,7 @@ bool tlgen::service3::DeleteProduct::read_boxed(::tlgen::basictl::tl_istream & s
   return true;
 }
 
-bool tlgen::service3::DeleteProduct::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::DeleteProduct::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3DeleteProductWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -905,7 +905,7 @@ void tlgen::service3::DeleteProduct::read_boxed(::tlgen::basictl::tl_throwable_i
   s2.pass_data(s);
 }
 
-void tlgen::service3::DeleteProduct::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::DeleteProduct::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -987,14 +987,14 @@ bool tlgen::details::Service3DeleteProductWriteBoxed(::tlgen::basictl::tl_ostrea
   return tlgen::details::Service3DeleteProductWrite(s, item);
 }
 
-bool tlgen::details::Service3DeleteProductReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::DeleteProduct& item, bool& result) {
+bool tlgen::details::Service3DeleteProductReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::DeleteProduct& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3DeleteProductWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::DeleteProduct& item, bool& result) {
+bool tlgen::details::Service3DeleteProductWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::DeleteProduct& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1002,23 +1002,23 @@ bool tlgen::details::Service3DeleteProductWriteResult(::tlgen::basictl::tl_ostre
   return true;
 }
 
-bool tlgen::service3::DeleteProduct::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::DeleteProduct::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3DeleteProductReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::DeleteProduct::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::DeleteProduct::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3DeleteProductWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::DeleteProduct::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::DeleteProduct::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::DeleteProduct::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::DeleteProduct::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -1035,7 +1035,7 @@ bool tlgen::service3::GetLastVisitTimestamp::read(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service3::GetLastVisitTimestamp::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetLastVisitTimestamp::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetLastVisitTimestampWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1047,7 +1047,7 @@ void tlgen::service3::GetLastVisitTimestamp::read(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetLastVisitTimestamp::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetLastVisitTimestamp::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1059,7 +1059,7 @@ bool tlgen::service3::GetLastVisitTimestamp::read_boxed(::tlgen::basictl::tl_ist
   return true;
 }
 
-bool tlgen::service3::GetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetLastVisitTimestampWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1071,7 +1071,7 @@ void tlgen::service3::GetLastVisitTimestamp::read_boxed(::tlgen::basictl::tl_thr
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1118,14 +1118,14 @@ bool tlgen::details::Service3GetLastVisitTimestampWriteBoxed(::tlgen::basictl::t
   return tlgen::details::Service3GetLastVisitTimestampWrite(s, item);
 }
 
-bool tlgen::details::Service3GetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result) {
+bool tlgen::details::Service3GetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::IntMaybeReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3GetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result) {
+bool tlgen::details::Service3GetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::GetLastVisitTimestamp& item, const std::optional<int32_t>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1133,23 +1133,23 @@ bool tlgen::details::Service3GetLastVisitTimestampWriteResult(::tlgen::basictl::
   return true;
 }
 
-bool tlgen::service3::GetLastVisitTimestamp::read_result(::tlgen::basictl::tl_istream & s, std::optional<int32_t> & result) noexcept {
+bool tlgen::service3::GetLastVisitTimestamp::read_result(::tlgen::basictl::tl_istream & s, std::optional<int32_t> & result) const noexcept {
   bool success = tlgen::details::Service3GetLastVisitTimestampReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::GetLastVisitTimestamp::write_result(::tlgen::basictl::tl_ostream & s, std::optional<int32_t> & result) noexcept {
+bool tlgen::service3::GetLastVisitTimestamp::write_result(::tlgen::basictl::tl_ostream & s, const std::optional<int32_t> & result) const noexcept {
   bool success = tlgen::details::Service3GetLastVisitTimestampWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::GetLastVisitTimestamp::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<int32_t> & result) {
+void tlgen::service3::GetLastVisitTimestamp::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<int32_t> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::GetLastVisitTimestamp::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<int32_t> & result) {
+void tlgen::service3::GetLastVisitTimestamp::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<int32_t> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -1166,7 +1166,7 @@ bool tlgen::service3::GetLimits::read(::tlgen::basictl::tl_istream & s) noexcept
   return true;
 }
 
-bool tlgen::service3::GetLimits::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetLimits::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetLimitsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1178,7 +1178,7 @@ void tlgen::service3::GetLimits::read(::tlgen::basictl::tl_throwable_istream & s
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetLimits::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetLimits::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1190,7 +1190,7 @@ bool tlgen::service3::GetLimits::read_boxed(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service3::GetLimits::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetLimits::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetLimitsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1202,7 +1202,7 @@ void tlgen::service3::GetLimits::read_boxed(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetLimits::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetLimits::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1241,14 +1241,14 @@ bool tlgen::details::Service3GetLimitsWriteBoxed(::tlgen::basictl::tl_ostream & 
   return tlgen::details::Service3GetLimitsWrite(s, item);
 }
 
-bool tlgen::details::Service3GetLimitsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::GetLimits& item, ::tlgen::service3::Limits& result) {
+bool tlgen::details::Service3GetLimitsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::GetLimits& item, ::tlgen::service3::Limits& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::Service3LimitsReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
   return true;
 }
-bool tlgen::details::Service3GetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::GetLimits& item, ::tlgen::service3::Limits& result) {
+bool tlgen::details::Service3GetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::GetLimits& item, const ::tlgen::service3::Limits& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1256,23 +1256,23 @@ bool tlgen::details::Service3GetLimitsWriteResult(::tlgen::basictl::tl_ostream &
   return true;
 }
 
-bool tlgen::service3::GetLimits::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service3::Limits & result) noexcept {
+bool tlgen::service3::GetLimits::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service3::Limits & result) const noexcept {
   bool success = tlgen::details::Service3GetLimitsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::GetLimits::write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::Limits & result) noexcept {
+bool tlgen::service3::GetLimits::write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::Limits & result) const noexcept {
   bool success = tlgen::details::Service3GetLimitsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::GetLimits::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service3::Limits & result) {
+void tlgen::service3::GetLimits::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service3::Limits & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::GetLimits::write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::service3::Limits & result) {
+void tlgen::service3::GetLimits::write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::service3::Limits & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -1289,7 +1289,7 @@ bool tlgen::service3::GetProductStats::read(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service3::GetProductStats::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetProductStats::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetProductStatsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1301,7 +1301,7 @@ void tlgen::service3::GetProductStats::read(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetProductStats::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetProductStats::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1313,7 +1313,7 @@ bool tlgen::service3::GetProductStats::read_boxed(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service3::GetProductStats::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetProductStats::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetProductStatsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1325,7 +1325,7 @@ void tlgen::service3::GetProductStats::read_boxed(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetProductStats::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetProductStats::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1385,14 +1385,14 @@ bool tlgen::details::Service3GetProductStatsWriteBoxed(::tlgen::basictl::tl_ostr
   return tlgen::details::Service3GetProductStatsWrite(s, item);
 }
 
-bool tlgen::details::Service3GetProductStatsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::GetProductStats& item, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result) {
+bool tlgen::details::Service3GetProductStatsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::GetProductStats& item, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::VectorService3ProductStatsOldMaybeReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3GetProductStatsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::GetProductStats& item, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result) {
+bool tlgen::details::Service3GetProductStatsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::GetProductStats& item, const std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1400,23 +1400,23 @@ bool tlgen::details::Service3GetProductStatsWriteResult(::tlgen::basictl::tl_ost
   return true;
 }
 
-bool tlgen::service3::GetProductStats::read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) noexcept {
+bool tlgen::service3::GetProductStats::read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) const noexcept {
   bool success = tlgen::details::Service3GetProductStatsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::GetProductStats::write_result(::tlgen::basictl::tl_ostream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) noexcept {
+bool tlgen::service3::GetProductStats::write_result(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) const noexcept {
   bool success = tlgen::details::Service3GetProductStatsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::GetProductStats::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) {
+void tlgen::service3::GetProductStats::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::GetProductStats::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) {
+void tlgen::service3::GetProductStats::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<std::vector<::tlgen::service3::ProductStatsOld>> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -1433,7 +1433,7 @@ bool tlgen::service3::GetProducts::read(::tlgen::basictl::tl_istream & s) noexce
   return true;
 }
 
-bool tlgen::service3::GetProducts::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetProducts::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetProductsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1445,7 +1445,7 @@ void tlgen::service3::GetProducts::read(::tlgen::basictl::tl_throwable_istream &
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetProducts::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetProducts::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1457,7 +1457,7 @@ bool tlgen::service3::GetProducts::read_boxed(::tlgen::basictl::tl_istream & s) 
   return true;
 }
 
-bool tlgen::service3::GetProducts::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetProducts::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetProductsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1469,7 +1469,7 @@ void tlgen::service3::GetProducts::read_boxed(::tlgen::basictl::tl_throwable_ist
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1595,14 +1595,14 @@ bool tlgen::details::Service3GetProductsWriteBoxed(::tlgen::basictl::tl_ostream 
   return tlgen::details::Service3GetProductsWrite(s, item);
 }
 
-bool tlgen::details::Service3GetProductsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::GetProducts& item, std::optional<std::vector<::tlgen::service3::Product>>& result) {
+bool tlgen::details::Service3GetProductsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::GetProducts& item, std::optional<std::vector<::tlgen::service3::Product>>& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::VectorService3ProductMaybeReadBoxed(s, result, item.mode)) { return false; }
   return true;
 }
-bool tlgen::details::Service3GetProductsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::GetProducts& item, std::optional<std::vector<::tlgen::service3::Product>>& result) {
+bool tlgen::details::Service3GetProductsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::GetProducts& item, const std::optional<std::vector<::tlgen::service3::Product>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1610,23 +1610,23 @@ bool tlgen::details::Service3GetProductsWriteResult(::tlgen::basictl::tl_ostream
   return true;
 }
 
-bool tlgen::service3::GetProducts::read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) noexcept {
+bool tlgen::service3::GetProducts::read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) const noexcept {
   bool success = tlgen::details::Service3GetProductsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::GetProducts::write_result(::tlgen::basictl::tl_ostream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) noexcept {
+bool tlgen::service3::GetProducts::write_result(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::Product>> & result) const noexcept {
   bool success = tlgen::details::Service3GetProductsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::GetProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) {
+void tlgen::service3::GetProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::GetProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) {
+void tlgen::service3::GetProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<std::vector<::tlgen::service3::Product>> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -1643,7 +1643,7 @@ bool tlgen::service3::GetScheduledProducts::read(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::service3::GetScheduledProducts::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetScheduledProducts::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetScheduledProductsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1655,7 +1655,7 @@ void tlgen::service3::GetScheduledProducts::read(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetScheduledProducts::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetScheduledProducts::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1667,7 +1667,7 @@ bool tlgen::service3::GetScheduledProducts::read_boxed(::tlgen::basictl::tl_istr
   return true;
 }
 
-bool tlgen::service3::GetScheduledProducts::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GetScheduledProducts::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GetScheduledProductsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1679,7 +1679,7 @@ void tlgen::service3::GetScheduledProducts::read_boxed(::tlgen::basictl::tl_thro
   s2.pass_data(s);
 }
 
-void tlgen::service3::GetScheduledProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GetScheduledProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1739,14 +1739,14 @@ bool tlgen::details::Service3GetScheduledProductsWriteBoxed(::tlgen::basictl::tl
   return tlgen::details::Service3GetScheduledProductsWrite(s, item);
 }
 
-bool tlgen::details::Service3GetScheduledProductsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result) {
+bool tlgen::details::Service3GetScheduledProductsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::VectorService3Product0MaybeReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3GetScheduledProductsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result) {
+bool tlgen::details::Service3GetScheduledProductsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::GetScheduledProducts& item, const std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1754,23 +1754,23 @@ bool tlgen::details::Service3GetScheduledProductsWriteResult(::tlgen::basictl::t
   return true;
 }
 
-bool tlgen::service3::GetScheduledProducts::read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) noexcept {
+bool tlgen::service3::GetScheduledProducts::read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) const noexcept {
   bool success = tlgen::details::Service3GetScheduledProductsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::GetScheduledProducts::write_result(::tlgen::basictl::tl_ostream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) noexcept {
+bool tlgen::service3::GetScheduledProducts::write_result(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) const noexcept {
   bool success = tlgen::details::Service3GetScheduledProductsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::GetScheduledProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) {
+void tlgen::service3::GetScheduledProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::GetScheduledProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) {
+void tlgen::service3::GetScheduledProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<std::vector<::tlgen::service3::Productmode<0>>> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -1787,7 +1787,7 @@ bool tlgen::service3::GroupCountLimit::read(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service3::GroupCountLimit::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GroupCountLimit::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GroupCountLimitWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1799,7 +1799,7 @@ void tlgen::service3::GroupCountLimit::read(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service3::GroupCountLimit::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GroupCountLimit::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1811,7 +1811,7 @@ bool tlgen::service3::GroupCountLimit::read_boxed(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service3::GroupCountLimit::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GroupCountLimit::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GroupCountLimitWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1823,7 +1823,7 @@ void tlgen::service3::GroupCountLimit::read_boxed(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service3::GroupCountLimit::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GroupCountLimit::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1894,7 +1894,7 @@ bool tlgen::service3::GroupSizeLimit::read(::tlgen::basictl::tl_istream & s) noe
   return true;
 }
 
-bool tlgen::service3::GroupSizeLimit::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GroupSizeLimit::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GroupSizeLimitWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1906,7 +1906,7 @@ void tlgen::service3::GroupSizeLimit::read(::tlgen::basictl::tl_throwable_istrea
   s2.pass_data(s);
 }
 
-void tlgen::service3::GroupSizeLimit::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GroupSizeLimit::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1918,7 +1918,7 @@ bool tlgen::service3::GroupSizeLimit::read_boxed(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::service3::GroupSizeLimit::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::GroupSizeLimit::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3GroupSizeLimitWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1930,7 +1930,7 @@ void tlgen::service3::GroupSizeLimit::read_boxed(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::service3::GroupSizeLimit::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::GroupSizeLimit::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -2001,7 +2001,7 @@ bool tlgen::service3::Limits::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::service3::Limits::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::Limits::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3LimitsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2013,7 +2013,7 @@ void tlgen::service3::Limits::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::service3::Limits::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::Limits::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -2025,7 +2025,7 @@ bool tlgen::service3::Limits::read_boxed(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::service3::Limits::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::Limits::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3LimitsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2037,7 +2037,7 @@ void tlgen::service3::Limits::read_boxed(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::service3::Limits::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::Limits::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -2130,7 +2130,7 @@ bool tlgen::service3::Product::read(::tlgen::basictl::tl_istream & s, [[maybe_un
   return true;
 }
 
-bool tlgen::service3::Product::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_mode)const noexcept {
+bool tlgen::service3::Product::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_mode) const noexcept {
   if (!::tlgen::details::Service3ProductWrite(s, *this, nat_mode)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2142,7 +2142,7 @@ void tlgen::service3::Product::read(::tlgen::basictl::tl_throwable_istream & s, 
   s2.pass_data(s);
 }
 
-void tlgen::service3::Product::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_mode)const {
+void tlgen::service3::Product::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_mode) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2, nat_mode);
   s2.pass_data(s);
@@ -2154,7 +2154,7 @@ bool tlgen::service3::Product::read_boxed(::tlgen::basictl::tl_istream & s, [[ma
   return true;
 }
 
-bool tlgen::service3::Product::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_mode)const noexcept {
+bool tlgen::service3::Product::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_mode) const noexcept {
   if (!::tlgen::details::Service3ProductWriteBoxed(s, *this, nat_mode)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2166,7 +2166,7 @@ void tlgen::service3::Product::read_boxed(::tlgen::basictl::tl_throwable_istream
   s2.pass_data(s);
 }
 
-void tlgen::service3::Product::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_mode)const {
+void tlgen::service3::Product::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_mode) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2, nat_mode);
   s2.pass_data(s);
@@ -2391,7 +2391,7 @@ bool tlgen::service3::ProductStatsOld::read(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service3::ProductStatsOld::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::ProductStatsOld::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3ProductStatsOldWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2403,7 +2403,7 @@ void tlgen::service3::ProductStatsOld::read(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service3::ProductStatsOld::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::ProductStatsOld::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -2415,7 +2415,7 @@ bool tlgen::service3::ProductStatsOld::read_boxed(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service3::ProductStatsOld::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::ProductStatsOld::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3ProductStatsOldWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2427,7 +2427,7 @@ void tlgen::service3::ProductStatsOld::read_boxed(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service3::ProductStatsOld::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::ProductStatsOld::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -2531,7 +2531,7 @@ bool tlgen::service3::RestoreAllProducts::read(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::service3::RestoreAllProducts::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::RestoreAllProducts::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3RestoreAllProductsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2543,7 +2543,7 @@ void tlgen::service3::RestoreAllProducts::read(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::service3::RestoreAllProducts::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::RestoreAllProducts::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -2555,7 +2555,7 @@ bool tlgen::service3::RestoreAllProducts::read_boxed(::tlgen::basictl::tl_istrea
   return true;
 }
 
-bool tlgen::service3::RestoreAllProducts::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::RestoreAllProducts::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3RestoreAllProductsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2567,7 +2567,7 @@ void tlgen::service3::RestoreAllProducts::read_boxed(::tlgen::basictl::tl_throwa
   s2.pass_data(s);
 }
 
-void tlgen::service3::RestoreAllProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::RestoreAllProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -2649,14 +2649,14 @@ bool tlgen::details::Service3RestoreAllProductsWriteBoxed(::tlgen::basictl::tl_o
   return tlgen::details::Service3RestoreAllProductsWrite(s, item);
 }
 
-bool tlgen::details::Service3RestoreAllProductsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::RestoreAllProducts& item, bool& result) {
+bool tlgen::details::Service3RestoreAllProductsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::RestoreAllProducts& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3RestoreAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::RestoreAllProducts& item, bool& result) {
+bool tlgen::details::Service3RestoreAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::RestoreAllProducts& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -2664,23 +2664,23 @@ bool tlgen::details::Service3RestoreAllProductsWriteResult(::tlgen::basictl::tl_
   return true;
 }
 
-bool tlgen::service3::RestoreAllProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::RestoreAllProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3RestoreAllProductsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::RestoreAllProducts::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::RestoreAllProducts::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3RestoreAllProductsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::RestoreAllProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::RestoreAllProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::RestoreAllProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::RestoreAllProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -2697,7 +2697,7 @@ bool tlgen::service3::RestoreGroupedProducts::read(::tlgen::basictl::tl_istream 
   return true;
 }
 
-bool tlgen::service3::RestoreGroupedProducts::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::RestoreGroupedProducts::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3RestoreGroupedProductsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2709,7 +2709,7 @@ void tlgen::service3::RestoreGroupedProducts::read(::tlgen::basictl::tl_throwabl
   s2.pass_data(s);
 }
 
-void tlgen::service3::RestoreGroupedProducts::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::RestoreGroupedProducts::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -2721,7 +2721,7 @@ bool tlgen::service3::RestoreGroupedProducts::read_boxed(::tlgen::basictl::tl_is
   return true;
 }
 
-bool tlgen::service3::RestoreGroupedProducts::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::RestoreGroupedProducts::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3RestoreGroupedProductsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2733,7 +2733,7 @@ void tlgen::service3::RestoreGroupedProducts::read_boxed(::tlgen::basictl::tl_th
   s2.pass_data(s);
 }
 
-void tlgen::service3::RestoreGroupedProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::RestoreGroupedProducts::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -2826,14 +2826,14 @@ bool tlgen::details::Service3RestoreGroupedProductsWriteBoxed(::tlgen::basictl::
   return tlgen::details::Service3RestoreGroupedProductsWrite(s, item);
 }
 
-bool tlgen::details::Service3RestoreGroupedProductsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::RestoreGroupedProducts& item, bool& result) {
+bool tlgen::details::Service3RestoreGroupedProductsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::RestoreGroupedProducts& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3RestoreGroupedProductsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::RestoreGroupedProducts& item, bool& result) {
+bool tlgen::details::Service3RestoreGroupedProductsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::RestoreGroupedProducts& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -2841,23 +2841,23 @@ bool tlgen::details::Service3RestoreGroupedProductsWriteResult(::tlgen::basictl:
   return true;
 }
 
-bool tlgen::service3::RestoreGroupedProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::RestoreGroupedProducts::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3RestoreGroupedProductsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::RestoreGroupedProducts::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::RestoreGroupedProducts::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3RestoreGroupedProductsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::RestoreGroupedProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::RestoreGroupedProducts::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::RestoreGroupedProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::RestoreGroupedProducts::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -2874,7 +2874,7 @@ bool tlgen::service3::RestoreProduct::read(::tlgen::basictl::tl_istream & s) noe
   return true;
 }
 
-bool tlgen::service3::RestoreProduct::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::RestoreProduct::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3RestoreProductWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2886,7 +2886,7 @@ void tlgen::service3::RestoreProduct::read(::tlgen::basictl::tl_throwable_istrea
   s2.pass_data(s);
 }
 
-void tlgen::service3::RestoreProduct::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::RestoreProduct::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -2898,7 +2898,7 @@ bool tlgen::service3::RestoreProduct::read_boxed(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::service3::RestoreProduct::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::RestoreProduct::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3RestoreProductWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -2910,7 +2910,7 @@ void tlgen::service3::RestoreProduct::read_boxed(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::service3::RestoreProduct::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::RestoreProduct::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -2992,14 +2992,14 @@ bool tlgen::details::Service3RestoreProductWriteBoxed(::tlgen::basictl::tl_ostre
   return tlgen::details::Service3RestoreProductWrite(s, item);
 }
 
-bool tlgen::details::Service3RestoreProductReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::RestoreProduct& item, bool& result) {
+bool tlgen::details::Service3RestoreProductReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::RestoreProduct& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3RestoreProductWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::RestoreProduct& item, bool& result) {
+bool tlgen::details::Service3RestoreProductWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::RestoreProduct& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -3007,23 +3007,23 @@ bool tlgen::details::Service3RestoreProductWriteResult(::tlgen::basictl::tl_ostr
   return true;
 }
 
-bool tlgen::service3::RestoreProduct::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::RestoreProduct::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3RestoreProductReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::RestoreProduct::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::RestoreProduct::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3RestoreProductWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::RestoreProduct::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::RestoreProduct::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::RestoreProduct::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::RestoreProduct::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -3040,7 +3040,7 @@ bool tlgen::service3::SetLastVisitTimestamp::read(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service3::SetLastVisitTimestamp::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::SetLastVisitTimestamp::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3SetLastVisitTimestampWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -3052,7 +3052,7 @@ void tlgen::service3::SetLastVisitTimestamp::read(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service3::SetLastVisitTimestamp::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::SetLastVisitTimestamp::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -3064,7 +3064,7 @@ bool tlgen::service3::SetLastVisitTimestamp::read_boxed(::tlgen::basictl::tl_ist
   return true;
 }
 
-bool tlgen::service3::SetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::SetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3SetLastVisitTimestampWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -3076,7 +3076,7 @@ void tlgen::service3::SetLastVisitTimestamp::read_boxed(::tlgen::basictl::tl_thr
   s2.pass_data(s);
 }
 
-void tlgen::service3::SetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::SetLastVisitTimestamp::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -3136,14 +3136,14 @@ bool tlgen::details::Service3SetLastVisitTimestampWriteBoxed(::tlgen::basictl::t
   return tlgen::details::Service3SetLastVisitTimestampWrite(s, item);
 }
 
-bool tlgen::details::Service3SetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::SetLastVisitTimestamp& item, bool& result) {
+bool tlgen::details::Service3SetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::SetLastVisitTimestamp& item, bool& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolReadBoxed(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service3SetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::SetLastVisitTimestamp& item, bool& result) {
+bool tlgen::details::Service3SetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::SetLastVisitTimestamp& item, const bool& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -3151,23 +3151,23 @@ bool tlgen::details::Service3SetLastVisitTimestampWriteResult(::tlgen::basictl::
   return true;
 }
 
-bool tlgen::service3::SetLastVisitTimestamp::read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept {
+bool tlgen::service3::SetLastVisitTimestamp::read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept {
   bool success = tlgen::details::Service3SetLastVisitTimestampReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::SetLastVisitTimestamp::write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept {
+bool tlgen::service3::SetLastVisitTimestamp::write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept {
   bool success = tlgen::details::Service3SetLastVisitTimestampWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::SetLastVisitTimestamp::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) {
+void tlgen::service3::SetLastVisitTimestamp::read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::SetLastVisitTimestamp::write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result) {
+void tlgen::service3::SetLastVisitTimestamp::write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -3184,7 +3184,7 @@ bool tlgen::service3::SetLimits::read(::tlgen::basictl::tl_istream & s) noexcept
   return true;
 }
 
-bool tlgen::service3::SetLimits::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::SetLimits::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3SetLimitsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -3196,7 +3196,7 @@ void tlgen::service3::SetLimits::read(::tlgen::basictl::tl_throwable_istream & s
   s2.pass_data(s);
 }
 
-void tlgen::service3::SetLimits::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::SetLimits::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -3208,7 +3208,7 @@ bool tlgen::service3::SetLimits::read_boxed(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service3::SetLimits::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service3::SetLimits::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service3SetLimitsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -3220,7 +3220,7 @@ void tlgen::service3::SetLimits::read_boxed(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service3::SetLimits::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service3::SetLimits::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -3265,14 +3265,14 @@ bool tlgen::details::Service3SetLimitsWriteBoxed(::tlgen::basictl::tl_ostream & 
   return tlgen::details::Service3SetLimitsWrite(s, item);
 }
 
-bool tlgen::details::Service3SetLimitsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service3::SetLimits& item, ::tlgen::BoolStat& result) {
+bool tlgen::details::Service3SetLimitsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service3::SetLimits& item, ::tlgen::BoolStat& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::BoolStatReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
   return true;
 }
-bool tlgen::details::Service3SetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service3::SetLimits& item, ::tlgen::BoolStat& result) {
+bool tlgen::details::Service3SetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service3::SetLimits& item, const ::tlgen::BoolStat& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -3280,23 +3280,23 @@ bool tlgen::details::Service3SetLimitsWriteResult(::tlgen::basictl::tl_ostream &
   return true;
 }
 
-bool tlgen::service3::SetLimits::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::BoolStat & result) noexcept {
+bool tlgen::service3::SetLimits::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::BoolStat & result) const noexcept {
   bool success = tlgen::details::Service3SetLimitsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service3::SetLimits::write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::BoolStat & result) noexcept {
+bool tlgen::service3::SetLimits::write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoolStat & result) const noexcept {
   bool success = tlgen::details::Service3SetLimitsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service3::SetLimits::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::BoolStat & result) {
+void tlgen::service3::SetLimits::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::BoolStat & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service3::SetLimits::write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::BoolStat & result) {
+void tlgen::service3::SetLimits::write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::BoolStat & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);

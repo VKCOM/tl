@@ -9,9 +9,14 @@ namespace tlgen { namespace service2 {
 struct ObjectId {
   std::vector<int32_t> id;
 
-  std::string_view tl_name() const { return "service2.objectId"; }
-  uint32_t tl_tag() const { return 0xaa0af282; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xaa0af282;
+  static constexpr std::string_view TL_NAME = "service2.objectId";
 
+  uint32_t tl_tag() const { return 0xaa0af282; }
+  std::string_view tl_name() const { return "service2.objectId"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_objectIdLength) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_objectIdLength) noexcept;
@@ -21,10 +26,10 @@ struct ObjectId {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_objectIdLength) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_objectIdLength) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_objectIdLength)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_objectIdLength) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_objectIdLength);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_objectIdLength)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_objectIdLength) const;
 };
 
 }} // namespace tlgen::service2

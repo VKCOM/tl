@@ -19,7 +19,7 @@ bool tlgen::service5::EmptyOutput::read(::tlgen::basictl::tl_istream & s) noexce
   return true;
 }
 
-bool tlgen::service5::EmptyOutput::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::EmptyOutput::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5EmptyOutputWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -31,7 +31,7 @@ void tlgen::service5::EmptyOutput::read(::tlgen::basictl::tl_throwable_istream &
   s2.pass_data(s);
 }
 
-void tlgen::service5::EmptyOutput::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::EmptyOutput::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -43,7 +43,7 @@ bool tlgen::service5::EmptyOutput::read_boxed(::tlgen::basictl::tl_istream & s) 
   return true;
 }
 
-bool tlgen::service5::EmptyOutput::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::EmptyOutput::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5EmptyOutputWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -55,7 +55,7 @@ void tlgen::service5::EmptyOutput::read_boxed(::tlgen::basictl::tl_throwable_ist
   s2.pass_data(s);
 }
 
-void tlgen::service5::EmptyOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::EmptyOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -105,7 +105,7 @@ bool tlgen::service5::Insert::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::service5::Insert::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::Insert::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5InsertWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -117,7 +117,7 @@ void tlgen::service5::Insert::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::service5::Insert::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::Insert::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -129,7 +129,7 @@ bool tlgen::service5::Insert::read_boxed(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::service5::Insert::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::Insert::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5InsertWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -141,7 +141,7 @@ void tlgen::service5::Insert::read_boxed(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::service5::Insert::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::Insert::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -201,14 +201,14 @@ bool tlgen::details::Service5InsertWriteBoxed(::tlgen::basictl::tl_ostream & s, 
   return tlgen::details::Service5InsertWrite(s, item);
 }
 
-bool tlgen::details::Service5InsertReadResult(::tlgen::basictl::tl_istream & s, tlgen::service5::Insert& item, ::tlgen::service5::Output& result) {
+bool tlgen::details::Service5InsertReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service5::Insert& item, ::tlgen::service5::Output& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::Service5OutputReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
   return true;
 }
-bool tlgen::details::Service5InsertWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service5::Insert& item, ::tlgen::service5::Output& result) {
+bool tlgen::details::Service5InsertWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service5::Insert& item, const ::tlgen::service5::Output& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -216,23 +216,23 @@ bool tlgen::details::Service5InsertWriteResult(::tlgen::basictl::tl_ostream & s,
   return true;
 }
 
-bool tlgen::service5::Insert::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Output & result) noexcept {
+bool tlgen::service5::Insert::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Output & result) const noexcept {
   bool success = tlgen::details::Service5InsertReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service5::Insert::write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::service5::Output & result) noexcept {
+bool tlgen::service5::Insert::write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Output & result) const noexcept {
   bool success = tlgen::details::Service5InsertWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service5::Insert::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service5::Output & result) {
+void tlgen::service5::Insert::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service5::Output & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service5::Insert::write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::service5::Output & result) {
+void tlgen::service5::Insert::write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::service5::Output & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -329,7 +329,7 @@ bool tlgen::service5::Params::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::service5::Params::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::Params::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5ParamsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -341,7 +341,7 @@ void tlgen::service5::Params::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::service5::Params::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::Params::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -353,7 +353,7 @@ bool tlgen::service5::Params::read_boxed(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::service5::Params::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::Params::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5ParamsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -365,7 +365,7 @@ void tlgen::service5::Params::read_boxed(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::service5::Params::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::Params::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -459,7 +459,7 @@ bool tlgen::service5::PerformQuery::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::service5::PerformQuery::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::PerformQuery::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5PerformQueryWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -471,7 +471,7 @@ void tlgen::service5::PerformQuery::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::service5::PerformQuery::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::PerformQuery::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -483,7 +483,7 @@ bool tlgen::service5::PerformQuery::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::service5::PerformQuery::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::PerformQuery::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5PerformQueryWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -495,7 +495,7 @@ void tlgen::service5::PerformQuery::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::service5::PerformQuery::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::PerformQuery::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -542,14 +542,14 @@ bool tlgen::details::Service5PerformQueryWriteBoxed(::tlgen::basictl::tl_ostream
   return tlgen::details::Service5PerformQueryWrite(s, item);
 }
 
-bool tlgen::details::Service5PerformQueryReadResult(::tlgen::basictl::tl_istream & s, tlgen::service5::PerformQuery& item, ::tlgen::service5::Output& result) {
+bool tlgen::details::Service5PerformQueryReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service5::PerformQuery& item, ::tlgen::service5::Output& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::Service5OutputReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
   return true;
 }
-bool tlgen::details::Service5PerformQueryWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service5::PerformQuery& item, ::tlgen::service5::Output& result) {
+bool tlgen::details::Service5PerformQueryWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service5::PerformQuery& item, const ::tlgen::service5::Output& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -557,23 +557,23 @@ bool tlgen::details::Service5PerformQueryWriteResult(::tlgen::basictl::tl_ostrea
   return true;
 }
 
-bool tlgen::service5::PerformQuery::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Output & result) noexcept {
+bool tlgen::service5::PerformQuery::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Output & result) const noexcept {
   bool success = tlgen::details::Service5PerformQueryReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service5::PerformQuery::write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::service5::Output & result) noexcept {
+bool tlgen::service5::PerformQuery::write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Output & result) const noexcept {
   bool success = tlgen::details::Service5PerformQueryWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service5::PerformQuery::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service5::Output & result) {
+void tlgen::service5::PerformQuery::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service5::Output & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service5::PerformQuery::write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::service5::Output & result) {
+void tlgen::service5::PerformQuery::write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::service5::Output & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -590,7 +590,7 @@ bool tlgen::service5::Query::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::service5::Query::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::Query::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5QueryWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -602,7 +602,7 @@ void tlgen::service5::Query::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::service5::Query::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::Query::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -614,7 +614,7 @@ bool tlgen::service5::Query::read_boxed(::tlgen::basictl::tl_istream & s) noexce
   return true;
 }
 
-bool tlgen::service5::Query::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::Query::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5QueryWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -626,7 +626,7 @@ void tlgen::service5::Query::read_boxed(::tlgen::basictl::tl_throwable_istream &
   s2.pass_data(s);
 }
 
-void tlgen::service5::Query::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::Query::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -684,14 +684,14 @@ bool tlgen::details::Service5QueryWriteBoxed(::tlgen::basictl::tl_ostream & s, c
   return tlgen::details::Service5QueryWrite(s, item);
 }
 
-bool tlgen::details::Service5QueryReadResult(::tlgen::basictl::tl_istream & s, tlgen::service5::Query& item, ::tlgen::service5::Output& result) {
+bool tlgen::details::Service5QueryReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service5::Query& item, ::tlgen::service5::Output& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::Service5OutputReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
   return true;
 }
-bool tlgen::details::Service5QueryWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service5::Query& item, ::tlgen::service5::Output& result) {
+bool tlgen::details::Service5QueryWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service5::Query& item, const ::tlgen::service5::Output& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -699,23 +699,23 @@ bool tlgen::details::Service5QueryWriteResult(::tlgen::basictl::tl_ostream & s, 
   return true;
 }
 
-bool tlgen::service5::Query::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Output & result) noexcept {
+bool tlgen::service5::Query::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Output & result) const noexcept {
   bool success = tlgen::details::Service5QueryReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service5::Query::write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::service5::Output & result) noexcept {
+bool tlgen::service5::Query::write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Output & result) const noexcept {
   bool success = tlgen::details::Service5QueryWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service5::Query::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service5::Output & result) {
+void tlgen::service5::Query::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service5::Output & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service5::Query::write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::service5::Output & result) {
+void tlgen::service5::Query::write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::service5::Output & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -732,7 +732,7 @@ bool tlgen::service5::StringOutput::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::service5::StringOutput::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::StringOutput::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5StringOutputWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -744,7 +744,7 @@ void tlgen::service5::StringOutput::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::service5::StringOutput::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::StringOutput::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -756,7 +756,7 @@ bool tlgen::service5::StringOutput::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::service5::StringOutput::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5::StringOutput::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5StringOutputWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -768,7 +768,7 @@ void tlgen::service5::StringOutput::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::service5::StringOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5::StringOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

@@ -66,13 +66,13 @@ namespace tlgen::basictl {
         return error.has_value();
     }
 
-    std::optional<tl_stream_error> &tl_istream::get_error() noexcept {
+    std::optional<tl_error> &tl_istream::get_error() noexcept {
         return error;
     }
 
     bool tl_istream::set_error(tl_error_type type, const char *what) noexcept {
         if (!error.has_value()) {
-            error = tl_error(type, what);
+            error = tl_stream_error(type, what);
         }
         return false;
     }
@@ -173,14 +173,12 @@ namespace tlgen::basictl {
         return true;
     }
 
-    std::exception static exception_from_tl_stream_error(tl_stream_error &error) {
+    void static throw_exception_from_tl_stream(tl_error &error) {
         switch (error.index()) {
             case 0:
-                return std::get<0>(error);
+                throw std::get<0>(error);
             case 1:
-                return std::get<1>(error);
-            default:
-                return {};
+                throw std::get<1>(error);
         }
     }
 
@@ -191,7 +189,7 @@ namespace tlgen::basictl {
         to.end_block = end_block;
 
         if (has_error()) {
-            throw ::tlgen::basictl::exception_from_tl_stream_error(error.value());
+            ::tlgen::basictl::throw_exception_from_tl_stream(error.value());
         }
     }
 
@@ -252,13 +250,13 @@ namespace tlgen::basictl {
         return error.has_value();
     }
 
-    std::optional<tl_stream_error> &tl_ostream::get_error() noexcept {
+    std::optional<tl_error> &tl_ostream::get_error() noexcept {
         return error;
     }
 
     bool tl_ostream::set_error(tl_error_type type, const char *what) noexcept {
         if (!error.has_value()) {
-            error = tl_error(type, what);
+            error = tl_stream_error(type, what);
         }
         return false;
     }
@@ -351,7 +349,7 @@ namespace tlgen::basictl {
         to.end_block = end_block;
 
         if (has_error()) {
-            throw ::tlgen::basictl::exception_from_tl_stream_error(error.value());
+            ::tlgen::basictl::throw_exception_from_tl_stream(error.value());
         }
     }
 } // namespace tlgen::basictl

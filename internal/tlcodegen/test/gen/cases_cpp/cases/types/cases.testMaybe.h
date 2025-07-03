@@ -9,9 +9,14 @@ namespace tlgen { namespace cases {
 struct TestMaybe {
   std::optional<int32_t> value;
 
-  std::string_view tl_name() const { return "cases.testMaybe"; }
-  uint32_t tl_tag() const { return 0xd6602613; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xd6602613;
+  static constexpr std::string_view TL_NAME = "cases.testMaybe";
 
+  uint32_t tl_tag() const { return 0xd6602613; }
+  std::string_view tl_name() const { return "cases.testMaybe"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,10 +26,10 @@ struct TestMaybe {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestMaybe& rhs) {
     rhs.write_json(s);

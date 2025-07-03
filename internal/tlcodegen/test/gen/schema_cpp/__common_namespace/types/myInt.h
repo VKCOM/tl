@@ -9,9 +9,14 @@ namespace tlgen {
 struct MyInt {
   int32_t val1 = 0;
 
-  std::string_view tl_name() const { return "myInt"; }
-  uint32_t tl_tag() const { return 0xc12375b7; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xc12375b7;
+  static constexpr std::string_view TL_NAME = "myInt";
 
+  uint32_t tl_tag() const { return 0xc12375b7; }
+  std::string_view tl_name() const { return "myInt"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,10 +26,10 @@ struct MyInt {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const MyInt& rhs) {
     rhs.write_json(s);

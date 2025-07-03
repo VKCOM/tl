@@ -16,7 +16,7 @@ bool tlgen::service4::ModifiedNewsEntry::read(::tlgen::basictl::tl_istream & s) 
   return true;
 }
 
-bool tlgen::service4::ModifiedNewsEntry::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service4::ModifiedNewsEntry::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service4ModifiedNewsEntryWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -28,7 +28,7 @@ void tlgen::service4::ModifiedNewsEntry::read(::tlgen::basictl::tl_throwable_ist
   s2.pass_data(s);
 }
 
-void tlgen::service4::ModifiedNewsEntry::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service4::ModifiedNewsEntry::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -40,7 +40,7 @@ bool tlgen::service4::ModifiedNewsEntry::read_boxed(::tlgen::basictl::tl_istream
   return true;
 }
 
-bool tlgen::service4::ModifiedNewsEntry::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service4::ModifiedNewsEntry::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service4ModifiedNewsEntryWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -52,7 +52,7 @@ void tlgen::service4::ModifiedNewsEntry::read_boxed(::tlgen::basictl::tl_throwab
   s2.pass_data(s);
 }
 
-void tlgen::service4::ModifiedNewsEntry::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service4::ModifiedNewsEntry::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -183,7 +183,7 @@ bool tlgen::service4::Object::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::service4::Object::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service4::Object::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service4ObjectWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -195,7 +195,7 @@ void tlgen::service4::Object::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::service4::Object::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service4::Object::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -207,7 +207,7 @@ bool tlgen::service4::Object::read_boxed(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::service4::Object::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service4::Object::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service4ObjectWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -219,7 +219,7 @@ void tlgen::service4::Object::read_boxed(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::service4::Object::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service4::Object::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

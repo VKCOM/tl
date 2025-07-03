@@ -11,9 +11,14 @@ struct Get_arrays {
   std::vector<int32_t> a;
   std::array<int32_t, 5> b{};
 
-  std::string_view tl_name() const { return "get_arrays"; }
-  uint32_t tl_tag() const { return 0x90658cdb; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x90658cdb;
+  static constexpr std::string_view TL_NAME = "get_arrays";
 
+  uint32_t tl_tag() const { return 0x90658cdb; }
+  std::string_view tl_name() const { return "get_arrays"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -23,16 +28,19 @@ struct Get_arrays {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, std::array<int32_t, 5> & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, std::array<int32_t, 5> & result) noexcept;
+  // function methods and properties
+  using ResultType = std::array<int32_t, 5>;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::array<int32_t, 5> & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, std::array<int32_t, 5> & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, std::array<int32_t, 5> & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const std::array<int32_t, 5> & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::array<int32_t, 5> & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::array<int32_t, 5> & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Get_arrays& rhs) {
     rhs.write_json(s);

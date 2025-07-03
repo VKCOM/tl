@@ -9,9 +9,14 @@
 namespace tlgen { namespace service3 { 
 struct GetLimits {
 
-  std::string_view tl_name() const { return "service3.getLimits"; }
-  uint32_t tl_tag() const { return 0xeb399467; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xeb399467;
+  static constexpr std::string_view TL_NAME = "service3.getLimits";
 
+  uint32_t tl_tag() const { return 0xeb399467; }
+  std::string_view tl_name() const { return "service3.getLimits"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,16 +26,19 @@ struct GetLimits {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service3::Limits & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::Limits & result) noexcept;
+  // function methods and properties
+  using ResultType = ::tlgen::service3::Limits;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service3::Limits & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::service3::Limits & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::service3::Limits & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::Limits & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::service3::Limits & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::service3::Limits & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetLimits& rhs) {
     rhs.write_json(s);

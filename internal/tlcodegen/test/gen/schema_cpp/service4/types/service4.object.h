@@ -11,9 +11,14 @@ struct Object {
   std::vector<int32_t> joint_id;
   std::vector<int32_t> object_id;
 
-  std::string_view tl_name() const { return "service4.object"; }
-  uint32_t tl_tag() const { return 0xa6eeca4f; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xa6eeca4f;
+  static constexpr std::string_view TL_NAME = "service4.object";
 
+  uint32_t tl_tag() const { return 0xa6eeca4f; }
+  std::string_view tl_name() const { return "service4.object"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -23,10 +28,10 @@ struct Object {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Object& rhs) {
     rhs.write_json(s);

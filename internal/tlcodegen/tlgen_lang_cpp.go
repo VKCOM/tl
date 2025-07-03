@@ -410,7 +410,7 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		code.WriteString("{\n")
 
 		code.WriteString("\t\"io\": [")
-		code.WriteString("\"basictl/io_streams.cpp\", \"basictl/io_throwable_streams.cpp\"")
+		code.WriteString("\"basictl\"")
 		code.WriteString("],\n")
 
 		code.WriteString("\t\"dependencies\":[")
@@ -434,6 +434,154 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		//	return nil, fmt.Errorf("tlgen bug: %s is not independent", CommonGroup)
 		//}
 		if err := gen.addCodeFile(filepath.Join(ns, "info.json"), code.String()); err != nil {
+			return nil, err
+		}
+	}
+
+	// create ns dependencies info file
+	{
+		allVertices := make(map[string]bool)
+		for v, us := range directDeps {
+			allVertices[v] = true
+			for u := range us {
+				allVertices[u] = true
+			}
+		}
+
+		delete(allVertices, GhostTypes)
+
+		order := make([]string, 0)
+		visited := make(map[string]bool)
+		component := make([]string, 0)
+		components := make([][]string, 0)
+
+		var df1 func(v string)
+		df1 = func(v string) {
+			visited[v] = true
+			for u := range directDeps[v] {
+				if !visited[u] && allVertices[u] {
+					df1(u)
+				}
+			}
+			order = append(order, v)
+		}
+
+		revDirectDeps := make(map[string]map[string]bool)
+		for v, us := range directDeps {
+			for u := range us {
+				if _, ok := revDirectDeps[u]; !ok {
+					revDirectDeps[u] = make(map[string]bool)
+				}
+				revDirectDeps[u][v] = true
+			}
+		}
+
+		var df2 func(v string)
+		df2 = func(v string) {
+			visited[v] = true
+			component = append(component, v)
+			for u := range revDirectDeps[v] {
+				if !visited[u] && allVertices[u] {
+					df2(u)
+				}
+			}
+		}
+
+		visited = make(map[string]bool)
+		for v := range allVertices {
+			if !visited[v] {
+				df1(v)
+			}
+		}
+		visited = make(map[string]bool)
+		for i := range order {
+			v := order[len(order)-1-i]
+			if !visited[v] {
+				df2(v)
+				components = append(components, component)
+				component = make([]string, 0)
+			}
+		}
+
+		for i, component := range components {
+			sort.Strings(component)
+			components[i] = component
+		}
+
+		// sort components
+		sort.Slice(components, func(i, j int) bool {
+			if len(components[i]) == len(components[j]) {
+				return slices.Compare(components[i], components[j]) > 0
+			}
+			return len(components[i]) > len(components[j])
+		})
+
+		nsToComponentId := make(map[string]int)
+		for id, comp := range components {
+			for _, ns := range comp {
+				nsToComponentId[ns] = id
+			}
+		}
+
+		compDeps := make(map[int]map[int]bool)
+		for ns, nsDeps := range directDeps {
+			for dep := range nsDeps {
+				if _, ok := compDeps[nsToComponentId[ns]]; !ok {
+					compDeps[nsToComponentId[ns]] = make(map[int]bool)
+				}
+				compDeps[nsToComponentId[ns]][nsToComponentId[dep]] = true
+			}
+		}
+
+		compVisited := make(map[int]bool)
+		compOrder := make([]int, 0)
+
+		var compDfs func(c int)
+		compDfs = func(c int) {
+			compVisited[c] = true
+			keys := utils.Keys(compDeps[c])
+			sort.Ints(keys)
+			for _, cDep := range keys {
+				if !compVisited[cDep] {
+					compDfs(cDep)
+				}
+			}
+			compOrder = append(compOrder, c)
+		}
+
+		for i := range components {
+			if !compVisited[i] {
+				compDfs(i)
+			}
+		}
+
+		code := strings.Builder{}
+		code.WriteString("{\n")
+		code.WriteString("\t\"order\": [\n")
+
+		for i := range compOrder {
+			orderId := i
+			compId := compOrder[orderId]
+			code.WriteString("\t\t[")
+			code.WriteString(
+				strings.Join(
+					utils.MapSlice(
+						components[compId],
+						func(s string) string { return fmt.Sprintf("\"%s\"", s) },
+					),
+					", ",
+				),
+			)
+			if i == len(compOrder)-1 {
+				code.WriteString("]\n")
+			} else {
+				code.WriteString("],\n")
+			}
+		}
+
+		code.WriteString("\t]\n")
+		code.WriteString("}")
+		if err := gen.addCodeFile("info.json", code.String()); err != nil {
 			return nil, err
 		}
 	}
@@ -487,6 +635,24 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 		}
 
 		if err := gen.addCodeFile(filepath.Join(basictlPackage, file), gen.copyrightText+code.String()); err != nil {
+			return err
+		}
+	}
+	{
+		code := strings.Builder{}
+		code.WriteString("{\n\t\"sources\":[")
+		wasFirst := false
+		for _, file := range exportingFiles {
+			if strings.HasSuffix(file, cppExt) && !strings.Contains(file, "/") {
+				if wasFirst {
+					code.WriteString(", ")
+				}
+				wasFirst = true
+				code.WriteString(fmt.Sprintf("\"%s\"", file))
+			}
+		}
+		code.WriteString("]\n}")
+		if err := gen.addCodeFile(filepath.Join(basictlPackage, "info.json"), code.String()); err != nil {
 			return err
 		}
 	}
@@ -737,6 +903,10 @@ func getNamespacesDependencies(allTypes []*TypeRWWrapper, edges map[*TypeRWWrapp
 	result := make(map[string]map[string]bool)
 
 	for _, exactType := range allTypes {
+		// to have at least zero deps
+		if _, ok := result[exactType.groupName]; !ok {
+			result[exactType.groupName] = make(map[string]bool)
+		}
 		for _, dep := range edges[exactType] {
 			if len(result[exactType.groupName]) == 0 {
 				result[exactType.groupName] = make(map[string]bool)

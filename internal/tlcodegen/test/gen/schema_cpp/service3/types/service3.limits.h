@@ -14,9 +14,14 @@ struct Limits {
   int32_t default_group_count_limit = 0;
   std::vector<::tlgen::service3::GroupCountLimit> custom_group_count_limits;
 
-  std::string_view tl_name() const { return "service3.limits"; }
-  uint32_t tl_tag() const { return 0x80ee61ca; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x80ee61ca;
+  static constexpr std::string_view TL_NAME = "service3.limits";
 
+  uint32_t tl_tag() const { return 0x80ee61ca; }
+  std::string_view tl_name() const { return "service3.limits"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -26,10 +31,10 @@ struct Limits {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Limits& rhs) {
     rhs.write_json(s);

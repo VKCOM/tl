@@ -11,8 +11,12 @@ struct DictionaryFieldAny {
   k key{};
   v value{};
 
-  std::string_view tl_name() const { return "dictionaryFieldAny"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x2c43a65b;
+  static constexpr std::string_view TL_NAME = "dictionaryFieldAny";
+
   uint32_t tl_tag() const { return 0x2c43a65b; }
+  std::string_view tl_name() const { return "dictionaryFieldAny"; }
 };
 
 } // namespace tlgen

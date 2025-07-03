@@ -17,8 +17,8 @@ bool Service3GetProductsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::s
 bool Service3GetProductsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetProducts& item);
 bool Service3GetProductsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetProducts& item);
 
-bool Service3GetProductsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetProducts& item, std::optional<std::vector<::tlgen::service3::Product>>& result);
-bool Service3GetProductsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetProducts& item, std::optional<std::vector<::tlgen::service3::Product>>& result);
+bool Service3GetProductsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::GetProducts& item, std::optional<std::vector<::tlgen::service3::Product>>& result);
+bool Service3GetProductsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetProducts& item, const std::optional<std::vector<::tlgen::service3::Product>>& result);
     
 }} // namespace tlgen::details
 

@@ -16,8 +16,8 @@ bool TasksGetQueueSizeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tas
 bool TasksGetQueueSizeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueSize& item);
 bool TasksGetQueueSizeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetQueueSize& item);
 
-bool TasksGetQueueSizeReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetQueueSize& item, ::tlgen::tasks::QueueStats& result);
-bool TasksGetQueueSizeWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::tasks::GetQueueSize& item, ::tlgen::tasks::QueueStats& result);
+bool TasksGetQueueSizeReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::tasks::GetQueueSize& item, ::tlgen::tasks::QueueStats& result);
+bool TasksGetQueueSizeWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetQueueSize& item, const ::tlgen::tasks::QueueStats& result);
     
 }} // namespace tlgen::details
 

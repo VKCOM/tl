@@ -16,8 +16,8 @@ bool AbCall1Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call1& it
 bool AbCall1ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call1& item);
 bool AbCall1WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call1& item);
 
-bool AbCall1ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::ab::Call1& item, ::tlgen::ab::TypeB& result);
-bool AbCall1WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::ab::Call1& item, ::tlgen::ab::TypeB& result);
+bool AbCall1ReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::ab::Call1& item, ::tlgen::ab::TypeB& result);
+bool AbCall1WriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::ab::Call1& item, const ::tlgen::ab::TypeB& result);
     
 }} // namespace tlgen::details
 

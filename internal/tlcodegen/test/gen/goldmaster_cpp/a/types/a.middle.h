@@ -13,8 +13,12 @@ struct Middle {
   ::tlgen::a::Inner a{};
   ::tlgen::Pair<P, Q> b{};
 
-  std::string_view tl_name() const { return "a.middle"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xaf5e2b14;
+  static constexpr std::string_view TL_NAME = "a.middle";
+
   uint32_t tl_tag() const { return 0xaf5e2b14; }
+  std::string_view tl_name() const { return "a.middle"; }
 };
 
 }} // namespace tlgen::a

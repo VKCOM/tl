@@ -9,9 +9,14 @@ namespace tlgen {
 struct Replace1 {
   std::vector<int32_t> a;
 
-  std::string_view tl_name() const { return "replace1"; }
-  uint32_t tl_tag() const { return 0x89eac43a; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x89eac43a;
+  static constexpr std::string_view TL_NAME = "replace1";
 
+  uint32_t tl_tag() const { return 0x89eac43a; }
+  std::string_view tl_name() const { return "replace1"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_n) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_n) noexcept;
@@ -21,10 +26,10 @@ struct Replace1 {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_n) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_n);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n) const;
 };
 
 } // namespace tlgen
@@ -34,8 +39,12 @@ template<uint32_t n>
 struct Replace1n {
   std::array<int32_t, n> a{};
 
-  std::string_view tl_name() const { return "replace1"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x89eac43a;
+  static constexpr std::string_view TL_NAME = "replace1";
+
   uint32_t tl_tag() const { return 0x89eac43a; }
+  std::string_view tl_name() const { return "replace1"; }
 };
 
 } // namespace tlgen

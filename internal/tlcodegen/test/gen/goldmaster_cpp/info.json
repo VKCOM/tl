@@ -1,0 +1,12 @@
+{
+	"order": [
+		["__common_namespace"],
+		["au"],
+		["a"],
+		["cyc1", "cyc2", "cyc3"],
+		["ab", "cd"],
+		["usefulService"],
+		["service5Long"],
+		["service5"]
+	]
+}

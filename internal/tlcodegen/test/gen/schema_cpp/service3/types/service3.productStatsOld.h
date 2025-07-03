@@ -13,9 +13,14 @@ struct ProductStatsOld {
   int32_t count_scheduled = 0;
   int32_t next_scheduled_at = 0;
 
-  std::string_view tl_name() const { return "service3.productStatsOld"; }
-  uint32_t tl_tag() const { return 0x6319810b; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x6319810b;
+  static constexpr std::string_view TL_NAME = "service3.productStatsOld";
 
+  uint32_t tl_tag() const { return 0x6319810b; }
+  std::string_view tl_name() const { return "service3.productStatsOld"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -25,10 +30,10 @@ struct ProductStatsOld {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const ProductStatsOld& rhs) {
     rhs.write_json(s);

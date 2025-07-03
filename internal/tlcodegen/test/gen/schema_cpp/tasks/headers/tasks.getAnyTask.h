@@ -16,8 +16,8 @@ bool TasksGetAnyTaskWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks
 bool TasksGetAnyTaskReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetAnyTask& item);
 bool TasksGetAnyTaskWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetAnyTask& item);
 
-bool TasksGetAnyTaskReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::tasks::GetAnyTask& item, std::optional<::tlgen::tasks::TaskInfo>& result);
-bool TasksGetAnyTaskWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::tasks::GetAnyTask& item, std::optional<::tlgen::tasks::TaskInfo>& result);
+bool TasksGetAnyTaskReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::tasks::GetAnyTask& item, std::optional<::tlgen::tasks::TaskInfo>& result);
+bool TasksGetAnyTaskWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::tasks::GetAnyTask& item, const std::optional<::tlgen::tasks::TaskInfo>& result);
     
 }} // namespace tlgen::details
 

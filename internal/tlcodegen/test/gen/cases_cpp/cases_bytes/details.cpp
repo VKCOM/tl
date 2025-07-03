@@ -179,7 +179,7 @@ bool tlgen::cases_bytes::TestArray::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::cases_bytes::TestArray::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestArray::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestArrayWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -191,7 +191,7 @@ void tlgen::cases_bytes::TestArray::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestArray::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestArray::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -203,7 +203,7 @@ bool tlgen::cases_bytes::TestArray::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::cases_bytes::TestArray::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestArray::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestArrayWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -215,7 +215,7 @@ void tlgen::cases_bytes::TestArray::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestArray::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestArray::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -286,7 +286,7 @@ bool tlgen::cases_bytes::TestDictAny::read(::tlgen::basictl::tl_istream & s) noe
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictAny::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictAny::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictAnyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -298,7 +298,7 @@ void tlgen::cases_bytes::TestDictAny::read(::tlgen::basictl::tl_throwable_istrea
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictAny::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictAny::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -310,7 +310,7 @@ bool tlgen::cases_bytes::TestDictAny::read_boxed(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictAny::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictAny::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictAnyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -322,7 +322,7 @@ void tlgen::cases_bytes::TestDictAny::read_boxed(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictAny::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictAny::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -380,7 +380,7 @@ bool tlgen::cases_bytes::TestDictInt::read(::tlgen::basictl::tl_istream & s) noe
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictInt::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictInt::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictIntWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -392,7 +392,7 @@ void tlgen::cases_bytes::TestDictInt::read(::tlgen::basictl::tl_throwable_istrea
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictInt::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictInt::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -404,7 +404,7 @@ bool tlgen::cases_bytes::TestDictInt::read_boxed(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictInt::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictInt::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictIntWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -416,7 +416,7 @@ void tlgen::cases_bytes::TestDictInt::read_boxed(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictInt::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictInt::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -474,7 +474,7 @@ bool tlgen::cases_bytes::TestDictString::read(::tlgen::basictl::tl_istream & s) 
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictString::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictString::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictStringWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -486,7 +486,7 @@ void tlgen::cases_bytes::TestDictString::read(::tlgen::basictl::tl_throwable_ist
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictString::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictString::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -498,7 +498,7 @@ bool tlgen::cases_bytes::TestDictString::read_boxed(::tlgen::basictl::tl_istream
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictString::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictString::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictStringWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -510,7 +510,7 @@ void tlgen::cases_bytes::TestDictString::read_boxed(::tlgen::basictl::tl_throwab
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictString::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictString::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -568,7 +568,7 @@ bool tlgen::cases_bytes::TestDictStringString::read(::tlgen::basictl::tl_istream
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictStringString::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictStringString::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictStringStringWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -580,7 +580,7 @@ void tlgen::cases_bytes::TestDictStringString::read(::tlgen::basictl::tl_throwab
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictStringString::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictStringString::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -592,7 +592,7 @@ bool tlgen::cases_bytes::TestDictStringString::read_boxed(::tlgen::basictl::tl_i
   return true;
 }
 
-bool tlgen::cases_bytes::TestDictStringString::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestDictStringString::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestDictStringStringWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -604,7 +604,7 @@ void tlgen::cases_bytes::TestDictStringString::read_boxed(::tlgen::basictl::tl_t
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestDictStringString::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestDictStringString::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -732,7 +732,7 @@ bool tlgen::cases_bytes::TestEnum1::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnum1::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnum1::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnum1Write(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -744,7 +744,7 @@ void tlgen::cases_bytes::TestEnum1::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnum1::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnum1::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -756,7 +756,7 @@ bool tlgen::cases_bytes::TestEnum1::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnum1::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnum1::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnum1WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -768,7 +768,7 @@ void tlgen::cases_bytes::TestEnum1::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnum1::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnum1::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -818,7 +818,7 @@ bool tlgen::cases_bytes::TestEnum2::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnum2::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnum2::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnum2Write(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -830,7 +830,7 @@ void tlgen::cases_bytes::TestEnum2::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnum2::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnum2::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -842,7 +842,7 @@ bool tlgen::cases_bytes::TestEnum2::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnum2::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnum2::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnum2WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -854,7 +854,7 @@ void tlgen::cases_bytes::TestEnum2::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnum2::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnum2::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -904,7 +904,7 @@ bool tlgen::cases_bytes::TestEnum3::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnum3::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnum3::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnum3Write(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -916,7 +916,7 @@ void tlgen::cases_bytes::TestEnum3::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnum3::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnum3::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -928,7 +928,7 @@ bool tlgen::cases_bytes::TestEnum3::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnum3::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnum3::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnum3WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -940,7 +940,7 @@ void tlgen::cases_bytes::TestEnum3::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnum3::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnum3::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -990,7 +990,7 @@ bool tlgen::cases_bytes::TestEnumContainer::read(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnumContainer::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnumContainer::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnumContainerWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1002,7 +1002,7 @@ void tlgen::cases_bytes::TestEnumContainer::read(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnumContainer::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnumContainer::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1014,7 +1014,7 @@ bool tlgen::cases_bytes::TestEnumContainer::read_boxed(::tlgen::basictl::tl_istr
   return true;
 }
 
-bool tlgen::cases_bytes::TestEnumContainer::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestEnumContainer::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestEnumContainerWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1026,7 +1026,7 @@ void tlgen::cases_bytes::TestEnumContainer::read_boxed(::tlgen::basictl::tl_thro
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestEnumContainer::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestEnumContainer::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1082,7 +1082,7 @@ bool tlgen::cases_bytes::TestTuple::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::cases_bytes::TestTuple::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestTuple::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestTupleWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1094,7 +1094,7 @@ void tlgen::cases_bytes::TestTuple::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestTuple::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestTuple::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1106,7 +1106,7 @@ bool tlgen::cases_bytes::TestTuple::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::cases_bytes::TestTuple::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestTuple::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestTupleWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1118,7 +1118,7 @@ void tlgen::cases_bytes::TestTuple::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestTuple::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestTuple::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1174,7 +1174,7 @@ bool tlgen::cases_bytes::TestVector::read(::tlgen::basictl::tl_istream & s) noex
   return true;
 }
 
-bool tlgen::cases_bytes::TestVector::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestVector::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestVectorWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1186,7 +1186,7 @@ void tlgen::cases_bytes::TestVector::read(::tlgen::basictl::tl_throwable_istream
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestVector::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestVector::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1198,7 +1198,7 @@ bool tlgen::cases_bytes::TestVector::read_boxed(::tlgen::basictl::tl_istream & s
   return true;
 }
 
-bool tlgen::cases_bytes::TestVector::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cases_bytes::TestVector::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::CasesBytesTestVectorWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1210,7 +1210,7 @@ void tlgen::cases_bytes::TestVector::read_boxed(::tlgen::basictl::tl_throwable_i
   s2.pass_data(s);
 }
 
-void tlgen::cases_bytes::TestVector::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cases_bytes::TestVector::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

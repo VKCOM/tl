@@ -16,8 +16,8 @@ bool Service1ReplaceOrIncrWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen:
 bool Service1ReplaceOrIncrReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::ReplaceOrIncr& item);
 bool Service1ReplaceOrIncrWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::ReplaceOrIncr& item);
 
-bool Service1ReplaceOrIncrReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::ReplaceOrIncr& item, ::tlgen::service1::Value& result);
-bool Service1ReplaceOrIncrWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::ReplaceOrIncr& item, ::tlgen::service1::Value& result);
+bool Service1ReplaceOrIncrReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::ReplaceOrIncr& item, ::tlgen::service1::Value& result);
+bool Service1ReplaceOrIncrWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::ReplaceOrIncr& item, const ::tlgen::service1::Value& result);
     
 }} // namespace tlgen::details
 

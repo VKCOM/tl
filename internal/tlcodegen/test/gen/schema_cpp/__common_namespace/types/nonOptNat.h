@@ -10,9 +10,14 @@ struct NonOptNat {
   uint32_t n = 0;
   std::vector<int32_t> xs;
 
-  std::string_view tl_name() const { return "nonOptNat"; }
-  uint32_t tl_tag() const { return 0x45366605; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x45366605;
+  static constexpr std::string_view TL_NAME = "nonOptNat";
 
+  uint32_t tl_tag() const { return 0x45366605; }
+  std::string_view tl_name() const { return "nonOptNat"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,10 +27,10 @@ struct NonOptNat {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const NonOptNat& rhs) {
     rhs.write_json(s);

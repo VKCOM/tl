@@ -10,9 +10,14 @@ struct Longvalue {
   int64_t value = 0;
   int32_t flags = 0;
 
-  std::string_view tl_name() const { return "service1.longvalue"; }
-  uint32_t tl_tag() const { return 0x082e0945; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x082e0945;
+  static constexpr std::string_view TL_NAME = "service1.longvalue";
 
+  uint32_t tl_tag() const { return 0x082e0945; }
+  std::string_view tl_name() const { return "service1.longvalue"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,10 +27,10 @@ struct Longvalue {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Longvalue& rhs) {
     rhs.write_json(s);

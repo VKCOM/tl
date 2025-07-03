@@ -11,8 +11,12 @@ struct Pair {
   X a{};
   Y b{};
 
-  std::string_view tl_name() const { return "pair"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x0f3c47ab;
+  static constexpr std::string_view TL_NAME = "pair";
+
   uint32_t tl_tag() const { return 0x0f3c47ab; }
+  std::string_view tl_name() const { return "pair"; }
 };
 
 } // namespace tlgen

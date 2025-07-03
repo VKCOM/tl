@@ -16,8 +16,8 @@ bool Service1ExistsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::servic
 bool Service1ExistsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Exists& item);
 bool Service1ExistsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Exists& item);
 
-bool Service1ExistsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Exists& item, bool& result);
-bool Service1ExistsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::Exists& item, bool& result);
+bool Service1ExistsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::Exists& item, bool& result);
+bool Service1ExistsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Exists& item, const bool& result);
     
 }} // namespace tlgen::details
 

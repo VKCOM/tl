@@ -16,8 +16,8 @@ bool Service5QueryWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service
 bool Service5QueryReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Query& item);
 bool Service5QueryWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Query& item);
 
-bool Service5QueryReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Query& item, ::tlgen::service5::Output& result);
-bool Service5QueryWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service5::Query& item, ::tlgen::service5::Output& result);
+bool Service5QueryReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service5::Query& item, ::tlgen::service5::Output& result);
+bool Service5QueryWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Query& item, const ::tlgen::service5::Output& result);
     
 }} // namespace tlgen::details
 

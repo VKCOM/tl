@@ -15,8 +15,8 @@ bool UniqueStringToIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::uni
 bool UniqueStringToIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::unique::StringToInt& item);
 bool UniqueStringToIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::unique::StringToInt& item);
 
-bool UniqueStringToIntReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::unique::StringToInt& item, int32_t& result);
-bool UniqueStringToIntWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::unique::StringToInt& item, int32_t& result);
+bool UniqueStringToIntReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::unique::StringToInt& item, int32_t& result);
+bool UniqueStringToIntWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::unique::StringToInt& item, const int32_t& result);
     
 }} // namespace tlgen::details
 

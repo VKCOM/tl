@@ -9,9 +9,14 @@ namespace tlgen { namespace service1 {
 struct GetWildcardDict {
   std::string prefix;
 
-  std::string_view tl_name() const { return "service1.getWildcardDict"; }
-  uint32_t tl_tag() const { return 0x72bbc81b; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x72bbc81b;
+  static constexpr std::string_view TL_NAME = "service1.getWildcardDict";
 
+  uint32_t tl_tag() const { return 0x72bbc81b; }
+  std::string_view tl_name() const { return "service1.getWildcardDict"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,16 +26,19 @@ struct GetWildcardDict {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, std::map<std::string, std::string> & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, std::map<std::string, std::string> & result) noexcept;
+  // function methods and properties
+  using ResultType = std::map<std::string, std::string>;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::map<std::string, std::string> & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, std::map<std::string, std::string> & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, std::map<std::string, std::string> & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const std::map<std::string, std::string> & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::map<std::string, std::string> & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::map<std::string, std::string> & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetWildcardDict& rhs) {
     rhs.write_json(s);

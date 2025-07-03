@@ -1,0 +1,16 @@
+{
+	"order": [
+		["__common_namespace"],
+		["tasks"],
+		["service6"],
+		["service2"],
+		["service1"],
+		["unique"],
+		["tree_stats"],
+		["service5"],
+		["service4"],
+		["service3"],
+		["pkg2"],
+		["antispam"]
+	]
+}

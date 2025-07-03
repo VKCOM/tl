@@ -10,8 +10,12 @@ template<typename X, typename Y>
 struct Right {
   Y value{};
 
-  std::string_view tl_name() const { return "right"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xdf3ecb3b;
+  static constexpr std::string_view TL_NAME = "right";
+
   uint32_t tl_tag() const { return 0xdf3ecb3b; }
+  std::string_view tl_name() const { return "right"; }
 };
 
 } // namespace tlgen

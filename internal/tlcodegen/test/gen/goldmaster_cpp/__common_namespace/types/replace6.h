@@ -9,9 +9,14 @@ namespace tlgen {
 struct Replace6 {
   std::vector<int32_t> a;
 
-  std::string_view tl_name() const { return "replace6"; }
-  uint32_t tl_tag() const { return 0xabd49d06; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xabd49d06;
+  static constexpr std::string_view TL_NAME = "replace6";
 
+  uint32_t tl_tag() const { return 0xabd49d06; }
+  std::string_view tl_name() const { return "replace6"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,10 +26,10 @@ struct Replace6 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Replace6& rhs) {
     rhs.write_json(s);

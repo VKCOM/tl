@@ -16,8 +16,8 @@ bool Service1GetExpireTimeWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen:
 bool Service1GetExpireTimeReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetExpireTime& item);
 bool Service1GetExpireTimeWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetExpireTime& item);
 
-bool Service1GetExpireTimeReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetExpireTime& item, std::optional<int32_t>& result);
-bool Service1GetExpireTimeWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetExpireTime& item, std::optional<int32_t>& result);
+bool Service1GetExpireTimeReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::GetExpireTime& item, std::optional<int32_t>& result);
+bool Service1GetExpireTimeWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetExpireTime& item, const std::optional<int32_t>& result);
     
 }} // namespace tlgen::details
 

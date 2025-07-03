@@ -15,7 +15,7 @@ bool tlgen::service5Long::EmptyOutput::read(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service5Long::EmptyOutput::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5Long::EmptyOutput::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5LongEmptyOutputWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -27,7 +27,7 @@ void tlgen::service5Long::EmptyOutput::read(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service5Long::EmptyOutput::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5Long::EmptyOutput::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -39,7 +39,7 @@ bool tlgen::service5Long::EmptyOutput::read_boxed(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::service5Long::EmptyOutput::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5Long::EmptyOutput::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5LongEmptyOutputWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -51,7 +51,7 @@ void tlgen::service5Long::EmptyOutput::read_boxed(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::service5Long::EmptyOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5Long::EmptyOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -181,7 +181,7 @@ bool tlgen::service5Long::StringOutput::read(::tlgen::basictl::tl_istream & s) n
   return true;
 }
 
-bool tlgen::service5Long::StringOutput::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5Long::StringOutput::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5LongStringOutputWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -193,7 +193,7 @@ void tlgen::service5Long::StringOutput::read(::tlgen::basictl::tl_throwable_istr
   s2.pass_data(s);
 }
 
-void tlgen::service5Long::StringOutput::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5Long::StringOutput::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -205,7 +205,7 @@ bool tlgen::service5Long::StringOutput::read_boxed(::tlgen::basictl::tl_istream 
   return true;
 }
 
-bool tlgen::service5Long::StringOutput::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service5Long::StringOutput::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service5LongStringOutputWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -217,7 +217,7 @@ void tlgen::service5Long::StringOutput::read_boxed(::tlgen::basictl::tl_throwabl
   s2.pass_data(s);
 }
 
-void tlgen::service5Long::StringOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service5Long::StringOutput::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

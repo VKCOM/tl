@@ -12,9 +12,14 @@ struct TestMaybe2 {
   std::optional<int32_t> a;
   std::optional<::tlgen::ab::MyType> g;
 
-  std::string_view tl_name() const { return "testMaybe2"; }
-  uint32_t tl_tag() const { return 0x0aa03cf2; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x0aa03cf2;
+  static constexpr std::string_view TL_NAME = "testMaybe2";
 
+  uint32_t tl_tag() const { return 0x0aa03cf2; }
+  std::string_view tl_name() const { return "testMaybe2"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -24,10 +29,10 @@ struct TestMaybe2 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestMaybe2& rhs) {
     rhs.write_json(s);

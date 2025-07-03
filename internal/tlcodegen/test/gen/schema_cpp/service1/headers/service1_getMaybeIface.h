@@ -16,8 +16,8 @@ bool GetMaybeIfaceWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMayb
 bool GetMaybeIfaceReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetMaybeIface& item);
 bool GetMaybeIfaceWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMaybeIface& item);
 
-bool GetMaybeIfaceReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetMaybeIface& item, std::optional<::tlgen::service1::Value>& result);
-bool GetMaybeIfaceWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetMaybeIface& item, std::optional<::tlgen::service1::Value>& result);
+bool GetMaybeIfaceReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetMaybeIface& item, std::optional<::tlgen::service1::Value>& result);
+bool GetMaybeIfaceWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMaybeIface& item, const std::optional<::tlgen::service1::Value>& result);
     
 }} // namespace tlgen::details
 

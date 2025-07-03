@@ -9,9 +9,14 @@
 namespace tlgen { namespace ab { 
 struct Call10 {
 
-  std::string_view tl_name() const { return "ab.call10"; }
-  uint32_t tl_tag() const { return 0x8db2a4f8; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x8db2a4f8;
+  static constexpr std::string_view TL_NAME = "ab.call10";
 
+  uint32_t tl_tag() const { return 0x8db2a4f8; }
+  std::string_view tl_name() const { return "ab.call10"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,16 +26,19 @@ struct Call10 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::a::Color & result) noexcept;
+  // function methods and properties
+  using ResultType = ::tlgen::a::Color;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::a::Color & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::a::Color & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::a::Color & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::a::Color & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::a::Color & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::a::Color & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Call10& rhs) {
     rhs.write_json(s);

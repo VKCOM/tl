@@ -108,7 +108,7 @@ namespace tlgen::basictl {
 
         [[nodiscard]] bool has_error() const noexcept;
 
-        [[nodiscard]] std::optional<tl_stream_error> &get_error() noexcept;
+        [[nodiscard]] std::optional<tl_error> &get_error() noexcept;
 
         bool set_error(tl_error_type type, const char *what) noexcept;
 
@@ -126,7 +126,7 @@ namespace tlgen::basictl {
 
     private:
         tl_input_connector *provider;
-        std::optional<tl_stream_error> error;
+        std::optional<tl_error> error;
 
         const std::byte *start_block{};
         const std::byte *ptr{};
@@ -218,7 +218,7 @@ namespace tlgen::basictl {
 
         [[nodiscard]] bool has_error() const noexcept;
 
-        [[nodiscard]] std::optional<tl_stream_error> &get_error() noexcept;
+        [[nodiscard]] std::optional<tl_error> &get_error() noexcept;
 
         bool set_error(tl_error_type type, const char *e) noexcept;
 
@@ -238,7 +238,7 @@ namespace tlgen::basictl {
 
     private:
         tl_output_connector *provider;
-        std::optional<tl_stream_error> error;
+        std::optional<tl_error> error;
 
         std::byte *start_block{};
         std::byte *ptr{};

@@ -13,7 +13,7 @@ bool tlgen::au::NionA::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::au::NionA::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::au::NionA::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AuNionAWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -25,7 +25,7 @@ void tlgen::au::NionA::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::au::NionA::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::au::NionA::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -37,7 +37,7 @@ bool tlgen::au::NionA::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::au::NionA::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::au::NionA::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AuNionAWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -49,7 +49,7 @@ void tlgen::au::NionA::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::au::NionA::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::au::NionA::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

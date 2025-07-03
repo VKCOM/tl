@@ -16,8 +16,8 @@ bool BoxedTupleSlice1Write(::tlgen::basictl::tl_ostream & s, const ::tlgen::Boxe
 bool BoxedTupleSlice1ReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedTupleSlice1& item);
 bool BoxedTupleSlice1WriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedTupleSlice1& item);
 
-bool BoxedTupleSlice1ReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedTupleSlice1& item, std::vector<int32_t>& result);
-bool BoxedTupleSlice1WriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedTupleSlice1& item, std::vector<int32_t>& result);
+bool BoxedTupleSlice1ReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::BoxedTupleSlice1& item, std::vector<int32_t>& result);
+bool BoxedTupleSlice1WriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedTupleSlice1& item, const std::vector<int32_t>& result);
     
 }} // namespace tlgen::details
 
