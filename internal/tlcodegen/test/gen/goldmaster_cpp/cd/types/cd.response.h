@@ -10,9 +10,14 @@ struct Response {
   int32_t x = 0;
   std::string str;
 
-  std::string_view tl_name() const { return "cd.response"; }
-  uint32_t tl_tag() const { return 0x8c202f64; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x8c202f64;
+  static constexpr std::string_view TL_NAME = "cd.response";
 
+  uint32_t tl_tag() const { return 0x8c202f64; }
+  std::string_view tl_name() const { return "cd.response"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,10 +27,10 @@ struct Response {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Response& rhs) {
     rhs.write_json(s);

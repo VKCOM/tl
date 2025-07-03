@@ -8,9 +8,14 @@
 namespace tlgen { namespace tasks { 
 struct TaskStatusInProgress {
 
-  std::string_view tl_name() const { return "tasks.taskStatusInProgress"; }
-  uint32_t tl_tag() const { return 0x06ef70e7; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x06ef70e7;
+  static constexpr std::string_view TL_NAME = "tasks.taskStatusInProgress";
 
+  uint32_t tl_tag() const { return 0x06ef70e7; }
+  std::string_view tl_name() const { return "tasks.taskStatusInProgress"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -20,10 +25,10 @@ struct TaskStatusInProgress {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TaskStatusInProgress& rhs) {
     rhs.write_json(s);
@@ -36,9 +41,14 @@ struct TaskStatusInProgress {
 namespace tlgen { namespace tasks { 
 struct TaskStatusNotCurrentlyInEngine {
 
-  std::string_view tl_name() const { return "tasks.taskStatusNotCurrentlyInEngine"; }
-  uint32_t tl_tag() const { return 0xb207caaa; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xb207caaa;
+  static constexpr std::string_view TL_NAME = "tasks.taskStatusNotCurrentlyInEngine";
 
+  uint32_t tl_tag() const { return 0xb207caaa; }
+  std::string_view tl_name() const { return "tasks.taskStatusNotCurrentlyInEngine"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -48,10 +58,10 @@ struct TaskStatusNotCurrentlyInEngine {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TaskStatusNotCurrentlyInEngine& rhs) {
     rhs.write_json(s);
@@ -64,9 +74,14 @@ struct TaskStatusNotCurrentlyInEngine {
 namespace tlgen { namespace tasks { 
 struct TaskStatusScheduled {
 
-  std::string_view tl_name() const { return "tasks.taskStatusScheduled"; }
-  uint32_t tl_tag() const { return 0x0aca80a9; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x0aca80a9;
+  static constexpr std::string_view TL_NAME = "tasks.taskStatusScheduled";
 
+  uint32_t tl_tag() const { return 0x0aca80a9; }
+  std::string_view tl_name() const { return "tasks.taskStatusScheduled"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -76,10 +91,10 @@ struct TaskStatusScheduled {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TaskStatusScheduled& rhs) {
     rhs.write_json(s);
@@ -92,9 +107,14 @@ struct TaskStatusScheduled {
 namespace tlgen { namespace tasks { 
 struct TaskStatusWaiting {
 
-  std::string_view tl_name() const { return "tasks.taskStatusWaiting"; }
-  uint32_t tl_tag() const { return 0x16739c2c; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x16739c2c;
+  static constexpr std::string_view TL_NAME = "tasks.taskStatusWaiting";
 
+  uint32_t tl_tag() const { return 0x16739c2c; }
+  std::string_view tl_name() const { return "tasks.taskStatusWaiting"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -104,10 +124,10 @@ struct TaskStatusWaiting {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TaskStatusWaiting& rhs) {
     rhs.write_json(s);

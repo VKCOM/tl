@@ -16,8 +16,8 @@ bool UniqueGetWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::unique::Get
 bool UniqueGetReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::unique::Get& item);
 bool UniqueGetWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::unique::Get& item);
 
-bool UniqueGetReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::unique::Get& item, std::optional<int32_t>& result);
-bool UniqueGetWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::unique::Get& item, std::optional<int32_t>& result);
+bool UniqueGetReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::unique::Get& item, std::optional<int32_t>& result);
+bool UniqueGetWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::unique::Get& item, const std::optional<int32_t>& result);
     
 }} // namespace tlgen::details
 

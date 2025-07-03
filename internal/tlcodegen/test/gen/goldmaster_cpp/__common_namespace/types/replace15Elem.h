@@ -10,6 +10,7 @@ struct Replace15Elem {
   int32_t x = 0;
   int32_t y = 0;
 
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_n) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_n) noexcept;

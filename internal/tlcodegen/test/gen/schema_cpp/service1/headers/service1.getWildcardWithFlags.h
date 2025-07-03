@@ -17,8 +17,8 @@ bool Service1GetWildcardWithFlagsWrite(::tlgen::basictl::tl_ostream & s, const :
 bool Service1GetWildcardWithFlagsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardWithFlags& item);
 bool Service1GetWildcardWithFlagsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcardWithFlags& item);
 
-bool Service1GetWildcardWithFlagsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::GetWildcardWithFlags& item, std::map<std::string, ::tlgen::service1::Value>& result);
-bool Service1GetWildcardWithFlagsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::GetWildcardWithFlags& item, std::map<std::string, ::tlgen::service1::Value>& result);
+bool Service1GetWildcardWithFlagsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::GetWildcardWithFlags& item, std::map<std::string, ::tlgen::service1::Value>& result);
+bool Service1GetWildcardWithFlagsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::GetWildcardWithFlags& item, const std::map<std::string, ::tlgen::service1::Value>& result);
     
 }} // namespace tlgen::details
 

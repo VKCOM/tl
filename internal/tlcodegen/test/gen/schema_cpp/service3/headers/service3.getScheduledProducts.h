@@ -17,8 +17,8 @@ bool Service3GetScheduledProductsWrite(::tlgen::basictl::tl_ostream & s, const :
 bool Service3GetScheduledProductsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetScheduledProducts& item);
 bool Service3GetScheduledProductsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetScheduledProducts& item);
 
-bool Service3GetScheduledProductsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result);
-bool Service3GetScheduledProductsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result);
+bool Service3GetScheduledProductsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::GetScheduledProducts& item, std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result);
+bool Service3GetScheduledProductsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetScheduledProducts& item, const std::optional<std::vector<::tlgen::service3::Productmode<0>>>& result);
     
 }} // namespace tlgen::details
 

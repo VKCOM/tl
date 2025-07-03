@@ -10,9 +10,14 @@ struct KeysStat {
   int32_t start_time = 0;
   std::map<std::string, std::map<std::string, int32_t>> keys_tops;
 
-  std::string_view tl_name() const { return "service1.keysStat"; }
-  uint32_t tl_tag() const { return 0xf0f6bc68; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xf0f6bc68;
+  static constexpr std::string_view TL_NAME = "service1.keysStat";
 
+  uint32_t tl_tag() const { return 0xf0f6bc68; }
+  std::string_view tl_name() const { return "service1.keysStat"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,10 +27,10 @@ struct KeysStat {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const KeysStat& rhs) {
     rhs.write_json(s);

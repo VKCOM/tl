@@ -11,9 +11,14 @@ struct QueueStats {
   int32_t scheduled_size = 0;
   int32_t in_progress_size = 0;
 
-  std::string_view tl_name() const { return "tasks.queueStats"; }
-  uint32_t tl_tag() const { return 0x1d942543; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x1d942543;
+  static constexpr std::string_view TL_NAME = "tasks.queueStats";
 
+  uint32_t tl_tag() const { return 0x1d942543; }
+  std::string_view tl_name() const { return "tasks.queueStats"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_fields_mask) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
@@ -23,10 +28,10 @@ struct QueueStats {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_fields_mask);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const;
 };
 
 }} // namespace tlgen::tasks

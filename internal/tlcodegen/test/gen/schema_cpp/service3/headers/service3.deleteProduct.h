@@ -16,8 +16,8 @@ bool Service3DeleteProductWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen:
 bool Service3DeleteProductReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteProduct& item);
 bool Service3DeleteProductWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteProduct& item);
 
-bool Service3DeleteProductReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::DeleteProduct& item, bool& result);
-bool Service3DeleteProductWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::DeleteProduct& item, bool& result);
+bool Service3DeleteProductReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::DeleteProduct& item, bool& result);
+bool Service3DeleteProductWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::DeleteProduct& item, const bool& result);
     
 }} // namespace tlgen::details
 

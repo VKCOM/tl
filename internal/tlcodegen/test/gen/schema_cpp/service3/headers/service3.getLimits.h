@@ -16,8 +16,8 @@ bool Service3GetLimitsWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ser
 bool Service3GetLimitsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLimits& item);
 bool Service3GetLimitsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetLimits& item);
 
-bool Service3GetLimitsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLimits& item, ::tlgen::service3::Limits& result);
-bool Service3GetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetLimits& item, ::tlgen::service3::Limits& result);
+bool Service3GetLimitsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::GetLimits& item, ::tlgen::service3::Limits& result);
+bool Service3GetLimitsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetLimits& item, const ::tlgen::service3::Limits& result);
     
 }} // namespace tlgen::details
 

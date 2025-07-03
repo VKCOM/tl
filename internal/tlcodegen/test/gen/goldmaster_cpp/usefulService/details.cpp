@@ -184,7 +184,7 @@ bool tlgen::usefulService::GetUserEntity::read(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::usefulService::GetUserEntity::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::usefulService::GetUserEntity::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::UsefulServiceGetUserEntityWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -196,7 +196,7 @@ void tlgen::usefulService::GetUserEntity::read(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::GetUserEntity::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::usefulService::GetUserEntity::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -208,7 +208,7 @@ bool tlgen::usefulService::GetUserEntity::read_boxed(::tlgen::basictl::tl_istrea
   return true;
 }
 
-bool tlgen::usefulService::GetUserEntity::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::usefulService::GetUserEntity::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::UsefulServiceGetUserEntityWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -220,7 +220,7 @@ void tlgen::usefulService::GetUserEntity::read_boxed(::tlgen::basictl::tl_throwa
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::GetUserEntity::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::usefulService::GetUserEntity::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -286,14 +286,14 @@ bool tlgen::details::UsefulServiceGetUserEntityWriteBoxed(::tlgen::basictl::tl_o
   return tlgen::details::UsefulServiceGetUserEntityWrite(s, item);
 }
 
-bool tlgen::details::UsefulServiceGetUserEntityReadResult(::tlgen::basictl::tl_istream & s, tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result) {
+bool tlgen::details::UsefulServiceGetUserEntityReadResult(::tlgen::basictl::tl_istream & s, const tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::UsefulServiceGetUserEntityResultBoxedMaybeReadBoxed(s, result, item.fields_mask)) { return false; }
   return true;
 }
-bool tlgen::details::UsefulServiceGetUserEntityWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result) {
+bool tlgen::details::UsefulServiceGetUserEntityWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::usefulService::GetUserEntity& item, const std::optional<::tlgen::usefulService::GetUserEntityResult>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -301,23 +301,23 @@ bool tlgen::details::UsefulServiceGetUserEntityWriteResult(::tlgen::basictl::tl_
   return true;
 }
 
-bool tlgen::usefulService::GetUserEntity::read_result(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) noexcept {
+bool tlgen::usefulService::GetUserEntity::read_result(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const noexcept {
   bool success = tlgen::details::UsefulServiceGetUserEntityReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::usefulService::GetUserEntity::write_result(::tlgen::basictl::tl_ostream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) noexcept {
+bool tlgen::usefulService::GetUserEntity::write_result(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const noexcept {
   bool success = tlgen::details::UsefulServiceGetUserEntityWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::usefulService::GetUserEntity::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) {
+void tlgen::usefulService::GetUserEntity::read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::usefulService::GetUserEntity::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<::tlgen::usefulService::GetUserEntityResult> & result) {
+void tlgen::usefulService::GetUserEntity::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<::tlgen::usefulService::GetUserEntityResult> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -334,7 +334,7 @@ bool tlgen::usefulService::GetUserEntityResult::read(::tlgen::basictl::tl_istrea
   return true;
 }
 
-bool tlgen::usefulService::GetUserEntityResult::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept {
+bool tlgen::usefulService::GetUserEntityResult::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept {
   if (!::tlgen::details::UsefulServiceGetUserEntityResultWrite(s, *this, nat_fields_mask)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -346,7 +346,7 @@ void tlgen::usefulService::GetUserEntityResult::read(::tlgen::basictl::tl_throwa
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::GetUserEntityResult::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const {
+void tlgen::usefulService::GetUserEntityResult::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2, nat_fields_mask);
   s2.pass_data(s);
@@ -358,7 +358,7 @@ bool tlgen::usefulService::GetUserEntityResult::read_boxed(::tlgen::basictl::tl_
   return true;
 }
 
-bool tlgen::usefulService::GetUserEntityResult::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept {
+bool tlgen::usefulService::GetUserEntityResult::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept {
   if (!::tlgen::details::UsefulServiceGetUserEntityResultWriteBoxed(s, *this, nat_fields_mask)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -370,7 +370,7 @@ void tlgen::usefulService::GetUserEntityResult::read_boxed(::tlgen::basictl::tl_
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::GetUserEntityResult::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const {
+void tlgen::usefulService::GetUserEntityResult::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2, nat_fields_mask);
   s2.pass_data(s);
@@ -473,7 +473,7 @@ bool tlgen::usefulService::UserEntityPaymentItem::read(::tlgen::basictl::tl_istr
   return true;
 }
 
-bool tlgen::usefulService::UserEntityPaymentItem::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept {
+bool tlgen::usefulService::UserEntityPaymentItem::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept {
   if (!::tlgen::details::UsefulServiceUserEntityPaymentItemWrite(s, *this, nat_fields_mask)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -485,7 +485,7 @@ void tlgen::usefulService::UserEntityPaymentItem::read(::tlgen::basictl::tl_thro
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::UserEntityPaymentItem::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const {
+void tlgen::usefulService::UserEntityPaymentItem::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2, nat_fields_mask);
   s2.pass_data(s);
@@ -497,7 +497,7 @@ bool tlgen::usefulService::UserEntityPaymentItem::read_boxed(::tlgen::basictl::t
   return true;
 }
 
-bool tlgen::usefulService::UserEntityPaymentItem::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept {
+bool tlgen::usefulService::UserEntityPaymentItem::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept {
   if (!::tlgen::details::UsefulServiceUserEntityPaymentItemWriteBoxed(s, *this, nat_fields_mask)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -509,7 +509,7 @@ void tlgen::usefulService::UserEntityPaymentItem::read_boxed(::tlgen::basictl::t
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::UserEntityPaymentItem::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const {
+void tlgen::usefulService::UserEntityPaymentItem::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2, nat_fields_mask);
   s2.pass_data(s);
@@ -580,7 +580,7 @@ bool tlgen::usefulService::UserEntityPaymentItemPromo::read(::tlgen::basictl::tl
   return true;
 }
 
-bool tlgen::usefulService::UserEntityPaymentItemPromo::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept {
+bool tlgen::usefulService::UserEntityPaymentItemPromo::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept {
   if (!::tlgen::details::UsefulServiceUserEntityPaymentItemPromoWrite(s, *this, nat_fields_mask)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -592,7 +592,7 @@ void tlgen::usefulService::UserEntityPaymentItemPromo::read(::tlgen::basictl::tl
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::UserEntityPaymentItemPromo::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const {
+void tlgen::usefulService::UserEntityPaymentItemPromo::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2, nat_fields_mask);
   s2.pass_data(s);
@@ -604,7 +604,7 @@ bool tlgen::usefulService::UserEntityPaymentItemPromo::read_boxed(::tlgen::basic
   return true;
 }
 
-bool tlgen::usefulService::UserEntityPaymentItemPromo::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept {
+bool tlgen::usefulService::UserEntityPaymentItemPromo::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept {
   if (!::tlgen::details::UsefulServiceUserEntityPaymentItemPromoWriteBoxed(s, *this, nat_fields_mask)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -616,7 +616,7 @@ void tlgen::usefulService::UserEntityPaymentItemPromo::read_boxed(::tlgen::basic
   s2.pass_data(s);
 }
 
-void tlgen::usefulService::UserEntityPaymentItemPromo::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const {
+void tlgen::usefulService::UserEntityPaymentItemPromo::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2, nat_fields_mask);
   s2.pass_data(s);

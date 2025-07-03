@@ -9,6 +9,7 @@ namespace tlgen {
 struct Replace12Elem {
   int32_t a = 0;
 
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_n) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_n) noexcept;

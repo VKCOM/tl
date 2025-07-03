@@ -14,9 +14,14 @@ struct CreateProduct {
   int32_t date = 0;
   int32_t expiration_date = 0;
 
-  std::string_view tl_name() const { return "service3.createProduct"; }
-  uint32_t tl_tag() const { return 0xb7d92bd9; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xb7d92bd9;
+  static constexpr std::string_view TL_NAME = "service3.createProduct";
 
+  uint32_t tl_tag() const { return 0xb7d92bd9; }
+  std::string_view tl_name() const { return "service3.createProduct"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -26,16 +31,19 @@ struct CreateProduct {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, bool & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, bool & result) noexcept;
+  // function methods and properties
+  using ResultType = bool;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, bool & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, bool & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const bool & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, bool & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const bool & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const CreateProduct& rhs) {
     rhs.write_json(s);

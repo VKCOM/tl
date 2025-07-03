@@ -10,9 +10,14 @@ namespace tlgen {
 struct MyMcValueTuple {
   std::array<::tlgen::service1::Value, 3> xs{};
 
-  std::string_view tl_name() const { return "myMcValueTuple"; }
-  uint32_t tl_tag() const { return 0x1287d116; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x1287d116;
+  static constexpr std::string_view TL_NAME = "myMcValueTuple";
 
+  uint32_t tl_tag() const { return 0x1287d116; }
+  std::string_view tl_name() const { return "myMcValueTuple"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,10 +27,10 @@ struct MyMcValueTuple {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const MyMcValueTuple& rhs) {
     rhs.write_json(s);

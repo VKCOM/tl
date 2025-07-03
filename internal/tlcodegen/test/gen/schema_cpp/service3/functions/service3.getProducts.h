@@ -17,9 +17,14 @@ struct GetProducts {
   int32_t limit = 0;
   std::vector<int32_t> allowed_info0;
 
-  std::string_view tl_name() const { return "service3.getProducts"; }
-  uint32_t tl_tag() const { return 0xeb306233; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xeb306233;
+  static constexpr std::string_view TL_NAME = "service3.getProducts";
 
+  uint32_t tl_tag() const { return 0xeb306233; }
+  std::string_view tl_name() const { return "service3.getProducts"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -29,16 +34,19 @@ struct GetProducts {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) noexcept;
+  // function methods and properties
+  using ResultType = std::optional<std::vector<::tlgen::service3::Product>>;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<std::vector<::tlgen::service3::Product>> & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const std::optional<std::vector<::tlgen::service3::Product>> & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<std::vector<::tlgen::service3::Product>> & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<std::vector<::tlgen::service3::Product>> & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetProducts& rhs) {
     rhs.write_json(s);

@@ -46,7 +46,7 @@ namespace tlgen::basictl {
             uint32_t actual_tag = 0;
             nat_read(actual_tag);
             if (tag != actual_tag) [[unlikely]] {
-                throw tl_error(tl_error_type::UNEXPECTED_TAG, "unexpected tag");
+                throw tl_stream_error(tl_error_type::UNEXPECTED_TAG, "unexpected tag");
             }
         }
 
@@ -120,7 +120,7 @@ namespace tlgen::basictl {
                 return;
             }
             if (tag != f) [[unlikely]] {
-                throw tl_error(tl_error_type::UNEXPECTED_TAG, "unexpected bool tag");
+                throw tl_stream_error(tl_error_type::UNEXPECTED_TAG, "unexpected bool tag");
             }
             value = false;
         }

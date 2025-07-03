@@ -239,13 +239,18 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 			}
 			if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
 				hpp.WriteString(fmt.Sprintf(`
-	std::string_view tl_name() const { return "%s"; }
-	uint32_t tl_tag() const { return 0x%08x; }
+	// tl type info
+	static constexpr uint32_t TL_TAG = 0x%08[2]x;
+	static constexpr std::string_view TL_NAME = "%[1]s";
+
+	uint32_t tl_tag() const { return 0x%08[2]x; }
+	std::string_view tl_name() const { return "%[1]s"; }
 `, trw.wr.tlName, trw.wr.tlTag))
 			}
 			if len(myArgsDecl) == 0 {
 				// cppStartNamespace(cppDet, trw.wr.gen.RootCPPNamespaceElements)
 				hpp.WriteString(fmt.Sprintf(`
+	// basic serialization methods 
 	bool write_json(std::ostream& s%[1]s) const;
 
 	bool read(::%[6]s::tl_istream & s%[1]s) noexcept;
@@ -263,10 +268,10 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 				if trw.wr.tlTag != 0 { // anonymous square brackets citizens or other exotic type
 					hpp.WriteString(fmt.Sprintf(`
 	bool read_boxed(::%[5]s::tl_istream & s%[1]s) noexcept;
-	bool write_boxed(::%[5]s::tl_ostream & s%[1]s)const noexcept;
+	bool write_boxed(::%[5]s::tl_ostream & s%[1]s) const noexcept;
 	
 	void read_boxed(::%[5]s::tl_throwable_istream & s%[1]s);
-	void write_boxed(::%[5]s::tl_throwable_ostream & s%[1]s)const;
+	void write_boxed(::%[5]s::tl_throwable_ostream & s%[1]s) const;
 `,
 						formatNatArgsDeclCPP(trw.wr.NatParams),
 						trw.CPPTypeResettingCode(bytesVersion, "*this"),
@@ -289,11 +294,14 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 						hppInc.ns[includeType] = includeInfo
 					}
 					hpp.WriteString(fmt.Sprintf(`
-	bool read_result(::%[2]s::tl_istream & s, %[1]s & result) noexcept;
-	bool write_result(::%[2]s::tl_ostream & s, %[1]s & result) noexcept;
+	// function methods and properties
+	using ResultType = %[1]s;
 
-	void read_result(::%[2]s::tl_throwable_istream & s, %[1]s & result);
-	void write_result(::%[2]s::tl_throwable_ostream & s, %[1]s & result);
+	bool read_result(::%[2]s::tl_istream & s, %[1]s & result) const noexcept;
+	bool write_result(::%[2]s::tl_ostream & s, const %[1]s & result) const noexcept;
+
+	void read_result(::%[2]s::tl_throwable_istream & s, %[1]s & result) const;
+	void write_result(::%[2]s::tl_throwable_ostream & s, const %[1]s & result) const;
 `,
 						trw.ResultType.CPPTypeStringInNamespaceHalfResolved2(bytesVersion, typeRed),
 						trw.wr.gen.cppBasictlNamespace(),
@@ -345,8 +353,8 @@ bool %[1]sWriteBoxed(::%[4]s::tl_ostream & s, const %[2]s& item%[3]s);
 		if trw.ResultType != nil {
 			resultType := trw.ResultType.trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
 			hppDet.WriteString(fmt.Sprintf(`
-bool %[1]sReadResult(::%[4]s::tl_istream & s, %[2]s& item, %[3]s& result);
-bool %[1]sWriteResult(::%[4]s::tl_ostream & s, %[2]s& item, %[3]s& result);
+bool %[1]sReadResult(::%[4]s::tl_istream & s, const %[2]s& item, %[3]s& result);
+bool %[1]sWriteResult(::%[4]s::tl_ostream & s, const %[2]s& item, const %[3]s& result);
 		`, goGlobalName, myFullType, resultType, trw.wr.gen.cppBasictlNamespace()))
 		}
 
@@ -369,7 +377,7 @@ bool %[5]s::read(::%[8]s::tl_istream & s%[1]s) noexcept {
 	return true;
 }
 
-bool %[5]s::write(::%[8]s::tl_ostream & s%[1]s)const noexcept {
+bool %[5]s::write(::%[8]s::tl_ostream & s%[1]s) const noexcept {
 %[4]s
 	s.sync();
 	return true;
@@ -381,7 +389,7 @@ void %[5]s::read(::%[8]s::tl_throwable_istream & s%[1]s) {
 	s2.pass_data(s);
 }
 
-void %[5]s::write(::%[8]s::tl_throwable_ostream & s%[1]s)const {
+void %[5]s::write(::%[8]s::tl_throwable_ostream & s%[1]s) const {
 	::%[8]s::tl_ostream s2(s);
 	this->write(s2%[7]s);
 	s2.pass_data(s);
@@ -404,7 +412,7 @@ bool %[5]s::read_boxed(::%[7]s::tl_istream & s%[1]s) noexcept {
 	return true;
 }
 
-bool %[5]s::write_boxed(::%[7]s::tl_ostream & s%[1]s)const noexcept {
+bool %[5]s::write_boxed(::%[7]s::tl_ostream & s%[1]s) const noexcept {
 %[4]s
 	s.sync();
 	return true;
@@ -416,7 +424,7 @@ void %[5]s::read_boxed(::%[7]s::tl_throwable_istream & s%[1]s) {
 	s2.pass_data(s);
 }
 
-void %[5]s::write_boxed(::%[7]s::tl_throwable_ostream & s%[1]s)const {
+void %[5]s::write_boxed(::%[7]s::tl_throwable_ostream & s%[1]s) const {
 	::%[7]s::tl_ostream s2(s);
 	this->write_boxed(s2%[6]s);
 	s2.pass_data(s);
@@ -504,14 +512,14 @@ bool %[7]s::%[1]sWriteBoxed(::%[10]s::tl_ostream & s, const %[2]s& item%[3]s) {
 			resultType := trw.ResultType.trw.cppTypeStringInNamespace(bytesVersion, &hppTmpInclude)
 
 			cppDet.WriteString(fmt.Sprintf(`
-bool %[8]s::%[6]sReadResult(::%[9]s::tl_istream & s, %[2]s& item, %[1]s& result) {
+bool %[8]s::%[6]sReadResult(::%[9]s::tl_istream & s, const %[2]s& item, %[1]s& result) {
 	(void)s;
 	(void)item;
 	(void)result;
 %[3]s
 	return true;
 }
-bool %[8]s::%[6]sWriteResult(::%[9]s::tl_ostream & s, %[2]s& item, %[1]s& result) {
+bool %[8]s::%[6]sWriteResult(::%[9]s::tl_ostream & s, const %[2]s& item, const %[1]s& result) {
 	(void)s;
 	(void)item;
 	(void)result;
@@ -519,23 +527,23 @@ bool %[8]s::%[6]sWriteResult(::%[9]s::tl_ostream & s, %[2]s& item, %[1]s& result
 	return true;
 }
 
-bool %[2]s::read_result(::%[9]s::tl_istream & s, %[1]s & result) noexcept {
+bool %[2]s::read_result(::%[9]s::tl_istream & s, %[1]s & result) const noexcept {
 	bool success = %[8]s::%[6]sReadResult(s, *this, result);
 	s.sync();
 	return success;
 }
-bool %[2]s::write_result(::%[9]s::tl_ostream & s, %[1]s & result) noexcept {
+bool %[2]s::write_result(::%[9]s::tl_ostream & s, const %[1]s & result) const noexcept {
 	bool success = %[8]s::%[6]sWriteResult(s, *this, result);
 	s.sync();
 	return success;
 }
 
-void %[2]s::read_result(::%[9]s::tl_throwable_istream & s, %[1]s & result) {
+void %[2]s::read_result(::%[9]s::tl_throwable_istream & s, %[1]s & result) const {
 	::%[9]s::tl_istream s2(s);
 	this->read_result(s2, result);
 	s2.pass_data(s);
 }
-void %[2]s::write_result(::%[9]s::tl_throwable_ostream & s, %[1]s & result) {
+void %[2]s::write_result(::%[9]s::tl_throwable_ostream & s, const %[1]s & result) const {
 	::%[9]s::tl_ostream s2(s);
 	this->write_result(s2, result);
 	s2.pass_data(s);

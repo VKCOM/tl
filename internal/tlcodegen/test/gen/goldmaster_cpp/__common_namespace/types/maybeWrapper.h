@@ -10,8 +10,12 @@ template<typename T, uint32_t N>
 struct MaybeWrapperN {
   std::optional<std::array<T, N>> a;
 
-  std::string_view tl_name() const { return "maybeWrapper"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x723390c4;
+  static constexpr std::string_view TL_NAME = "maybeWrapper";
+
   uint32_t tl_tag() const { return 0x723390c4; }
+  std::string_view tl_name() const { return "maybeWrapper"; }
 };
 
 } // namespace tlgen

@@ -15,6 +15,76 @@ bool BoolWriteBoxed(::tlgen::basictl::tl_ostream & s, bool item);
 
 namespace tlgen { namespace details { 
 
+void BuiltinTuple0BoolReset(std::array<bool, 0>& item);
+
+bool BuiltinTuple0BoolWriteJSON(std::ostream & s, const std::array<bool, 0>& item);
+bool BuiltinTuple0BoolRead(::tlgen::basictl::tl_istream & s, std::array<bool, 0>& item);
+bool BuiltinTuple0BoolWrite(::tlgen::basictl::tl_ostream & s, const std::array<bool, 0>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void BuiltinTuple11BoolReset(std::array<bool, 11>& item);
+
+bool BuiltinTuple11BoolWriteJSON(std::ostream & s, const std::array<bool, 11>& item);
+bool BuiltinTuple11BoolRead(::tlgen::basictl::tl_istream & s, std::array<bool, 11>& item);
+bool BuiltinTuple11BoolWrite(::tlgen::basictl::tl_ostream & s, const std::array<bool, 11>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void BuiltinTuple16BoolReset(std::array<bool, 16>& item);
+
+bool BuiltinTuple16BoolWriteJSON(std::ostream & s, const std::array<bool, 16>& item);
+bool BuiltinTuple16BoolRead(::tlgen::basictl::tl_istream & s, std::array<bool, 16>& item);
+bool BuiltinTuple16BoolWrite(::tlgen::basictl::tl_ostream & s, const std::array<bool, 16>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void BuiltinTuple1BoolReset(std::array<bool, 1>& item);
+
+bool BuiltinTuple1BoolWriteJSON(std::ostream & s, const std::array<bool, 1>& item);
+bool BuiltinTuple1BoolRead(::tlgen::basictl::tl_istream & s, std::array<bool, 1>& item);
+bool BuiltinTuple1BoolWrite(::tlgen::basictl::tl_ostream & s, const std::array<bool, 1>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void BuiltinTuple7BoolReset(std::array<bool, 7>& item);
+
+bool BuiltinTuple7BoolWriteJSON(std::ostream & s, const std::array<bool, 7>& item);
+bool BuiltinTuple7BoolRead(::tlgen::basictl::tl_istream & s, std::array<bool, 7>& item);
+bool BuiltinTuple7BoolWrite(::tlgen::basictl::tl_ostream & s, const std::array<bool, 7>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void BuiltinTuple8BoolReset(std::array<bool, 8>& item);
+
+bool BuiltinTuple8BoolWriteJSON(std::ostream & s, const std::array<bool, 8>& item);
+bool BuiltinTuple8BoolRead(::tlgen::basictl::tl_istream & s, std::array<bool, 8>& item);
+bool BuiltinTuple8BoolWrite(::tlgen::basictl::tl_ostream & s, const std::array<bool, 8>& item);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
+void BuiltinTupleBoolReset(std::vector<bool>& item);
+
+bool BuiltinTupleBoolWriteJSON(std::ostream & s, const std::vector<bool>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleBoolRead(::tlgen::basictl::tl_istream & s, std::vector<bool>& item, [[maybe_unused]] uint32_t nat_n);
+bool BuiltinTupleBoolWrite(::tlgen::basictl::tl_ostream & s, const std::vector<bool>& item, [[maybe_unused]] uint32_t nat_n);
+
+}} // namespace tlgen::details
+
+namespace tlgen { namespace details { 
+
 void BuiltinVectorBoolReset(std::vector<bool>& item);
 
 bool BuiltinVectorBoolWriteJSON(std::ostream & s, const std::vector<bool>& item);

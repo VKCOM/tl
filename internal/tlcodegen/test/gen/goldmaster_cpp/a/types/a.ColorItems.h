@@ -8,9 +8,14 @@
 namespace tlgen { namespace a { 
 struct Blue {
 
-  std::string_view tl_name() const { return "a.blue"; }
-  uint32_t tl_tag() const { return 0x623360f3; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x623360f3;
+  static constexpr std::string_view TL_NAME = "a.blue";
 
+  uint32_t tl_tag() const { return 0x623360f3; }
+  std::string_view tl_name() const { return "a.blue"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -20,10 +25,10 @@ struct Blue {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Blue& rhs) {
     rhs.write_json(s);
@@ -36,9 +41,14 @@ struct Blue {
 namespace tlgen { namespace a { 
 struct Color0 {
 
-  std::string_view tl_name() const { return "a.color"; }
-  uint32_t tl_tag() const { return 0xf35d7a69; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xf35d7a69;
+  static constexpr std::string_view TL_NAME = "a.color";
 
+  uint32_t tl_tag() const { return 0xf35d7a69; }
+  std::string_view tl_name() const { return "a.color"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -48,10 +58,10 @@ struct Color0 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Color0& rhs) {
     rhs.write_json(s);
@@ -64,9 +74,14 @@ struct Color0 {
 namespace tlgen { namespace a { 
 struct Green {
 
-  std::string_view tl_name() const { return "a.green"; }
-  uint32_t tl_tag() const { return 0x6127e7b8; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x6127e7b8;
+  static constexpr std::string_view TL_NAME = "a.green";
 
+  uint32_t tl_tag() const { return 0x6127e7b8; }
+  std::string_view tl_name() const { return "a.green"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -76,10 +91,10 @@ struct Green {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Green& rhs) {
     rhs.write_json(s);
@@ -92,9 +107,14 @@ struct Green {
 namespace tlgen { namespace a { 
 struct Red {
 
-  std::string_view tl_name() const { return "a.red"; }
-  uint32_t tl_tag() const { return 0xb83a723d; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xb83a723d;
+  static constexpr std::string_view TL_NAME = "a.red";
 
+  uint32_t tl_tag() const { return 0xb83a723d; }
+  std::string_view tl_name() const { return "a.red"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -104,10 +124,10 @@ struct Red {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const Red& rhs) {
     rhs.write_json(s);

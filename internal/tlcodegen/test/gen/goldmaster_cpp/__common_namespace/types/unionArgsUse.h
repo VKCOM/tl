@@ -13,9 +13,14 @@ struct UnionArgsUse {
   ::tlgen::UnionArgsXXX<int32_t> a;
   ::tlgen::UnionArgsXXX<int64_t> b;
 
-  std::string_view tl_name() const { return "unionArgsUse"; }
-  uint32_t tl_tag() const { return 0x742161d2; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x742161d2;
+  static constexpr std::string_view TL_NAME = "unionArgsUse";
 
+  uint32_t tl_tag() const { return 0x742161d2; }
+  std::string_view tl_name() const { return "unionArgsUse"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -25,10 +30,10 @@ struct UnionArgsUse {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const UnionArgsUse& rhs) {
     rhs.write_json(s);

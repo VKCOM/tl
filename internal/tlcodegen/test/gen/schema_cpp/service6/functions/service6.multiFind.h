@@ -14,9 +14,14 @@ struct MultiFind {
   int32_t limit = 0;
   double eq_threshold = 0;
 
-  std::string_view tl_name() const { return "service6.multiFind"; }
-  uint32_t tl_tag() const { return 0xe62178d8; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xe62178d8;
+  static constexpr std::string_view TL_NAME = "service6.multiFind";
 
+  uint32_t tl_tag() const { return 0xe62178d8; }
+  std::string_view tl_name() const { return "service6.multiFind"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -26,16 +31,19 @@ struct MultiFind {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) noexcept;
+  // function methods and properties
+  using ResultType = std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const MultiFind& rhs) {
     rhs.write_json(s);

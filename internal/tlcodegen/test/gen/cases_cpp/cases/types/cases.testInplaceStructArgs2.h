@@ -14,9 +14,14 @@ struct TestInplaceStructArgs2 {
   uint32_t a3 = 0;
   ::tlgen::cases::Inplace1<::tlgen::Pair<std::vector<int32_t>, std::vector<int32_t>>> arg{};
 
-  std::string_view tl_name() const { return "cases.testInplaceStructArgs2"; }
-  uint32_t tl_tag() const { return 0xaa9f2480; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xaa9f2480;
+  static constexpr std::string_view TL_NAME = "cases.testInplaceStructArgs2";
 
+  uint32_t tl_tag() const { return 0xaa9f2480; }
+  std::string_view tl_name() const { return "cases.testInplaceStructArgs2"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -26,10 +31,10 @@ struct TestInplaceStructArgs2 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestInplaceStructArgs2& rhs) {
     rhs.write_json(s);

@@ -27,31 +27,11 @@ bool BuiltinTuple4IntWrite(::tlgen::basictl::tl_ostream & s, const std::array<in
 
 namespace tlgen { namespace details { 
 
-void BuiltinTupleIntReset(std::vector<int32_t>& item);
-
-bool BuiltinTupleIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
-bool BuiltinTupleIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
-bool BuiltinTupleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n);
-
-}} // namespace tlgen::details
-
-namespace tlgen { namespace details { 
-
 void BuiltinTupleTupleIntReset(std::vector<std::vector<int32_t>>& item);
 
 bool BuiltinTupleTupleIntWriteJSON(std::ostream & s, const std::vector<std::vector<int32_t>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
 bool BuiltinTupleTupleIntRead(::tlgen::basictl::tl_istream & s, std::vector<std::vector<int32_t>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
 bool BuiltinTupleTupleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<std::vector<int32_t>>& item, [[maybe_unused]] uint32_t nat_n, [[maybe_unused]] uint32_t nat_t);
-
-}} // namespace tlgen::details
-
-namespace tlgen { namespace details { 
-
-void BuiltinVectorIntReset(std::vector<int32_t>& item);
-
-bool BuiltinVectorIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item);
-bool BuiltinVectorIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item);
-bool BuiltinVectorIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item);
 
 }} // namespace tlgen::details
 

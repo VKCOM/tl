@@ -11,9 +11,14 @@ struct GetTaskFromQueue {
   std::string type_name;
   std::vector<int32_t> queue_id;
 
-  std::string_view tl_name() const { return "tasks.getTaskFromQueue"; }
-  uint32_t tl_tag() const { return 0x6a52b698; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x6a52b698;
+  static constexpr std::string_view TL_NAME = "tasks.getTaskFromQueue";
 
+  uint32_t tl_tag() const { return 0x6a52b698; }
+  std::string_view tl_name() const { return "tasks.getTaskFromQueue"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -23,16 +28,19 @@ struct GetTaskFromQueue {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::tasks::TaskInfo> & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, std::optional<::tlgen::tasks::TaskInfo> & result) noexcept;
+  // function methods and properties
+  using ResultType = std::optional<::tlgen::tasks::TaskInfo>;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<::tlgen::tasks::TaskInfo> & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, std::optional<::tlgen::tasks::TaskInfo> & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, std::optional<::tlgen::tasks::TaskInfo> & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const std::optional<::tlgen::tasks::TaskInfo> & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, std::optional<::tlgen::tasks::TaskInfo> & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::optional<::tlgen::tasks::TaskInfo> & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetTaskFromQueue& rhs) {
     rhs.write_json(s);

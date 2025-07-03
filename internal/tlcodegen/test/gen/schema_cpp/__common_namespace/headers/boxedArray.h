@@ -16,8 +16,8 @@ bool BoxedArrayWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedArray
 bool BoxedArrayReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedArray& item);
 bool BoxedArrayWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedArray& item);
 
-bool BoxedArrayReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::BoxedArray& item, ::tlgen::MyBoxedArray& result);
-bool BoxedArrayWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::BoxedArray& item, ::tlgen::MyBoxedArray& result);
+bool BoxedArrayReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::BoxedArray& item, ::tlgen::MyBoxedArray& result);
+bool BoxedArrayWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::BoxedArray& item, const ::tlgen::MyBoxedArray& result);
     
 }} // namespace tlgen::details
 

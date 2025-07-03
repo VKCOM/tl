@@ -10,8 +10,12 @@ template<typename X>
 struct UnionArgsXXX1 {
   std::vector<X> x;
 
-  std::string_view tl_name() const { return "unionArgsXXX1"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xe7978c97;
+  static constexpr std::string_view TL_NAME = "unionArgsXXX1";
+
   uint32_t tl_tag() const { return 0xe7978c97; }
+  std::string_view tl_name() const { return "unionArgsXXX1"; }
 };
 
 } // namespace tlgen

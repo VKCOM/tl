@@ -15,7 +15,7 @@ bool tlgen::pkg2::Foo::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::pkg2::Foo::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::pkg2::Foo::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Pkg2FooWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -27,7 +27,7 @@ void tlgen::pkg2::Foo::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::pkg2::Foo::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::pkg2::Foo::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -39,7 +39,7 @@ bool tlgen::pkg2::Foo::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::pkg2::Foo::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::pkg2::Foo::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Pkg2FooWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -51,7 +51,7 @@ void tlgen::pkg2::Foo::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::pkg2::Foo::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::pkg2::Foo::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -109,7 +109,7 @@ bool tlgen::pkg2::T1::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::pkg2::T1::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::pkg2::T1::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Pkg2T1Write(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -121,7 +121,7 @@ void tlgen::pkg2::T1::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::pkg2::T1::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::pkg2::T1::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -133,7 +133,7 @@ bool tlgen::pkg2::T1::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::pkg2::T1::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::pkg2::T1::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Pkg2T1WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -145,7 +145,7 @@ void tlgen::pkg2::T1::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::pkg2::T1::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::pkg2::T1::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

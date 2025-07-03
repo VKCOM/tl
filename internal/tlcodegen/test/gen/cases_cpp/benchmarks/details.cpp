@@ -22,7 +22,7 @@ bool tlgen::benchmarks::Vruhash::read(::tlgen::basictl::tl_istream & s) noexcept
   return true;
 }
 
-bool tlgen::benchmarks::Vruhash::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::Vruhash::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVruHashWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -34,7 +34,7 @@ void tlgen::benchmarks::Vruhash::read(::tlgen::basictl::tl_throwable_istream & s
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::Vruhash::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::Vruhash::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -46,7 +46,7 @@ bool tlgen::benchmarks::Vruhash::read_boxed(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::benchmarks::Vruhash::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::Vruhash::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVruHashWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -58,7 +58,7 @@ void tlgen::benchmarks::Vruhash::read_boxed(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::Vruhash::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::Vruhash::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -129,7 +129,7 @@ bool tlgen::benchmarks::Vruposition::read(::tlgen::basictl::tl_istream & s) noex
   return true;
 }
 
-bool tlgen::benchmarks::Vruposition::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::Vruposition::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVruPositionWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -141,7 +141,7 @@ void tlgen::benchmarks::Vruposition::read(::tlgen::basictl::tl_throwable_istream
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::Vruposition::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::Vruposition::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -153,7 +153,7 @@ bool tlgen::benchmarks::Vruposition::read_boxed(::tlgen::basictl::tl_istream & s
   return true;
 }
 
-bool tlgen::benchmarks::Vruposition::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::Vruposition::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVruPositionWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -165,7 +165,7 @@ void tlgen::benchmarks::Vruposition::read_boxed(::tlgen::basictl::tl_throwable_i
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::Vruposition::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::Vruposition::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -369,7 +369,7 @@ bool tlgen::benchmarks::VrutoyPositions::read(::tlgen::basictl::tl_istream & s, 
   return true;
 }
 
-bool tlgen::benchmarks::VrutoyPositions::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n)const noexcept {
+bool tlgen::benchmarks::VrutoyPositions::write(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoyPositionsWrite(s, *this, nat_n)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -381,7 +381,7 @@ void tlgen::benchmarks::VrutoyPositions::read(::tlgen::basictl::tl_throwable_ist
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoyPositions::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n)const {
+void tlgen::benchmarks::VrutoyPositions::write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2, nat_n);
   s2.pass_data(s);
@@ -393,7 +393,7 @@ bool tlgen::benchmarks::VrutoyPositions::read_boxed(::tlgen::basictl::tl_istream
   return true;
 }
 
-bool tlgen::benchmarks::VrutoyPositions::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n)const noexcept {
+bool tlgen::benchmarks::VrutoyPositions::write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_n) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoyPositionsWriteBoxed(s, *this, nat_n)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -405,7 +405,7 @@ void tlgen::benchmarks::VrutoyPositions::read_boxed(::tlgen::basictl::tl_throwab
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoyPositions::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n)const {
+void tlgen::benchmarks::VrutoyPositions::write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_n) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2, nat_n);
   s2.pass_data(s);
@@ -463,7 +463,7 @@ bool tlgen::benchmarks::VrutoyTopLevelContainer::read(::tlgen::basictl::tl_istre
   return true;
 }
 
-bool tlgen::benchmarks::VrutoyTopLevelContainer::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoyTopLevelContainer::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoyTopLevelContainerWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -475,7 +475,7 @@ void tlgen::benchmarks::VrutoyTopLevelContainer::read(::tlgen::basictl::tl_throw
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoyTopLevelContainer::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoyTopLevelContainer::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -487,7 +487,7 @@ bool tlgen::benchmarks::VrutoyTopLevelContainer::read_boxed(::tlgen::basictl::tl
   return true;
 }
 
-bool tlgen::benchmarks::VrutoyTopLevelContainer::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoyTopLevelContainer::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoyTopLevelContainerWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -499,7 +499,7 @@ void tlgen::benchmarks::VrutoyTopLevelContainer::read_boxed(::tlgen::basictl::tl
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoyTopLevelContainer::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoyTopLevelContainer::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -555,7 +555,7 @@ bool tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::read(::tlgen::bas
   return true;
 }
 
-bool tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoyTopLevelContainerWithDependencyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -567,7 +567,7 @@ void tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::read(::tlgen::bas
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -579,7 +579,7 @@ bool tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::read_boxed(::tlge
   return true;
 }
 
-bool tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoyTopLevelContainerWithDependencyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -591,7 +591,7 @@ void tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::read_boxed(::tlge
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoyTopLevelContainerWithDependency::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -740,7 +740,7 @@ bool tlgen::benchmarks::VrutoytopLevelUnionBig::read(::tlgen::basictl::tl_istrea
   return true;
 }
 
-bool tlgen::benchmarks::VrutoytopLevelUnionBig::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoytopLevelUnionBig::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoytopLevelUnionBigWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -752,7 +752,7 @@ void tlgen::benchmarks::VrutoytopLevelUnionBig::read(::tlgen::basictl::tl_throwa
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoytopLevelUnionBig::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoytopLevelUnionBig::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -764,7 +764,7 @@ bool tlgen::benchmarks::VrutoytopLevelUnionBig::read_boxed(::tlgen::basictl::tl_
   return true;
 }
 
-bool tlgen::benchmarks::VrutoytopLevelUnionBig::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoytopLevelUnionBig::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoytopLevelUnionBigWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -776,7 +776,7 @@ void tlgen::benchmarks::VrutoytopLevelUnionBig::read_boxed(::tlgen::basictl::tl_
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoytopLevelUnionBig::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoytopLevelUnionBig::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -834,7 +834,7 @@ bool tlgen::benchmarks::VrutoytopLevelUnionEmpty::read(::tlgen::basictl::tl_istr
   return true;
 }
 
-bool tlgen::benchmarks::VrutoytopLevelUnionEmpty::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoytopLevelUnionEmpty::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoytopLevelUnionEmptyWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -846,7 +846,7 @@ void tlgen::benchmarks::VrutoytopLevelUnionEmpty::read(::tlgen::basictl::tl_thro
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoytopLevelUnionEmpty::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoytopLevelUnionEmpty::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -858,7 +858,7 @@ bool tlgen::benchmarks::VrutoytopLevelUnionEmpty::read_boxed(::tlgen::basictl::t
   return true;
 }
 
-bool tlgen::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::BenchmarksVrutoytopLevelUnionEmptyWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -870,7 +870,7 @@ void tlgen::benchmarks::VrutoytopLevelUnionEmpty::read_boxed(::tlgen::basictl::t
   s2.pass_data(s);
 }
 
-void tlgen::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::benchmarks::VrutoytopLevelUnionEmpty::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

@@ -1,0 +1,3 @@
+{
+	"sources":["io_streams.cpp", "io_throwable_streams.cpp"]
+}

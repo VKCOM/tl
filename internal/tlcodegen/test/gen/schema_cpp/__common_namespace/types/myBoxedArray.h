@@ -9,9 +9,14 @@ namespace tlgen {
 struct MyBoxedArray {
   std::array<int32_t, 2> data{};
 
-  std::string_view tl_name() const { return "myBoxedArray"; }
-  uint32_t tl_tag() const { return 0x288f64f0; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x288f64f0;
+  static constexpr std::string_view TL_NAME = "myBoxedArray";
 
+  uint32_t tl_tag() const { return 0x288f64f0; }
+  std::string_view tl_name() const { return "myBoxedArray"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,10 +26,10 @@ struct MyBoxedArray {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const MyBoxedArray& rhs) {
     rhs.write_json(s);

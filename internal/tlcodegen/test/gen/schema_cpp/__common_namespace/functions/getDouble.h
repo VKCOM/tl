@@ -9,9 +9,14 @@ namespace tlgen {
 struct GetDouble {
   double x = 0;
 
-  std::string_view tl_name() const { return "getDouble"; }
-  uint32_t tl_tag() const { return 0x39711d7b; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x39711d7b;
+  static constexpr std::string_view TL_NAME = "getDouble";
 
+  uint32_t tl_tag() const { return 0x39711d7b; }
+  std::string_view tl_name() const { return "getDouble"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -21,16 +26,19 @@ struct GetDouble {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, double & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, double & result) noexcept;
+  // function methods and properties
+  using ResultType = double;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, double & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, double & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, double & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const double & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, double & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const double & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetDouble& rhs) {
     rhs.write_json(s);

@@ -73,8 +73,12 @@ namespace basictl {
             return type_;
         }
 
-        [[nodiscard]] std::string_view message() const noexcept {
+        [[nodiscard]] const std::string& message() const & noexcept {
             return message_;
+        }
+
+        [[nodiscard]] std::string&& message() && noexcept {
+            return std::move(message_);
         }
 
         [[nodiscard]] const char *what() const noexcept override {
@@ -86,9 +90,9 @@ namespace basictl {
         std::string message_;
     };
 
-    using tl_error = basic_error<tl_error_type>;
+    using tl_stream_error = basic_error<tl_error_type>;
     using tl_connector_error = basic_error<std::uint32_t>;
-    using tl_stream_error = std::variant<tl_error, tl_connector_error>;
+    using tl_error = std::variant<tl_stream_error, tl_connector_error>;
 }
 
 #endif //BASICTL_CPP_ERRORS_H
@@ -227,13 +231,13 @@ namespace basictl {
         return error.has_value();
     }
 
-    std::optional<tl_stream_error> &tl_istream::get_error() noexcept {
+    std::optional<tl_error> &tl_istream::get_error() noexcept {
         return error;
     }
 
     bool tl_istream::set_error(tl_error_type type, const char *what) noexcept {
         if (!error.has_value()) {
-            error = tl_error(type, what);
+            error = tl_stream_error(type, what);
         }
         return false;
     }
@@ -334,14 +338,12 @@ namespace basictl {
         return true;
     }
 
-    std::exception static exception_from_tl_stream_error(tl_stream_error &error) {
+    void static throw_exception_from_tl_stream(tl_error &error) {
         switch (error.index()) {
             case 0:
-                return std::get<0>(error);
+                throw std::get<0>(error);
             case 1:
-                return std::get<1>(error);
-            default:
-                return {};
+                throw std::get<1>(error);
         }
     }
 
@@ -352,7 +354,7 @@ namespace basictl {
         to.end_block = end_block;
 
         if (has_error()) {
-            throw ::basictl::exception_from_tl_stream_error(error.value());
+            ::basictl::throw_exception_from_tl_stream(error.value());
         }
     }
 
@@ -413,13 +415,13 @@ namespace basictl {
         return error.has_value();
     }
 
-    std::optional<tl_stream_error> &tl_ostream::get_error() noexcept {
+    std::optional<tl_error> &tl_ostream::get_error() noexcept {
         return error;
     }
 
     bool tl_ostream::set_error(tl_error_type type, const char *what) noexcept {
         if (!error.has_value()) {
-            error = tl_error(type, what);
+            error = tl_stream_error(type, what);
         }
         return false;
     }
@@ -512,7 +514,7 @@ namespace basictl {
         to.end_block = end_block;
 
         if (has_error()) {
-            throw ::basictl::exception_from_tl_stream_error(error.value());
+            ::basictl::throw_exception_from_tl_stream(error.value());
         }
     }
 } // namespace basictl`
@@ -626,7 +628,7 @@ namespace basictl {
 
         [[nodiscard]] bool has_error() const noexcept;
 
-        [[nodiscard]] std::optional<tl_stream_error> &get_error() noexcept;
+        [[nodiscard]] std::optional<tl_error> &get_error() noexcept;
 
         bool set_error(tl_error_type type, const char *what) noexcept;
 
@@ -644,7 +646,7 @@ namespace basictl {
 
     private:
         tl_input_connector *provider;
-        std::optional<tl_stream_error> error;
+        std::optional<tl_error> error;
 
         const std::byte *start_block{};
         const std::byte *ptr{};
@@ -736,7 +738,7 @@ namespace basictl {
 
         [[nodiscard]] bool has_error() const noexcept;
 
-        [[nodiscard]] std::optional<tl_stream_error> &get_error() noexcept;
+        [[nodiscard]] std::optional<tl_error> &get_error() noexcept;
 
         bool set_error(tl_error_type type, const char *e) noexcept;
 
@@ -756,7 +758,7 @@ namespace basictl {
 
     private:
         tl_output_connector *provider;
-        std::optional<tl_stream_error> error;
+        std::optional<tl_error> error;
 
         std::byte *start_block{};
         std::byte *ptr{};
@@ -787,7 +789,7 @@ namespace basictl {
         auto len = size_t(static_cast<unsigned char>(*ptr));
         if (len >= basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
             if (len > basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
-                throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                throw tl_stream_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t len32 = 0;
             nat_read(len32);
@@ -810,7 +812,7 @@ namespace basictl {
         uint32_t x = 0;
         std::memcpy(&x, ptr + fullLen - 4, 4);
         if ((x & ~(0xFFFFFFFFU >> (8 * pad))) != 0) [[unlikely]] {
-            throw tl_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
+            throw tl_stream_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
         }
         value.assign(reinterpret_cast<const char *>(ptr + 1), len);
         ptr += fullLen;
@@ -839,7 +841,7 @@ namespace basictl {
         if (ptr >= end_block) [[unlikely]] {
             grow_buffer();
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
     }
@@ -860,7 +862,7 @@ namespace basictl {
             size -= end_block - ptr;
             grow_buffer();
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         std::memcpy(data, ptr, size);
@@ -875,7 +877,7 @@ namespace basictl {
             grow_buffer();
             // assert(ptr <= end)
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         value.append(reinterpret_cast<const char *>(ptr), size);
@@ -886,7 +888,7 @@ namespace basictl {
         uint32_t x = 0;
         fetch_data(&x, len);
         if (x != 0) [[unlikely]] {
-            throw tl_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
+            throw tl_stream_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
         }
     }
 
@@ -905,7 +907,7 @@ namespace basictl {
         auto len = value.size();
         if (len > basictl::TL_MAX_TINY_STRING_LEN) [[unlikely]] {
             if (len > basictl::TL_BIG_STRING_LEN) [[unlikely]] {
-                throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                throw tl_stream_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t p = (len << 8U) | basictl::TL_BIG_STRING_MARKER;
             store_data(&p, 4);
@@ -966,7 +968,7 @@ namespace basictl {
             size -= end_block - ptr;
             grow_buffer();
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         std::memcpy(ptr, data, size);
@@ -981,7 +983,7 @@ namespace basictl {
             grow_buffer();
             // assert(ptr <= end)
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         if (size != 0) {
@@ -1047,7 +1049,7 @@ namespace basictl {
             uint32_t actual_tag = 0;
             nat_read(actual_tag);
             if (tag != actual_tag) [[unlikely]] {
-                throw tl_error(tl_error_type::UNEXPECTED_TAG, "unexpected tag");
+                throw tl_stream_error(tl_error_type::UNEXPECTED_TAG, "unexpected tag");
             }
         }
 
@@ -1121,7 +1123,7 @@ namespace basictl {
                 return;
             }
             if (tag != f) [[unlikely]] {
-                throw tl_error(tl_error_type::UNEXPECTED_TAG, "unexpected bool tag");
+                throw tl_stream_error(tl_error_type::UNEXPECTED_TAG, "unexpected bool tag");
             }
             value = false;
         }

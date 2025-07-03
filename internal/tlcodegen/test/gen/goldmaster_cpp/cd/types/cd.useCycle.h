@@ -12,9 +12,14 @@ struct UseCycle {
   ::tlgen::cyc2::MyCycle a{};
   std::optional<::tlgen::a::Color> b;
 
-  std::string_view tl_name() const { return "cd.useCycle"; }
-  uint32_t tl_tag() const { return 0x6ed67ca0; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x6ed67ca0;
+  static constexpr std::string_view TL_NAME = "cd.useCycle";
 
+  uint32_t tl_tag() const { return 0x6ed67ca0; }
+  std::string_view tl_name() const { return "cd.useCycle"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -24,10 +29,10 @@ struct UseCycle {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const UseCycle& rhs) {
     rhs.write_json(s);

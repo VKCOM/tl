@@ -16,8 +16,8 @@ bool GetNonOptNatWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetNonOp
 bool GetNonOptNatReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetNonOptNat& item);
 bool GetNonOptNatWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetNonOptNat& item);
 
-bool GetNonOptNatReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetNonOptNat& item, std::vector<int32_t>& result);
-bool GetNonOptNatWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetNonOptNat& item, std::vector<int32_t>& result);
+bool GetNonOptNatReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetNonOptNat& item, std::vector<int32_t>& result);
+bool GetNonOptNatWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetNonOptNat& item, const std::vector<int32_t>& result);
     
 }} // namespace tlgen::details
 

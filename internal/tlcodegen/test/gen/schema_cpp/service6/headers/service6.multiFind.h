@@ -18,8 +18,8 @@ bool Service6MultiFindWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::ser
 bool Service6MultiFindReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item);
 bool Service6MultiFindWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFind& item);
 
-bool Service6MultiFindReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result);
-bool Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result);
+bool Service6MultiFindReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result);
+bool Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service6::MultiFind& item, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result);
     
 }} // namespace tlgen::details
 

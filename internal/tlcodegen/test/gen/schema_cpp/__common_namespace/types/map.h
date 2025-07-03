@@ -11,8 +11,12 @@ struct Map {
   X key{};
   Y value{};
 
-  std::string_view tl_name() const { return "map"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x79c473a4;
+  static constexpr std::string_view TL_NAME = "map";
+
   uint32_t tl_tag() const { return 0x79c473a4; }
+  std::string_view tl_name() const { return "map"; }
 };
 
 } // namespace tlgen

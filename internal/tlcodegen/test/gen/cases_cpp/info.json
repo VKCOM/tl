@@ -1,0 +1,9 @@
+{
+	"order": [
+		["__common_namespace"],
+		["cases"],
+		["cases_bytes"],
+		["benchmarks"],
+		["casesTL2"]
+	]
+}

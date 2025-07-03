@@ -16,7 +16,7 @@ bool tlgen::antispam::GetPattern::read(::tlgen::basictl::tl_istream & s) noexcep
   return true;
 }
 
-bool tlgen::antispam::GetPattern::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::antispam::GetPattern::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AntispamGetPatternWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -28,7 +28,7 @@ void tlgen::antispam::GetPattern::read(::tlgen::basictl::tl_throwable_istream & 
   s2.pass_data(s);
 }
 
-void tlgen::antispam::GetPattern::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::antispam::GetPattern::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -40,7 +40,7 @@ bool tlgen::antispam::GetPattern::read_boxed(::tlgen::basictl::tl_istream & s) n
   return true;
 }
 
-bool tlgen::antispam::GetPattern::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::antispam::GetPattern::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AntispamGetPatternWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -52,7 +52,7 @@ void tlgen::antispam::GetPattern::read_boxed(::tlgen::basictl::tl_throwable_istr
   s2.pass_data(s);
 }
 
-void tlgen::antispam::GetPattern::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::antispam::GetPattern::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -99,14 +99,14 @@ bool tlgen::details::AntispamGetPatternWriteBoxed(::tlgen::basictl::tl_ostream &
   return tlgen::details::AntispamGetPatternWrite(s, item);
 }
 
-bool tlgen::details::AntispamGetPatternReadResult(::tlgen::basictl::tl_istream & s, tlgen::antispam::GetPattern& item, ::tlgen::antispam::PatternFull& result) {
+bool tlgen::details::AntispamGetPatternReadResult(::tlgen::basictl::tl_istream & s, const tlgen::antispam::GetPattern& item, ::tlgen::antispam::PatternFull& result) {
   (void)s;
   (void)item;
   (void)result;
   if (!::tlgen::details::AntispamPatternFullReadBoxed(s, result)) { return s.set_error_unknown_scenario(); }
   return true;
 }
-bool tlgen::details::AntispamGetPatternWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::antispam::GetPattern& item, ::tlgen::antispam::PatternFull& result) {
+bool tlgen::details::AntispamGetPatternWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::antispam::GetPattern& item, const ::tlgen::antispam::PatternFull& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -114,23 +114,23 @@ bool tlgen::details::AntispamGetPatternWriteResult(::tlgen::basictl::tl_ostream 
   return true;
 }
 
-bool tlgen::antispam::GetPattern::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::PatternFull & result) noexcept {
+bool tlgen::antispam::GetPattern::read_result(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::PatternFull & result) const noexcept {
   bool success = tlgen::details::AntispamGetPatternReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::antispam::GetPattern::write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::antispam::PatternFull & result) noexcept {
+bool tlgen::antispam::GetPattern::write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::antispam::PatternFull & result) const noexcept {
   bool success = tlgen::details::AntispamGetPatternWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::antispam::GetPattern::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::antispam::PatternFull & result) {
+void tlgen::antispam::GetPattern::read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::antispam::PatternFull & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::antispam::GetPattern::write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::antispam::PatternFull & result) {
+void tlgen::antispam::GetPattern::write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::antispam::PatternFull & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -147,7 +147,7 @@ bool tlgen::antispam::PatternFound::read(::tlgen::basictl::tl_istream & s) noexc
   return true;
 }
 
-bool tlgen::antispam::PatternFound::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::antispam::PatternFound::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AntispamPatternFoundWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -159,7 +159,7 @@ void tlgen::antispam::PatternFound::read(::tlgen::basictl::tl_throwable_istream 
   s2.pass_data(s);
 }
 
-void tlgen::antispam::PatternFound::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::antispam::PatternFound::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -171,7 +171,7 @@ bool tlgen::antispam::PatternFound::read_boxed(::tlgen::basictl::tl_istream & s)
   return true;
 }
 
-bool tlgen::antispam::PatternFound::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::antispam::PatternFound::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AntispamPatternFoundWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -183,7 +183,7 @@ void tlgen::antispam::PatternFound::read_boxed(::tlgen::basictl::tl_throwable_is
   s2.pass_data(s);
 }
 
-void tlgen::antispam::PatternFound::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::antispam::PatternFound::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -367,7 +367,7 @@ bool tlgen::antispam::PatternNotFound::read(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::antispam::PatternNotFound::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::antispam::PatternNotFound::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AntispamPatternNotFoundWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -379,7 +379,7 @@ void tlgen::antispam::PatternNotFound::read(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::antispam::PatternNotFound::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::antispam::PatternNotFound::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -391,7 +391,7 @@ bool tlgen::antispam::PatternNotFound::read_boxed(::tlgen::basictl::tl_istream &
   return true;
 }
 
-bool tlgen::antispam::PatternNotFound::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::antispam::PatternNotFound::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::AntispamPatternNotFoundWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -403,7 +403,7 @@ void tlgen::antispam::PatternNotFound::read_boxed(::tlgen::basictl::tl_throwable
   s2.pass_data(s);
 }
 
-void tlgen::antispam::PatternNotFound::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::antispam::PatternNotFound::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

@@ -27,8 +27,12 @@ namespace tlgen::basictl {
             return type_;
         }
 
-        [[nodiscard]] std::string_view message() const noexcept {
+        [[nodiscard]] const std::string& message() const & noexcept {
             return message_;
+        }
+
+        [[nodiscard]] std::string&& message() && noexcept {
+            return std::move(message_);
         }
 
         [[nodiscard]] const char *what() const noexcept override {
@@ -40,9 +44,9 @@ namespace tlgen::basictl {
         std::string message_;
     };
 
-    using tl_error = basic_error<tl_error_type>;
+    using tl_stream_error = basic_error<tl_error_type>;
     using tl_connector_error = basic_error<std::uint32_t>;
-    using tl_stream_error = std::variant<tl_error, tl_connector_error>;
+    using tl_error = std::variant<tl_stream_error, tl_connector_error>;
 }
 
 #endif //BASICTL_CPP_ERRORS_H

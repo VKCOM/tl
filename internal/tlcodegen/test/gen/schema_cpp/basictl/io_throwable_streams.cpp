@@ -11,7 +11,7 @@ namespace tlgen::basictl {
         auto len = size_t(static_cast<unsigned char>(*ptr));
         if (len >= tlgen::basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
             if (len > tlgen::basictl::TL_BIG_STRING_MARKER) [[unlikely]] {
-                throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                throw tl_stream_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t len32 = 0;
             nat_read(len32);
@@ -34,7 +34,7 @@ namespace tlgen::basictl {
         uint32_t x = 0;
         std::memcpy(&x, ptr + fullLen - 4, 4);
         if ((x & ~(0xFFFFFFFFU >> (8 * pad))) != 0) [[unlikely]] {
-            throw tl_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
+            throw tl_stream_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
         }
         value.assign(reinterpret_cast<const char *>(ptr + 1), len);
         ptr += fullLen;
@@ -63,7 +63,7 @@ namespace tlgen::basictl {
         if (ptr >= end_block) [[unlikely]] {
             grow_buffer();
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
     }
@@ -84,7 +84,7 @@ namespace tlgen::basictl {
             size -= end_block - ptr;
             grow_buffer();
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         std::memcpy(data, ptr, size);
@@ -99,7 +99,7 @@ namespace tlgen::basictl {
             grow_buffer();
             // assert(ptr <= end)
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         value.append(reinterpret_cast<const char *>(ptr), size);
@@ -110,7 +110,7 @@ namespace tlgen::basictl {
         uint32_t x = 0;
         fetch_data(&x, len);
         if (x != 0) [[unlikely]] {
-            throw tl_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
+            throw tl_stream_error(tl_error_type::INCORRECT_STRING_PADDING, "incorrect string padding");
         }
     }
 
@@ -129,7 +129,7 @@ namespace tlgen::basictl {
         auto len = value.size();
         if (len > tlgen::basictl::TL_MAX_TINY_STRING_LEN) [[unlikely]] {
             if (len > tlgen::basictl::TL_BIG_STRING_LEN) [[unlikely]] {
-                throw tl_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
+                throw tl_stream_error(tl_error_type::INCORRECT_SEQUENCE_LENGTH, "TODO - huge string");
             }
             uint32_t p = (len << 8U) | tlgen::basictl::TL_BIG_STRING_MARKER;
             store_data(&p, 4);
@@ -190,7 +190,7 @@ namespace tlgen::basictl {
             size -= end_block - ptr;
             grow_buffer();
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         std::memcpy(ptr, data, size);
@@ -205,7 +205,7 @@ namespace tlgen::basictl {
             grow_buffer();
             // assert(ptr <= end)
             if (ptr == end_block) [[unlikely]] {
-                throw tl_error(tl_error_type::STREAM_EOF, "eof");
+                throw tl_stream_error(tl_error_type::STREAM_EOF, "eof");
             }
         }
         if (size != 0) {

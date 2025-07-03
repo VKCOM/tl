@@ -12,8 +12,12 @@ struct Replace13 {
   uint32_t k = 0;
   std::vector<::tlgen::Replace13Elem<X>> a;
 
-  std::string_view tl_name() const { return "replace13"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xc6f00b71;
+  static constexpr std::string_view TL_NAME = "replace13";
+
   uint32_t tl_tag() const { return 0xc6f00b71; }
+  std::string_view tl_name() const { return "replace13"; }
 };
 
 } // namespace tlgen

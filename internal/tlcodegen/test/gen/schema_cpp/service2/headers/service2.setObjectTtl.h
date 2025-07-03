@@ -16,8 +16,8 @@ bool Service2SetObjectTtlWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::
 bool Service2SetObjectTtlReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service2::SetObjectTtl& item);
 bool Service2SetObjectTtlWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::SetObjectTtl& item);
 
-bool Service2SetObjectTtlReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service2::SetObjectTtl& item, ::tlgen::True& result);
-bool Service2SetObjectTtlWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service2::SetObjectTtl& item, ::tlgen::True& result);
+bool Service2SetObjectTtlReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service2::SetObjectTtl& item, ::tlgen::True& result);
+bool Service2SetObjectTtlWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::SetObjectTtl& item, const ::tlgen::True& result);
     
 }} // namespace tlgen::details
 

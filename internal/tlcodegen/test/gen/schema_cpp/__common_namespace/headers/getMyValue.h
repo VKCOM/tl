@@ -16,8 +16,8 @@ bool GetMyValueWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyValue
 bool GetMyValueReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyValue& item);
 bool GetMyValueWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyValue& item);
 
-bool GetMyValueReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyValue& item, ::tlgen::MyValue& result);
-bool GetMyValueWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetMyValue& item, ::tlgen::MyValue& result);
+bool GetMyValueReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetMyValue& item, ::tlgen::MyValue& result);
+bool GetMyValueWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyValue& item, const ::tlgen::MyValue& result);
     
 }} // namespace tlgen::details
 

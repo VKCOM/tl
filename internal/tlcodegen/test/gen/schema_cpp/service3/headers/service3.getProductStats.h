@@ -17,8 +17,8 @@ bool Service3GetProductStatsWrite(::tlgen::basictl::tl_ostream & s, const ::tlge
 bool Service3GetProductStatsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetProductStats& item);
 bool Service3GetProductStatsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetProductStats& item);
 
-bool Service3GetProductStatsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetProductStats& item, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result);
-bool Service3GetProductStatsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetProductStats& item, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result);
+bool Service3GetProductStatsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::GetProductStats& item, std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result);
+bool Service3GetProductStatsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetProductStats& item, const std::optional<std::vector<::tlgen::service3::ProductStatsOld>>& result);
     
 }} // namespace tlgen::details
 

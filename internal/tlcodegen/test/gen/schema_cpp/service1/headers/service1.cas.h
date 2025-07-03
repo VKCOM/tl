@@ -16,8 +16,8 @@ bool Service1CasWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1:
 bool Service1CasReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Cas& item);
 bool Service1CasWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Cas& item);
 
-bool Service1CasReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Cas& item, bool& result);
-bool Service1CasWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::Cas& item, bool& result);
+bool Service1CasReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::Cas& item, bool& result);
+bool Service1CasWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Cas& item, const bool& result);
     
 }} // namespace tlgen::details
 

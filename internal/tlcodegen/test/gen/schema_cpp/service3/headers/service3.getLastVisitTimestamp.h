@@ -16,8 +16,8 @@ bool Service3GetLastVisitTimestampWrite(::tlgen::basictl::tl_ostream & s, const 
 bool Service3GetLastVisitTimestampReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLastVisitTimestamp& item);
 bool Service3GetLastVisitTimestampWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetLastVisitTimestamp& item);
 
-bool Service3GetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
-bool Service3GetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
+bool Service3GetLastVisitTimestampReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::GetLastVisitTimestamp& item, std::optional<int32_t>& result);
+bool Service3GetLastVisitTimestampWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::GetLastVisitTimestamp& item, const std::optional<int32_t>& result);
     
 }} // namespace tlgen::details
 

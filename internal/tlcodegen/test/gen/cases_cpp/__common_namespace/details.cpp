@@ -6,8 +6,45 @@
 #include "__common_namespace/headers/dictionary.h"
 #include "__common_namespace/headers/dictionaryAny.h"
 #include "__common_namespace/headers/dictionaryFieldAny.h"
+#include "__common_namespace/headers/int.h"
 #include "__common_namespace/headers/true.h"
 
+
+void tlgen::details::BuiltinTupleIntReset(std::vector<int32_t>& item) {
+  item.resize(0);
+}
+
+bool tlgen::details::BuiltinTupleIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n) {
+  if (item.size() != nat_n) { return false; }
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << el;
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
+}
+
+bool tlgen::details::BuiltinTupleIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n) {
+  // TODO - check length sanity
+  item.resize(nat_n);
+  for(auto && el : item) {
+    if (!s.int_read(el)) { return false; }
+  }
+  return true;
+}
+
+bool tlgen::details::BuiltinTupleIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item, [[maybe_unused]] uint32_t nat_n) {
+  if (item.size() != nat_n) { return s.set_error_sequence_length(); }
+  for(const auto & el : item) {
+    if (!s.int_write(el)) { return false;}
+  }
+  return true;
+}
 
 void tlgen::details::BuiltinVectorDictionaryFieldAnyDoubleIntReset(std::vector<::tlgen::DictionaryFieldAny<double, int32_t>>& item) {
   item.resize(0); // TODO - unwrap
@@ -124,6 +161,43 @@ bool tlgen::details::BuiltinVectorDictionaryFieldIntWrite(::tlgen::basictl::tl_o
   for(const auto & el : item) {
     ::tlgen::DictionaryField<int32_t> el2{.key= el.first, .value= el.second};
     if (!::tlgen::details::DictionaryFieldIntWrite(s, el2)) { return s.set_error_unknown_scenario(); }
+  }
+  return true;
+}
+
+void tlgen::details::BuiltinVectorIntReset(std::vector<int32_t>& item) {
+  item.resize(0); // TODO - unwrap
+}
+
+bool tlgen::details::BuiltinVectorIntWriteJSON(std::ostream & s, const std::vector<int32_t>& item) {
+  s << "[";
+  size_t index = 0;
+  for(const auto & el : item) {
+    s << el;
+    if (index != item.size() - 1) {
+      s << ",";
+    }
+    index++;
+  }
+  s << "]";
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorIntRead(::tlgen::basictl::tl_istream & s, std::vector<int32_t>& item) {
+  uint32_t len = 0;
+  if (!s.nat_read(len)) { return false; }
+  // TODO - check length sanity
+  item.resize(len);
+  for(auto && el : item) {
+    if (!s.int_read(el)) { return false; }
+  }
+  return true;
+}
+
+bool tlgen::details::BuiltinVectorIntWrite(::tlgen::basictl::tl_ostream & s, const std::vector<int32_t>& item) {
+  if (!s.nat_write(item.size())) { return false; }
+  for(const auto & el : item) {
+    if (!s.int_write(el)) { return false;}
   }
   return true;
 }
@@ -535,7 +609,7 @@ bool tlgen::True::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::True::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::True::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::TrueWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -547,7 +621,7 @@ void tlgen::True::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::True::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::True::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -559,7 +633,7 @@ bool tlgen::True::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::True::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::True::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::TrueWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -571,7 +645,7 @@ void tlgen::True::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::True::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::True::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

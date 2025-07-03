@@ -10,9 +10,14 @@ namespace tlgen { namespace cases_bytes {
 struct TestDictAny {
   ::tlgen::DictionaryAny<double, int32_t> dict{};
 
-  std::string_view tl_name() const { return "cases_bytes.testDictAny"; }
-  uint32_t tl_tag() const { return 0x5a5fce57; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x5a5fce57;
+  static constexpr std::string_view TL_NAME = "cases_bytes.testDictAny";
 
+  uint32_t tl_tag() const { return 0x5a5fce57; }
+  std::string_view tl_name() const { return "cases_bytes.testDictAny"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,10 +27,10 @@ struct TestDictAny {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestDictAny& rhs) {
     rhs.write_json(s);

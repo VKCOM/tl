@@ -10,9 +10,14 @@ namespace tlgen {
 struct GetMyDouble {
   ::tlgen::MyDouble x{};
 
-  std::string_view tl_name() const { return "getMyDouble"; }
-  uint32_t tl_tag() const { return 0xb660ad10; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xb660ad10;
+  static constexpr std::string_view TL_NAME = "getMyDouble";
 
+  uint32_t tl_tag() const { return 0xb660ad10; }
+  std::string_view tl_name() const { return "getMyDouble"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,16 +27,19 @@ struct GetMyDouble {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::MyDouble & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::MyDouble & result) noexcept;
+  // function methods and properties
+  using ResultType = ::tlgen::MyDouble;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::MyDouble & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::MyDouble & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::MyDouble & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyDouble & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::MyDouble & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::MyDouble & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetMyDouble& rhs) {
     rhs.write_json(s);

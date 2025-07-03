@@ -14,7 +14,7 @@ bool tlgen::cyc1::MyCycle::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::cyc1::MyCycle::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cyc1::MyCycle::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Cyc1MyCycleWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -26,7 +26,7 @@ void tlgen::cyc1::MyCycle::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::cyc1::MyCycle::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cyc1::MyCycle::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -38,7 +38,7 @@ bool tlgen::cyc1::MyCycle::read_boxed(::tlgen::basictl::tl_istream & s) noexcept
   return true;
 }
 
-bool tlgen::cyc1::MyCycle::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::cyc1::MyCycle::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Cyc1MyCycleWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -50,7 +50,7 @@ void tlgen::cyc1::MyCycle::read_boxed(::tlgen::basictl::tl_throwable_istream & s
   s2.pass_data(s);
 }
 
-void tlgen::cyc1::MyCycle::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::cyc1::MyCycle::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);

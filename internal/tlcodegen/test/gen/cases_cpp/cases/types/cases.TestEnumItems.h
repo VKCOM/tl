@@ -8,9 +8,14 @@
 namespace tlgen { namespace cases { 
 struct TestEnum1 {
 
-  std::string_view tl_name() const { return "cases.testEnum1"; }
-  uint32_t tl_tag() const { return 0x6c6c55ac; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x6c6c55ac;
+  static constexpr std::string_view TL_NAME = "cases.testEnum1";
 
+  uint32_t tl_tag() const { return 0x6c6c55ac; }
+  std::string_view tl_name() const { return "cases.testEnum1"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -20,10 +25,10 @@ struct TestEnum1 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestEnum1& rhs) {
     rhs.write_json(s);
@@ -36,9 +41,14 @@ struct TestEnum1 {
 namespace tlgen { namespace cases { 
 struct TestEnum2 {
 
-  std::string_view tl_name() const { return "cases.testEnum2"; }
-  uint32_t tl_tag() const { return 0x86ea88ce; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x86ea88ce;
+  static constexpr std::string_view TL_NAME = "cases.testEnum2";
 
+  uint32_t tl_tag() const { return 0x86ea88ce; }
+  std::string_view tl_name() const { return "cases.testEnum2"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -48,10 +58,10 @@ struct TestEnum2 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestEnum2& rhs) {
     rhs.write_json(s);
@@ -64,9 +74,14 @@ struct TestEnum2 {
 namespace tlgen { namespace cases { 
 struct TestEnum3 {
 
-  std::string_view tl_name() const { return "cases.testEnum3"; }
-  uint32_t tl_tag() const { return 0x69b83e2f; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x69b83e2f;
+  static constexpr std::string_view TL_NAME = "cases.testEnum3";
 
+  uint32_t tl_tag() const { return 0x69b83e2f; }
+  std::string_view tl_name() const { return "cases.testEnum3"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -76,10 +91,10 @@ struct TestEnum3 {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   friend std::ostream& operator<<(std::ostream& s, const TestEnum3& rhs) {
     rhs.write_json(s);

@@ -281,7 +281,7 @@ bool tlgen::Issue3498::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::Issue3498::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::Issue3498::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Issue3498Write(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -293,7 +293,7 @@ void tlgen::Issue3498::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::Issue3498::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::Issue3498::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -305,7 +305,7 @@ bool tlgen::Issue3498::read_boxed(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::Issue3498::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::Issue3498::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Issue3498WriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -317,7 +317,7 @@ void tlgen::Issue3498::read_boxed(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::Issue3498::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::Issue3498::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -539,7 +539,7 @@ bool tlgen::service6::Error::read(::tlgen::basictl::tl_istream & s) noexcept {
   return true;
 }
 
-bool tlgen::service6::Error::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::Error::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6ErrorWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -551,7 +551,7 @@ void tlgen::service6::Error::read(::tlgen::basictl::tl_throwable_istream & s) {
   s2.pass_data(s);
 }
 
-void tlgen::service6::Error::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::Error::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -563,7 +563,7 @@ bool tlgen::service6::Error::read_boxed(::tlgen::basictl::tl_istream & s) noexce
   return true;
 }
 
-bool tlgen::service6::Error::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::Error::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6ErrorWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -575,7 +575,7 @@ void tlgen::service6::Error::read_boxed(::tlgen::basictl::tl_throwable_istream &
   s2.pass_data(s);
 }
 
-void tlgen::service6::Error::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::Error::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -633,7 +633,7 @@ bool tlgen::service6::FindResultRow::read(::tlgen::basictl::tl_istream & s) noex
   return true;
 }
 
-bool tlgen::service6::FindResultRow::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::FindResultRow::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6FindResultRowWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -645,7 +645,7 @@ void tlgen::service6::FindResultRow::read(::tlgen::basictl::tl_throwable_istream
   s2.pass_data(s);
 }
 
-void tlgen::service6::FindResultRow::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::FindResultRow::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -657,7 +657,7 @@ bool tlgen::service6::FindResultRow::read_boxed(::tlgen::basictl::tl_istream & s
   return true;
 }
 
-bool tlgen::service6::FindResultRow::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::FindResultRow::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6FindResultRowWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -669,7 +669,7 @@ void tlgen::service6::FindResultRow::read_boxed(::tlgen::basictl::tl_throwable_i
   s2.pass_data(s);
 }
 
-void tlgen::service6::FindResultRow::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::FindResultRow::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -727,7 +727,7 @@ bool tlgen::service6::FindWithBoundsResult::read(::tlgen::basictl::tl_istream & 
   return true;
 }
 
-bool tlgen::service6::FindWithBoundsResult::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::FindWithBoundsResult::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6FindWithBoundsResultWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -739,7 +739,7 @@ void tlgen::service6::FindWithBoundsResult::read(::tlgen::basictl::tl_throwable_
   s2.pass_data(s);
 }
 
-void tlgen::service6::FindWithBoundsResult::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::FindWithBoundsResult::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -751,7 +751,7 @@ bool tlgen::service6::FindWithBoundsResult::read_boxed(::tlgen::basictl::tl_istr
   return true;
 }
 
-bool tlgen::service6::FindWithBoundsResult::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::FindWithBoundsResult::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6FindWithBoundsResultWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -763,7 +763,7 @@ void tlgen::service6::FindWithBoundsResult::read_boxed(::tlgen::basictl::tl_thro
   s2.pass_data(s);
 }
 
-void tlgen::service6::FindWithBoundsResult::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::FindWithBoundsResult::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -821,7 +821,7 @@ bool tlgen::service6::MultiFind::read(::tlgen::basictl::tl_istream & s) noexcept
   return true;
 }
 
-bool tlgen::service6::MultiFind::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::MultiFind::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6MultiFindWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -833,7 +833,7 @@ void tlgen::service6::MultiFind::read(::tlgen::basictl::tl_throwable_istream & s
   s2.pass_data(s);
 }
 
-void tlgen::service6::MultiFind::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::MultiFind::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -845,7 +845,7 @@ bool tlgen::service6::MultiFind::read_boxed(::tlgen::basictl::tl_istream & s) no
   return true;
 }
 
-bool tlgen::service6::MultiFind::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::MultiFind::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6MultiFindWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -857,7 +857,7 @@ void tlgen::service6::MultiFind::read_boxed(::tlgen::basictl::tl_throwable_istre
   s2.pass_data(s);
 }
 
-void tlgen::service6::MultiFind::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::MultiFind::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -928,7 +928,7 @@ bool tlgen::details::Service6MultiFindWriteBoxed(::tlgen::basictl::tl_ostream & 
   return tlgen::details::Service6MultiFindWrite(s, item);
 }
 
-bool tlgen::details::Service6MultiFindReadResult(::tlgen::basictl::tl_istream & s, tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result) {
+bool tlgen::details::Service6MultiFindReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -936,7 +936,7 @@ bool tlgen::details::Service6MultiFindReadResult(::tlgen::basictl::tl_istream & 
   if (!::tlgen::details::BuiltinVectorEitherService6ErrorVectorService6FindResultRowRead(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service6::MultiFind& item, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result) {
+bool tlgen::details::Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service6::MultiFind& item, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -945,23 +945,23 @@ bool tlgen::details::Service6MultiFindWriteResult(::tlgen::basictl::tl_ostream &
   return true;
 }
 
-bool tlgen::service6::MultiFind::read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) noexcept {
+bool tlgen::service6::MultiFind::read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const noexcept {
   bool success = tlgen::details::Service6MultiFindReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service6::MultiFind::write_result(::tlgen::basictl::tl_ostream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) noexcept {
+bool tlgen::service6::MultiFind::write_result(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const noexcept {
   bool success = tlgen::details::Service6MultiFindWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service6::MultiFind::read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) {
+void tlgen::service6::MultiFind::read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service6::MultiFind::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) {
+void tlgen::service6::MultiFind::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::vector<::tlgen::Either<::tlgen::service6::Error, std::vector<::tlgen::service6::FindResultRow>>> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);
@@ -978,7 +978,7 @@ bool tlgen::service6::MultiFindWithBounds::read(::tlgen::basictl::tl_istream & s
   return true;
 }
 
-bool tlgen::service6::MultiFindWithBounds::write(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::MultiFindWithBounds::write(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6MultiFindWithBoundsWrite(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -990,7 +990,7 @@ void tlgen::service6::MultiFindWithBounds::read(::tlgen::basictl::tl_throwable_i
   s2.pass_data(s);
 }
 
-void tlgen::service6::MultiFindWithBounds::write(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::MultiFindWithBounds::write(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write(s2);
   s2.pass_data(s);
@@ -1002,7 +1002,7 @@ bool tlgen::service6::MultiFindWithBounds::read_boxed(::tlgen::basictl::tl_istre
   return true;
 }
 
-bool tlgen::service6::MultiFindWithBounds::write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept {
+bool tlgen::service6::MultiFindWithBounds::write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept {
   if (!::tlgen::details::Service6MultiFindWithBoundsWriteBoxed(s, *this)) { return s.set_error_unknown_scenario(); }
   s.sync();
   return true;
@@ -1014,7 +1014,7 @@ void tlgen::service6::MultiFindWithBounds::read_boxed(::tlgen::basictl::tl_throw
   s2.pass_data(s);
 }
 
-void tlgen::service6::MultiFindWithBounds::write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const {
+void tlgen::service6::MultiFindWithBounds::write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_boxed(s2);
   s2.pass_data(s);
@@ -1061,7 +1061,7 @@ bool tlgen::details::Service6MultiFindWithBoundsWriteBoxed(::tlgen::basictl::tl_
   return tlgen::details::Service6MultiFindWithBoundsWrite(s, item);
 }
 
-bool tlgen::details::Service6MultiFindWithBoundsReadResult(::tlgen::basictl::tl_istream & s, tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result) {
+bool tlgen::details::Service6MultiFindWithBoundsReadResult(::tlgen::basictl::tl_istream & s, const tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1069,7 +1069,7 @@ bool tlgen::details::Service6MultiFindWithBoundsReadResult(::tlgen::basictl::tl_
   if (!::tlgen::details::BuiltinVectorEitherIntVectorService6FindWithBoundsResultRead(s, result)) { return false; }
   return true;
 }
-bool tlgen::details::Service6MultiFindWithBoundsWriteResult(::tlgen::basictl::tl_ostream & s, tlgen::service6::MultiFindWithBounds& item, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result) {
+bool tlgen::details::Service6MultiFindWithBoundsWriteResult(::tlgen::basictl::tl_ostream & s, const tlgen::service6::MultiFindWithBounds& item, const std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>>& result) {
   (void)s;
   (void)item;
   (void)result;
@@ -1078,23 +1078,23 @@ bool tlgen::details::Service6MultiFindWithBoundsWriteResult(::tlgen::basictl::tl
   return true;
 }
 
-bool tlgen::service6::MultiFindWithBounds::read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) noexcept {
+bool tlgen::service6::MultiFindWithBounds::read_result(::tlgen::basictl::tl_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) const noexcept {
   bool success = tlgen::details::Service6MultiFindWithBoundsReadResult(s, *this, result);
   s.sync();
   return success;
 }
-bool tlgen::service6::MultiFindWithBounds::write_result(::tlgen::basictl::tl_ostream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) noexcept {
+bool tlgen::service6::MultiFindWithBounds::write_result(::tlgen::basictl::tl_ostream & s, const std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) const noexcept {
   bool success = tlgen::details::Service6MultiFindWithBoundsWriteResult(s, *this, result);
   s.sync();
   return success;
 }
 
-void tlgen::service6::MultiFindWithBounds::read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) {
+void tlgen::service6::MultiFindWithBounds::read_result(::tlgen::basictl::tl_throwable_istream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) const {
   ::tlgen::basictl::tl_istream s2(s);
   this->read_result(s2, result);
   s2.pass_data(s);
 }
-void tlgen::service6::MultiFindWithBounds::write_result(::tlgen::basictl::tl_throwable_ostream & s, std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) {
+void tlgen::service6::MultiFindWithBounds::write_result(::tlgen::basictl::tl_throwable_ostream & s, const std::vector<::tlgen::Either<int32_t, std::vector<::tlgen::service6::FindWithBoundsResult>>> & result) const {
   ::tlgen::basictl::tl_ostream s2(s);
   this->write_result(s2, result);
   s2.pass_data(s);

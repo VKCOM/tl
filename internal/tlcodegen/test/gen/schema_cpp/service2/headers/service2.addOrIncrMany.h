@@ -16,8 +16,8 @@ bool Service2AddOrIncrManyWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen:
 bool Service2AddOrIncrManyReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service2::AddOrIncrMany& item);
 bool Service2AddOrIncrManyWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::AddOrIncrMany& item);
 
-bool Service2AddOrIncrManyReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service2::AddOrIncrMany& item, std::vector<::tlgen::service2::CounterSet>& result);
-bool Service2AddOrIncrManyWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service2::AddOrIncrMany& item, std::vector<::tlgen::service2::CounterSet>& result);
+bool Service2AddOrIncrManyReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service2::AddOrIncrMany& item, std::vector<::tlgen::service2::CounterSet>& result);
+bool Service2AddOrIncrManyWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service2::AddOrIncrMany& item, const std::vector<::tlgen::service2::CounterSet>& result);
     
 }} // namespace tlgen::details
 

@@ -16,8 +16,8 @@ bool Service5InsertWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::servic
 bool Service5InsertReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Insert& item);
 bool Service5InsertWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Insert& item);
 
-bool Service5InsertReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service5::Insert& item, ::tlgen::service5::Output& result);
-bool Service5InsertWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service5::Insert& item, ::tlgen::service5::Output& result);
+bool Service5InsertReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service5::Insert& item, ::tlgen::service5::Output& result);
+bool Service5InsertWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service5::Insert& item, const ::tlgen::service5::Output& result);
     
 }} // namespace tlgen::details
 

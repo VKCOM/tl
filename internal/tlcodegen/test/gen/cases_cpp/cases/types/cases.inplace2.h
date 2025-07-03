@@ -11,8 +11,12 @@ template<typename X>
 struct Inplace2 {
   ::tlgen::cases::Inplace3<std::array<X, 2>> value{};
 
-  std::string_view tl_name() const { return "cases.inplace2"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x869fcff5;
+  static constexpr std::string_view TL_NAME = "cases.inplace2";
+
   uint32_t tl_tag() const { return 0x869fcff5; }
+  std::string_view tl_name() const { return "cases.inplace2"; }
 };
 
 }} // namespace tlgen::cases

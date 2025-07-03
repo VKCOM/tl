@@ -10,9 +10,14 @@ namespace tlgen {
 struct GetMyValue {
   ::tlgen::MyValue x;
 
-  std::string_view tl_name() const { return "getMyValue"; }
-  uint32_t tl_tag() const { return 0xb3df27fe; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xb3df27fe;
+  static constexpr std::string_view TL_NAME = "getMyValue";
 
+  uint32_t tl_tag() const { return 0xb3df27fe; }
+  std::string_view tl_name() const { return "getMyValue"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s) const;
 
   bool read(::tlgen::basictl::tl_istream & s) noexcept;
@@ -22,16 +27,19 @@ struct GetMyValue {
   void write(::tlgen::basictl::tl_throwable_ostream & s) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s) const;
 
-  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::MyValue & result) noexcept;
-  bool write_result(::tlgen::basictl::tl_ostream & s, ::tlgen::MyValue & result) noexcept;
+  // function methods and properties
+  using ResultType = ::tlgen::MyValue;
 
-  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::MyValue & result);
-  void write_result(::tlgen::basictl::tl_throwable_ostream & s, ::tlgen::MyValue & result);
+  bool read_result(::tlgen::basictl::tl_istream & s, ::tlgen::MyValue & result) const noexcept;
+  bool write_result(::tlgen::basictl::tl_ostream & s, const ::tlgen::MyValue & result) const noexcept;
+
+  void read_result(::tlgen::basictl::tl_throwable_istream & s, ::tlgen::MyValue & result) const;
+  void write_result(::tlgen::basictl::tl_throwable_ostream & s, const ::tlgen::MyValue & result) const;
 
   friend std::ostream& operator<<(std::ostream& s, const GetMyValue& rhs) {
     rhs.write_json(s);

@@ -11,9 +11,14 @@ struct GetUserEntityResult {
   std::string entity_id;
   std::optional<std::map<std::string, ::tlgen::usefulService::UserEntityPaymentItem>> payment_items;
 
-  std::string_view tl_name() const { return "usefulService.getUserEntityResult"; }
-  uint32_t tl_tag() const { return 0xe494698a; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xe494698a;
+  static constexpr std::string_view TL_NAME = "usefulService.getUserEntityResult";
 
+  uint32_t tl_tag() const { return 0xe494698a; }
+  std::string_view tl_name() const { return "usefulService.getUserEntityResult"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_fields_mask) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
@@ -23,10 +28,10 @@ struct GetUserEntityResult {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_fields_mask) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_fields_mask);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_fields_mask) const;
 };
 
 }} // namespace tlgen::usefulService

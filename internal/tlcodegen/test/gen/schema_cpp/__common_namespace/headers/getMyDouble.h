@@ -16,8 +16,8 @@ bool GetMyDoubleWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDoub
 bool GetMyDoubleReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDouble& item);
 bool GetMyDoubleWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDouble& item);
 
-bool GetMyDoubleReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDouble& item, ::tlgen::MyDouble& result);
-bool GetMyDoubleWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetMyDouble& item, ::tlgen::MyDouble& result);
+bool GetMyDoubleReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetMyDouble& item, ::tlgen::MyDouble& result);
+bool GetMyDoubleWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDouble& item, const ::tlgen::MyDouble& result);
     
 }} // namespace tlgen::details
 

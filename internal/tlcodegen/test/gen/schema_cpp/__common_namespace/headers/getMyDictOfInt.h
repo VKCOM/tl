@@ -16,8 +16,8 @@ bool GetMyDictOfIntWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyD
 bool GetMyDictOfIntReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDictOfInt& item);
 bool GetMyDictOfIntWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDictOfInt& item);
 
-bool GetMyDictOfIntReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::GetMyDictOfInt& item, ::tlgen::MyDictOfInt& result);
-bool GetMyDictOfIntWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::GetMyDictOfInt& item, ::tlgen::MyDictOfInt& result);
+bool GetMyDictOfIntReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::GetMyDictOfInt& item, ::tlgen::MyDictOfInt& result);
+bool GetMyDictOfIntWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::GetMyDictOfInt& item, const ::tlgen::MyDictOfInt& result);
     
 }} // namespace tlgen::details
 

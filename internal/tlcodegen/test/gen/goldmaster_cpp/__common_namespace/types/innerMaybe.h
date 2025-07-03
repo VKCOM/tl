@@ -9,9 +9,14 @@ namespace tlgen {
 struct InnerMaybe {
   std::optional<std::vector<int32_t>> a;
 
-  std::string_view tl_name() const { return "innerMaybe"; }
-  uint32_t tl_tag() const { return 0x0a7d3b9e; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x0a7d3b9e;
+  static constexpr std::string_view TL_NAME = "innerMaybe";
 
+  uint32_t tl_tag() const { return 0x0a7d3b9e; }
+  std::string_view tl_name() const { return "innerMaybe"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_X) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_X) noexcept;
@@ -21,10 +26,10 @@ struct InnerMaybe {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_X) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_X) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_X)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_X) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_X);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_X)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_X) const;
 };
 
 } // namespace tlgen
@@ -34,8 +39,12 @@ template<uint32_t X>
 struct InnerMaybeX {
   std::optional<std::array<int32_t, X>> a;
 
-  std::string_view tl_name() const { return "innerMaybe"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0x0a7d3b9e;
+  static constexpr std::string_view TL_NAME = "innerMaybe";
+
   uint32_t tl_tag() const { return 0x0a7d3b9e; }
+  std::string_view tl_name() const { return "innerMaybe"; }
 };
 
 } // namespace tlgen

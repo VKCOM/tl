@@ -16,8 +16,8 @@ bool Service1EnableExpirationWrite(::tlgen::basictl::tl_ostream & s, const ::tlg
 bool Service1EnableExpirationReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableExpiration& item);
 bool Service1EnableExpirationWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::EnableExpiration& item);
 
-bool Service1EnableExpirationReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::EnableExpiration& item, bool& result);
-bool Service1EnableExpirationWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::EnableExpiration& item, bool& result);
+bool Service1EnableExpirationReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::EnableExpiration& item, bool& result);
+bool Service1EnableExpirationWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::EnableExpiration& item, const bool& result);
     
 }} // namespace tlgen::details
 

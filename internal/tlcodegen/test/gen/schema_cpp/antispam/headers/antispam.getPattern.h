@@ -16,8 +16,8 @@ bool AntispamGetPatternWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::an
 bool AntispamGetPatternReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::GetPattern& item);
 bool AntispamGetPatternWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::antispam::GetPattern& item);
 
-bool AntispamGetPatternReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::antispam::GetPattern& item, ::tlgen::antispam::PatternFull& result);
-bool AntispamGetPatternWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::antispam::GetPattern& item, ::tlgen::antispam::PatternFull& result);
+bool AntispamGetPatternReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::antispam::GetPattern& item, ::tlgen::antispam::PatternFull& result);
+bool AntispamGetPatternWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::antispam::GetPattern& item, const ::tlgen::antispam::PatternFull& result);
     
 }} // namespace tlgen::details
 

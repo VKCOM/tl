@@ -16,8 +16,8 @@ bool Service1TouchWrite(::tlgen::basictl::tl_ostream & s, const ::tlgen::service
 bool Service1TouchReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Touch& item);
 bool Service1TouchWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Touch& item);
 
-bool Service1TouchReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service1::Touch& item, bool& result);
-bool Service1TouchWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service1::Touch& item, bool& result);
+bool Service1TouchReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service1::Touch& item, bool& result);
+bool Service1TouchWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service1::Touch& item, const bool& result);
     
 }} // namespace tlgen::details
 

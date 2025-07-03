@@ -16,8 +16,8 @@ bool UsefulServiceGetUserEntityWrite(::tlgen::basictl::tl_ostream & s, const ::t
 bool UsefulServiceGetUserEntityReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntity& item);
 bool UsefulServiceGetUserEntityWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::GetUserEntity& item);
 
-bool UsefulServiceGetUserEntityReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result);
-bool UsefulServiceGetUserEntityWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result);
+bool UsefulServiceGetUserEntityReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::usefulService::GetUserEntity& item, std::optional<::tlgen::usefulService::GetUserEntityResult>& result);
+bool UsefulServiceGetUserEntityWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::usefulService::GetUserEntity& item, const std::optional<::tlgen::usefulService::GetUserEntityResult>& result);
     
 }} // namespace tlgen::details
 

@@ -2,6 +2,9 @@
 #include "__meta/headers.h"
 #include "__factory/headers.h"
 
+#include "__common_namespace/types/vector.h"
+#include "__common_namespace/types/tuple.h"
+#include "__common_namespace/types/int.h"
 #include "cases/types/cases.testVector.h"
 #include "cases/types/cases.testUnionContainer.h"
 #include "cases/types/cases.testUnion2.h"
@@ -20,7 +23,17 @@
 #include "cases/types/cases.testBeforeReadBitValidation.h"
 #include "cases/types/cases.testArray.h"
 #include "cases/types/cases.testAllPossibleFieldConfigsContainer.h"
+#include "casesTL2/types/casesTL2.testVectorBool.h"
 #include "casesTL2/types/casesTL2.testObject.h"
+#include "casesTL2/functions/casesTL2.testFunctionWithDep2.h"
+#include "casesTL2/functions/casesTL2.testFunctionWithDep1.h"
+#include "casesTL2/functions/casesTL2.testFunctionNoDep5.h"
+#include "casesTL2/functions/casesTL2.testFunctionNoDep4.h"
+#include "casesTL2/functions/casesTL2.testFunctionNoDep3.h"
+#include "casesTL2/functions/casesTL2.testFunctionNoDep2.h"
+#include "casesTL2/functions/casesTL2.testFunctionNoDep1.h"
+#include "casesTL2/types/casesTL2.testArrayFlexibleBool.h"
+#include "casesTL2/types/casesTL2.testArrayFixedBool.h"
 #include "cases/types/cases.replace7plusplus.h"
 #include "cases/types/cases.replace7plus.h"
 #include "cases/types/cases.replace7.h"
@@ -37,10 +50,12 @@
 #include "cases_bytes/types/cases_bytes.testDictInt.h"
 #include "cases_bytes/types/cases_bytes.testDictAny.h"
 #include "cases_bytes/types/cases_bytes.testArray.h"
+#include "__common_namespace/types/Bool.h"
 #include "benchmarks/types/benchmarks.vrutoyTopLevelContainerWithDependency.h"
 #include "benchmarks/types/benchmarks.vrutoyTopLevelContainer.h"
 #include "benchmarks/types/benchmarks.vrutoytopLevelUnionEmpty.h"
 #include "benchmarks/types/benchmarks.vrutoytopLevelUnionBig.h"
+#include "benchmarks/types/benchmarks.vrutoyPositions.h"
 #include "benchmarks/types/benchmarks.vruposition.h"
 #include "__common_namespace/types/true.h"
 #include "benchmarks/types/benchmarks.vruhash.h"
@@ -553,6 +568,295 @@ void tlgen::factory::set_all_factories() {
     return std::make_unique<tlgen_cases_Replace7plusplus_tl_object>();
   });
 
+  struct tlgen_casesTL2_TestArrayFixedBool_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::casesTL2::TestArrayFixedBool object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testArrayFixedBool", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestArrayFixedBool_tl_object>();
+  });
+
+  struct tlgen_casesTL2_TestArrayFlexibleBool_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::casesTL2::TestArrayFlexibleBool object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testArrayFlexibleBool", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestArrayFlexibleBool_tl_object>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionNoDep1_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionNoDep1 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      int32_t result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionNoDep1", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep1_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionNoDep1", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep1_tl_function>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionNoDep2_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionNoDep2 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::True result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionNoDep2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep2_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionNoDep2", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep2_tl_function>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionNoDep3_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionNoDep3 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      std::vector<int32_t> result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionNoDep3", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep3_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionNoDep3", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep3_tl_function>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionNoDep4_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionNoDep4 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      bool result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionNoDep4", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep4_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionNoDep4", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep4_tl_function>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionNoDep5_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionNoDep5 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::casesTL2::TestObject result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionNoDep5", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep5_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionNoDep5", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionNoDep5_tl_function>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionWithDep1_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionWithDep1 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      std::vector<int32_t> result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionWithDep1", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionWithDep1_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionWithDep1", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionWithDep1_tl_function>();
+  });
+
+  struct tlgen_casesTL2_TestFunctionWithDep2_tl_function : public ::tlgen::meta::tl_function {
+    tlgen::casesTL2::TestFunctionWithDep2 object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+    bool read_write_result(::tlgen::basictl::tl_istream &in, ::tlgen::basictl::tl_ostream &out) override {
+      tlgen::benchmarks::VrutoyPositions result;
+      bool read_result = this->object.read_result(in, result);
+      if (!read_result) {
+        return false;
+      }
+      return this->object.write_result(out, result);
+    }
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testFunctionWithDep2", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionWithDep2_tl_function>();
+  });
+
+  ::tlgen::meta::set_create_function_by_name("casesTL2.testFunctionWithDep2", []() -> std::unique_ptr<::tlgen::meta::tl_function> {
+    return std::make_unique<tlgen_casesTL2_TestFunctionWithDep2_tl_function>();
+  });
+
   struct tlgen_casesTL2_TestObject_tl_object : public ::tlgen::meta::tl_object {
     tlgen::casesTL2::TestObject object;
 
@@ -573,6 +877,28 @@ void tlgen::factory::set_all_factories() {
   };
   ::tlgen::meta::set_create_object_by_name("casesTL2.testObject", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
     return std::make_unique<tlgen_casesTL2_TestObject_tl_object>();
+  });
+
+  struct tlgen_casesTL2_TestVectorBool_tl_object : public ::tlgen::meta::tl_object {
+    tlgen::casesTL2::TestVectorBool object;
+
+    bool read(::tlgen::basictl::tl_istream &s) override {return object.read(s);}
+    bool write(::tlgen::basictl::tl_ostream &s) override {return object.write(s);}
+
+    void read(::tlgen::basictl::tl_throwable_istream &s) override { object.read(s);}
+    void write(::tlgen::basictl::tl_throwable_ostream &s) override { object.write(s);}
+        
+    bool read_boxed(::tlgen::basictl::tl_istream &s) override {return object.read_boxed(s);}
+    bool write_boxed(::tlgen::basictl::tl_ostream &s) override {return object.write_boxed(s);}
+
+    void read_boxed(::tlgen::basictl::tl_throwable_istream &s) override { object.read_boxed(s);}
+    void write_boxed(::tlgen::basictl::tl_throwable_ostream &s) override { object.write_boxed(s);}
+
+    bool write_json(std::ostream &s) override {return object.write_json(s);}
+
+  };
+  ::tlgen::meta::set_create_object_by_name("casesTL2.testVectorBool", []() -> std::unique_ptr<::tlgen::meta::tl_object> {
+    return std::make_unique<tlgen_casesTL2_TestVectorBool_tl_object>();
   });
 
   struct tlgen_cases_TestAllPossibleFieldConfigsContainer_tl_object : public ::tlgen::meta::tl_object {

@@ -9,9 +9,14 @@ namespace tlgen { namespace a {
 struct Inner {
   std::vector<int32_t> a;
 
-  std::string_view tl_name() const { return "a.inner"; }
-  uint32_t tl_tag() const { return 0xec5089b9; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xec5089b9;
+  static constexpr std::string_view TL_NAME = "a.inner";
 
+  uint32_t tl_tag() const { return 0xec5089b9; }
+  std::string_view tl_name() const { return "a.inner"; }
+
+  // basic serialization methods 
   bool write_json(std::ostream& s, [[maybe_unused]] uint32_t nat_I) const;
 
   bool read(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_I) noexcept;
@@ -21,10 +26,10 @@ struct Inner {
   void write(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I) const;
 
   bool read_boxed(::tlgen::basictl::tl_istream & s, [[maybe_unused]] uint32_t nat_I) noexcept;
-  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_I)const noexcept;
+  bool write_boxed(::tlgen::basictl::tl_ostream & s, [[maybe_unused]] uint32_t nat_I) const noexcept;
   
   void read_boxed(::tlgen::basictl::tl_throwable_istream & s, [[maybe_unused]] uint32_t nat_I);
-  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I)const;
+  void write_boxed(::tlgen::basictl::tl_throwable_ostream & s, [[maybe_unused]] uint32_t nat_I) const;
 };
 
 }} // namespace tlgen::a
@@ -34,8 +39,12 @@ template<uint32_t I>
 struct InnerI {
   std::array<int32_t, I> a{};
 
-  std::string_view tl_name() const { return "a.inner"; }
+  // tl type info
+  static constexpr uint32_t TL_TAG = 0xec5089b9;
+  static constexpr std::string_view TL_NAME = "a.inner";
+
   uint32_t tl_tag() const { return 0xec5089b9; }
+  std::string_view tl_name() const { return "a.inner"; }
 };
 
 }} // namespace tlgen::a

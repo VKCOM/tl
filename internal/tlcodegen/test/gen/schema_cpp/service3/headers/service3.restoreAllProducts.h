@@ -16,8 +16,8 @@ bool Service3RestoreAllProductsWrite(::tlgen::basictl::tl_ostream & s, const ::t
 bool Service3RestoreAllProductsReadBoxed(::tlgen::basictl::tl_istream & s, ::tlgen::service3::RestoreAllProducts& item);
 bool Service3RestoreAllProductsWriteBoxed(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::RestoreAllProducts& item);
 
-bool Service3RestoreAllProductsReadResult(::tlgen::basictl::tl_istream & s, ::tlgen::service3::RestoreAllProducts& item, bool& result);
-bool Service3RestoreAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, ::tlgen::service3::RestoreAllProducts& item, bool& result);
+bool Service3RestoreAllProductsReadResult(::tlgen::basictl::tl_istream & s, const ::tlgen::service3::RestoreAllProducts& item, bool& result);
+bool Service3RestoreAllProductsWriteResult(::tlgen::basictl::tl_ostream & s, const ::tlgen::service3::RestoreAllProducts& item, const bool& result);
     
 }} // namespace tlgen::details
 
