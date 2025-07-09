@@ -54,6 +54,8 @@ type TL2Field struct {
 
 	PR     PositionRange
 	PRName PositionRange
+
+	CommentBefore string
 }
 
 type TL2TypeDefinition struct {
@@ -132,6 +134,8 @@ type TL2Combinator struct {
 	IsFunction bool
 
 	PR PositionRange
+
+	CommentBefore string
 }
 
 // TL2File := TL2Combinator*;
@@ -163,4 +167,15 @@ func (c TL2TypeCategory) IsUint32() bool {
 
 func (c TL2TypeCategory) IsLegalCategory() bool {
 	return c.IsUint32() || c.IsType()
+}
+
+func (t TL2UnionTypeVariant) HasBeforeCommentIn() bool {
+	if t.IsConstructor {
+		for _, field := range t.Constructor.Fields {
+			if field.CommentBefore != "" {
+				return true
+			}
+		}
+	}
+	return false
 }

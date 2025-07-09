@@ -52,6 +52,11 @@ func (it *tokenIterator) skipWS(outer Position) PositionRange {
 	return PositionRange{}
 }
 
+func (it *tokenIterator) currentPositionRange(outer Position) PositionRange {
+	tok := it.front()
+	return PositionRange{Outer: outer, Begin: tok.pos, End: tok.pos}
+}
+
 // returns if newline was found
 func (it *tokenIterator) skipToNewline() bool {
 	for ; it.count() != 0; it.popFront() {
@@ -78,6 +83,15 @@ func (it *tokenIterator) expect(i int) bool {
 		return true
 	}
 	return false
+}
+
+func (it *tokenIterator) expectLazy(i int) bool {
+	it2 := *it
+	result := it2.expect(i)
+	if result {
+		*it = it2
+	}
+	return result
 }
 
 func (it *tokenIterator) expectOrPanic(i int) {

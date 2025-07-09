@@ -119,6 +119,8 @@ func parseTL2Combinator(it tokenIterator) (TL2Combinator, tokenIterator, error) 
 	combinator := TL2Combinator{PR: rest.skipWS(Position{})}
 	outer := combinator.PR.Begin
 
+	combinator.CommentBefore = parseCommentBefore(it, rest)
+
 	state, rest, combinator.Annotations = zeroOrMore(parseTL2Annotation)(rest, outer)
 	if state.Error != nil {
 		return TL2Combinator{}, tokenIterator{}, state.Error
@@ -308,7 +310,7 @@ func parseTL2TypeDeclarationWithoutName(tokens tokenIterator, position Position,
 // TL2TypeDefinition = TL2TypeRef | TL2Field* | TL2UnionType;
 func parseTL2TypeDefinition(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeDefinition) {
 	restTokens = tokens
-	result.PR = restTokens.skipWS(position)
+	result.PR = restTokens.currentPositionRange(position)
 
 	state, restTokens, result.ConstructorFields = zeroOrMore(parseTL2Field)(restTokens, position)
 	if state.StartProcessing {
@@ -437,6 +439,9 @@ func parseTL2Field(tokens tokenIterator, position Position) (state OptionalState
 
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
+
+	result.CommentBefore = parseCommentBefore(tokens, restTokens)
+
 	switch {
 	case restTokens.checkToken(lcIdent) || restTokens.checkToken(underscore):
 		result.PRName = restTokens.skipWS(position)
@@ -512,7 +517,7 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 	}
 	result.PRName.End = restTokens.front().pos
 
-	if restTokens.expect(lAngleBracket) {
+	if restTokens.expectLazy(lAngleBracket) {
 		result.Arguments = make([]TL2TypeArgument, 1)
 
 		var argState OptionalState
@@ -551,7 +556,7 @@ func parseTL2BracketType(tokens tokenIterator, position Position) (state Optiona
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
-	if restTokens.expect(lSquareBracket) {
+	if restTokens.expectLazy(lSquareBracket) {
 		state.StartProcessing = true
 
 		var indexState OptionalState

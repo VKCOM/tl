@@ -7,6 +7,7 @@
 package tlast
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"testing"
@@ -116,5 +117,12 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 		lex := newLexer(str, "", LexerOptions{})
 		_, err := lex.generateTokens()
 		require.Error(t, err)
+	})
+
+	t.Run("Comments parse", func(t *testing.T) {
+		str := "// a\n\n// b\n// c\nname = x:int // d\n;"
+		lex := newLexer(str, "", LexerOptions{})
+		its, _ := lex.generateTokens()
+		fmt.Println(its)
 	})
 }

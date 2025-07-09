@@ -194,11 +194,13 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 		natTemples = utils.CopyMap(natTemples)
 		for _, field := range oldFields {
 			newField := tlast.TL2Field{}
+			// name
 			newField.Name = lowerFirst(field.FieldName)
 			if newField.Name == "" {
 				newField.Name = "_"
 				newField.IsIgnored = true
 			}
+			// if it has field mask
 			if field.Mask != nil {
 				newField.IsOptional = true
 				if !field.IsRepeated {
@@ -226,6 +228,7 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 				}
 			}
 			calculatingType := &newField.Type
+			// if is repeated
 			if field.IsRepeated {
 				newField.Type.IsBracket = true
 				newField.Type.BracketType = new(tlast.TL2BracketType)
@@ -244,16 +247,42 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 					}
 				}
 			}
+			// calculate type
 			*calculatingType = resolveType(field.FieldType, natIsConstant, natTemples)
+			// advance context
 			if field.FieldType.String() == "#" {
 				natTemples[field.FieldName] = true
+			}
+			// add comment
+			newField.CommentBefore = field.CommentBefore
+			if field.CommentRight != "" {
+				if newField.CommentBefore != "" {
+					newField.CommentBefore += "\n"
+				}
+				newField.CommentBefore += field.CommentRight
 			}
 			newFields = append(newFields, newField)
 		}
 		return
 	}
 
-	for _, name := range typeNames {
+	getOrder := func(name tlast.Name) int {
+		combinators := info.Types[name]
+		minIndex := combinators[0].OriginalOrderIndex
+		for _, combinator := range combinators {
+			if combinator.OriginalOrderIndex < minIndex {
+				minIndex = combinator.OriginalOrderIndex
+			}
+		}
+		return minIndex
+	}
+
+	originalOrderTypeNames := slices.Clone(typeNames)
+	sort.Slice(originalOrderTypeNames, func(i, j int) bool {
+		return getOrder(originalOrderTypeNames[i]) < getOrder(originalOrderTypeNames[j])
+	})
+
+	for _, name := range originalOrderTypeNames {
 		combinators := info.Types[name]
 		if len(combinators) == 0 {
 			continue
@@ -285,9 +314,9 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 				sort.Ints(iList)
 				jList := utils.Keys(allConstableArgsSubSets[j])
 				sort.Ints(jList)
-				return slices.Compare(iList, jList) > 0
+				return slices.Compare(iList, jList) <= 0
 			}
-			return len(allConstableArgsSubSets[i]) > len(allConstableArgsSubSets[j])
+			return len(allConstableArgsSubSets[i]) <= len(allConstableArgsSubSets[j])
 		})
 
 		allConstableArgsSubSets = utils.FilterSlice(
@@ -312,6 +341,9 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 			sort.Ints(constantArgs)
 			for _, arg := range constantArgs {
 				tl2Combinator.TypeDecl.Name.Name += "_" + upperFirst(combinator0.TypeDecl.Arguments[arg])
+			}
+			if len(constantArgs) != 0 {
+				tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "duplicate"})
 			}
 
 			// init templates
@@ -368,18 +400,37 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 					tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
 				}
 			}
-
+			// add comment
+			tl2Combinator.CommentBefore = combinator0.CommentBefore
+			if combinator0.CommentRight != "" {
+				if tl2Combinator.CommentBefore != "" {
+					tl2Combinator.CommentBefore += "\n"
+				}
+				tl2Combinator.CommentBefore += combinator0.CommentRight
+			}
 			file.Combinators = append(file.Combinators, tl2Combinator)
 		}
 	}
 
-	for _, function := range info.Functions {
+	orderedFunctions := slices.Clone(info.Functions)
+	sort.Slice(orderedFunctions, func(i, j int) bool {
+		return orderedFunctions[i].OriginalOrderIndex < orderedFunctions[j].OriginalOrderIndex
+	})
+
+	for _, function := range orderedFunctions {
 		tl2Combinator := tlast.TL2Combinator{IsFunction: true}
 		// add modifiers
 		for _, modifier := range function.Modifiers {
 			tl2Combinator.Annotations = append(tl2Combinator.Annotations,
 				tlast.TL2Annotation{
 					Name: modifier.Name,
+				},
+			)
+		}
+		if len(function.TemplateArguments) > 0 {
+			tl2Combinator.Annotations = append(tl2Combinator.Annotations,
+				tlast.TL2Annotation{
+					Name: "tl1_diagonal",
 				},
 			)
 		}
@@ -393,17 +444,27 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 			tl2Combinator.FuncDecl.ID = new(uint32)
 			*tl2Combinator.FuncDecl.ID = *function.Construct.ID
 		}
-		// add arguments
-		tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool), make(map[string]bool))
-		// add return type
-		nats := make(map[string]bool)
-		for _, field := range function.Fields {
-			if field.FieldType.String() == "#" {
-				nats[field.FieldName] = true
+		if len(function.TemplateArguments) == 0 {
+			// add arguments
+			tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool), make(map[string]bool))
+			// add return type
+			nats := make(map[string]bool)
+			for _, field := range function.Fields {
+				if field.FieldType.String() == "#" {
+					nats[field.FieldName] = true
+				}
+			}
+			tl2Combinator.FuncDecl.ReturnType = tlast.TL2TypeDefinition{
+				TypeAlias: resolveType(function.FuncDecl, make(map[string]bool), nats),
 			}
 		}
-		tl2Combinator.FuncDecl.ReturnType = tlast.TL2TypeDefinition{
-			TypeAlias: resolveType(function.FuncDecl, make(map[string]bool), nats),
+		// add comment
+		tl2Combinator.CommentBefore = function.CommentBefore
+		if function.CommentRight != "" {
+			if tl2Combinator.CommentBefore != "" {
+				tl2Combinator.CommentBefore += "\n"
+			}
+			tl2Combinator.CommentBefore += function.CommentRight
 		}
 		file.Combinators = append(file.Combinators, tl2Combinator)
 	}
@@ -476,20 +537,54 @@ func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, n
 	}
 
 	// print for debug
-	if false {
-		for tp, args := range natUsage.CombinatorsNatFieldsToArraySizeReference {
+	if true {
+		//file, _ := os.Open("usages.json")
+		currefs := natUsage.CombinatorsNatFieldsToArraySizeReference
+
+		tps := utils.Keys(currefs)
+		sort.Slice(tps, func(i, j int) bool {
+			return compareNames(tps[i], tps[j])
+		})
+
+		for _, tp := range tps {
+			args := utils.Keys(currefs[tp])
+			sort.Ints(args)
+
 			fmt.Printf("<<<<<<\n%s:\n[\n", tp.String())
-			for arg, refs := range args {
+			for arg := range args {
+				refs := currefs[tp][arg]
+
+				refsKeys := utils.Keys(refs)
+				sort.Slice(refsKeys, func(i, j int) bool {
+					return compareNames(refsKeys[i], refsKeys[j])
+				})
+
 				fmt.Printf("\t%d: [\n", arg)
-				for ref, fields := range refs {
-					for field := range fields {
-						fmt.Printf("\t\t(\"%s\", %d),\n", ref.String(), field)
+				for _, ref := range refsKeys {
+					fields := refs[ref]
+
+					fieldsKeys := utils.Keys(fields)
+					sort.Ints(fieldsKeys)
+
+					for _, field := range fieldsKeys {
+						path := fields[field]
+						pathStr := ""
+						for _, edge := range path {
+							pathStr += fmt.Sprintf(" <- ((%s, %d), %d)", edge.Type, edge.ArgIndex, edge.FieldIndex)
+						}
+						fmt.Printf("\t\t(\"%s\", %d)%s,\n", ref.String(), field, pathStr)
 					}
 				}
 				fmt.Println("\t],")
 			}
 			fmt.Println("]")
 		}
+
+		fmt.Printf("List to remove deps (%d): [\n", len(tps))
+		for _, tp := range tps {
+			fmt.Printf("\t%s,\n", tp)
+		}
+		fmt.Println("]")
 	}
 
 	// print for debug
