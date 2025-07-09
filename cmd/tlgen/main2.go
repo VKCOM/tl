@@ -214,7 +214,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	if opt.TL2MigrationFile != "" {
 		file := gen.MigrateToTL2()
 		sb := strings.Builder{}
-		file.Print(&sb)
+		file.Print(&sb, tlast.DefaultOptions())
 		if opt.Verbose {
 			log.Print("generating TL2 file...")
 		}
