@@ -387,15 +387,14 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 			} else {
 				tl2Combinator.TypeDecl.Type.IsUnionType = true
 				for _, combinator := range combinators {
-					newVariant := tlast.TL2UnionTypeVariant{}
+					newVariant := tlast.TL2UnionConstructor{}
+					newVariant.Name = upperFirst(combinator.Construct.Name.Name)
 					if len(combinator.Fields) == 1 && combinator.Fields[0].FieldName == "" {
+						newVariant.IsTypeAlias = true
 						newVariant.TypeAlias = resolveType(combinator.Fields[0].FieldType, natIsConstant, natTemplates)
 					} else {
-						newVariant.IsConstructor = true
-						newVariant.Constructor = tlast.TL2UnionConstructor{
-							Name: upperFirst(combinator.Construct.Name.Name),
-						}
-						newVariant.Constructor.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
+						newVariant.IsTypeAlias = false
+						newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
 					}
 					tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
 				}

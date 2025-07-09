@@ -12,7 +12,7 @@ dictionary<t:type> = vector<dictionaryField<t>>;
 dictionaryFieldAny<k:type,v:type> = key:k value:v;
 dictionaryAny<k:type,v:type> = []dictionaryFieldAny<k,v>;
 true = ;
-maybe<t:type> = ResultFalse | t;
+maybe<t:type> = ResultFalse | ResultTrue t;
 pair<x:type,y:type> = x:x y:y;
 // BLOCK: TEST RECURSIVE TYPES
 cases.myCycle1 = fields_mask:uint32 a?:cases.myCycle2;

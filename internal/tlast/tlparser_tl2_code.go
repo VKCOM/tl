@@ -328,7 +328,7 @@ func parseTL2TypeDefinition(tokens tokenIterator, position Position) (state Opti
 	return
 }
 
-// TL2UnionType := vb? TL2UnionTypeVariant (vb TL2UnionTypeVariant)+;
+// TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
 func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionType) {
 	defer func() {
 		if !state.StartProcessing {
@@ -343,9 +343,9 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 		state.StartProcessing = true
 	}
 
-	result.Variants = make([]TL2UnionTypeVariant, 1)
+	result.Variants = make([]TL2UnionConstructor, 1)
 	var localState OptionalState
-	localState, restTokens, result.Variants[0] = parseTL2UnionTypeVariant(restTokens, position)
+	localState, restTokens, result.Variants[0] = parseTL2UnionConstructor(restTokens, position)
 	if localState.IsFailed() {
 		state.Fail("can't parse first variant")
 		return
@@ -356,9 +356,8 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 
 	state.Inherit(localState)
 
-	if !state.StartProcessing && !result.Variants[0].IsConstructor {
-		// maybe typedef
-		state.StartProcessing = false
+	if !state.StartProcessing {
+		return
 	}
 
 	for {
@@ -367,8 +366,8 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 		}
 		state.StartProcessing = true
 		var localState OptionalState
-		var variant TL2UnionTypeVariant
-		localState, restTokens, variant = parseTL2UnionTypeVariant(restTokens, position)
+		var variant TL2UnionConstructor
+		localState, restTokens, variant = parseTL2UnionConstructor(restTokens, position)
 		result.Variants = append(result.Variants, variant)
 		state.Inherit(localState)
 		if !localState.ExpectProgress("expected union variant definition after vertical var") {
@@ -382,33 +381,14 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	}
 
 	if len(result.Variants) < 2 {
-		if len(result.Variants) == 1 && !result.Variants[0].IsConstructor {
-			state.StartProcessing = false
-			return
-		}
-		state.Fail("expected at least 2 variants on union type")
+		state.Fail("expected at least 2 variants of union type")
 	}
 
 	result.PR.End = restTokens.front().pos
 	return
 }
 
-// TL2UnionTypeVariant := TL2TypeRef | TL2UnionConstructor;
-func parseTL2UnionTypeVariant(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionTypeVariant) {
-	restTokens = tokens
-	result.PR = restTokens.skipWS(position)
-
-	state, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
-	if !state.StartProcessing {
-		state, restTokens, result.Constructor = parseTL2UnionConstructor(restTokens, position)
-		result.IsConstructor = state.StartProcessing
-	}
-
-	result.PR.End = restTokens.front().pos
-	return
-}
-
-// TL2UnionConstructor := ucName TL2Field*;
+// TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
 func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionConstructor) {
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
@@ -423,6 +403,15 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 		var fieldsState OptionalState
 		fieldsState, restTokens, result.Fields = zeroOrMore(parseTL2Field)(restTokens, position)
 		state.Inherit(fieldsState)
+		if !fieldsState.StartProcessing {
+			result.IsTypeAlias = true
+			var aliasState OptionalState
+			aliasState, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
+			state.Inherit(aliasState)
+			if aliasState.IsOmitted() {
+				result.IsTypeAlias = false
+			}
+		}
 	}
 
 	result.PR.End = restTokens.front().pos

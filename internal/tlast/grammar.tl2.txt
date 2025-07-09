@@ -6,9 +6,8 @@ TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts
 
 TL2TypeDefinition := TL2TypeRef | TL2Field* | TL2UnionType;
 
-TL2UnionType := vb? TL2UnionTypeVariant (vb TL2UnionTypeVariant)+;
-TL2UnionTypeVariant := TL2TypeRef | TL2UnionConstructor;
-TL2UnionConstructor := ucName TL2Field*;
+TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
+TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
 
 TL2Field := ((lcName qm?) | usc) cl TL2TypeRef;
 

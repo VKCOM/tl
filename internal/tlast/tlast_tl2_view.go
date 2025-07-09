@@ -212,14 +212,15 @@ func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options f
 	return forceNewline
 }
 
-func (t *TL2UnionTypeVariant) print(sb *strings.Builder, options formatOptions, prefixSize int) (hasNewLine bool) {
+func (t *TL2UnionConstructor) print(sb *strings.Builder, options formatOptions, prefixSize int) (hasNewLine bool) {
 	const defaultSep = " "
 	const newLineSep = "\n\t\t"
 
+	currentSize := sb.Len()
+	sb.WriteString(t.Name)
+
 	forceNewLine := false
-	if t.IsConstructor {
-		currentSize := sb.Len()
-		sb.WriteString(t.Constructor.Name)
+	if !t.IsTypeAlias {
 		if !options.IgnoreComments {
 			if t.HasBeforeCommentIn() {
 				forceNewLine = true
@@ -241,13 +242,14 @@ func (t *TL2UnionTypeVariant) print(sb *strings.Builder, options formatOptions, 
 			t.printVariantFields(sb, options, sep)
 		}
 	} else {
+		sb.WriteString(" ")
 		t.TypeAlias.Print(sb)
 	}
 	return forceNewLine
 }
 
-func (t *TL2UnionTypeVariant) printVariantFields(sb *strings.Builder, options formatOptions, sep string) {
-	for _, field := range t.Constructor.Fields {
+func (t *TL2UnionConstructor) printVariantFields(sb *strings.Builder, options formatOptions, sep string) {
+	for _, field := range t.Fields {
 		sb.WriteString(sep)
 		if !options.IgnoreComments {
 			if field.CommentBefore != "" {
