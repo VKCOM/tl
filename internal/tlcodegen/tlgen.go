@@ -334,7 +334,7 @@ type Gen2Options struct {
 	GenerateRPCCode        bool
 	BasicRPCPath           string
 	BytesWhiteList         string
-	TypesWhileList         string
+	TypesWhiteList         string
 	RawHandlerWhileList    string
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
@@ -1948,8 +1948,8 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 		}
 	}
 	filters := []string{"."}
-	if gen.options.TypesWhileList != "" {
-		filters = prepareNameFilter(gen.options.TypesWhileList)
+	if gen.options.TypesWhiteList != "" {
+		filters = prepareNameFilter(gen.options.TypesWhiteList)
 	}
 	for filepathName := range relativeFiles {
 		f := filepath.Join(outdir, filepathName)
@@ -2060,7 +2060,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	default:
 		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported, plus '' for linting", options.Language)
 	}
-	typesWhiteList := prepareNameFilter(options.TypesWhileList)
+	typesWhiteList := prepareNameFilter(options.TypesWhiteList)
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
 	gen.supportedAnnotations = map[string]int{"read": 0, "any": 1, "internal": 2, "write": 3, "readwrite": 4, "kphp": 5}
@@ -2437,7 +2437,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 				return nil, err
 			}
 		}
-		shouldGenerate := options.TypesWhileList == ""
+		shouldGenerate := options.TypesWhiteList == ""
 		whiteListName := typ.Construct.Name
 		if !typ.IsFunction {
 			whiteListName = typ.TypeDecl.Name

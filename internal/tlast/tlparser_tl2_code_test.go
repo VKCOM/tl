@@ -623,5 +623,174 @@ testNs.testName <x:uint32,  y:type  > =
 				combs.String(),
 			)
 		})
+		t.Run("combinator with comment", func(t *testing.T) {
+			it, _ := setupIterator(`// comment 
+testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
+			comb, _, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
+			assert.Equal(t,
+				`// comment
+testNs.testName<x:uint32,y:type>#09abcdef = Green x:int | Red | string;`,
+				comb.String(),
+			)
+		})
+
+		t.Run("fields with comments", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName <x:uint32,  y:type  >#09abcdef = // a
+x:int
+
+// b
+// c
+y:int
+
+//
+
+z:int; `)
+			comb, _, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
+			assert.Equal(t,
+				`testNs.testName<x:uint32,y:type>#09abcdef = 
+	// a
+	x:int
+	// b
+	// c
+	y:int
+	z:int;`,
+				comb.String(),
+			)
+		})
+
+		t.Run("variant fields with comments", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName <x:uint32,  y:type  >#09abcdef = int | string | Green
+
+// a
+x:int
+
+// b
+// c
+y:int
+
+//
+
+z:int; `)
+			comb, _, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
+			assert.Equal(t,
+				`testNs.testName<x:uint32,y:type>#09abcdef = 
+	| int
+	| string
+	| Green
+		// a
+		x:int
+		// b
+		// c
+		y:int
+		z:int;`,
+				comb.String(),
+			)
+		})
+	})
+
+	t.Run("check comments", func(t *testing.T) {
+		t.Run("comments before", func(t *testing.T) {
+			t.Run("combinators", func(t *testing.T) {
+				t.Run("one line", func(t *testing.T) {
+					it, _ := setupIterator(`// a
+
+// b
+name = x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "// b", comb.CommentBefore)
+				})
+
+				t.Run("few lines", func(t *testing.T) {
+					it, _ := setupIterator(`// a
+
+// l1
+// l2
+name = x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "// l1\n// l2", comb.CommentBefore)
+				})
+
+				t.Run("no lines", func(t *testing.T) {
+					it, _ := setupIterator(`// a
+
+// l1
+// l2
+
+name = x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "", comb.CommentBefore)
+				})
+			})
+
+			t.Run("fields", func(t *testing.T) {
+				t.Run("one line for first", func(t *testing.T) {
+					it, _ := setupIterator(`name = // a
+														x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "// a", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
+				})
+
+				t.Run("one line for second", func(t *testing.T) {
+					it, _ := setupIterator(`name = y: int
+						// a
+						x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
+					assert.Equal(t, "// a", comb.TypeDecl.Type.ConstructorFields[1].CommentBefore)
+				})
+
+				t.Run("few lines for first", func(t *testing.T) {
+					it, _ := setupIterator(`// a
+name = // l1
+// l2
+x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "// l1\n// l2", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
+				})
+
+				t.Run("few lines for second", func(t *testing.T) {
+					it, _ := setupIterator(`name = y: int
+// a
+// b
+						x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
+					assert.Equal(t, "// a\n// b", comb.TypeDecl.Type.ConstructorFields[1].CommentBefore)
+				})
+
+				t.Run("no lines for first", func(t *testing.T) {
+					it, _ := setupIterator(`// a
+name = // l1
+// l2
+
+x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
+				})
+
+				t.Run("no lines for second", func(t *testing.T) {
+					it, _ := setupIterator(`name = y: int
+// a
+// b
+
+						x:int;`)
+					comb, _, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
+					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[1].CommentBefore)
+				})
+			})
+		})
 	})
 }
