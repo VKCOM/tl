@@ -70,24 +70,19 @@ type TL2TypeDefinition struct {
 }
 
 type TL2UnionConstructor struct {
-	Name   string
-	Fields []TL2Field
+	Name string
+
+	Fields    []TL2Field
+	TypeAlias TL2TypeRef
+
+	IsTypeAlias bool
 
 	PR     PositionRange
 	PRName PositionRange
 }
 
-type TL2UnionTypeVariant struct {
-	TypeAlias   TL2TypeRef
-	Constructor TL2UnionConstructor
-
-	IsConstructor bool
-
-	PR PositionRange
-}
-
 type TL2UnionType struct {
-	Variants []TL2UnionTypeVariant // at least 2
+	Variants []TL2UnionConstructor // at least 2
 
 	PR PositionRange
 }
@@ -169,9 +164,9 @@ func (c TL2TypeCategory) IsLegalCategory() bool {
 	return c.IsUint32() || c.IsType()
 }
 
-func (t TL2UnionTypeVariant) HasBeforeCommentIn() bool {
-	if t.IsConstructor {
-		for _, field := range t.Constructor.Fields {
+func (t TL2UnionConstructor) HasBeforeCommentIn() bool {
+	if !t.IsTypeAlias {
+		for _, field := range t.Fields {
 			if field.CommentBefore != "" {
 				return true
 			}

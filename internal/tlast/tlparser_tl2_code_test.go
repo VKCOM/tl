@@ -211,7 +211,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("union", func(t *testing.T) {
-				it, _ := setupIterator(` testNs.testName = int | string; `)
+				it, _ := setupIterator(` testNs.testName = SomeInt int | SomeString string; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -233,7 +233,7 @@ func TestParseTL2(t *testing.T) {
 			})
 
 			t.Run("union with constructors", func(t *testing.T) {
-				it, _ := setupIterator(` testNs.testName = Green x:int | Red | string; `)
+				it, _ := setupIterator(` testNs.testName = Green x:int | Red | SomeString string; `)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
 				assert.True(t, newIt.expect(eof))
@@ -249,29 +249,29 @@ func TestParseTL2(t *testing.T) {
 				assert.Equal(t, 3, len(union.Variants))
 
 				// variant 0
-				assert.True(t, union.Variants[0].IsConstructor)
-				assert.Equal(t, "Green", union.Variants[0].Constructor.Name)
-				assert.Equal(t, 1, len(union.Variants[0].Constructor.Fields))
+				assert.False(t, union.Variants[0].IsTypeAlias)
+				assert.Equal(t, "Green", union.Variants[0].Name)
+				assert.Equal(t, 1, len(union.Variants[0].Fields))
 
-				assert.Equal(t, "", union.Variants[0].Constructor.Fields[0].Type.SomeType.Name.Namespace)
-				assert.Equal(t, "int", union.Variants[0].Constructor.Fields[0].Type.SomeType.Name.Name)
+				assert.Equal(t, "", union.Variants[0].Fields[0].Type.SomeType.Name.Namespace)
+				assert.Equal(t, "int", union.Variants[0].Fields[0].Type.SomeType.Name.Name)
 
 				// variant 1
-				assert.True(t, union.Variants[1].IsConstructor)
-				assert.Equal(t, "Red", union.Variants[1].Constructor.Name)
-				assert.Equal(t, 0, len(union.Variants[1].Constructor.Fields))
+				assert.False(t, union.Variants[1].IsTypeAlias)
+				assert.Equal(t, "Red", union.Variants[1].Name)
+				assert.Equal(t, 0, len(union.Variants[1].Fields))
 
 				// variant 2
 				assert.Equal(t, "", union.Variants[2].TypeAlias.SomeType.Name.Namespace)
 				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
 			})
 
-			t.Run("union with constructors and traling |", func(t *testing.T) {
+			t.Run("union with constructors and traling vb", func(t *testing.T) {
 				it, _ := setupIterator(`
 testNs.testName = 
 	| Green x:int 
 	| Red 
-	| string
+	| Text string
 	;`)
 				comb, newIt, err := parseTL2Combinator(it)
 				assert.NoError(t, err)
@@ -288,19 +288,20 @@ testNs.testName =
 				assert.Equal(t, 3, len(union.Variants))
 
 				// variant 0
-				assert.True(t, union.Variants[0].IsConstructor)
-				assert.Equal(t, "Green", union.Variants[0].Constructor.Name)
-				assert.Equal(t, 1, len(union.Variants[0].Constructor.Fields))
+				assert.False(t, union.Variants[0].IsTypeAlias)
+				assert.Equal(t, "Green", union.Variants[0].Name)
+				assert.Equal(t, 1, len(union.Variants[0].Fields))
 
-				assert.Equal(t, "", union.Variants[0].Constructor.Fields[0].Type.SomeType.Name.Namespace)
-				assert.Equal(t, "int", union.Variants[0].Constructor.Fields[0].Type.SomeType.Name.Name)
+				assert.Equal(t, "", union.Variants[0].Fields[0].Type.SomeType.Name.Namespace)
+				assert.Equal(t, "int", union.Variants[0].Fields[0].Type.SomeType.Name.Name)
 
 				// variant 1
-				assert.True(t, union.Variants[1].IsConstructor)
-				assert.Equal(t, "Red", union.Variants[1].Constructor.Name)
-				assert.Equal(t, 0, len(union.Variants[1].Constructor.Fields))
+				assert.False(t, union.Variants[1].IsTypeAlias)
+				assert.Equal(t, "Red", union.Variants[1].Name)
+				assert.Equal(t, 0, len(union.Variants[1].Fields))
 
 				// variant 2
+				assert.True(t, union.Variants[2].IsTypeAlias)
 				assert.Equal(t, "", union.Variants[2].TypeAlias.SomeType.Name.Namespace)
 				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
 			})
@@ -442,7 +443,7 @@ testNs.testName = Green x:int |
 		})
 
 		t.Run("function with union type result", func(t *testing.T) {
-			it, _ := setupIterator(` testNs.testName#09123456 x:int => int | NonFound | Found name:string _:int; `)
+			it, _ := setupIterator(` testNs.testName#09123456 x:int => SomeInt int | NonFound | Found name:string _:int; `)
 			comb, newIt, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.True(t, newIt.expect(eof))
@@ -467,20 +468,20 @@ testNs.testName = Green x:int |
 			variants := comb.FuncDecl.ReturnType.UnionType.Variants
 
 			// 0
-			assert.False(t, variants[0].IsConstructor)
+			assert.True(t, variants[0].IsTypeAlias)
 			assert.Equal(t, "int", variants[0].TypeAlias.String())
 
 			// 1
-			assert.True(t, variants[1].IsConstructor)
-			assert.Equal(t, "NonFound", variants[1].Constructor.Name)
-			assert.Equal(t, 0, len(variants[1].Constructor.Fields))
+			assert.False(t, variants[1].IsTypeAlias)
+			assert.Equal(t, "NonFound", variants[1].Name)
+			assert.Equal(t, 0, len(variants[1].Fields))
 
 			// 2
-			assert.True(t, variants[2].IsConstructor)
-			assert.Equal(t, "Found", variants[2].Constructor.Name)
-			assert.Equal(t, 2, len(variants[2].Constructor.Fields))
-			assert.Equal(t, "name", variants[2].Constructor.Fields[0].Name)
-			assert.Equal(t, "_", variants[2].Constructor.Fields[1].Name)
+			assert.False(t, variants[2].IsTypeAlias)
+			assert.Equal(t, "Found", variants[2].Name)
+			assert.Equal(t, 2, len(variants[2].Fields))
+			assert.Equal(t, "name", variants[2].Fields[0].Name)
+			assert.Equal(t, "_", variants[2].Fields[1].Name)
 
 		})
 	})
@@ -597,11 +598,11 @@ testNs.testName = Green x:int |
 
 	t.Run("check print", func(t *testing.T) {
 		t.Run("combinator", func(t *testing.T) {
-			it, _ := setupIterator(` testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
+			it, _ := setupIterator(` testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | SomeStr string   ; `)
 			comb, _, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.Equal(t,
-				`testNs.testName<x:uint32,y:type>#09abcdef = Green x:int | Red | string;`,
+				`testNs.testName<x:uint32,y:type>#09abcdef = Green x:int | Red | SomeStr string;`,
 				comb.String(),
 			)
 		})
@@ -611,13 +612,14 @@ testNs.testName = Green x:int |
 testNs.testName <x:uint32,  y:type  > =
 	  Green x:int 
 	| Red _:int
-	| string // my comment  
+	| SomeStr     string // my comment  
 ; 
 @x@r testFunc#09123456 a:uint32 t:vector<vector < int>> 
 	=> int;`
-			combs, _ := ParseTL2(str)
+			combs, err := ParseTL2(str)
+			assert.NoError(t, err)
 			assert.Equal(t,
-				`testNs.testName<x:uint32,y:type> = Green x:int | Red _:int | string;
+				`testNs.testName<x:uint32,y:type> = Green x:int | Red _:int | SomeStr string;
 @x @r testFunc#09123456 a:uint32 t:vector<vector<int>> => int;
 `,
 				combs.String(),
@@ -625,12 +627,12 @@ testNs.testName <x:uint32,  y:type  > =
 		})
 		t.Run("combinator with comment", func(t *testing.T) {
 			it, _ := setupIterator(`// comment 
-testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | string   ; `)
+testNs.testName <x:uint32,  y:type  >#09abcdef =Green x:int |   Red | SomeStr    string   ; `)
 			comb, _, err := parseTL2Combinator(it)
 			assert.NoError(t, err)
 			assert.Equal(t,
 				`// comment
-testNs.testName<x:uint32,y:type>#09abcdef = Green x:int | Red | string;`,
+testNs.testName<x:uint32,y:type>#09abcdef = Green x:int | Red | SomeStr string;`,
 				comb.String(),
 			)
 		})
@@ -661,7 +663,7 @@ z:int; `)
 		})
 
 		t.Run("variant fields with comments", func(t *testing.T) {
-			it, _ := setupIterator(`testNs.testName <x:uint32,  y:type  >#09abcdef = int | string | Green
+			it, _ := setupIterator(`testNs.testName <x:uint32,  y:type  >#09abcdef = SomeInt int | SomeStr string | Green
 
 // a
 x:int
@@ -677,8 +679,8 @@ z:int; `)
 			assert.NoError(t, err)
 			assert.Equal(t,
 				`testNs.testName<x:uint32,y:type>#09abcdef = 
-	| int
-	| string
+	| SomeInt int
+	| SomeStr string
 	| Green
 		// a
 		x:int
