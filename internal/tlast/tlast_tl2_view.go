@@ -16,7 +16,7 @@ type formatOptions struct {
 	UnionConstructorSize   int
 }
 
-func DefaultOptions() formatOptions {
+func NewDefaultFormatOptions() formatOptions {
 	return formatOptions{
 		IgnoreComments:         false,
 		OneLineConstructorSize: OneLineConstructorSize,
@@ -24,7 +24,7 @@ func DefaultOptions() formatOptions {
 	}
 }
 
-func CanonicalOptions() formatOptions {
+func NewCanonicalFormatOptions() formatOptions {
 	return formatOptions{
 		IgnoreComments:         true,
 		OneLineConstructorSize: math.MaxInt32 - 10000,
@@ -34,13 +34,13 @@ func CanonicalOptions() formatOptions {
 
 func (t TL2File) String() string {
 	sb := strings.Builder{}
-	t.Print(&sb, DefaultOptions())
+	t.Print(&sb, NewDefaultFormatOptions())
 	return sb.String()
 }
 
 func (t TL2Combinator) String() string {
 	sb := strings.Builder{}
-	t.Print(&sb, DefaultOptions())
+	t.Print(&sb, NewDefaultFormatOptions())
 	return sb.String()
 }
 
