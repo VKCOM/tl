@@ -5,6 +5,7 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
+	"os"
 	"sort"
 	"strings"
 )
@@ -63,24 +64,242 @@ func (ai AstInfo) TypeFromName(name tlast.Name) tlast.Name {
 	}
 }
 
-func (gen *Gen2) MigrateToTL2() tlast.TL2File {
+type MigratingNamespaceInfo struct {
+	Namespace string
+
+	CombinatorsToMigrate   []*tlast.Combinator
+	CombinatorsToReference []*tlast.Combinator
+}
+
+func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
+	//allConstructors := gen.allConstructors
+
+	typesInfo := processCombinators(gen.allConstructors)
+
+	namespaceToReductions := make(map[string]map[string]*TypeReduction)
+	namespaceToTypes := make(map[string][]tlast.Name)
+	allReductions := make(map[string]*TypeReduction)
+	reductionToNamespaceUsages := make(map[string]map[string]bool)
+	reductionToNamespaceOrigin := make(map[string]string)
+
+	allTypes := utils.Keys(typesInfo.Types)
+	sort.Slice(allTypes, func(i, j int) bool {
+		return compareNames(allTypes[i], allTypes[j])
+	})
+
+	for _, name := range allTypes {
+		namespaceToTypes[name.Namespace] = append(namespaceToTypes[name.Namespace], name)
+	}
+
+	allNamespaces := utils.Keys(namespaceToTypes)
+	sort.Strings(allNamespaces)
+
+	for _, namespace := range allNamespaces {
+		typeReductions := make(map[string]*TypeReduction)
+		visitedTypes := make(map[TypeName]bool)
+
+		for _, name := range namespaceToTypes[namespace] {
+			comb := typesInfo.Types[name]
+			if len(comb.TypeArguments) != 0 {
+				continue
+			}
+			reduce(
+				TypeReduction{
+					IsType: true,
+					Type:   typesInfo.Types[comb.Name],
+				},
+				&typeReductions,
+				&typesInfo.Types,
+				&typesInfo.Constructors,
+				&visitedTypes,
+			)
+			if len(comb.Constructors) == 0 && comb.Constructors[0].Result != nil {
+				resultRed := typesInfo.ResultTypeReduction(&TypeReduction{
+					IsType: true,
+					Type:   typesInfo.Types[comb.Name],
+				})
+				reduce(
+					*resultRed.Type,
+					&typeReductions,
+					&typesInfo.Types,
+					&typesInfo.Constructors,
+					&visitedTypes,
+				)
+			}
+		}
+
+		namespaceToReductions[namespace] = typeReductions
+		for s, reduction := range typeReductions {
+			allReductions[s] = reduction
+		}
+	}
+
+	// view results
+	{
+		file, _ := os.Create("./reductions.txt")
+
+		namespaces := utils.Keys(namespaceToReductions)
+		sort.Strings(namespaces)
+
+		for _, namespace := range namespaces {
+			fmt.Fprintf(file, ">>> %s\n", namespace)
+
+			reductions := utils.Keys(namespaceToReductions[namespace])
+			sort.Strings(reductions)
+
+			for _, reduction := range reductions {
+				fmt.Fprintf(file, "%s\n", reduction)
+			}
+		}
+
+	}
+
+	for ns, reds := range namespaceToReductions {
+		for red, redType := range reds {
+			if _, ok := reductionToNamespaceUsages[red]; !ok {
+				reductionToNamespaceUsages[red] = make(map[string]bool)
+			}
+			reductionToNamespaceUsages[red][ns] = true
+			reductionToNamespaceOrigin[red] = redType.ReferenceName().Namespace
+		}
+	}
+
+	// view results
+	{
+		file2, _ := os.Create("./common_reductions.txt")
+		filter := true
+
+		if filter {
+			fmt.Fprintf(file2, "Filter to show only reductions in multiple namespaces\n")
+		}
+
+		reds := utils.Keys(reductionToNamespaceUsages)
+		sort.Strings(reds)
+
+		for _, red := range reds {
+			nss := utils.Keys(reductionToNamespaceUsages[red])
+			if filter {
+				if len(nss) < 2 {
+					continue
+				}
+			}
+
+			sort.Strings(nss)
+
+			fmt.Fprintf(file2, ">>> %s: [", red)
+			for _, ns := range nss {
+				if ns == "" {
+					ns = "__empty"
+				}
+				fmt.Fprintf(file2, "%s,", ns)
+			}
+
+			fmt.Fprintf(file2, "]\n")
+		}
+	}
+
+	filter := prepareNameFilter(gen.options.TL2MigratingWhitelist)
+	referencingConstructors := make(map[string]map[string]*tlast.Combinator)
+	migratingConstructors := make(map[string]map[string]*tlast.Combinator)
+
+	for s, combinator := range gen.allConstructors {
+		consideredName := combinator.TypeDecl.Name
+		if combinator.IsFunction || combinator.Builtin {
+			consideredName = combinator.Construct.Name
+		}
+		if inNameFilter(consideredName, filter) {
+			if _, ok := migratingConstructors[consideredName.Namespace]; !ok {
+				migratingConstructors[consideredName.Namespace] = make(map[string]*tlast.Combinator)
+			}
+			migratingConstructors[consideredName.Namespace][s] = combinator
+		}
+	}
+
+	migratingNamespaces := utils.Keys(migratingConstructors)
+	sort.Strings(migratingNamespaces)
+
+	for _, ns := range migratingNamespaces {
+		for red, redType := range namespaceToReductions[ns] {
+			origin := reductionToNamespaceOrigin[red]
+			if origin != ns {
+				refName := redType.ReferenceName().String()
+				if refConstructor, ok := gen.allConstructors[refName]; ok {
+					if _, ok := referencingConstructors[origin]; !ok {
+						referencingConstructors[origin] = make(map[string]*tlast.Combinator)
+					}
+					referencingConstructors[origin][refName] = refConstructor
+				}
+			}
+		}
+	}
+
+	for _, ns := range allNamespaces {
+		if _, ok := migratingConstructors[ns]; ok {
+			continue
+		}
+		for red := range namespaceToReductions[ns] {
+			origin := reductionToNamespaceOrigin[red]
+			if _, ok := migratingConstructors[origin]; ok {
+				return nil, fmt.Errorf("can't migrate namespace \"%s\" because from it depends nonmigrating namespaces \"%s\"", origin, ns)
+			}
+		}
+	}
+
+	affectedNamespaces := utils.SliceToSet(utils.Keys(referencingConstructors))
+	utils.AppendMap(
+		utils.SliceToSet(utils.Keys(migratingConstructors)),
+		&affectedNamespaces,
+	)
+
+	results := make([]MigratingNamespaceInfo, 0)
+
+	affectedNamespacesList := utils.Keys(affectedNamespaces)
+	sort.Strings(affectedNamespacesList)
+
+	for _, ns := range affectedNamespacesList {
+		newInfo := MigratingNamespaceInfo{Namespace: ns}
+		nsRefConstructors := referencingConstructors[ns]
+
+		constructors := utils.Keys(nsRefConstructors)
+		slices.SortFunc(constructors, func(a, b string) int {
+			return nsRefConstructors[a].OriginalOrderIndex - nsRefConstructors[b].OriginalOrderIndex
+		})
+
+		for _, constructor := range constructors {
+			newInfo.CombinatorsToReference = append(newInfo.CombinatorsToReference, nsRefConstructors[constructor])
+		}
+
+		nsMigratingConstructors := migratingConstructors[ns]
+		constructors = utils.Keys(nsMigratingConstructors)
+		slices.SortFunc(constructors, func(a, b string) int {
+			return nsMigratingConstructors[a].OriginalOrderIndex - nsMigratingConstructors[b].OriginalOrderIndex
+		})
+
+		for _, constructor := range constructors {
+			newInfo.CombinatorsToMigrate = append(newInfo.CombinatorsToMigrate, nsMigratingConstructors[constructor])
+		}
+
+		results = append(results, newInfo)
+	}
+
+	return results, nil
+}
+
+type FileToWrite struct {
+	Path string
+	Ast  tlast.TL2File
+}
+
+func (gen *Gen2) MigrateToTL2() []FileToWrite {
+	if true {
+		_, err := gen.SplitMigratingTypes()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
 	file := tlast.TL2File{}
 	info := initAstInfo(gen.allConstructors)
-
-	// print for debug
-	if false {
-		fmt.Println("[")
-		for _, typ := range info.AllNamesSorted {
-			suffix := ""
-			if info.AllConstructors[typ].Builtin {
-				suffix = "(builtin)"
-			} else if !gen.allConstructors[typ].IsFunction {
-				suffix = "(" + gen.allConstructors[typ].TypeDecl.Name.String() + ")"
-			}
-			fmt.Println("\t", typ, suffix)
-		}
-		fmt.Println("]")
-	}
 
 	associatedWrappers := make(map[*tlast.Combinator][]*TypeRWWrapper)
 	associatedCombinator := make(map[tlast.Name]*tlast.Combinator)
@@ -470,10 +689,25 @@ func (gen *Gen2) MigrateToTL2() tlast.TL2File {
 
 	printDebugInfo(associatedWrappers, natUsage, info)
 
-	return file
+	return []FileToWrite{{Path: gen.options.TL2MigrationFile, Ast: file}}
 }
 
 func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, natUsage NatUsagesInfo, info AstInfo) {
+	// print for debug
+	//if false {
+	//	fmt.Println("[")
+	//	for _, typ := range info.AllNamesSorted {
+	//		suffix := ""
+	//		if info.AllConstructors[typ].Builtin {
+	//			suffix = "(builtin)"
+	//		} else if !gen.allConstructors[typ].IsFunction {
+	//			suffix = "(" + gen.allConstructors[typ].TypeDecl.Name.String() + ")"
+	//		}
+	//		fmt.Println("\t", typ, suffix)
+	//	}
+	//	fmt.Println("]")
+	//}
+	//
 	// print for debug
 	if false {
 		for combinator, wrappers := range associatedWrappers {
@@ -536,7 +770,7 @@ func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, n
 	}
 
 	// print for debug
-	if true {
+	if false {
 		//file, _ := os.Open("usages.json")
 		currefs := natUsage.CombinatorsNatFieldsToArraySizeReference
 
