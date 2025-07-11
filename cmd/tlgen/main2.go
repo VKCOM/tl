@@ -50,7 +50,11 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	flag.BoolVar(&opt.GenerateTL2, "tl2-generate", false,
 		"generate code for tl2 methods (currently work only for golang)")
 	flag.StringVar(&opt.TL2MigrationFile, "tl2-migration-file", "",
-		"file to create .tl2 file with migrated files")
+		"file to create .tl2 file with migrated files (if --tl2-migration-by-namespaces=true then it is path to common folder)")
+	flag.BoolVar(&opt.TL2MigrateByNamespaces, "tl2-migration-by-namespaces", false,
+		"whenever to migrate namespaces to separate files (this option requires --tl2-migration-file)")
+	flag.StringVar(&opt.TL2MigratingWhitelist, "tl2-migration-whitelist", "*",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to create migration file. Empty means none, '*' means all (this option requires --tl2-migration-file)")
 
 	// Linter
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
@@ -212,14 +216,17 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 	}
 	if opt.TL2MigrationFile != "" {
-		file := gen.MigrateToTL2()
-		sb := strings.Builder{}
-		file.Print(&sb, tlast.NewDefaultFormatOptions())
-		if opt.Verbose {
-			log.Print("generating TL2 file...")
-		}
-		if err := os.WriteFile(opt.TL2MigrationFile, []byte(sb.String()), 0644); err != nil {
-			return fmt.Errorf("error writing tl2 file: %w", err)
+		files := gen.MigrateToTL2()
+		options := tlast.NewDefaultFormatOptions()
+		for _, file := range files {
+			sb := strings.Builder{}
+			file.Ast.Print(&sb, options)
+			if opt.Verbose {
+				log.Print("generating TL2 file...")
+			}
+			if err := os.WriteFile(file.Path, []byte(sb.String()), 0644); err != nil {
+				return fmt.Errorf("error writing tl2 file: %w", err)
+			}
 		}
 	}
 	if opt.TLOPath != "" {

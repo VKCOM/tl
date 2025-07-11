@@ -317,9 +317,13 @@ type Gen2Options struct {
 	AddFactoryData    bool
 
 	// TL2
-	GenerateTL2      bool
-	TL2MigrationFile string
-	TL2WhiteList     string
+	GenerateTL2 bool
+
+	TL2MigrationFile       string
+	TL2MigrateByNamespaces bool
+	TL2MigratingWhitelist  string
+
+	TL2WhiteList string
 
 	// Linter
 	Schema2Compare string
@@ -3042,7 +3046,7 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 
 	for _, comb := range types {
 		declaredType := comb.TypeDecl.Name
-		if comb.Builtin {
+		if comb.Builtin || comb.IsFunction {
 			declaredType = comb.Construct.Name
 		}
 		currentConstructor := comb.Construct.Name
@@ -3088,7 +3092,11 @@ func processCombinators(types map[string]*tlast.Combinator) *TypesInfo {
 		)
 	}
 
-	ti := TypesInfo{Types: existingTypes, Constructors: existingConstructors, TypeReductions: typeReductions}
+	ti := TypesInfo{
+		Types:        existingTypes,
+		Constructors: existingConstructors,
+		//TypeReductions: typeReductions,
+	}
 
 	//printResults(ti)
 
@@ -3136,7 +3144,7 @@ func reduceConstructor(
 	constructors *map[ConstructorName]*Constructor,
 	visitedTypes *map[TypeName]bool,
 ) {
-	if constructor == nil || constructor.Type.IsBasic {
+	if constructor == nil {
 		return
 	}
 
@@ -3297,9 +3305,9 @@ func toTypeReduction(
 }
 
 type TypesInfo struct {
-	Types          map[TypeName]*TypeDefinition
-	Constructors   map[ConstructorName]*Constructor
-	TypeReductions map[string]*TypeReduction
+	Types        map[TypeName]*TypeDefinition
+	Constructors map[ConstructorName]*Constructor
+	//TypeReductions map[string]*TypeReduction
 }
 
 // works for given constructor or for 1-st
