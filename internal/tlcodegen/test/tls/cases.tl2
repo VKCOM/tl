@@ -6,7 +6,7 @@ int64 = long;
 string = string;
 vector<t:type> = []t;
 tuple<t:type> = []t;
-@duplicate tuple_N<t:type,n:uint32> = [n]t;
+@tl2ext tuple_N<t:type,n:uint32> = [n]t;
 dictionaryField<t:type> = key:string value:t;
 dictionary<t:type> = vector<dictionaryField<t>>;
 dictionaryFieldAny<k:type,v:type> = key:k value:v;
@@ -135,7 +135,7 @@ casesTL2.testVectorBool = x:vector<bool>;
 casesTL2.testArrayFixedBool = a1:[1]bool a2:[0]bool a3:[7]bool a4:[8]bool a5:[11]bool a6:[16]bool;
 casesTL2.testArrayFlexibleBool = n:uint32 arr:[]bool;
 casesTL2.testFixedParam = x:casesTL2.testObjectWithParam_N<4>;
-@duplicate casesTL2.testObjectWithParam_N<n:uint32> = x?:int y:[n]int;
+@tl2ext casesTL2.testObjectWithParam_N<n:uint32> = x?:int y:[n]int;
 casesTL2.testParamsGeneration = 
 	n1:uint32
 	n2:uint32
@@ -144,9 +144,9 @@ casesTL2.testParamsGeneration =
 	x3:casesTL2.testObjectWithMuiltiParams_N<3>
 	x4:casesTL2.testObjectWithMuiltiParams;
 casesTL2.testObjectWithMuiltiParams = f1?:[]int f2?:[]int y:[][]int;
-@duplicate casesTL2.testObjectWithMuiltiParams_N<n:uint32> = f1?:[n]int f2?:[]int y:[n][]int;
-@duplicate casesTL2.testObjectWithMuiltiParams_M<m:uint32> = f1?:[]int f2?:[m]int y:[][m]int;
-@duplicate casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1?:[n]int f2?:[m]int y:[n][m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = f1?:[n]int f2?:[]int y:[n][]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = f1?:[]int f2?:[m]int y:[][m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1?:[n]int f2?:[m]int y:[n][m]int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => int;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => true;
 @read casesTL2.testFunctionNoDep3#f020849b x:int => vector<int>;
