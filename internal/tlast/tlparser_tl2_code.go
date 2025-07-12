@@ -519,8 +519,8 @@ func parseTL2TypeApplication(tokens tokenIterator, position Position) (state Opt
 		for {
 			if restTokens.expect(commaSign) {
 				var arg TL2TypeArgument
-				argState, restTokens, result.Arguments[len(result.Arguments)-1] = parseTL2TypeArgument(restTokens, position)
 				result.Arguments = append(result.Arguments, arg)
+				argState, restTokens, result.Arguments[len(result.Arguments)-1] = parseTL2TypeArgument(restTokens, position)
 				state.Inherit(argState)
 				if !state.ExpectProgress("expected type argument") {
 					return
@@ -599,7 +599,7 @@ func parseTL2TypeArgument(tokens tokenIterator, position Position) (state Option
 	return
 }
 
-// TL2TypeArgumentDeclaration := lcName cl lcName;
+// TL2TypeTemplate := lcName cl lcName;
 func parseTL2TypeArgumentDeclaration(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2TypeTemplate) {
 	restTokens = tokens
 	state.StartProcessing = true

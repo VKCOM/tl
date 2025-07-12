@@ -54,6 +54,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"file to create .tl2 file with migrated files (if --tl2-migration-by-namespaces=true then it is path to common folder)")
 	flag.BoolVar(&opt.TL2MigrateByNamespaces, "tl2-migration-by-namespaces", false,
 		"whenever to migrate namespaces to separate files (this option requires --tl2-migration-file)")
+	flag.BoolVar(&opt.TL2ContinuousMigration, "tl2-continuous-migration", false,
+		"whenever current migration is part of the series which means old files will not be deleted (this option requires --tl2-migration-by-namespaces=true)")
 	flag.StringVar(&opt.TL2MigratingWhitelist, "tl2-migration-whitelist", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to create migration file. Empty means none, '*' means all (this option requires --tl2-migration-file)")
 
@@ -217,13 +219,36 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 	}
 	if opt.TL2MigrationFile != "" {
-		files, err := gen.MigrateToTL2()
+		prevState := make([]tlcodegen.FileToWrite, 0)
+		prevStateFolder := filepath.Join(opt.TL2MigrationFile, "namespaces")
+		if opt.TL2MigrateByNamespaces && opt.TL2ContinuousMigration {
+			files, err := os.ReadDir(prevStateFolder)
+			if err != nil {
+				return fmt.Errorf("error reading folder with previous state of tl2 migration: %s", err)
+			}
+			for _, file := range files {
+				if file.IsDir() || !strings.HasSuffix(file.Name(), ".tl2") {
+					continue
+				}
+				path := filepath.Join(prevStateFolder, file.Name())
+				body, err := os.ReadFile(path)
+				if err != nil {
+					return fmt.Errorf("error reading body for file \"%s\" in previous state: %s", file.Name(), err)
+				}
+				ast, err := tlast.ParseTL2(string(body))
+				if err != nil {
+					return fmt.Errorf("error parsing previous state of \"%s\": %s", file.Name(), err)
+				}
+				prevState = append(prevState, tlcodegen.FileToWrite{Path: path, Ast: ast})
+			}
+		}
+		files, err := gen.MigrateToTL2(prevState)
 		if err != nil {
 			return fmt.Errorf("error migrating to tl2: %s", err)
 		}
 		options := tlast.NewDefaultFormatOptions()
-		if opt.TL2MigrateByNamespaces {
-			err := os.RemoveAll(filepath.Join(opt.TL2MigrationFile, "namespaces"))
+		if opt.TL2MigrateByNamespaces && !opt.TL2ContinuousMigration {
+			err := os.RemoveAll(prevStateFolder)
 			if err != nil {
 				return err
 			}

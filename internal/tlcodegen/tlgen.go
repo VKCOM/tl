@@ -321,6 +321,7 @@ type Gen2Options struct {
 
 	TL2MigrationFile       string
 	TL2MigrateByNamespaces bool
+	TL2ContinuousMigration bool
 	TL2MigratingWhitelist  string
 
 	TL2WhiteList string

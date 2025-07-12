@@ -2,16 +2,19 @@
 
 package tlast
 
+// TL2TypeName := (lcName dot)? lcName;
 type TL2TypeName struct {
 	Namespace string
 	Name      string
 }
 
+// TL2Annotation := at lcName;
 type TL2Annotation struct {
 	Name string
 	PR   PositionRange
 }
 
+// TL2TypeArgument := TL2TypeRef | number;
 type TL2TypeArgument struct {
 	Type   TL2TypeRef
 	Number uint32
@@ -21,6 +24,7 @@ type TL2TypeArgument struct {
 	PR PositionRange
 }
 
+// TL2TypeApplication := TL2TypeName (lts TL2TypeArgument (cm TL2TypeArgument)* gts)?;
 type TL2TypeApplication struct {
 	Name      TL2TypeName
 	Arguments []TL2TypeArgument
@@ -30,6 +34,7 @@ type TL2TypeApplication struct {
 	PRArguments PositionRange
 }
 
+// TL2BracketType := lsb TL2TypeArgument? rsb TL2TypeRef;
 type TL2BracketType struct {
 	IndexType *TL2TypeArgument // nil means that it is vector
 	ArrayType TL2TypeRef
@@ -37,6 +42,7 @@ type TL2BracketType struct {
 	PR PositionRange
 }
 
+// TL2TypeRef := TL2TypeApplication | TL2BracketType;
 type TL2TypeRef struct {
 	SomeType    *TL2TypeApplication
 	BracketType *TL2BracketType
@@ -46,6 +52,7 @@ type TL2TypeRef struct {
 	PR PositionRange
 }
 
+// TL2Field := ((lcName qm?) | ucs) cl TL2TypeRef;
 type TL2Field struct {
 	Name       string
 	IsOptional bool
@@ -58,6 +65,7 @@ type TL2Field struct {
 	CommentBefore string
 }
 
+// TL2TypeDefinition = TL2TypeRef | TL2Field* | TL2UnionType;
 type TL2TypeDefinition struct {
 	TypeAlias         TL2TypeRef
 	ConstructorFields []TL2Field
@@ -69,6 +77,7 @@ type TL2TypeDefinition struct {
 	PR PositionRange
 }
 
+// TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
 type TL2UnionConstructor struct {
 	Name string
 
@@ -81,6 +90,7 @@ type TL2UnionConstructor struct {
 	PRName PositionRange
 }
 
+// TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
 type TL2UnionType struct {
 	Variants []TL2UnionConstructor // at least 2
 
@@ -89,6 +99,7 @@ type TL2UnionType struct {
 
 type TL2TypeCategory string
 
+// TL2TypeTemplate := lcName cl lcName;
 type TL2TypeTemplate struct {
 	Name     string
 	Category TL2TypeCategory
@@ -98,6 +109,7 @@ type TL2TypeTemplate struct {
 	PRCategory PositionRange
 }
 
+// TL2TypeDeclaration := TL2TypeName (lts TL2TypeArgumentDeclaration (cm TL2TypeArgumentDeclaration)* gts)? CRC32? eq TL2TypeDefinition?;
 type TL2TypeDeclaration struct {
 	Name              TL2TypeName
 	ID                *uint32
@@ -109,6 +121,7 @@ type TL2TypeDeclaration struct {
 	PRID   PositionRange
 }
 
+// TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
 type TL2FuncDeclaration struct {
 	Name       TL2TypeName
 	ID         *uint32
@@ -120,6 +133,7 @@ type TL2FuncDeclaration struct {
 	PRID   PositionRange
 }
 
+// TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 type TL2Combinator struct {
 	Annotations []TL2Annotation
 
