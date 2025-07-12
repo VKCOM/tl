@@ -6,6 +6,7 @@ import (
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -64,15 +65,27 @@ func (ai AstInfo) TypeFromName(name tlast.Name) tlast.Name {
 	}
 }
 
-type MigratingNamespaceInfo struct {
-	Namespace string
+type MigratingPartInfo struct {
+	File string
 
 	CombinatorsToMigrate   []*tlast.Combinator
 	CombinatorsToReference []*tlast.Combinator
 }
 
-func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
-	//allConstructors := gen.allConstructors
+func (gen *Gen2) SplitMigratingTypes() ([]MigratingPartInfo, error) {
+	if !gen.options.TL2MigrateByNamespaces {
+		allConstructors := utils.Values(gen.allConstructors)
+		sort.Slice(allConstructors, func(i, j int) bool {
+			return allConstructors[i].OriginalOrderIndex < allConstructors[j].OriginalOrderIndex
+		})
+
+		return []MigratingPartInfo{
+			{
+				File:                 gen.options.TL2MigrationFile,
+				CombinatorsToMigrate: allConstructors,
+			},
+		}, nil
+	}
 
 	typesInfo := processCombinators(gen.allConstructors)
 
@@ -113,10 +126,10 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 				&typesInfo.Constructors,
 				&visitedTypes,
 			)
-			if len(comb.Constructors) == 0 && comb.Constructors[0].Result != nil {
+			if len(comb.Constructors) == 1 && comb.Constructors[0].Result != nil {
 				resultRed := typesInfo.ResultTypeReduction(&TypeReduction{
-					IsType: true,
-					Type:   typesInfo.Types[comb.Name],
+					IsType:      false,
+					Constructor: comb.Constructors[0],
 				})
 				reduce(
 					*resultRed.Type,
@@ -135,7 +148,7 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 	}
 
 	// view results
-	{
+	if true {
 		file, _ := os.Create("./reductions.txt")
 
 		namespaces := utils.Keys(namespaceToReductions)
@@ -165,7 +178,7 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 	}
 
 	// view results
-	{
+	if true {
 		file2, _ := os.Create("./common_reductions.txt")
 		filter := true
 
@@ -221,7 +234,7 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 	for _, ns := range migratingNamespaces {
 		for red, redType := range namespaceToReductions[ns] {
 			origin := reductionToNamespaceOrigin[red]
-			if origin != ns {
+			if _, ok := migratingConstructors[origin]; !ok {
 				refName := redType.ReferenceName().String()
 				if refConstructor, ok := gen.allConstructors[refName]; ok {
 					if _, ok := referencingConstructors[origin]; !ok {
@@ -233,6 +246,8 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 		}
 	}
 
+	absentNamespaceDependencies := make(map[string]map[string]bool)
+
 	for _, ns := range allNamespaces {
 		if _, ok := migratingConstructors[ns]; ok {
 			continue
@@ -240,9 +255,41 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 		for red := range namespaceToReductions[ns] {
 			origin := reductionToNamespaceOrigin[red]
 			if _, ok := migratingConstructors[origin]; ok {
-				return nil, fmt.Errorf("can't migrate namespace \"%s\" because from it depends nonmigrating namespaces \"%s\"", origin, ns)
+				if _, ok := absentNamespaceDependencies[origin]; !ok {
+					absentNamespaceDependencies[origin] = make(map[string]bool)
+				}
+				absentNamespaceDependencies[origin][ns] = true
 			}
 		}
+	}
+
+	if len(absentNamespaceDependencies) != 0 {
+		errorText := strings.Builder{}
+		errorText.WriteString("can't migrate current set of namespaces, cause non-migrating namespaces below depends on them:\n{\n")
+
+		keys := utils.Keys(absentNamespaceDependencies)
+		sort.Strings(keys)
+
+		for i, key := range keys {
+			deps := utils.Keys(absentNamespaceDependencies[key])
+			sort.Strings(deps)
+
+			errorText.WriteString(fmt.Sprintf("\t\"%s\": [", key))
+			for j, dep := range deps {
+				errorText.WriteString(fmt.Sprintf("\"%s\"", dep))
+				if j != len(deps)-1 {
+					errorText.WriteString(",")
+				}
+			}
+			errorText.WriteString("]")
+			if i != len(keys)-1 {
+				errorText.WriteString(",")
+			}
+			errorText.WriteString("\n")
+		}
+
+		errorText.WriteString("}\n(add depended namespaces to whitelist or remove unnecessary ones)")
+		return nil, fmt.Errorf(errorText.String())
 	}
 
 	affectedNamespaces := utils.SliceToSet(utils.Keys(referencingConstructors))
@@ -251,13 +298,17 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingNamespaceInfo, error) {
 		&affectedNamespaces,
 	)
 
-	results := make([]MigratingNamespaceInfo, 0)
+	results := make([]MigratingPartInfo, 0)
 
 	affectedNamespacesList := utils.Keys(affectedNamespaces)
 	sort.Strings(affectedNamespacesList)
 
 	for _, ns := range affectedNamespacesList {
-		newInfo := MigratingNamespaceInfo{Namespace: ns}
+		nsFileName := ns
+		if nsFileName == "" {
+			nsFileName = "__common_namespace"
+		}
+		newInfo := MigratingPartInfo{File: filepath.Join(gen.options.TL2MigrationFile, "namespaces", nsFileName+".tl2")}
 		nsRefConstructors := referencingConstructors[ns]
 
 		constructors := utils.Keys(nsRefConstructors)
@@ -290,17 +341,13 @@ type FileToWrite struct {
 	Ast  tlast.TL2File
 }
 
-func (gen *Gen2) MigrateToTL2() []FileToWrite {
-	if true {
-		_, err := gen.SplitMigratingTypes()
-		if err != nil {
-			fmt.Println(err)
-		}
+func (gen *Gen2) MigrateToTL2() (result []FileToWrite, _ error) {
+	parts, err := gen.SplitMigratingTypes()
+	if err != nil {
+		return nil, err
 	}
 
-	file := tlast.TL2File{}
 	info := initAstInfo(gen.allConstructors)
-
 	associatedWrappers := make(map[*tlast.Combinator][]*TypeRWWrapper)
 	associatedCombinator := make(map[tlast.Name]*tlast.Combinator)
 
@@ -496,200 +543,238 @@ func (gen *Gen2) MigrateToTL2() []FileToWrite {
 		return minIndex
 	}
 
-	originalOrderTypeNames := slices.Clone(typeNames)
-	sort.Slice(originalOrderTypeNames, func(i, j int) bool {
-		return getOrder(originalOrderTypeNames[i]) < getOrder(originalOrderTypeNames[j])
-	})
+	for _, part := range parts {
+		file := tlast.TL2File{}
 
-	for _, name := range originalOrderTypeNames {
-		combinators := info.Types[name]
-		if len(combinators) == 0 {
-			continue
+		localConstructors := make(map[string]*tlast.Combinator)
+		referencingConstructors := make(map[string]bool)
+
+		for _, combinator := range part.CombinatorsToMigrate {
+			localConstructors[combinator.Construct.Name.String()] = combinator
 		}
-		combinator0 := combinators[0]
-
-		combinatorConstableArgs := make(map[int]bool)
-		for i, argument := range combinator0.TemplateArguments {
-			if argument.IsNat {
-				if len(natUsage.GetConstantsPassingThroughArgument(name, i)) > 0 {
-					combinatorConstableArgs[i] = true
-				}
-			}
+		for _, combinator := range part.CombinatorsToReference {
+			localConstructors[combinator.Construct.Name.String()] = combinator
+			referencingConstructors[combinator.Construct.Name.String()] = true
 		}
 
-		minimalConstableArgsSubSet := make(map[int]bool)
-		for i, argument := range combinator0.TemplateArguments {
-			if argument.IsNat {
-				if len(natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)) == 0 {
-					minimalConstableArgsSubSet[i] = true
-				}
-			}
-		}
-
-		allConstableArgsSubSets := utils.SetSubSets(combinatorConstableArgs)
-		sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
-			if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
-				iList := utils.Keys(allConstableArgsSubSets[i])
-				sort.Ints(iList)
-				jList := utils.Keys(allConstableArgsSubSets[j])
-				sort.Ints(jList)
-				return slices.Compare(iList, jList) <= 0
-			}
-			return len(allConstableArgsSubSets[i]) <= len(allConstableArgsSubSets[j])
+		localInfo := initAstInfo(localConstructors)
+		localTypeNames := utils.Keys(localInfo.Types)
+		sort.Slice(localTypeNames, func(i, j int) bool {
+			return compareNames(localTypeNames[i], localTypeNames[j])
 		})
 
-		allConstableArgsSubSets = utils.FilterSlice(
-			allConstableArgsSubSets,
-			func(m map[int]bool) bool {
-				for i := range minimalConstableArgsSubSet {
-					if !m[i] {
-						return false
-					}
-				}
-				return true
-			},
-		)
+		originalOrderTypeNames := slices.Clone(localTypeNames)
+		sort.Slice(originalOrderTypeNames, func(i, j int) bool {
+			return getOrder(originalOrderTypeNames[i]) < getOrder(originalOrderTypeNames[j])
+		})
 
-		for _, setOfConstantNatArgs := range allConstableArgsSubSets {
-			tl2Combinator := tlast.TL2Combinator{IsFunction: false}
-			// init name
-			tl2Combinator.TypeDecl.Name.Namespace = name.Namespace
-			tl2Combinator.TypeDecl.Name.Name = lowerFirst(name.Name)
-
-			constantArgs := utils.Keys(setOfConstantNatArgs)
-			sort.Ints(constantArgs)
-			for _, arg := range constantArgs {
-				tl2Combinator.TypeDecl.Name.Name += "_" + upperFirst(combinator0.TypeDecl.Arguments[arg])
+		for _, name := range originalOrderTypeNames {
+			combinators := info.Types[name]
+			if len(combinators) == 0 {
+				continue
 			}
-			if len(constantArgs) != 0 {
-				tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "duplicate"})
-			}
+			combinator0 := combinators[0]
 
-			// init templates
-			natTemplates := make(map[string]bool)
-			natIsConstant := make(map[string]bool)
-			generic := make(map[string]bool)
-
+			combinatorConstableArgs := make(map[int]bool)
 			for i, argument := range combinator0.TemplateArguments {
-				category := "type"
 				if argument.IsNat {
-					category = "uint32"
-					natTemplates[argument.FieldName] = true
-					if !setOfConstantNatArgs[i] {
-						continue
+					if len(natUsage.GetConstantsPassingThroughArgument(name, i)) > 0 {
+						combinatorConstableArgs[i] = true
 					}
-					natIsConstant[argument.FieldName] = true
-				} else {
-					generic[argument.FieldName] = true
+				}
+			}
+
+			minimalConstableArgsSubSet := make(map[int]bool)
+			for i, argument := range combinator0.TemplateArguments {
+				if argument.IsNat {
+					if len(natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)) == 0 {
+						minimalConstableArgsSubSet[i] = true
+					}
+				}
+			}
+
+			allConstableArgsSubSets := utils.SetSubSets(combinatorConstableArgs)
+			sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
+				if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
+					iList := utils.Keys(allConstableArgsSubSets[i])
+					sort.Ints(iList)
+					jList := utils.Keys(allConstableArgsSubSets[j])
+					sort.Ints(jList)
+					return slices.Compare(iList, jList) <= 0
+				}
+				return len(allConstableArgsSubSets[i]) <= len(allConstableArgsSubSets[j])
+			})
+
+			allConstableArgsSubSets = utils.FilterSlice(
+				allConstableArgsSubSets,
+				func(m map[int]bool) bool {
+					for i := range minimalConstableArgsSubSet {
+						if !m[i] {
+							return false
+						}
+					}
+					return true
+				},
+			)
+
+			isRef := referencingConstructors[combinator0.Construct.Name.String()]
+
+			for _, setOfConstantNatArgs := range allConstableArgsSubSets {
+				tl2Combinator := tlast.TL2Combinator{IsFunction: false}
+				// init name
+				tl2Combinator.TypeDecl.Name.Namespace = name.Namespace
+				tl2Combinator.TypeDecl.Name.Name = lowerFirst(name.Name)
+
+				constantArgs := utils.Keys(setOfConstantNatArgs)
+				sort.Ints(constantArgs)
+				for _, arg := range constantArgs {
+					tl2Combinator.TypeDecl.Name.Name += "_" + upperFirst(combinator0.TypeDecl.Arguments[arg])
+				}
+				// add annotations
+				if isRef {
+					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "tl1"})
+				}
+				if len(constantArgs) != 0 {
+					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "tl2ext"})
 				}
 
-				tl2Combinator.TypeDecl.TemplateArguments = append(tl2Combinator.TypeDecl.TemplateArguments,
-					tlast.TL2TypeTemplate{
-						Name:     lowerFirst(argument.FieldName),
-						Category: tlast.TL2TypeCategory(category),
+				// init templates
+				natTemplates := make(map[string]bool)
+				natIsConstant := make(map[string]bool)
+				generic := make(map[string]bool)
+
+				for i, argument := range combinator0.TemplateArguments {
+					category := "type"
+					if argument.IsNat {
+						category = "uint32"
+						natTemplates[argument.FieldName] = true
+						if !setOfConstantNatArgs[i] {
+							continue
+						}
+						natIsConstant[argument.FieldName] = true
+					} else {
+						generic[argument.FieldName] = true
+					}
+
+					tl2Combinator.TypeDecl.TemplateArguments = append(tl2Combinator.TypeDecl.TemplateArguments,
+						tlast.TL2TypeTemplate{
+							Name:     lowerFirst(argument.FieldName),
+							Category: tlast.TL2TypeCategory(category),
+						},
+					)
+				}
+				//// init magic
+				//if combinator0.Construct.ID != nil {
+				//	tl2Combinator.TypeDecl.ID = new(uint32)
+				//	*tl2Combinator.TypeDecl.ID = *combinator0.Construct.ID
+				//}
+
+				if !isRef {
+					if len(combinators) == 1 {
+						if len(combinator0.Fields) == 1 && combinator0.Fields[0].FieldName == "" {
+							tl2Combinator.TypeDecl.Type.TypeAlias = resolveType(combinator0.Fields[0].FieldType, natIsConstant, natTemplates)
+						} else {
+							tl2Combinator.TypeDecl.Type.IsConstructorFields = true
+							tl2Combinator.TypeDecl.Type.ConstructorFields = addFields(combinator0.Fields, natIsConstant, natTemplates)
+						}
+					} else {
+						tl2Combinator.TypeDecl.Type.IsUnionType = true
+						for _, combinator := range combinators {
+							newVariant := tlast.TL2UnionConstructor{}
+							newVariant.Name = upperFirst(combinator.Construct.Name.Name)
+							if len(combinator.Fields) == 1 && combinator.Fields[0].FieldName == "" {
+								newVariant.IsTypeAlias = true
+								newVariant.TypeAlias = resolveType(combinator.Fields[0].FieldType, natIsConstant, natTemplates)
+							} else {
+								newVariant.IsTypeAlias = false
+								newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
+							}
+							tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
+						}
+					}
+				} else {
+					tl2Combinator.TypeDecl.Type.IsConstructorFields = true
+				}
+
+				if isRef {
+					tl2Combinator.CommentBefore = fmt.Sprintf("// original:%s", combinator0.TypeDecl.Name.String())
+				} else {
+					// add comment
+					tl2Combinator.CommentBefore = combinator0.CommentBefore
+					if combinator0.CommentRight != "" {
+						if tl2Combinator.CommentBefore != "" {
+							tl2Combinator.CommentBefore += "\n"
+						}
+						tl2Combinator.CommentBefore += combinator0.CommentRight
+					}
+				}
+				file.Combinators = append(file.Combinators, tl2Combinator)
+			}
+		}
+
+		orderedFunctions := slices.Clone(localInfo.Functions)
+		sort.Slice(orderedFunctions, func(i, j int) bool {
+			return orderedFunctions[i].OriginalOrderIndex < orderedFunctions[j].OriginalOrderIndex
+		})
+
+		for _, function := range orderedFunctions {
+			tl2Combinator := tlast.TL2Combinator{IsFunction: true}
+			// add modifiers
+			for _, modifier := range function.Modifiers {
+				tl2Combinator.Annotations = append(tl2Combinator.Annotations,
+					tlast.TL2Annotation{
+						Name: modifier.Name,
 					},
 				)
 			}
-			//// init magic
-			//if combinator0.Construct.ID != nil {
-			//	tl2Combinator.TypeDecl.ID = new(uint32)
-			//	*tl2Combinator.TypeDecl.ID = *combinator0.Construct.ID
-			//}
-
-			if len(combinators) == 1 {
-				if len(combinator0.Fields) == 1 && combinator0.Fields[0].FieldName == "" {
-					tl2Combinator.TypeDecl.Type.TypeAlias = resolveType(combinator0.Fields[0].FieldType, natIsConstant, natTemplates)
-				} else {
-					tl2Combinator.TypeDecl.Type.IsConstructorFields = true
-					tl2Combinator.TypeDecl.Type.ConstructorFields = addFields(combinator0.Fields, natIsConstant, natTemplates)
-				}
-			} else {
-				tl2Combinator.TypeDecl.Type.IsUnionType = true
-				for _, combinator := range combinators {
-					newVariant := tlast.TL2UnionConstructor{}
-					newVariant.Name = upperFirst(combinator.Construct.Name.Name)
-					if len(combinator.Fields) == 1 && combinator.Fields[0].FieldName == "" {
-						newVariant.IsTypeAlias = true
-						newVariant.TypeAlias = resolveType(combinator.Fields[0].FieldType, natIsConstant, natTemplates)
-					} else {
-						newVariant.IsTypeAlias = false
-						newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
+			if len(function.TemplateArguments) > 0 {
+				tl2Combinator.Annotations = append(tl2Combinator.Annotations,
+					tlast.TL2Annotation{
+						Name: "tl1_diagonal",
+					},
+				)
+			}
+			// add name
+			tl2Combinator.FuncDecl.Name = tlast.TL2TypeName{
+				Namespace: function.Construct.Name.Namespace,
+				Name:      lowerFirst(function.Construct.Name.Name),
+			}
+			// add magic
+			if function.Construct.ID != nil {
+				tl2Combinator.FuncDecl.ID = new(uint32)
+				*tl2Combinator.FuncDecl.ID = *function.Construct.ID
+			}
+			if len(function.TemplateArguments) == 0 {
+				// add arguments
+				tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool), make(map[string]bool))
+				// add return type
+				nats := make(map[string]bool)
+				for _, field := range function.Fields {
+					if field.FieldType.String() == "#" {
+						nats[field.FieldName] = true
 					}
-					tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
+				}
+				tl2Combinator.FuncDecl.ReturnType = tlast.TL2TypeDefinition{
+					TypeAlias: resolveType(function.FuncDecl, make(map[string]bool), nats),
 				}
 			}
 			// add comment
-			tl2Combinator.CommentBefore = combinator0.CommentBefore
-			if combinator0.CommentRight != "" {
+			tl2Combinator.CommentBefore = function.CommentBefore
+			if function.CommentRight != "" {
 				if tl2Combinator.CommentBefore != "" {
 					tl2Combinator.CommentBefore += "\n"
 				}
-				tl2Combinator.CommentBefore += combinator0.CommentRight
+				tl2Combinator.CommentBefore += function.CommentRight
 			}
 			file.Combinators = append(file.Combinators, tl2Combinator)
 		}
-	}
 
-	orderedFunctions := slices.Clone(info.Functions)
-	sort.Slice(orderedFunctions, func(i, j int) bool {
-		return orderedFunctions[i].OriginalOrderIndex < orderedFunctions[j].OriginalOrderIndex
-	})
-
-	for _, function := range orderedFunctions {
-		tl2Combinator := tlast.TL2Combinator{IsFunction: true}
-		// add modifiers
-		for _, modifier := range function.Modifiers {
-			tl2Combinator.Annotations = append(tl2Combinator.Annotations,
-				tlast.TL2Annotation{
-					Name: modifier.Name,
-				},
-			)
-		}
-		if len(function.TemplateArguments) > 0 {
-			tl2Combinator.Annotations = append(tl2Combinator.Annotations,
-				tlast.TL2Annotation{
-					Name: "tl1_diagonal",
-				},
-			)
-		}
-		// add name
-		tl2Combinator.FuncDecl.Name = tlast.TL2TypeName{
-			Namespace: function.Construct.Name.Namespace,
-			Name:      lowerFirst(function.Construct.Name.Name),
-		}
-		// add magic
-		if function.Construct.ID != nil {
-			tl2Combinator.FuncDecl.ID = new(uint32)
-			*tl2Combinator.FuncDecl.ID = *function.Construct.ID
-		}
-		if len(function.TemplateArguments) == 0 {
-			// add arguments
-			tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool), make(map[string]bool))
-			// add return type
-			nats := make(map[string]bool)
-			for _, field := range function.Fields {
-				if field.FieldType.String() == "#" {
-					nats[field.FieldName] = true
-				}
-			}
-			tl2Combinator.FuncDecl.ReturnType = tlast.TL2TypeDefinition{
-				TypeAlias: resolveType(function.FuncDecl, make(map[string]bool), nats),
-			}
-		}
-		// add comment
-		tl2Combinator.CommentBefore = function.CommentBefore
-		if function.CommentRight != "" {
-			if tl2Combinator.CommentBefore != "" {
-				tl2Combinator.CommentBefore += "\n"
-			}
-			tl2Combinator.CommentBefore += function.CommentRight
-		}
-		file.Combinators = append(file.Combinators, tl2Combinator)
+		result = append(result, FileToWrite{Path: part.File, Ast: file})
 	}
 
 	printDebugInfo(associatedWrappers, natUsage, info)
 
-	return []FileToWrite{{Path: gen.options.TL2MigrationFile, Ast: file}}
+	return result, err
 }
 
 func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, natUsage NatUsagesInfo, info AstInfo) {

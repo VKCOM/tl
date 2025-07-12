@@ -17,6 +17,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -216,13 +217,26 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 	}
 	if opt.TL2MigrationFile != "" {
-		files := gen.MigrateToTL2()
+		files, err := gen.MigrateToTL2()
+		if err != nil {
+			return fmt.Errorf("error migrating to tl2: %s", err)
+		}
 		options := tlast.NewDefaultFormatOptions()
+		if opt.TL2MigrateByNamespaces {
+			err := os.RemoveAll(filepath.Join(opt.TL2MigrationFile, "namespaces"))
+			if err != nil {
+				return err
+			}
+		}
 		for _, file := range files {
 			sb := strings.Builder{}
 			file.Ast.Print(&sb, options)
 			if opt.Verbose {
-				log.Print("generating TL2 file...")
+				log.Printf("generating TL2 file \"%s\"...\n", file.Path)
+			}
+			err := os.MkdirAll(filepath.Dir(file.Path), 0755)
+			if err != nil && !os.IsExist(err) {
+				return err
 			}
 			if err := os.WriteFile(file.Path, []byte(sb.String()), 0644); err != nil {
 				return fmt.Errorf("error writing tl2 file: %w", err)
