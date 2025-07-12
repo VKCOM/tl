@@ -33,6 +33,14 @@ func SliceToSet[T comparable](s []T) map[T]bool {
 	return m
 }
 
+func SliceToMap[K comparable, T, V any](s []T, key func(T) K, value func(T) V) map[K]V {
+	m := make(map[K]V)
+	for _, t := range s {
+		m[key(t)] = value(t)
+	}
+	return m
+}
+
 func CopyMap[K comparable, V any](m map[K]V) map[K]V {
 	m2 := make(map[K]V)
 	for k, v := range m {
@@ -115,4 +123,29 @@ func AppendMapWithResolving[K comparable, V any](values map[K]V, to *map[K]V, re
 			(*to)[k] = v
 		}
 	}
+}
+
+func SetIntersection[K comparable](s1, s2 map[K]bool) map[K]bool {
+	result := make(map[K]bool)
+	origin, target := s1, s2
+	if len(s2) < len(s1) {
+		origin, target = s2, s1
+	}
+	for key := range origin {
+		if _, ok := target[key]; ok {
+			result[key] = true
+		}
+	}
+	return result
+}
+
+func SetUnion[K comparable](s1, s2 map[K]bool) map[K]bool {
+	result := make(map[K]bool)
+	for key := range s1 {
+		result[key] = true
+	}
+	for key := range s2 {
+		result[key] = true
+	}
+	return result
 }

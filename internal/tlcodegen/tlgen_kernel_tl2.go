@@ -341,7 +341,7 @@ type FileToWrite struct {
 	Ast  tlast.TL2File
 }
 
-func (gen *Gen2) MigrateToTL2() (result []FileToWrite, _ error) {
+func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, _ error) {
 	parts, err := gen.SplitMigratingTypes()
 	if err != nil {
 		return nil, err
@@ -769,30 +769,172 @@ func (gen *Gen2) MigrateToTL2() (result []FileToWrite, _ error) {
 			file.Combinators = append(file.Combinators, tl2Combinator)
 		}
 
-		result = append(result, FileToWrite{Path: part.File, Ast: file})
+		newState = append(newState, FileToWrite{Path: part.File, Ast: file})
 	}
 
 	printDebugInfo(associatedWrappers, natUsage, info)
 
-	return result, err
+	return gen.MergeMigrationState(prevState, newState)
+}
+
+func (gen *Gen2) MergeMigrationState(oldState, newState []FileToWrite) ([]FileToWrite, error) {
+	if !gen.options.TL2MigrateByNamespaces || !gen.options.TL2ContinuousMigration {
+		return newState, nil
+	}
+
+	resultingState := make([]FileToWrite, 0)
+
+	presentingNewFiles := make(map[string]FileToWrite)
+	presentingOldFiles := make(map[string]FileToWrite)
+
+	for _, file := range oldState {
+		presentingOldFiles[file.Path] = file
+	}
+
+	for _, file := range newState {
+		presentingNewFiles[file.Path] = file
+	}
+
+	// in old but not in new
+	for path, file := range presentingOldFiles {
+		if _, ok := presentingNewFiles[path]; !ok {
+			resultingState = append(resultingState, file)
+		}
+	}
+
+	// in new but not in old
+	for path, file := range presentingNewFiles {
+		if _, ok := presentingOldFiles[path]; !ok {
+			resultingState = append(resultingState, file)
+		}
+	}
+
+	// in both
+	for path, oldFile := range presentingOldFiles {
+		if newFile, ok := presentingNewFiles[path]; ok {
+			resultingFile, err := gen.mergeTL2Files(oldFile.Ast, newFile.Ast)
+			if err != nil {
+				return nil, err
+			}
+			resultingState = append(resultingState, FileToWrite{Path: path, Ast: resultingFile})
+		}
+	}
+
+	sort.Slice(resultingState, func(i, j int) bool {
+		return strings.Compare(resultingState[i].Path, resultingState[j].Path) > 0
+	})
+
+	return resultingState, nil
+}
+
+type TL2CombinatorIndexed struct {
+	Name       tlast.TL2TypeName
+	Combinator tlast.TL2Combinator
+
+	Index int
+}
+
+func indexCombinators(file tlast.TL2File) (result []TL2CombinatorIndexed) {
+	result = make([]TL2CombinatorIndexed, len(file.Combinators))
+	for i, combinator := range file.Combinators {
+		result[i].Index = i
+		result[i].Combinator = combinator
+		result[i].Name = combinator.TypeDecl.Name
+		if combinator.IsFunction {
+			result[i].Name = combinator.FuncDecl.Name
+		}
+	}
+	return
+}
+
+func id[T any](x T) T { return x }
+
+func (gen *Gen2) mergeTL2Files(oldFile, newFile tlast.TL2File) (tlast.TL2File, error) {
+	resultingMapping := make(map[tlast.TL2TypeName]TL2CombinatorIndexed)
+
+	oldCombs := indexCombinators(oldFile)
+	newCombs := indexCombinators(newFile)
+
+	getName := func(c TL2CombinatorIndexed) tlast.TL2TypeName { return c.Name }
+	isReferencingTL1 := func(anns []tlast.TL2Annotation) bool {
+		for _, ann := range anns {
+			if ann.Name == "tl1" {
+				return true
+			}
+		}
+		return false
+	}
+
+	oldMapping := utils.SliceToMap(oldCombs, getName, id[TL2CombinatorIndexed])
+	newMapping := utils.SliceToMap(newCombs, getName, id[TL2CombinatorIndexed])
+
+	oldNames := utils.Keys(oldMapping)
+	newNames := utils.Keys(newMapping)
+
+	intersection := utils.SetIntersection(
+		utils.SliceToSet(oldNames),
+		utils.SliceToSet(newNames),
+	)
+
+	for name := range intersection {
+		options := tlast.NewCanonicalFormatOptions()
+
+		oldComb := oldMapping[name]
+		newComb := newMapping[name]
+
+		oldStr := strings.Builder{}
+		newStr := strings.Builder{}
+
+		oldComb.Combinator.Print(&oldStr, options)
+		newComb.Combinator.Print(&newStr, options)
+
+		if oldStr.String() == newStr.String() {
+			resultingMapping[name] = newMapping[name]
+		} else {
+			oldIsRef := isReferencingTL1(oldComb.Combinator.Annotations)
+			newIsRef := isReferencingTL1(newComb.Combinator.Annotations)
+
+			if oldIsRef && !newIsRef {
+				resultingMapping[name] = newMapping[name]
+			} else {
+				return tlast.TL2File{}, fmt.Errorf("can't continue migration due to incompetible versions to \"%s\"", name)
+			}
+		}
+	}
+
+	union := utils.SetUnion(
+		utils.SliceToSet(oldNames),
+		utils.SliceToSet(newNames),
+	)
+
+	for name := range union {
+		if _, ok := intersection[name]; ok {
+			continue
+		}
+		if comb, ok := oldMapping[name]; ok {
+			resultingMapping[name] = comb
+			continue
+		}
+		if comb, ok := newMapping[name]; ok {
+			resultingMapping[name] = comb
+			continue
+		}
+	}
+
+	combs := utils.Values(resultingMapping)
+	sort.Slice(combs, func(i, j int) bool {
+		return combs[i].Index <= combs[j].Index
+	})
+
+	file := tlast.TL2File{}
+	for _, comb := range combs {
+		file.Combinators = append(file.Combinators, comb.Combinator)
+	}
+
+	return newFile, nil
 }
 
 func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, natUsage NatUsagesInfo, info AstInfo) {
-	// print for debug
-	//if false {
-	//	fmt.Println("[")
-	//	for _, typ := range info.AllNamesSorted {
-	//		suffix := ""
-	//		if info.AllConstructors[typ].Builtin {
-	//			suffix = "(builtin)"
-	//		} else if !gen.allConstructors[typ].IsFunction {
-	//			suffix = "(" + gen.allConstructors[typ].TypeDecl.Name.String() + ")"
-	//		}
-	//		fmt.Println("\t", typ, suffix)
-	//	}
-	//	fmt.Println("]")
-	//}
-	//
 	// print for debug
 	if false {
 		for combinator, wrappers := range associatedWrappers {

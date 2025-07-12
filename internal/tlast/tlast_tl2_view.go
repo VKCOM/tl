@@ -11,24 +11,24 @@ const OneLineConstructorSize = 120
 const UnionConstructorSize = 80
 
 type formatOptions struct {
-	IgnoreComments         bool
-	OneLineConstructorSize int
-	UnionConstructorSize   int
+	ignoreComments         bool
+	oneLineConstructorSize int
+	unionConstructorSize   int
 }
 
 func NewDefaultFormatOptions() formatOptions {
 	return formatOptions{
-		IgnoreComments:         false,
-		OneLineConstructorSize: OneLineConstructorSize,
-		UnionConstructorSize:   UnionConstructorSize,
+		ignoreComments:         false,
+		oneLineConstructorSize: OneLineConstructorSize,
+		unionConstructorSize:   UnionConstructorSize,
 	}
 }
 
 func NewCanonicalFormatOptions() formatOptions {
 	return formatOptions{
-		IgnoreComments:         true,
-		OneLineConstructorSize: math.MaxInt32 - 10000,
-		UnionConstructorSize:   math.MaxInt32 - 10000,
+		ignoreComments:         true,
+		oneLineConstructorSize: math.MaxInt32 - 10000,
+		unionConstructorSize:   math.MaxInt32 - 10000,
 	}
 }
 
@@ -59,7 +59,7 @@ func (t TL2File) Print(sb *strings.Builder, options formatOptions) {
 
 func (t *TL2Combinator) Print(sb *strings.Builder, options formatOptions) {
 	start := sb.Len()
-	if !options.IgnoreComments {
+	if !options.ignoreComments {
 		if len(t.CommentBefore) != 0 {
 			lines := strings.Split(t.CommentBefore, "\n")
 			for _, line := range lines {
@@ -112,7 +112,7 @@ func (t *TL2FuncDeclaration) printFunction(sb *strings.Builder, options formatOp
 	sb.WriteString(sep)
 	sb.WriteString("=> ")
 	hasNewLines = t.ReturnType.print(sb, options, sb.Len()-startSize+prefixSize)
-	if hasNewLines || sb.Len()-startSize+prefixSize > options.OneLineConstructorSize {
+	if hasNewLines || sb.Len()-startSize+prefixSize > options.oneLineConstructorSize {
 		hasNewLines = true
 	}
 	return
@@ -143,7 +143,7 @@ func (t *TL2TypeDeclaration) print(sb *strings.Builder, options formatOptions, p
 func (t TL2TypeDefinition) print(sb *strings.Builder, options formatOptions, definitionPrefix int) (hasNewLines bool) {
 	tmpSb := strings.Builder{}
 	hasNewLines = t.printWithNewLineOption(&tmpSb, options, false)
-	if hasNewLines || tmpSb.Len()+definitionPrefix > options.OneLineConstructorSize {
+	if hasNewLines || tmpSb.Len()+definitionPrefix > options.oneLineConstructorSize {
 		hasNewLines = true
 	}
 	t.printWithNewLineOption(sb, options, hasNewLines)
@@ -156,7 +156,7 @@ func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options f
 
 	if t.IsUnionType {
 		hasComments := false
-		if !options.IgnoreComments {
+		if !options.ignoreComments {
 			for _, variant := range t.UnionType.Variants {
 				hasComments = hasComments || variant.HasBeforeCommentIn()
 				if hasComments {
@@ -178,7 +178,7 @@ func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options f
 		}
 	} else if t.IsConstructorFields {
 		hasComments := false
-		if !options.IgnoreComments {
+		if !options.ignoreComments {
 			for _, field := range t.ConstructorFields {
 				hasComments = hasComments || field.CommentBefore != ""
 				if hasComments {
@@ -195,7 +195,7 @@ func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options f
 			if i != 0 || forceNewline {
 				sb.WriteString(sep)
 			}
-			if !options.IgnoreComments {
+			if !options.ignoreComments {
 				if field.CommentBefore != "" {
 					lines := strings.Split(field.CommentBefore, "\n")
 					for _, line := range lines {
@@ -221,7 +221,7 @@ func (t *TL2UnionConstructor) print(sb *strings.Builder, options formatOptions, 
 
 	forceNewLine := false
 	if !t.IsTypeAlias {
-		if !options.IgnoreComments {
+		if !options.ignoreComments {
 			if t.HasBeforeCommentIn() {
 				forceNewLine = true
 			}
@@ -233,7 +233,7 @@ func (t *TL2UnionConstructor) print(sb *strings.Builder, options formatOptions, 
 		if !forceNewLine {
 			tmp := strings.Builder{}
 			t.printVariantFields(&tmp, options, sep)
-			if prefixSize+(sb.Len()-currentSize)+tmp.Len() > options.UnionConstructorSize {
+			if prefixSize+(sb.Len()-currentSize)+tmp.Len() > options.unionConstructorSize {
 				t.printVariantFields(sb, options, newLineSep)
 			} else {
 				t.printVariantFields(sb, options, defaultSep)
@@ -251,7 +251,7 @@ func (t *TL2UnionConstructor) print(sb *strings.Builder, options formatOptions, 
 func (t *TL2UnionConstructor) printVariantFields(sb *strings.Builder, options formatOptions, sep string) {
 	for _, field := range t.Fields {
 		sb.WriteString(sep)
-		if !options.IgnoreComments {
+		if !options.ignoreComments {
 			if field.CommentBefore != "" {
 				lines := strings.Split(field.CommentBefore, "\n")
 				for _, line := range lines {
