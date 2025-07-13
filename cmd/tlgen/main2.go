@@ -219,53 +219,9 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 	}
 	if opt.TL2MigrationFile != "" {
-		prevState := make([]tlcodegen.FileToWrite, 0)
-		prevStateFolder := filepath.Join(opt.TL2MigrationFile, "namespaces")
-		if opt.TL2MigrateByNamespaces && opt.TL2ContinuousMigration {
-			files, err := os.ReadDir(prevStateFolder)
-			if err != nil {
-				return fmt.Errorf("error reading folder with previous state of tl2 migration: %s", err)
-			}
-			for _, file := range files {
-				if file.IsDir() || !strings.HasSuffix(file.Name(), ".tl2") {
-					continue
-				}
-				path := filepath.Join(prevStateFolder, file.Name())
-				body, err := os.ReadFile(path)
-				if err != nil {
-					return fmt.Errorf("error reading body for file \"%s\" in previous state: %s", file.Name(), err)
-				}
-				ast, err := tlast.ParseTL2(string(body))
-				if err != nil {
-					return fmt.Errorf("error parsing previous state of \"%s\": %s", file.Name(), err)
-				}
-				prevState = append(prevState, tlcodegen.FileToWrite{Path: path, Ast: ast})
-			}
-		}
-		files, err := gen.MigrateToTL2(prevState)
-		if err != nil {
-			return fmt.Errorf("error migrating to tl2: %s", err)
-		}
-		options := tlast.NewDefaultFormatOptions()
-		if opt.TL2MigrateByNamespaces && !opt.TL2ContinuousMigration {
-			err := os.RemoveAll(prevStateFolder)
-			if err != nil {
-				return err
-			}
-		}
-		for _, file := range files {
-			sb := strings.Builder{}
-			file.Ast.Print(&sb, options)
-			if opt.Verbose {
-				log.Printf("generating TL2 file \"%s\"...\n", file.Path)
-			}
-			err := os.MkdirAll(filepath.Dir(file.Path), 0755)
-			if err != nil && !os.IsExist(err) {
-				return err
-			}
-			if err := os.WriteFile(file.Path, []byte(sb.String()), 0644); err != nil {
-				return fmt.Errorf("error writing tl2 file: %w", err)
-			}
+		migrationErr := runTL2Migration(opt, gen)
+		if migrationErr != nil {
+			return migrationErr
 		}
 	}
 	if opt.TLOPath != "" {
@@ -303,6 +259,58 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		fullAst.WriteGenerate2TL(&buf)
 		if err := os.WriteFile(opt.CanonicalFormPath, buf.Bytes(), 0644); err != nil {
 			return err
+		}
+	}
+	return nil
+}
+
+func runTL2Migration(opt *tlcodegen.Gen2Options, gen *tlcodegen.Gen2) error {
+	prevState := make([]tlcodegen.FileToWrite, 0)
+	prevStateFolder := filepath.Join(opt.TL2MigrationFile, "namespaces")
+	if opt.TL2MigrateByNamespaces && opt.TL2ContinuousMigration {
+		files, err := os.ReadDir(prevStateFolder)
+		if err != nil {
+			return fmt.Errorf("error reading folder with previous state of tl2 migration: %s", err)
+		}
+		for _, file := range files {
+			if file.IsDir() || !strings.HasSuffix(file.Name(), ".tl2") {
+				continue
+			}
+			path := filepath.Join(prevStateFolder, file.Name())
+			body, err := os.ReadFile(path)
+			if err != nil {
+				return fmt.Errorf("error reading body for file \"%s\" in previous state: %s", file.Name(), err)
+			}
+			ast, err := tlast.ParseTL2(string(body))
+			if err != nil {
+				return fmt.Errorf("error parsing previous state of \"%s\": %s", file.Name(), err)
+			}
+			prevState = append(prevState, tlcodegen.FileToWrite{Path: path, Ast: ast})
+		}
+	}
+	files, err := gen.MigrateToTL2(prevState)
+	if err != nil {
+		return fmt.Errorf("error migrating to tl2: %s", err)
+	}
+	options := tlast.NewDefaultFormatOptions()
+	if opt.TL2MigrateByNamespaces && !opt.TL2ContinuousMigration {
+		err := os.RemoveAll(prevStateFolder)
+		if err != nil {
+			return err
+		}
+	}
+	for _, file := range files {
+		sb := strings.Builder{}
+		file.Ast.Print(&sb, options)
+		if opt.Verbose {
+			log.Printf("generating TL2 file \"%s\"...\n", file.Path)
+		}
+		err := os.MkdirAll(filepath.Dir(file.Path), 0755)
+		if err != nil && !os.IsExist(err) {
+			return err
+		}
+		if err := os.WriteFile(file.Path, []byte(sb.String()), 0644); err != nil {
+			return fmt.Errorf("error writing tl2 file: %w", err)
 		}
 	}
 	return nil

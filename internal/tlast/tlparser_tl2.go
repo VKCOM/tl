@@ -188,3 +188,12 @@ func (t TL2UnionConstructor) HasBeforeCommentIn() bool {
 	}
 	return false
 }
+
+func (c TL2Combinator) HasAnnotation(value string) bool {
+	for _, tl2Annotation := range c.Annotations {
+		if tl2Annotation.Name == value {
+			return true
+		}
+	}
+	return false
+}
