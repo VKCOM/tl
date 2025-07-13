@@ -347,6 +347,8 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		return nil, err
 	}
 
+	prevTypeTL2Info := getTypesInfoFromTL2State(prevState)
+
 	info := initAstInfo(gen.allConstructors)
 	associatedWrappers := make(map[*tlast.Combinator][]*TypeRWWrapper)
 	associatedCombinator := make(map[tlast.Name]*tlast.Combinator)
@@ -356,11 +358,16 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			if combinator.IsFunction {
 				continue
 			}
-			associatedCombinator[combinator.Construct.Name] = combinator
-			if !combinator.Builtin {
-				associatedCombinator[combinator.TypeDecl.Name] = combinator
-			}
 			associatedWrappers[combinator] = append(associatedWrappers[combinator], wrapper)
+		}
+	}
+
+	for _, combinator := range gen.allConstructors {
+		// constructor name
+		associatedCombinator[combinator.Construct.Name] = combinator
+		// type name if presented
+		if !combinator.Builtin {
+			associatedCombinator[combinator.TypeDecl.Name] = combinator
 		}
 	}
 
@@ -398,9 +405,16 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		}
 		comb := associatedCombinator[ref.Type]
 		if comb != nil {
-			wrapper := associatedWrappers[comb][0]
 			tname := info.TypeFromName(ref.Type)
-			if _, ok := wrapper.trw.(*TypeRWBrackets); ok {
+			isBracket := false
+			if len(associatedWrappers[comb]) > 0 {
+				wrapper := associatedWrappers[comb][0]
+				_, isBracket = wrapper.trw.(*TypeRWBrackets)
+			} else {
+				isBracket = comb.Builtin && (comb.Construct.Name.String() == BuiltinTupleName ||
+					comb.Construct.Name.String() == BuiltinVectorName)
+			}
+			if isBracket {
 				newRef.IsBracket = true
 				newRef.BracketType = new(tlast.TL2BracketType)
 				arrayIndex := 0
@@ -471,7 +485,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				newField.IsOptional = true
 				if !field.IsRepeated {
 					comb := associatedCombinator[field.FieldType.Type]
-					if comb != nil {
+					if comb != nil && len(associatedWrappers[comb]) > 0 {
 						wrapper := associatedWrappers[comb][0]
 						if _, ok := wrapper.trw.(*TypeRWBool); ok {
 							newField.IsOptional = false
@@ -575,36 +589,30 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			}
 			combinator0 := combinators[0]
 
+			// basic info
+			baseName := tlast.TL2TypeName{Namespace: name.Namespace, Name: lowerFirst(name.Name)}
+			isRef := referencingConstructors[combinator0.Construct.Name.String()]
+
 			combinatorConstableArgs := make(map[int]bool)
+			minimalConstableArgsSubSet := make(map[int]bool)
+
 			for i, argument := range combinator0.TemplateArguments {
 				if argument.IsNat {
-					if len(natUsage.GetConstantsPassingThroughArgument(name, i)) > 0 {
+					influencedNats := natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)
+
+					usedAsConst := len(natUsage.GetConstantsPassingThroughArgument(name, i)) > 0
+					usedAsUnknownValue := len(influencedNats) > 0
+					if usedAsConst {
 						combinatorConstableArgs[i] = true
 					}
-				}
-			}
-
-			minimalConstableArgsSubSet := make(map[int]bool)
-			for i, argument := range combinator0.TemplateArguments {
-				if argument.IsNat {
-					if len(natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)) == 0 {
+					// it used for constants only
+					if !usedAsUnknownValue && usedAsConst {
 						minimalConstableArgsSubSet[i] = true
 					}
 				}
 			}
 
 			allConstableArgsSubSets := utils.SetSubSets(combinatorConstableArgs)
-			sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
-				if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
-					iList := utils.Keys(allConstableArgsSubSets[i])
-					sort.Ints(iList)
-					jList := utils.Keys(allConstableArgsSubSets[j])
-					sort.Ints(jList)
-					return slices.Compare(iList, jList) <= 0
-				}
-				return len(allConstableArgsSubSets[i]) <= len(allConstableArgsSubSets[j])
-			})
-
 			allConstableArgsSubSets = utils.FilterSlice(
 				allConstableArgsSubSets,
 				func(m map[int]bool) bool {
@@ -617,13 +625,49 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				},
 			)
 
-			isRef := referencingConstructors[combinator0.Construct.Name.String()]
+			if baseName.String() == "vector" {
+				//print("debug")
+			}
+
+			// add from previous state
+			for _, combinator := range prevTypeTL2Info[baseName] {
+				inheritedSubSet := make(map[int]bool)
+				for i, argument := range combinator.TypeDecl.TemplateArguments {
+					if argument.Category.IsUint32() {
+						inheritedSubSet[i] = true
+					}
+				}
+				inheritedSubSetList := utils.Keys(inheritedSubSet)
+				sort.Ints(inheritedSubSetList)
+				if !slices.ContainsFunc(allConstableArgsSubSets, func(m map[int]bool) bool {
+					l := utils.Keys(m)
+					sort.Ints(l)
+					return slices.Equal(inheritedSubSetList, l)
+				}) {
+					allConstableArgsSubSets = append(allConstableArgsSubSets, inheritedSubSet)
+				}
+			}
+
+			// sort them
+			sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
+				if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
+					iList := utils.Keys(allConstableArgsSubSets[i])
+					sort.Ints(iList)
+					jList := utils.Keys(allConstableArgsSubSets[j])
+					sort.Ints(jList)
+					return slices.Compare(iList, jList) <= 0
+				}
+				return len(allConstableArgsSubSets[i]) <= len(allConstableArgsSubSets[j])
+			})
 
 			for _, setOfConstantNatArgs := range allConstableArgsSubSets {
 				tl2Combinator := tlast.TL2Combinator{IsFunction: false}
 				// init name
-				tl2Combinator.TypeDecl.Name.Namespace = name.Namespace
-				tl2Combinator.TypeDecl.Name.Name = lowerFirst(name.Name)
+				tl2Combinator.TypeDecl.Name = baseName
+
+				if tl2Combinator.TypeDecl.Name.String() == "dictionary" {
+					//print("debug")
+				}
 
 				constantArgs := utils.Keys(setOfConstantNatArgs)
 				sort.Ints(constantArgs)
@@ -856,14 +900,6 @@ func (gen *Gen2) mergeTL2Files(oldFile, newFile tlast.TL2File) (tlast.TL2File, e
 	newCombs := indexCombinators(newFile)
 
 	getName := func(c TL2CombinatorIndexed) tlast.TL2TypeName { return c.Name }
-	isReferencingTL1 := func(anns []tlast.TL2Annotation) bool {
-		for _, ann := range anns {
-			if ann.Name == "tl1" {
-				return true
-			}
-		}
-		return false
-	}
 
 	oldMapping := utils.SliceToMap(oldCombs, getName, id[TL2CombinatorIndexed])
 	newMapping := utils.SliceToMap(newCombs, getName, id[TL2CombinatorIndexed])
@@ -891,8 +927,8 @@ func (gen *Gen2) mergeTL2Files(oldFile, newFile tlast.TL2File) (tlast.TL2File, e
 		if oldStr.String() == newStr.String() {
 			resultingMapping[name] = newMapping[name]
 		} else {
-			oldIsRef := isReferencingTL1(oldComb.Combinator.Annotations)
-			newIsRef := isReferencingTL1(newComb.Combinator.Annotations)
+			oldIsRef := oldComb.Combinator.HasAnnotation("tl1")
+			newIsRef := newComb.Combinator.HasAnnotation("tl1")
 
 			if oldIsRef && !newIsRef {
 				resultingMapping[name] = newMapping[name]
@@ -923,7 +959,14 @@ func (gen *Gen2) mergeTL2Files(oldFile, newFile tlast.TL2File) (tlast.TL2File, e
 
 	combs := utils.Values(resultingMapping)
 	sort.Slice(combs, func(i, j int) bool {
-		return combs[i].Index <= combs[j].Index
+		_, isOldI := oldMapping[combs[i].Name]
+		_, isOldJ := oldMapping[combs[j].Name]
+
+		if isOldI == isOldJ {
+			return combs[i].Index <= combs[j].Index
+		} else {
+			return isOldI
+		}
 	})
 
 	file := tlast.TL2File{}
@@ -931,7 +974,33 @@ func (gen *Gen2) mergeTL2Files(oldFile, newFile tlast.TL2File) (tlast.TL2File, e
 		file.Combinators = append(file.Combinators, comb.Combinator)
 	}
 
-	return newFile, nil
+	return file, nil
+}
+
+func getTypesInfoFromTL2State(state []FileToWrite) map[tlast.TL2TypeName][]tlast.TL2Combinator {
+	result := make(map[tlast.TL2TypeName][]tlast.TL2Combinator)
+	for _, file := range state {
+		for _, combinator := range file.Ast.Combinators {
+			if combinator.IsFunction {
+				continue
+			}
+			name := combinator.TypeDecl.Name
+			if name.String() == "vector" {
+				//print("debug")
+			}
+			if combinator.HasAnnotation("tl2ext") {
+				suffix := ""
+				for _, argument := range combinator.TypeDecl.TemplateArguments {
+					if argument.Category.IsUint32() {
+						suffix += "_" + strings.ToUpper(argument.Name[:1]) + argument.Name[1:]
+					}
+				}
+				name.Name, _ = strings.CutSuffix(name.Name, suffix)
+			}
+			result[name] = append(result[name], combinator)
+		}
+	}
+	return result
 }
 
 func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, natUsage NatUsagesInfo, info AstInfo) {

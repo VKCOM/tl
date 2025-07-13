@@ -7,6 +7,7 @@
 package test
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"os"
@@ -41,6 +42,273 @@ func TestGen(t *testing.T) {
 	err = gen.WriteToDir(outputDir)
 
 	require.NoError(t, err)
+}
+
+func TestMigrationOneStep(t *testing.T) {
+	var nextState []tlcodegen.FileToWrite
+	var stepSuccess bool
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
+
+a.t1 f1:int f2:vector<int> = a.T1;
+a.t2 n:# f1:tuple<a.t1, n> f2:tuple<a.t1, 2> = a.T2;
+
+b.t1 x:vector<a.t2> = b.T1;
+
+c.t1 n:# f1:n.0?int = c.T1;
+c.t2 f1:pair<c.t1, double> = c.T2;
+`,
+		"b.",
+		map[string]string{
+			"": `@tl1 vector<t:type> = ;
+@tl1 tuple<t:type> = ;
+@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+`,
+			"a": `@tl1 a.t1 = ;
+@tl1 a.t2 = ;
+`,
+			"b": `b.t1 = x:vector<a.t2>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+}
+
+func TestMigrationMerge(t *testing.T) {
+	var nextState []tlcodegen.FileToWrite
+	var stepSuccess bool
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+
+a.t1 f1:int f2:vector<int> = a.T1;
+a.t2 n:# f1:tuple<a.t1, n> = a.T2;
+
+b.t1 x:tuple<int, 2> = b.T1;
+`,
+		"b.",
+		map[string]string{
+			"": `@tl1 tuple<t:type> = ;
+@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+`,
+			"b": `b.t1 = x:tuple_N<int,2>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+
+a.t1 f1:int f2:vector<int> = a.T1;
+a.t2 n:# f1:tuple<a.t1, n> = a.T2;
+`,
+		"b.,a.,.",
+		map[string]string{
+			"": `tuple<t:type> = []t;
+@tl2ext tuple_N<t:type,n:uint32> = [n]t;
+vector<t:type> = []t;
+`,
+			"a": `a.t1 = f1:int f2:vector<int>;
+a.t2 = n:uint32 f1:tuple<a.t1>;
+`,
+			"b": `b.t1 = x:tuple_N<int,2>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+}
+
+func TestFullMigrationStepByStep(t *testing.T) {
+	var nextState []tlcodegen.FileToWrite
+	var stepSuccess bool
+	// STEP 1: remove b.
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
+
+a.t1 f1:int f2:vector<int> = a.T1;
+a.t2 n:# f1:tuple<a.t1, n> f2:tuple<a.t1, 2> = a.T2;
+
+b.t1 x:vector<a.t2> = b.T1;
+
+c.t1 n:# f1:n.0?int = c.T1;
+c.t2 f1:pair<c.t1, double> = c.T2;
+`,
+		"b.",
+		map[string]string{
+			"": `@tl1 vector<t:type> = ;
+@tl1 tuple<t:type> = ;
+@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+`,
+			"a": `@tl1 a.t1 = ;
+@tl1 a.t2 = ;
+`,
+			"b": `b.t1 = x:vector<a.t2>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+
+	// STEP 2: remove b. and decide to move a.
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
+
+a.t1 f1:int f2:vector<int> = a.T1;
+a.t2 n:# f1:tuple<a.t1, n> f2:tuple<a.t1, 2> = a.T2;
+
+c.t1 n:# f1:n.0?int = c.T1;
+c.t2 f1:pair<c.t1, double> = c.T2;
+`,
+		"b.,a.",
+		map[string]string{
+			"": `@tl1 vector<t:type> = ;
+@tl1 tuple<t:type> = ;
+@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+`,
+			"a": `a.t1 = f1:int f2:vector<int>;
+a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
+`,
+			"b": `b.t1 = x:vector<a.t2>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+
+	// STEP 3: remove b. and decide to move c.
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
+
+c.t1 n:# f1:n.0?int = c.T1;
+c.t2 f1:pair<c.t1, double> = c.T2;
+`,
+		"b.,a.,c.",
+		map[string]string{
+			"": `@tl1 vector<t:type> = ;
+@tl1 tuple<t:type> = ;
+@tl1 @tl2ext tuple_N<t:type,n:uint32> = ;
+@tl1 pair<x:type,y:type> = ;
+`,
+			"a": `a.t1 = f1:int f2:vector<int>;
+a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
+`,
+			"b": `b.t1 = x:vector<a.t2>;
+`,
+			"c": `c.t1 = n:uint32 f1?:int;
+c.t2 = f1:pair<c.t1,double>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+
+	// STEP 4: remove c. and decide to move __common_namespace.
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+pair {X:Type} {Y:Type} x:X y:Y = Pair X Y;
+`,
+		"b.,a.,c.,.",
+		map[string]string{
+			"": `vector<t:type> = []t;
+tuple<t:type> = []t;
+@tl2ext tuple_N<t:type,n:uint32> = [n]t;
+pair<x:type,y:type> = x:x y:y;
+`,
+			"a": `a.t1 = f1:int f2:vector<int>;
+a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
+`,
+			"b": `b.t1 = x:vector<a.t2>;
+`,
+			"c": `c.t1 = n:uint32 f1?:int;
+c.t2 = f1:pair<c.t1,double>;
+`,
+		},
+	)
+	assert.True(t, stepSuccess)
+}
+
+func assertMigrationStep(t *testing.T, prevState []tlcodegen.FileToWrite, tl1 string, filter string, allExpectedNamespaces map[string]string) (success bool, nextState []tlcodegen.FileToWrite) {
+	ast, err := tlast.ParseTL(tl1)
+	assert.NoError(t, err)
+	gen, err := tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+		ErrorWriter: io.Discard,
+		Verbose:     true,
+
+		TL2MigrationFile:       "tmp",
+		TL2MigrateByNamespaces: true,
+		TL2MigratingWhitelist:  filter,
+		TL2ContinuousMigration: true,
+	})
+
+	nextState, err = gen.MigrateToTL2(prevState)
+	assert.NoError(t, err)
+	assert.Equal(t, len(allExpectedNamespaces), len(nextState))
+
+	for ns, value := range allExpectedNamespaces {
+		assertNamespaceTranslation(
+			t,
+			nextState,
+			ns,
+			value,
+		)
+	}
+
+	return !t.Failed(), nextState
+}
+
+func assertNamespaceTranslation(t *testing.T, files []tlcodegen.FileToWrite, ns string, expectedValue string) {
+	if ns == "" {
+		ns = "__common_namespace"
+	}
+	targetFile := tlcodegen.FileToWrite{}
+	found := false
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Path, fmt.Sprintf("%s.tl2", ns)) {
+			found = true
+			targetFile = file
+			break
+		}
+	}
+
+	if !found {
+		t.Error(fmt.Errorf("can't find file for namespace \"%s\"", ns))
+		return
+	}
+
+	str := strings.Builder{}
+	targetFile.Ast.Print(&str, tlast.NewCanonicalFormatOptions())
+
+	assert.Equal(t, expectedValue, str.String())
 }
 
 func TestPHPLinterCheck(t *testing.T) {
