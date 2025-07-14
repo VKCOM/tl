@@ -133,12 +133,13 @@ func (item *TasksCronTaskWithId) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksCronTaskWithId) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TasksCronTaskWithId) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TasksCronTaskWithId) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TasksCronTaskWithId) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -158,7 +159,7 @@ func (item *TasksCronTaskWithId) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"task":`...)
-	w = item.Task.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Task.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 

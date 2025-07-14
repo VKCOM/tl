@@ -92,29 +92,21 @@ func (item *GetArrays) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func (item *GetArrays) WriteResultJSON(w []byte, ret [5]int32) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *GetArrays) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret [5]int32) (_ []byte, err error) {
-	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(newTypeNames, short, w, &ret)
+	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(tctx, w, &ret)
 	return w, nil
 }
 
-func (item *GetArrays) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetArrays) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret [5]int32
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *GetArrays) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret [5]int32
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -203,12 +195,13 @@ func (item *GetArrays) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *GetArrays) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *GetArrays) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *GetArrays) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *GetArrays) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
@@ -222,7 +215,7 @@ func (item *GetArrays) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.A, item.N); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.A) != 0) == false {
@@ -230,7 +223,7 @@ func (item *GetArrays) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(newTypeNames, short, w, &item.B)
+	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(tctx, w, &item.B)
 	return append(w, '}'), nil
 }
 

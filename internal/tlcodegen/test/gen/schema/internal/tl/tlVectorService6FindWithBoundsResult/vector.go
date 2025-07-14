@@ -69,17 +69,18 @@ func (item *VectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames bool, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorService6FindWithBoundsResult) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorService6FindWithBoundsResult) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorService6FindWithBoundsResult) MarshalJSON() ([]byte, error) {

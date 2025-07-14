@@ -124,31 +124,32 @@ func (item *TreeStatsObjectLimitValue) ReadJSON(legacyTypeNames bool, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TreeStatsObjectLimitValue) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TreeStatsObjectLimitValue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TreeStatsObjectLimitValue) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TreeStatsObjectLimitValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"tree_stats.objectLimitValueLong"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"tree_stats.objectLimitValueLong#73111993"`...)
+		} else {
+			w = append(w, `{"type":"tree_stats.objectLimitValueLong"`...)
 		}
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"tree_stats.objectLimitValueDouble"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"tree_stats.objectLimitValueDouble#5dfb8816"`...)
+		} else {
+			w = append(w, `{"type":"tree_stats.objectLimitValueDouble"`...)
 		}
 		if item.valueDouble != 0 {
 			w = append(w, `,"value":`...)
-			w = item.valueDouble.WriteJSONOpt(newTypeNames, short, w)
+			w = item.valueDouble.WriteJSONOpt(tctx, w)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -229,12 +230,13 @@ func (item *TreeStatsObjectLimitValueDouble) ReadJSON(legacyTypeNames bool, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TreeStatsObjectLimitValueDouble) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *TreeStatsObjectLimitValueDouble) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TreeStatsObjectLimitValueDouble) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *TreeStatsObjectLimitValueDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
@@ -315,12 +317,13 @@ func (item *TreeStatsObjectLimitValueLong) ReadJSON(legacyTypeNames bool, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TreeStatsObjectLimitValueLong) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TreeStatsObjectLimitValueLong) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TreeStatsObjectLimitValueLong) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TreeStatsObjectLimitValueLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')

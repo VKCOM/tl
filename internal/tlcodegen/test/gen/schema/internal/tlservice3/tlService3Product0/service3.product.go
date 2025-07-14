@@ -202,12 +202,13 @@ func (item *Service3Product0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service3Product0) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service3Product0) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service3Product0) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service3Product0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -221,14 +222,14 @@ func (item *Service3Product0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Id)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Id)
 	if (len(item.Id) != 0) == false {
 		w = w[:backupIndexId]
 	}
 	backupIndexInfo := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"info":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Info)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Info)
 	if (len(item.Info) != 0) == false {
 		w = w[:backupIndexInfo]
 	}

@@ -69,17 +69,18 @@ func (item *VectorTasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorTasksQueueTypeInfo) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorTasksQueueTypeInfo) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorTasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorTasksQueueTypeInfo) MarshalJSON() ([]byte, error) {

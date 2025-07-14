@@ -145,32 +145,33 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeN
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"left"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"left#0a29cd5d"`...)
+		} else {
+			w = append(w, `{"type":"left"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueLeft.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueLeft.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"right"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"right#df3ecb3b"`...)
+		} else {
+			w = append(w, `{"type":"right"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueRight.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueRight.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -279,18 +280,19 @@ func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNam
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Value.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -392,19 +394,20 @@ func (item *RightService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNa
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *RightService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWriteJSONOpt(newTypeNames, short, w, item.Value)
+	w = tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowWriteJSONOpt(tctx, w, item.Value)
 	if (len(item.Value) != 0) == false {
 		w = w[:backupIndexValue]
 	}

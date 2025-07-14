@@ -104,7 +104,8 @@ func (item *Service3CreateProduct) ReadResultJSON(legacyTypeNames bool, in *basi
 }
 
 func (item *Service3CreateProduct) WriteResultJSON(w []byte, ret bool) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *Service3CreateProduct) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret bool) (_ []byte, err error) {
@@ -112,21 +113,12 @@ func (item *Service3CreateProduct) writeResultJSON(tctx *basictl.JSONWriteContex
 	return w, nil
 }
 
-func (item *Service3CreateProduct) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3CreateProduct) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *Service3CreateProduct) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret bool
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -241,12 +233,13 @@ func (item *Service3CreateProduct) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service3CreateProduct) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service3CreateProduct) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service3CreateProduct) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service3CreateProduct) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -267,14 +260,14 @@ func (item *Service3CreateProduct) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Id)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Id)
 	if (len(item.Id) != 0) == false {
 		w = w[:backupIndexId]
 	}
 	backupIndexInfo := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"info":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Info)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Info)
 	if (len(item.Info) != 0) == false {
 		w = w[:backupIndexInfo]
 	}

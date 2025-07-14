@@ -144,32 +144,33 @@ func (item *EitherIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeName
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"left"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"left#0a29cd5d"`...)
+		} else {
+			w = append(w, `{"type":"left"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueLeft.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueLeft.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"right"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"right#df3ecb3b"`...)
+		} else {
+			w = append(w, `{"type":"right"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueRight.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueRight.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -278,12 +279,13 @@ func (item *LeftIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -395,19 +397,20 @@ func (item *RightIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RightIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *RightIntVectorService6FindWithBoundsResult) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *RightIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *RightIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(newTypeNames, short, w, item.Value)
+	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(tctx, w, item.Value)
 	if (len(item.Value) != 0) == false {
 		w = w[:backupIndexValue]
 	}

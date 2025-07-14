@@ -125,31 +125,23 @@ func (item *Service2AddOrIncrMany) ReadResultJSON(legacyTypeNames bool, in *basi
 }
 
 func (item *Service2AddOrIncrMany) WriteResultJSON(w []byte, ret []tlService2CounterSet.Service2CounterSet) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *Service2AddOrIncrMany) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []tlService2CounterSet.Service2CounterSet) (_ []byte, err error) {
-	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(newTypeNames, short, w, ret, item.ObjectsNum, item.IntCountersNum, item.FloatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(tctx, w, ret, item.ObjectsNum, item.IntCountersNum, item.FloatCountersNum); err != nil {
 		return w, err
 	}
 	return w, nil
 }
 
-func (item *Service2AddOrIncrMany) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service2AddOrIncrMany) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []tlService2CounterSet.Service2CounterSet
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *Service2AddOrIncrMany) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret []tlService2CounterSet.Service2CounterSet
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -298,12 +290,13 @@ func (item *Service2AddOrIncrMany) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2AddOrIncrMany) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *Service2AddOrIncrMany) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *Service2AddOrIncrMany) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service2AddOrIncrMany) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
@@ -338,7 +331,7 @@ func (item *Service2AddOrIncrMany) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexIntCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"intCounters":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.IntCounters, item.IntCountersNum); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.IntCounters, item.IntCountersNum); err != nil {
 		return w, err
 	}
 	if (len(item.IntCounters) != 0) == false {
@@ -347,7 +340,7 @@ func (item *Service2AddOrIncrMany) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexFloatCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"floatCounters":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.FloatCounters, item.FloatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.FloatCounters, item.FloatCountersNum); err != nil {
 		return w, err
 	}
 	if (len(item.FloatCounters) != 0) == false {
@@ -356,7 +349,7 @@ func (item *Service2AddOrIncrMany) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexDeltas := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"deltas":`...)
-	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWriteJSONOpt(newTypeNames, short, w, item.Deltas, item.ObjectsNum, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWriteJSONOpt(tctx, w, item.Deltas, item.ObjectsNum, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
 		return w, err
 	}
 	if (len(item.Deltas) != 0) == false {

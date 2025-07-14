@@ -252,18 +252,19 @@ func (item *Service4ModifiedNewsEntry) ReadJSON(legacyTypeNames bool, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service4ModifiedNewsEntry) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service4ModifiedNewsEntry) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service4ModifiedNewsEntry) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service4ModifiedNewsEntry) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"object":`...)
-	w = item.Object.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Object.WriteJSONOpt(tctx, w)
 	backupIndexCreationDate := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"creation_date":`...)

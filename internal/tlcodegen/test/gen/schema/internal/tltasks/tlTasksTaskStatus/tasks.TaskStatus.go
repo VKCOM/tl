@@ -113,19 +113,20 @@ func (item *TasksTaskStatus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item TasksTaskStatus) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item TasksTaskStatus) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item TasksTaskStatus) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item TasksTaskStatus) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '"')
-	if newTypeNames {
-		w = append(w, _TasksTaskStatus[item.index].TLName...)
-	} else {
+	if tctx.LegacyTypeNames {
 		w = append(w, _TasksTaskStatus[item.index].TLString...)
+	} else {
+		w = append(w, _TasksTaskStatus[item.index].TLName...)
 	}
 	return append(w, '"')
 }

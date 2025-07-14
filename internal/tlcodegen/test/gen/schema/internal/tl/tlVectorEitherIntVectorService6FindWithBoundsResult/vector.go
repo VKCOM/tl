@@ -69,17 +69,18 @@ func (item *VectorEitherIntVectorService6FindWithBoundsResult) ReadJSON(legacyTy
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult)(item)
-	w = tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) MarshalJSON() ([]byte, error) {

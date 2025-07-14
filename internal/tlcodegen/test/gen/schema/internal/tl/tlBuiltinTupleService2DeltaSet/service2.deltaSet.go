@@ -77,7 +77,8 @@ func BuiltinTupleService2DeltaSetReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func BuiltinTupleService2DeltaSetWriteJSON(w []byte, vec []tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
-	return BuiltinTupleService2DeltaSetWriteJSONOpt(true, false, w, vec, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleService2DeltaSetWriteJSONOpt(&tctx, w, vec, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 func BuiltinTupleService2DeltaSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService2DeltaSet.Service2DeltaSet, nat_n uint32, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
@@ -86,7 +87,7 @@ func BuiltinTupleService2DeltaSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 			return w, err
 		}
 	}

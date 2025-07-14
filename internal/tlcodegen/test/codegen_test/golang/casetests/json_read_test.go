@@ -9,15 +9,16 @@ package casetests
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
+	"os"
+	"testing"
+
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory_bytes"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
 	"github.com/vkcom/tl/pkg/basictl"
-	"math/rand"
-	"os"
 
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type MappingSuccess struct {
@@ -139,7 +140,7 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 			buf2 = buf2[:0]
 			t.Run(tlItem.TLName(), func(t *testing.T) {
 				obj.FillRandom(basictl.NewRandGenerator(rnd))
-				buf1, err = obj.WriteJSONGeneral(buf1)
+				buf1, err = obj.WriteJSONGeneral(&basictl.JSONWriteContext{}, buf1)
 				if err != nil {
 					t.Logf("Seed: %d\n", seed)
 					t.Fatal("first serialization wasn't succeeded", err.Error())
@@ -152,7 +153,7 @@ func TestAllTLObjectsReadJsonByRandom(t *testing.T) {
 					return
 				}
 				obj1 := obj
-				buf2, err = obj.WriteJSONGeneral(buf2)
+				buf2, err = obj.WriteJSONGeneral(&basictl.JSONWriteContext{}, buf2)
 				if err != nil {
 					t.Logf("Seed: %d\n", seed)
 					t.Fatal("second serialization wasn't succeeded", err.Error())

@@ -69,7 +69,8 @@ func BuiltinTuple2IntBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, 
 }
 
 func BuiltinTuple2IntBoxedWriteJSON(w []byte, vec *[2]int32) []byte {
-	return BuiltinTuple2IntBoxedWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple2IntBoxedWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinTuple2IntBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[2]int32) []byte {
 	w = append(w, '[')

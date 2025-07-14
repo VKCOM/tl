@@ -117,26 +117,27 @@ func (item *BenchObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchObject) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *BenchObject) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *BenchObject) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *BenchObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexXs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"xs":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Xs)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Xs)
 	if (len(item.Xs) != 0) == false {
 		w = w[:backupIndexXs]
 	}
 	backupIndexYs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"ys":`...)
-	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteJSONOpt(newTypeNames, short, w, item.Ys)
+	w = tlBuiltinVectorInteger.BuiltinVectorIntegerWriteJSONOpt(tctx, w, item.Ys)
 	if (len(item.Ys) != 0) == false {
 		w = w[:backupIndexYs]
 	}

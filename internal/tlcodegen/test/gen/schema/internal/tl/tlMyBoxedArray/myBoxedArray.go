@@ -101,18 +101,19 @@ func (item *MyBoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyBoxedArray) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MyBoxedArray) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyBoxedArray) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *MyBoxedArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"data":`...)
-	w = tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWriteJSONOpt(newTypeNames, short, w, &item.Data)
+	w = tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWriteJSONOpt(tctx, w, &item.Data)
 	return append(w, '}')
 }
 

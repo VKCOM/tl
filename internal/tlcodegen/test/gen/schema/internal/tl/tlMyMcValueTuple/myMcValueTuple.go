@@ -98,18 +98,19 @@ func (item *MyMcValueTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyMcValueTuple) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MyMcValueTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyMcValueTuple) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *MyMcValueTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"xs":`...)
-	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteJSONOpt(newTypeNames, short, w, &item.Xs)
+	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteJSONOpt(tctx, w, &item.Xs)
 	return append(w, '}')
 }
 

@@ -2,14 +2,15 @@ package goldmastertests
 
 import (
 	"fmt"
+	"math/rand"
+	"strings"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/factory"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 	"github.com/vkcom/tl/internal/utils"
 	"github.com/vkcom/tl/pkg/basictl"
-	"math/rand"
-	"strings"
-	"testing"
 )
 
 var bannedTypes = []string{"cycleTuple"}
@@ -27,7 +28,7 @@ func TestExactCases(t *testing.T) {
 	dst := factory.CreateObjectFromName(TestingName)
 	_, _ = dst.Read(utils.ParseHexToBytes(testingBytesChanged))
 
-	json, _ := dst.WriteJSONGeneral(nil)
+	json, _ := dst.WriteJSONGeneral(&basictl.JSONWriteContext{}, nil)
 	fmt.Println(string(json))
 
 	writeBuffer = dst.WriteTL2(writeBuffer[:0], &context)
