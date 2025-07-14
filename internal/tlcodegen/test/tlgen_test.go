@@ -8,12 +8,12 @@ package test
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"os"
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"
