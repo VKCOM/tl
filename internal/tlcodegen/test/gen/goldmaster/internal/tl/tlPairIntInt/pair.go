@@ -119,14 +119,15 @@ func (item *PairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairIntInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairIntInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairIntInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

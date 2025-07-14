@@ -79,7 +79,7 @@ func (item *MyDouble) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *MyDouble) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*float64)(item)
 	w = basictl.JSONWriteFloat64(w, *ptr)
 	return w

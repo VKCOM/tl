@@ -71,17 +71,18 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) ReadJSON(legacyTy
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSON(w, nat_t), nil
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byte, nat_t uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_t uint32) []byte {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	ptr := (*map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)(item)
-	w = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(newTypeNames, short, w, *ptr, nat_t)
+	w = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, *ptr, nat_t)
 	return w
 }
 

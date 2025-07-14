@@ -173,14 +173,15 @@ func (item *CasesTestInplaceStructArgs2) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestInplaceStructArgs2) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesTestInplaceStructArgs2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesTestInplaceStructArgs2) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestInplaceStructArgs2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesTestInplaceStructArgs2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexA1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -205,7 +206,7 @@ func (item *CasesTestInplaceStructArgs2) WriteJSONOpt(newTypeNames bool, short b
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arg":`...)
-	if w, err = item.Arg.WriteJSONOpt(newTypeNames, short, w, item.A1, item.A2, item.A3, item.A3, item.A2); err != nil {
+	if w, err = item.Arg.WriteJSONOpt(tctx, w, item.A1, item.A2, item.A3, item.A3, item.A2); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

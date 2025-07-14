@@ -75,7 +75,7 @@ func (item *VectorService3ProductStatsOldMaybe) WriteJSONGeneral(w []byte) (_ []
 func (item *VectorService3ProductStatsOldMaybe) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *VectorService3ProductStatsOldMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorService3ProductStatsOldMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}

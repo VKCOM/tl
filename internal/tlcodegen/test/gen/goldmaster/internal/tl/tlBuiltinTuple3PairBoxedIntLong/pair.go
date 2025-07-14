@@ -145,13 +145,14 @@ func BuiltinTuple3PairBoxedIntLongReadJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 func BuiltinTuple3PairBoxedIntLongWriteJSON(w []byte, vec *[3]tlPairIntLong.PairIntLong) []byte {
-	return BuiltinTuple3PairBoxedIntLongWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3PairBoxedIntLongWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3PairBoxedIntLongWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]tlPairIntLong.PairIntLong) []byte {
+func BuiltinTuple3PairBoxedIntLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]tlPairIntLong.PairIntLong) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

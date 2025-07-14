@@ -183,14 +183,15 @@ func (item *MyNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyNat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MyNat) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyNat) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *MyNat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyNat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -202,7 +203,7 @@ func (item *MyNat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte 
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		w = item.A.WriteJSONOpt(newTypeNames, short, w)
+		w = item.A.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }

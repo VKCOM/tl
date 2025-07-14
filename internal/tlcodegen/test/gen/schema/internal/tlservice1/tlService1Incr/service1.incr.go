@@ -82,7 +82,7 @@ func (item *Service1Incr) WriteResultJSON(w []byte, ret cycle_6ca945392bbf8b14f2
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service1Incr) writeResultJSON(newTypeNames bool, short bool, w []byte, ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
+func (item *Service1Incr) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -96,7 +96,7 @@ func (item *Service1Incr) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byt
 	return r, w, err
 }
 
-func (item *Service1Incr) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1Incr) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -175,7 +175,7 @@ func (item *Service1Incr) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Service1Incr) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1Incr) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1Incr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -141,7 +141,7 @@ func (item *TasksQueueTypeInfo) WriteJSONGeneral(w []byte) (_ []byte, err error)
 func (item *TasksQueueTypeInfo) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TasksQueueTypeInfo) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexTypeName := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

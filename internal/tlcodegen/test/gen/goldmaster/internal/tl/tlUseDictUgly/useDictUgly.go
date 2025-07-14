@@ -334,14 +334,15 @@ func (item *UseDictUgly) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UseDictUgly) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *UseDictUgly) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *UseDictUgly) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *UseDictUgly) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *UseDictUgly) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -353,28 +354,28 @@ func (item *UseDictUgly) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(newTypeNames, short, w, item.A, item.N)
+	w = tlBuiltinVectorDictionaryElemUglyIntString.BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(tctx, w, item.A, item.N)
 	if (len(item.A) != 0) == false {
 		w = w[:backupIndexA]
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(newTypeNames, short, w, item.B)
+	w = tlBuiltinVectorDictionaryElemStrangeString.BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(tctx, w, item.B)
 	if (len(item.B) != 0) == false {
 		w = w[:backupIndexB]
 	}
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(newTypeNames, short, w, item.C)
+	w = tlBuiltinVectorDictionaryElemPairIntIntInt.BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(tctx, w, item.C)
 	if (len(item.C) != 0) == false {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(newTypeNames, short, w, item.D, item.N); err != nil {
+	if w, err = tlBuiltinVectorDictionaryElemTupleStringInt.BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(tctx, w, item.D, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.D) != 0) == false {
@@ -383,42 +384,42 @@ func (item *UseDictUgly) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(newTypeNames, short, w, item.E)
+	w = tlBuiltinVectorDictionaryElemPairBoolAColorInt.BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(tctx, w, item.E)
 	if (len(item.E) != 0) == false {
 		w = w[:backupIndexE]
 	}
 	backupIndexF := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(newTypeNames, short, w, item.F)
+	w = tlBuiltinVectorDictionaryElemPairFloatDoubleInt.BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(tctx, w, item.F)
 	if (len(item.F) != 0) == false {
 		w = w[:backupIndexF]
 	}
 	backupIndexG := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"g":`...)
-	w = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(newTypeNames, short, w, item.G)
+	w = tlBuiltinVectorDictionaryElemPairIntPairMultiPointStringInt.BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(tctx, w, item.G)
 	if (len(item.G) != 0) == false {
 		w = w[:backupIndexG]
 	}
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(newTypeNames, short, w, item.X)
+	w = tlBuiltinVectorDictionaryElemIntPairIntInt.BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(tctx, w, item.X)
 	if (len(item.X) != 0) == false {
 		w = w[:backupIndexX]
 	}
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(newTypeNames, short, w, item.Y)
+	w = tlBuiltinVectorDictionaryElemLongPairIntInt.BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(tctx, w, item.Y)
 	if (len(item.Y) != 0) == false {
 		w = w[:backupIndexY]
 	}
 	backupIndexZ := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"z":`...)
-	w = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(newTypeNames, short, w, item.Z)
+	w = tlBuiltinVectorDictionaryElemStringPairIntInt.BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(tctx, w, item.Z)
 	if (len(item.Z) != 0) == false {
 		w = w[:backupIndexZ]
 	}

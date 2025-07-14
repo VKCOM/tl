@@ -214,9 +214,10 @@ func BuiltinVectorDictionaryElemStrangeStringReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryElemStrangeStringWriteJSON(w []byte, m map[uint32]string) []byte {
-	return BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[uint32]string) []byte {
+func BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[uint32]string) []byte {
 	keys := make([]uint32, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

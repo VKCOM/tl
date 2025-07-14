@@ -74,17 +74,18 @@ func (item *VectorTrueBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorTrueBoxed) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorTrueBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorTrueBoxed) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *VectorTrueBoxed) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorTrueBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlTrue.True)(item)
-	w = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorTrueBoxed) MarshalJSON() ([]byte, error) {

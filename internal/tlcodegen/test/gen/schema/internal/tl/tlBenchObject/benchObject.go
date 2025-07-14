@@ -124,7 +124,7 @@ func (item *BenchObject) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *BenchObject) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *BenchObject) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BenchObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexXs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

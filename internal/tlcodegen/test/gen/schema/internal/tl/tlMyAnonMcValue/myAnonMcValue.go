@@ -76,7 +76,7 @@ func (item *MyAnonMcValue) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *MyAnonMcValue) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyAnonMcValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
 	w = ptr.WriteJSONOpt(newTypeNames, short, w)
 	return w

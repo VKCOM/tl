@@ -228,32 +228,33 @@ func (item *AbCounterChangeRequestPeriods) ReadJSON(legacyTypeNames bool, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCounterChangeRequestPeriods) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AbCounterChangeRequestPeriods) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AbCounterChangeRequestPeriods) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany#14a35d80"`...)
+		} else {
+			w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueMany.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueMany.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne#d9c36de5"`...)
+		} else {
+			w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueOne.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueOne.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -366,19 +367,20 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadJSON(legacyTypeNames bool, in
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCounterChangeRequestPeriodsMany) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AbCounterChangeRequestPeriodsMany) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AbCounterChangeRequestPeriodsMany) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AbCounterChangeRequestPeriodsMany) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexObjectsPeridos := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"objects_peridos":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.ObjectsPeridos)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.ObjectsPeridos)
 	if (len(item.ObjectsPeridos) != 0) == false {
 		w = w[:backupIndexObjectsPeridos]
 	}
@@ -608,14 +610,15 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbCounterChangeRequestPeriodsOne) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AbCounterChangeRequestPeriodsOne) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AbCounterChangeRequestPeriodsOne) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AbCounterChangeRequestPeriodsOne) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexPeriod := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

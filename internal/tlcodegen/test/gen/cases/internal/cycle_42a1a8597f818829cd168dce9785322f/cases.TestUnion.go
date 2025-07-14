@@ -223,32 +223,33 @@ func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTestUnion) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTestUnion) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestUnion) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"cases.testUnion1"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"cases.testUnion1#4b4f09b1"`...)
+		} else {
+			w = append(w, `{"type":"cases.testUnion1"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.value1.WriteJSONOpt(newTypeNames, short, w)
+		w = item.value1.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"cases.testUnion2"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"cases.testUnion2#464f96c4"`...)
+		} else {
+			w = append(w, `{"type":"cases.testUnion2"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.value2.WriteJSONOpt(newTypeNames, short, w)
+		w = item.value2.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -361,14 +362,15 @@ func (item *CasesTestUnion1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion1) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTestUnion1) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTestUnion1) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestUnion1) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTestUnion1) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -594,14 +596,15 @@ func (item *CasesTestUnion2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestUnion2) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTestUnion2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTestUnion2) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestUnion2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTestUnion2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

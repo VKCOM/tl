@@ -135,14 +135,15 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSON(legacyType
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -153,7 +154,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) WriteJSONOpt(newTyp
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.Value.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

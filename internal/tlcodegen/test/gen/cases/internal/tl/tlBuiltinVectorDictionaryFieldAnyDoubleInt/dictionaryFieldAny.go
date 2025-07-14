@@ -145,13 +145,14 @@ func BuiltinVectorDictionaryFieldAnyDoubleIntReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSON(w []byte, vec []tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) []byte {
-	return BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) []byte {
+func BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

@@ -70,17 +70,18 @@ func (item *TupleCycleTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleCycleTuple) WriteJSONGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSON(w, nat_n)
+func (item *TupleCycleTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_n)
 }
 
 func (item *TupleCycleTuple) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_n)
 }
 
-func (item *TupleCycleTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleCycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWriteJSONOpt(newTypeNames, short, w, *ptr, nat_n); err != nil {
+	if w, err = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleWriteJSONOpt(tctx, w, *ptr, nat_n); err != nil {
 		return w, err
 	}
 	return w, nil

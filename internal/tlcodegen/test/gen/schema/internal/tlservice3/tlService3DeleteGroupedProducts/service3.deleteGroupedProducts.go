@@ -101,7 +101,7 @@ func (item *Service3DeleteGroupedProducts) WriteResultJSON(w []byte, ret bool) (
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service3DeleteGroupedProducts) writeResultJSON(newTypeNames bool, short bool, w []byte, ret bool) (_ []byte, err error) {
+func (item *Service3DeleteGroupedProducts) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret bool) (_ []byte, err error) {
 	w = basictl.JSONWriteBool(w, ret)
 	return w, nil
 }
@@ -115,7 +115,7 @@ func (item *Service3DeleteGroupedProducts) ReadResultWriteResultJSON(r []byte, w
 	return r, w, err
 }
 
-func (item *Service3DeleteGroupedProducts) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3DeleteGroupedProducts) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -230,7 +230,7 @@ func (item *Service3DeleteGroupedProducts) WriteJSONGeneral(w []byte) (_ []byte,
 func (item *Service3DeleteGroupedProducts) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3DeleteGroupedProducts) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3DeleteGroupedProducts) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexUserId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

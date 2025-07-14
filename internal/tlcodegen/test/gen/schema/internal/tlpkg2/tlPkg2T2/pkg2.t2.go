@@ -76,7 +76,7 @@ func (item *Pkg2T2) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *Pkg2T2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Pkg2T2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
 	w = ptr.WriteJSONOpt(newTypeNames, short, w)
 	return w

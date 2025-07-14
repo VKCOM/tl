@@ -98,19 +98,20 @@ func (item *MaybeWrapperInt3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MaybeWrapperInt3) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MaybeWrapperInt3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MaybeWrapperInt3) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *MaybeWrapperInt3) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MaybeWrapperInt3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(newTypeNames, short, w)
+	w = item.A.WriteJSONOpt(tctx, w)
 	if (item.A.Ok) == false {
 		w = w[:backupIndexA]
 	}

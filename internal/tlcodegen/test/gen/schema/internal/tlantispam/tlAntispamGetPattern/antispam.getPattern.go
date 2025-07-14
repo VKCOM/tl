@@ -76,7 +76,7 @@ func (item *AntispamGetPattern) WriteResultJSON(w []byte, ret cycle_4174bfee82ee
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *AntispamGetPattern) writeResultJSON(newTypeNames bool, short bool, w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
+func (item *AntispamGetPattern) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *AntispamGetPattern) ReadResultWriteResultJSON(r []byte, w []byte) (_
 	return r, w, err
 }
 
-func (item *AntispamGetPattern) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *AntispamGetPattern) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *AntispamGetPattern) WriteJSONGeneral(w []byte) (_ []byte, err error)
 func (item *AntispamGetPattern) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *AntispamGetPattern) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AntispamGetPattern) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

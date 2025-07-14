@@ -210,19 +210,20 @@ func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item AColor) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item AColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item AColor) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item AColor) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item AColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '"')
-	if newTypeNames {
-		w = append(w, _AColor[item.index].TLName...)
-	} else {
+	if tctx.LegacyTypeNames {
 		w = append(w, _AColor[item.index].TLString...)
+	} else {
+		w = append(w, _AColor[item.index].TLName...)
 	}
 	return append(w, '"')
 }

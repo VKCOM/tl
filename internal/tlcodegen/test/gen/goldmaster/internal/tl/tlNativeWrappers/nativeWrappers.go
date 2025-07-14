@@ -201,14 +201,15 @@ func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *NativeWrappers) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *NativeWrappers) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *NativeWrappers) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *NativeWrappers) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *NativeWrappers) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -227,28 +228,28 @@ func (item *NativeWrappers) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(newTypeNames, short, w)
+	w = item.C.WriteJSONOpt(tctx, w)
 	if (item.C != 0) == false {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = item.D.WriteJSONOpt(newTypeNames, short, w)
+	w = item.D.WriteJSONOpt(tctx, w)
 	if (item.D != 0) == false {
 		w = w[:backupIndexD]
 	}
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = item.E.WriteJSONOpt(newTypeNames, short, w)
+	w = item.E.WriteJSONOpt(tctx, w)
 	if (item.E != 0) == false {
 		w = w[:backupIndexE]
 	}
 	backupIndexF := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = item.F.WriteJSONOpt(newTypeNames, short, w)
+	w = item.F.WriteJSONOpt(tctx, w)
 	if (item.F != 0) == false {
 		w = w[:backupIndexF]
 	}

@@ -84,7 +84,7 @@ func (item *Service5EmptyOutput) WriteJSONGeneral(w []byte) (_ []byte, err error
 func (item *Service5EmptyOutput) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service5EmptyOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5EmptyOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -212,7 +212,7 @@ func (item *Service5Output) WriteJSONGeneral(w []byte) ([]byte, error) {
 func (item *Service5Output) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service5Output) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
 		if newTypeNames {
@@ -362,7 +362,7 @@ func (item *Service5StringOutput) WriteJSONGeneral(w []byte) (_ []byte, err erro
 func (item *Service5StringOutput) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service5StringOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5StringOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexHttpCode := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

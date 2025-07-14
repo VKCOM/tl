@@ -122,7 +122,7 @@ func (item *MyTwoDicts) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *MyTwoDicts) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *MyTwoDicts) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyTwoDicts) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

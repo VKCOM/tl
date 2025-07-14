@@ -223,32 +223,33 @@ func (item *AMyUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AMyUnion) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AMyUnion) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AMyUnion) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AMyUnion) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AMyUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"a.uNionA"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"a.uNionA#a7662843"`...)
+		} else {
+			w = append(w, `{"type":"a.uNionA"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueUNionA.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueUNionA.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"au.nionA"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"au.nionA#df61f632"`...)
+		} else {
+			w = append(w, `{"type":"au.nionA"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueNionA.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueNionA.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -361,14 +362,15 @@ func (item *AUNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AUNionA) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AUNionA) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AUNionA) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AUNionA) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AUNionA) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -594,14 +596,15 @@ func (item *AuNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AuNionA) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AuNionA) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AuNionA) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AuNionA) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AuNionA) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

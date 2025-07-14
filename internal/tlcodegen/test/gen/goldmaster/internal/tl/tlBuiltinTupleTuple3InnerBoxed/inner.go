@@ -185,16 +185,17 @@ func BuiltinTupleTuple3InnerBoxedReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func BuiltinTupleTuple3InnerBoxedWriteJSON(w []byte, vec [][3]tlInner.Inner, nat_n uint32, nat_t uint32) (_ []byte, err error) {
-	return BuiltinTupleTuple3InnerBoxedWriteJSONOpt(true, false, w, vec, nat_n, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleTuple3InnerBoxedWriteJSONOpt(&tctx, w, vec, nat_n, nat_t)
 }
-func BuiltinTupleTuple3InnerBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec [][3]tlInner.Inner, nat_n uint32, nat_t uint32) (_ []byte, err error) {
+func BuiltinTupleTuple3InnerBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec [][3]tlInner.Inner, nat_n uint32, nat_t uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[][3]tlInner.Inner", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = tlBuiltinTuple3InnerBoxed.BuiltinTuple3InnerBoxedWriteJSONOpt(newTypeNames, short, w, &elem, nat_t)
+		w = tlBuiltinTuple3InnerBoxed.BuiltinTuple3InnerBoxedWriteJSONOpt(tctx, w, &elem, nat_t)
 	}
 	return append(w, ']'), nil
 }

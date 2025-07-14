@@ -143,9 +143,10 @@ func BuiltinTuple4StringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, ve
 }
 
 func BuiltinTuple4StringWriteJSON(w []byte, vec *[4]string) []byte {
-	return BuiltinTuple4StringWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple4StringWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple4StringWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[4]string) []byte {
+func BuiltinTuple4StringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[4]string) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -282,9 +283,10 @@ func BuiltinTuple4StringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func BuiltinTuple4StringBytesWriteJSON(w []byte, vec *[4][]byte) []byte {
-	return BuiltinTuple4StringBytesWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple4StringBytesWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple4StringBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[4][]byte) []byte {
+func BuiltinTuple4StringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[4][]byte) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

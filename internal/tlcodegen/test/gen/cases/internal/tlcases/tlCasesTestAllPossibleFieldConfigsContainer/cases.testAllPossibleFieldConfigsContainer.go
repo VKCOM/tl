@@ -149,14 +149,15 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSON(legacyTypeNames 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexOuter := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -167,7 +168,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) WriteJSONOpt(newTypeNames
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(newTypeNames, short, w, item.Outer); err != nil {
+	if w, err = item.Value.WriteJSONOpt(tctx, w, item.Outer); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

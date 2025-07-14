@@ -76,7 +76,7 @@ func (item *Service3GetLastVisitTimestamp) WriteResultJSON(w []byte, ret tlIntMa
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service3GetLastVisitTimestamp) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlIntMaybe.IntMaybe) (_ []byte, err error) {
+func (item *Service3GetLastVisitTimestamp) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlIntMaybe.IntMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *Service3GetLastVisitTimestamp) ReadResultWriteResultJSON(r []byte, w
 	return r, w, err
 }
 
-func (item *Service3GetLastVisitTimestamp) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3GetLastVisitTimestamp) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlIntMaybe.IntMaybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *Service3GetLastVisitTimestamp) WriteJSONGeneral(w []byte) (_ []byte,
 func (item *Service3GetLastVisitTimestamp) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3GetLastVisitTimestamp) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3GetLastVisitTimestamp) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexUserId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

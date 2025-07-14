@@ -1290,7 +1290,7 @@ func (item *TasksFullFilledCron) WriteJSONGeneral(w []byte) (_ []byte, err error
 func (item *TasksFullFilledCron) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TasksFullFilledCron) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TasksFullFilledCron) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

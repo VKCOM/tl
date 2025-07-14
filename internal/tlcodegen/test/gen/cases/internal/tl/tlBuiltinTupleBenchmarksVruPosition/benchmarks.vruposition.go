@@ -184,16 +184,17 @@ func BuiltinTupleBenchmarksVruPositionReadJSON(legacyTypeNames bool, in *basictl
 }
 
 func BuiltinTupleBenchmarksVruPositionWriteJSON(w []byte, vec []tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleBenchmarksVruPositionWriteJSONOpt(true, false, w, vec, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleBenchmarksVruPositionWriteJSONOpt(&tctx, w, vec, nat_n)
 }
-func BuiltinTupleBenchmarksVruPositionWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBenchmarksVruPositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlBenchmarksVruPosition.BenchmarksVruPosition, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlBenchmarksVruPosition.BenchmarksVruPosition", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']'), nil
 }

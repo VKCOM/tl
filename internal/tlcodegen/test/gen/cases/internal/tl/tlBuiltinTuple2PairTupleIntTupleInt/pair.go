@@ -147,13 +147,14 @@ func BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames bool, in *basictl
 }
 
 func BuiltinTuple2PairTupleIntTupleIntWriteJSON(w []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
-	return BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(true, false, w, vec, nat_tXn, nat_tYn)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(&tctx, w, vec, nat_tXn, nat_tYn)
 }
-func BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+func BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w, nat_tXn, nat_tYn); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w, nat_tXn, nat_tYn); err != nil {
 			return w, err
 		}
 	}

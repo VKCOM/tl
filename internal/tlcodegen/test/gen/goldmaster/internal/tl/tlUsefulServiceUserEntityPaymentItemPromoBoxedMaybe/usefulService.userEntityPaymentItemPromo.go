@@ -154,19 +154,20 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSON(legacyTy
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_t), nil
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
 }
 
 func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
 }
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_t uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w, nat_t)
+	w = item.Value.WriteJSONOpt(tctx, w, nat_t)
 	return append(w, '}')
 }

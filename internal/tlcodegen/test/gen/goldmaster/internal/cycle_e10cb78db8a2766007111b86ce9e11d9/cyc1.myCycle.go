@@ -144,13 +144,14 @@ func BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 func BuiltinVectorCyc1MyCycleWriteJSON(w []byte, vec []Cyc1MyCycle) []byte {
-	return BuiltinVectorCyc1MyCycleWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorCyc1MyCycleWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorCyc1MyCycleWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []Cyc1MyCycle) []byte {
+func BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []Cyc1MyCycle) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -290,14 +291,15 @@ func (item *Cyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Cyc1MyCycle) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Cyc1MyCycle) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Cyc1MyCycle) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Cyc1MyCycle) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Cyc1MyCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -309,7 +311,7 @@ func (item *Cyc1MyCycle) WriteJSONOpt(newTypeNames bool, short bool, w []byte) [
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		w = item.A.WriteJSONOpt(newTypeNames, short, w)
+		w = item.A.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }

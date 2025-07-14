@@ -101,19 +101,20 @@ func (item *CasesTL2TestVectorBool) ReadJSON(legacyTypeNames bool, in *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestVectorBool) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTL2TestVectorBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTL2TestVectorBool) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTL2TestVectorBool) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTL2TestVectorBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = tlBuiltinVectorBool.BuiltinVectorBoolWriteJSONOpt(newTypeNames, short, w, item.X)
+	w = tlBuiltinVectorBool.BuiltinVectorBoolWriteJSONOpt(tctx, w, item.X)
 	if (len(item.X) != 0) == false {
 		w = w[:backupIndexX]
 	}

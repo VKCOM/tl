@@ -76,7 +76,7 @@ func (item *UniqueGet) WriteResultJSON(w []byte, ret tlIntMaybe.IntMaybe) (_ []b
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *UniqueGet) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlIntMaybe.IntMaybe) (_ []byte, err error) {
+func (item *UniqueGet) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlIntMaybe.IntMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *UniqueGet) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, 
 	return r, w, err
 }
 
-func (item *UniqueGet) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *UniqueGet) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlIntMaybe.IntMaybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *UniqueGet) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *UniqueGet) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *UniqueGet) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *UniqueGet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -80,7 +80,7 @@ func (item *Service1GetWildcardList) WriteResultJSON(w []byte, ret []string) (_ 
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service1GetWildcardList) writeResultJSON(newTypeNames bool, short bool, w []byte, ret []string) (_ []byte, err error) {
+func (item *Service1GetWildcardList) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []string) (_ []byte, err error) {
 	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(newTypeNames, short, w, ret)
 	return w, nil
 }
@@ -94,7 +94,7 @@ func (item *Service1GetWildcardList) ReadResultWriteResultJSON(r []byte, w []byt
 	return r, w, err
 }
 
-func (item *Service1GetWildcardList) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetWildcardList) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []string
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -161,7 +161,7 @@ func (item *Service1GetWildcardList) WriteJSONGeneral(w []byte) (_ []byte, err e
 func (item *Service1GetWildcardList) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1GetWildcardList) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1GetWildcardList) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexPrefix := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

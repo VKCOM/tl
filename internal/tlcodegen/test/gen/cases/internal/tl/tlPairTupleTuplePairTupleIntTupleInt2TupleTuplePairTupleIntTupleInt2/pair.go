@@ -137,19 +137,20 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteJSONGeneral(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
 }
 
 func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_XttXn, nat_XttYn, nat_Xn, nat_YttXn, nat_YttYn, nat_Yn)
 }
-func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
+func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_XttXn uint32, nat_XttYn uint32, nat_Xn uint32, nat_YttXn uint32, nat_YttYn uint32, nat_Yn uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	if w, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(newTypeNames, short, w, item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
+	if w, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx, w, item.X, nat_Xn, nat_XttXn, nat_XttYn); err != nil {
 		return w, err
 	}
 	if (len(item.X) != 0) == false {
@@ -158,7 +159,7 @@ func (item *PairTupleTuplePairTupleIntTupleInt2TupleTuplePairTupleIntTupleInt2) 
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	if w, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(newTypeNames, short, w, item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
+	if w, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx, w, item.Y, nat_Yn, nat_YttXn, nat_YttYn); err != nil {
 		return w, err
 	}
 	if (len(item.Y) != 0) == false {

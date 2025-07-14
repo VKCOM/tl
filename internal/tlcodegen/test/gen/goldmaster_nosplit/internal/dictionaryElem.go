@@ -214,9 +214,10 @@ func BuiltinVectorDictionaryElemIntPairIntIntReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(w []byte, m map[int32]PairIntInt) []byte {
-	return BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[int32]PairIntInt) []byte {
+func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int32]PairIntInt) []byte {
 	keys := make([]int32, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -231,7 +232,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(newTypeNames bool, sho
 		w = append(w, `"`...)
 		w = basictl.JSONWriteInt32(w, key)
 		w = append(w, `":`...)
-		w = value.WriteJSONOpt(newTypeNames, short, w)
+		w = value.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }
@@ -435,9 +436,10 @@ func BuiltinVectorDictionaryElemLongPairIntIntReadJSON(legacyTypeNames bool, in 
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntWriteJSON(w []byte, m map[int64]PairIntInt) []byte {
-	return BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[int64]PairIntInt) []byte {
+func BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int64]PairIntInt) []byte {
 	keys := make([]int64, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -452,7 +454,7 @@ func BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(newTypeNames bool, sh
 		w = append(w, `"`...)
 		w = basictl.JSONWriteInt64(w, key)
 		w = append(w, `":`...)
-		w = value.WriteJSONOpt(newTypeNames, short, w)
+		w = value.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }
@@ -589,13 +591,14 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSON(legacyTypeNames bool, 
 }
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(w []byte, vec []DictionaryElemPairBoolAColorInt) []byte {
-	return BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryElemPairBoolAColorInt) []byte {
+func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryElemPairBoolAColorInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -732,13 +735,14 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSON(legacyTypeNames bool,
 }
 
 func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(w []byte, vec []DictionaryElemPairFloatDoubleInt) []byte {
-	return BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryElemPairFloatDoubleInt) []byte {
+func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryElemPairFloatDoubleInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -875,13 +879,14 @@ func BuiltinVectorDictionaryElemPairIntIntIntReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryElemPairIntIntIntWriteJSON(w []byte, vec []DictionaryElemPairIntIntInt) []byte {
-	return BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryElemPairIntIntInt) []byte {
+func BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryElemPairIntIntInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -1018,13 +1023,14 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTyp
 }
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(w []byte, vec []DictionaryElemPairIntPairMultiPointStringInt) []byte {
-	return BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryElemPairIntPairMultiPointStringInt) []byte {
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryElemPairIntPairMultiPointStringInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -1214,9 +1220,10 @@ func BuiltinVectorDictionaryElemStringPairIntIntReadJSON(legacyTypeNames bool, i
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntWriteJSON(w []byte, m map[string]PairIntInt) []byte {
-	return BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]PairIntInt) []byte {
+func BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]PairIntInt) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -1228,7 +1235,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(newTypeNames bool, 
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = value.WriteJSONOpt(newTypeNames, short, w)
+		w = value.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }
@@ -1367,13 +1374,14 @@ func BuiltinVectorDictionaryElemTupleStringIntReadJSON(legacyTypeNames bool, in 
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntWriteJSON(w []byte, vec []DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
-	return BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(true, false, w, vec, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(&tctx, w, vec, nat_t)
 }
-func BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w, nat_t); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w, nat_t); err != nil {
 			return w, err
 		}
 	}
@@ -1484,14 +1492,15 @@ func (item *DictionaryElemIntPairIntInt) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemIntPairIntInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemIntPairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemIntPairIntInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemIntPairIntInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemIntPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1502,7 +1511,7 @@ func (item *DictionaryElemIntPairIntInt) WriteJSONOpt(newTypeNames bool, short b
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Value.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -1764,14 +1773,15 @@ func (item *DictionaryElemLongPairIntInt) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemLongPairIntInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemLongPairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemLongPairIntInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemLongPairIntInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemLongPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1782,7 +1792,7 @@ func (item *DictionaryElemLongPairIntInt) WriteJSONOpt(newTypeNames bool, short 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Value.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -2044,18 +2054,19 @@ func (item *DictionaryElemPairBoolAColorInt) ReadJSON(legacyTypeNames bool, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemPairBoolAColorInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemPairBoolAColorInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemPairBoolAColorInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemPairBoolAColorInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemPairBoolAColorInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	w = item.Key.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Key.WriteJSONOpt(tctx, w)
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
@@ -2324,18 +2335,19 @@ func (item *DictionaryElemPairFloatDoubleInt) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemPairFloatDoubleInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemPairFloatDoubleInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemPairFloatDoubleInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemPairFloatDoubleInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemPairFloatDoubleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	w = item.Key.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Key.WriteJSONOpt(tctx, w)
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
@@ -2604,18 +2616,19 @@ func (item *DictionaryElemPairIntIntInt) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemPairIntIntInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemPairIntIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemPairIntIntInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemPairIntIntInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemPairIntIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	w = item.Key.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Key.WriteJSONOpt(tctx, w)
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
@@ -2884,18 +2897,19 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadJSON(legacyTypeNam
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	w = item.Key.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Key.WriteJSONOpt(tctx, w)
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
@@ -3164,14 +3178,15 @@ func (item *DictionaryElemStringPairIntInt) ReadJSON(legacyTypeNames bool, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemStringPairIntInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryElemStringPairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryElemStringPairIntInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryElemStringPairIntInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryElemStringPairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -3182,7 +3197,7 @@ func (item *DictionaryElemStringPairIntInt) WriteJSONOpt(newTypeNames bool, shor
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Value.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -3452,19 +3467,20 @@ func (item *DictionaryElemTupleStringInt) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemTupleStringInt) WriteJSONGeneral(w []byte, nat_k uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_k)
+func (item *DictionaryElemTupleStringInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_k uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_k)
 }
 
 func (item *DictionaryElemTupleStringInt) WriteJSON(w []byte, nat_k uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_k)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_k)
 }
-func (item *DictionaryElemTupleStringInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_k uint32) (_ []byte, err error) {
+func (item *DictionaryElemTupleStringInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_k uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	if w, err = BuiltinTupleStringWriteJSONOpt(newTypeNames, short, w, item.Key, nat_k); err != nil {
+	if w, err = BuiltinTupleStringWriteJSONOpt(tctx, w, item.Key, nat_k); err != nil {
 		return w, err
 	}
 	if (len(item.Key) != 0) == false {

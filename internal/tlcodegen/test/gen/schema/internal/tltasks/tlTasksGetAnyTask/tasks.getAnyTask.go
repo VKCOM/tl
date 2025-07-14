@@ -70,7 +70,7 @@ func (item *TasksGetAnyTask) WriteResultJSON(w []byte, ret tlTasksTaskInfoMaybe.
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *TasksGetAnyTask) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlTasksTaskInfoMaybe.TasksTaskInfoMaybe) (_ []byte, err error) {
+func (item *TasksGetAnyTask) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlTasksTaskInfoMaybe.TasksTaskInfoMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -84,7 +84,7 @@ func (item *TasksGetAnyTask) ReadResultWriteResultJSON(r []byte, w []byte) (_ []
 	return r, w, err
 }
 
-func (item *TasksGetAnyTask) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *TasksGetAnyTask) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTasksTaskInfoMaybe.TasksTaskInfoMaybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -132,7 +132,7 @@ func (item *TasksGetAnyTask) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *TasksGetAnyTask) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TasksGetAnyTask) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TasksGetAnyTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }

@@ -154,20 +154,21 @@ func (item *TupleIntBoxed3Maybe) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleIntBoxed3Maybe) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TupleIntBoxed3Maybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TupleIntBoxed3Maybe) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TupleIntBoxed3Maybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TupleIntBoxed3Maybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(newTypeNames, short, w, &item.Value)
+	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, &item.Value)
 	return append(w, '}')
 }
 

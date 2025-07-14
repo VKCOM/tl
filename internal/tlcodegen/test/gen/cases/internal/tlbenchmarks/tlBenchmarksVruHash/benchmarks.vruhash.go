@@ -119,14 +119,15 @@ func (item *BenchmarksVruHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVruHash) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *BenchmarksVruHash) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *BenchmarksVruHash) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVruHash) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BenchmarksVruHash) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexLow := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

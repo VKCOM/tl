@@ -181,7 +181,7 @@ func (item *AntispamPatternFound) WriteJSONGeneral(w []byte) (_ []byte, err erro
 func (item *AntispamPatternFound) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *AntispamPatternFound) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AntispamPatternFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexIp := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -344,7 +344,7 @@ func (item *AntispamPatternFull) WriteJSONGeneral(w []byte) ([]byte, error) {
 func (item *AntispamPatternFull) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *AntispamPatternFull) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AntispamPatternFull) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
 		if newTypeNames {
@@ -451,7 +451,7 @@ func (item *AntispamPatternNotFound) WriteJSONGeneral(w []byte) (_ []byte, err e
 func (item *AntispamPatternNotFound) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *AntispamPatternNotFound) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AntispamPatternNotFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }

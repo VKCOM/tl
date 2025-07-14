@@ -216,14 +216,15 @@ func (item *CasesTestLocalFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestLocalFieldmask) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTestLocalFieldmask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTestLocalFieldmask) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestLocalFieldmask) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTestLocalFieldmask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexF1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -74,17 +74,18 @@ func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorBenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
-	w = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorBenchmarksVrutoyTopLevelUnion) MarshalJSON() ([]byte, error) {

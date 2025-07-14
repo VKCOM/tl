@@ -138,7 +138,7 @@ func (item *NonOptNat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *NonOptNat) WriteJSON(w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *NonOptNat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *NonOptNat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

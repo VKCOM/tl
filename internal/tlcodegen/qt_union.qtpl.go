@@ -862,17 +862,17 @@ func (item *`)
 func (item `)
 	qw422016.N().S(asterisk)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONGeneral(w []byte`)
+	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) ([]byte, error) {
 `)
 	if writeNeedsError {
-		qw422016.N().S(`    return item.WriteJSONOpt(true, false, w`)
+		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 `)
 	} else {
-		qw422016.N().S(`    return item.WriteJSONOpt(true, false, w`)
+		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`), nil
 `)
@@ -887,14 +887,15 @@ func (item `)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
-    return item.WriteJSONOpt(true, false, w`)
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
 func (item `)
 	qw422016.N().S(asterisk)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONOpt(newTypeNames bool, short bool, w []byte`)
+	qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -902,14 +903,14 @@ func (item `)
 `)
 	if union.IsEnum {
 		qw422016.N().S(`        w = append(w, '"')
-        if newTypeNames {
-            w = append(w, _`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`[item.index].TLName...)
-        } else {
+        if tctx.LegacyTypeNames {
             w = append(w, _`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`[item.index].TLString...)
+        } else {
+            w = append(w, _`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`[item.index].TLName...)
         }
         return append(w, '"')
 `)
@@ -934,16 +935,8 @@ func (item `)
 			qw422016.N().S(`:
 `)
 			if wrWithoutLong != nil {
-				qw422016.N().S(`        if short {
-            if newTypeNames {
-                w = append(w, `)
-				qw422016.N().S("`")
-				qw422016.N().S(`{"type":`)
-				qw422016.N().Q(nameWithTagShortNew)
-				qw422016.N().S(``)
-				qw422016.N().S("`")
-				qw422016.N().S(`...)
-            } else {
+				qw422016.N().S(`        if tctx.Short {
+            if tctx.LegacyTypeNames {
                 w = append(w, `)
 				qw422016.N().S("`")
 				qw422016.N().S(`{"type":`)
@@ -951,15 +944,23 @@ func (item `)
 				qw422016.N().S(``)
 				qw422016.N().S("`")
 				qw422016.N().S(`...)
+            } else {
+                w = append(w, `)
+				qw422016.N().S("`")
+				qw422016.N().S(`{"type":`)
+				qw422016.N().Q(nameWithTagShortNew)
+				qw422016.N().S(``)
+				qw422016.N().S("`")
+				qw422016.N().S(`...)
             }
         } else {
 `)
 			}
-			qw422016.N().S(`            if newTypeNames {
+			qw422016.N().S(`            if tctx.LegacyTypeNames {
                 w = append(w, `)
 			qw422016.N().S("`")
 			qw422016.N().S(`{"type":`)
-			qw422016.N().Q(nameWithTagNew)
+			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(``)
 			qw422016.N().S("`")
 			qw422016.N().S(`...)
@@ -967,7 +968,7 @@ func (item `)
                 w = append(w, `)
 			qw422016.N().S("`")
 			qw422016.N().S(`{"type":`)
-			qw422016.N().Q(nameWithTag)
+			qw422016.N().Q(nameWithTagNew)
 			qw422016.N().S(``)
 			qw422016.N().S("`")
 			qw422016.N().S(`...)

@@ -435,24 +435,25 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
     {%- endif -%}
 
 // This method is general version of WriteJSON, use it instead!
-func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(w []byte{%s= natArgsDecl %}) ([]byte, error) {
+func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) ([]byte, error) {
     {%- if writeNeedsError -%}
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
     {%- else -%}
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %}), nil
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
     {%- endif -%}
 }
 
 func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
-func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(newTypeNames bool, short bool, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     {%- if union.IsEnum -%}
         w = append(w, '"')
-        if newTypeNames {
-            w = append(w, _{%s= goName %}[item.index].TLName...)
-        } else {
+        if tctx.LegacyTypeNames {
             w = append(w, _{%s= goName %}[item.index].TLString...)
+        } else {
+            w = append(w, _{%s= goName %}[item.index].TLName...)
         }
         return append(w, '"')
     {%- else -%}
@@ -473,18 +474,18 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(newTypeNames bool, short
             -%}
         case {%d i %}:
         {%- if wrWithoutLong != nil -%}
-        if short {
-            if newTypeNames {
-                w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
-            } else {
+        if tctx.Short {
+            if tctx.LegacyTypeNames {
                 w = append(w, `{"type":{%q= nameWithTagShort %}`...)
+            } else {
+                w = append(w, `{"type":{%q= nameWithTagShortNew %}`...)
             }
         } else {
         {%- endif -%}
-            if newTypeNames {
-                w = append(w, `{"type":{%q= nameWithTagNew %}`...)
-            } else {
+            if tctx.LegacyTypeNames {
                 w = append(w, `{"type":{%q= nameWithTag %}`...)
+            } else {
+                w = append(w, `{"type":{%q= nameWithTagNew %}`...)
             }
         {%- if wrWithoutLong != nil -%}
         }

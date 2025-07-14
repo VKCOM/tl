@@ -101,19 +101,20 @@ func (item *CasesBytesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestVector) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesBytesTestVector) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesBytesTestVector) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesBytesTestVector) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesBytesTestVector) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(newTypeNames, short, w, item.Arr)
+	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(tctx, w, item.Arr)
 	if (len(item.Arr) != 0) == false {
 		w = w[:backupIndexArr]
 	}
@@ -339,19 +340,20 @@ func (item *CasesBytesTestVectorBytes) ReadJSON(legacyTypeNames bool, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestVectorBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesBytesTestVectorBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesBytesTestVectorBytes) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesBytesTestVectorBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesBytesTestVectorBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	w = tlBuiltinVectorString.BuiltinVectorStringBytesWriteJSONOpt(newTypeNames, short, w, item.Arr)
+	w = tlBuiltinVectorString.BuiltinVectorStringBytesWriteJSONOpt(tctx, w, item.Arr)
 	if (len(item.Arr) != 0) == false {
 		w = w[:backupIndexArr]
 	}

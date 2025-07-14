@@ -506,14 +506,15 @@ func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *Replace) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *Replace) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Replace) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *Replace) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -524,79 +525,79 @@ func (item *Replace) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.A.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a1":`...)
-	w = item.A1.WriteJSONOpt(newTypeNames, short, w)
+	w = item.A1.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = item.B.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.B.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(newTypeNames, short, w)
+	w = item.C.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	if w, err = item.D.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.D.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d1":`...)
-	w = item.D1.WriteJSONOpt(newTypeNames, short, w)
+	w = item.D1.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = item.E.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.E.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"g":`...)
-	w = item.G.WriteJSONOpt(newTypeNames, short, w)
+	w = item.G.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"h":`...)
-	if w, err = item.H.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.H.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"i":`...)
-	if w, err = item.I.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.I.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"j":`...)
-	if w, err = item.J.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.J.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"k":`...)
-	if w, err = item.K.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.K.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"l":`...)
-	if w, err = item.L.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.L.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"m":`...)
-	if w, err = item.M.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.M.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"o":`...)
-	if w, err = item.O.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.O.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"p":`...)
-	if w, err = item.P.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.P.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"q":`...)
-	if w, err = item.Q.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.Q.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

@@ -74,17 +74,18 @@ func (item *VectorDictionaryFieldInt) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorDictionaryFieldInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorDictionaryFieldInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorDictionaryFieldInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *VectorDictionaryFieldInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorDictionaryFieldInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[string]int32)(item)
-	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorDictionaryFieldInt) MarshalJSON() ([]byte, error) {
@@ -192,17 +193,18 @@ func (item *VectorDictionaryFieldIntBytes) ReadJSON(legacyTypeNames bool, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorDictionaryFieldIntBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorDictionaryFieldIntBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorDictionaryFieldIntBytes) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *VectorDictionaryFieldIntBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorDictionaryFieldIntBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
-	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorDictionaryFieldIntBytes) MarshalJSON() ([]byte, error) {

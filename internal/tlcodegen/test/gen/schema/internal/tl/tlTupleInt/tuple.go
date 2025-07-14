@@ -73,7 +73,7 @@ func (item *TupleInt) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.WriteJSONOpt(true, false, w, nat_n)
 }
 
-func (item *TupleInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *TupleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]int32)(item)
 	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, *ptr, nat_n); err != nil {
 		return w, err

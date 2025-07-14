@@ -193,33 +193,34 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MultiPoint) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MultiPoint) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MultiPoint) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *MultiPoint) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MultiPoint) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &item.A)
+	w = BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.A)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = BuiltinTuple3IntBoxedWriteJSONOpt(newTypeNames, short, w, &item.B)
+	w = BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, &item.B)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = BuiltinTuple3Int32WriteJSONOpt(newTypeNames, short, w, &item.C)
+	w = BuiltinTuple3Int32WriteJSONOpt(tctx, w, &item.C)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = BuiltinTuple3Int32BoxedWriteJSONOpt(newTypeNames, short, w, &item.D)
+	w = BuiltinTuple3Int32BoxedWriteJSONOpt(tctx, w, &item.D)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = BuiltinTuple3MyInt32WriteJSONOpt(newTypeNames, short, w, &item.E)
+	w = BuiltinTuple3MyInt32WriteJSONOpt(tctx, w, &item.E)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = BuiltinTuple3MyInt32BoxedWriteJSONOpt(newTypeNames, short, w, &item.F)
+	w = BuiltinTuple3MyInt32BoxedWriteJSONOpt(tctx, w, &item.F)
 	return append(w, '}')
 }
 

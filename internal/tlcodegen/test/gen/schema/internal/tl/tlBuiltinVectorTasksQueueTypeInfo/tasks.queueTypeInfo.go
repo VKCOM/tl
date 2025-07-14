@@ -76,7 +76,7 @@ func BuiltinVectorTasksQueueTypeInfoReadJSON(legacyTypeNames bool, in *basictl.J
 func BuiltinVectorTasksQueueTypeInfoWriteJSON(w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
 	return BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(true, false, w, vec)
 }
-func BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
+func BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlTasksQueueTypeInfo.TasksQueueTypeInfo) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

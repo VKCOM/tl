@@ -98,14 +98,15 @@ func (item *TypeA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TypeA) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TypeA) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TypeA) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TypeA) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TypeA) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

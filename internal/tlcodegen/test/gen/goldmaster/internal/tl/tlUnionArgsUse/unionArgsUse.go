@@ -181,14 +181,15 @@ func (item *UnionArgsUse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UnionArgsUse) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *UnionArgsUse) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *UnionArgsUse) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *UnionArgsUse) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *UnionArgsUse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexK := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -206,12 +207,12 @@ func (item *UnionArgsUse) WriteJSONOpt(newTypeNames bool, short bool, w []byte) 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(newTypeNames, short, w, item.K); err != nil {
+	if w, err = item.A.WriteJSONOpt(tctx, w, item.K); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = item.B.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.B.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

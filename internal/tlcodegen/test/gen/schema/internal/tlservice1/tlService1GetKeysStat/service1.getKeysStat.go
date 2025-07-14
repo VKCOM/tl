@@ -76,7 +76,7 @@ func (item *Service1GetKeysStat) WriteResultJSON(w []byte, ret tlService1KeysSta
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service1GetKeysStat) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlService1KeysStatMaybe.Service1KeysStatMaybe) (_ []byte, err error) {
+func (item *Service1GetKeysStat) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService1KeysStatMaybe.Service1KeysStatMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *Service1GetKeysStat) ReadResultWriteResultJSON(r []byte, w []byte) (
 	return r, w, err
 }
 
-func (item *Service1GetKeysStat) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetKeysStat) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService1KeysStatMaybe.Service1KeysStatMaybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *Service1GetKeysStat) WriteJSONGeneral(w []byte) (_ []byte, err error
 func (item *Service1GetKeysStat) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1GetKeysStat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1GetKeysStat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexPeriod := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

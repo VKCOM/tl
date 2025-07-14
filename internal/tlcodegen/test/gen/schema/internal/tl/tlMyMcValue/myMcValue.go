@@ -104,7 +104,7 @@ func (item *MyMcValue) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *MyMcValue) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *MyMcValue) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyMcValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

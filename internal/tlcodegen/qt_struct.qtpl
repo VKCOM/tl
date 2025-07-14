@@ -263,19 +263,20 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *{%s= goName %}) WriteJSONGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
         {%- if writeNeedsError -%}
-    return item.WriteJSON(w{%s= natArgsCall %})
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
         {%- else -%}
-    return item.WriteJSON(w{%s= natArgsCall %}), nil
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
         {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 
-func (item *{%s= goName %}) WriteJSONOpt(newTypeNames bool, short bool, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     ptr := (*{%s= fieldTypeString %})(item)
     {%s= field.t.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true, writeNeedsError) %}
         {%- if writeNeedsError -%}
@@ -685,18 +686,19 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
     -%}
 
 // This method is general version of WriteJSON, use it instead!
-func (item *{%s= goName %}) WriteJSONGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if writeNeedsError -%}
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
     {%- else -%}
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %}), nil
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
     {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
-func (item *{%s= goName %}) WriteJSONOpt(newTypeNames bool, short bool, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
         {%- code // field names will be mandatory soon, except for typedefs which are processed separately
@@ -834,29 +836,21 @@ func (item *{%s= goName %}) ReadResultJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 func (item *{%s= goName %}) WriteResultJSON(w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
-    return item.writeResultJSON(true, false, w, ret)
+    tctx := basictl.JSONWriteContext{}
+    return item.writeResultJSON(&tctx, w, ret)
 }
 
-func (item *{%s= goName %}) writeResultJSON(newTypeNames bool, short bool, w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
+func (item *{%s= goName %}) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret {%s= retArg  %}) (_ []byte, err error) {
     {%s= struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, struct_.ResultType.hasErrorInWriteMethods) %}
     return w, nil
 }
 
-func (item *{%s= goName %}) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *{%s= goName %}) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret {%s= retArg %}
   if r, err = item.ReadResult(r, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResultJSON(w, ret)
-  return r, w, err
-}
-
-func (item *{%s= goName %}) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-  var ret {%s= retArg %}
-  if r, err = item.ReadResult(r, &ret); err != nil {
-    return r, w, err
-  }
-  w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+  w, err = item.writeResultJSON(tctx, w, ret)
   return r, w, err
 }
 

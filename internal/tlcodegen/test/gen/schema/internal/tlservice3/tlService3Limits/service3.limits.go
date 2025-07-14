@@ -161,7 +161,7 @@ func (item *Service3Limits) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Service3Limits) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3Limits) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexDefaultGroupSizeLimit := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

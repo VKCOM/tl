@@ -98,18 +98,19 @@ func (item *Replace3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace3) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Replace3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Replace3) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Replace3) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Replace3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &item.A)
+	w = BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.A)
 	return append(w, '}')
 }
 

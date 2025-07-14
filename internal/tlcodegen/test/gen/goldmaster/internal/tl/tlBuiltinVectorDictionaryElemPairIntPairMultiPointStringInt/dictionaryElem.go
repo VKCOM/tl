@@ -145,13 +145,14 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTyp
 }
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSON(w []byte, vec []tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) []byte {
-	return BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) []byte {
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

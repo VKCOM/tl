@@ -201,31 +201,32 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSON(legacyTypeNames bool, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_n)
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_n)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSON(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_n)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_n uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if nat_n&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F1, nat_n); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F1, nat_n); err != nil {
 			return w, err
 		}
 	}
 	if 2&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		w = tlBuiltinTuple2Int.BuiltinTuple2IntWriteJSONOpt(newTypeNames, short, w, &item.F2)
+		w = tlBuiltinTuple2Int.BuiltinTuple2IntWriteJSONOpt(tctx, w, &item.F2)
 	}
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	if w, err = tlBuiltinTupleTuple2Int.BuiltinTupleTuple2IntWriteJSONOpt(newTypeNames, short, w, item.Y, nat_n); err != nil {
+	if w, err = tlBuiltinTupleTuple2Int.BuiltinTupleTuple2IntWriteJSONOpt(tctx, w, item.Y, nat_n); err != nil {
 		return w, err
 	}
 	if (len(item.Y) != 0) == false {

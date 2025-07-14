@@ -76,7 +76,7 @@ func (item *VectorString) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorString) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]string)(item)
 	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

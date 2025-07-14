@@ -110,7 +110,7 @@ func BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames bool, in *basict
 func BuiltinVectorDictionaryFieldStringWriteJSON(w []byte, m map[string]string) []byte {
 	return BuiltinVectorDictionaryFieldStringWriteJSONOpt(true, false, w, m)
 }
-func BuiltinVectorDictionaryFieldStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]string) []byte {
+func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

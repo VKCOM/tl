@@ -77,7 +77,7 @@ func (item *VectorService3Product0) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorService3Product0) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorService3Product0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlService3Product0.Service3Product0)(item)
 	w = tlBuiltinVectorService3Product0.BuiltinVectorService3Product0WriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

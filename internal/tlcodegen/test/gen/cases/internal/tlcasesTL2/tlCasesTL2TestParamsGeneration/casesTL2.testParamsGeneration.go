@@ -239,14 +239,15 @@ func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestParamsGeneration) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesTL2TestParamsGeneration) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesTL2TestParamsGeneration) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -264,20 +265,20 @@ func (item *CasesTL2TestParamsGeneration) WriteJSONOpt(newTypeNames bool, short 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x1":`...)
-	w = item.X1.WriteJSONOpt(newTypeNames, short, w)
+	w = item.X1.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x2":`...)
-	if w, err = item.X2.WriteJSONOpt(newTypeNames, short, w, item.N1); err != nil {
+	if w, err = item.X2.WriteJSONOpt(tctx, w, item.N1); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x3":`...)
-	if w, err = item.X3.WriteJSONOpt(newTypeNames, short, w, item.N2); err != nil {
+	if w, err = item.X3.WriteJSONOpt(tctx, w, item.N2); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x4":`...)
-	if w, err = item.X4.WriteJSONOpt(newTypeNames, short, w, item.N1, item.N2); err != nil {
+	if w, err = item.X4.WriteJSONOpt(tctx, w, item.N1, item.N2); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

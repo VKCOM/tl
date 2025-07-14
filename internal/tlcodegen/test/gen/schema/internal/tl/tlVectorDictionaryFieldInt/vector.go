@@ -76,7 +76,7 @@ func (item *VectorDictionaryFieldInt) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorDictionaryFieldInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorDictionaryFieldInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[string]int32)(item)
 	w = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

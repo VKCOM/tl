@@ -76,7 +76,7 @@ func (item *GetMyDouble) WriteResultJSON(w []byte, ret tlMyDouble.MyDouble) (_ [
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetMyDouble) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlMyDouble.MyDouble) (_ []byte, err error) {
+func (item *GetMyDouble) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlMyDouble.MyDouble) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *GetMyDouble) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte
 	return r, w, err
 }
 
-func (item *GetMyDouble) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMyDouble) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyDouble.MyDouble
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *GetMyDouble) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetMyDouble) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetMyDouble) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *GetMyDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

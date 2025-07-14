@@ -142,13 +142,14 @@ func BuiltinTuple3PairBoxedIntLongReadJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 func BuiltinTuple3PairBoxedIntLongWriteJSON(w []byte, vec *[3]PairIntLong) []byte {
-	return BuiltinTuple3PairBoxedIntLongWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3PairBoxedIntLongWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3PairBoxedIntLongWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]PairIntLong) []byte {
+func BuiltinTuple3PairBoxedIntLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]PairIntLong) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -324,16 +325,17 @@ func BuiltinTuplePairBoxedIntLongReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func BuiltinTuplePairBoxedIntLongWriteJSON(w []byte, vec []PairIntLong, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTuplePairBoxedIntLongWriteJSONOpt(true, false, w, vec, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuplePairBoxedIntLongWriteJSONOpt(&tctx, w, vec, nat_n)
 }
-func BuiltinTuplePairBoxedIntLongWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []PairIntLong, nat_n uint32) (_ []byte, err error) {
+func BuiltinTuplePairBoxedIntLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []PairIntLong, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]PairIntLong", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']'), nil
 }
@@ -454,23 +456,24 @@ func (item *PairAInnerAInner) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairAInnerAInner) WriteJSONGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_X, nat_Y)
+func (item *PairAInnerAInner) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_X, nat_Y)
 }
 
 func (item *PairAInnerAInner) WriteJSON(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_X, nat_Y)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_X, nat_Y)
 }
-func (item *PairAInnerAInner) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+func (item *PairAInnerAInner) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(newTypeNames, short, w, nat_X); err != nil {
+	if w, err = item.A.WriteJSONOpt(tctx, w, nat_X); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = item.B.WriteJSONOpt(newTypeNames, short, w, nat_Y); err != nil {
+	if w, err = item.B.WriteJSONOpt(tctx, w, nat_Y); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil
@@ -728,14 +731,15 @@ func (item *PairBoolAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairBoolAColor) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairBoolAColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairBoolAColor) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairBoolAColor) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairBoolAColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -746,7 +750,7 @@ func (item *PairBoolAColor) WriteJSONOpt(newTypeNames bool, short bool, w []byte
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(newTypeNames, short, w)
+	w = item.B.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -1004,14 +1008,15 @@ func (item *PairFloatDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairFloatDouble) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairFloatDouble) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairFloatDouble) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairFloatDouble) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairFloatDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1283,14 +1288,15 @@ func (item *PairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairIntInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairIntInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairIntInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairIntInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairIntInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1562,14 +1568,15 @@ func (item *PairIntLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairIntLong) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairIntLong) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairIntLong) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairIntLong) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairIntLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1841,14 +1848,15 @@ func (item *PairIntPairMultiPointString) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairIntPairMultiPointString) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairIntPairMultiPointString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairIntPairMultiPointString) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairIntPairMultiPointString) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairIntPairMultiPointString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1859,7 +1867,7 @@ func (item *PairIntPairMultiPointString) WriteJSONOpt(newTypeNames bool, short b
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(newTypeNames, short, w)
+	w = item.B.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -2121,18 +2129,19 @@ func (item *PairMultiPointString) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairMultiPointString) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *PairMultiPointString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *PairMultiPointString) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *PairMultiPointString) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *PairMultiPointString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(newTypeNames, short, w)
+	w = item.A.WriteJSONOpt(tctx, w)
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
@@ -2409,23 +2418,24 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONGeneral(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_XXI, nat_XYI)
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_XXI, nat_XYI)
 }
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSON(w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_XXI, nat_XYI)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_XXI, nat_XYI)
 }
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = item.A.WriteJSONOpt(newTypeNames, short, w, nat_XXI, nat_XYI); err != nil {
+	if w, err = item.A.WriteJSONOpt(tctx, w, nat_XXI, nat_XYI); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(newTypeNames, short, w)
+	w = item.B.WriteJSONOpt(tctx, w)
 	return append(w, '}'), nil
 }
 

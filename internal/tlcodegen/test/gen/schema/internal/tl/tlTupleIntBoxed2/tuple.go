@@ -76,7 +76,7 @@ func (item *TupleIntBoxed2) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *TupleIntBoxed2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TupleIntBoxed2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[2]int32)(item)
 	w = tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedWriteJSONOpt(newTypeNames, short, w, ptr)
 	return w

@@ -105,18 +105,19 @@ func (item *CasesInplace3TuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bo
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONGeneral(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
 
 func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_a1, nat_a2, nat_a3, nat_XtXn, nat_XtYn)
 }
-func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
+func (item *CasesInplace3TuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XtXn uint32, nat_XtYn uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(newTypeNames, short, w, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
+	if w, err = item.Value.WriteJSONOpt(tctx, w, nat_XtXn, nat_XtYn, nat_a2, nat_XtXn, nat_XtYn, nat_a3); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

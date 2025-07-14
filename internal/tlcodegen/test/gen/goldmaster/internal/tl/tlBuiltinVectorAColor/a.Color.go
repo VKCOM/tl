@@ -145,13 +145,14 @@ func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, ve
 }
 
 func BuiltinVectorAColorWriteJSON(w []byte, vec []tlAColor.AColor) []byte {
-	return BuiltinVectorAColorWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorAColorWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorAColorWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlAColor.AColor) []byte {
+func BuiltinVectorAColorWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlAColor.AColor) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

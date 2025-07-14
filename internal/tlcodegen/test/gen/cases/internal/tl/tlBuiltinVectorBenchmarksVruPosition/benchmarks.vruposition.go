@@ -145,13 +145,14 @@ func BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames bool, in *basict
 }
 
 func BuiltinVectorBenchmarksVruPositionWriteJSON(w []byte, vec []tlBenchmarksVruPosition.BenchmarksVruPosition) []byte {
-	return BuiltinVectorBenchmarksVruPositionWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorBenchmarksVruPositionWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorBenchmarksVruPositionWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlBenchmarksVruPosition.BenchmarksVruPosition) []byte {
+func BuiltinVectorBenchmarksVruPositionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlBenchmarksVruPosition.BenchmarksVruPosition) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

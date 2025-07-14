@@ -226,14 +226,15 @@ func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *ListService5Output) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *ListService5Output) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *ListService5Output) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *ListService5Output) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *ListService5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFlag := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -245,12 +246,12 @@ func (item *ListService5Output) WriteJSONOpt(newTypeNames bool, short bool, w []
 	if item.Flag&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"head":`...)
-		w = item.Head.WriteJSONOpt(newTypeNames, short, w)
+		w = item.Head.WriteJSONOpt(tctx, w)
 	}
 	if item.Flag&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"tail":`...)
-		w = item.Tail.WriteJSONOpt(newTypeNames, short, w)
+		w = item.Tail.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }

@@ -134,14 +134,15 @@ func (item *Replace9) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace9) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *Replace9) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *Replace9) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Replace9) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *Replace9) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -153,7 +154,7 @@ func (item *Replace9) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ [
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = tlBuiltinTupleTuple3InnerBoxed.BuiltinTupleTuple3InnerBoxedWriteJSONOpt(newTypeNames, short, w, item.A, item.N, item.N); err != nil {
+	if w, err = tlBuiltinTupleTuple3InnerBoxed.BuiltinTupleTuple3InnerBoxedWriteJSONOpt(tctx, w, item.A, item.N, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.A) != 0) == false {

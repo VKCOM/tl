@@ -144,13 +144,14 @@ func BuiltinTuple3Replace14ElemElemLongReadJSON(legacyTypeNames bool, in *basict
 }
 
 func BuiltinTuple3Replace14ElemElemLongWriteJSON(w []byte, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) (_ []byte, err error) {
-	return BuiltinTuple3Replace14ElemElemLongWriteJSONOpt(true, false, w, vec, nat_tn, nat_tk)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3Replace14ElemElemLongWriteJSONOpt(&tctx, w, vec, nat_tn, nat_tk)
 }
-func BuiltinTuple3Replace14ElemElemLongWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) (_ []byte, err error) {
+func BuiltinTuple3Replace14ElemElemLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Replace14ElemElemLong, nat_tn uint32, nat_tk uint32) (_ []byte, err error) {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w, nat_tn, nat_tk); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w, nat_tn, nat_tk); err != nil {
 			return w, err
 		}
 	}
@@ -246,14 +247,15 @@ func (item *Replace14ElemElemLong) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace14ElemElemLong) WriteJSONGeneral(w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_n, nat_k)
+func (item *Replace14ElemElemLong) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_n, nat_k)
 }
 
 func (item *Replace14ElemElemLong) WriteJSON(w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_n, nat_k)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_n, nat_k)
 }
-func (item *Replace14ElemElemLong) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
+func (item *Replace14ElemElemLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32, nat_k uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -265,7 +267,7 @@ func (item *Replace14ElemElemLong) WriteJSONOpt(newTypeNames bool, short bool, w
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	if w, err = BuiltinTupleLongWriteJSONOpt(newTypeNames, short, w, item.Y, nat_k); err != nil {
+	if w, err = BuiltinTupleLongWriteJSONOpt(tctx, w, item.Y, nat_k); err != nil {
 		return w, err
 	}
 	if (len(item.Y) != 0) == false {

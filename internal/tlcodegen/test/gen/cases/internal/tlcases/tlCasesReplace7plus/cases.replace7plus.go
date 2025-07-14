@@ -188,14 +188,15 @@ func (item *CasesReplace7plus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesReplace7plus) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesReplace7plus) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesReplace7plus) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesReplace7plus) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesReplace7plus) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -214,7 +215,7 @@ func (item *CasesReplace7plus) WriteJSONOpt(newTypeNames bool, short bool, w []b
 	if item.N&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		if w, err = tlBuiltinTupleTupleInt.BuiltinTupleTupleIntWriteJSONOpt(newTypeNames, short, w, item.A, item.N, item.M); err != nil {
+		if w, err = tlBuiltinTupleTupleInt.BuiltinTupleTupleIntWriteJSONOpt(tctx, w, item.A, item.N, item.M); err != nil {
 			return w, err
 		}
 	}

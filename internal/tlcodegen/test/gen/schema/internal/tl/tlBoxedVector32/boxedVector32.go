@@ -84,7 +84,7 @@ func (item *BoxedVector32) WriteResultJSON(w []byte, ret []int32) (_ []byte, err
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *BoxedVector32) writeResultJSON(newTypeNames bool, short bool, w []byte, ret []int32) (_ []byte, err error) {
+func (item *BoxedVector32) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
 	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, ret)
 	return w, nil
 }
@@ -98,7 +98,7 @@ func (item *BoxedVector32) ReadResultWriteResultJSON(r []byte, w []byte) (_ []by
 	return r, w, err
 }
 
-func (item *BoxedVector32) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedVector32) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -165,7 +165,7 @@ func (item *BoxedVector32) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *BoxedVector32) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *BoxedVector32) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BoxedVector32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

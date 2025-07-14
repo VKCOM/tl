@@ -175,7 +175,7 @@ func (item *Service3ProductStatsOld) WriteJSONGeneral(w []byte) (_ []byte, err e
 func (item *Service3ProductStatsOld) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3ProductStatsOld) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3ProductStatsOld) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexType := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

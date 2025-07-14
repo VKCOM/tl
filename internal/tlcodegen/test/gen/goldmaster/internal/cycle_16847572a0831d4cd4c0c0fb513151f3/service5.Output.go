@@ -79,14 +79,15 @@ func (item *Service5EmptyOutput) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5EmptyOutput) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service5EmptyOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service5EmptyOutput) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Service5EmptyOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5EmptyOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -374,30 +375,31 @@ func (item *Service5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5Output) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service5Output) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service5Output) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Service5Output) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5Output) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"service5.emptyOutput"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service5.emptyOutput#ff8f7db8"`...)
+		} else {
+			w = append(w, `{"type":"service5.emptyOutput"`...)
 		}
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"service5.stringOutput"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service5.stringOutput#dc170ff4"`...)
+		} else {
+			w = append(w, `{"type":"service5.stringOutput"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueString.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueString.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -529,14 +531,15 @@ func (item *Service5StringOutput) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5StringOutput) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service5StringOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service5StringOutput) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Service5StringOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5StringOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexHttpCode := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -74,17 +74,18 @@ func (item *DictionaryAnyDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryAnyDoubleInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *DictionaryAnyDoubleInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryAnyDoubleInt) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *DictionaryAnyDoubleInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryAnyDoubleInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt)(item)
-	w = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorDictionaryFieldAnyDoubleInt.BuiltinVectorDictionaryFieldAnyDoubleIntWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *DictionaryAnyDoubleInt) MarshalJSON() ([]byte, error) {

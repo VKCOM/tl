@@ -131,7 +131,7 @@ func (item *TreeStatsObjectLimitValue) WriteJSONGeneral(w []byte) ([]byte, error
 func (item *TreeStatsObjectLimitValue) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TreeStatsObjectLimitValue) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TreeStatsObjectLimitValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
 		if newTypeNames {
@@ -237,7 +237,7 @@ func (item *TreeStatsObjectLimitValueDouble) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *TreeStatsObjectLimitValueDouble) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TreeStatsObjectLimitValueDouble) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*float64)(item)
 	w = basictl.JSONWriteFloat64(w, *ptr)
 	return w
@@ -322,7 +322,7 @@ func (item *TreeStatsObjectLimitValueLong) WriteJSONGeneral(w []byte) (_ []byte,
 func (item *TreeStatsObjectLimitValueLong) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TreeStatsObjectLimitValueLong) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TreeStatsObjectLimitValueLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }

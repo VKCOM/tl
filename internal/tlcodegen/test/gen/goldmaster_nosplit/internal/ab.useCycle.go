@@ -117,22 +117,23 @@ func (item *AbUseCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AbUseCycle) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AbUseCycle) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AbUseCycle) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AbUseCycle) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AbUseCycle) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(newTypeNames, short, w)
+	w = item.A.WriteJSONOpt(tctx, w)
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = BuiltinVectorAColorWriteJSONOpt(newTypeNames, short, w, item.B)
+	w = BuiltinVectorAColorWriteJSONOpt(tctx, w, item.B)
 	if (len(item.B) != 0) == false {
 		w = w[:backupIndexB]
 	}

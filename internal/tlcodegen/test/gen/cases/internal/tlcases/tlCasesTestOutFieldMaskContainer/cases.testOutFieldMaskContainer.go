@@ -141,14 +141,15 @@ func (item *CasesTestOutFieldMaskContainer) ReadJSON(legacyTypeNames bool, in *b
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestOutFieldMaskContainer) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesTestOutFieldMaskContainer) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesTestOutFieldMaskContainer) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestOutFieldMaskContainer) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesTestOutFieldMaskContainer) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexF := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -159,7 +160,7 @@ func (item *CasesTestOutFieldMaskContainer) WriteJSONOpt(newTypeNames bool, shor
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"inner":`...)
-	if w, err = item.Inner.WriteJSONOpt(newTypeNames, short, w, item.F); err != nil {
+	if w, err = item.Inner.WriteJSONOpt(tctx, w, item.F); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

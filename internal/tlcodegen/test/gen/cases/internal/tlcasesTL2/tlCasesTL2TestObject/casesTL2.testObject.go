@@ -323,14 +323,15 @@ func (item *CasesTL2TestObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObject) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesTL2TestObject) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesTL2TestObject) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTL2TestObject) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesTL2TestObject) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -353,13 +354,13 @@ func (item *CasesTL2TestObject) WriteJSONOpt(newTypeNames bool, short bool, w []
 	backupIndexF3 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f3":`...)
-	w = tlBuiltinVectorBool.BuiltinVectorBoolWriteJSONOpt(newTypeNames, short, w, item.F3)
+	w = tlBuiltinVectorBool.BuiltinVectorBoolWriteJSONOpt(tctx, w, item.F3)
 	if (len(item.F3) != 0) == false {
 		w = w[:backupIndexF3]
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f4":`...)
-	if w, err = item.F4.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.F4.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
@@ -370,14 +371,14 @@ func (item *CasesTL2TestObject) WriteJSONOpt(newTypeNames bool, short bool, w []
 	backupIndexF6 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f6":`...)
-	w = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(newTypeNames, short, w, item.F6)
+	w = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx, w, item.F6)
 	if (len(item.F6) != 0) == false {
 		w = w[:backupIndexF6]
 	}
 	if item.N&(1<<14) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f7":`...)
-		w = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedWriteJSONOpt(newTypeNames, short, w, item.F7)
+		w = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedWriteJSONOpt(tctx, w, item.F7)
 	}
 	return append(w, '}'), nil
 }

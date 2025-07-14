@@ -147,13 +147,14 @@ func BuiltinVectorDictionaryElemTupleStringIntReadJSON(legacyTypeNames bool, in 
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntWriteJSON(w []byte, vec []tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
-	return BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(true, false, w, vec, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(&tctx, w, vec, nat_t)
 }
-func BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemTupleStringIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w, nat_t); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w, nat_t); err != nil {
 			return w, err
 		}
 	}

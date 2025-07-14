@@ -152,7 +152,7 @@ func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w [
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
 		if newTypeNames {
@@ -286,7 +286,7 @@ func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w []b
 func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *LeftService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
@@ -399,7 +399,7 @@ func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w []
 func (item *RightService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *RightService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

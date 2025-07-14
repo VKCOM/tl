@@ -119,14 +119,15 @@ func (item *UsefulServiceGetUserEntityResult) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceGetUserEntityResult) WriteJSONGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_fields_mask), nil
+func (item *UsefulServiceGetUserEntityResult) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_fields_mask), nil
 }
 
 func (item *UsefulServiceGetUserEntityResult) WriteJSON(w []byte, nat_fields_mask uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_fields_mask)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_fields_mask)
 }
-func (item *UsefulServiceGetUserEntityResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceGetUserEntityResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
 	w = append(w, '{')
 	backupIndexEntityId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -138,7 +139,7 @@ func (item *UsefulServiceGetUserEntityResult) WriteJSONOpt(newTypeNames bool, sh
 	backupIndexPaymentItems := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"payment_items":`...)
-	w = item.PaymentItems.WriteJSONOpt(newTypeNames, short, w, nat_fields_mask)
+	w = item.PaymentItems.WriteJSONOpt(tctx, w, nat_fields_mask)
 	if (item.PaymentItems.Ok) == false {
 		w = w[:backupIndexPaymentItems]
 	}
@@ -434,19 +435,20 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadJSON(legacyTypeNames
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteJSONGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_t), nil
+func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
 }
 
 func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
 }
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_t uint32) []byte {
+func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w, nat_t)
+	w = item.Value.WriteJSONOpt(tctx, w, nat_t)
 	return append(w, '}')
 }

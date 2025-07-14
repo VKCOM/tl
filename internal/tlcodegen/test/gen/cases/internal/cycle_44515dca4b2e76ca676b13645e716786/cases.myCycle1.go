@@ -183,14 +183,15 @@ func (item *CasesMyCycle1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesMyCycle1) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesMyCycle1) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesMyCycle1) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesMyCycle1) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesMyCycle1) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexFieldsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -202,7 +203,7 @@ func (item *CasesMyCycle1) WriteJSONOpt(newTypeNames bool, short bool, w []byte)
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		w = item.A.WriteJSONOpt(newTypeNames, short, w)
+		w = item.A.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }

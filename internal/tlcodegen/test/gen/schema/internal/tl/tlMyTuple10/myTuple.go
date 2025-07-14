@@ -80,7 +80,7 @@ func (item *MyTuple10) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *MyTuple10) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyTuple10) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[10]int32)(item)
 	w = tlBuiltinTuple10IntBoxed.BuiltinTuple10IntBoxedWriteJSONOpt(newTypeNames, short, w, ptr)
 	return w

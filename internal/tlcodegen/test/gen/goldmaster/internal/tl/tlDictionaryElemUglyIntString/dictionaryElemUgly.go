@@ -172,14 +172,15 @@ func (item *DictionaryElemUglyIntString) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemUglyIntString) WriteJSONGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_f), nil
+func (item *DictionaryElemUglyIntString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_f), nil
 }
 
 func (item *DictionaryElemUglyIntString) WriteJSON(w []byte, nat_f uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_f)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_f)
 }
-func (item *DictionaryElemUglyIntString) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_f uint32) []byte {
+func (item *DictionaryElemUglyIntString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) []byte {
 	w = append(w, '{')
 	if nat_f&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)

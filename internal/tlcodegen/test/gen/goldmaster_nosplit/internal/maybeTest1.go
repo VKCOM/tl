@@ -301,14 +301,15 @@ func (item *MaybeTest1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MaybeTest1) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *MaybeTest1) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *MaybeTest1) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *MaybeTest1) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *MaybeTest1) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -320,64 +321,64 @@ func (item *MaybeTest1) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(newTypeNames, short, w)
+	w = item.A.WriteJSONOpt(tctx, w)
 	if (item.A.Ok) == false {
 		w = w[:backupIndexA]
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(newTypeNames, short, w)
+	w = item.B.WriteJSONOpt(tctx, w)
 	if (item.B.Ok) == false {
 		w = w[:backupIndexB]
 	}
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(newTypeNames, short, w)
+	w = item.C.WriteJSONOpt(tctx, w)
 	if (item.C.Ok) == false {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = item.D.WriteJSONOpt(newTypeNames, short, w)
+	w = item.D.WriteJSONOpt(tctx, w)
 	if (item.D.Ok) == false {
 		w = w[:backupIndexD]
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = item.E.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.E.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = item.F.WriteJSONOpt(newTypeNames, short, w)
+	w = item.F.WriteJSONOpt(tctx, w)
 	backupIndexG := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"g":`...)
-	w = item.G.WriteJSONOpt(newTypeNames, short, w)
+	w = item.G.WriteJSONOpt(tctx, w)
 	if (item.G.Ok) == false {
 		w = w[:backupIndexG]
 	}
 	backupIndexH := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"h":`...)
-	w = item.H.WriteJSONOpt(newTypeNames, short, w)
+	w = item.H.WriteJSONOpt(tctx, w)
 	if (item.H.Ok) == false {
 		w = w[:backupIndexH]
 	}
 	backupIndexI := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"i":`...)
-	w = item.I.WriteJSONOpt(newTypeNames, short, w)
+	w = item.I.WriteJSONOpt(tctx, w)
 	if (item.I.Ok) == false {
 		w = w[:backupIndexI]
 	}
 	backupIndexJ := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"j":`...)
-	w = item.J.WriteJSONOpt(newTypeNames, short, w)
+	w = item.J.WriteJSONOpt(tctx, w)
 	if (item.J.Ok) == false {
 		w = w[:backupIndexJ]
 	}

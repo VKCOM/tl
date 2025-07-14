@@ -133,14 +133,15 @@ func (item *CasesBytesTestArray) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestArray) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesBytesTestArray) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesBytesTestArray) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesBytesTestArray) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesBytesTestArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -152,7 +153,7 @@ func (item *CasesBytesTestArray) WriteJSONOpt(newTypeNames bool, short bool, w [
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(newTypeNames, short, w, item.Arr, item.N); err != nil {
+	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(tctx, w, item.Arr, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.Arr) != 0) == false {
@@ -436,14 +437,15 @@ func (item *CasesBytesTestArrayBytes) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestArrayBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CasesBytesTestArrayBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CasesBytesTestArrayBytes) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesBytesTestArrayBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CasesBytesTestArrayBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -455,7 +457,7 @@ func (item *CasesBytesTestArrayBytes) WriteJSONOpt(newTypeNames bool, short bool
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	if w, err = tlBuiltinTupleString.BuiltinTupleStringBytesWriteJSONOpt(newTypeNames, short, w, item.Arr, item.N); err != nil {
+	if w, err = tlBuiltinTupleString.BuiltinTupleStringBytesWriteJSONOpt(tctx, w, item.Arr, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.Arr) != 0) == false {

@@ -83,7 +83,7 @@ func (item *Service3GetScheduledProducts) WriteResultJSON(w []byte, ret tlVector
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service3GetScheduledProducts) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlVectorService3Product0Maybe.VectorService3Product0Maybe) (_ []byte, err error) {
+func (item *Service3GetScheduledProducts) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlVectorService3Product0Maybe.VectorService3Product0Maybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -97,7 +97,7 @@ func (item *Service3GetScheduledProducts) ReadResultWriteResultJSON(r []byte, w 
 	return r, w, err
 }
 
-func (item *Service3GetScheduledProducts) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3GetScheduledProducts) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlVectorService3Product0Maybe.VectorService3Product0Maybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -176,7 +176,7 @@ func (item *Service3GetScheduledProducts) WriteJSONGeneral(w []byte) (_ []byte, 
 func (item *Service3GetScheduledProducts) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3GetScheduledProducts) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3GetScheduledProducts) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexUserId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

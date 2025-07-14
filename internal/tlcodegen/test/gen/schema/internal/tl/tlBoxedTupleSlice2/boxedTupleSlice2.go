@@ -80,7 +80,7 @@ func (item *BoxedTupleSlice2) WriteResultJSON(w []byte, ret tlMyBoxedTupleSlice.
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *BoxedTupleSlice2) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlMyBoxedTupleSlice.MyBoxedTupleSlice) (_ []byte, err error) {
+func (item *BoxedTupleSlice2) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlMyBoxedTupleSlice.MyBoxedTupleSlice) (_ []byte, err error) {
 	if w, err = ret.WriteJSONOpt(newTypeNames, short, w); err != nil {
 		return w, err
 	}
@@ -96,7 +96,7 @@ func (item *BoxedTupleSlice2) ReadResultWriteResultJSON(r []byte, w []byte) (_ [
 	return r, w, err
 }
 
-func (item *BoxedTupleSlice2) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedTupleSlice2) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyBoxedTupleSlice.MyBoxedTupleSlice
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -167,7 +167,7 @@ func (item *BoxedTupleSlice2) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *BoxedTupleSlice2) WriteJSON(w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *BoxedTupleSlice2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *BoxedTupleSlice2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

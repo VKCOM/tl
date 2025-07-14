@@ -145,13 +145,14 @@ func BuiltinVectorTrueBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 }
 
 func BuiltinVectorTrueBoxedWriteJSON(w []byte, vec []tlTrue.True) []byte {
-	return BuiltinVectorTrueBoxedWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorTrueBoxedWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorTrueBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlTrue.True) []byte {
+func BuiltinVectorTrueBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlTrue.True) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

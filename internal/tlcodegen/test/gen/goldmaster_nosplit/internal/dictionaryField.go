@@ -200,9 +200,10 @@ func BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames bool, in *basict
 }
 
 func BuiltinVectorDictionaryFieldStringWriteJSON(w []byte, m map[string]string) []byte {
-	return BuiltinVectorDictionaryFieldStringWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldStringWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryFieldStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]string) []byte {
+func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -353,9 +354,10 @@ func BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames bool, in *b
 }
 
 func BuiltinVectorDictionaryFieldStringBytesWriteJSON(w []byte, vec []DictionaryFieldStringBytes) []byte {
-	return BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryFieldStringBytes) []byte {
+func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryFieldStringBytes) []byte {
 	w = append(w, '{')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -551,9 +553,10 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSON
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
-	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(true, false, w, m, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(&tctx, w, m, nat_t)
 }
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -565,7 +568,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSO
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = value.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = value.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, '}')
 }
@@ -674,14 +677,15 @@ func (item *DictionaryFieldString) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryFieldString) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryFieldString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryFieldString) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryFieldString) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryFieldString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -961,14 +965,15 @@ func (item *DictionaryFieldStringBytes) ReadJSON(legacyTypeNames bool, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryFieldStringBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *DictionaryFieldStringBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *DictionaryFieldStringBytes) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *DictionaryFieldStringBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *DictionaryFieldStringBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1252,14 +1257,15 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadJSON(leg
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_t), nil
+func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
 }
 
 func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byte, nat_t uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
 }
-func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_t uint32) []byte {
+func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -1270,7 +1276,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w, nat_t)
+	w = item.Value.WriteJSONOpt(tctx, w, nat_t)
 	return append(w, '}')
 }
 

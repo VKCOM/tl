@@ -184,16 +184,17 @@ func BuiltinTuplePairBoxedIntLongReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func BuiltinTuplePairBoxedIntLongWriteJSON(w []byte, vec []tlPairIntLong.PairIntLong, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTuplePairBoxedIntLongWriteJSONOpt(true, false, w, vec, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuplePairBoxedIntLongWriteJSONOpt(&tctx, w, vec, nat_n)
 }
-func BuiltinTuplePairBoxedIntLongWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlPairIntLong.PairIntLong, nat_n uint32) (_ []byte, err error) {
+func BuiltinTuplePairBoxedIntLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlPairIntLong.PairIntLong, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlPairIntLong.PairIntLong", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']'), nil
 }

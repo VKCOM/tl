@@ -151,7 +151,7 @@ func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []by
 func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *EitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
 		if newTypeNames {
@@ -285,7 +285,7 @@ func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []byte
 func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *LeftIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -402,7 +402,7 @@ func (item *RightIntVectorService6FindWithBoundsResult) WriteJSONGeneral(w []byt
 func (item *RightIntVectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *RightIntVectorService6FindWithBoundsResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *RightIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexValue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
