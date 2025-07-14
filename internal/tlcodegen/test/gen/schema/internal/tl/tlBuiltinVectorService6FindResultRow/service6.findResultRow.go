@@ -76,7 +76,7 @@ func BuiltinVectorService6FindResultRowReadJSON(legacyTypeNames bool, in *basict
 func BuiltinVectorService6FindResultRowWriteJSON(w []byte, vec []tlService6FindResultRow.Service6FindResultRow) []byte {
 	return BuiltinVectorService6FindResultRowWriteJSONOpt(true, false, w, vec)
 }
-func BuiltinVectorService6FindResultRowWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlService6FindResultRow.Service6FindResultRow) []byte {
+func BuiltinVectorService6FindResultRowWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService6FindResultRow.Service6FindResultRow) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

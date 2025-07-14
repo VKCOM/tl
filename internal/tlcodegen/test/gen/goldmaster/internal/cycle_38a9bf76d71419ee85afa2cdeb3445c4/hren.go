@@ -123,19 +123,20 @@ func (item *Hren) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Hren) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Hren) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Hren) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Hren) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Hren) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexNext := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next":`...)
-	w = item.Next.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Next.WriteJSONOpt(tctx, w)
 	if (item.Next != nil && item.Next.Ok) == false {
 		w = w[:backupIndexNext]
 	}
@@ -422,20 +423,21 @@ func (item *HrenMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *HrenMaybe) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *HrenMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *HrenMaybe) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *HrenMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *HrenMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Value.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 

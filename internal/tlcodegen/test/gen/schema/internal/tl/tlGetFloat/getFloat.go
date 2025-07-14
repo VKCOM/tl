@@ -79,7 +79,7 @@ func (item *GetFloat) WriteResultJSON(w []byte, ret float32) (_ []byte, err erro
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetFloat) writeResultJSON(newTypeNames bool, short bool, w []byte, ret float32) (_ []byte, err error) {
+func (item *GetFloat) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret float32) (_ []byte, err error) {
 	w = basictl.JSONWriteFloat32(w, ret)
 	return w, nil
 }
@@ -93,7 +93,7 @@ func (item *GetFloat) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _
 	return r, w, err
 }
 
-func (item *GetFloat) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetFloat) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret float32
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -160,7 +160,7 @@ func (item *GetFloat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetFloat) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetFloat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *GetFloat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

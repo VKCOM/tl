@@ -87,7 +87,7 @@ func (item *TasksGetQueueTypes) WriteResultJSON(w []byte, ret []tlTasksQueueType
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *TasksGetQueueTypes) writeResultJSON(newTypeNames bool, short bool, w []byte, ret []tlTasksQueueTypeInfo.TasksQueueTypeInfo) (_ []byte, err error) {
+func (item *TasksGetQueueTypes) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []tlTasksQueueTypeInfo.TasksQueueTypeInfo) (_ []byte, err error) {
 	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(newTypeNames, short, w, ret)
 	return w, nil
 }
@@ -101,7 +101,7 @@ func (item *TasksGetQueueTypes) ReadResultWriteResultJSON(r []byte, w []byte) (_
 	return r, w, err
 }
 
-func (item *TasksGetQueueTypes) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *TasksGetQueueTypes) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []tlTasksQueueTypeInfo.TasksQueueTypeInfo
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -180,7 +180,7 @@ func (item *TasksGetQueueTypes) WriteJSONGeneral(w []byte) (_ []byte, err error)
 func (item *TasksGetQueueTypes) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TasksGetQueueTypes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TasksGetQueueTypes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexSettingsMask := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -166,14 +166,15 @@ func (item *CasesTestOutFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestOutFieldMask) WriteJSONGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_f)
+func (item *CasesTestOutFieldMask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_f)
 }
 
 func (item *CasesTestOutFieldMask) WriteJSON(w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_f)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_f)
 }
-func (item *CasesTestOutFieldMask) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_f uint32) (_ []byte, err error) {
+func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if nat_f&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
@@ -183,7 +184,7 @@ func (item *CasesTestOutFieldMask) WriteJSONOpt(newTypeNames bool, short bool, w
 	backupIndexF3 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f3":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F3, nat_f); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F3, nat_f); err != nil {
 		return w, err
 	}
 	if (len(item.F3) != 0) == false {

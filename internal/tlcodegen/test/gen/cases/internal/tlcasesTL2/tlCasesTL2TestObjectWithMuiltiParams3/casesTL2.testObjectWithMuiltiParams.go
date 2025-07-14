@@ -201,30 +201,31 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSON(legacyTypeNames bool, 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONGeneral(w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_m)
+func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_m uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_m)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSON(w []byte, nat_m uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_m)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_m)
 }
-func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_m uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_m uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	if 3&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f1":`...)
-		w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &item.F1)
+		w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.F1)
 	}
 	if nat_m&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f2":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F2, nat_m); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F2, nat_m); err != nil {
 			return w, err
 		}
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	if w, err = tlBuiltinTuple3TupleInt.BuiltinTuple3TupleIntWriteJSONOpt(newTypeNames, short, w, &item.Y, nat_m); err != nil {
+	if w, err = tlBuiltinTuple3TupleInt.BuiltinTuple3TupleIntWriteJSONOpt(tctx, w, &item.Y, nat_m); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

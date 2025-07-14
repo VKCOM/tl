@@ -210,19 +210,20 @@ func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item AColor) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item AColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item AColor) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item AColor) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item AColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '"')
-	if newTypeNames {
-		w = append(w, _AColor[item.index].TLName...)
-	} else {
+	if tctx.LegacyTypeNames {
 		w = append(w, _AColor[item.index].TLString...)
+	} else {
+		w = append(w, _AColor[item.index].TLName...)
 	}
 	return append(w, '"')
 }
@@ -382,20 +383,21 @@ func (item *AColorBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AColorBoxedMaybe) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AColorBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AColorBoxedMaybe) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AColorBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AColorBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	w = append(w, `,"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Value.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -541,13 +543,14 @@ func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, ve
 }
 
 func BuiltinVectorAColorWriteJSON(w []byte, vec []AColor) []byte {
-	return BuiltinVectorAColorWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorAColorWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorAColorWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []AColor) []byte {
+func BuiltinVectorAColorWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []AColor) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

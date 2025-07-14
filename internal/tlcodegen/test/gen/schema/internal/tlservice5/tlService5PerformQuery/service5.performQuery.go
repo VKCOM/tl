@@ -76,7 +76,7 @@ func (item *Service5PerformQuery) WriteResultJSON(w []byte, ret cycle_16847572a0
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service5PerformQuery) writeResultJSON(newTypeNames bool, short bool, w []byte, ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) (_ []byte, err error) {
+func (item *Service5PerformQuery) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *Service5PerformQuery) ReadResultWriteResultJSON(r []byte, w []byte) 
 	return r, w, err
 }
 
-func (item *Service5PerformQuery) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service5PerformQuery) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *Service5PerformQuery) WriteJSONGeneral(w []byte) (_ []byte, err erro
 func (item *Service5PerformQuery) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service5PerformQuery) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5PerformQuery) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexQuery := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

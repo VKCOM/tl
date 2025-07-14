@@ -122,7 +122,7 @@ func (item *Service3GroupCountLimit) WriteJSONGeneral(w []byte) (_ []byte, err e
 func (item *Service3GroupCountLimit) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3GroupCountLimit) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3GroupCountLimit) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexTypes := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

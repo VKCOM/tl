@@ -163,21 +163,22 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) ReadJSO
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSONGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_t), nil
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSON(w []byte, nat_t uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
 }
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_t uint32) []byte {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}
 	w = append(w, `{"ok":true`...)
 	if len(item.Value) != 0 {
 		w = append(w, `,"value":`...)
-		w = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(newTypeNames, short, w, item.Value, nat_t)
+		w = tlBuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx, w, item.Value, nat_t)
 	}
 	return append(w, '}')
 }

@@ -102,19 +102,20 @@ func (item *AInner) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_I 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AInner) WriteJSONGeneral(w []byte, nat_I uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_I)
+func (item *AInner) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_I)
 }
 
 func (item *AInner) WriteJSON(w []byte, nat_I uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_I)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_I)
 }
-func (item *AInner) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_I uint32) (_ []byte, err error) {
+func (item *AInner) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.A, nat_I); err != nil {
+	if w, err = BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, nat_I); err != nil {
 		return w, err
 	}
 	if (len(item.A) != 0) == false {
@@ -331,18 +332,19 @@ func (item *AInner3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AInner3) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AInner3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AInner3) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *AInner3) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *AInner3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &item.A)
+	w = BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.A)
 	return append(w, '}')
 }
 

@@ -145,13 +145,14 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSON(legacyTypeNames bool, 
 }
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSON(w []byte, vec []tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt) []byte {
-	return BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt) []byte {
+func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

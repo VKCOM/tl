@@ -103,7 +103,7 @@ func (item *Pkg2Foo) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Pkg2Foo) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Pkg2Foo) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Pkg2Foo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

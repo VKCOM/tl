@@ -111,7 +111,7 @@ func BuiltinVectorDictionaryFieldService1ValueReadJSON(legacyTypeNames bool, in 
 func BuiltinVectorDictionaryFieldService1ValueWriteJSON(w []byte, m map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
 	return BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(true, false, w, m)
 }
-func BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
+func BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)

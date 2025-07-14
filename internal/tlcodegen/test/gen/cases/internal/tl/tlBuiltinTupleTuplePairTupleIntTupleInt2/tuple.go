@@ -187,16 +187,17 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSON(legacyTypeNames bool, in *ba
 }
 
 func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSON(w []byte, vec [][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
-	return BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(true, false, w, vec, nat_n, nat_ttXn, nat_ttYn)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(&tctx, w, vec, nat_n, nat_ttXn, nat_ttYn)
 }
-func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec [][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec [][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(newTypeNames, short, w, &elem, nat_ttXn, nat_ttYn); err != nil {
+		if w, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntWriteJSONOpt(tctx, w, &elem, nat_ttXn, nat_ttYn); err != nil {
 			return w, err
 		}
 	}

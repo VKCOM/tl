@@ -77,7 +77,7 @@ func (item *VectorTasksQueueTypeInfo) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorTasksQueueTypeInfo) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorTasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
 	w = tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

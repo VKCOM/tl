@@ -76,7 +76,7 @@ func (item *MyMaybe2) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *MyMaybe2) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyMaybe2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
 	w = ptr.WriteJSONOpt(newTypeNames, short, w)
 	return w

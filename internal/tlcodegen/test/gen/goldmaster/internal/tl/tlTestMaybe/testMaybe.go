@@ -233,14 +233,15 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TestMaybe) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *TestMaybe) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *TestMaybe) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TestMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *TestMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -252,35 +253,35 @@ func (item *TestMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ 
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = item.A.WriteJSONOpt(newTypeNames, short, w)
+	w = item.A.WriteJSONOpt(tctx, w)
 	if (item.A.Ok) == false {
 		w = w[:backupIndexA]
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = item.B.WriteJSONOpt(newTypeNames, short, w)
+	w = item.B.WriteJSONOpt(tctx, w)
 	if (item.B.Ok) == false {
 		w = w[:backupIndexB]
 	}
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = item.C.WriteJSONOpt(newTypeNames, short, w)
+	w = item.C.WriteJSONOpt(tctx, w)
 	if (item.C.Ok) == false {
 		w = w[:backupIndexC]
 	}
 	backupIndexD := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = item.D.WriteJSONOpt(newTypeNames, short, w)
+	w = item.D.WriteJSONOpt(tctx, w)
 	if (item.D.Ok) == false {
 		w = w[:backupIndexD]
 	}
 	backupIndexE := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	if w, err = item.E.WriteJSONOpt(newTypeNames, short, w, item.N); err != nil {
+	if w, err = item.E.WriteJSONOpt(tctx, w, item.N); err != nil {
 		return w, err
 	}
 	if (item.E.Ok) == false {
@@ -288,7 +289,7 @@ func (item *TestMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ 
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = item.F.WriteJSONOpt(newTypeNames, short, w)
+	w = item.F.WriteJSONOpt(tctx, w)
 	return append(w, '}'), nil
 }
 

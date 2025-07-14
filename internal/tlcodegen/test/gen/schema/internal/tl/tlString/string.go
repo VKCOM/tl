@@ -75,7 +75,7 @@ func (item *String) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *String) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *String) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*string)(item)
 	w = basictl.JSONWriteString(w, *ptr)
 	return w

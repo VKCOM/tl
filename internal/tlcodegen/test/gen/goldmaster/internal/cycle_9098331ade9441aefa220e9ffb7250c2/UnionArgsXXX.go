@@ -111,19 +111,20 @@ func (item *UnionArgsXXX1Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UnionArgsXXX1Int) WriteJSONGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_Y)
+func (item *UnionArgsXXX1Int) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_Y)
 }
 
 func (item *UnionArgsXXX1Int) WriteJSON(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_Y)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_Y)
 }
-func (item *UnionArgsXXX1Int) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX1Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.X, nat_Y); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.X, nat_Y); err != nil {
 		return w, err
 	}
 	if (len(item.X) != 0) == false {
@@ -340,14 +341,15 @@ func (item *UnionArgsXXX2Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UnionArgsXXX2Int) WriteJSONGeneral(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_Y), nil
+func (item *UnionArgsXXX2Int) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_Y), nil
 }
 
 func (item *UnionArgsXXX2Int) WriteJSON(w []byte, nat_Y uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_Y)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_Y)
 }
-func (item *UnionArgsXXX2Int) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_Y uint32) []byte {
+func (item *UnionArgsXXX2Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) []byte {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -691,34 +693,35 @@ func (item *UnionArgsXXXInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UnionArgsXXXInt) WriteJSONGeneral(w []byte, nat_Y uint32) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w, nat_Y)
+func (item *UnionArgsXXXInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w, nat_Y)
 }
 
 func (item *UnionArgsXXXInt) WriteJSON(w []byte, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_Y)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_Y)
 }
-func (item *UnionArgsXXXInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"unionArgsXXX1"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
+		} else {
+			w = append(w, `{"type":"unionArgsXXX1"`...)
 		}
 		w = append(w, `,"value":`...)
-		if w, err = item.value1.WriteJSONOpt(newTypeNames, short, w, nat_Y); err != nil {
+		if w, err = item.value1.WriteJSONOpt(tctx, w, nat_Y); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"unionArgsXXX2"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
+		} else {
+			w = append(w, `{"type":"unionArgsXXX2"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.value2.WriteJSONOpt(newTypeNames, short, w, nat_Y)
+		w = item.value2.WriteJSONOpt(tctx, w, nat_Y)
 		return append(w, '}'), nil
 	default: // Impossible due to panic above
 		return w, nil

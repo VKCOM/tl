@@ -82,7 +82,7 @@ func (item *Service1Touch) WriteResultJSON(w []byte, ret bool) (_ []byte, err er
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service1Touch) writeResultJSON(newTypeNames bool, short bool, w []byte, ret bool) (_ []byte, err error) {
+func (item *Service1Touch) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret bool) (_ []byte, err error) {
 	w = basictl.JSONWriteBool(w, ret)
 	return w, nil
 }
@@ -96,7 +96,7 @@ func (item *Service1Touch) ReadResultWriteResultJSON(r []byte, w []byte) (_ []by
 	return r, w, err
 }
 
-func (item *Service1Touch) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1Touch) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -175,7 +175,7 @@ func (item *Service1Touch) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Service1Touch) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1Touch) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1Touch) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

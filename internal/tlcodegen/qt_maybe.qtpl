@@ -216,18 +216,19 @@ func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *{%s= goName %}) WriteJSONGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
     {%- if writeElementNeedsError -%}
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %})
     {%- else -%}
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %}), nil
+    return item.WriteJSONOpt(tctx, w{%s= natArgsCall %}), nil
     {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return item.WriteJSONOpt(true, false, w{%s= natArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
-func (item *{%s= goName %}) WriteJSONOpt(newTypeNames bool, short bool, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     if !item.Ok {
     {%- if writeElementNeedsError -%}
         return append(w, "{}"...), nil

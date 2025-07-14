@@ -84,7 +84,7 @@ func (item *BoxedTuple) WriteResultJSON(w []byte, ret [3]int32) (_ []byte, err e
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *BoxedTuple) writeResultJSON(newTypeNames bool, short bool, w []byte, ret [3]int32) (_ []byte, err error) {
+func (item *BoxedTuple) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret [3]int32) (_ []byte, err error) {
 	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &ret)
 	return w, nil
 }
@@ -98,7 +98,7 @@ func (item *BoxedTuple) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte,
 	return r, w, err
 }
 
-func (item *BoxedTuple) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedTuple) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret [3]int32
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -165,7 +165,7 @@ func (item *BoxedTuple) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *BoxedTuple) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *BoxedTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BoxedTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

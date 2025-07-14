@@ -74,7 +74,7 @@ func (item *TupleService2DeltaSet) WriteJSON(w []byte, nat_tobjectIdLength uint3
 	return item.WriteJSONOpt(true, false, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-func (item *TupleService2DeltaSet) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+func (item *TupleService2DeltaSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]tlService2DeltaSet.Service2DeltaSet)(item)
 	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWriteJSONOpt(newTypeNames, short, w, *ptr, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err

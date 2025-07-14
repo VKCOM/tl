@@ -29,8 +29,9 @@ TL_BYTE_VERSIONS := ch_proxy.,ab.
 all: build
 
 .PHONY: build
-build:
-	@$(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+build: # build static binary to run on many linux variants
+	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
+	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlclient ./cmd/tlclient
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \

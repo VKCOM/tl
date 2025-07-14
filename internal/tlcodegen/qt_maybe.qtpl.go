@@ -366,17 +366,17 @@ func (item *`)
 // This method is general version of WriteJSON, use it instead!
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONGeneral(w []byte`)
+	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if writeElementNeedsError {
-		qw422016.N().S(`    return item.WriteJSONOpt(true, false, w`)
+		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 `)
 	} else {
-		qw422016.N().S(`    return item.WriteJSONOpt(true, false, w`)
+		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`), nil
 `)
@@ -390,13 +390,14 @@ func (item *`)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 	qw422016.N().S(` {
-    return item.WriteJSONOpt(true, false, w`)
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONOpt(newTypeNames bool, short bool, w []byte`)
+	qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))

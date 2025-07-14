@@ -82,7 +82,7 @@ func (item *Service6MultiFindWithBounds) WriteResultJSON(w []byte, ret []cycle_e
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service6MultiFindWithBounds) writeResultJSON(newTypeNames bool, short bool, w []byte, ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
+func (item *Service6MultiFindWithBounds) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) (_ []byte, err error) {
 	w = tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(newTypeNames, short, w, ret)
 	return w, nil
 }
@@ -96,7 +96,7 @@ func (item *Service6MultiFindWithBounds) ReadResultWriteResultJSON(r []byte, w [
 	return r, w, err
 }
 
-func (item *Service6MultiFindWithBounds) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service6MultiFindWithBounds) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -163,7 +163,7 @@ func (item *Service6MultiFindWithBounds) WriteJSONGeneral(w []byte) (_ []byte, e
 func (item *Service6MultiFindWithBounds) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service6MultiFindWithBounds) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service6MultiFindWithBounds) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexClusters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

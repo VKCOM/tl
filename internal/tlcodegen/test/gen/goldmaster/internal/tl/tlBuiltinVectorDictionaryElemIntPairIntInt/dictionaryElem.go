@@ -215,9 +215,10 @@ func BuiltinVectorDictionaryElemIntPairIntIntReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryElemIntPairIntIntWriteJSON(w []byte, m map[int32]tlPairIntInt.PairIntInt) []byte {
-	return BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[int32]tlPairIntInt.PairIntInt) []byte {
+func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[int32]tlPairIntInt.PairIntInt) []byte {
 	keys := make([]int32, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -232,7 +233,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(newTypeNames bool, sho
 		w = append(w, `"`...)
 		w = basictl.JSONWriteInt32(w, key)
 		w = append(w, `":`...)
-		w = value.WriteJSONOpt(newTypeNames, short, w)
+		w = value.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }

@@ -122,7 +122,7 @@ func (item *Service1KeysStat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Service1KeysStat) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1KeysStat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1KeysStat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexStartTime := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -76,7 +76,7 @@ func (item *TupleInt5) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *TupleInt5) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TupleInt5) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[5]int32)(item)
 	w = tlBuiltinTuple5Int.BuiltinTuple5IntWriteJSONOpt(newTypeNames, short, w, ptr)
 	return w

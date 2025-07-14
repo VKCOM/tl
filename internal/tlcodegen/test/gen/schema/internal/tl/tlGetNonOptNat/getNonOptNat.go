@@ -94,7 +94,7 @@ func (item *GetNonOptNat) WriteResultJSON(w []byte, ret []int32) (_ []byte, err 
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetNonOptNat) writeResultJSON(newTypeNames bool, short bool, w []byte, ret []int32) (_ []byte, err error) {
+func (item *GetNonOptNat) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
 	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, ret, item.N); err != nil {
 		return w, err
 	}
@@ -110,7 +110,7 @@ func (item *GetNonOptNat) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byt
 	return r, w, err
 }
 
-func (item *GetNonOptNat) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetNonOptNat) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret []int32
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -199,7 +199,7 @@ func (item *GetNonOptNat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetNonOptNat) WriteJSON(w []byte) (_ []byte, err error) {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetNonOptNat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *GetNonOptNat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -124,14 +124,15 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadJSON(leg
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(w []byte, nat_t uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_t), nil
+func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_t), nil
 }
 
 func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSON(w []byte, nat_t uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_t)
 }
-func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_t uint32) []byte {
+func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_t uint32) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -142,7 +143,7 @@ func (item *DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	w = item.Value.WriteJSONOpt(newTypeNames, short, w, nat_t)
+	w = item.Value.WriteJSONOpt(tctx, w, nat_t)
 	return append(w, '}')
 }
 

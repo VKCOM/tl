@@ -78,7 +78,7 @@ func (item *True) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *True) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *True) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *True) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }

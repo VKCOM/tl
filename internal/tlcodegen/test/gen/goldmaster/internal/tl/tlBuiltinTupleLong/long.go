@@ -178,9 +178,10 @@ func BuiltinTupleLongReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *
 }
 
 func BuiltinTupleLongWriteJSON(w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleLongWriteJSONOpt(true, false, w, vec, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleLongWriteJSONOpt(&tctx, w, vec, nat_n)
 }
-func BuiltinTupleLongWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleLongWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int64, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]int64", len(vec), nat_n)
 	}

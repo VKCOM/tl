@@ -201,33 +201,34 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTL2TestArrayFixedBool) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTL2TestArrayFixedBool) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTL2TestArrayFixedBool) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTL2TestArrayFixedBool) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTL2TestArrayFixedBool) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a1":`...)
-	w = tlBuiltinTuple1Bool.BuiltinTuple1BoolWriteJSONOpt(newTypeNames, short, w, &item.A1)
+	w = tlBuiltinTuple1Bool.BuiltinTuple1BoolWriteJSONOpt(tctx, w, &item.A1)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a2":`...)
-	w = tlBuiltinTuple0Bool.BuiltinTuple0BoolWriteJSONOpt(newTypeNames, short, w, &item.A2)
+	w = tlBuiltinTuple0Bool.BuiltinTuple0BoolWriteJSONOpt(tctx, w, &item.A2)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a3":`...)
-	w = tlBuiltinTuple7Bool.BuiltinTuple7BoolWriteJSONOpt(newTypeNames, short, w, &item.A3)
+	w = tlBuiltinTuple7Bool.BuiltinTuple7BoolWriteJSONOpt(tctx, w, &item.A3)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a4":`...)
-	w = tlBuiltinTuple8Bool.BuiltinTuple8BoolWriteJSONOpt(newTypeNames, short, w, &item.A4)
+	w = tlBuiltinTuple8Bool.BuiltinTuple8BoolWriteJSONOpt(tctx, w, &item.A4)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a5":`...)
-	w = tlBuiltinTuple11Bool.BuiltinTuple11BoolWriteJSONOpt(newTypeNames, short, w, &item.A5)
+	w = tlBuiltinTuple11Bool.BuiltinTuple11BoolWriteJSONOpt(tctx, w, &item.A5)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a6":`...)
-	w = tlBuiltinTuple16Bool.BuiltinTuple16BoolWriteJSONOpt(newTypeNames, short, w, &item.A6)
+	w = tlBuiltinTuple16Bool.BuiltinTuple16BoolWriteJSONOpt(tctx, w, &item.A6)
 	return append(w, '}')
 }
 

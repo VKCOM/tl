@@ -180,19 +180,20 @@ func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item CasesBytesTestEnum) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item CasesBytesTestEnum) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item CasesBytesTestEnum) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item CasesBytesTestEnum) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item CasesBytesTestEnum) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '"')
-	if newTypeNames {
-		w = append(w, _CasesBytesTestEnum[item.index].TLName...)
-	} else {
+	if tctx.LegacyTypeNames {
 		w = append(w, _CasesBytesTestEnum[item.index].TLString...)
+	} else {
+		w = append(w, _CasesBytesTestEnum[item.index].TLName...)
 	}
 	return append(w, '"')
 }

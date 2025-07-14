@@ -203,33 +203,34 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MultiPoint) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MultiPoint) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MultiPoint) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *MultiPoint) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MultiPoint) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &item.A)
+	w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.A)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(newTypeNames, short, w, &item.B)
+	w = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedWriteJSONOpt(tctx, w, &item.B)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	w = tlBuiltinTuple3Int32.BuiltinTuple3Int32WriteJSONOpt(newTypeNames, short, w, &item.C)
+	w = tlBuiltinTuple3Int32.BuiltinTuple3Int32WriteJSONOpt(tctx, w, &item.C)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"d":`...)
-	w = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedWriteJSONOpt(newTypeNames, short, w, &item.D)
+	w = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedWriteJSONOpt(tctx, w, &item.D)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"e":`...)
-	w = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32WriteJSONOpt(newTypeNames, short, w, &item.E)
+	w = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32WriteJSONOpt(tctx, w, &item.E)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f":`...)
-	w = tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedWriteJSONOpt(newTypeNames, short, w, &item.F)
+	w = tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedWriteJSONOpt(tctx, w, &item.F)
 	return append(w, '}')
 }
 

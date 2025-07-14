@@ -143,13 +143,14 @@ func BuiltinTuple3MyInt32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 func BuiltinTuple3MyInt32BoxedWriteJSON(w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
-	return BuiltinTuple3MyInt32BoxedWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3MyInt32BoxedWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3MyInt32BoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
+func BuiltinTuple3MyInt32BoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]tlMyInt32.MyInt32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

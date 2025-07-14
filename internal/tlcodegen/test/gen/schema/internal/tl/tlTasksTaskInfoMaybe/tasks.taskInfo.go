@@ -74,7 +74,7 @@ func (item *TasksTaskInfoMaybe) WriteJSONGeneral(w []byte) (_ []byte, err error)
 func (item *TasksTaskInfoMaybe) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TasksTaskInfoMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TasksTaskInfoMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}

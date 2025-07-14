@@ -74,17 +74,18 @@ func (item *VectorBenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorBenchmarksVruPosition) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorBenchmarksVruPosition) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorBenchmarksVruPosition) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *VectorBenchmarksVruPosition) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorBenchmarksVruPosition) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	w = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorBenchmarksVruPosition) MarshalJSON() ([]byte, error) {

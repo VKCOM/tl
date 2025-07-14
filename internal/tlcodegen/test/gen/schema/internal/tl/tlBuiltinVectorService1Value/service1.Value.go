@@ -76,7 +76,7 @@ func BuiltinVectorService1ValueReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 func BuiltinVectorService1ValueWriteJSON(w []byte, vec []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
 	return BuiltinVectorService1ValueWriteJSONOpt(true, false, w, vec)
 }
-func BuiltinVectorService1ValueWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
+func BuiltinVectorService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

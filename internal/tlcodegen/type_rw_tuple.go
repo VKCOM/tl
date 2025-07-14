@@ -227,9 +227,9 @@ func (trw *TypeRWBrackets) typeJSONWritingCode(bytesVersion bool, directImports 
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
 	// Code which depends on serialization location (skipping empty array if object property) is generated in that location.
 	if needError {
-		return fmt.Sprintf("if w, err = %sWriteJSONOpt(newTypeNames, short, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
+		return fmt.Sprintf("if w, err = %sWriteJSONOpt(tctx, w, %s%s); err != nil { return w, err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
 	} else {
-		return fmt.Sprintf("w = %sWriteJSONOpt(newTypeNames, short, w, %s%s)", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
+		return fmt.Sprintf("w = %sWriteJSONOpt(tctx, w, %s%s)", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, refVal, joinWithCommas(natArgs))
 	}
 }
 

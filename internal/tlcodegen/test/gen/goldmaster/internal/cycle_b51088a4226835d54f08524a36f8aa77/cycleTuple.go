@@ -147,13 +147,14 @@ func BuiltinTuple2CycleTupleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func BuiltinTuple2CycleTupleWriteJSON(w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
-	return BuiltinTuple2CycleTupleWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple2CycleTupleWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple2CycleTupleWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
+func BuiltinTuple2CycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[2]CycleTuple) (_ []byte, err error) {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w); err != nil {
 			return w, err
 		}
 	}
@@ -330,16 +331,17 @@ func BuiltinTupleCycleTupleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 }
 
 func BuiltinTupleCycleTupleWriteJSON(w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
-	return BuiltinTupleCycleTupleWriteJSONOpt(true, false, w, vec, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleCycleTupleWriteJSONOpt(&tctx, w, vec, nat_n)
 }
-func BuiltinTupleCycleTupleWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleCycleTupleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []CycleTuple, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]CycleTuple", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w); err != nil {
 			return w, err
 		}
 	}
@@ -604,14 +606,15 @@ func (item *CycleTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CycleTuple) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *CycleTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *CycleTuple) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CycleTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *CycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -623,14 +626,14 @@ func (item *CycleTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_
 	if item.N&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"a":`...)
-		if w, err = BuiltinTuple2CycleTupleWriteJSONOpt(newTypeNames, short, w, item.A); err != nil {
+		if w, err = BuiltinTuple2CycleTupleWriteJSONOpt(tctx, w, item.A); err != nil {
 			return w, err
 		}
 	}
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = BuiltinTupleCycleTupleWriteJSONOpt(newTypeNames, short, w, item.B, item.N); err != nil {
+	if w, err = BuiltinTupleCycleTupleWriteJSONOpt(tctx, w, item.B, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.B) != 0) == false {
@@ -639,7 +642,7 @@ func (item *CycleTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_
 	if item.N&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"c":`...)
-		w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(newTypeNames, short, w, &item.C)
+		w = tlBuiltinTuple3Int.BuiltinTuple3IntWriteJSONOpt(tctx, w, &item.C)
 	}
 	return append(w, '}'), nil
 }

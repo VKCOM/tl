@@ -103,7 +103,7 @@ func (item *Service6FindWithBoundsResult) WriteJSONGeneral(w []byte) (_ []byte, 
 func (item *Service6FindWithBoundsResult) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service6FindWithBoundsResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

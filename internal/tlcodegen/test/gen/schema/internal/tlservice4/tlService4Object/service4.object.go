@@ -140,7 +140,7 @@ func (item *Service4Object) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Service4Object) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service4Object) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service4Object) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexType := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

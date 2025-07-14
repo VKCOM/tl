@@ -76,7 +76,7 @@ func (item *VectorLongBoxed) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorLongBoxed) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorLongBoxed) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]int64)(item)
 	w = tlBuiltinVectorLongBoxed.BuiltinVectorLongBoxedWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

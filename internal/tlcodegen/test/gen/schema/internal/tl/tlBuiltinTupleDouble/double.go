@@ -76,7 +76,7 @@ func BuiltinTupleDoubleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec
 func BuiltinTupleDoubleWriteJSON(w []byte, vec []float64, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleDoubleWriteJSONOpt(true, false, w, vec, nat_n)
 }
-func BuiltinTupleDoubleWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []float64, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleDoubleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []float64, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]float64", len(vec), nat_n)
 	}

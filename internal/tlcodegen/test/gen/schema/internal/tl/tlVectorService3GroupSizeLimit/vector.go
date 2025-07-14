@@ -77,7 +77,7 @@ func (item *VectorService3GroupSizeLimit) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorService3GroupSizeLimit) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorService3GroupSizeLimit) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
 	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

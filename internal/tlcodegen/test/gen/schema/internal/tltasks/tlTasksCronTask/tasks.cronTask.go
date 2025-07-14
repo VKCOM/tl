@@ -160,7 +160,7 @@ func (item *TasksCronTask) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *TasksCronTask) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *TasksCronTask) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TasksCronTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexTypeName := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

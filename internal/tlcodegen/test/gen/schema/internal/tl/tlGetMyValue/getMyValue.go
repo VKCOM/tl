@@ -76,7 +76,7 @@ func (item *GetMyValue) WriteResultJSON(w []byte, ret cycle_2383fe3e154dfb1e44c2
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetMyValue) writeResultJSON(newTypeNames bool, short bool, w []byte, ret cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyValue) (_ []byte, err error) {
+func (item *GetMyValue) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyValue) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *GetMyValue) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte,
 	return r, w, err
 }
 
-func (item *GetMyValue) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMyValue) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyValue
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *GetMyValue) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetMyValue) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetMyValue) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *GetMyValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

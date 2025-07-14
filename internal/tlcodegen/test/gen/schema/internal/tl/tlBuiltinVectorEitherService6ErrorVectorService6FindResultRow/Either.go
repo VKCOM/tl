@@ -76,7 +76,7 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSON(legacyT
 func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
 	return BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(true, false, w, vec)
 }
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

@@ -184,16 +184,17 @@ func BuiltinTupleReplace15Elem2ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 func BuiltinTupleReplace15Elem2WriteJSON(w []byte, vec []Replace15Elem2, nat_n uint32, nat_t uint32) (_ []byte, err error) {
-	return BuiltinTupleReplace15Elem2WriteJSONOpt(true, false, w, vec, nat_n, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleReplace15Elem2WriteJSONOpt(&tctx, w, vec, nat_n, nat_t)
 }
-func BuiltinTupleReplace15Elem2WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []Replace15Elem2, nat_n uint32, nat_t uint32) (_ []byte, err error) {
+func BuiltinTupleReplace15Elem2WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []Replace15Elem2, nat_n uint32, nat_t uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]Replace15Elem2", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = elem.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, ']'), nil
 }
@@ -298,14 +299,15 @@ func (item *Replace15Elem2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace15Elem2) WriteJSONGeneral(w []byte, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_n), nil
+func (item *Replace15Elem2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_n), nil
 }
 
 func (item *Replace15Elem2) WriteJSON(w []byte, nat_n uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_n)
 }
-func (item *Replace15Elem2) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_n uint32) []byte {
+func (item *Replace15Elem2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_n uint32) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

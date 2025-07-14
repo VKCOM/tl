@@ -74,17 +74,18 @@ func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorAColor) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorAColor) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorAColor) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *VectorAColor) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorAColor) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlAColor.AColor)(item)
-	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorAColor.BuiltinVectorAColorWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorAColor) MarshalJSON() ([]byte, error) {

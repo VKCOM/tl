@@ -113,7 +113,7 @@ func (item *MyInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *MyInt) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *MyInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexVal1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -234,7 +234,7 @@ func (item *MyString) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *MyString) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *MyString) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexVal2 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -387,7 +387,7 @@ func (item *MyValue) WriteJSONGeneral(w []byte) ([]byte, error) {
 func (item *MyValue) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *MyValue) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
 		if newTypeNames {

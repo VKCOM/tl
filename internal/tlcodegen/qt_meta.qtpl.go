@@ -75,7 +75,9 @@ type Object interface {
 `)
 	}
 	qw422016.N().S(`    ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
-	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it
+    // like MarshalJSON, but appends to w and returns it
+    // pass empty basictl.JSONWriteContext{} if you do not know which options you need
+	WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error)
 `)
 	if gen.options.GenerateTL2 {
 		qw422016.N().S(`
@@ -88,11 +90,10 @@ type Object interface {
 type Function interface {
 	Object
 
-	ReadResultWriteResultJSON(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
+    // tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
+    // pass empty basictl.JSONWriteContext{} if you do not know which options you need
+	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
-
-    // For transcoding short-long version during Long ID and newTypeNames transition
-	ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) ([]byte, []byte, error)
 }
 
 func GetAllTLItems() []TLItem {
@@ -277,7 +278,7 @@ func (item TLItem) String() string {
 	}
 	return nil
 }
-func (item *TLItem) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+func (item *TLItem) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSON(w), nil
 }
 func (item *TLItem) WriteJSON(w []byte) []byte {

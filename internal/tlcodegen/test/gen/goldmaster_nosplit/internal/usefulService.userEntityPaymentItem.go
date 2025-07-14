@@ -121,14 +121,15 @@ func (item *UsefulServiceUserEntityPaymentItem) ReadJSON(legacyTypeNames bool, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *UsefulServiceUserEntityPaymentItem) WriteJSONGeneral(w []byte, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_fields_mask), nil
+func (item *UsefulServiceUserEntityPaymentItem) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_fields_mask), nil
 }
 
 func (item *UsefulServiceUserEntityPaymentItem) WriteJSON(w []byte, nat_fields_mask uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_fields_mask)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_fields_mask)
 }
-func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
 	w = append(w, '{')
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -140,7 +141,7 @@ func (item *UsefulServiceUserEntityPaymentItem) WriteJSONOpt(newTypeNames bool, 
 	backupIndexPromo := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"promo":`...)
-	w = item.Promo.WriteJSONOpt(newTypeNames, short, w, nat_fields_mask)
+	w = item.Promo.WriteJSONOpt(tctx, w, nat_fields_mask)
 	if (item.Promo.Ok) == false {
 		w = w[:backupIndexPromo]
 	}

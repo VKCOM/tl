@@ -74,7 +74,7 @@ func (item *Service1ValueBoxedMaybe) WriteJSONGeneral(w []byte) (_ []byte, err e
 func (item *Service1ValueBoxedMaybe) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1ValueBoxedMaybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1ValueBoxedMaybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}

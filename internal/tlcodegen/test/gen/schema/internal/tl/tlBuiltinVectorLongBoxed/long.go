@@ -79,7 +79,7 @@ func BuiltinVectorLongBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 func BuiltinVectorLongBoxedWriteJSON(w []byte, vec []int64) []byte {
 	return BuiltinVectorLongBoxedWriteJSONOpt(true, false, w, vec)
 }
-func BuiltinVectorLongBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []int64) []byte {
+func BuiltinVectorLongBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int64) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

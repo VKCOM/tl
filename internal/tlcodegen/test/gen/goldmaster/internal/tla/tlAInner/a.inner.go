@@ -105,19 +105,20 @@ func (item *AInner) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_I 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AInner) WriteJSONGeneral(w []byte, nat_I uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_I)
+func (item *AInner) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_I)
 }
 
 func (item *AInner) WriteJSON(w []byte, nat_I uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_I)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_I)
 }
-func (item *AInner) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_I uint32) (_ []byte, err error) {
+func (item *AInner) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_I uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.A, nat_I); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.A, nat_I); err != nil {
 		return w, err
 	}
 	if (len(item.A) != 0) == false {

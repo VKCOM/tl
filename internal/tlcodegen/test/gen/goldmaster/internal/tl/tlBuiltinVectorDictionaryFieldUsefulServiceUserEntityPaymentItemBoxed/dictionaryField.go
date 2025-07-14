@@ -201,9 +201,10 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSON
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSON(w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
-	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(true, false, w, m, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(&tctx, w, m, nat_t)
 }
-func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
+func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -215,7 +216,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedWriteJSO
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = value.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = value.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, '}')
 }

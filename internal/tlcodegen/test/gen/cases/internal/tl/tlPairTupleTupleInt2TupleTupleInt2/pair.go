@@ -132,19 +132,20 @@ func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONGeneral(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_X, nat_Y)
+func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_X, nat_Y)
 }
 
 func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSON(w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_X, nat_Y)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_X, nat_Y)
 }
-func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	if w, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2WriteJSONOpt(newTypeNames, short, w, item.X, nat_X); err != nil {
+	if w, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2WriteJSONOpt(tctx, w, item.X, nat_X); err != nil {
 		return w, err
 	}
 	if (len(item.X) != 0) == false {
@@ -153,7 +154,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONOpt(newTypeNames bool, sh
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	if w, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2WriteJSONOpt(newTypeNames, short, w, item.Y, nat_Y); err != nil {
+	if w, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2WriteJSONOpt(tctx, w, item.Y, nat_Y); err != nil {
 		return w, err
 	}
 	if (len(item.Y) != 0) == false {

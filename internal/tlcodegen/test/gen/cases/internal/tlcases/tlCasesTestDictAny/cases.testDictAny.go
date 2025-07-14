@@ -101,19 +101,20 @@ func (item *CasesTestDictAny) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestDictAny) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTestDictAny) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTestDictAny) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestDictAny) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTestDictAny) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = item.Dict.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Dict.WriteJSONOpt(tctx, w)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}

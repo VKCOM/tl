@@ -135,7 +135,7 @@ func (item *Service2CounterSet) WriteJSONGeneral(w []byte, nat_intCountersNum ui
 func (item *Service2CounterSet) WriteJSON(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	return item.WriteJSONOpt(true, false, w, nat_intCountersNum, nat_floatCountersNum)
 }
-func (item *Service2CounterSet) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+func (item *Service2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexIntCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

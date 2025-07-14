@@ -145,13 +145,14 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSON(legacyTypeNames bool,
 }
 
 func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSON(w []byte, vec []tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) []byte {
-	return BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) []byte {
+func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryElemPairFloatDoubleInt.DictionaryElemPairFloatDoubleInt) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

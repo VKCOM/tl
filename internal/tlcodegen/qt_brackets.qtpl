@@ -209,9 +209,10 @@ func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= valueNatArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= valueNatArgsCall %})
 }
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '{')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
@@ -287,9 +288,10 @@ func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= valueNatArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= valueNatArgsCall %})
 }
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '{')
     for _, elem := range vec {
         key := elem.{%s= keyFieldName %}
@@ -600,10 +602,11 @@ func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *{%s=
 }
 
 func {%s= goName %}WriteJSON(w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return {%s= goName %}WriteJSONOpt(true, false, w, m{%s= valueNatArgsCall %})
+    tctx := basictl.JSONWriteContext{}
+    return {%s= goName %}WriteJSONOpt(&tctx, w, m{%s= valueNatArgsCall %})
 }
                 {%- if tuple.dictKeyString -%}
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s= typeString %} {%s= valueNatArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)
@@ -627,7 +630,7 @@ func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, m {%s= 
     {%- endif -%}
 }
                 {%- else -%}
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, m {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     keys := make([]{%s= keyTypeString %}, 0, len(m))
     for k := range m {
         keys = append(keys, k)
@@ -879,9 +882,10 @@ func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= natCall %})
+    tctx := basictl.JSONWriteContext{}
+    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= natCall %})
 }
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '[')
     for _, elem := range vec {
         w = basictl.JSONAddCommaIfNeeded(w)
@@ -1172,9 +1176,10 @@ func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
-    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= natCall %})
+    tctx := basictl.JSONWriteContext{}
+    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= natCall %})
 }
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
     if uint32(len(vec)) != nat_n {
         return w, {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, len(vec), nat_n)
     }
@@ -1398,9 +1403,10 @@ func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%
 }
 
 func {%s= goName %}WriteJSON(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
-    return {%s= goName %}WriteJSONOpt(true, false, w, vec{%s= natCall %})
+    tctx := basictl.JSONWriteContext{}
+    return {%s= goName %}WriteJSONOpt(&tctx, w, vec{%s= natCall %})
 }
-func {%s= goName %}WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     w = append(w, '[')
     for _, elem := range *vec {
         w = basictl.JSONAddCommaIfNeeded(w)

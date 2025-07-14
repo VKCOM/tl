@@ -76,7 +76,7 @@ func (item *Service1DisableExpiration) WriteResultJSON(w []byte, ret bool) (_ []
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service1DisableExpiration) writeResultJSON(newTypeNames bool, short bool, w []byte, ret bool) (_ []byte, err error) {
+func (item *Service1DisableExpiration) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret bool) (_ []byte, err error) {
 	w = basictl.JSONWriteBool(w, ret)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *Service1DisableExpiration) ReadResultWriteResultJSON(r []byte, w []b
 	return r, w, err
 }
 
-func (item *Service1DisableExpiration) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1DisableExpiration) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *Service1DisableExpiration) WriteJSONGeneral(w []byte) (_ []byte, err
 func (item *Service1DisableExpiration) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1DisableExpiration) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1DisableExpiration) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexPrefix := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

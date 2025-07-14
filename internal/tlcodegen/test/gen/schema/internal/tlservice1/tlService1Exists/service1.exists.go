@@ -76,7 +76,7 @@ func (item *Service1Exists) WriteResultJSON(w []byte, ret bool) (_ []byte, err e
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service1Exists) writeResultJSON(newTypeNames bool, short bool, w []byte, ret bool) (_ []byte, err error) {
+func (item *Service1Exists) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret bool) (_ []byte, err error) {
 	w = basictl.JSONWriteBool(w, ret)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *Service1Exists) ReadResultWriteResultJSON(r []byte, w []byte) (_ []b
 	return r, w, err
 }
 
-func (item *Service1Exists) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1Exists) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *Service1Exists) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *Service1Exists) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service1Exists) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service1Exists) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

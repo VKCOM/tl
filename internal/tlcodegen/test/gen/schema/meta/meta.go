@@ -44,7 +44,7 @@ type Function interface {
 	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 
 	// For transcoding short-long version during Long ID and newTypeNames transition
-	ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) ([]byte, []byte, error)
+	ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error)
 }
 
 func GetAllTLItems() []TLItem {

@@ -76,7 +76,7 @@ func (item *BoxedArray) WriteResultJSON(w []byte, ret tlMyBoxedArray.MyBoxedArra
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *BoxedArray) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
+func (item *BoxedArray) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *BoxedArray) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte,
 	return r, w, err
 }
 
-func (item *BoxedArray) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedArray) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyBoxedArray.MyBoxedArray
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *BoxedArray) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *BoxedArray) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *BoxedArray) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BoxedArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

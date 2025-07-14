@@ -71,17 +71,18 @@ func (item *TupleTuplePairTupleIntTupleInt2) ReadJSON(legacyTypeNames bool, in *
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONGeneral(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSON(w, nat_ttXn, nat_ttYn, nat_n)
+func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_ttXn, nat_ttYn, nat_n)
 }
 
 func (item *TupleTuplePairTupleIntTupleInt2) WriteJSON(w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_ttXn, nat_ttYn, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_ttXn, nat_ttYn, nat_n)
 }
 
-func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
+func (item *TupleTuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_ttXn uint32, nat_ttYn uint32, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	if w, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(newTypeNames, short, w, *ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
+	if w, err = tlBuiltinTupleTuplePairTupleIntTupleInt2.BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx, w, *ptr, nat_n, nat_ttXn, nat_ttYn); err != nil {
 		return w, err
 	}
 	return w, nil

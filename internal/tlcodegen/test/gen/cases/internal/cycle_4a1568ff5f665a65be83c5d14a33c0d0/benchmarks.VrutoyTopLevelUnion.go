@@ -212,29 +212,30 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *ba
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
+		} else {
+			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueBig.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueBig.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)
+		} else {
+			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -348,19 +349,20 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BenchmarksVrutoytopLevelUnionBig) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexNextPositions := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"next_positions":`...)
-	w = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionWriteJSONOpt(newTypeNames, short, w, item.NextPositions)
+	w = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionWriteJSONOpt(tctx, w, item.NextPositions)
 	if (len(item.NextPositions) != 0) == false {
 		w = w[:backupIndexNextPositions]
 	}
@@ -565,14 +567,15 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSON(legacyTypeNames bool, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }

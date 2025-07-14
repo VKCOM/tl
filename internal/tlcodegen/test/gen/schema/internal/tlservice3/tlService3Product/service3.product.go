@@ -217,7 +217,7 @@ func (item *Service3Product) WriteJSONGeneral(w []byte, nat_mode uint32) (_ []by
 func (item *Service3Product) WriteJSON(w []byte, nat_mode uint32) []byte {
 	return item.WriteJSONOpt(true, false, w, nat_mode)
 }
-func (item *Service3Product) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_mode uint32) []byte {
+func (item *Service3Product) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_mode uint32) []byte {
 	w = append(w, '{')
 	backupIndexType := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

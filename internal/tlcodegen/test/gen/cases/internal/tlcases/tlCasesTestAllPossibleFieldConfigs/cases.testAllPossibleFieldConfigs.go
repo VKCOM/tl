@@ -558,14 +558,15 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSON(legacyTypeNames bool, in 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(w []byte, nat_outer uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_outer)
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_outer)
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) WriteJSON(w []byte, nat_outer uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_outer)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_outer)
 }
-func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_outer uint32) (_ []byte, err error) {
+func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_outer uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexLocal := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -584,7 +585,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(newTypeNames bool, sh
 	backupIndexF02 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f02":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F02, item.Local); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F02, item.Local); err != nil {
 		return w, err
 	}
 	if (len(item.F02) != 0) == false {
@@ -593,7 +594,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(newTypeNames bool, sh
 	backupIndexF03 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f03":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F03, nat_outer); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F03, nat_outer); err != nil {
 		return w, err
 	}
 	if (len(item.F03) != 0) == false {
@@ -611,14 +612,14 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(newTypeNames bool, sh
 	if item.Local&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f12":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F12, item.Local); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F12, item.Local); err != nil {
 			return w, err
 		}
 	}
 	if item.Local&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f13":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F13, nat_outer); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F13, nat_outer); err != nil {
 			return w, err
 		}
 	}
@@ -630,14 +631,14 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(newTypeNames bool, sh
 	if nat_outer&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f22":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F22, item.Local); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F22, item.Local); err != nil {
 			return w, err
 		}
 	}
 	if nat_outer&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"f23":`...)
-		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.F23, nat_outer); err != nil {
+		if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.F23, nat_outer); err != nil {
 			return w, err
 		}
 	}

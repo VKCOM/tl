@@ -73,17 +73,18 @@ func (item *TupleString4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleString4) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *TupleString4) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TupleString4) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *TupleString4) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TupleString4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[4]string)(item)
-	w = tlBuiltinTuple4String.BuiltinTuple4StringWriteJSONOpt(newTypeNames, short, w, ptr)
+	w = tlBuiltinTuple4String.BuiltinTuple4StringWriteJSONOpt(tctx, w, ptr)
 	return w
 }
 func (item *TupleString4) MarshalJSON() ([]byte, error) {
@@ -191,17 +192,18 @@ func (item *TupleString4Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleString4Bytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *TupleString4Bytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TupleString4Bytes) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *TupleString4Bytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TupleString4Bytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[4][]byte)(item)
-	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWriteJSONOpt(newTypeNames, short, w, ptr)
+	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWriteJSONOpt(tctx, w, ptr)
 	return w
 }
 func (item *TupleString4Bytes) MarshalJSON() ([]byte, error) {

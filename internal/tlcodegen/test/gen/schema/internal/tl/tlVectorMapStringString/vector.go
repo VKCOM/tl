@@ -77,7 +77,7 @@ func (item *VectorMapStringString) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorMapStringString) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorMapStringString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlMapStringString.MapStringString)(item)
 	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

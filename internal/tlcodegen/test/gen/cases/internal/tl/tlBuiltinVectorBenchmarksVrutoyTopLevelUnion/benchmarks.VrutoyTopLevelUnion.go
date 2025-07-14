@@ -145,13 +145,14 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSON(legacyTypeNames bool, in
 }
 
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSON(w []byte, vec []cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) []byte {
-	return BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) []byte {
+func BuiltinVectorBenchmarksVrutoyTopLevelUnionWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

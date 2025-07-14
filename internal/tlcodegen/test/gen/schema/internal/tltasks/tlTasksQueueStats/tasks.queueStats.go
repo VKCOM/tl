@@ -213,7 +213,7 @@ func (item *TasksQueueStats) WriteJSONGeneral(w []byte, nat_fields_mask uint32) 
 func (item *TasksQueueStats) WriteJSON(w []byte, nat_fields_mask uint32) []byte {
 	return item.WriteJSONOpt(true, false, w, nat_fields_mask)
 }
-func (item *TasksQueueStats) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_fields_mask uint32) []byte {
+func (item *TasksQueueStats) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_fields_mask uint32) []byte {
 	w = append(w, '{')
 	if nat_fields_mask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)

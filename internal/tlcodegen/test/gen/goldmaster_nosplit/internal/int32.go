@@ -140,13 +140,14 @@ func BuiltinTuple3Int32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec
 }
 
 func BuiltinTuple3Int32WriteJSON(w []byte, vec *[3]Int32) []byte {
-	return BuiltinTuple3Int32WriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3Int32WriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3Int32WriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Int32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -278,13 +279,14 @@ func BuiltinTuple3Int32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 func BuiltinTuple3Int32BoxedWriteJSON(w []byte, vec *[3]Int32) []byte {
-	return BuiltinTuple3Int32BoxedWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3Int32BoxedWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinTuple3Int32BoxedWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]Int32) []byte {
+func BuiltinTuple3Int32BoxedWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]Int32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }
@@ -346,15 +348,16 @@ func (item *Int32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Int32) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *Int32) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Int32) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
-func (item *Int32) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Int32) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*int32)(item)
 	w = basictl.JSONWriteInt32(w, *ptr)
 	return w

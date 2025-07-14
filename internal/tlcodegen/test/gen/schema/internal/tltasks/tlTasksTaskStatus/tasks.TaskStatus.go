@@ -120,7 +120,7 @@ func (item TasksTaskStatus) WriteJSONGeneral(w []byte) ([]byte, error) {
 func (item TasksTaskStatus) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item TasksTaskStatus) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item TasksTaskStatus) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '"')
 	if newTypeNames {
 		w = append(w, _TasksTaskStatus[item.index].TLName...)

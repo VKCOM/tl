@@ -77,7 +77,7 @@ func (item *Service3SetLimits) WriteResultJSON(w []byte, ret tlBoolStat.BoolStat
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service3SetLimits) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlBoolStat.BoolStat) (_ []byte, err error) {
+func (item *Service3SetLimits) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlBoolStat.BoolStat) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -91,7 +91,7 @@ func (item *Service3SetLimits) ReadResultWriteResultJSON(r []byte, w []byte) (_ 
 	return r, w, err
 }
 
-func (item *Service3SetLimits) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3SetLimits) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlBoolStat.BoolStat
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -158,7 +158,7 @@ func (item *Service3SetLimits) WriteJSONGeneral(w []byte) (_ []byte, err error) 
 func (item *Service3SetLimits) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3SetLimits) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3SetLimits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"limits":`...)

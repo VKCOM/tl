@@ -74,7 +74,7 @@ func (item *MyTuple10Maybe) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *MyTuple10Maybe) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *MyTuple10Maybe) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *MyTuple10Maybe) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	if !item.Ok {
 		return append(w, "{}"...)
 	}

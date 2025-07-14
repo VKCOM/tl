@@ -108,7 +108,7 @@ func (item *Service2ObjectId) WriteJSONGeneral(w []byte, nat_objectIdLength uint
 func (item *Service2ObjectId) WriteJSON(w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	return item.WriteJSONOpt(true, false, w, nat_objectIdLength)
 }
-func (item *Service2ObjectId) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
+func (item *Service2ObjectId) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

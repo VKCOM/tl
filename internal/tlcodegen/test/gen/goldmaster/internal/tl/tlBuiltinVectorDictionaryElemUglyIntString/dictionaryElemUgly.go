@@ -145,13 +145,14 @@ func BuiltinVectorDictionaryElemUglyIntStringReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryElemUglyIntStringWriteJSON(w []byte, vec []tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) []byte {
-	return BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(true, false, w, vec, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(&tctx, w, vec, nat_t)
 }
-func BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) []byte {
+func BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = elem.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, ']')
 }

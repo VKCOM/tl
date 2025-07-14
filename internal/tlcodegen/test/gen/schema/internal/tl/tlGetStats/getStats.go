@@ -76,7 +76,7 @@ func (item *GetStats) WriteResultJSON(w []byte, ret tlTasksQueueTypeStats.TasksQ
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetStats) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlTasksQueueTypeStats.TasksQueueTypeStats) (_ []byte, err error) {
+func (item *GetStats) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlTasksQueueTypeStats.TasksQueueTypeStats) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *GetStats) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _
 	return r, w, err
 }
 
-func (item *GetStats) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetStats) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTasksQueueTypeStats.TasksQueueTypeStats
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *GetStats) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetStats) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetStats) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *GetStats) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

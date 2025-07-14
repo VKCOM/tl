@@ -124,19 +124,20 @@ func (item *DictionaryElemTupleStringInt) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemTupleStringInt) WriteJSONGeneral(w []byte, nat_k uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_k)
+func (item *DictionaryElemTupleStringInt) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_k uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_k)
 }
 
 func (item *DictionaryElemTupleStringInt) WriteJSON(w []byte, nat_k uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_k)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_k)
 }
-func (item *DictionaryElemTupleStringInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_k uint32) (_ []byte, err error) {
+func (item *DictionaryElemTupleStringInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_k uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexKey := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"key":`...)
-	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(newTypeNames, short, w, item.Key, nat_k); err != nil {
+	if w, err = tlBuiltinTupleString.BuiltinTupleStringWriteJSONOpt(tctx, w, item.Key, nat_k); err != nil {
 		return w, err
 	}
 	if (len(item.Key) != 0) == false {

@@ -145,13 +145,14 @@ func BuiltinVectorDictionaryElemUglyIntStringReadJSON(legacyTypeNames bool, in *
 }
 
 func BuiltinVectorDictionaryElemUglyIntStringWriteJSON(w []byte, vec []DictionaryElemUglyIntString, nat_t uint32) []byte {
-	return BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(true, false, w, vec, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(&tctx, w, vec, nat_t)
 }
-func BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []DictionaryElemUglyIntString, nat_t uint32) []byte {
+func BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []DictionaryElemUglyIntString, nat_t uint32) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = elem.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, ']')
 }
@@ -313,14 +314,15 @@ func (item *DictionaryElemUglyIntString) ReadJSON(legacyTypeNames bool, in *basi
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *DictionaryElemUglyIntString) WriteJSONGeneral(w []byte, nat_f uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_f), nil
+func (item *DictionaryElemUglyIntString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_f), nil
 }
 
 func (item *DictionaryElemUglyIntString) WriteJSON(w []byte, nat_f uint32) []byte {
-	return item.WriteJSONOpt(true, false, w, nat_f)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_f)
 }
-func (item *DictionaryElemUglyIntString) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_f uint32) []byte {
+func (item *DictionaryElemUglyIntString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_f uint32) []byte {
 	w = append(w, '{')
 	if nat_f&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)

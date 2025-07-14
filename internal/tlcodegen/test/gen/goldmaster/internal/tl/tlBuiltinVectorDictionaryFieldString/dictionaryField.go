@@ -200,9 +200,10 @@ func BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames bool, in *basict
 }
 
 func BuiltinVectorDictionaryFieldStringWriteJSON(w []byte, m map[string]string) []byte {
-	return BuiltinVectorDictionaryFieldStringWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldStringWriteJSONOpt(&tctx, w, m)
 }
-func BuiltinVectorDictionaryFieldStringWriteJSONOpt(newTypeNames bool, short bool, w []byte, m map[string]string) []byte {
+func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]string) []byte {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
@@ -350,9 +351,10 @@ func BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames bool, in *b
 }
 
 func BuiltinVectorDictionaryFieldStringBytesWriteJSON(w []byte, vec []tlDictionaryFieldString.DictionaryFieldStringBytes) []byte {
-	return BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(&tctx, w, vec)
 }
-func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlDictionaryFieldString.DictionaryFieldStringBytes) []byte {
+func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryFieldString.DictionaryFieldStringBytes) []byte {
 	w = append(w, '{')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)

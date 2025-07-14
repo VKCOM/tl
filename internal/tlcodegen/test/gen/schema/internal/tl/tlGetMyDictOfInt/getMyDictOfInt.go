@@ -76,7 +76,7 @@ func (item *GetMyDictOfInt) WriteResultJSON(w []byte, ret tlMyDictOfInt.MyDictOf
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetMyDictOfInt) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlMyDictOfInt.MyDictOfInt) (_ []byte, err error) {
+func (item *GetMyDictOfInt) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlMyDictOfInt.MyDictOfInt) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -90,7 +90,7 @@ func (item *GetMyDictOfInt) ReadResultWriteResultJSON(r []byte, w []byte) (_ []b
 	return r, w, err
 }
 
-func (item *GetMyDictOfInt) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMyDictOfInt) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyDictOfInt.MyDictOfInt
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -157,7 +157,7 @@ func (item *GetMyDictOfInt) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetMyDictOfInt) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetMyDictOfInt) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *GetMyDictOfInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

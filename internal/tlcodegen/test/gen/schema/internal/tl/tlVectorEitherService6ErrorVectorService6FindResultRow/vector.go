@@ -77,7 +77,7 @@ func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSON(w []
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow)(item)
 	w = tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

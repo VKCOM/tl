@@ -101,18 +101,19 @@ func (item *CasesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesTestTuple) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesTestTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesTestTuple) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesTestTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesTestTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tpl":`...)
-	w = tlBuiltinTuple4Int.BuiltinTuple4IntWriteJSONOpt(newTypeNames, short, w, &item.Tpl)
+	w = tlBuiltinTuple4Int.BuiltinTuple4IntWriteJSONOpt(tctx, w, &item.Tpl)
 	return append(w, '}')
 }
 

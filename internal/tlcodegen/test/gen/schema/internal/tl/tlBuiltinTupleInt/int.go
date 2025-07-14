@@ -76,7 +76,7 @@ func BuiltinTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[
 func BuiltinTupleIntWriteJSON(w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
 	return BuiltinTupleIntWriteJSONOpt(true, false, w, vec, nat_n)
 }
-func BuiltinTupleIntWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]int32", len(vec), nat_n)
 	}

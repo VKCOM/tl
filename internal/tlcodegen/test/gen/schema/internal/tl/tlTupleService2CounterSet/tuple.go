@@ -74,7 +74,7 @@ func (item *TupleService2CounterSet) WriteJSON(w []byte, nat_tintCountersNum uin
 	return item.WriteJSONOpt(true, false, w, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-func (item *TupleService2CounterSet) WriteJSONOpt(newTypeNames bool, short bool, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+func (item *TupleService2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]tlService2CounterSet.Service2CounterSet)(item)
 	if w, err = tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetWriteJSONOpt(newTypeNames, short, w, *ptr, nat_n, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err

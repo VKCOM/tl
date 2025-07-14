@@ -77,7 +77,7 @@ func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSON(w []byt
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorEitherIntVectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult)(item)
 	w = tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

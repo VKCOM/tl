@@ -259,7 +259,7 @@ func (item *Service4ModifiedNewsEntry) WriteJSONGeneral(w []byte) (_ []byte, err
 func (item *Service4ModifiedNewsEntry) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service4ModifiedNewsEntry) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service4ModifiedNewsEntry) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"object":`...)

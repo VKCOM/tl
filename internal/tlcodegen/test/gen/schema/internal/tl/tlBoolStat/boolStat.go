@@ -139,7 +139,7 @@ func (item *BoolStat) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *BoolStat) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *BoolStat) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *BoolStat) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexStatTrue := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

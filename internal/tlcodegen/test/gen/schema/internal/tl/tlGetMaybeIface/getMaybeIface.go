@@ -77,7 +77,7 @@ func (item *GetMaybeIface) WriteResultJSON(w []byte, ret tlService1ValueBoxedMay
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *GetMaybeIface) writeResultJSON(newTypeNames bool, short bool, w []byte, ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) (_ []byte, err error) {
+func (item *GetMaybeIface) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(newTypeNames, short, w)
 	return w, nil
 }
@@ -91,7 +91,7 @@ func (item *GetMaybeIface) ReadResultWriteResultJSON(r []byte, w []byte) (_ []by
 	return r, w, err
 }
 
-func (item *GetMaybeIface) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *GetMaybeIface) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -158,7 +158,7 @@ func (item *GetMaybeIface) WriteJSONGeneral(w []byte) (_ []byte, err error) {
 func (item *GetMaybeIface) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *GetMaybeIface) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *GetMaybeIface) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)

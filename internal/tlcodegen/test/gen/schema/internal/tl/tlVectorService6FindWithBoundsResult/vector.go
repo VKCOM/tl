@@ -77,7 +77,7 @@ func (item *VectorService6FindWithBoundsResult) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
 
-func (item *VectorService6FindWithBoundsResult) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *VectorService6FindWithBoundsResult) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
 	w = tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(newTypeNames, short, w, *ptr)
 	return w

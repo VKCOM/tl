@@ -79,7 +79,7 @@ func BuiltinTupleService2CounterSetReadJSON(legacyTypeNames bool, in *basictl.Js
 func BuiltinTupleService2CounterSetWriteJSON(w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
 	return BuiltinTupleService2CounterSetWriteJSONOpt(true, false, w, vec, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
 }
-func BuiltinTupleService2CounterSetWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
+func BuiltinTupleService2CounterSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlService2CounterSet.Service2CounterSet", len(vec), nat_n)
 	}

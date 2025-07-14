@@ -101,18 +101,19 @@ func (item *CasesBytesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestTuple) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesBytesTestTuple) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesBytesTestTuple) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesBytesTestTuple) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesBytesTestTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tpl":`...)
-	w = tlBuiltinTuple4String.BuiltinTuple4StringWriteJSONOpt(newTypeNames, short, w, &item.Tpl)
+	w = tlBuiltinTuple4String.BuiltinTuple4StringWriteJSONOpt(tctx, w, &item.Tpl)
 	return append(w, '}')
 }
 
@@ -331,18 +332,19 @@ func (item *CasesBytesTestTupleBytes) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *CasesBytesTestTupleBytes) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *CasesBytesTestTupleBytes) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *CasesBytesTestTupleBytes) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *CasesBytesTestTupleBytes) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *CasesBytesTestTupleBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"tpl":`...)
-	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWriteJSONOpt(newTypeNames, short, w, &item.Tpl)
+	w = tlBuiltinTuple4String.BuiltinTuple4StringBytesWriteJSONOpt(tctx, w, &item.Tpl)
 	return append(w, '}')
 }
 

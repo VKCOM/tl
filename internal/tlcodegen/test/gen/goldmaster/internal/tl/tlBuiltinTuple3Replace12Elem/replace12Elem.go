@@ -145,13 +145,14 @@ func BuiltinTuple3Replace12ElemReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 func BuiltinTuple3Replace12ElemWriteJSON(w []byte, vec *[3]tlReplace12Elem.Replace12Elem, nat_t uint32) []byte {
-	return BuiltinTuple3Replace12ElemWriteJSONOpt(true, false, w, vec, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple3Replace12ElemWriteJSONOpt(&tctx, w, vec, nat_t)
 }
-func BuiltinTuple3Replace12ElemWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec *[3]tlReplace12Elem.Replace12Elem, nat_t uint32) []byte {
+func BuiltinTuple3Replace12ElemWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[3]tlReplace12Elem.Replace12Elem, nat_t uint32) []byte {
 	w = append(w, '[')
 	for _, elem := range *vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = elem.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, ']')
 }

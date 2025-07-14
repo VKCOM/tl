@@ -107,7 +107,7 @@ func (item *Service3CreateProduct) WriteResultJSON(w []byte, ret bool) (_ []byte
 	return item.writeResultJSON(true, false, w, ret)
 }
 
-func (item *Service3CreateProduct) writeResultJSON(newTypeNames bool, short bool, w []byte, ret bool) (_ []byte, err error) {
+func (item *Service3CreateProduct) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret bool) (_ []byte, err error) {
 	w = basictl.JSONWriteBool(w, ret)
 	return w, nil
 }
@@ -121,7 +121,7 @@ func (item *Service3CreateProduct) ReadResultWriteResultJSON(r []byte, w []byte)
 	return r, w, err
 }
 
-func (item *Service3CreateProduct) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service3CreateProduct) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret bool
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
@@ -248,7 +248,7 @@ func (item *Service3CreateProduct) WriteJSONGeneral(w []byte) (_ []byte, err err
 func (item *Service3CreateProduct) WriteJSON(w []byte) []byte {
 	return item.WriteJSONOpt(true, false, w)
 }
-func (item *Service3CreateProduct) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service3CreateProduct) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexUserId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

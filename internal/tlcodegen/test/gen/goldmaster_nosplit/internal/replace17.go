@@ -136,19 +136,20 @@ func (item *Replace17) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace17) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Replace17) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Replace17) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Replace17) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Replace17) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexX := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.X)
+	w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.X)
 	if (len(item.X) != 0) == false {
 		w = w[:backupIndexX]
 	}
@@ -162,7 +163,7 @@ func (item *Replace17) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []b
 	backupIndexY := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Y)
+	w = BuiltinVectorIntWriteJSONOpt(tctx, w, item.Y)
 	if (len(item.Y) != 0) == false {
 		w = w[:backupIndexY]
 	}

@@ -79,14 +79,15 @@ func (item *Service5LongEmptyOutput) ReadJSON(legacyTypeNames bool, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5LongEmptyOutput) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service5LongEmptyOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service5LongEmptyOutput) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Service5LongEmptyOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5LongEmptyOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	return append(w, '}')
 }
@@ -382,46 +383,47 @@ func (item *Service5LongOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5LongOutput) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service5LongOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service5LongOutput) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Service5LongOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if short {
-			if newTypeNames {
-				w = append(w, `{"type":"service5.emptyOutput"`...)
-			} else {
+		if tctx.Short {
+			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"service5.emptyOutput#ff8f7db8"`...)
+			} else {
+				w = append(w, `{"type":"service5.emptyOutput"`...)
 			}
 		} else {
-			if newTypeNames {
-				w = append(w, `{"type":"service5Long.emptyOutput"`...)
-			} else {
+			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"service5Long.emptyOutput#ff8f7db9"`...)
+			} else {
+				w = append(w, `{"type":"service5Long.emptyOutput"`...)
 			}
 		}
 		return append(w, '}')
 	case 1:
-		if short {
-			if newTypeNames {
-				w = append(w, `{"type":"service5.stringOutput"`...)
-			} else {
+		if tctx.Short {
+			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"service5.stringOutput#dc170ff4"`...)
+			} else {
+				w = append(w, `{"type":"service5.stringOutput"`...)
 			}
 		} else {
-			if newTypeNames {
-				w = append(w, `{"type":"service5Long.stringOutput"`...)
-			} else {
+			if tctx.LegacyTypeNames {
 				w = append(w, `{"type":"service5Long.stringOutput#dc170ff5"`...)
+			} else {
+				w = append(w, `{"type":"service5Long.stringOutput"`...)
 			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueString.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueString.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w
@@ -553,14 +555,15 @@ func (item *Service5LongStringOutput) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service5LongStringOutput) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service5LongStringOutput) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service5LongStringOutput) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Service5LongStringOutput) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *Service5LongStringOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexHttpCode := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

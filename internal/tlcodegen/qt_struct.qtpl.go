@@ -571,17 +571,17 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 // This method is general version of WriteJSON, use it instead!
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteJSONGeneral(w []byte`)
+		qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
 		if writeNeedsError {
-			qw422016.N().S(`    return item.WriteJSON(w`)
+			qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 			qw422016.N().S(natArgsCall)
 			qw422016.N().S(`)
 `)
 		} else {
-			qw422016.N().S(`    return item.WriteJSON(w`)
+			qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 			qw422016.N().S(natArgsCall)
 			qw422016.N().S(`), nil
 `)
@@ -595,14 +595,15 @@ func (item *`)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    return item.WriteJSONOpt(true, false, w`)
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 }
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteJSONOpt(newTypeNames bool, short bool, w []byte`)
+		qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -1450,17 +1451,17 @@ func (struct_ *TypeRWStruct) streamwriteJSONCode(qw422016 *qt422016.Writer, byte
 // This method is general version of WriteJSON, use it instead!
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONGeneral(w []byte`)
+	qw422016.N().S(`) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
 	if writeNeedsError {
-		qw422016.N().S(`    return item.WriteJSONOpt(true, false, w`)
+		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 `)
 	} else {
-		qw422016.N().S(`    return item.WriteJSONOpt(true, false, w`)
+		qw422016.N().S(`    return item.WriteJSONOpt(tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`), nil
 `)
@@ -1474,13 +1475,14 @@ func (item *`)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
-    return item.WriteJSONOpt(true, false, w`)
+    tctx := basictl.JSONWriteContext{}
+    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteJSONOpt(newTypeNames bool, short bool, w []byte`)
+	qw422016.N().S(`) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
@@ -1720,12 +1722,13 @@ func (item *`)
 	qw422016.N().S(`) WriteResultJSON(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
-    return item.writeResultJSON(true, false, w, ret)
+    tctx := basictl.JSONWriteContext{}
+    return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) writeResultJSON(newTypeNames bool, short bool, w []byte, ret `)
+	qw422016.N().S(`) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
     `)
@@ -1736,27 +1739,14 @@ func (item *`)
 
 func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	qw422016.N().S(`) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`
   if r, err = item.ReadResult(r, &ret); err != nil {
     return r, w, err
   }
-  w, err = item.WriteResultJSON(w, ret)
-  return r, w, err
-}
-
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-  var ret `)
-	qw422016.N().S(retArg)
-	qw422016.N().S(`
-  if r, err = item.ReadResult(r, &ret); err != nil {
-    return r, w, err
-  }
-  w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+  w, err = item.writeResultJSON(tctx, w, ret)
   return r, w, err
 }
 

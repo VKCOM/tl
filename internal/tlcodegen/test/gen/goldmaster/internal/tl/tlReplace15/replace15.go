@@ -192,14 +192,15 @@ func (item *Replace15) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Replace15) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *Replace15) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *Replace15) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *Replace15) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *Replace15) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexN := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -211,7 +212,7 @@ func (item *Replace15) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ 
 	backupIndexA := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"a":`...)
-	if w, err = tlBuiltinTupleReplace15Elem.BuiltinTupleReplace15ElemWriteJSONOpt(newTypeNames, short, w, item.A, item.N, item.N); err != nil {
+	if w, err = tlBuiltinTupleReplace15Elem.BuiltinTupleReplace15ElemWriteJSONOpt(tctx, w, item.A, item.N, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.A) != 0) == false {
@@ -220,7 +221,7 @@ func (item *Replace15) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ 
 	backupIndexB := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"b":`...)
-	if w, err = tlBuiltinTupleReplace15Elem1.BuiltinTupleReplace15Elem1WriteJSONOpt(newTypeNames, short, w, item.B, item.N, item.N); err != nil {
+	if w, err = tlBuiltinTupleReplace15Elem1.BuiltinTupleReplace15Elem1WriteJSONOpt(tctx, w, item.B, item.N, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.B) != 0) == false {
@@ -229,7 +230,7 @@ func (item *Replace15) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ 
 	backupIndexC := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"c":`...)
-	if w, err = tlBuiltinTupleReplace15Elem2.BuiltinTupleReplace15Elem2WriteJSONOpt(newTypeNames, short, w, item.C, item.N, item.N); err != nil {
+	if w, err = tlBuiltinTupleReplace15Elem2.BuiltinTupleReplace15Elem2WriteJSONOpt(tctx, w, item.C, item.N, item.N); err != nil {
 		return w, err
 	}
 	if (len(item.C) != 0) == false {

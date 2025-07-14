@@ -184,16 +184,17 @@ func BuiltinTupleReplace15ElemReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 func BuiltinTupleReplace15ElemWriteJSON(w []byte, vec []tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
-	return BuiltinTupleReplace15ElemWriteJSONOpt(true, false, w, vec, nat_n, nat_t)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleReplace15ElemWriteJSONOpt(&tctx, w, vec, nat_n, nat_t)
 }
-func BuiltinTupleReplace15ElemWriteJSONOpt(newTypeNames bool, short bool, w []byte, vec []tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
+func BuiltinTupleReplace15ElemWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlReplace15Elem.Replace15Elem, nat_n uint32, nat_t uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlReplace15Elem.Replace15Elem", len(vec), nat_n)
 	}
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w, nat_t)
+		w = elem.WriteJSONOpt(tctx, w, nat_t)
 	}
 	return append(w, ']'), nil
 }
