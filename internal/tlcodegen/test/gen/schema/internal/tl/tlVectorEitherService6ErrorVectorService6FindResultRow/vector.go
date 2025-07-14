@@ -69,17 +69,18 @@ func (item *VectorEitherService6ErrorVectorService6FindResultRow) ReadJSON(legac
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow)(item)
-	w = tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorEitherService6ErrorVectorService6FindResultRow.BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorEitherService6ErrorVectorService6FindResultRow) MarshalJSON() ([]byte, error) {

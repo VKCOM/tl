@@ -77,7 +77,8 @@ func BuiltinTupleService2CounterSetReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 func BuiltinTupleService2CounterSetWriteJSON(w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
-	return BuiltinTupleService2CounterSetWriteJSONOpt(true, false, w, vec, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTupleService2CounterSetWriteJSONOpt(&tctx, w, vec, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 func BuiltinTupleService2CounterSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
 	if uint32(len(vec)) != nat_n {
@@ -86,7 +87,7 @@ func BuiltinTupleService2CounterSetWriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		if w, err = elem.WriteJSONOpt(newTypeNames, short, w, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+		if w, err = elem.WriteJSONOpt(tctx, w, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 			return w, err
 		}
 	}

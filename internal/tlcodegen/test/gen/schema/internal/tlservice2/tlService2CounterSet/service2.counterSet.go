@@ -128,19 +128,20 @@ func (item *Service2CounterSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2CounterSet) WriteJSONGeneral(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_intCountersNum, nat_floatCountersNum)
+func (item *Service2CounterSet) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_intCountersNum, nat_floatCountersNum)
 }
 
 func (item *Service2CounterSet) WriteJSON(w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_intCountersNum, nat_floatCountersNum)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_intCountersNum, nat_floatCountersNum)
 }
 func (item *Service2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexIntCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"intCounters":`...)
-	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(newTypeNames, short, w, item.IntCounters, nat_intCountersNum); err != nil {
+	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWriteJSONOpt(tctx, w, item.IntCounters, nat_intCountersNum); err != nil {
 		return w, err
 	}
 	if (len(item.IntCounters) != 0) == false {
@@ -149,7 +150,7 @@ func (item *Service2CounterSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	backupIndexFloatCounters := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"floatCounters":`...)
-	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteJSONOpt(newTypeNames, short, w, item.FloatCounters, nat_floatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleDouble.BuiltinTupleDoubleWriteJSONOpt(tctx, w, item.FloatCounters, nat_floatCountersNum); err != nil {
 		return w, err
 	}
 	if (len(item.FloatCounters) != 0) == false {

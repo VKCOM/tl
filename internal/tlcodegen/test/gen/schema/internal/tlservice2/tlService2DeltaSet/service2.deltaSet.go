@@ -128,23 +128,24 @@ func (item *Service2DeltaSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service2DeltaSet) WriteJSONGeneral(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
+func (item *Service2DeltaSet) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 
 func (item *Service2DeltaSet) WriteJSON(w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 func (item *Service2DeltaSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"id":`...)
-	if w, err = item.Id.WriteJSONOpt(newTypeNames, short, w, nat_objectIdLength); err != nil {
+	if w, err = item.Id.WriteJSONOpt(tctx, w, nat_objectIdLength); err != nil {
 		return w, err
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"counters":`...)
-	if w, err = item.Counters.WriteJSONOpt(newTypeNames, short, w, nat_intCountersNum, nat_floatCountersNum); err != nil {
+	if w, err = item.Counters.WriteJSONOpt(tctx, w, nat_intCountersNum, nat_floatCountersNum); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

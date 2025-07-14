@@ -322,12 +322,13 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksCronTime) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TasksCronTime) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TasksCronTime) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TasksCronTime) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -341,32 +342,32 @@ func (item *TasksCronTime) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	if item.FieldsMask&(1<<0) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"seconds":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Seconds)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Seconds)
 	}
 	if item.FieldsMask&(1<<1) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"minutes":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Minutes)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Minutes)
 	}
 	if item.FieldsMask&(1<<2) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"hours":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Hours)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Hours)
 	}
 	if item.FieldsMask&(1<<3) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"days_of_week":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.DaysOfWeek)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.DaysOfWeek)
 	}
 	if item.FieldsMask&(1<<4) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"days":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Days)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Days)
 	}
 	if item.FieldsMask&(1<<5) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"months":`...)
-		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.Months)
+		w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.Months)
 	}
 	return append(w, '}')
 }

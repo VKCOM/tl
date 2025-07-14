@@ -174,12 +174,13 @@ func (item *AntispamPatternFound) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamPatternFound) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AntispamPatternFound) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AntispamPatternFound) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *AntispamPatternFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -337,29 +338,30 @@ func (item *AntispamPatternFull) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamPatternFull) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AntispamPatternFull) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AntispamPatternFull) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *AntispamPatternFull) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"antispam.patternFound"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"antispam.patternFound#a7688492"`...)
+		} else {
+			w = append(w, `{"type":"antispam.patternFound"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valuePatternFound.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valuePatternFound.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"antispam.patternNotFound"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"antispam.patternNotFound#2c22e225"`...)
+		} else {
+			w = append(w, `{"type":"antispam.patternNotFound"`...)
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -444,12 +446,13 @@ func (item *AntispamPatternNotFound) ReadJSON(legacyTypeNames bool, in *basictl.
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamPatternNotFound) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AntispamPatternNotFound) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AntispamPatternNotFound) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *AntispamPatternNotFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')

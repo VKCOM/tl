@@ -111,29 +111,21 @@ func (item *TasksGetQueueSize) ReadResultJSON(legacyTypeNames bool, in *basictl.
 }
 
 func (item *TasksGetQueueSize) WriteResultJSON(w []byte, ret tlTasksQueueStats.TasksQueueStats) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *TasksGetQueueSize) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlTasksQueueStats.TasksQueueStats) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(newTypeNames, short, w, item.FieldsMask)
+	w = ret.WriteJSONOpt(tctx, w, item.FieldsMask)
 	return w, nil
 }
 
-func (item *TasksGetQueueSize) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *TasksGetQueueSize) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlTasksQueueStats.TasksQueueStats
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *TasksGetQueueSize) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret tlTasksQueueStats.TasksQueueStats
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -254,12 +246,13 @@ func (item *TasksGetQueueSize) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksGetQueueSize) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TasksGetQueueSize) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TasksGetQueueSize) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TasksGetQueueSize) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -273,7 +266,7 @@ func (item *TasksGetQueueSize) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	backupIndexQueueId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"queue_id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.QueueId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.QueueId)
 	if (len(item.QueueId) != 0) == false {
 		w = w[:backupIndexQueueId]
 	}

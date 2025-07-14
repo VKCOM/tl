@@ -98,19 +98,20 @@ func (item *MyMcValueVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyMcValueVector) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MyMcValueVector) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyMcValueVector) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *MyMcValueVector) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexXs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"xs":`...)
-	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteJSONOpt(newTypeNames, short, w, item.Xs)
+	w = tlBuiltinVectorService1Value.BuiltinVectorService1ValueWriteJSONOpt(tctx, w, item.Xs)
 	if (len(item.Xs) != 0) == false {
 		w = w[:backupIndexXs]
 	}

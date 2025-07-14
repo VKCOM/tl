@@ -74,13 +74,14 @@ func BuiltinVectorService3GroupCountLimitReadJSON(legacyTypeNames bool, in *basi
 }
 
 func BuiltinVectorService3GroupCountLimitWriteJSON(w []byte, vec []tlService3GroupCountLimit.Service3GroupCountLimit) []byte {
-	return BuiltinVectorService3GroupCountLimitWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorService3GroupCountLimitWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorService3GroupCountLimitWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService3GroupCountLimit.Service3GroupCountLimit) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

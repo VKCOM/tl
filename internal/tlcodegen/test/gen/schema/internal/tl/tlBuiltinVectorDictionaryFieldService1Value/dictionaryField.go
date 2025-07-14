@@ -109,7 +109,8 @@ func BuiltinVectorDictionaryFieldService1ValueReadJSON(legacyTypeNames bool, in 
 }
 
 func BuiltinVectorDictionaryFieldService1ValueWriteJSON(w []byte, m map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
-	return BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(true, false, w, m)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(&tctx, w, m)
 }
 func BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) []byte {
 	keys := make([]string, 0, len(m))
@@ -123,7 +124,7 @@ func BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx *basictl.JSONWri
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
-		w = value.WriteJSONOpt(newTypeNames, short, w)
+		w = value.WriteJSONOpt(tctx, w)
 	}
 	return append(w, '}')
 }

@@ -73,29 +73,21 @@ func (item *AntispamGetPattern) ReadResultJSON(legacyTypeNames bool, in *basictl
 }
 
 func (item *AntispamGetPattern) WriteResultJSON(w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *AntispamGetPattern) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(newTypeNames, short, w)
+	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
-func (item *AntispamGetPattern) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *AntispamGetPattern) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *AntispamGetPattern) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -150,12 +142,13 @@ func (item *AntispamGetPattern) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *AntispamGetPattern) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *AntispamGetPattern) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *AntispamGetPattern) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *AntispamGetPattern) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')

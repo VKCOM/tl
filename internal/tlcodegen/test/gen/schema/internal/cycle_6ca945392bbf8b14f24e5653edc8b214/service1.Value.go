@@ -120,12 +120,13 @@ func (item *Service1Longvalue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1Longvalue) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1Longvalue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1Longvalue) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1Longvalue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -280,12 +281,13 @@ func (item *Service1LongvalueWithTime) ReadJSON(legacyTypeNames bool, in *basict
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1LongvalueWithTime) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1LongvalueWithTime) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1LongvalueWithTime) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1LongvalueWithTime) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -386,12 +388,13 @@ func (item *Service1NotFound) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1NotFound) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1NotFound) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1NotFound) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1NotFound) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -514,12 +517,13 @@ func (item *Service1Strvalue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1Strvalue) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1Strvalue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1Strvalue) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1Strvalue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -674,12 +678,13 @@ func (item *Service1StrvalueWithTime) ReadJSON(legacyTypeNames bool, in *basictl
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1StrvalueWithTime) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1StrvalueWithTime) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1StrvalueWithTime) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1StrvalueWithTime) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -937,57 +942,58 @@ func (item *Service1Value) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1Value) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1Value) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1Value) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1Value) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if newTypeNames {
-			w = append(w, `{"type":"service1.not_found"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service1.not_found#1d670b96"`...)
+		} else {
+			w = append(w, `{"type":"service1.not_found"`...)
 		}
 		return append(w, '}')
 	case 1:
-		if newTypeNames {
-			w = append(w, `{"type":"service1.strvalue"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service1.strvalue#5faa0c52"`...)
+		} else {
+			w = append(w, `{"type":"service1.strvalue"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueStrvalue.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueStrvalue.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 2:
-		if newTypeNames {
-			w = append(w, `{"type":"service1.longvalue"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service1.longvalue#082e0945"`...)
+		} else {
+			w = append(w, `{"type":"service1.longvalue"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueLongvalue.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueLongvalue.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 3:
-		if newTypeNames {
-			w = append(w, `{"type":"service1.strvalueWithTime"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service1.strvalueWithTime#98b1a484"`...)
+		} else {
+			w = append(w, `{"type":"service1.strvalueWithTime"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueStrvalueWithTime.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueStrvalueWithTime.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 4:
-		if newTypeNames {
-			w = append(w, `{"type":"service1.longvalueWithTime"`...)
-		} else {
+		if tctx.LegacyTypeNames {
 			w = append(w, `{"type":"service1.longvalueWithTime#a04606ec"`...)
+		} else {
+			w = append(w, `{"type":"service1.longvalueWithTime"`...)
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueLongvalueWithTime.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueLongvalueWithTime.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	default: // Impossible due to panic above
 		return w

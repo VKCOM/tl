@@ -78,29 +78,21 @@ func (item *Service1GetWildcardWithFlags) ReadResultJSON(legacyTypeNames bool, i
 }
 
 func (item *Service1GetWildcardWithFlags) WriteResultJSON(w []byte, ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *Service1GetWildcardWithFlags) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) (_ []byte, err error) {
-	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(newTypeNames, short, w, ret)
+	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx, w, ret)
 	return w, nil
 }
 
-func (item *Service1GetWildcardWithFlags) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *Service1GetWildcardWithFlags) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *Service1GetWildcardWithFlags) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -155,12 +147,13 @@ func (item *Service1GetWildcardWithFlags) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service1GetWildcardWithFlags) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service1GetWildcardWithFlags) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service1GetWildcardWithFlags) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service1GetWildcardWithFlags) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')

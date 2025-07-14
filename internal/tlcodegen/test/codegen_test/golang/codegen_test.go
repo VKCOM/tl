@@ -2,9 +2,10 @@ package golang_test
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/vkcom/tl/internal/utils"
 
@@ -80,7 +81,7 @@ func checkFunctionReadWrite(t *testing.T, fnType string, fnJsonValue string, res
 		return
 	}
 
-	_, jsonResult, jsonErr := fn.ReadResultWriteResultJSON(utils.ParseHexToBytes(resultBytesValue), nil)
+	_, jsonResult, jsonErr := fn.ReadResultWriteResultJSON(&basictl.JSONWriteContext{}, utils.ParseHexToBytes(resultBytesValue), nil)
 	if jsonErr != nil {
 		t.Fatalf("Write json error: %v\n", jsonErr)
 		return

@@ -261,12 +261,13 @@ func (item *RpcInvokeReqExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *RpcInvokeReqExtra) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *RpcInvokeReqExtra) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *RpcInvokeReqExtra) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *RpcInvokeReqExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -297,7 +298,7 @@ func (item *RpcInvokeReqExtra) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	if item.FieldsMask&(1<<18) != 0 {
 		w = basictl.JSONAddCommaIfNeeded(w)
 		w = append(w, `"string_forward_keys":`...)
-		w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(newTypeNames, short, w, item.StringForwardKeys)
+		w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(tctx, w, item.StringForwardKeys)
 	}
 	return append(w, '}')
 }

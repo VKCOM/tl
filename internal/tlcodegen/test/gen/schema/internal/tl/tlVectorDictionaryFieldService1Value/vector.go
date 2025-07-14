@@ -69,17 +69,18 @@ func (item *VectorDictionaryFieldService1Value) ReadJSON(legacyTypeNames bool, i
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorDictionaryFieldService1Value) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorDictionaryFieldService1Value) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorDictionaryFieldService1Value) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorDictionaryFieldService1Value) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorDictionaryFieldService1Value.BuiltinVectorDictionaryFieldService1ValueWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorDictionaryFieldService1Value) MarshalJSON() ([]byte, error) {

@@ -73,7 +73,8 @@ func BuiltinVectorIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *
 }
 
 func BuiltinVectorIntWriteJSON(w []byte, vec []int32) []byte {
-	return BuiltinVectorIntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorIntWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int32) []byte {
 	w = append(w, '[')

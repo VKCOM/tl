@@ -74,13 +74,14 @@ func BuiltinVectorIntegerReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, v
 }
 
 func BuiltinVectorIntegerWriteJSON(w []byte, vec []tlInteger.Integer) []byte {
-	return BuiltinVectorIntegerWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorIntegerWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorIntegerWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlInteger.Integer) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

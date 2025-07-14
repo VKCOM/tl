@@ -153,12 +153,13 @@ func (item *TasksCronTask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksCronTask) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TasksCronTask) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TasksCronTask) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TasksCronTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -172,16 +173,16 @@ func (item *TasksCronTask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	backupIndexQueueId := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"queue_id":`...)
-	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(newTypeNames, short, w, item.QueueId)
+	w = tlBuiltinVectorInt.BuiltinVectorIntWriteJSONOpt(tctx, w, item.QueueId)
 	if (len(item.QueueId) != 0) == false {
 		w = w[:backupIndexQueueId]
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"task":`...)
-	w = item.Task.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Task.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"time":`...)
-	w = item.Time.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Time.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 

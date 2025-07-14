@@ -154,12 +154,13 @@ func (item *Service3Limits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *Service3Limits) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *Service3Limits) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *Service3Limits) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -173,7 +174,7 @@ func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexCustomGroupSizeLimits := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"custom_group_size_limits":`...)
-	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(newTypeNames, short, w, item.CustomGroupSizeLimits)
+	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(tctx, w, item.CustomGroupSizeLimits)
 	if (len(item.CustomGroupSizeLimits) != 0) == false {
 		w = w[:backupIndexCustomGroupSizeLimits]
 	}
@@ -187,7 +188,7 @@ func (item *Service3Limits) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byt
 	backupIndexCustomGroupCountLimits := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"custom_group_count_limits":`...)
-	w = tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitWriteJSONOpt(newTypeNames, short, w, item.CustomGroupCountLimits)
+	w = tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitWriteJSONOpt(tctx, w, item.CustomGroupCountLimits)
 	if (len(item.CustomGroupCountLimits) != 0) == false {
 		w = w[:backupIndexCustomGroupCountLimits]
 	}

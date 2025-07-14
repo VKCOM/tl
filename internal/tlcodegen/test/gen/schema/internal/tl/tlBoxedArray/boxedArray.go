@@ -73,29 +73,21 @@ func (item *BoxedArray) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLex
 }
 
 func (item *BoxedArray) WriteResultJSON(w []byte, ret tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
-	return item.writeResultJSON(true, false, w, ret)
+	tctx := basictl.JSONWriteContext{}
+	return item.writeResultJSON(&tctx, w, ret)
 }
 
 func (item *BoxedArray) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlMyBoxedArray.MyBoxedArray) (_ []byte, err error) {
-	w = ret.WriteJSONOpt(newTypeNames, short, w)
+	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
 }
 
-func (item *BoxedArray) ReadResultWriteResultJSON(r []byte, w []byte) (_ []byte, _ []byte, err error) {
+func (item *BoxedArray) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlMyBoxedArray.MyBoxedArray
 	if r, err = item.ReadResult(r, &ret); err != nil {
 		return r, w, err
 	}
-	w, err = item.WriteResultJSON(w, ret)
-	return r, w, err
-}
-
-func (item *BoxedArray) ReadResultWriteResultJSONOpt(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret tlMyBoxedArray.MyBoxedArray
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.writeResultJSON(newTypeNames, short, w, ret)
+	w, err = item.writeResultJSON(tctx, w, ret)
 	return r, w, err
 }
 
@@ -150,18 +142,19 @@ func (item *BoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *BoxedArray) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *BoxedArray) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *BoxedArray) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *BoxedArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = item.X.WriteJSONOpt(newTypeNames, short, w)
+	w = item.X.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 

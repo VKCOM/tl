@@ -69,17 +69,18 @@ func (item *TupleService1Value3) ReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleService1Value3) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *TupleService1Value3) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TupleService1Value3) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *TupleService1Value3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteJSONOpt(newTypeNames, short, w, ptr)
+	w = tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueWriteJSONOpt(tctx, w, ptr)
 	return w
 }
 func (item *TupleService1Value3) MarshalJSON() ([]byte, error) {

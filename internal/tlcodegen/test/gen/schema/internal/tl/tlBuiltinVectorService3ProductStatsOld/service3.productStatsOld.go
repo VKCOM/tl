@@ -74,13 +74,14 @@ func BuiltinVectorService3ProductStatsOldReadJSON(legacyTypeNames bool, in *basi
 }
 
 func BuiltinVectorService3ProductStatsOldWriteJSON(w []byte, vec []tlService3ProductStatsOld.Service3ProductStatsOld) []byte {
-	return BuiltinVectorService3ProductStatsOldWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorService3ProductStatsOldWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorService3ProductStatsOldWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService3ProductStatsOld.Service3ProductStatsOld) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

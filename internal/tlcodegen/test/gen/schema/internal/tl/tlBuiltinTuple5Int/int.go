@@ -65,7 +65,8 @@ func BuiltinTuple5IntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *
 }
 
 func BuiltinTuple5IntWriteJSON(w []byte, vec *[5]int32) []byte {
-	return BuiltinTuple5IntWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinTuple5IntWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinTuple5IntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec *[5]int32) []byte {
 	w = append(w, '[')

@@ -68,17 +68,18 @@ func (item *MyAnonMcValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyAnonMcValue) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *MyAnonMcValue) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyAnonMcValue) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *MyAnonMcValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	w = ptr.WriteJSONOpt(newTypeNames, short, w)
+	w = ptr.WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *MyAnonMcValue) MarshalJSON() ([]byte, error) {

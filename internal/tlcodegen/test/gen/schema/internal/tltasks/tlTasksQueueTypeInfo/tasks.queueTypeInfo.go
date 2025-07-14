@@ -134,12 +134,13 @@ func (item *TasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TasksQueueTypeInfo) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TasksQueueTypeInfo) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TasksQueueTypeInfo) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *TasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
@@ -152,10 +153,10 @@ func (item *TasksQueueTypeInfo) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"settings":`...)
-	w = item.Settings.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Settings.WriteJSONOpt(tctx, w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"stats":`...)
-	w = item.Stats.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Stats.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 

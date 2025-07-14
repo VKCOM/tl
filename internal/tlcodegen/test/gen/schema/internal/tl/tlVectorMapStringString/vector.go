@@ -69,17 +69,18 @@ func (item *VectorMapStringString) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorMapStringString) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorMapStringString) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorMapStringString) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorMapStringString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlMapStringString.MapStringString)(item)
-	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorMapStringString) MarshalJSON() ([]byte, error) {

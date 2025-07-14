@@ -74,13 +74,14 @@ func BuiltinVectorService6FindWithBoundsResultReadJSON(legacyTypeNames bool, in 
 }
 
 func BuiltinVectorService6FindWithBoundsResultWriteJSON(w []byte, vec []tlService6FindWithBoundsResult.Service6FindWithBoundsResult) []byte {
-	return BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorService6FindWithBoundsResultWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService6FindWithBoundsResult.Service6FindWithBoundsResult) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

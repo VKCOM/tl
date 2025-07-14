@@ -74,13 +74,14 @@ func BuiltinVectorMapStringStringReadJSON(legacyTypeNames bool, in *basictl.Json
 }
 
 func BuiltinVectorMapStringStringWriteJSON(w []byte, vec []tlMapStringString.MapStringString) []byte {
-	return BuiltinVectorMapStringStringWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorMapStringStringWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorMapStringStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlMapStringString.MapStringString) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

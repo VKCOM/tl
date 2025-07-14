@@ -69,17 +69,18 @@ func (item *VectorService3Product0) ReadJSON(legacyTypeNames bool, in *basictl.J
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorService3Product0) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorService3Product0) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorService3Product0) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorService3Product0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlService3Product0.Service3Product0)(item)
-	w = tlBuiltinVectorService3Product0.BuiltinVectorService3Product0WriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorService3Product0.BuiltinVectorService3Product0WriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorService3Product0) MarshalJSON() ([]byte, error) {

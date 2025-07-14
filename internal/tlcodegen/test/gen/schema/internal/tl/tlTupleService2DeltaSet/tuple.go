@@ -66,17 +66,18 @@ func (item *TupleService2DeltaSet) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TupleService2DeltaSet) WriteJSONGeneral(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSON(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+func (item *TupleService2DeltaSet) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
 func (item *TupleService2DeltaSet) WriteJSON(w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
 func (item *TupleService2DeltaSet) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) (_ []byte, err error) {
 	ptr := (*[]tlService2DeltaSet.Service2DeltaSet)(item)
-	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWriteJSONOpt(newTypeNames, short, w, *ptr, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+	if w, err = tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetWriteJSONOpt(tctx, w, *ptr, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return w, err
 	}
 	return w, nil

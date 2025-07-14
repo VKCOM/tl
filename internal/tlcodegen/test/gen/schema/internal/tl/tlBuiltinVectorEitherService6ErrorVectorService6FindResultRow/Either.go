@@ -74,13 +74,14 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSON(legacyT
 }
 
 func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSON(w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
-	return BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(true, false, w, vec)
+	tctx := basictl.JSONWriteContext{}
+	return BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(&tctx, w, vec)
 }
 func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) []byte {
 	w = append(w, '[')
 	for _, elem := range vec {
 		w = basictl.JSONAddCommaIfNeeded(w)
-		w = elem.WriteJSONOpt(newTypeNames, short, w)
+		w = elem.WriteJSONOpt(tctx, w)
 	}
 	return append(w, ']')
 }

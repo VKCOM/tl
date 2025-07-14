@@ -68,17 +68,18 @@ func (item *MyMaybe2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyMaybe2) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *MyMaybe2) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyMaybe2) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *MyMaybe2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*tlMyTuple10Maybe.MyTuple10Maybe)(item)
-	w = ptr.WriteJSONOpt(newTypeNames, short, w)
+	w = ptr.WriteJSONOpt(tctx, w)
 	return w
 }
 func (item *MyMaybe2) MarshalJSON() ([]byte, error) {

@@ -69,17 +69,18 @@ func (item *VectorService3GroupSizeLimit) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *VectorService3GroupSizeLimit) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSON(w), nil
+func (item *VectorService3GroupSizeLimit) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *VectorService3GroupSizeLimit) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 
 func (item *VectorService3GroupSizeLimit) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(newTypeNames, short, w, *ptr)
+	w = tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitWriteJSONOpt(tctx, w, *ptr)
 	return w
 }
 func (item *VectorService3GroupSizeLimit) MarshalJSON() ([]byte, error) {

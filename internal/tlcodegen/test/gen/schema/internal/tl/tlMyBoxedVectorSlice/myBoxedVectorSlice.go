@@ -101,19 +101,20 @@ func (item *MyBoxedVectorSlice) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *MyBoxedVectorSlice) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *MyBoxedVectorSlice) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *MyBoxedVectorSlice) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *MyBoxedVectorSlice) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexData := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"data":`...)
-	w = tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedWriteJSONOpt(newTypeNames, short, w, item.Data)
+	w = tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedWriteJSONOpt(tctx, w, item.Data)
 	if (len(item.Data) != 0) == false {
 		w = w[:backupIndexData]
 	}
