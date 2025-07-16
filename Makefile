@@ -31,7 +31,7 @@ all: build
 .PHONY: build
 build: # build static binary to run on many linux variants
 	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
-	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlclient ./cmd/tlclient
+	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlclient2 ./cmd/tlclient2
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \
