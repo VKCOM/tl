@@ -39,6 +39,43 @@ func LegacyPrintGlobalMap() {
 	}
 }
 
+func LegacyEnableExclamation(conFullName string) bool {
+	if conFullName == "rpcDestActor" {
+		return true
+	}
+	if conFullName == "rpcDestActorFlags" {
+		return true
+	}
+	if conFullName == "rpcDestFlags" {
+		return true
+	}
+	if conFullName == "rpcInvokeReq" {
+		return true
+	}
+	if conFullName == "engine.sendResponseTo" {
+		return true
+	}
+	if conFullName == "messages.responseQuery" {
+		return true
+	}
+	if conFullName == "rpcProxy.diagonal" {
+		return true
+	}
+	if conFullName == "rpcProxy.diagonalTargets" {
+		return true
+	}
+	if conFullName == "storage2Impl.forwardToFork" {
+		return true
+	}
+	if conFullName == "storage2Impl.diagonalFork" {
+		return true
+	}
+	if conFullName == "tree_stats.preferMaster" {
+		return true
+	}
+	return false
+}
+
 func LegacyEnableWarningsUnionNamespaceSkip(conNamespace string, typeNamespace string) bool {
 	if conNamespace == "messagesLong" && typeNamespace == "messages" {
 		return true

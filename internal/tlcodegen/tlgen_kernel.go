@@ -512,7 +512,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		}
 		if field.Mask != nil {
 			if field.Mask.BitNumber >= 32 {
-				return field.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..32)", field.Mask.BitNumber))
+				return field.Mask.PRBits.BeautifulError(fmt.Errorf("bitmask (%d) must be in range [0..31]", field.Mask.BitNumber))
 			}
 			newField.BitNumber = field.Mask.BitNumber
 			localArg, ok := lrc.localNatArgs[field.Mask.MaskName]

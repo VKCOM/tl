@@ -78,6 +78,11 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 		constructorTags[typ.Crc32()] = typ                  // overwrite if same, collision check is in another place
 		constructorNames[typ.Construct.Name.String()] = typ // overwrite if same, collision check is in another place
 		typeNames[typ.TypeDecl.Name.String()] = typ         // overwrite if same, collision check is in another place
+		for _, field := range typ.Fields {
+			if field.Excl && !LegacyEnableExclamation(typ.Construct.Name.String()) {
+				return tl, field.PR.BeautifulError(fmt.Errorf("new !X function wrappers are forbidden"))
+			}
+		}
 	}
 	for typeIndex := 0; typeIndex < len(tl); typeIndex++ { // We append anonymous types while iterating
 		typ := tl[typeIndex]
