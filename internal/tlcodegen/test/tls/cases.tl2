@@ -12,7 +12,11 @@ dictionary<t:type> = vector<dictionaryField<t>>;
 dictionaryFieldAny<k:type,v:type> = key:k value:v;
 dictionaryAny<k:type,v:type> = []dictionaryFieldAny<k,v>;
 true = ;
-maybe<t:type> = ResultFalse | ResultTrue t;
+maybe<t:type> = 
+	// tlgen:tl1name:"resultFalse"
+	| ResultFalse
+	// tlgen:tl1name:"resultTrue"
+	| ResultTrue t;
 pair<x:type,y:type> = x:x y:y;
 // BLOCK: TEST RECURSIVE TYPES
 cases.myCycle1 = fields_mask:uint32 a?:cases.myCycle2;
@@ -30,9 +34,21 @@ cases.testDictInt = dict:dictionaryAny<int,int>;
 cases.testDictAny = dict:dictionaryAny<double,int>;
 // BLOCK: TEST UNIONS
 cases.testMaybe = value:maybe<int>;
-cases.testUnion = TestUnion1 value:int | TestUnion2 value:string;
+cases.testUnion = 
+	// tlgen:tl1name:"cases.testUnion1"
+	| TestUnion1
+		value:int
+	// tlgen:tl1name:"cases.testUnion2"
+	| TestUnion2
+		value:string;
 cases.testUnionContainer = value:cases.testUnion;
-cases.testEnum = TestEnum1 | TestEnum2 | TestEnum3;
+cases.testEnum = 
+	// tlgen:tl1name:"cases.testEnum1"
+	| TestEnum1
+	// tlgen:tl1name:"cases.testEnum2"
+	| TestEnum2
+	// tlgen:tl1name:"cases.testEnum3"
+	| TestEnum3;
 cases.testEnumContainer = value:cases.testEnum;
 // BLOCK: TEST FIELD MASKS
 cases.testRecursiveFieldmask = f0:uint32 f1?:uint32 f2?:uint32 t1?:true t2?:true t3?:true;
@@ -89,7 +105,13 @@ cases_bytes.testDictString = dict:dictionary<int>;
 cases_bytes.testDictInt = dict:dictionaryAny<int,int>;
 // will be array of tuples
 cases_bytes.testDictAny = dict:dictionaryAny<double,int>;
-cases_bytes.testEnum = TestEnum1 | TestEnum2 | TestEnum3;
+cases_bytes.testEnum = 
+	// tlgen:tl1name:"cases_bytes.testEnum1"
+	| TestEnum1
+	// tlgen:tl1name:"cases_bytes.testEnum2"
+	| TestEnum2
+	// tlgen:tl1name:"cases_bytes.testEnum3"
+	| TestEnum3;
 cases_bytes.testEnumContainer = value:cases.testEnum;
 // BLOCK: BENCHMARKS
 // We store xxh3 components in LE endianness, as common in TL
@@ -114,14 +136,15 @@ benchmarks.vruPosition =
 	file_offset:long
 	// incremented after each block.
 	seq_number?:long;
-benchmarks.vrutoyTopLevelUnion = 
-	| VrutoytopLevelUnionBig next_positions:vector<benchmarks.vruPosition>
-	| VrutoytopLevelUnionEmpty;
+benchmarks.vrutoyTopLevelUnion = Big next_positions:vector<benchmarks.vruPosition> | Empty;
 benchmarks.vrutoyTopLevelContainer = value:benchmarks.vrutoyTopLevelUnion;
 benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruPosition;
 benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions;
 // Boolean emulation
-bool = BoolFalse | BoolTrue;
+bool = 
+	| False
+	// bool comment
+	| True;
 casesTL2.testObject = 
 	n:uint32
 	f1?:true

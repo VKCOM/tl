@@ -135,14 +135,14 @@ type LexerOptions struct {
 	AllowBuiltin bool // allows constructor to start from '_' (underscore), used only internally by tlgen
 	AllowDirty   bool // allows to use '_' (underscore) as constructor name, will be removed after combined.tl is cleaned up
 
-	LexerLanguage // default value is tl1
+	LexerLanguage // default value is TL1
 }
 
 type LexerLanguage int
 
 const (
-	tl1 LexerLanguage = iota
-	tl2
+	TL1 LexerLanguage = iota
+	TL2
 )
 
 type lexer struct {
@@ -173,23 +173,23 @@ func (l *lexer) validateTokens() ([]token, error) {
 	for i, curToken := range l.tokens {
 		var err error
 		switch l.opts.LexerLanguage {
-		case tl1:
+		case TL1:
 			switch curToken.tokenType {
 			case verticalBar, underscore:
-				err = parseErrToken(fmt.Errorf("illegal token for tl1: \"%s\"", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL1: \"%s\"", curToken.val), curToken, curToken.pos)
 			}
-		case tl2:
+		case TL2:
 			switch curToken.tokenType {
 			case lCurlyBracket, rCurlyBracket,
 				exclamation,
 				lRoundBracket, rRoundBracket:
-				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\"", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\"", curToken.val), curToken, curToken.pos)
 			case plus, asterisk:
-				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - ariphmetic operations are mot allowed", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\" - ariphmetic operations are mot allowed", curToken.val), curToken, curToken.pos)
 			case percentSign:
-				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - boxed types are not supported in tl2", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\" - boxed types are not supported in TL2", curToken.val), curToken, curToken.pos)
 			case typesSection, functionsSection:
-				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - sections are not supported in tl2", curToken.val), curToken, curToken.pos)
+				err = parseErrToken(fmt.Errorf("illegal token for TL2: \"%s\" - sections are not supported in tl2", curToken.val), curToken, curToken.pos)
 			}
 		default:
 			return l.tokens, fmt.Errorf("unknown language code \"%d\"", l.opts.LexerLanguage)
@@ -293,7 +293,7 @@ func (l *lexer) nextToken() error {
 	case l.str[0] == '#':
 		return l.lexNumberSign()
 	case l.str[0] == '_':
-		if l.opts.LexerLanguage == tl2 {
+		if l.opts.LexerLanguage == TL2 {
 			l.advance(1, int(underscore))
 			return nil
 		}

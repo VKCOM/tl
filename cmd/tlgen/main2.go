@@ -26,6 +26,7 @@ import (
 )
 
 const tlExt = ".tl"
+const tl2Ext = ".tl2"
 
 func parseFlags(opt *tlcodegen.Gen2Options) {
 	// General
@@ -167,8 +168,12 @@ func run(opt tlcodegen.Gen2Options) {
 }
 
 func runMain(opt *tlcodegen.Gen2Options) error {
+	// tl1
 	var ast tlast.TL
 	var fullAst tlast.TL
+	// tl2
+	var astTL2 tlast.TL2File
+
 	if opt.ErrorWriter == nil {
 		opt.ErrorWriter = os.Stdout
 	}
@@ -176,6 +181,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	if len(args) == 0 {
 		return fmt.Errorf("specify 1 or more input TL schema filenames after flags")
 	}
+	// parse tl1
 	paths, err := utils.WalkDeterministic(tlExt, args...)
 	if err != nil {
 		return fmt.Errorf("error while walkking through paths: %w", err)
@@ -192,7 +198,19 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		ast = append(ast, tl...)
 		fullAst = append(fullAst, fullTl...)
 	}
-	gen, err := tlcodegen.GenerateCode(ast, *opt)
+	// parse tl2
+	pathsTL2, err := utils.WalkDeterministic(tl2Ext, args...)
+	if err != nil {
+		return fmt.Errorf("error while walkking through tl2 paths: %w", err)
+	}
+	for _, path := range pathsTL2 {
+		tl2, err := parseTL2File(path, opt)
+		if err != nil {
+			return err
+		}
+		astTL2.Combinators = append(astTL2.Combinators, tl2.Combinators...)
+	}
+	gen, err := tlcodegen.GenerateCode(ast, astTL2, *opt)
 	if err != nil {
 		return err // Do not add excess info to already long parse error
 	}
@@ -368,4 +386,13 @@ func parseTlFile(file string, replaceStrange bool, opt *tlcodegen.Gen2Options) (
 		return tl, err // Do not add excess info to already long parse error
 	}
 	return tl, nil
+}
+
+func parseTL2File(file string, opt *tlcodegen.Gen2Options) (tlast.TL2File, error) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return tlast.TL2File{}, fmt.Errorf("error reading schema file %q - %w", file, err)
+	}
+	dataStr := string(data)
+	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, opt.ErrorWriter)
 }

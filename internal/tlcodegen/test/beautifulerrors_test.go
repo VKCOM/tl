@@ -274,7 +274,7 @@ service5.hrenOutput = service5.Output;
 				parseError.ConsolePrint(&errorBuffer, err, false)
 				require.Equalf(t, test.parsingError, errorBuffer.String(), "errors for parsing stage didn't match for test %d", i)
 
-			} else if _, err := tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{ErrorWriter: &errorBuffer}); err != nil && errors.As(err, &parseError) {
+			} else if _, err := tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{ErrorWriter: &errorBuffer}); err != nil && errors.As(err, &parseError) {
 				parseError.ConsolePrint(&errorBuffer, err, false)
 				require.Equalf(t, test.compilationError, errorBuffer.String(), "errors for compiling stage didn't match for test %d", i)
 			}
