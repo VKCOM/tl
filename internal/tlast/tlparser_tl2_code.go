@@ -78,13 +78,13 @@ func zeroOrMore[T any](parser OptionalParse[T]) OptionalParse[[]T] {
 }
 
 func ParseTL2(str string) (TL2File, error) {
-	return ParseTL2File(str, "", LexerOptions{LexerLanguage: tl2}, os.Stdout)
+	return ParseTL2File(str, "", LexerOptions{LexerLanguage: TL2}, os.Stdout)
 }
 
 // TL2File := TL2Combinator* EOF;
 func ParseTL2File(str, file string, opts LexerOptions, errorWriter io.Writer) (tl2File TL2File, err error) {
-	if opts.LexerLanguage != tl2 {
-		return TL2File{}, fmt.Errorf("ParseTL2File can't parse nothing rather than tl2")
+	if opts.LexerLanguage != TL2 {
+		return TL2File{}, fmt.Errorf("ParseTL2File can't parse nothing rather than TL2")
 	}
 	lex := newLexer(str, file, opts)
 	allTokens, err := lex.generateTokens()
@@ -189,7 +189,7 @@ func parseTL2TypeName(tokens tokenIterator, position Position) (state OptionalSt
 		result.Namespace = value[:dotIndex]
 		result.Name = value[dotIndex+1:]
 	case restTokens.checkToken(ucIdentNS):
-		state.Fail("tl2 type names can't start from uppercase")
+		state.Fail("TL2 type names can't start from uppercase")
 	default:
 		state.StartProcessing = false
 	}
@@ -339,6 +339,8 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	restTokens = tokens
 	result.PR = restTokens.skipWS(position)
 
+	commentBefore := parseCommentBefore(tokens, restTokens)
+
 	if restTokens.expect(verticalBar) {
 		state.StartProcessing = true
 	}
@@ -354,6 +356,7 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 		return
 	}
 
+	result.Variants[0].CommentBefore = commentBefore
 	state.Inherit(localState)
 
 	if !state.StartProcessing {
@@ -361,13 +364,21 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 	}
 
 	for {
+		beforeVB := restTokens
+		rightBeforeBV := restTokens
+		rightBeforeBV.skipWS(Position{})
+
 		if !restTokens.expect(verticalBar) {
 			break
 		}
+		commentBefore := parseCommentBefore(beforeVB, rightBeforeBV)
+
 		state.StartProcessing = true
 		var localState OptionalState
 		var variant TL2UnionConstructor
 		localState, restTokens, variant = parseTL2UnionConstructor(restTokens, position)
+		variant.CommentBefore = commentBefore
+
 		result.Variants = append(result.Variants, variant)
 		state.Inherit(localState)
 		if !localState.ExpectProgress("expected union variant definition after vertical var") {

@@ -7,7 +7,7 @@ import (
 )
 
 func setupIterator(str string) (tokenIterator, error) {
-	lex := newLexer(str, "", LexerOptions{LexerLanguage: tl2})
+	lex := newLexer(str, "", LexerOptions{LexerLanguage: TL2})
 	allTokens, err := lex.generateTokens()
 
 	return tokenIterator{tokens: allTokens}, err
@@ -266,7 +266,7 @@ func TestParseTL2(t *testing.T) {
 				assert.Equal(t, "string", union.Variants[2].TypeAlias.SomeType.Name.Name)
 			})
 
-			t.Run("union with constructors and traling vb", func(t *testing.T) {
+			t.Run("union with constructors and trailing vb", func(t *testing.T) {
 				it, _ := setupIterator(`
 testNs.testName = 
 	| Green x:int 
@@ -386,7 +386,7 @@ testNs.testName = Green x:int |
 		})
 	})
 
-	t.Run("function declration", func(t *testing.T) {
+	t.Run("function declaration", func(t *testing.T) {
 		t.Run("simple function", func(t *testing.T) {
 			it, _ := setupIterator(` testNs.testName#09123456 x:int => int; `)
 			comb, newIt, err := parseTL2Combinator(it)
@@ -691,6 +691,28 @@ z:int; `)
 				comb.String(),
 			)
 		})
+
+		t.Run("variant with comment", func(t *testing.T) {
+			it, _ := setupIterator(`testNs.testName <x:uint32,  y:type  >#09abcdef = 
+// SomeInt
+SomeInt int 
+
+// SomeStr
+| SomeStr string // Green 
+| Green; `)
+			comb, _, err := parseTL2Combinator(it)
+			assert.NoError(t, err)
+			assert.Equal(t,
+				`testNs.testName<x:uint32,y:type>#09abcdef = 
+	// SomeInt
+	| SomeInt int
+	// SomeStr
+	| SomeStr string
+	// Green
+	| Green;`,
+				comb.String(),
+			)
+		})
 	})
 
 	t.Run("check comments", func(t *testing.T) {
@@ -791,6 +813,47 @@ x:int;`)
 					assert.NoError(t, err)
 					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[0].CommentBefore)
 					assert.Equal(t, "", comb.TypeDecl.Type.ConstructorFields[1].CommentBefore)
+				})
+			})
+
+			t.Run("union", func(t *testing.T) {
+
+				t.Run("before first constructor", func(t *testing.T) {
+					it, _ := setupIterator(`
+testNs.testName<x:type, y:uint32> = 
+	// IntValue
+	IntValue x:int
+	| StrValue string; `)
+					comb, newIt, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.True(t, newIt.expect(eof))
+
+					assert.Equal(t, `// IntValue`, comb.TypeDecl.Type.UnionType.Variants[0].CommentBefore)
+				})
+
+				t.Run("before first constructor with trailing vb", func(t *testing.T) {
+					it, _ := setupIterator(`
+testNs.testName<x:type, y:uint32> = 
+	// IntValue
+	| IntValue x:int
+	| StrValue string; `)
+					comb, newIt, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.True(t, newIt.expect(eof))
+
+					assert.Equal(t, `// IntValue`, comb.TypeDecl.Type.UnionType.Variants[0].CommentBefore)
+				})
+
+				t.Run("before second constructor", func(t *testing.T) {
+					it, _ := setupIterator(`
+testNs.testName<x:type, y:uint32> = IntValue x:int 
+	// StrValue
+	| StrValue string; `)
+					comb, newIt, err := parseTL2Combinator(it)
+					assert.NoError(t, err)
+					assert.True(t, newIt.expect(eof))
+
+					assert.Equal(t, `// StrValue`, comb.TypeDecl.Type.UnionType.Variants[1].CommentBefore)
 				})
 			})
 		})

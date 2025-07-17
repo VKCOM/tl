@@ -31,7 +31,7 @@ func TestGen(t *testing.T) {
 		t.Error(err)
 	}
 
-	gen, err := tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+	gen, err := tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 		ErrorWriter: io.Discard,
 		Verbose:     true,
 	})
@@ -75,6 +75,42 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 			"b": `b.t1 = x:vector<a.t2>;
 `,
 		},
+		true,
+	)
+	assert.True(t, stepSuccess)
+}
+
+func TestMigrationNameConversion(t *testing.T) {
+	var nextState []tlcodegen.FileToWrite
+	var stepSuccess bool
+	stepSuccess, nextState = assertMigrationStep(
+		t,
+		nextState,
+		`
+a.correctNameTypeC1 = a.CorrectNameType;
+a.correctNameTypeC2 = a.CorrectNameType;
+
+a.c1 = a.WrongNameType;
+a.wrongNameTypeC2 = a.WrongNameType;
+
+a.c3 = a.WrongNamespaceType;
+b.c4 = a.WrongNamespaceType;
+`,
+		"a.",
+		map[string]string{
+			"a": `a.correctNameType = C1 | C2;
+a.wrongNameType = 
+	// tlgen:tl1name:"a.c1"
+	| C1
+	| C2;
+a.wrongNamespaceType = 
+	// tlgen:tl1name:"a.c3"
+	| C3
+	// tlgen:tl1name:"b.c4"
+	| C4;
+`,
+		},
+		false,
 	)
 	assert.True(t, stepSuccess)
 }
@@ -102,6 +138,7 @@ b.t1 x:tuple<int, 2> = b.T1;
 			"b": `b.t1 = x:tuple_N<int,2>;
 `,
 		},
+		true,
 	)
 	assert.True(t, stepSuccess)
 
@@ -127,6 +164,7 @@ a.t2 = n:uint32 f1:tuple<a.t1>;
 			"b": `b.t1 = x:tuple_N<int,2>;
 `,
 		},
+		true,
 	)
 	assert.True(t, stepSuccess)
 }
@@ -163,6 +201,7 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 			"b": `b.t1 = x:vector<a.t2>;
 `,
 		},
+		true,
 	)
 	assert.True(t, stepSuccess)
 
@@ -193,6 +232,7 @@ a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
 			"b": `b.t1 = x:vector<a.t2>;
 `,
 		},
+		true,
 	)
 	assert.True(t, stepSuccess)
 
@@ -224,6 +264,7 @@ a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
 c.t2 = f1:pair<c.t1,double>;
 `,
 		},
+		true,
 	)
 	assert.True(t, stepSuccess)
 
@@ -252,14 +293,15 @@ a.t2 = n:uint32 f1:tuple<a.t1> f2:tuple_N<a.t1,2>;
 c.t2 = f1:pair<c.t1,double>;
 `,
 		},
+		true,
 	)
 	assert.True(t, stepSuccess)
 }
 
-func assertMigrationStep(t *testing.T, prevState []tlcodegen.FileToWrite, tl1 string, filter string, allExpectedNamespaces map[string]string) (success bool, nextState []tlcodegen.FileToWrite) {
+func assertMigrationStep(t *testing.T, prevState []tlcodegen.FileToWrite, tl1 string, filter string, allExpectedNamespaces map[string]string, expectedCanonical bool) (success bool, nextState []tlcodegen.FileToWrite) {
 	ast, err := tlast.ParseTL(tl1)
 	assert.NoError(t, err)
-	gen, err := tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+	gen, err := tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 		ErrorWriter: io.Discard,
 		Verbose:     true,
 
@@ -268,6 +310,11 @@ func assertMigrationStep(t *testing.T, prevState []tlcodegen.FileToWrite, tl1 st
 		TL2MigratingWhitelist:  filter,
 		TL2ContinuousMigration: true,
 	})
+
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	nextState, err = gen.MigrateToTL2(prevState)
 	assert.NoError(t, err)
@@ -279,13 +326,14 @@ func assertMigrationStep(t *testing.T, prevState []tlcodegen.FileToWrite, tl1 st
 			nextState,
 			ns,
 			value,
+			expectedCanonical,
 		)
 	}
 
 	return !t.Failed(), nextState
 }
 
-func assertNamespaceTranslation(t *testing.T, files []tlcodegen.FileToWrite, ns string, expectedValue string) {
+func assertNamespaceTranslation(t *testing.T, files []tlcodegen.FileToWrite, ns string, expectedValue string, expectedCanonical bool) {
 	if ns == "" {
 		ns = "__common_namespace"
 	}
@@ -306,7 +354,11 @@ func assertNamespaceTranslation(t *testing.T, files []tlcodegen.FileToWrite, ns 
 	}
 
 	str := strings.Builder{}
-	targetFile.Ast.Print(&str, tlast.NewCanonicalFormatOptions())
+	options := tlast.NewDefaultFormatOptions()
+	if expectedCanonical {
+		options = tlast.NewCanonicalFormatOptions()
+	}
+	targetFile.Ast.Print(&str, options)
 
 	assert.Equal(t, expectedValue, str.String())
 }

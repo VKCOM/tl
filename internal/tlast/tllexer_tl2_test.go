@@ -31,7 +31,7 @@ func TestTL2Lexer(t *testing.T) {
 }
 
 func testCorrectCase(t *testing.T, str string) {
-	lex := newLexer(str, "", LexerOptions{LexerLanguage: tl2})
+	lex := newLexer(str, "", LexerOptions{LexerLanguage: TL2})
 	tokens, err := lex.generateTokens()
 	require.NoError(t, err)
 	require.Equal(t, 0, countToken(tokens, undefined))
@@ -40,7 +40,7 @@ func testCorrectCase(t *testing.T, str string) {
 }
 
 func testIncorrectCase(t *testing.T, str string) {
-	lex := newLexer(str, "", LexerOptions{LexerLanguage: tl2})
+	lex := newLexer(str, "", LexerOptions{LexerLanguage: TL2})
 	_, err := lex.generateTokens()
 	require.Error(t, err)
 }

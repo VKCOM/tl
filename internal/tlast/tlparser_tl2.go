@@ -1,4 +1,4 @@
-// similar to bnf definitions in grammar.tl2.txt
+// similar to bnf definitions in grammar.TL2.txt
 
 package tlast
 
@@ -88,6 +88,8 @@ type TL2UnionConstructor struct {
 
 	PR     PositionRange
 	PRName PositionRange
+
+	CommentBefore string
 }
 
 // TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
@@ -179,6 +181,9 @@ func (c TL2TypeCategory) IsLegalCategory() bool {
 }
 
 func (t TL2UnionConstructor) HasBeforeCommentIn() bool {
+	if t.CommentBefore != "" {
+		return true
+	}
 	if !t.IsTypeAlias {
 		for _, field := range t.Fields {
 			if field.CommentBefore != "" {
@@ -196,4 +201,18 @@ func (c TL2Combinator) HasAnnotation(value string) bool {
 		}
 	}
 	return false
+}
+
+func (c TL2Combinator) ReferenceName() TL2TypeName {
+	if c.IsFunction {
+		return c.FuncDecl.Name
+	}
+	return c.TypeDecl.Name
+}
+
+func (c TL2Combinator) ReferenceNamePR() PositionRange {
+	if c.IsFunction {
+		return c.FuncDecl.PRName
+	}
+	return c.TypeDecl.PRName
 }
