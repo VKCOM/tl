@@ -33,7 +33,7 @@ func (gen *Gen2) generateCodeGolang(bytesWhiteList []string) error {
 				continue // leave namespace nil
 			}
 			globalIns.Types = append(globalIns.Types, v)
-			globalIns.Namespaces[v.tlName.Namespace] = struct{}{}
+			globalIns.Namespaces[v.Namespace()] = struct{}{}
 			v.ins = globalIns
 		}
 	} else {
@@ -51,7 +51,7 @@ func (gen *Gen2) generateCodeGolang(bytesWhiteList []string) error {
 			}
 			nextDebugID++
 			e := &InternalNamespace{DebugID: nextDebugID, Types: []*TypeRWWrapper{v}, Namespaces: map[string]struct{}{}, DirectImports: &DirectImports{ns: map[*InternalNamespace]struct{}{}}}
-			e.Namespaces[v.tlName.Namespace] = struct{}{}
+			e.Namespaces[v.Namespace()] = struct{}{}
 			v.ins = e
 			internalNamespaces = append(internalNamespaces, e)
 		}
@@ -91,7 +91,7 @@ func (gen *Gen2) generateCodeGolang(bytesWhiteList []string) error {
 			if len(ins.Types) == 1 {
 				t := ins.Types[0]
 				ins.Name = "tl" + t.goGlobalName
-				ins.SubPath = "internal/tl" + t.tlName.Namespace + "/" + ins.Name
+				ins.SubPath = "internal/tl" + t.Namespace() + "/" + ins.Name
 				continue
 			}
 			sha := sha1.Sum([]byte(strings.Join(ins.sortedElements(), ":")))

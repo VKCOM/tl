@@ -106,9 +106,14 @@ type TypeRWWrapper struct {
 	hppDetailsFileName string
 	cppDetailsFileName string
 	groupName          string
+	typeComponent      int
 
+	// php info
 	phpInfo PhpClassMeta
 
+	originateFromTL2 bool
+
+	// tl1 info
 	tlTag  uint32     // TODO - turn into function
 	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation
 	origTL []*tlast.Combinator
@@ -119,13 +124,39 @@ type TypeRWWrapper struct {
 	WrLong        *TypeRWWrapper // long transitioning code
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 
-	typeComponent int
+	// tl2 info (if union is not nil otherwise check there)
+	tl2Name     tlast.TL2TypeName
+	tl2Origin   *tlast.TL2Combinator
+	tl2IsResult bool
+}
+
+func (wr *TypeRWWrapper) Namespace() string {
+	if wr.originateFromTL2 {
+		return wr.tl2Name.Namespace
+	} else {
+		return wr.tlName.Namespace
+	}
 }
 
 // Those have unique structure fully defined by the magic.
 // items with condition len(w.NatParams) == 0 could be serialized independently, but if there is several type instantiations,
 // they could not be distinguished by the magic. For example vector<int> and vector<long>.
-func (w *TypeRWWrapper) IsTopLevel() bool { return len(w.origTL[0].TemplateArguments) == 0 }
+func (w *TypeRWWrapper) IsTopLevel() bool {
+	if w.originateFromTL2 {
+		if w.unionParent == nil {
+			if w.tl2IsResult {
+				return false
+			}
+			if w.tl2Origin.IsFunction {
+				return true
+			}
+			return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
+		} else {
+			return false
+		}
+	}
+	return len(w.origTL[0].TemplateArguments) == 0
+}
 
 func (w *TypeRWWrapper) CanonicalStringTop() string {
 	return w.CanonicalString(len(w.origTL) <= 1) // single constructors, arrays and primitives are naturally bare, unions are naturally boxed
@@ -133,19 +164,36 @@ func (w *TypeRWWrapper) CanonicalStringTop() string {
 
 func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 	var s strings.Builder
-	if len(w.origTL) > 1 {
-		if bare {
-			panic("CanonicalString of bare union")
-		}
-		w.origTL[0].TypeDecl.Name.WriteString(&s)
-	} else if len(w.origTL) == 1 {
-		if bare {
-			w.origTL[0].Construct.Name.WriteString(&s)
+	if w.originateFromTL2 {
+		if w.unionParent == nil {
+			if w.tl2IsResult {
+				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
+			} else {
+				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
+			}
 		} else {
-			w.origTL[0].TypeDecl.Name.WriteString(&s)
+			originType := w.unionParent.wr.tl2Origin
+			if w.unionParent.wr.tl2IsResult {
+				s.WriteString(originType.FuncDecl.Name.String() + "__Result" + originType.FuncDecl.ReturnType.UnionType.Variants[w.unionIndex].Name)
+			} else {
+				s.WriteString(originType.TypeDecl.Name.String() + originType.TypeDecl.Type.UnionType.Variants[w.unionIndex].Name)
+			}
 		}
 	} else {
-		panic("all builtins are parsed from TL text, so must have exactly one constructor")
+		if len(w.origTL) > 1 {
+			if bare {
+				panic("CanonicalString of bare union")
+			}
+			w.origTL[0].TypeDecl.Name.WriteString(&s)
+		} else if len(w.origTL) == 1 {
+			if bare {
+				w.origTL[0].Construct.Name.WriteString(&s)
+			} else {
+				w.origTL[0].TypeDecl.Name.WriteString(&s)
+			}
+		} else {
+			panic("all builtins are parsed from TL text, so must have exactly one constructor")
+		}
 	}
 	if len(w.arguments) == 0 {
 		return s.String()
@@ -291,7 +339,11 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	for _, a := range w.arguments {
 		if a.isNat {
 			if a.isArith {
-				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+				if a.isTL2FakeArith {
+					b.WriteString("FakeUint32Max")
+				} else {
+					b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+				}
 			}
 		} else {
 			head, tail := a.tip.resolvedT2GoName(insideNamespace)
@@ -308,7 +360,14 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	if len(w.origTL) == 1 && (w.origTL[0].TypeDecl.Name.String() == "_" || w.origTL[0].IsFunction || w.unionParent != nil) {
 		return canonicalGoName(w.origTL[0].Construct.Name, insideNamespace), b.String()
 	}
-	return canonicalGoName(w.origTL[0].TypeDecl.Name, insideNamespace), b.String()
+	var typeName tlast.Name
+	if w.originateFromTL2 {
+		typeName.Name = w.tl2Name.Name
+		typeName.Namespace = w.tl2Name.Namespace
+	} else {
+		typeName = w.origTL[0].TypeDecl.Name
+	}
+	return canonicalGoName(typeName, insideNamespace), b.String()
 }
 
 // for golang cycle detection

@@ -116,6 +116,8 @@ type ResolvedArgument struct {
 	Arith   tlast.Arithmetic
 	tip     *TypeRWWrapper
 	bare    bool // vector Int is not the same as vector int, we must capture the difference somewhere
+
+	isTL2FakeArith bool // for only tl2 purposes
 }
 
 type ActualNatArg struct {
@@ -124,6 +126,8 @@ type ActualNatArg struct {
 	isField    bool // otherwise it is # param with name
 	FieldIndex int
 	name       string // param name
+
+	isTL2FakeArith bool // for only tl2 purposes
 }
 
 type HalfResolvedArgument struct { // TODO - better name
@@ -392,6 +396,10 @@ type Gen2 struct {
 	singleConstructors   map[string]*tlast.Combinator // only types with 1 constructor, no functions
 	allConstructors      map[string]*tlast.Combinator // for printing beautiful errors
 	allAnnotations       []string                     // position is bit
+
+	// parsed TL2
+	tl2Combinators      map[string]*tlast.TL2Combinator
+	tl2CombinatorsOrder map[string]int
 
 	// generation
 	builtinTypes       map[string]*TypeRWWrapper
@@ -2009,7 +2017,7 @@ func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 	return nil
 }
 
-func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
+func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, error) {
 	gen := &Gen2{
 		options:    &options,
 		Code:       map[string]string{},
@@ -2157,6 +2165,23 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			writeValue:        "basictl.StringWrite",
 			readValue:         "basictl.StringRead",
 		},
+	}
+	if gen.options.GenerateTL2 {
+		primitiveTypesList = append(primitiveTypesList, &TypeRWPrimitive{
+			tlType:            "uint32",
+			goType:            "uint32",
+			cppPrimitiveType:  "uint32_t",
+			cppDefaultInit:    " = 0",
+			cppFunctionSuffix: "nat",
+			cppResetValue:     "%s = 0;",
+			writeJSONValue:    "basictl.JSONWriteUint32",
+			readJSONValue:     gen.InternalPrefix() + "JsonReadUint32",
+			readJSON2Value:    gen.InternalPrefix() + "Json2ReadUint32",
+			resetValue:        "%s = 0",
+			randomValue:       "basictl.RandomUint",
+			writeValue:        "basictl.NatWrite",
+			readValue:         "basictl.NatRead",
+		})
 	}
 	builtinBeautifulText := fmt.Sprintf(`
 %s {n:#} {t:Type} n*[t] = _ n t; // builtin tuple
@@ -2313,6 +2338,11 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		return nil, err
 	}
 
+	err = gen.validateTL2AstAndCollectInfo(tl2)
+	if err != nil {
+		return nil, err
+	}
+
 	// Now we replace all builtin legitimate builtin wrapper constructors to constructors of builtins
 	// Int and %Int will reference wrappers, while int will reference builtin constructor.
 	// To avoid 2 canonical forms, resolveType will replace %Int to int for wrappers
@@ -2462,12 +2492,30 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			if !typ.IsFunction {
 				t = tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
 			}
+			if t.String() == "cases.TestInplaceStructArgs" {
+				//print("debug")
+			}
 			_, _, _, _, err = gen.getType(LocalResolveContext{allowAnyConstructor: true}, t, nil)
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
+
+	for _, combinator := range tl2.Combinators {
+		if combinator.HasAnnotation("tl1_diagonal") {
+			continue
+		}
+		ref := tlast.TL2TypeRef{SomeType: &tlast.TL2TypeApplication{Name: combinator.ReferenceName()}}
+		if !combinator.IsFunction && len(combinator.TypeDecl.TemplateArguments) > 0 {
+			continue
+		}
+		_, err = gen.genTypeTL2(ref)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	LegacyPrintGlobalMap()
 
 	bytesChildren := map[*TypeRWWrapper]bool{}
@@ -2482,6 +2530,9 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	typesCounterMarkTL2 := 0
 	for _, v := range gen.generatedTypesList {
 		if inNameFilter(v.tlName, tl2WhiteList) {
+			v.MarkWantsTL2(tl2Children)
+			typesCounterMarkTL2++
+		} else if v.wantsTL2 {
 			v.MarkWantsTL2(tl2Children)
 			typesCounterMarkTL2++
 		}
