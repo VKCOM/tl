@@ -9,6 +9,8 @@ import "time"
 
 import "strings"
 
+import "github.com/vkcom/tl/internal/tlast"
+
 import (
 	qtio422016 "io"
 
@@ -190,7 +192,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 	qw422016.N().S(`</h2>
 `)
 	if len(trww.origTL) == 1 && trww.origTL[0].CommentBefore != "" {
-		for _, line := range strings.Split(trww.origTL[0].CommentBefore, "\n") {
+		for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentBefore) {
 			qw422016.N().S(`    <code style="color:DarkCyan">`)
 			qw422016.E().S(line)
 			qw422016.N().S(`</code></br>
@@ -262,7 +264,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 `)
 			for i, field := range trw.Fields {
 				if field.origTL.CommentBefore != "" {
-					for _, line := range strings.Split(field.origTL.CommentBefore, "\n") {
+					for _, line := range tlast.SplitMultilineComment(field.origTL.CommentBefore) {
 						qw422016.N().S(`          <tr><td colspan="4">
             <code style="color:DarkCyan">`)
 						qw422016.E().S(line)
@@ -300,7 +302,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
           <td>
 `)
 				if field.origTL.CommentRight != "" {
-					for _, line := range strings.Split(field.origTL.CommentRight, "\n") {
+					for _, line := range tlast.SplitMultilineComment(field.origTL.CommentRight) {
 						qw422016.N().S(`    <code style="color:DarkCyan">`)
 						qw422016.E().S(line)
 						qw422016.N().S(`</code></td></tr><tr><td colspan="4">
@@ -323,7 +325,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 		qw422016.N().S(`</code>
 `)
 		if trww.origTL[0].CommentRight != "" {
-			for _, line := range strings.Split(trww.origTL[0].CommentRight, "\n") {
+			for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentRight) {
 				qw422016.N().S(`    <code style="color:DarkCyan">`)
 				qw422016.E().S(line)
 				qw422016.N().S(`</code></br>
@@ -376,7 +378,7 @@ func streamprintHTMLHelp(qw422016 *qt422016.Writer, gen *Gen2, trww *TypeRWWrapp
 			qw422016.N().S(`          <td>
 `)
 			if field.t.origTL[0].CommentRight != "" {
-				for _, line := range strings.Split(field.t.origTL[0].CommentRight, "\n") {
+				for _, line := range tlast.SplitMultilineComment(field.t.origTL[0].CommentRight) {
 					qw422016.N().S(`    <code style="color:DarkCyan">`)
 					qw422016.E().S(line)
 					qw422016.N().S(`</code></td></tr><tr><td colspan="3">

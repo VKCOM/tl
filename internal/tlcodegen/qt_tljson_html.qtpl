@@ -3,6 +3,7 @@
 {% import "fmt" %}
 {% import "time" %}
 {% import "strings" %}
+{% import "github.com/vkcom/tl/internal/tlast" %}
 
 {%- func tlJSON(gen *Gen2, tlgenVersion string) -%}
 <!DOCTYPE html>
@@ -105,7 +106,7 @@ Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as fiel
   -%}
 <h2 id="{%s trww.goGlobalName %}">{%s trww.JSONHelpString() %}</h2>
     {%- if len(trww.origTL) == 1 && trww.origTL[0].CommentBefore != "" -%}
-    {%- for _, line := range strings.Split(trww.origTL[0].CommentBefore, "\n") -%}
+    {%- for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentBefore) -%}
     <code style="color:DarkCyan">{%s line %}</code></br>
     {%- endfor -%}
     {%- endif -%}
@@ -151,7 +152,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
       <table>
       {%- for i, field := range trw.Fields -%}
             {%- if field.origTL.CommentBefore != "" -%}
-            {%- for _, line := range strings.Split(field.origTL.CommentBefore, "\n") -%}
+            {%- for _, line := range tlast.SplitMultilineComment(field.origTL.CommentBefore) -%}
           <tr><td colspan="4">
             <code style="color:DarkCyan">{%s line %}</code>
           </td></tr>
@@ -167,7 +168,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
           <td>{%= jsonCommentFieldMask(field.fieldMask, field.BitNumber, trw.Fields) %}</td>
           <td>
     {%- if field.origTL.CommentRight != "" -%}
-    {%- for _, line := range strings.Split(field.origTL.CommentRight, "\n") -%}
+    {%- for _, line := range tlast.SplitMultilineComment(field.origTL.CommentRight) -%}
     <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="4">
     {%- endfor -%}
     {%- endif -%}
@@ -181,7 +182,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
   <dd>
     <code>{%s trww.origTL[0].String() %}</code>
     {%- if trww.origTL[0].CommentRight != "" -%}
-    {%- for _, line := range strings.Split(trww.origTL[0].CommentRight, "\n") -%}
+    {%- for _, line := range tlast.SplitMultilineComment(trww.origTL[0].CommentRight) -%}
     <code style="color:DarkCyan">{%s line %}</code></br>
     {%- endfor -%}
     {%- endif -%}
@@ -204,7 +205,7 @@ External # (nat) arguments: <b>{%s strings.Join(trww.NatParams, ", ") %}</b>
             {%- endif -%}
           <td>
     {%- if field.t.origTL[0].CommentRight != "" -%}
-    {%- for _, line := range strings.Split(field.t.origTL[0].CommentRight, "\n") -%}
+    {%- for _, line := range tlast.SplitMultilineComment(field.t.origTL[0].CommentRight) -%}
     <code style="color:DarkCyan">{%s line %}</code></td></tr><tr><td colspan="3">
     {%- endfor -%}
     {%- endif -%}

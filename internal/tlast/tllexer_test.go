@@ -8,6 +8,7 @@ package tlast
 
 import (
 	"math/rand"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -64,6 +65,16 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 
 	t.Run("Full file", func(t *testing.T) {
 		str := combinedBytes
+		lex := newLexer(str, "", LexerOptions{})
+		tokens, err := lex.generateTokens()
+		require.NoError(t, err)
+		require.Equal(t, 0, countToken(tokens, undefined))
+		recombined := lex.recombineTokens()
+		require.Equal(t, str, recombined)
+	})
+
+	t.Run("Windows line ending", func(t *testing.T) {
+		str := strings.ReplaceAll(combinedBytes, "\n", "\r\n")
 		lex := newLexer(str, "", LexerOptions{})
 		tokens, err := lex.generateTokens()
 		require.NoError(t, err)
