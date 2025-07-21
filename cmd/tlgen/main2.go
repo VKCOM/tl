@@ -206,7 +206,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 	for _, path := range pathsTL2 {
 		tl2, err := parseTL2File(path, opt)
 		if err != nil {
-			return err
+			return fmt.Errorf("error while parsing %q: %s", path, err)
 		}
 		astTL2.Combinators = append(astTL2.Combinators, tl2.Combinators...)
 	}

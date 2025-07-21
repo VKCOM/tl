@@ -99,7 +99,7 @@ func ParseTL2File(str, file string, opts LexerOptions, errorWriter io.Writer) (t
 	}
 
 	it := tokenIterator{tokens: allTokens}
-	for !it.expect(eof) {
+	for !it.expectLazy(eof) {
 		var combinator TL2Combinator
 		combinator, it, err = parseTL2Combinator(it)
 		if err != nil {
@@ -214,7 +214,7 @@ func parseTL2FuncDeclarationWithoutName(tokens tokenIterator, position Position,
 		*result.ID = uint32(value)
 		result.PRID.End = restTokens.front().pos
 	} else {
-		state.StartProcessing = false
+		state.Fail("function must have magic")
 		return
 	}
 

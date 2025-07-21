@@ -117,9 +117,10 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 		if ta.IsNat {
 			if a.IsArith {
 				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-					isNat:   true,
-					isArith: true,
-					Arith:   a.Arith,
+					isNat:          true,
+					isArith:        true,
+					Arith:          a.Arith,
+					isTL2FakeArith: false,
 				})
 				halfResolved.Args = append(halfResolved.Args, HalfResolvedArgument{}) // Empty name here
 				continue
@@ -131,9 +132,10 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 					return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 				}
 				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-					isNat:   true, // true due to check above
-					isArith: localArg.natArg.isArith,
-					Arith:   localArg.natArg.Arith,
+					isNat:          true, // true due to check above
+					isArith:        localArg.natArg.isArith,
+					Arith:          localArg.natArg.Arith,
+					isTL2FakeArith: localArg.natArg.isTL2FakeArith,
 				})
 				halfResolved.Args = append(halfResolved.Args, HalfResolvedArgument{Name: aName})
 				if !localArg.natArg.isArith {
@@ -232,9 +234,10 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 				NamePR: a.PR,
 				TypePR: a.PR,
 				natArg: ActualNatArg{
-					isArith: ra.isArith,
-					Arith:   ra.Arith,
-					name:    a.FieldName,
+					isArith:        ra.isArith,
+					Arith:          ra.Arith,
+					name:           a.FieldName,
+					isTL2FakeArith: ra.isTL2FakeArith,
 				},
 			}
 			if !ra.isArith {
@@ -287,6 +290,13 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		myWrapper.tlTag = tlType[0].Crc32()
 		switch tlType[0].Construct.Name.String() { // TODO - better switch
 		case BuiltinTupleName:
+			// tl2 faking vector
+			if myWrapper.arguments[0].isArith && myWrapper.arguments[0].isTL2FakeArith {
+				myWrapper.arguments = myWrapper.arguments[1:]
+				_, tail := myWrapper.resolvedT2GoName("")
+				myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
+				return gen.GenerateVector(myWrapper, tlType[0], lrc, 1)
+			}
 			_, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinTuple" + tail)
 			// built-in tuple has no local name. TODO - invent one?
@@ -295,7 +305,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			_, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
 			// built-in vector has no local name. TODO - invent one?
-			return gen.GenerateVector(myWrapper, tlType[0], lrc)
+			return gen.GenerateVector(myWrapper, tlType[0], lrc, 0)
 		}
 		head, tail := myWrapper.resolvedT2GoName("")
 		myWrapper.goGlobalName = gen.globalDec.deconflictName(head + tail)
@@ -611,8 +621,8 @@ func (gen *Gen2) GenerateTuple(myWrapper *TypeRWWrapper, tlType *tlast.Combinato
 	return nil
 }
 
-func (gen *Gen2) GenerateVector(myWrapper *TypeRWWrapper, tlType *tlast.Combinator, lrc LocalResolveContext) error {
-	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[0].FieldName}} // TODO - PR
+func (gen *Gen2) GenerateVector(myWrapper *TypeRWWrapper, tlType *tlast.Combinator, lrc LocalResolveContext, vectorElementTypeIndex int) error {
+	elementT := tlast.TypeRef{Type: tlast.Name{Name: tlType.TemplateArguments[vectorElementTypeIndex].FieldName}} // TODO - PR
 	elementResolvedType, elementResolvedTypeBare, elementNatArgs, elementHalfResolved, err := gen.getType(lrc, elementT, nil)
 	if err != nil {
 		return err

@@ -3,1156 +3,747 @@ package tlcodegen
 import (
 	"fmt"
 	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
-	"golang.org/x/exp/slices"
-	"os"
-	"path/filepath"
-	"sort"
+	"math"
+	"strconv"
 	"strings"
 )
 
-type AstInfo struct {
-	AllNamesSorted  []string
-	AllConstructors map[string]*tlast.Combinator
-
-	BuiltInConstructors map[tlast.Name]bool
-	Types               map[tlast.Name][]*tlast.Combinator
-	// for non builtins
-	ConstructorToType map[tlast.Name]tlast.Name
-	Functions         []*tlast.Combinator
-}
-
-func initAstInfo(allConstructors map[string]*tlast.Combinator) AstInfo {
-	info := AstInfo{AllConstructors: allConstructors}
-	allTypes := utils.Keys(info.AllConstructors)
-
-	info.BuiltInConstructors = make(map[tlast.Name]bool)
-	info.Types = make(map[tlast.Name][]*tlast.Combinator)
-	info.ConstructorToType = make(map[tlast.Name]tlast.Name)
-
-	sort.Slice(allTypes, func(i, j int) bool {
-		hasNSi := strings.Contains(allTypes[i], ".")
-		hasNSj := strings.Contains(allTypes[j], ".")
-		if hasNSi == hasNSj {
-			return strings.Compare(allTypes[i], allTypes[j]) <= 0
-		} else {
-			return hasNSj
-		}
-	})
-
-	info.AllNamesSorted = allTypes
-	for _, name := range info.AllNamesSorted {
-		comb := info.AllConstructors[name]
-		if comb.Builtin {
-			info.BuiltInConstructors[comb.Construct.Name] = true
-		} else {
-			if comb.IsFunction {
-				info.Functions = append(info.Functions, comb)
-			} else {
-				info.ConstructorToType[comb.Construct.Name] = comb.TypeDecl.Name
-				info.Types[comb.TypeDecl.Name] = append(info.Types[comb.TypeDecl.Name], comb)
-			}
-		}
+func (gen *Gen2) validateTL2AstAndCollectInfo(tl2 tlast.TL2File) error {
+	if gen.tl2CombinatorsOrder == nil {
+		gen.tl2CombinatorsOrder = make(map[string]int)
+		gen.tl2Combinators = make(map[string]*tlast.TL2Combinator)
 	}
-	return info
-}
-
-func (ai AstInfo) TypeFromName(name tlast.Name) tlast.Name {
-	if typ, ok := ai.ConstructorToType[name]; ok {
-		return typ
-	} else {
-		return name
-	}
-}
-
-type MigratingPartInfo struct {
-	File string
-
-	CombinatorsToMigrate   []*tlast.Combinator
-	CombinatorsToReference []*tlast.Combinator
-}
-
-func (gen *Gen2) SplitMigratingTypes() ([]MigratingPartInfo, error) {
-	if !gen.options.TL2MigrateByNamespaces {
-		allConstructors := utils.Values(gen.allConstructors)
-		sort.Slice(allConstructors, func(i, j int) bool {
-			return allConstructors[i].OriginalOrderIndex < allConstructors[j].OriginalOrderIndex
-		})
-
-		return []MigratingPartInfo{
-			{
-				File:                 gen.options.TL2MigrationFile,
-				CombinatorsToMigrate: allConstructors,
-			},
-		}, nil
-	}
-
-	typesInfo := processCombinators(gen.allConstructors)
-
-	namespaceToReductions := make(map[string]map[string]*TypeReduction)
-	namespaceToTypes := make(map[string][]tlast.Name)
-	allReductions := make(map[string]*TypeReduction)
-	reductionToNamespaceUsages := make(map[string]map[string]bool)
-	reductionToNamespaceOrigin := make(map[string]string)
-
-	allTypes := utils.Keys(typesInfo.Types)
-	sort.Slice(allTypes, func(i, j int) bool {
-		return compareNames(allTypes[i], allTypes[j])
-	})
-
-	for _, name := range allTypes {
-		namespaceToTypes[name.Namespace] = append(namespaceToTypes[name.Namespace], name)
-	}
-
-	allNamespaces := utils.Keys(namespaceToTypes)
-	sort.Strings(allNamespaces)
-
-	for _, namespace := range allNamespaces {
-		typeReductions := make(map[string]*TypeReduction)
-		visitedTypes := make(map[TypeName]bool)
-
-		for _, name := range namespaceToTypes[namespace] {
-			comb := typesInfo.Types[name]
-			if len(comb.TypeArguments) != 0 {
-				continue
-			}
-			reduce(
-				TypeReduction{
-					IsType: true,
-					Type:   typesInfo.Types[comb.Name],
-				},
-				&typeReductions,
-				&typesInfo.Types,
-				&typesInfo.Constructors,
-				&visitedTypes,
+	for i, combinator := range tl2.Combinators {
+		s := combinator.ReferenceName().String()
+		if prevCombinator, ok := gen.tl2Combinators[s]; ok {
+			return tlast.BeautifulError2(
+				combinator.ReferenceNamePR().BeautifulError(fmt.Errorf("this definition of combinator is duplicated")),
+				prevCombinator.ReferenceNamePR().BeautifulError(fmt.Errorf("first apperance")),
 			)
-			if len(comb.Constructors) == 1 && comb.Constructors[0].Result != nil {
-				resultRed := typesInfo.ResultTypeReduction(&TypeReduction{
-					IsType:      false,
-					Constructor: comb.Constructors[0],
-				})
-				reduce(
-					*resultRed.Type,
-					&typeReductions,
-					&typesInfo.Types,
-					&typesInfo.Constructors,
-					&visitedTypes,
-				)
-			}
 		}
-
-		namespaceToReductions[namespace] = typeReductions
-		for s, reduction := range typeReductions {
-			allReductions[s] = reduction
-		}
-	}
-
-	// view results
-	if true {
-		file, _ := os.Create("./reductions.txt")
-
-		namespaces := utils.Keys(namespaceToReductions)
-		sort.Strings(namespaces)
-
-		for _, namespace := range namespaces {
-			fmt.Fprintf(file, ">>> %s\n", namespace)
-
-			reductions := utils.Keys(namespaceToReductions[namespace])
-			sort.Strings(reductions)
-
-			for _, reduction := range reductions {
-				fmt.Fprintf(file, "%s\n", reduction)
-			}
-		}
-
-	}
-
-	for ns, reds := range namespaceToReductions {
-		for red, redType := range reds {
-			if _, ok := reductionToNamespaceUsages[red]; !ok {
-				reductionToNamespaceUsages[red] = make(map[string]bool)
-			}
-			reductionToNamespaceUsages[red][ns] = true
-			reductionToNamespaceOrigin[red] = redType.ReferenceName().Namespace
-		}
-	}
-
-	// view results
-	if true {
-		file2, _ := os.Create("./common_reductions.txt")
-		filter := true
-
-		if filter {
-			fmt.Fprintf(file2, "Filter to show only reductions in multiple namespaces\n")
-		}
-
-		reds := utils.Keys(reductionToNamespaceUsages)
-		sort.Strings(reds)
-
-		for _, red := range reds {
-			nss := utils.Keys(reductionToNamespaceUsages[red])
-			if filter {
-				if len(nss) < 2 {
-					continue
-				}
-			}
-
-			sort.Strings(nss)
-
-			fmt.Fprintf(file2, ">>> %s: [", red)
-			for _, ns := range nss {
-				if ns == "" {
-					ns = "__empty"
-				}
-				fmt.Fprintf(file2, "%s,", ns)
-			}
-
-			fmt.Fprintf(file2, "]\n")
-		}
-	}
-
-	filter := prepareNameFilter(gen.options.TL2MigratingWhitelist)
-	referencingConstructors := make(map[string]map[string]*tlast.Combinator)
-	migratingConstructors := make(map[string]map[string]*tlast.Combinator)
-
-	for s, combinator := range gen.allConstructors {
-		consideredName := combinator.TypeDecl.Name
-		if combinator.IsFunction || combinator.Builtin {
-			consideredName = combinator.Construct.Name
-		}
-		if inNameFilter(consideredName, filter) {
-			if _, ok := migratingConstructors[consideredName.Namespace]; !ok {
-				migratingConstructors[consideredName.Namespace] = make(map[string]*tlast.Combinator)
-			}
-			migratingConstructors[consideredName.Namespace][s] = combinator
-		}
-	}
-
-	migratingNamespaces := utils.Keys(migratingConstructors)
-	sort.Strings(migratingNamespaces)
-
-	for _, ns := range migratingNamespaces {
-		for red, redType := range namespaceToReductions[ns] {
-			origin := reductionToNamespaceOrigin[red]
-			if _, ok := migratingConstructors[origin]; !ok {
-				refName := redType.ReferenceName().String()
-				if refConstructor, ok := gen.allConstructors[refName]; ok {
-					if _, ok := referencingConstructors[origin]; !ok {
-						referencingConstructors[origin] = make(map[string]*tlast.Combinator)
-					}
-					referencingConstructors[origin][refName] = refConstructor
-				}
-			}
-		}
-	}
-
-	absentNamespaceDependencies := make(map[string]map[string]bool)
-
-	for _, ns := range allNamespaces {
-		if _, ok := migratingConstructors[ns]; ok {
-			continue
-		}
-		for red := range namespaceToReductions[ns] {
-			origin := reductionToNamespaceOrigin[red]
-			if _, ok := migratingConstructors[origin]; ok {
-				if _, ok := absentNamespaceDependencies[origin]; !ok {
-					absentNamespaceDependencies[origin] = make(map[string]bool)
-				}
-				absentNamespaceDependencies[origin][ns] = true
-			}
-		}
-	}
-
-	if len(absentNamespaceDependencies) != 0 {
-		errorText := strings.Builder{}
-		errorText.WriteString("can't migrate current set of namespaces, cause non-migrating namespaces below depends on them:\n{\n")
-
-		keys := utils.Keys(absentNamespaceDependencies)
-		sort.Strings(keys)
-
-		for i, key := range keys {
-			deps := utils.Keys(absentNamespaceDependencies[key])
-			sort.Strings(deps)
-
-			errorText.WriteString(fmt.Sprintf("\t\"%s\": [", key))
-			for j, dep := range deps {
-				errorText.WriteString(fmt.Sprintf("\"%s\"", dep))
-				if j != len(deps)-1 {
-					errorText.WriteString(",")
-				}
-			}
-			errorText.WriteString("]")
-			if i != len(keys)-1 {
-				errorText.WriteString(",")
-			}
-			errorText.WriteString("\n")
-		}
-
-		errorText.WriteString("}\n(add depended namespaces to whitelist or remove unnecessary ones)")
-		return nil, fmt.Errorf(errorText.String())
-	}
-
-	affectedNamespaces := utils.SliceToSet(utils.Keys(referencingConstructors))
-	utils.AppendMap(
-		utils.SliceToSet(utils.Keys(migratingConstructors)),
-		&affectedNamespaces,
-	)
-
-	results := make([]MigratingPartInfo, 0)
-
-	affectedNamespacesList := utils.Keys(affectedNamespaces)
-	sort.Strings(affectedNamespacesList)
-
-	for _, ns := range affectedNamespacesList {
-		nsFileName := ns
-		if nsFileName == "" {
-			nsFileName = "__common_namespace"
-		}
-		newInfo := MigratingPartInfo{File: filepath.Join(gen.options.TL2MigrationFile, "namespaces", nsFileName+".tl2")}
-		nsRefConstructors := referencingConstructors[ns]
-
-		constructors := utils.Keys(nsRefConstructors)
-		slices.SortFunc(constructors, func(a, b string) int {
-			return nsRefConstructors[a].OriginalOrderIndex - nsRefConstructors[b].OriginalOrderIndex
-		})
-
-		for _, constructor := range constructors {
-			newInfo.CombinatorsToReference = append(newInfo.CombinatorsToReference, nsRefConstructors[constructor])
-		}
-
-		nsMigratingConstructors := migratingConstructors[ns]
-		constructors = utils.Keys(nsMigratingConstructors)
-		slices.SortFunc(constructors, func(a, b string) int {
-			return nsMigratingConstructors[a].OriginalOrderIndex - nsMigratingConstructors[b].OriginalOrderIndex
-		})
-
-		for _, constructor := range constructors {
-			newInfo.CombinatorsToMigrate = append(newInfo.CombinatorsToMigrate, nsMigratingConstructors[constructor])
-		}
-
-		results = append(results, newInfo)
-	}
-
-	return results, nil
-}
-
-type FileToWrite struct {
-	Path string
-	Ast  tlast.TL2File
-}
-
-func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, _ error) {
-	parts, err := gen.SplitMigratingTypes()
-	if err != nil {
-		return nil, err
-	}
-
-	prevTypeTL2Info := getTypesInfoFromTL2State(prevState)
-
-	info := initAstInfo(gen.allConstructors)
-	associatedWrappers := make(map[*tlast.Combinator][]*TypeRWWrapper)
-	associatedCombinator := make(map[tlast.Name]*tlast.Combinator)
-
-	for _, wrapper := range gen.generatedTypesList {
-		for _, combinator := range wrapper.origTL {
-			if combinator.IsFunction {
-				continue
-			}
-			associatedWrappers[combinator] = append(associatedWrappers[combinator], wrapper)
-		}
-	}
-
-	for _, combinator := range gen.allConstructors {
-		// constructor name
-		associatedCombinator[combinator.Construct.Name] = combinator
-		// type name if presented
-		if !combinator.Builtin {
-			associatedCombinator[combinator.TypeDecl.Name] = combinator
-		}
-	}
-
-	var combinedTL tlast.TL = utils.Values(info.AllConstructors)
-	natUsage := checkNatUsages(&combinedTL)
-
-	typeNames := utils.Keys(info.Types)
-	sort.Slice(typeNames, func(i, j int) bool {
-		return compareNames(typeNames[i], typeNames[j])
-	})
-
-	lowerFirst := func(s string) string {
-		if s == "" {
-			return s
-		}
-		return strings.ToLower(s[:1]) + s[1:]
-	}
-
-	upperFirst := func(s string) string {
-		if s == "" {
-			return s
-		}
-		return strings.ToUpper(s[:1]) + s[1:]
-	}
-
-	var resolveType func(ref tlast.TypeRef, natIsConstant map[string]bool, natTemples map[string]bool) (newRef tlast.TL2TypeRef)
-	resolveType = func(ref tlast.TypeRef, natIsConstant map[string]bool, natTemples map[string]bool) (newRef tlast.TL2TypeRef) {
-		if ref.Type.String() == "#" {
-			newRef.SomeType = &tlast.TL2TypeApplication{
-				Name: tlast.TL2TypeName{
-					Name: "uint32",
-				},
-			}
-			return
-		}
-		comb := associatedCombinator[ref.Type]
-		if comb != nil {
-			tname := info.TypeFromName(ref.Type)
-			isBracket := false
-			if len(associatedWrappers[comb]) > 0 {
-				wrapper := associatedWrappers[comb][0]
-				_, isBracket = wrapper.trw.(*TypeRWBrackets)
-			} else {
-				isBracket = comb.Builtin && (comb.Construct.Name.String() == BuiltinTupleName ||
-					comb.Construct.Name.String() == BuiltinVectorName)
-			}
-			if isBracket {
-				newRef.IsBracket = true
-				newRef.BracketType = new(tlast.TL2BracketType)
-				arrayIndex := 0
-				if len(ref.Args) == 2 {
-					arrayIndex = 1
-					indexType := ref.Args[0]
-					if indexType.IsArith {
-						newRef.BracketType.IndexType = new(tlast.TL2TypeArgument)
-						newRef.BracketType.IndexType.IsNumber = true
-						newRef.BracketType.IndexType.Number = indexType.Arith.Res
-					} else if natIsConstant[indexType.String()] {
-						newRef.BracketType.IndexType = new(tlast.TL2TypeArgument)
-						newRef.BracketType.IndexType.Type.SomeType = &tlast.TL2TypeApplication{
-							Name: tlast.TL2TypeName{
-								Name: lowerFirst(indexType.T.Type.Name),
-							},
-						}
-					}
-				}
-				newRef.BracketType.ArrayType = resolveType(ref.Args[arrayIndex].T, natIsConstant, natTemples)
-			} else {
-				newRef.SomeType = &tlast.TL2TypeApplication{
-					Name: tlast.TL2TypeName{
-						Namespace: tname.Namespace,
-						Name:      lowerFirst(tname.Name),
-					},
-				}
-				for i, arg := range ref.Args {
-					if arg.IsArith || natTemples[arg.String()] {
-						if arg.IsArith || natIsConstant[arg.String()] {
-							newRef.SomeType.Name.Name += "_" + upperFirst(associatedCombinator[ref.Type].TemplateArguments[i].FieldName)
-						} else {
-							continue
-						}
-					}
-					newArg := tlast.TL2TypeArgument{}
-					if arg.IsArith {
-						newArg.IsNumber = true
-						newArg.Number = arg.Arith.Res
-					} else {
-						newArg.Type = resolveType(arg.T, natIsConstant, natTemples)
-					}
-					newRef.SomeType.Arguments = append(newRef.SomeType.Arguments, newArg)
-				}
-			}
-		} else {
-			newRef.SomeType = &tlast.TL2TypeApplication{
-				Name: tlast.TL2TypeName{
-					Name: lowerFirst(ref.Type.Name),
-				},
-			}
-		}
-		return
-	}
-
-	addFields := func(oldFields []tlast.Field, natIsConstant map[string]bool, natTemples map[string]bool) (newFields []tlast.TL2Field) {
-		natTemples = utils.CopyMap(natTemples)
-		for _, field := range oldFields {
-			newField := tlast.TL2Field{}
-			// name
-			newField.Name = lowerFirst(field.FieldName)
-			if newField.Name == "" {
-				newField.Name = "_"
-				newField.IsIgnored = true
-			}
-			// if it has field mask
-			if field.Mask != nil {
-				newField.IsOptional = true
-				if !field.IsRepeated {
-					comb := associatedCombinator[field.FieldType.Type]
-					if comb != nil && len(associatedWrappers[comb]) > 0 {
-						wrapper := associatedWrappers[comb][0]
-						if _, ok := wrapper.trw.(*TypeRWBool); ok {
-							newField.IsOptional = false
-							newField.Type.SomeType = &tlast.TL2TypeApplication{
-								Name: tlast.TL2TypeName{Name: "maybe"},
-								Arguments: []tlast.TL2TypeArgument{
-									{
-										Type: tlast.TL2TypeRef{
-											SomeType: &tlast.TL2TypeApplication{
-												Name: tlast.TL2TypeName{Name: "bool"},
-											},
-										},
-									},
-								},
-							}
-							newFields = append(newFields, newField)
-							continue
-						}
-					}
-				}
-			}
-			calculatingType := &newField.Type
-			// if is repeated
-			if field.IsRepeated {
-				newField.Type.IsBracket = true
-				newField.Type.BracketType = new(tlast.TL2BracketType)
-				calculatingType = &newField.Type.BracketType.ArrayType
-				if !field.ScaleRepeat.ExplicitScale {
-					newField.Type.BracketType.IndexType = nil
-				} else {
-					newField.Type.BracketType.IndexType = new(tlast.TL2TypeArgument)
-					if field.ScaleRepeat.Scale.IsArith {
-						newField.Type.BracketType.IndexType.IsNumber = true
-						newField.Type.BracketType.IndexType.Number = field.ScaleRepeat.Scale.Arith.Res
-					} else {
-						newField.Type.BracketType.IndexType.Type.SomeType = &tlast.TL2TypeApplication{
-							Name: tlast.TL2TypeName{Name: lowerFirst(field.ScaleRepeat.Scale.Scale)},
-						}
-					}
-				}
-			}
-			// calculate type
-			*calculatingType = resolveType(field.FieldType, natIsConstant, natTemples)
-			// advance context
-			if field.FieldType.String() == "#" {
-				natTemples[field.FieldName] = true
-			}
-			// add comment
-			newField.CommentBefore = field.CommentBefore
-			if field.CommentRight != "" {
-				if newField.CommentBefore != "" {
-					newField.CommentBefore += "\n"
-				}
-				newField.CommentBefore += field.CommentRight
-			}
-			newFields = append(newFields, newField)
-		}
-		return
-	}
-
-	getOrder := func(name tlast.Name) int {
-		combinators := info.Types[name]
-		minIndex := combinators[0].OriginalOrderIndex
-		for _, combinator := range combinators {
-			if combinator.OriginalOrderIndex < minIndex {
-				minIndex = combinator.OriginalOrderIndex
-			}
-		}
-		return minIndex
-	}
-
-	for _, part := range parts {
-		file := tlast.TL2File{}
-
-		localConstructors := make(map[string]*tlast.Combinator)
-		referencingConstructors := make(map[string]bool)
-
-		for _, combinator := range part.CombinatorsToMigrate {
-			localConstructors[combinator.Construct.Name.String()] = combinator
-		}
-		for _, combinator := range part.CombinatorsToReference {
-			localConstructors[combinator.Construct.Name.String()] = combinator
-			referencingConstructors[combinator.Construct.Name.String()] = true
-		}
-
-		localInfo := initAstInfo(localConstructors)
-		localTypeNames := utils.Keys(localInfo.Types)
-		sort.Slice(localTypeNames, func(i, j int) bool {
-			return compareNames(localTypeNames[i], localTypeNames[j])
-		})
-
-		originalOrderTypeNames := slices.Clone(localTypeNames)
-		sort.Slice(originalOrderTypeNames, func(i, j int) bool {
-			return getOrder(originalOrderTypeNames[i]) < getOrder(originalOrderTypeNames[j])
-		})
-
-		for _, name := range originalOrderTypeNames {
-			combinators := info.Types[name]
-			if len(combinators) == 0 {
-				continue
-			}
-			combinator0 := combinators[0]
-
-			// basic info
-			baseName := tlast.TL2TypeName{Namespace: name.Namespace, Name: lowerFirst(name.Name)}
-			isRef := referencingConstructors[combinator0.Construct.Name.String()]
-
-			combinatorConstableArgs := make(map[int]bool)
-			minimalConstableArgsSubSet := make(map[int]bool)
-
-			for i, argument := range combinator0.TemplateArguments {
-				if argument.IsNat {
-					influencedNats := natUsage.GetInfluencedNatFieldsToTemplate(combinator0.TypeDecl.Name, i)
-
-					usedAsConst := len(natUsage.GetConstantsPassingThroughArgument(name, i)) > 0
-					usedAsUnknownValue := len(influencedNats) > 0
-					if usedAsConst {
-						combinatorConstableArgs[i] = true
-					}
-					// it used for constants only
-					if !usedAsUnknownValue && usedAsConst {
-						minimalConstableArgsSubSet[i] = true
-					}
-				}
-			}
-
-			allConstableArgsSubSets := utils.SetSubSets(combinatorConstableArgs)
-			allConstableArgsSubSets = utils.FilterSlice(
-				allConstableArgsSubSets,
-				func(m map[int]bool) bool {
-					for i := range minimalConstableArgsSubSet {
-						if !m[i] {
-							return false
-						}
-					}
-					return true
-				},
-			)
-
-			if baseName.String() == "vector" {
-				//print("debug")
-			}
-
-			// add from previous state
-			for _, combinator := range prevTypeTL2Info[baseName] {
-				inheritedSubSet := make(map[int]bool)
-				for i, argument := range combinator.TypeDecl.TemplateArguments {
-					if argument.Category.IsUint32() {
-						inheritedSubSet[i] = true
-					}
-				}
-				inheritedSubSetList := utils.Keys(inheritedSubSet)
-				sort.Ints(inheritedSubSetList)
-				if !slices.ContainsFunc(allConstableArgsSubSets, func(m map[int]bool) bool {
-					l := utils.Keys(m)
-					sort.Ints(l)
-					return slices.Equal(inheritedSubSetList, l)
-				}) {
-					allConstableArgsSubSets = append(allConstableArgsSubSets, inheritedSubSet)
-				}
-			}
-
-			// sort them
-			sort.Slice(allConstableArgsSubSets, func(i, j int) bool {
-				if len(allConstableArgsSubSets[i]) == len(allConstableArgsSubSets[j]) {
-					iList := utils.Keys(allConstableArgsSubSets[i])
-					sort.Ints(iList)
-					jList := utils.Keys(allConstableArgsSubSets[j])
-					sort.Ints(jList)
-					return slices.Compare(iList, jList) <= 0
-				}
-				return len(allConstableArgsSubSets[i]) <= len(allConstableArgsSubSets[j])
-			})
-
-			for _, setOfConstantNatArgs := range allConstableArgsSubSets {
-				tl2Combinator := tlast.TL2Combinator{IsFunction: false}
-				// init name
-				tl2Combinator.TypeDecl.Name = baseName
-
-				if tl2Combinator.TypeDecl.Name.String() == "dictionary" {
-					//print("debug")
-				}
-
-				constantArgs := utils.Keys(setOfConstantNatArgs)
-				sort.Ints(constantArgs)
-				for _, arg := range constantArgs {
-					tl2Combinator.TypeDecl.Name.Name += "_" + upperFirst(combinator0.TypeDecl.Arguments[arg])
-				}
-				// add annotations
-				if isRef {
-					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "tl1"})
-				}
-				if len(constantArgs) != 0 {
-					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "tl2ext"})
-				}
-
-				// init templates
-				natTemplates := make(map[string]bool)
-				natIsConstant := make(map[string]bool)
-				generic := make(map[string]bool)
-
-				for i, argument := range combinator0.TemplateArguments {
-					category := "type"
-					if argument.IsNat {
-						category = "uint32"
-						natTemplates[argument.FieldName] = true
-						if !setOfConstantNatArgs[i] {
-							continue
-						}
-						natIsConstant[argument.FieldName] = true
-					} else {
-						generic[argument.FieldName] = true
-					}
-
-					tl2Combinator.TypeDecl.TemplateArguments = append(tl2Combinator.TypeDecl.TemplateArguments,
-						tlast.TL2TypeTemplate{
-							Name:     lowerFirst(argument.FieldName),
-							Category: tlast.TL2TypeCategory(category),
-						},
+		if !combinator.IsFunction {
+			visitedTypeArgNames := make(map[string]tlast.PositionRange)
+			for _, argument := range combinator.TypeDecl.TemplateArguments {
+				if pr, ok := visitedTypeArgNames[argument.Name]; ok {
+					return tlast.BeautifulError2(
+						argument.PRName.BeautifulError(fmt.Errorf("name repeats several times (all names must be unique)")),
+						pr.BeautifulError(fmt.Errorf("first apperance")),
 					)
 				}
-				//// init magic
-				//if combinator0.Construct.ID != nil {
-				//	tl2Combinator.TypeDecl.ID = new(uint32)
-				//	*tl2Combinator.TypeDecl.ID = *combinator0.Construct.ID
-				//}
-
-				if !isRef {
-					if len(combinators) == 1 {
-						if len(combinator0.Fields) == 1 && combinator0.Fields[0].FieldName == "" {
-							tl2Combinator.TypeDecl.Type.TypeAlias = resolveType(combinator0.Fields[0].FieldType, natIsConstant, natTemplates)
-						} else {
-							tl2Combinator.TypeDecl.Type.IsConstructorFields = true
-							tl2Combinator.TypeDecl.Type.ConstructorFields = addFields(combinator0.Fields, natIsConstant, natTemplates)
-						}
-					} else {
-						tl2Combinator.TypeDecl.Type.IsUnionType = true
-						for _, combinator := range combinators {
-							newVariant := tlast.TL2UnionConstructor{}
-							newVariant.Name = upperFirst(combinator.Construct.Name.Name)
-							if len(combinator.Fields) == 1 && combinator.Fields[0].FieldName == "" {
-								newVariant.IsTypeAlias = true
-								newVariant.TypeAlias = resolveType(combinator.Fields[0].FieldType, natIsConstant, natTemplates)
-							} else {
-								newVariant.IsTypeAlias = false
-								newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
-							}
-							tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
-						}
-					}
-				} else {
-					tl2Combinator.TypeDecl.Type.IsConstructorFields = true
-				}
-
-				if isRef {
-					tl2Combinator.CommentBefore = fmt.Sprintf("// original:%s", combinator0.TypeDecl.Name.String())
-				} else {
-					// add comment
-					tl2Combinator.CommentBefore = combinator0.CommentBefore
-					if combinator0.CommentRight != "" {
-						if tl2Combinator.CommentBefore != "" {
-							tl2Combinator.CommentBefore += "\n"
-						}
-						tl2Combinator.CommentBefore += combinator0.CommentRight
-					}
-				}
-				file.Combinators = append(file.Combinators, tl2Combinator)
+				visitedTypeArgNames[argument.Name] = argument.PRName
 			}
 		}
-
-		orderedFunctions := slices.Clone(localInfo.Functions)
-		sort.Slice(orderedFunctions, func(i, j int) bool {
-			return orderedFunctions[i].OriginalOrderIndex < orderedFunctions[j].OriginalOrderIndex
-		})
-
-		for _, function := range orderedFunctions {
-			tl2Combinator := tlast.TL2Combinator{IsFunction: true}
-			// add modifiers
-			for _, modifier := range function.Modifiers {
-				tl2Combinator.Annotations = append(tl2Combinator.Annotations,
-					tlast.TL2Annotation{
-						Name: modifier.Name,
-					},
-				)
-			}
-			if len(function.TemplateArguments) > 0 {
-				tl2Combinator.Annotations = append(tl2Combinator.Annotations,
-					tlast.TL2Annotation{
-						Name: "tl1_diagonal",
-					},
-				)
-			}
-			// add name
-			tl2Combinator.FuncDecl.Name = tlast.TL2TypeName{
-				Namespace: function.Construct.Name.Namespace,
-				Name:      lowerFirst(function.Construct.Name.Name),
-			}
-			// add magic
-			if function.Construct.ID != nil {
-				tl2Combinator.FuncDecl.ID = new(uint32)
-				*tl2Combinator.FuncDecl.ID = *function.Construct.ID
-			}
-			if len(function.TemplateArguments) == 0 {
-				// add arguments
-				tl2Combinator.FuncDecl.Arguments = addFields(function.Fields, make(map[string]bool), make(map[string]bool))
-				// add return type
-				nats := make(map[string]bool)
-				for _, field := range function.Fields {
-					if field.FieldType.String() == "#" {
-						nats[field.FieldName] = true
-					}
-				}
-				tl2Combinator.FuncDecl.ReturnType = tlast.TL2TypeDefinition{
-					TypeAlias: resolveType(function.FuncDecl, make(map[string]bool), nats),
-				}
-			}
-			// add comment
-			tl2Combinator.CommentBefore = function.CommentBefore
-			if function.CommentRight != "" {
-				if tl2Combinator.CommentBefore != "" {
-					tl2Combinator.CommentBefore += "\n"
-				}
-				tl2Combinator.CommentBefore += function.CommentRight
-			}
-			file.Combinators = append(file.Combinators, tl2Combinator)
-		}
-
-		newState = append(newState, FileToWrite{Path: part.File, Ast: file})
+		gen.tl2CombinatorsOrder[s] = i
+		gen.tl2Combinators[s] = &tl2.Combinators[i]
 	}
-
-	printDebugInfo(associatedWrappers, natUsage, info)
-
-	return gen.MergeMigrationState(prevState, newState)
+	return nil
 }
 
-func (gen *Gen2) MergeMigrationState(oldState, newState []FileToWrite) ([]FileToWrite, error) {
-	if !gen.options.TL2MigrateByNamespaces || !gen.options.TL2ContinuousMigration {
-		return newState, nil
-	}
+type ResolvedTL2References struct {
+	ResolvedTypes map[string]tlast.TL2TypeRef
+	ResolvedNats  map[string]uint32
+}
 
-	resultingState := make([]FileToWrite, 0)
-
-	presentingNewFiles := make(map[string]FileToWrite)
-	presentingOldFiles := make(map[string]FileToWrite)
-
-	for _, file := range oldState {
-		presentingOldFiles[file.Path] = file
-	}
-
-	for _, file := range newState {
-		presentingNewFiles[file.Path] = file
-	}
-
-	// in old but not in new
-	for path, file := range presentingOldFiles {
-		if _, ok := presentingNewFiles[path]; !ok {
-			resultingState = append(resultingState, file)
+func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tlast.TL2TypeRef, err error) {
+	newRef.PR = ref.PR
+	if ref.IsBracket {
+		newRef.IsBracket = true
+		if ref.BracketType == nil {
+			err = ref.PR.BeautifulError(fmt.Errorf("no bracket parsed"))
+			return
 		}
-	}
+		newRef.BracketType = new(tlast.TL2BracketType)
+		oldBracket := ref.BracketType
+		newBracket := newRef.BracketType
 
-	// in new but not in old
-	for path, file := range presentingNewFiles {
-		if _, ok := presentingOldFiles[path]; !ok {
-			resultingState = append(resultingState, file)
-		}
-	}
+		newBracket.PR = oldBracket.PR
 
-	// in both
-	for path, oldFile := range presentingOldFiles {
-		if newFile, ok := presentingNewFiles[path]; ok {
-			resultingFile, err := gen.mergeTL2Files(oldFile.Ast, newFile.Ast)
-			if err != nil {
-				return nil, err
+		if oldBracket.IndexType != nil {
+			newBracket.IndexType = new(tlast.TL2TypeArgument)
+
+			oldIndex := oldBracket.IndexType
+			newIndex := newBracket.IndexType
+
+			newIndex.PR = oldIndex.PR
+
+			if oldIndex.IsNumber {
+				newIndex.IsNumber = true
+				newIndex.Number = oldIndex.Number
+			} else {
+				newIndex.Type, err = rtl2c.resolveRef(oldIndex.Type)
+				if err != nil {
+					return
+				}
 			}
-			resultingState = append(resultingState, FileToWrite{Path: path, Ast: resultingFile})
 		}
-	}
+		newBracket.ArrayType, err = rtl2c.resolveRef(oldBracket.ArrayType)
+		if err != nil {
+			return
+		}
+	} else {
+		oldType := ref.SomeType
+		if oldType == nil {
+			err = ref.PR.BeautifulError(fmt.Errorf("expected type to be parsed"))
+			return
+		}
+		tp := ref.SomeType
+		refName := tp.Name
+		if resolvedRef, ok := rtl2c.ResolvedTypes[refName.String()]; ok {
+			if len(tp.Arguments) != 0 {
+				err = tp.PRArguments.BeautifulError(fmt.Errorf("generic type can't have arguments"))
+				return
+			}
+			newRef = resolvedRef
+			return
+		}
+		if _, ok := rtl2c.ResolvedNats[refName.String()]; ok {
+			err = tp.PRArguments.BeautifulError(fmt.Errorf("reference to number generic can't be type"))
+			return
+		}
 
-	sort.Slice(resultingState, func(i, j int) bool {
-		return strings.Compare(resultingState[i].Path, resultingState[j].Path) > 0
-	})
+		newRef.SomeType = new(tlast.TL2TypeApplication)
+		newType := newRef.SomeType
 
-	return resultingState, nil
-}
+		newType.Name = oldType.Name
+		newType.PRName = oldType.PRName
+		newType.PRArguments = oldType.PRArguments
 
-type TL2CombinatorIndexed struct {
-	Name       tlast.TL2TypeName
-	Combinator tlast.TL2Combinator
+		for i, argument := range oldType.Arguments {
+			newType.Arguments = append(newType.Arguments, tlast.TL2TypeArgument{})
+			newType.Arguments[i].PR = argument.PR
 
-	Index int
-}
-
-func indexCombinators(file tlast.TL2File) (result []TL2CombinatorIndexed) {
-	result = make([]TL2CombinatorIndexed, len(file.Combinators))
-	for i, combinator := range file.Combinators {
-		result[i].Index = i
-		result[i].Combinator = combinator
-		result[i].Name = combinator.TypeDecl.Name
-		if combinator.IsFunction {
-			result[i].Name = combinator.FuncDecl.Name
+			if argument.IsNumber {
+				newType.Arguments[i].IsNumber = true
+				newType.Arguments[i].Number = argument.Number
+			} else {
+				if !argument.Type.IsBracket {
+					if argument.Type.SomeType == nil {
+						err = ref.PR.BeautifulError(fmt.Errorf("expected type to be parsed"))
+						return
+					}
+					if resolvedNumber, ok := rtl2c.ResolvedNats[argument.Type.SomeType.Name.String()]; ok {
+						newType.Arguments[i].IsNumber = true
+						newType.Arguments[i].Number = resolvedNumber
+						continue
+					}
+				}
+				newType.Arguments[i].Type, err = rtl2c.resolveRef(argument.Type)
+				if err != nil {
+					return
+				}
+			}
 		}
 	}
 	return
 }
 
-func id[T any](x T) T { return x }
+func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error) {
+	reduction := resolvedRef.String()
+	if wr, ok := gen.generatedTypes[reduction]; ok {
+		return wr, nil
+	}
+	if pr, ok := gen.builtinTypes[reduction]; ok {
+		return pr, nil
+	}
+	kernelType := TypeRWWrapper{
+		gen:              gen,
+		originateFromTL2: true,
+		wantsTL2:         true,
+	}
 
-func (gen *Gen2) mergeTL2Files(oldFile, newFile tlast.TL2File) (tlast.TL2File, error) {
-	resultingMapping := make(map[tlast.TL2TypeName]TL2CombinatorIndexed)
+	if !gen.isTL1Ref(resolvedRef) {
+		gen.generatedTypes[reduction] = &kernelType
+		gen.generatedTypesList = append(gen.generatedTypesList, &kernelType)
+	}
 
-	oldCombs := indexCombinators(oldFile)
-	newCombs := indexCombinators(newFile)
+	if resolvedRef.IsBracket {
+		if resolvedRef.BracketType == nil {
+			return nil, resolvedRef.PR.BeautifulError(fmt.Errorf("expected bracket type declaration but it wasn't parsed"))
+		}
+		return gen.genBracketTypeTL2(&kernelType, *resolvedRef.BracketType)
+	}
+	if resolvedRef.SomeType == nil {
+		return nil, resolvedRef.PR.BeautifulError(fmt.Errorf("expected reference to type but it wasn't parsed"))
+	}
+	typeApplication := *resolvedRef.SomeType
+	name := typeApplication.Name
+	comb, ok := gen.tl2Combinators[name.String()]
+	if !ok {
+		return nil, typeApplication.PRName.BeautifulError(fmt.Errorf("reference to unknown type %q", name))
+	}
+	if comb.IsFunction {
+		return gen.genFunctionTL2(&kernelType, comb)
+	}
+	typeDeclaration := comb.TypeDecl
+	if len(typeApplication.Arguments) != len(typeDeclaration.TemplateArguments) {
+		return nil, tlast.BeautifulError2(
+			typeApplication.PRArguments.BeautifulError(
+				fmt.Errorf("unexpected number of type arguments (%d instead if %d)",
+					len(typeApplication.Arguments),
+					len(typeDeclaration.TemplateArguments),
+				),
+			),
+			typeDeclaration.PR.BeautifulError(fmt.Errorf("original")),
+		)
+	}
 
-	getName := func(c TL2CombinatorIndexed) tlast.TL2TypeName { return c.Name }
+	argNamespaces := map[string]struct{}{}
+	resolveMapping := ResolvedTL2References{
+		ResolvedNats:  map[string]uint32{},
+		ResolvedTypes: map[string]tlast.TL2TypeRef{},
+	}
 
-	oldMapping := utils.SliceToMap(oldCombs, getName, id[TL2CombinatorIndexed])
-	newMapping := utils.SliceToMap(newCombs, getName, id[TL2CombinatorIndexed])
+	for i, argument := range typeDeclaration.TemplateArguments {
+		actualArg := typeApplication.Arguments[i]
+		if argument.Category.IsUint32() {
+			if !actualArg.IsNumber {
+				return nil, actualArg.PR.BeautifulError(fmt.Errorf("by definition of this type here can be either number or generic if uint32"))
+			}
+			resolveMapping.ResolvedNats[argument.Name] = actualArg.Number
+			kernelType.arguments = append(kernelType.arguments, ResolvedArgument{isNat: true, isArith: true, Arith: tlast.Arithmetic{Res: actualArg.Number}})
+		} else if argument.Category.IsType() {
+			if actualArg.IsNumber {
+				return nil, actualArg.PR.BeautifulError(fmt.Errorf("by definition of this type here can be only type reference"))
+			}
+			resolveMapping.ResolvedTypes[argument.Name] = actualArg.Type
+			wr, err := gen.genTypeTL2(actualArg.Type)
+			if err != nil {
+				return nil, err
+			}
+			_, isUnion := wr.trw.(*TypeRWUnion)
+			kernelType.arguments = append(kernelType.arguments, ResolvedArgument{tip: wr, bare: !isUnion})
+			collectArgsNamespaces(wr, argNamespaces)
+		}
+	}
 
-	oldNames := utils.Keys(oldMapping)
-	newNames := utils.Keys(newMapping)
+	if comb.HasAnnotation("tl1") {
+		if comb.TypeDecl.Name.String() == "vector" {
+			print("debug")
+			print("\n")
+		}
+		kernelType.originateFromTL2 = false
 
-	intersection := utils.SetIntersection(
-		utils.SliceToSet(oldNames),
-		utils.SliceToSet(newNames),
-	)
-
-	for name := range intersection {
-		options := tlast.NewCanonicalFormatOptions()
-
-		oldComb := oldMapping[name]
-		newComb := newMapping[name]
-
-		oldStr := strings.Builder{}
-		newStr := strings.Builder{}
-
-		oldComb.Combinator.Print(&oldStr, options)
-		newComb.Combinator.Print(&newStr, options)
-
-		if oldStr.String() == newStr.String() {
-			resultingMapping[name] = newMapping[name]
-		} else {
-			oldIsRef := oldComb.Combinator.HasAnnotation("tl1")
-			newIsRef := newComb.Combinator.HasAnnotation("tl1")
-
-			if oldIsRef && !newIsRef {
-				resultingMapping[name] = newMapping[name]
-			} else {
-				return tlast.TL2File{}, fmt.Errorf("can't continue migration due to incompetible versions to \"%s\"", name)
+		notParsedError := comb.TypeDecl.PRName.BeautifulError(fmt.Errorf("can't find reference to tl1-type"))
+		comment, found := "", false
+		for _, line := range strings.Split(comb.CommentBefore, "\n") {
+			comment, found = strings.CutPrefix(line, "// tlgen:tl1type:")
+			if found {
+				comment = strings.TrimSpace(comment)
+				break
 			}
 		}
+
+		if !found {
+			return nil, notParsedError
+		}
+
+		comment, found = strings.CutPrefix(comment, "\"")
+		if !found {
+			return nil, notParsedError
+		}
+		comment, found = strings.CutSuffix(comment, "\"")
+		if !found {
+			return nil, notParsedError
+		}
+
+		parts := strings.Split(comment, " ")
+		if len(parts) == 0 {
+			return nil, notParsedError
+		}
+		typeNamespace := ""
+		typeName := parts[0]
+		if i := strings.Index(typeName, "."); i != -1 {
+			typeNamespace = typeName[:i]
+			typeName = typeName[i+1:]
+		}
+		tl1Ref := tlast.TypeRef{
+			Type: TypeName{Namespace: typeNamespace, Name: typeName},
+		}
+		tl1Context := LocalResolveContext{
+			localTypeArgs: map[string]LocalTypeArg{},
+			localNatArgs:  map[string]LocalNatArg{},
+		}
+		for _, arg := range parts[1:] {
+			tl1Ref.Args = append(tl1Ref.Args, tlast.ArithmeticOrType{T: tlast.TypeRef{Type: TypeName{Name: arg}}})
+			tl2Arg := strings.ToLower(arg[:1]) + arg[1:]
+			if number, ok := resolveMapping.ResolvedNats[tl2Arg]; ok {
+				tl1Context.localNatArgs[arg] = LocalNatArg{
+					natArg: ActualNatArg{
+						isArith: true,
+						Arith: tlast.Arithmetic{
+							Nums: []uint32{number},
+							Res:  number,
+						},
+						isField: false,
+					},
+				}
+			} else if ref, ok := resolveMapping.ResolvedTypes[tl2Arg]; ok {
+				wr, err := gen.genTypeTL2(ref)
+				if err != nil {
+					return nil, err
+				}
+				_, isUnion := wr.trw.(*TypeRWUnion)
+				tl1Context.localTypeArgs[tl2Arg] = LocalTypeArg{
+					arg: ResolvedArgument{
+						tip:  wr,
+						bare: !isUnion,
+					},
+				}
+			} else {
+				// make it fake number
+				tl1Context.localNatArgs[arg] = LocalNatArg{
+					natArg: ActualNatArg{
+						isArith: true,
+						Arith: tlast.Arithmetic{
+							Nums: []uint32{math.MaxUint32},
+							Res:  math.MaxUint32,
+						},
+						isField:        false,
+						isTL2FakeArith: true,
+					},
+				}
+			}
+		}
+		wr, _, _, _, err := gen.getType(tl1Context, tl1Ref, nil)
+		wr.wantsTL2 = true
+		return wr, err
 	}
 
-	union := utils.SetUnion(
-		utils.SliceToSet(oldNames),
-		utils.SliceToSet(newNames),
+	// some namespace optimization
+	replaceNamespace := func(n string) *Namespace {
+		newNamespace := n
+		if n == "" && len(argNamespaces) == 1 {
+			for ns := range argNamespaces {
+				newNamespace = ns
+			}
+		}
+		return gen.getNamespace(newNamespace)
+	}
+	argTail := kernelType.wrapperNameTail()
+
+	// calculate exact type
+	if comb.TypeDecl.Name.String() == "a.t5" {
+		print("debug")
+		print("\n")
+	}
+	kernelType.tl2Name = comb.TypeDecl.Name
+	kernelType.tl2Origin = comb
+	kernelType.ns = replaceNamespace(comb.TypeDecl.Name.Namespace)
+	kernelType.ns.types = append(kernelType.ns.types, &kernelType)
+	kernelType.fileName = comb.TypeDecl.Name.String()
+	kernelType.goLocalName, kernelType.goGlobalName = getCombinatorNames(*comb, argTail)
+
+	var err error
+	err = gen.genTypeDeclaration(&kernelType, comb.TypeDecl.Type, resolveMapping, resolvedRef)
+
+	return &kernelType, err
+}
+
+func (gen *Gen2) genTypeDeclaration(
+	kernelType *TypeRWWrapper,
+	typeDecl tlast.TL2TypeDefinition,
+	resolveMapping ResolvedTL2References,
+	originalRef tlast.TL2TypeRef,
+) error {
+	argTail := kernelType.wrapperNameTail()
+
+	switch {
+	case typeDecl.IsUnionType:
+		union := TypeRWUnion{
+			wr:     kernelType,
+			Fields: []Field{},
+			IsEnum: false,
+		}
+		kernelType.trw = &union
+		hasNonEnum := false
+		for i, variant := range typeDecl.UnionType.Variants {
+			if !variant.IsTypeAlias {
+				hasNonEnum = hasNonEnum || len(variant.Fields) > 0
+			}
+			variantType := TypeRWStruct{}
+			variantWrapper := TypeRWWrapper{
+				gen: gen,
+				trw: &variantType,
+
+				ns: kernelType.ns,
+
+				originateFromTL2: true,
+				wantsTL2:         true,
+
+				fileName: kernelType.fileName,
+
+				unionParent: &union,
+				unionIndex:  i,
+			}
+			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
+			variantType.wr = &variantWrapper
+			field := Field{
+				originalName: variant.Name,
+
+				t: &variantWrapper,
+			}
+			var err error
+			variantWrapper.goLocalName, variantWrapper.goGlobalName, field.goName, err = getVariantNames(kernelType.tl2Name, variant, argTail)
+
+			currentRef := originalRef
+			currentRef.SomeType = new(tlast.TL2TypeApplication)
+			*currentRef.SomeType = *originalRef.SomeType
+			currentRef.SomeType.Name.Name = originalRef.SomeType.Name.Name + variant.Name
+
+			variantReduction := currentRef.String()
+			gen.generatedTypes[variantReduction] = &variantWrapper
+			gen.generatedTypesList = append(gen.generatedTypesList, &variantWrapper)
+
+			if err != nil {
+				return err
+			}
+			if variant.IsTypeAlias {
+				resolvedTypedef, err := resolveMapping.resolveRef(variant.TypeAlias)
+				if err != nil {
+					return err
+				}
+				typeDefWr, err := gen.genTypeTL2(resolvedTypedef)
+				if err != nil {
+					return err
+				}
+				variantType.Fields = append(variantType.Fields, Field{})
+				variantType.Fields[0].t = typeDefWr
+				_, isUnion := typeDefWr.trw.(*TypeRWUnion)
+				variantType.Fields[0].bare = !isUnion
+			} else {
+				err = gen.genFields(resolveMapping, &variantType.Fields, variant.Fields)
+				if err != nil {
+					return err
+				}
+			}
+
+			_, isUnion := field.t.trw.(*TypeRWUnion)
+			field.bare = !isUnion
+			union.Fields = append(union.Fields, field)
+		}
+		union.IsEnum = !hasNonEnum
+	case typeDecl.IsConstructorFields:
+		strct := TypeRWStruct{
+			wr:     kernelType,
+			Fields: []Field{},
+		}
+		kernelType.trw = &strct
+		err := gen.genFields(resolveMapping, &strct.Fields, typeDecl.ConstructorFields)
+		if err != nil {
+			return err
+		}
+	default:
+		kernelInterface := TypeRWStruct{
+			wr: kernelType,
+			Fields: []Field{
+				{
+					originalName: "",
+				},
+			},
+		}
+		kernelType.trw = &kernelInterface
+		resolvedTypedef, err := resolveMapping.resolveRef(typeDecl.TypeAlias)
+		if err != nil {
+			return err
+		}
+		typeDefWr, err := gen.genTypeTL2(resolvedTypedef)
+		if err != nil {
+			return err
+		}
+		_, isUnion := typeDefWr.trw.(*TypeRWUnion)
+		kernelInterface.Fields[0].t = typeDefWr
+		kernelInterface.Fields[0].bare = !isUnion
+	}
+
+	return nil
+}
+
+func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field, refFields []tlast.TL2Field) error {
+	for _, refField := range refFields {
+		// init
+		field := Field{
+			originalName: refField.Name,
+			goName:       snakeToCamelCase(refField.Name),
+		}
+		// add fieldmask
+		if refField.IsOptional {
+			field.fieldMask = new(ActualNatArg)
+			field.fieldMask.isField = true
+			field.fieldMask.FieldIndex = -1
+		}
+		// add type
+		resolvedRefType, err := resolveMapping.resolveRef(refField.Type)
+		if err != nil {
+			return err
+		}
+		field.t, err = gen.genTypeTL2(resolvedRefType)
+		if err != nil {
+			return err
+		}
+		_, isUnion := field.t.trw.(*TypeRWUnion)
+		field.bare = !isUnion
+		*fields = append(*fields, field)
+	}
+	return nil
+}
+
+func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combinator) (wr *TypeRWWrapper, err error) {
+	// set up wrapper
+	kernelType.tl2Name = comb.FuncDecl.Name
+	kernelType.tl2Origin = comb
+	kernelType.tlTag = *comb.FuncDecl.ID
+
+	kernelType.ns = gen.getNamespace(comb.FuncDecl.Name.Namespace)
+	kernelType.ns.types = append(kernelType.ns.types, kernelType)
+	kernelType.fileName = comb.FuncDecl.Name.String()
+	kernelType.goLocalName, kernelType.goGlobalName = getCombinatorNames(*comb, "")
+
+	functionType := TypeRWStruct{
+		wr: kernelType,
+	}
+	kernelType.trw = &functionType
+
+	err = gen.genFields(
+		ResolvedTL2References{
+			ResolvedNats:  map[string]uint32{},
+			ResolvedTypes: map[string]tlast.TL2TypeRef{},
+		},
+		&functionType.Fields,
+		comb.FuncDecl.Arguments,
 	)
 
-	for name := range union {
-		if _, ok := intersection[name]; ok {
-			continue
-		}
-		if comb, ok := oldMapping[name]; ok {
-			resultingMapping[name] = comb
-			continue
-		}
-		if comb, ok := newMapping[name]; ok {
-			resultingMapping[name] = comb
-			continue
-		}
+	if err != nil {
+		return nil, err
 	}
 
-	combs := utils.Values(resultingMapping)
-	sort.Slice(combs, func(i, j int) bool {
-		_, isOldI := oldMapping[combs[i].Name]
-		_, isOldJ := oldMapping[combs[j].Name]
+	// set up wrapper for result
+	functionType.ResultType = &TypeRWWrapper{
+		gen: gen,
+		ns:  gen.getNamespace(comb.FuncDecl.Name.Namespace),
 
-		if isOldI == isOldJ {
-			return combs[i].Index <= combs[j].Index
+		goGlobalName: kernelType.goGlobalName + "Result",
+		goLocalName:  kernelType.goLocalName + "Result",
+
+		fileName: kernelType.fileName,
+
+		originateFromTL2: true,
+		wantsTL2:         true,
+
+		tl2IsResult: true,
+		tl2Name: tlast.TL2TypeName{
+			Namespace: kernelType.tl2Name.Namespace,
+			Name:      kernelType.tl2Name.Name + "Result",
+		},
+		tl2Origin: kernelType.tl2Origin,
+	}
+	functionType.ResultType.ns.types = append(functionType.ResultType.ns.types, functionType.ResultType)
+
+	gen.generatedTypes[functionType.ResultType.goGlobalName] = functionType.ResultType
+	gen.generatedTypesList = append(gen.generatedTypesList, functionType.ResultType)
+
+	err = gen.genTypeDeclaration(
+		functionType.ResultType,
+		comb.FuncDecl.ReturnType,
+		ResolvedTL2References{
+			ResolvedNats:  map[string]uint32{},
+			ResolvedTypes: map[string]tlast.TL2TypeRef{},
+		},
+		tlast.TL2TypeRef{
+			SomeType: &tlast.TL2TypeApplication{
+				Name: functionType.ResultType.tl2Name,
+			},
+		},
+	)
+
+	return kernelType, err
+}
+
+func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2BracketType) (*TypeRWWrapper, error) {
+	var err error
+	bracketType := TypeRWBrackets{
+		wr: kernelType,
+	}
+	kernelType.trw = &bracketType
+
+	elementRef := &bracketType.element
+	if br.IndexType != nil {
+		if br.IndexType.IsNumber {
+			bracketType.dynamicSize = false
+			bracketType.size = br.IndexType.Number
+
+			kernelType.goLocalName, kernelType.goGlobalName = "BuiltinTuple", "BuiltinTuple"
+			kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
+				isNat:   true,
+				isArith: true,
+				Arith:   tlast.Arithmetic{Res: bracketType.size},
+			})
 		} else {
-			return isOldI
+			bracketType.dictLike = true
+			bracketType.dictKeyField = Field{goName: "Key"}
+			bracketType.dictKeyField.t, err = gen.genTypeTL2(br.IndexType.Type)
+			if err != nil {
+				return nil, err
+			}
+
+			if pr, ok := bracketType.dictKeyField.t.trw.(*TypeRWPrimitive); ok && pr.goType == "string" {
+				bracketType.dictKeyString = true
+			}
+
+			_, isUnion := bracketType.dictKeyField.t.trw.(*TypeRWUnion)
+			kernelType.goLocalName, kernelType.goGlobalName = "BuiltinMap", "BuiltinMap"
+			kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
+				isNat:   false,
+				isArith: false,
+				tip:     bracketType.dictKeyField.t,
+				bare:    !isUnion,
+			})
+			elementRef = &bracketType.dictValueField
 		}
+	} else {
+		bracketType.vectorLike = true
+		kernelType.goLocalName, kernelType.goGlobalName = "BuiltinVector", "BuiltinVector"
+	}
+
+	elementRef.goName = "Value"
+	elementRef.t, err = gen.genTypeTL2(br.ArrayType)
+	if err != nil {
+		return nil, err
+	}
+
+	_, isUnion := elementRef.t.trw.(*TypeRWUnion)
+	kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
+		isNat:   false,
+		isArith: false,
+		tip:     elementRef.t,
+		bare:    !isUnion,
 	})
 
-	file := tlast.TL2File{}
-	for _, comb := range combs {
-		file.Combinators = append(file.Combinators, comb.Combinator)
-	}
+	kernelType.goLocalName += kernelType.wrapperNameTail()
+	kernelType.goGlobalName += kernelType.wrapperNameTail()
 
-	return file, nil
+	kernelType.ns = elementRef.t.ns
+	kernelType.ns.types = append(kernelType.ns.types, kernelType)
+	kernelType.fileName = elementRef.t.fileName
+
+	return kernelType, nil
 }
 
-func getTypesInfoFromTL2State(state []FileToWrite) map[tlast.TL2TypeName][]tlast.TL2Combinator {
-	result := make(map[tlast.TL2TypeName][]tlast.TL2Combinator)
-	for _, file := range state {
-		for _, combinator := range file.Ast.Combinators {
-			if combinator.IsFunction {
-				continue
-			}
-			name := combinator.TypeDecl.Name
-			if name.String() == "vector" {
-				//print("debug")
-			}
-			if combinator.HasAnnotation("tl2ext") {
-				suffix := ""
-				for _, argument := range combinator.TypeDecl.TemplateArguments {
-					if argument.Category.IsUint32() {
-						suffix += "_" + strings.ToUpper(argument.Name[:1]) + argument.Name[1:]
-					}
-				}
-				name.Name, _ = strings.CutSuffix(name.Name, suffix)
-			}
-			result[name] = append(result[name], combinator)
+func snakeToCamelCase(s string) string {
+	parts := strings.Split(s, "_")
+	newS := ""
+	for _, part := range parts {
+		if len(part) > 0 {
+			newS += strings.ToUpper(part[:1]) + part[1:]
 		}
 	}
-	return result
+	return strings.ToUpper(newS[:1]) + newS[1:]
 }
 
-func printDebugInfo(associatedWrappers map[*tlast.Combinator][]*TypeRWWrapper, natUsage NatUsagesInfo, info AstInfo) {
-	// print for debug
-	if false {
-		for combinator, wrappers := range associatedWrappers {
-			fmt.Println(">>>>>")
-			fmt.Println(combinator)
-			fmt.Printf("[info] isBuiltin:%t, isFunction:%t\n", combinator.Builtin, combinator.IsFunction)
-			fmt.Println("[")
-			for _, wrapper := range wrappers {
-				fmt.Print("\t")
-				fmt.Print(wrapper.goGlobalName)
-				fmt.Println(",")
-			}
-			fmt.Println("]")
-		}
-	}
-
-	// print for debug
-	if false {
-		for name, m := range natUsage.TypeNameAndArgToAffectingConstants {
-			fmt.Printf(">>>>>>\n%s: \n[\n", name)
-			for index, cs := range m {
-				fmt.Printf("\t%d: [", index)
-				for c := range cs {
-					fmt.Printf("%d, ", c)
-				}
-				fmt.Printf("],\n")
-			}
-			fmt.Print("]\n")
-		}
-	}
-
-	// print for debug
-	if false {
-		var tl tlast.TL = utils.Values(info.AllConstructors)
-		sort.Slice(tl, func(i, j int) bool {
-			return compareNames(tl[i].Construct.Name, tl[j].Construct.Name)
-		})
-		fmt.Println(tl)
-	}
-
-	// print for debug
-	if false {
-		for tp, args := range natUsage.TypeArgumentToArraySizeReference {
-			fmt.Printf(">>>>>>\n%s:\n[\n", tp.String())
-			for arg, refs := range args {
-				fmt.Printf("\t%d: [\n", arg)
-				for ref, fields := range refs {
-					for field, path := range fields {
-						pathStr := ""
-						for _, edge := range path {
-							pathStr += fmt.Sprintf(" <- ((%s, %d), %d)", edge.Type, edge.ArgIndex, edge.FieldIndex)
-						}
-						fmt.Printf("\t\t(\"%s\", %d)%s,\n", ref.String(), field, pathStr)
-					}
-				}
-				fmt.Println("\t],")
-			}
-			fmt.Println("]")
-		}
-	}
-
-	// print for debug
-	if false {
-		//file, _ := os.Open("usages.json")
-		currefs := natUsage.CombinatorsNatFieldsToArraySizeReference
-
-		tps := utils.Keys(currefs)
-		sort.Slice(tps, func(i, j int) bool {
-			return compareNames(tps[i], tps[j])
-		})
-
-		for _, tp := range tps {
-			args := utils.Keys(currefs[tp])
-			sort.Ints(args)
-
-			fmt.Printf("<<<<<<\n%s:\n[\n", tp.String())
-			for arg := range args {
-				refs := currefs[tp][arg]
-
-				refsKeys := utils.Keys(refs)
-				sort.Slice(refsKeys, func(i, j int) bool {
-					return compareNames(refsKeys[i], refsKeys[j])
-				})
-
-				fmt.Printf("\t%d: [\n", arg)
-				for _, ref := range refsKeys {
-					fields := refs[ref]
-
-					fieldsKeys := utils.Keys(fields)
-					sort.Ints(fieldsKeys)
-
-					for _, field := range fieldsKeys {
-						path := fields[field]
-						pathStr := ""
-						for _, edge := range path {
-							pathStr += fmt.Sprintf(" <- ((%s, %d), %d)", edge.Type, edge.ArgIndex, edge.FieldIndex)
-						}
-						fmt.Printf("\t\t(\"%s\", %d)%s,\n", ref.String(), field, pathStr)
-					}
-				}
-				fmt.Println("\t],")
-			}
-			fmt.Println("]")
-		}
-
-		fmt.Printf("List to remove deps (%d): [\n", len(tps))
-		for _, tp := range tps {
-			fmt.Printf("\t%s,\n", tp)
-		}
-		fmt.Println("]")
-	}
-
-	// print for debug
-	if false {
-		fmt.Println("--------")
-
-		for comb, fields := range natUsage.CombinatorsNatFieldIndexToBitsUsed {
-			for field, bits := range fields {
-				if len(bits) == 0 {
-					continue
-				}
-				sizeRefs := natUsage.GetArraySizeReferenceForField(comb, field)
-				if len(sizeRefs) != 0 {
-					fmt.Printf("WARNING: %s's field #%d is used as a field mask and as array size !!!!!\n", comb.String(), field)
-				}
+func getCombinatorNames(combinator tlast.TL2Combinator, argTail string) (localName string, globalName string) {
+	tn := combinator.ReferenceName()
+	if combinator.HasAnnotation("tl2ext") {
+		suffix := ""
+		for _, argument := range combinator.TypeDecl.TemplateArguments {
+			if argument.Category.IsUint32() {
+				suffix += "_" + strings.ToUpper(argument.Name[:1]) + argument.Name[1:]
 			}
 		}
-
-		fmt.Println("--------")
-
-		for typ, args := range natUsage.TypeNameAndArgIndexToBitsUsedByNat {
-			for arg, bits := range args {
-				if len(bits) == 0 {
-					continue
-				}
-				sizeRefs := natUsage.GetArgumentUsagesAsSize(typ, arg)
-				if len(sizeRefs) != 0 {
-					fmt.Printf("WARNING: %s's template argument #%d is used as a field mask and as array size !!!!!\n", typ.String(), arg)
-				}
-			}
-		}
+		tn.Name, _ = strings.CutSuffix(tn.Name, suffix)
 	}
+	return getTypeNames(tn, argTail)
 }
 
-func compareNames(name1, name2 tlast.Name) bool {
-	emptyI, emptyJ := name1.Namespace == "", name2.Namespace == ""
-	if emptyI == emptyJ {
-		return strings.Compare(name1.String(), name2.String()) <= 0
+func getTypeNames(tl2Name tlast.TL2TypeName, argTail string) (localName string, globalName string) {
+	tName := tl2Name.Name
+	tNs := tl2Name.Namespace
+	return snakeToCamelCase(tName) + argTail, snakeToCamelCase(tNs+"_"+tName) + argTail
+}
+
+func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstructor, argTail string) (localName string, globalName string, fieldName string, err error) {
+	comment, found := "", false
+	for _, line := range strings.Split(constructor.CommentBefore, "\n") {
+		comment, found = strings.CutPrefix(line, "// tlgen:tl1name:")
+		if found {
+			comment = strings.TrimSpace(comment)
+			break
+		}
+	}
+
+	if found {
+		comment, found = strings.CutPrefix(comment, "\"")
+		if !found {
+			err = fmt.Errorf("wrong format for tl1name reference: no open quote")
+			return
+		}
+		comment, found = strings.CutSuffix(comment, "\"")
+		if !found {
+			err = fmt.Errorf("wrong format for tl1name reference: no close quote")
+			return
+		}
+	}
+
+	if found {
+		tl1Namespace, tl1Name := "", comment
+		if strings.Contains(tl1Name, ".") {
+			tl1Namespace, tl1Name, _ = strings.Cut(tl1Name, ".")
+		}
+		localName, globalName = getTypeNames(
+			tlast.TL2TypeName{
+				Namespace: tl1Namespace,
+				Name:      tl1Name,
+			},
+			argTail,
+		)
+		nameSuffix := tl1Name
+		if strings.HasPrefix(strings.ToLower(tl1Name), strings.ToLower(tl2Name.Name)) {
+			nameSuffix = tl1Name[len(tl2Name.Name):]
+		}
+		fieldName = snakeToCamelCase(nameSuffix)
+		return
 	} else {
-		return emptyI
+		localName, globalName = getTypeNames(
+			tlast.TL2TypeName{
+				Namespace: tl2Name.Namespace,
+				Name:      tl2Name.Name + "_" + constructor.Name,
+			},
+			argTail,
+		)
+		fieldName = snakeToCamelCase(constructor.Name)
+		return
 	}
+}
+
+func (w *TypeRWWrapper) wrapperNameTail() (tail string) {
+	b := strings.Builder{}
+	for _, a := range w.arguments {
+		if a.isNat {
+			if a.isTL2FakeArith {
+				b.WriteString("FakeUint32Max")
+			} else {
+				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
+			}
+		} else {
+			b.WriteString(a.tip.goGlobalName)
+		}
+	}
+	return b.String()
+}
+
+func (gen *Gen2) isTL1Ref(ref tlast.TL2TypeRef) bool {
+	if ref.IsBracket {
+		return false
+	}
+	if ref.SomeType == nil {
+		return false
+	}
+	typeApplication := *ref.SomeType
+	name := typeApplication.Name
+	comb, ok := gen.tl2Combinators[name.String()]
+	if !ok {
+		return false
+	}
+	if comb.IsFunction {
+		return false
+	}
+	return comb.HasAnnotation("tl1")
 }

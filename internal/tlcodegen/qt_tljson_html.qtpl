@@ -31,6 +31,9 @@
     <h1>Functions</h1>
     <ul>
   {%- for _, trww := range gen.generatedTypesList -%}
+    {%- if trww.originateFromTL2 -%}
+        {%- continue -%}
+    {%- endif -%}
     {%- if fun, ok := trww.trw.(*TypeRWStruct); ok && fun.ResultType != nil -%}
       <li>
         <a href="#{%s trww.goGlobalName %}">
@@ -44,6 +47,9 @@
 <h2 id="#">#</h2>
 Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
   {%- for _, trww := range gen.generatedTypesList -%}
+    {%- if trww.originateFromTL2 -%}
+        {%- continue -%}
+    {%- endif -%}
 {%= printHTMLHelp(gen, trww) %}
   {%- endfor -%}
   </body>

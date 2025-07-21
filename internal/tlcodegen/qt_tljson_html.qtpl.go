@@ -63,6 +63,9 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, tlgenVersion string) {
     <ul>
 `)
 	for _, trww := range gen.generatedTypesList {
+		if trww.originateFromTL2 {
+			continue
+		}
 		if fun, ok := trww.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			qw422016.N().S(`      <li>
         <a href="#`)
@@ -84,6 +87,9 @@ func streamtlJSON(qw422016 *qt422016.Writer, gen *Gen2, tlgenVersion string) {
 Builtin type <code>#</code>. Represents <code>uint32</code>. Can be used as field mask or collection size.
 `)
 	for _, trww := range gen.generatedTypesList {
+		if trww.originateFromTL2 {
+			continue
+		}
 		streamprintHTMLHelp(qw422016, gen, trww)
 		qw422016.N().S(`
 `)
