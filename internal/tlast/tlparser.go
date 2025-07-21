@@ -6,6 +6,8 @@
 
 package tlast
 
+import "strings"
+
 const ContactAuthorsString = "please check/create issue with example https://github.com/VKCOM/tl/issues" // TODO move to better place
 
 type Name struct {
@@ -139,4 +141,10 @@ func (a Arithmetic) IsEmpty() bool {
 
 func (sf ScaleFactor) IsEmpty() bool {
 	return sf.Arith.IsEmpty() && sf.Scale == ""
+}
+
+// we support windows-style line separators
+func SplitMultilineComment(comment string) []string {
+	rep := strings.ReplaceAll(comment, "\r\n", "\n")
+	return strings.Split(rep, "\n")
 }

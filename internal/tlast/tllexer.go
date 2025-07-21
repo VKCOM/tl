@@ -26,6 +26,7 @@ const (
 	ucIdentNS        = -12
 	eof              = -13 // so we always have next token in array
 	functionSign     = -14 // greedy => symbol
+	newLine          = -15
 )
 
 const (
@@ -44,7 +45,6 @@ const (
 	percentSign    = '%'
 	whiteSpace     = ' '
 	tab            = '\t'
-	newLine        = '\n'
 	equalSign      = '='
 	questionMark   = '?'
 	asterisk       = '*'
@@ -237,12 +237,6 @@ func (l *lexer) checkPrimitive() bool {
 		commaSign, verticalBar:
 		l.advance(1, int(c))
 		return true
-	case newLine:
-		l.advance(1, int(c))
-		l.position.line++
-		l.position.column = 1
-		l.position.startLineOffset = l.position.offset
-		return true
 	default:
 		return false
 	}
@@ -251,6 +245,22 @@ func (l *lexer) checkPrimitive() bool {
 func (l *lexer) nextToken() error {
 	switch {
 	case l.checkPrimitive():
+		return nil
+	case l.str[0] == '\r':
+		if strings.HasPrefix(l.str, "\r\n") {
+			l.advance(2, newLine)
+			l.position.line++
+			l.position.column = 1
+			l.position.startLineOffset = l.position.offset
+			return nil
+		}
+		tok := l.advance(1, undefined)
+		return parseErrToken(fmt.Errorf("carriage-return (\\r) must be followed by line-feed (\\n)"), tok, tok.pos)
+	case l.str[0] == '\n':
+		l.advance(1, newLine)
+		l.position.line++
+		l.position.column = 1
+		l.position.startLineOffset = l.position.offset
 		return nil
 	case l.str[0] == '=':
 		if strings.HasPrefix(l.str, "=>") {

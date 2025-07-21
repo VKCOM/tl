@@ -264,3 +264,9 @@ hren2 a:(foo  (((((2))))) )= Hren;
 		}
 	})
 }
+
+func TestSplitMultilineComment(t *testing.T) {
+	lines := SplitMultilineComment("hren\r\nvam\npopolam\n\r\n\r\n")
+	result := []string{"hren", "vam", "popolam", "", "", ""}
+	require.Equal(t, lines, result)
+}
