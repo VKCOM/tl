@@ -49,6 +49,9 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
 {%= union.generateConstructorsBehavior(bytesVersion, directImports) %}
 
 func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if union.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     var tag uint32
     if w, err = basictl.NatRead(w, &tag); err != nil {
         return w, err
@@ -76,16 +79,22 @@ func (item*{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err
     default:
         return w, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionTag({%q= tlName %}, tag)
     }
+    {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if union.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%- if writeNeedsError -%}
     return item.WriteBoxed(w{%s= natArgsCall %})
     {%- else -%}
     return item.WriteBoxed(w{%s= natArgsCall %}), nil
     {%- endif -%}
+    {%- endif -%}
 }
 
+{%- if !union.wr.originateFromTL2 -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %}  {
     w = basictl.NatWrite(w, _{%s= addBytes(union.wr.goGlobalName, false) %}[item.index].TLTag)
     {%- if union.IsEnum -%}
@@ -117,10 +126,11 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
         {%- endif -%}
     {%- endif -%}
 }
+{%- endif -%}
 {%- if union.wr.gen.options.GenerateTL2 -%}
 
 {%- if union.wr.wantsTL2 -%}
-func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     {%- if union.IsEnum -%}
     switch item.index {
     case 0:
@@ -139,7 +149,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
             {%- endif -%}
         {%- else -%}
-        {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive) %}
         {%- endif -%}
     {%- endfor -%}
     }
@@ -147,7 +157,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     return sizes
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
     {%- if union.IsEnum -%}
     switch item.index {
     case 0:
@@ -176,7 +186,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         w = basictl.TL2WriteSize(w, item.index)
             {%- endif -%}
         {%- else -%}
-        {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive) %}
         {%- endif -%}
     {%- endfor -%}
     }
@@ -184,7 +194,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     return w, sizes
 }
 
-func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
 
@@ -221,7 +231,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
             {%s= fmt.Sprintf("item.value%s", field.goName) %} = &newValue
         }
         {%- endif -%}
-        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive, formatNatArgs(nil, field.natArgs)) %}
+        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive) %}
         {%- endif -%}
     {%- endfor -%}
     }

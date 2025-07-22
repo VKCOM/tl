@@ -32,6 +32,9 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
     {%- endif -%}
 
 func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if maybe.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     if w, err = basictl.ReadBool(w, &item.Ok, {%s= emptyTag %}, {%s= okTag %}); err != nil {
         return w, err
     }
@@ -39,16 +42,22 @@ func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, er
         {%s= maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true) %}
     }
     return w, nil
+    {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if maybe.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%- if writeElementNeedsError -%}
     return item.WriteBoxed(w{%s= natArgsCall %})
     {%- else -%}
     return item.WriteBoxed(w{%s= natArgsCall %}), nil
     {%- endif -%}
+    {%- endif -%}
 }
 
+{%- if !maybe.wr.originateFromTL2 -%}
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
     if item.Ok {
         w = basictl.NatWrite(w, {%s= okTag %})
@@ -60,10 +69,11 @@ func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWit
     return basictl.NatWrite(w, {%s= emptyTag %})
     {%- endif -%}
 }
+{%- endif -%}
 
 {%- if maybe.wr.gen.options.GenerateTL2 -%}
 {%- if maybe.wr.wantsTL2 -%}
-func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if item.Ok {
@@ -76,7 +86,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- if nonEmptyCondition != "" -%}
         if {%s= nonEmptyCondition %} {
         {%- endif -%}
-        {%s= maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive) %}
         {%- code
             sizeValue := "sizes[currentPosition]"
             if len(trivialSize) != 0 {
@@ -100,7 +110,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     return sizes
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -125,7 +135,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
         {%- endif -%}
         if {%s= sizeValue %} != 0 {
         w[currentPosition] |= (1 << 1)
-        {%s= maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive) %}
         {%- if len(trivialSize) == 0 -%}
         } else {
             sizes = sizes[1:]
@@ -141,7 +151,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
 {%- if !maybe.wr.wantsTL2 -%}
     return r, {%s= maybe.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
 {%- else -%}
@@ -171,7 +181,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
             item.Value = &newValue
         }
         {%- endif -%}
-        {%s= maybe.element.t.ReadTL2Call(directImports, bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)) %}
+        {%s= maybe.element.t.ReadTL2Call(directImports, bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive) %}
         } else {
         {%s= maybe.element.t.TypeResettingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.recursive) %}
         }

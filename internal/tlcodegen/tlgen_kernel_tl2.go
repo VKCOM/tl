@@ -216,7 +216,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		}
 	}
 
-	if comb.HasAnnotation("tl1") {
+	if comb.HasAnnotation(tl1Ref) {
 		if comb.TypeDecl.Name.String() == "vector" {
 			print("debug")
 			print("\n")
@@ -290,18 +290,25 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 					},
 				}
 			} else {
-				// make it fake number
 				tl1Context.localNatArgs[arg] = LocalNatArg{
 					natArg: ActualNatArg{
-						isArith: true,
-						Arith: tlast.Arithmetic{
-							Nums: []uint32{math.MaxUint32},
-							Res:  math.MaxUint32,
-						},
-						isField:        false,
-						isTL2FakeArith: true,
+						isArith: false,
+						isField: false,
+						name:    tl2Arg,
 					},
 				}
+				////make it fake number
+				//tl1Context.localNatArgs[arg] = LocalNatArg{
+				//	natArg: ActualNatArg{
+				//		isArith: true,
+				//		Arith: tlast.Arithmetic{
+				//			Nums: []uint32{math.MaxUint32},
+				//			Res:  math.MaxUint32,
+				//		},
+				//		isField:        false,
+				//		isTL2FakeArith: true,
+				//	},
+				//}
 			}
 		}
 		wr, _, _, _, err := gen.getType(tl1Context, tl1Ref, nil)
@@ -322,7 +329,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	argTail := kernelType.wrapperNameTail()
 
 	// calculate exact type
-	if comb.TypeDecl.Name.String() == "a.t5" {
+	if comb.TypeDecl.Name.String() == "a.t2" {
 		print("debug")
 		print("\n")
 	}
@@ -374,6 +381,9 @@ func (gen *Gen2) genTypeDeclaration(
 
 				unionParent: &union,
 				unionIndex:  i,
+
+				// TODO: keep it sync with tl1
+				tlTag: uint32(i),
 			}
 			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
 			variantType.wr = &variantWrapper
@@ -459,7 +469,7 @@ func (gen *Gen2) genTypeDeclaration(
 }
 
 func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field, refFields []tlast.TL2Field) error {
-	for _, refField := range refFields {
+	for i, refField := range refFields {
 		// init
 		field := Field{
 			originalName: refField.Name,
@@ -469,7 +479,10 @@ func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field
 		if refField.IsOptional {
 			field.fieldMask = new(ActualNatArg)
 			field.fieldMask.isField = true
-			field.fieldMask.FieldIndex = -1
+			field.fieldMask.FieldIndex = -((i+1)/8 + 1)
+			field.BitNumber = uint32((i + 1) % 8)
+
+			field.goName = strings.ToLower(field.goName[:1]) + field.goName[1:]
 		}
 		// add type
 		resolvedRefType, err := resolveMapping.resolveRef(refField.Type)
@@ -480,8 +493,20 @@ func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field
 		if err != nil {
 			return err
 		}
+		// tl1 boxed only for union
 		_, isUnion := field.t.trw.(*TypeRWUnion)
 		field.bare = !isUnion
+		// for tl1 unknown params call
+		for paramI := 0; paramI < len(field.t.NatParams); paramI++ {
+			field.natArgs = append(field.natArgs, ActualNatArg{
+				isArith:        true,
+				isTL2FakeArith: true,
+				Arith: tlast.Arithmetic{
+					Res:  math.MaxUint32,
+					Nums: []uint32{math.MaxUint32},
+				},
+			})
+		}
 		*fields = append(*fields, field)
 	}
 	return nil
@@ -492,6 +517,12 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 	kernelType.tl2Name = comb.FuncDecl.Name
 	kernelType.tl2Origin = comb
 	kernelType.tlTag = *comb.FuncDecl.ID
+
+	// TODO: for tl1 meta
+	kernelType.tlName = tlast.Name{
+		Namespace: comb.FuncDecl.Name.Namespace,
+		Name:      comb.FuncDecl.Name.Name,
+	}
 
 	kernelType.ns = gen.getNamespace(comb.FuncDecl.Name.Namespace)
 	kernelType.ns.types = append(kernelType.ns.types, kernelType)
@@ -641,7 +672,7 @@ func snakeToCamelCase(s string) string {
 
 func getCombinatorNames(combinator tlast.TL2Combinator, argTail string) (localName string, globalName string) {
 	tn := combinator.ReferenceName()
-	if combinator.HasAnnotation("tl2ext") {
+	if combinator.HasAnnotation(tl2Ext) {
 		suffix := ""
 		for _, argument := range combinator.TypeDecl.TemplateArguments {
 			if argument.Category.IsUint32() {
@@ -745,5 +776,5 @@ func (gen *Gen2) isTL1Ref(ref tlast.TL2TypeRef) bool {
 	if comb.IsFunction {
 		return false
 	}
-	return comb.HasAnnotation("tl1")
+	return comb.HasAnnotation(tl1Ref)
 }

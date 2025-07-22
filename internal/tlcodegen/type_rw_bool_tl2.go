@@ -14,7 +14,7 @@ func (trw *TypeRWBool) calculateLayoutCall(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string) string {
+) string {
 	return ""
 	//if canDependOnLocalBit {
 	//	return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetSizes)
@@ -31,7 +31,6 @@ func (trw *TypeRWBool) writeTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	if canDependOnLocalBit {
 		return "" // fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
@@ -50,7 +49,6 @@ func (trw *TypeRWBool) readTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	if canDependOnLocalBit {
 		return fmt.Sprintf("%[1]s = true", addAsterisk(refObject, targetObject))

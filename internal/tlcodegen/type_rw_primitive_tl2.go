@@ -10,7 +10,7 @@ func (trw *TypeRWPrimitive) calculateLayoutCall(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string) string {
+) string {
 	return ""
 	//_, size := trw.tl2TrivialSize(targetObject, canDependOnLocalBit, refObject)
 	//return fmt.Sprintf("%[1]s = append(%[1]s, %[2]s)", targetSizes, size)
@@ -25,7 +25,7 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string) string {
+) string {
 	method := ""
 	switch trw.goType {
 	case "int32":
@@ -61,7 +61,6 @@ func (trw *TypeRWPrimitive) readTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	method := ""
 	switch trw.goType {

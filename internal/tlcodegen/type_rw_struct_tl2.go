@@ -10,14 +10,14 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string) string {
+) string {
 	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 	//	return ""
 	//}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
+		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject)
 	}
-	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), joinWithCommas(natArgs))
+	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject))
 }
 
 func (trw *TypeRWStruct) writeTL2Call(
@@ -29,17 +29,16 @@ func (trw *TypeRWStruct) writeTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string) string {
+) string {
 	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 	//	return ""
 	//}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
+		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
 	}
-	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
+	return fmt.Sprintf("%[3]s, %[1]s = %[2]s.InternalWriteTL2(%[3]s, %[1]s)",
 		targetSizes,
 		targetObject,
-		joinWithCommas(natArgs),
 		targetBytes,
 	)
 }
@@ -52,22 +51,20 @@ func (trw *TypeRWStruct) readTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 	//	return ""
 	//}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.ReadTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, trw.replaceUnwrapArgs(natArgs))
+		return trw.Fields[0].t.ReadTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
 	}
 	additionalSuffix := ""
 	if trw.wr.unionParent != nil {
 		additionalSuffix = ", block"
 	}
-	return fmt.Sprintf("if %[4]s, err = %[2]s.InternalReadTL2(%[4]s%[5]s%[3]s); err != nil { return %[4]s, err }",
+	return fmt.Sprintf("if %[3]s, err = %[2]s.InternalReadTL2(%[3]s%[4]s); err != nil { return %[3]s, err }",
 		"",
 		targetObject,
-		joinWithCommas(natArgs),
 		targetBytes,
 		additionalSuffix,
 	)

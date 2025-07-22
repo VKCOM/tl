@@ -47,10 +47,14 @@ func (item *{%s= goName %}) FillRandom(rg *basictl.RandGenerator{%s= natArgsDecl
 func (item *{%s= goName %}) Read(w []byte{%s= natArgsDecl %}) (_ []byte, err error) { {%= struct_.readFields(bytesVersion, directImports) %} }
 
 func (item *{%s= goName %}) WriteGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%- if writeNeedsError -%}
     return item.Write(w{%s= natArgsCall %})
     {%- else -%}
     return item.Write(w{%s= natArgsCall %}), nil
+    {%- endif -%}
     {%- endif -%}
 }
 
@@ -58,23 +62,39 @@ func (item *{%s= goName %}) Write(w []byte{%s= natArgsDecl %}) {%s= wrapWithErro
 
     {%- if struct_.wr.tlTag != 0 -%}
 func (item *{%s= goName %}) ReadBoxed(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     if w, err = basictl.NatReadExactTag(w, {%s= tlTag %}); err != nil {
         return w, err
     }
     return item.Read(w{%s= natArgsCall %})
+    {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteBoxedGeneral(w []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%- if writeNeedsError -%}
     return item.WriteBoxed(w{%s= natArgsCall %})
     {%- else -%}
     return item.WriteBoxed(w{%s= natArgsCall %}), nil
     {%- endif -%}
+    {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteBoxed(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- if writeNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
     w = basictl.NatWrite(w, {%s= tlTag %})
     return item.Write(w{%s= natArgsCall %})
+    {%- endif -%}
 }
 
     {%- endif -%}
@@ -128,6 +148,24 @@ type {%s= goName %} struct {
         -%}
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- code
+            masks := make(map[int]bool)
+            for _, field := range struct_.Fields {
+                if field.fieldMask != nil {
+                    masks[-field.fieldMask.FieldIndex] = true
+                }
+            }
+            keys := utils.Keys(masks)
+            sort.Ints(keys)
+        -%}
+        {%- if len(masks) > 0 -%}
+
+            {%- for _, mask := range keys -%}
+    mask{%d mask %} uint32
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endif -%}
 }
 {%- endfunc -%}
 
@@ -753,12 +791,20 @@ vru.replicaState#3d74578e fields_mask:# pre_vote_demote  :fields_mask.10?string 
         retArg := struct_.ResultType.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
     -%}
 func (item *{%s= goName %}) ReadResult(w []byte, ret *{%s= retArg %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%s= struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true) %}
+    {%- endif -%}
 }
 
 func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte, err error) {
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%s= struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods) %}
     return w, nil
+    {%- endif -%}
 }
 {%- if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 -%}
 
@@ -781,7 +827,7 @@ func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
     }
 
     if block & (1 << 1) != 0 {
-        {%s= struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)) %}
+        {%s= struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true) %}
     } else {
         {%s= struct_.ResultType.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, "ret", true) %}
     }
@@ -796,8 +842,8 @@ func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
             sizeValue = trivialSize
         }
         nonEmptyCondition := struct_.ResultType.TypeJSONEmptyCondition(false, "ret", false)
-        calculateResultLayout := struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs))
-        writeResult := struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs))
+        calculateResultLayout := struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false)
+        writeResult := struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false)
 	-%}
 	var sizes []int
 	if ctx != nil {
@@ -1005,6 +1051,14 @@ rg.DecreaseDepth()
 {%- endfunc -%}
 
 {%- func (struct_ *TypeRWStruct)writeFields(bytesVersion bool, directImports *DirectImports) -%}
+    {%- if struct_.wr.originateFromTL2 -%}
+        {%- if struct_.wr.hasErrorInWriteMethods -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+        {%- return -%}
+    {%- endif -%}
     {%- if struct_.isTypeDef() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
@@ -1048,6 +1102,10 @@ return w
 {%- endfunc -%}
 
 {%- func (struct_ *TypeRWStruct)readFields(bytesVersion bool, directImports *DirectImports) -%}
+    {%- if struct_.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- return -%}
+    {%- endif -%}
     {%- if struct_.isTypeDef() -%}
         {%- code field := struct_.Fields[0] -%}
 ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
@@ -1099,8 +1157,8 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
     {%- code
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
-        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+//        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
+//        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
     -%}
 {%- if struct_.isTypeDef() && struct_.wr.unionParent == nil -%}
         {%- code
@@ -1109,24 +1167,24 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
         -%}
 {%- if struct_.wr.wantsTL2 -%}
 
-func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
         {%- if field.t.trw.doesCalculateLayoutUseObject(true) -%}
     ptr := (*{%s= fieldTypeString %})(item)
         {%- endif -%}
-    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true) %}
     return sizes
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
         {%- if field.t.trw.doesWriteTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
         {%- endif -%}
-    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true) %}
     return w, sizes
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= natArgsDecl %}) []byte {
+func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 {%- if !struct_.wr.wantsTL2 -%}
     return w
 {%- else -%}
@@ -1134,8 +1192,8 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= 
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0]{%s= natArgsCall%})
-    w, _ = item.InternalWriteTL2(w, sizes{%s= natArgsCall%})
+    sizes = item.CalculateLayout(sizes[:0])
+    w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
@@ -1143,25 +1201,25 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= 
 {%- endif -%}
 }
 
-func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     {%- if !struct_.wr.wantsTL2 -%}
     return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
     {%- else -%}
             {%- if field.t.trw.doesReadTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
             {%- endif -%}
-    {%s= field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    {%s= field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true) %}
     return r, nil
     {%- endif -%}
 }
 
-func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext{%s= natArgsDecl %}) (_ []byte, err error) {
-    return item.InternalReadTL2(r{%s= natArgsCall%})
+func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+    return item.InternalReadTL2(r)
 }
 {%- else -%}
 
 {%- if struct_.wr.wantsTL2 -%}
-func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []int {
+func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     {%- if struct_.isTypeDef() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1213,14 +1271,14 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     currentPosition = len(sizes)
             {%- endif -%}
         {%- endif -%}
-        {%- if field.fieldMask != nil -%}
+        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
         {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive) -%}
         {%- if nonEmptyCondition != "" -%}
     if {%s= nonEmptyCondition %} {
         {%- endif -%}
-    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
         {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
             {%- if !isSizeConstant -%}
                 {%- code
@@ -1265,7 +1323,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
         {%- if nonEmptyCondition != "" -%}
     }
         {%- endif -%}
-        {%- if field.fieldMask != nil -%}
+        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
     }
         {%- endif -%}
     {%- endfor -%}
@@ -1281,7 +1339,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int{%s= natArgsDecl %}) []in
     return sizes
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDecl %}) ([]byte, []int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
     {%- if struct_.isTypeDef() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1340,7 +1398,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}
     // write {%s= fieldName %}
-        {%- if field.fieldMask != nil -%}
+        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
             {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive) -%}
@@ -1361,7 +1419,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
     serializedSize += basictl.TL2CalculateSize({%s= sizeValue %})
             {%- endif -%}
     currentBlock |= (1 << {%v (fieldIndex + 1) % 8 %})
-    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
+    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
             {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
                 {%- if len(trivialSize) == 0 -%}
     } else {
@@ -1374,7 +1432,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
             {%- if nonEmptyCondition != "" -%}
     }
             {%- endif -%}
-        {%- if field.fieldMask != nil -%}
+        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
     }
         {%- endif -%}
     {%- endfor -%}
@@ -1385,7 +1443,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int{%s= natArgsDe
 }
 {%- endif -%}
 
-func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= natArgsDecl %}) []byte {
+func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
         {%- if !struct_.wr.wantsTL2 -%}
     return w
         {%- else -%}
@@ -1393,8 +1451,8 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= 
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0]{%s= natArgsCall%})
-    w, _ = item.InternalWriteTL2(w, sizes{%s= natArgsCall%})
+    sizes = item.CalculateLayout(sizes[:0])
+    w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
@@ -1404,7 +1462,7 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext{%s= 
 
 {%- if struct_.wr.wantsTL2 -%}
     {%- if struct_.wr.unionParent == nil -%}
-func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if len(r) < currentSize {
@@ -1431,7 +1489,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte{%s= natArgsDecl %}) (_ []by
         }
     }
     {%- else -%}
-func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
         {%- code
             initCurrentR := false
             for _, field := range struct_.Fields {
@@ -1482,11 +1540,11 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte{%s= natArgsDecl
             {%s= fieldName %} = &newValue
         }
         {%- endif -%}
-        {%- if field.fieldMask != nil -%}
+        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
-        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)) %}
-        {%- if field.fieldMask != nil -%}
+        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
+        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
         } else {
             return currentR, basictl.TL2Error("field mask contradiction: field item." + "{%s= field.goName %}" + "is presented but depending bit is absent")
         }
@@ -1507,11 +1565,11 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte{%s= natArgsDecl
 {%- endif -%}
 
         {%- if !struct_.wr.wantsTL2 -%}
-func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
         return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= tlName %})
 }
         {%- else -%}
-func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext{%s= natArgsDecl %}) (_ []byte, err error) {
+func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
             {%- if struct_.wr.unionParent != nil -%}
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
@@ -1534,10 +1592,10 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext{%s= na
     if index != {%d= struct_.wr.unionIndex %} {
         return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, {%d= struct_.wr.unionIndex %})
     }
-    _, err = item.InternalReadTL2(currentR, block{%s= natArgsCall%})
+    _, err = item.InternalReadTL2(currentR, block)
     return r, err
             {%- else -%}
-    return item.InternalReadTL2(r{%s= natArgsCall%})
+    return item.InternalReadTL2(r)
             {%- endif -%}
 }
         {%- endif -%}

@@ -219,9 +219,17 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 }
 
 func (w *TypeRWWrapper) HasAnnotation(str string) bool {
-	for _, m := range w.origTL[0].Modifiers {
-		if m.Name == str {
-			return true
+	if w.originateFromTL2 {
+		for _, annotation := range w.tl2Origin.Annotations {
+			if annotation.Name == str {
+				return true
+			}
+		}
+	} else {
+		for _, m := range w.origTL[0].Modifiers {
+			if m.Name == str {
+				return true
+			}
 		}
 	}
 	return false
@@ -1251,6 +1259,10 @@ func formatNatArg(fields []Field, arg ActualNatArg) string {
 		return strconv.FormatUint(uint64(arg.Arith.Res), 10)
 	}
 	if arg.isField {
+		// tl2 case
+		if arg.FieldIndex < 0 {
+			return fmt.Sprintf("item.mask%d", -arg.FieldIndex)
+		}
 		return "item." + fields[arg.FieldIndex].goName
 	}
 	if strings.HasPrefix(arg.name, "nat_") {
@@ -1301,12 +1313,24 @@ func formatNatArgsAddNat(natArgs []string) []string {
 func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
-		if !arg.isArith {
+		if !arg.isArith || arg.isTL2FakeArith {
 			result = append(result, formatNatArg(fields, arg))
 		}
 	}
 	return result
 }
+
+////for tl2 to tl1 bridge
+////in case of formatNatArgs(struct_.Fields, field.natArgs)
+//func (f *Field) formatNatArgsOrReturnRandoms(fields []Field, rgName string) []string {
+//	result := formatNatArgs(fields, f.natArgs)
+//	if len(f.t.NatParams) != len(result) {
+//		for i := 0; i < len(f.t.NatParams); i++ {
+//			result = append(result, fmt.Sprintf(", basictl.RandomUint(%s)", rgName))
+//		}
+//	}
+//	return result
+//}
 
 func formatNatArgsDecl(natArgs []string) string {
 	var s strings.Builder
