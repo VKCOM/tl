@@ -323,22 +323,25 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 `)
 	}
 	if struct_.wr.originateFromTL2 {
-		masks := make(map[int]bool)
-		for _, field := range struct_.Fields {
-			if field.fieldMask != nil {
-				masks[-field.fieldMask.FieldIndex] = true
-			}
-		}
-		keys := utils.Keys(masks)
-		sort.Ints(keys)
+		masks := struct_.AllRequiredTL2Masks()
 
 		if len(masks) > 0 {
 			qw422016.N().S(`
 `)
-			for _, mask := range keys {
+			for _, mask := range masks {
+				left := (mask - 1) * 8
+				right := left + 7
+				if left == 0 {
+					left = 1
+				}
+
 				qw422016.N().S(`    mask`)
 				qw422016.N().D(mask)
-				qw422016.N().S(` uint32
+				qw422016.N().S(` byte // for fields #`)
+				qw422016.N().D(left)
+				qw422016.N().S(` .. #`)
+				qw422016.N().D(right)
+				qw422016.N().S(`
 `)
 			}
 		}
@@ -386,7 +389,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			// We skip generating Set and Clear altogether in this case, but still generate IsSet
 			setName := struct_.setNames[i]
 			if setName == "" {
-				setName = struct_.fieldsDec.deconflictName("Set" + field.goName)
+				setName = struct_.fieldsDec.deconflictName("Set" + utils.UpperFirst(field.goName))
 				struct_.setNames[i] = setName
 			}
 
@@ -471,7 +474,7 @@ func (item *`)
 			if !field.t.IsTrueType() {
 				clearName := struct_.clearNames[i]
 				if clearName == "" {
-					clearName = struct_.fieldsDec.deconflictName("Clear" + field.goName)
+					clearName = struct_.fieldsDec.deconflictName("Clear" + utils.UpperFirst(field.goName))
 					struct_.clearNames[i] = clearName
 				}
 
@@ -527,7 +530,7 @@ func (item *`)
 		}
 		isSetName := struct_.isSetNames[i]
 		if isSetName == "" {
-			isSetName = struct_.fieldsDec.deconflictName("IsSet" + field.goName)
+			isSetName = struct_.fieldsDec.deconflictName("IsSet" + utils.UpperFirst(field.goName))
 			struct_.isSetNames[i] = isSetName
 		}
 
@@ -1983,6 +1986,14 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 `)
 		return
 	}
+	if struct_.wr.originateFromTL2 {
+		for _, no := range struct_.AllRequiredTL2Masks() {
+			qw422016.N().S(`item.mask`)
+			qw422016.N().D(no)
+			qw422016.N().S(` = basictl.RandomByte(rg)
+`)
+		}
+	}
 	for fieldId, field := range struct_.Fields {
 		if field.t.IsTrueType() {
 			continue
@@ -2306,6 +2317,7 @@ func (struct_ *TypeRWStruct) readFields(bytesVersion bool, directImports *Direct
 func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
+	tl2MasksToStore := utils.SliceToSet(struct_.AllRequiredTL2Masks())
 	//        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 	//        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
@@ -2816,6 +2828,10 @@ func (item *`)
 `)
 				}
 			}
+			if tl2MasksToStore[1] {
+				qw422016.N().S(`    item.mask1 = block
+`)
+			}
 			if struct_.isTypeDef() {
 				qw422016.N().S(`    ptr := (*`)
 				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
@@ -2847,6 +2863,12 @@ func (item *`)
         block = 0
     }
 `)
+					if tl2MasksToStore[1] {
+						qw422016.N().S(`    item.mask`)
+						qw422016.N().D(fieldIndex / 8)
+						qw422016.N().S(` = block
+`)
+					}
 				}
 				qw422016.N().S(`
 `)

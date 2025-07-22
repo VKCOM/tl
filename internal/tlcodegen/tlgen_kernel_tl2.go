@@ -217,10 +217,6 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	}
 
 	if comb.HasAnnotation(tl1Ref) {
-		if comb.TypeDecl.Name.String() == "vector" {
-			print("debug")
-			print("\n")
-		}
 		kernelType.originateFromTL2 = false
 
 		notParsedError := comb.TypeDecl.PRName.BeautifulError(fmt.Errorf("can't find reference to tl1-type"))
@@ -372,8 +368,6 @@ func (gen *Gen2) genTypeDeclaration(
 				gen: gen,
 				trw: &variantType,
 
-				ns: kernelType.ns,
-
 				originateFromTL2: true,
 				wantsTL2:         true,
 
@@ -385,7 +379,6 @@ func (gen *Gen2) genTypeDeclaration(
 				// TODO: keep it sync with tl1
 				tlTag: uint32(i),
 			}
-			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
 			variantType.wr = &variantWrapper
 			field := Field{
 				originalName: variant.Name,
@@ -393,7 +386,11 @@ func (gen *Gen2) genTypeDeclaration(
 				t: &variantWrapper,
 			}
 			var err error
-			variantWrapper.goLocalName, variantWrapper.goGlobalName, field.goName, err = getVariantNames(kernelType.tl2Name, variant, argTail)
+			var targetNamespace string
+			targetNamespace, variantWrapper.goLocalName, variantWrapper.goGlobalName, field.goName, err = getVariantNames(kernelType.tl2Name, variant, argTail)
+
+			variantWrapper.ns = gen.getNamespace(targetNamespace)
+			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
 
 			currentRef := originalRef
 			currentRef.SomeType = new(tlast.TL2TypeApplication)
@@ -547,44 +544,49 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 		return nil, err
 	}
 
-	// set up wrapper for result
-	functionType.ResultType = &TypeRWWrapper{
-		gen: gen,
-		ns:  gen.getNamespace(comb.FuncDecl.Name.Namespace),
+	if comb.FuncDecl.ReturnType.IsAlias() {
+		// for less diff with tl1 generation inplace type
+		functionType.ResultType, err = gen.genTypeTL2(comb.FuncDecl.ReturnType.TypeAlias)
+	} else {
+		// set up wrapper for result
+		functionType.ResultType = &TypeRWWrapper{
+			gen: gen,
+			ns:  gen.getNamespace(comb.FuncDecl.Name.Namespace),
 
-		goGlobalName: kernelType.goGlobalName + "Result",
-		goLocalName:  kernelType.goLocalName + "Result",
+			goGlobalName: kernelType.goGlobalName + "Result",
+			goLocalName:  kernelType.goLocalName + "Result",
 
-		fileName: kernelType.fileName,
+			fileName: kernelType.fileName,
 
-		originateFromTL2: true,
-		wantsTL2:         true,
+			originateFromTL2: true,
+			wantsTL2:         true,
 
-		tl2IsResult: true,
-		tl2Name: tlast.TL2TypeName{
-			Namespace: kernelType.tl2Name.Namespace,
-			Name:      kernelType.tl2Name.Name + "Result",
-		},
-		tl2Origin: kernelType.tl2Origin,
-	}
-	functionType.ResultType.ns.types = append(functionType.ResultType.ns.types, functionType.ResultType)
-
-	gen.generatedTypes[functionType.ResultType.goGlobalName] = functionType.ResultType
-	gen.generatedTypesList = append(gen.generatedTypesList, functionType.ResultType)
-
-	err = gen.genTypeDeclaration(
-		functionType.ResultType,
-		comb.FuncDecl.ReturnType,
-		ResolvedTL2References{
-			ResolvedNats:  map[string]uint32{},
-			ResolvedTypes: map[string]tlast.TL2TypeRef{},
-		},
-		tlast.TL2TypeRef{
-			SomeType: &tlast.TL2TypeApplication{
-				Name: functionType.ResultType.tl2Name,
+			tl2IsResult: true,
+			tl2Name: tlast.TL2TypeName{
+				Namespace: kernelType.tl2Name.Namespace,
+				Name:      kernelType.tl2Name.Name + "Result",
 			},
-		},
-	)
+			tl2Origin: kernelType.tl2Origin,
+		}
+		functionType.ResultType.ns.types = append(functionType.ResultType.ns.types, functionType.ResultType)
+
+		gen.generatedTypes[functionType.ResultType.goGlobalName] = functionType.ResultType
+		gen.generatedTypesList = append(gen.generatedTypesList, functionType.ResultType)
+
+		err = gen.genTypeDeclaration(
+			functionType.ResultType,
+			comb.FuncDecl.ReturnType,
+			ResolvedTL2References{
+				ResolvedNats:  map[string]uint32{},
+				ResolvedTypes: map[string]tlast.TL2TypeRef{},
+			},
+			tlast.TL2TypeRef{
+				SomeType: &tlast.TL2TypeApplication{
+					Name: functionType.ResultType.tl2Name,
+				},
+			},
+		)
+	}
 
 	return kernelType, err
 }
@@ -595,6 +597,7 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 		wr: kernelType,
 	}
 	kernelType.trw = &bracketType
+	kernelType.tl2IsBuiltinBrackets = true
 
 	elementRef := &bracketType.element
 	if br.IndexType != nil {
@@ -690,7 +693,7 @@ func getTypeNames(tl2Name tlast.TL2TypeName, argTail string) (localName string, 
 	return snakeToCamelCase(tName) + argTail, snakeToCamelCase(tNs+"_"+tName) + argTail
 }
 
-func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstructor, argTail string) (localName string, globalName string, fieldName string, err error) {
+func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstructor, argTail string) (namespace string, localName string, globalName string, fieldName string, err error) {
 	comment, found := "", false
 	for _, line := range strings.Split(constructor.CommentBefore, "\n") {
 		comment, found = strings.CutPrefix(line, "// tlgen:tl1name:")
@@ -718,6 +721,7 @@ func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstr
 		if strings.Contains(tl1Name, ".") {
 			tl1Namespace, tl1Name, _ = strings.Cut(tl1Name, ".")
 		}
+		namespace = tl1Namespace
 		localName, globalName = getTypeNames(
 			tlast.TL2TypeName{
 				Namespace: tl1Namespace,
@@ -732,6 +736,7 @@ func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstr
 		fieldName = snakeToCamelCase(nameSuffix)
 		return
 	} else {
+		namespace = tl2Name.Namespace
 		localName, globalName = getTypeNames(
 			tlast.TL2TypeName{
 				Namespace: tl2Name.Namespace,
