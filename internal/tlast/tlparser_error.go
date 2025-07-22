@@ -26,7 +26,7 @@ func (pr PositionRange) CollapseToBegin() PositionRange {
 
 func (pr PositionRange) CheckValidity() {
 	if pr.Outer.column == 0 || pr.Begin.column == 0 || pr.End.column == 0 {
-		fmt.Printf("beautiful error created without context, this is a %sbug%s, please report with TL file\n", color.Red, color.Reset)
+		fmt.Printf("beautiful error created without context, this is a %s, please report with TL file\n", color.InRed("bug"))
 	}
 }
 
@@ -132,10 +132,10 @@ func (e *ParseError) consolePrint(out io.Writer, err error, c string, isWarning 
 	}
 	if anyCorrupted {
 		_, _ = fmt.Fprintf(out, "%v\n", err.Error())
-		_, _ = fmt.Fprintf(out, "beautiful error context corrupted, %sinternal error%s, please report with TL file\n", color.InRed("internal error"), color.Reset)
+		_, _ = fmt.Fprintf(out, "beautiful error context corrupted, %s, please report with TL file\n", color.InRed("internal error"))
 	} else {
-		_, _ = fmt.Fprintf(out, "%s%s%s%s%s\n", ourLineBeforeBegin, c, ourLineRed, color.Reset, after1)
-		_, _ = fmt.Fprintf(out, "%s%s%s%s-- %s%s\n", errLineBeforeBegin, color.Reset, errLineRed, color.Reset, warnText, after2) // keep lines same length in bytes
+		_, _ = fmt.Fprintf(out, "%s%s%s\n", ourLineBeforeBegin, color.Colorize(c, ourLineRed), after1)
+		_, _ = fmt.Fprintf(out, "%s%s-- %s%s\n", errLineBeforeBegin, color.InRed(errLineRed), warnText, after2) // keep lines same length in bytes
 	}
 }
 

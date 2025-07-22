@@ -257,7 +257,7 @@ var _ = basictl.NatWrite
 		formattedCode, err := format.Source([]byte(code))
 		if err != nil {
 			// We generate code still, because it will be easy to debug when the wrong file is written out
-			fmt.Printf("generator %sinternal error%s: source file %q will not compile due to error: %v", color.Red, color.Reset, filepathName, err)
+			fmt.Printf("generator %s: source file %q will not compile due to error: %v", color.InRed("internal error"), filepathName, err)
 			continue
 		}
 		gen.Code[filepathName] = string(formattedCode)
