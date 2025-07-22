@@ -1627,7 +1627,7 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 
 func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 	if _, ok := gen.Code[filepathName]; ok {
-		return fmt.Errorf("generator %sinternal error%s: source file %q is generated twice", color.Red, color.Reset, filepathName)
+		return fmt.Errorf("generator %s: source file %q is generated twice", color.InRed("internal error"), filepathName)
 	}
 	gen.Code[filepathName] = code
 	return nil
