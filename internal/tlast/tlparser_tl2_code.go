@@ -411,6 +411,7 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 		result.Name = restTokens.popFront().val
 		result.PRName.End = restTokens.front().pos
 
+		var savedRestTokens = restTokens
 		var fieldsState OptionalState
 		fieldsState, restTokens, result.Fields = zeroOrMore(parseTL2Field)(restTokens, position)
 		state.Inherit(fieldsState)
@@ -420,6 +421,7 @@ func parseTL2UnionConstructor(tokens tokenIterator, position Position) (state Op
 			aliasState, restTokens, result.TypeAlias = parseTL2Type(restTokens, position)
 			state.Inherit(aliasState)
 			if aliasState.IsOmitted() {
+				restTokens = savedRestTokens
 				result.IsTypeAlias = false
 			}
 		}

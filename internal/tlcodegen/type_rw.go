@@ -125,9 +125,10 @@ type TypeRWWrapper struct {
 	WrWithoutLong *TypeRWWrapper // long transitioning code
 
 	// tl2 info (if union is not nil otherwise check there)
-	tl2Name     tlast.TL2TypeName
-	tl2Origin   *tlast.TL2Combinator
-	tl2IsResult bool
+	tl2Name              tlast.TL2TypeName
+	tl2Origin            *tlast.TL2Combinator
+	tl2IsResult          bool
+	tl2IsBuiltinBrackets bool
 }
 
 func (wr *TypeRWWrapper) Namespace() string {
@@ -168,6 +169,8 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 		if w.unionParent == nil {
 			if w.tl2IsResult {
 				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
+			} else if w.tl2IsBuiltinBrackets {
+				s.WriteString("__builtin_brackets")
 			} else {
 				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
 			}
