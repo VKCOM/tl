@@ -464,6 +464,9 @@ func visit(
 func (trw *TypeRWStruct) AllAffectedFieldMasks(f Field) (nats []Field, bits []uint32) {
 	curField := f
 	for curField.IsAffectingLocalFieldMasks() {
+		if curField.fieldMask.FieldIndex < 0 {
+			return
+		}
 		ancestor := trw.Fields[curField.fieldMask.FieldIndex]
 		nats = append(nats, ancestor)
 		bits = append(bits, curField.BitNumber)

@@ -62,31 +62,38 @@ func `)
 			qw422016.N().S(` `)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
-    var l uint32
+`)
+			if tuple.wr.originateFromTL2 {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    var l uint32
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
 `)
-			if tuple.wr.gen.options.UseCheckLengthSanity {
-				qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+				if tuple.wr.gen.options.UseCheckLengthSanity {
+					qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
 `)
-			}
-			qw422016.N().S(`    if uint32(cap(*vec)) < l {
+				}
+				qw422016.N().S(`    if uint32(cap(*vec)) < l {
         *vec = make([]`)
-			qw422016.N().S(elementTypeString)
-			qw422016.N().S(`, l)
+				qw422016.N().S(elementTypeString)
+				qw422016.N().S(`, l)
     } else {
         *vec = (*vec)[:l]
     }
     for i := range *vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
-			qw422016.N().S(`
+				qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+				qw422016.N().S(`
     }
     return w, nil
-}
+`)
+			}
+			qw422016.N().S(`}
 
 func `)
 			qw422016.N().S(goName)
@@ -97,19 +104,30 @@ func `)
 			qw422016.N().S(`) `)
 			qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 			qw422016.N().S(` {
-    w = basictl.NatWrite(w, uint32(len(vec)))
+`)
+			if tuple.wr.originateFromTL2 {
+				if writeElementNeedsError {
+					qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+				} else {
+					qw422016.N().S(`    return w
+`)
+				}
+			} else {
+				qw422016.N().S(`    w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
-			qw422016.N().S(`
+				qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+				qw422016.N().S(`
     }
 `)
-			if writeElementNeedsError {
-				qw422016.N().S(`    return w, nil
+				if writeElementNeedsError {
+					qw422016.N().S(`    return w, nil
 `)
-			} else {
-				qw422016.N().S(`    return w
+				} else {
+					qw422016.N().S(`    return w
 `)
+				}
 			}
 			qw422016.N().S(`}
 `)
@@ -121,7 +139,6 @@ func `)
 					qw422016.N().S(goName)
 					qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
 					qw422016.N().S(typeString)
-					qw422016.N().S(valueNatArgsDecl)
 					qw422016.N().S(`) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -145,7 +162,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         sizes[sizePosition] += `)
 					qw422016.N().S(sizeValue)
@@ -165,7 +182,6 @@ func `)
 					qw422016.N().S(goName)
 					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int,vec *`)
 					qw422016.N().S(typeString)
-					qw422016.N().S(valueNatArgsDecl)
 					qw422016.N().S(`) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -182,7 +198,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
     return w, sizes
@@ -194,7 +210,6 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(valueNatArgsDecl)
 				qw422016.N().S(`) (_ []byte, err error) {
 `)
 				if !tuple.wr.wantsTL2 {
@@ -240,7 +255,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
     return r, nil
@@ -608,31 +623,36 @@ func `)
 			qw422016.N().S(` `)
 			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
-    var l uint32
+`)
+			if tuple.wr.originateFromTL2 {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    var l uint32
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
 `)
-			if tuple.wr.gen.options.UseCheckLengthSanity {
-				qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+				if tuple.wr.gen.options.UseCheckLengthSanity {
+					qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
 `)
-			}
-			qw422016.N().S(`    var data map[`)
-			qw422016.N().S(keyTypeString)
-			qw422016.N().S(`]`)
-			qw422016.N().S(valueTypeString)
-			qw422016.N().S(`
+				}
+				qw422016.N().S(`    var data map[`)
+				qw422016.N().S(keyTypeString)
+				qw422016.N().S(`]`)
+				qw422016.N().S(valueTypeString)
+				qw422016.N().S(`
     if *m == nil {
         if l == 0 {
             return w, nil
         }
         data = make(map[`)
-			qw422016.N().S(keyTypeString)
-			qw422016.N().S(`]`)
-			qw422016.N().S(valueTypeString)
-			qw422016.N().S(`, l)
+				qw422016.N().S(keyTypeString)
+				qw422016.N().S(`]`)
+				qw422016.N().S(valueTypeString)
+				qw422016.N().S(`, l)
         *m = data
     } else {
         data = *m
@@ -642,19 +662,21 @@ func `)
     }
     for i := 0; i < int(l); i++ {
         var elem `)
-			qw422016.N().S(elementTypeString)
-			qw422016.N().S(`
+				qw422016.N().S(elementTypeString)
+				qw422016.N().S(`
         `)
-			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
-			qw422016.N().S(`
+				qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+				qw422016.N().S(`
          data[elem.`)
-			qw422016.N().S(keyFieldName)
-			qw422016.N().S(`] = elem.`)
-			qw422016.N().S(valueFieldName)
-			qw422016.N().S(`
+				qw422016.N().S(keyFieldName)
+				qw422016.N().S(`] = elem.`)
+				qw422016.N().S(valueFieldName)
+				qw422016.N().S(`
     }
     return w, nil
-}
+`)
+			}
+			qw422016.N().S(`}
 
 func `)
 			qw422016.N().S(goName)
@@ -667,55 +689,66 @@ func `)
 			qw422016.N().S(`) `)
 			qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 			qw422016.N().S(` {
-    w = basictl.NatWrite(w, uint32(len(m)))
+`)
+			if tuple.wr.originateFromTL2 {
+				if writeElementNeedsError {
+					qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+				} else {
+					qw422016.N().S(`    return w
+`)
+				}
+			} else {
+				qw422016.N().S(`    w = basictl.NatWrite(w, uint32(len(m)))
     if len(m) == 0 {
 `)
-			if writeElementNeedsError {
-				qw422016.N().S(`        return w, nil
+				if writeElementNeedsError {
+					qw422016.N().S(`        return w, nil
 `)
-			} else {
-				qw422016.N().S(`        return w
+				} else {
+					qw422016.N().S(`        return w
 `)
-			}
-			qw422016.N().S(`    }
+				}
+				qw422016.N().S(`    }
     keys := make([]`)
-			qw422016.N().S(keyTypeString)
-			qw422016.N().S(`, 0, len(m))
+				qw422016.N().S(keyTypeString)
+				qw422016.N().S(`, 0, len(m))
     for k := range m {
         keys = append(keys, k)
     }
 `)
-			directImports.importSort = true
+				directImports.importSort = true
 
-			if tuple.dictKeyString {
-				qw422016.N().S(`    sort.Strings(keys)
+				if tuple.dictKeyString {
+					qw422016.N().S(`    sort.Strings(keys)
 `)
-			} else {
-				qw422016.N().S(`    sort.Slice(keys, func(i, j int) bool {
+				} else {
+					qw422016.N().S(`    sort.Slice(keys, func(i, j int) bool {
         return keys[i] < keys[j]
     })
 `)
-			}
-			qw422016.N().S(`    for _, key := range keys {
+				}
+				qw422016.N().S(`    for _, key := range keys {
         val := m[key]
         elem := `)
-			qw422016.N().S(elementTypeString)
-			qw422016.N().S(`{`)
-			qw422016.N().S(keyFieldName)
-			qw422016.N().S(`:key, `)
-			qw422016.N().S(valueFieldName)
-			qw422016.N().S(`:val}
+				qw422016.N().S(elementTypeString)
+				qw422016.N().S(`{`)
+				qw422016.N().S(keyFieldName)
+				qw422016.N().S(`:key, `)
+				qw422016.N().S(valueFieldName)
+				qw422016.N().S(`:val}
         `)
-			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
-			qw422016.N().S(`
+				qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+				qw422016.N().S(`
     }
 `)
-			if writeElementNeedsError {
-				qw422016.N().S(`    return w, nil
+				if writeElementNeedsError {
+					qw422016.N().S(`    return w, nil
 `)
-			} else {
-				qw422016.N().S(`    return w
+				} else {
+					qw422016.N().S(`    return w
 `)
+				}
 			}
 			qw422016.N().S(`}
 `)
@@ -729,7 +762,6 @@ func `)
 					qw422016.N().S(keyTypeString)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
-					qw422016.N().S(natDecl)
 					qw422016.N().S(`) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -777,7 +809,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         sizes[sizePosition] += `)
 					qw422016.N().S(sizeValue)
@@ -799,7 +831,6 @@ func `)
 					qw422016.N().S(keyTypeString)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
-					qw422016.N().S(natDecl)
 					qw422016.N().S(`) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -839,7 +870,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
     return w, sizes
@@ -853,7 +884,6 @@ func `)
 				qw422016.N().S(keyTypeString)
 				qw422016.N().S(`]`)
 				qw422016.N().S(valueTypeString)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) (_ []byte, err error) {
 `)
 				if !tuple.wr.wantsTL2 {
@@ -905,7 +935,7 @@ func `)
 					qw422016.N().S(elementTypeString)
 					qw422016.N().S(`{}
         `)
-					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         data[elem.`)
 					qw422016.N().S(keyFieldName)
@@ -1224,31 +1254,38 @@ func `)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    var l uint32
+`)
+		if tuple.wr.originateFromTL2 {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		} else {
+			qw422016.N().S(`    var l uint32
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
     }
 `)
-		if tuple.wr.gen.options.UseCheckLengthSanity {
-			qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+			if tuple.wr.gen.options.UseCheckLengthSanity {
+				qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
         return w, err
     }
 `)
-		}
-		qw422016.N().S(`    if uint32(cap(*vec)) < l {
+			}
+			qw422016.N().S(`    if uint32(cap(*vec)) < l {
         *vec = make([]`)
-		qw422016.N().S(elementTypeString)
-		qw422016.N().S(`, l)
+			qw422016.N().S(elementTypeString)
+			qw422016.N().S(`, l)
     } else {
         *vec = (*vec)[:l]
     }
     for i := range *vec {
         `)
-		qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
-		qw422016.N().S(`
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+			qw422016.N().S(`
     }
     return w, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 
 func `)
 		qw422016.N().S(goName)
@@ -1259,19 +1296,30 @@ func `)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    w = basictl.NatWrite(w, uint32(len(vec)))
+`)
+		if tuple.wr.originateFromTL2 {
+			if writeElementNeedsError {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    return w
+`)
+			}
+		} else {
+			qw422016.N().S(`    w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
         `)
-		qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
-		qw422016.N().S(`
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+			qw422016.N().S(`
     }
 `)
-		if writeElementNeedsError {
-			qw422016.N().S(`    return w, nil
+			if writeElementNeedsError {
+				qw422016.N().S(`    return w, nil
 `)
-		} else {
-			qw422016.N().S(`    return w
+			} else {
+				qw422016.N().S(`    return w
 `)
+			}
 		}
 		qw422016.N().S(`}
 `)
@@ -1283,8 +1331,6 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) []int {
     currentSize := 0
     sizePosition := len(sizes)
@@ -1315,7 +1361,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -1338,8 +1384,6 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -1379,7 +1423,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 `)
@@ -1393,7 +1437,6 @@ func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 			qw422016.N().S(typeString)
-			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
 			if !tuple.wr.wantsTL2 {
@@ -1454,7 +1497,7 @@ func `)
 				} else {
 					qw422016.N().S(`    for i := 0; i < elementCount; i++ {
         `)
-					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 `)
@@ -1618,26 +1661,32 @@ func `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if tuple.wr.gen.options.UseCheckLengthSanity {
-			qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
+		if tuple.wr.originateFromTL2 {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		} else {
+			if tuple.wr.gen.options.UseCheckLengthSanity {
+				qw422016.N().S(`    if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
         return w, err
     }
 `)
-		}
-		qw422016.N().S(`    if uint32(cap(*vec)) < nat_n {
+			}
+			qw422016.N().S(`    if uint32(cap(*vec)) < nat_n {
         *vec = make([]`)
-		qw422016.N().S(elementTypeString)
-		qw422016.N().S(`, nat_n)
+			qw422016.N().S(elementTypeString)
+			qw422016.N().S(`, nat_n)
     } else {
         *vec = (*vec)[:nat_n]
     }
     for i := range *vec {
         `)
-		qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
-		qw422016.N().S(`
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+			qw422016.N().S(`
     }
     return w, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 
 func `)
 		qw422016.N().S(goName)
@@ -1646,20 +1695,32 @@ func `)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    if uint32(len(vec)) != nat_n {
+`)
+		if tuple.wr.originateFromTL2 {
+			if writeElementNeedsError {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    return w
+`)
+			}
+		} else {
+			qw422016.N().S(`    if uint32(len(vec)) != nat_n {
         return w, `)
-		qw422016.N().S(tuple.wr.gen.InternalPrefix())
-		qw422016.N().S(`ErrorWrongSequenceLength(`)
-		qw422016.N().Q(typeString)
-		qw422016.N().S(`, len(vec), nat_n)
+			qw422016.N().S(tuple.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorWrongSequenceLength(`)
+			qw422016.N().Q(typeString)
+			qw422016.N().S(`, len(vec), nat_n)
     }
     for _, elem := range vec {
         `)
-		qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
-		qw422016.N().S(`
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+			qw422016.N().S(`
     }
     return w, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 `)
 		if tuple.wr.gen.options.GenerateTL2 {
 			qw422016.N().S(`
@@ -1669,9 +1730,9 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) []int {
+    nat_n := uint32(len(*vec))
+
     currentSize := 0
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1703,7 +1764,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -1737,7 +1798,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -1761,9 +1822,9 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) ([]byte, []int) {
+    nat_n := uint32(len(*vec))
+
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -1805,7 +1866,7 @@ func `)
 				} else {
 					qw422016.N().S(`    for i := uint32(0); i < lastIndex; i++ {
         `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 
@@ -1819,7 +1880,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 `)
@@ -1833,7 +1894,6 @@ func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 			qw422016.N().S(typeString)
-			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
 			if !tuple.wr.wantsTL2 {
@@ -1844,7 +1904,9 @@ func `)
 				qw422016.N().S(`)
 `)
 			} else {
-				qw422016.N().S(`    currentSize := 0
+				qw422016.N().S(`    nat_n := uint32(len(*vec))
+
+    currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if len(r) < currentSize {
         return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
@@ -1906,7 +1968,7 @@ func `)
 				} else {
 					qw422016.N().S(`    for i := uint32(0); i < lastIndex; i++ {
         `)
-					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 
@@ -2093,13 +2155,20 @@ func `)
 		qw422016.N().S(` `)
 		qw422016.N().S(natDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    for i := range *vec {
+`)
+		if tuple.wr.originateFromTL2 {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		} else {
+			qw422016.N().S(`    for i := range *vec {
         `)
-		qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
-		qw422016.N().S(`
+			qw422016.N().S(tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false))
+			qw422016.N().S(`
     }
     return w, nil
-}
+`)
+		}
+		qw422016.N().S(`}
 
 func `)
 		qw422016.N().S(goName)
@@ -2110,18 +2179,29 @@ func `)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    for _, elem := range *vec {
+`)
+		if tuple.wr.originateFromTL2 {
+			if writeElementNeedsError {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    return w
+`)
+			}
+		} else {
+			qw422016.N().S(`    for _, elem := range *vec {
         `)
-		qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
-		qw422016.N().S(`
+			qw422016.N().S(tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError))
+			qw422016.N().S(`
     }
 `)
-		if writeElementNeedsError {
-			qw422016.N().S(`    return w, nil
+			if writeElementNeedsError {
+				qw422016.N().S(`    return w, nil
 `)
-		} else {
-			qw422016.N().S(`    return w
+			} else {
+				qw422016.N().S(`    return w
 `)
+			}
 		}
 		qw422016.N().S(`}
 `)
@@ -2133,8 +2213,6 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`CalculateLayout(sizes []int, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) []int {
     currentSize := 0
     sizePosition := len(sizes)
@@ -2170,7 +2248,7 @@ func `)
 `)
 					}
 					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         currentSize += `)
 					qw422016.N().S(sizeValue)
@@ -2194,8 +2272,6 @@ func `)
 				qw422016.N().S(goName)
 				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(` `)
-				qw422016.N().S(natDecl)
 				qw422016.N().S(`) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
@@ -2239,7 +2315,7 @@ func `)
 					qw422016.N().V(tuple.size)
 					qw422016.N().S(`; i++ {
         `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 `)
@@ -2323,7 +2399,7 @@ func `)
 				} else {
 					qw422016.N().S(`    for i := 0; i < lastIndex; i++ {
         `)
-					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)))
+					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
 

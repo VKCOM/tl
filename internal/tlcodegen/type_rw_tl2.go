@@ -9,7 +9,6 @@ type TypeRWTL2 interface {
 		canDependOnLocalBit bool,
 		ins *InternalNamespace,
 		refObject bool,
-		natArgs []string,
 	) string
 
 	doesCalculateLayoutUseObject(allowInplace bool) bool
@@ -25,7 +24,6 @@ type TypeRWTL2 interface {
 		canDependOnLocalBit bool,
 		ins *InternalNamespace,
 		refObject bool,
-		natArgs []string,
 	) string
 
 	doesWriteTL2UseObject(canDependOnLocalBit bool) bool
@@ -39,7 +37,6 @@ type TypeRWTL2 interface {
 		canDependOnLocalBit bool,
 		ins *InternalNamespace,
 		refObject bool,
-		natArgs []string,
 	) string
 
 	doesReadTL2UseObject(canDependOnLocalBit bool) bool
@@ -54,10 +51,9 @@ func (w *TypeRWWrapper) CalculateLayoutCall(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.calculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.calculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject)
 }
 
 func (w *TypeRWWrapper) WriteTL2Call(
@@ -69,10 +65,9 @@ func (w *TypeRWWrapper) WriteTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.writeTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.writeTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
 }
 
 func (w *TypeRWWrapper) ReadTL2Call(
@@ -83,8 +78,7 @@ func (w *TypeRWWrapper) ReadTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.readTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject, natArgs)
+	return w.trw.readTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
 }

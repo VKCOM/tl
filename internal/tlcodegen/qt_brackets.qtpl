@@ -31,6 +31,9 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
                 {%- endif -%}
 
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     var l uint32
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
@@ -49,9 +52,17 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
         {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
     }
     return w, nil
+    {%- endif -%}
 }
 
 func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    {%- if tuple.wr.originateFromTL2 -%}
+        {%- if writeElementNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
     w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
         {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
@@ -61,11 +72,12 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
     {%- else -%}
     return w
     {%- endif -%}
+    {%- endif -%}
 }
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 {%- if tuple.wr.wantsTL2 -%}
-func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}{%s= valueNatArgsDecl %}) []int {
+func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if len(*vec) != 0 {
@@ -85,7 +97,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}{%s= valu
         {%- if tuple.element.t.trw.doesCalculateLayoutUseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false) %}
         sizes[sizePosition] += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -94,7 +106,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}{%s= valu
     return sizes
 }
 
-func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %}{%s= valueNatArgsDecl %}) ([]byte, []int) {
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %}) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -107,13 +119,13 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int,vec *{%s= typeString %
         {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
     }
     return w, sizes
 }
 {%- endif -%}
 
-func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= valueNatArgsDecl %}) (_ []byte, err error) {
+func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte, err error) {
 {%- if !tuple.wr.wantsTL2 -%}
     return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
 {%- else -%}
@@ -145,7 +157,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= valueNa
         {%- if tuple.element.t.trw.doesReadTL2UseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false) %}
     }
     return r, nil
 {%- endif -%}
@@ -329,6 +341,9 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeStri
 }
             {%- endif -%}
 func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     var l uint32
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
@@ -357,9 +372,17 @@ func {%s= goName %}Read(w []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeStr
          data[elem.{%s= keyFieldName %}] = elem.{%s= valueFieldName %}
     }
     return w, nil
+    {%- endif -%}
 }
 
 func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    {%- if tuple.wr.originateFromTL2 -%}
+        {%- if writeElementNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
     w = basictl.NatWrite(w, uint32(len(m)))
     if len(m) == 0 {
     {%- if writeElementNeedsError -%}
@@ -392,11 +415,12 @@ func {%s= goName %}Write(w []byte, m map[{%s= keyTypeString %}]{%s= valueTypeStr
     {%- else -%}
     return w
     {%- endif -%}
+    {%- endif -%}
 }
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 {%- if tuple.wr.wantsTL2 -%}
-func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) []int {
+func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if len(*m) != 0 {
@@ -429,7 +453,7 @@ func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false) %}
         sizes[sizePosition] += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         sizes[sizePosition] += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -438,7 +462,7 @@ func {%s= goName %}CalculateLayout(sizes []int, m *map[{%s= keyTypeString %}]{%s
     return sizes
 }
 
-func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) ([]byte, []int) {
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -463,13 +487,13 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, m *map[{%s= keyTypeSt
         {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:keys[i], {%s= valueFieldName %}:(*m)[keys[i]]}
         {%- endif -%}
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
     }
     return w, sizes
 }
 {%- endif -%}
 
-func {%s= goName %}InternalReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}{%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}InternalReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= valueTypeString %}) (_ []byte, err error) {
 {%- if !tuple.wr.wantsTL2 -%}
     return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
 {%- else -%}
@@ -505,7 +529,7 @@ func {%s= goName %}InternalReadTL2(r []byte, m *map[{%s= keyTypeString %}]{%s= v
 
     for i := 0; i < elementCount; i++ {
         elem := {%s= elementTypeString %}{}
-        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "elem", false, tuple.wr.ins, false) %}
         data[elem.{%s= keyFieldName %}] = elem.{%s= valueFieldName %}
     }
     return r, nil
@@ -671,6 +695,9 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
 }
             {%- endif -%}
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     var l uint32
     if w, err = basictl.NatRead(w, &l); err != nil {
         return w, err
@@ -689,9 +716,17 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
         {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false ) %}
     }
     return w, nil
+    {%- endif -%}
 }
 
 func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    {%- if tuple.wr.originateFromTL2 -%}
+        {%- if writeElementNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
     w = basictl.NatWrite(w, uint32(len(vec)))
     for _, elem := range vec {
         {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
@@ -701,11 +736,12 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) {%s= 
     {%- else -%}
     return w
     {%- endif -%}
+    {%- endif -%}
 }
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 {%- if tuple.wr.wantsTL2 -%}
-func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= natDecl %}) []int {
+func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}) []int {
     currentSize := 0
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -730,7 +766,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if tuple.element.t.trw.doesCalculateLayoutUseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -741,7 +777,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
     return sizes
 }
 
-func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %}) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -775,14 +811,14 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
         {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
         elem := (*vec)[i]
         {%- endif -%}
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
     }
     {%- endif -%}
     return w, sizes
 }
 {%- endif -%}
 
-func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte, err error) {
 {%- if !tuple.wr.wantsTL2 -%}
     return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
 {%- else -%}
@@ -829,7 +865,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl
     }
     {%- else -%}
     for i := 0; i < elementCount; i++ {
-        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
     {%- endif -%}
     return r, nil
@@ -911,6 +947,9 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
             {%- endif -%}
 
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     {%- if tuple.wr.gen.options.UseCheckLengthSanity -%}
     if err = basictl.CheckLengthSanity(w, nat_n, 4); err != nil {
         return w, err
@@ -925,9 +964,17 @@ func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []
         {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false) %}
     }
     return w, nil
+    {%- endif -%}
 }
 
 func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.originateFromTL2 -%}
+        {%- if writeElementNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
     if uint32(len(vec)) != nat_n {
         return w, {%s= tuple.wr.gen.InternalPrefix()%}ErrorWrongSequenceLength({%q= typeString %}, len(vec), nat_n)
     }
@@ -935,11 +982,14 @@ func {%s= goName %}Write(w []byte, vec {%s= typeString %} {%s= natDecl %}) (_ []
         {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
     return w, nil
+    {%- endif -%}
 }
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 {%- if tuple.wr.wantsTL2 -%}
-func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= natDecl %}) []int {
+func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}) []int {
+    nat_n := uint32(len(*vec))
+
     currentSize := 0
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -967,7 +1017,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -989,7 +1039,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -1001,7 +1051,9 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
     return sizes
 }
 
-func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %}) ([]byte, []int) {
+    nat_n := uint32(len(*vec))
+
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -1040,7 +1092,7 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     }
     {%- else -%}
     for i := uint32(0); i < lastIndex; i++ {
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
 
     // append empty objects if not enough
@@ -1048,17 +1100,19 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
         {%- if tuple.element.t.trw.doesWriteTL2UseObject(false) -%}
         var elem {%s= elementTypeString %}
         {%- endif -%}
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
     }
     {%- endif -%}
     return w, sizes
 }
 {%- endif -%}
 
-func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte, err error) {
 {%- if !tuple.wr.wantsTL2 -%}
     return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
 {%- else -%}
+    nat_n := uint32(len(*vec))
+
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if len(r) < currentSize {
@@ -1114,7 +1168,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl
     }
     {%- else -%}
     for i := uint32(0); i < lastIndex; i++ {
-        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
 
     // reset elements if received less elements
@@ -1209,13 +1263,24 @@ func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %}
             {%- endif -%}
 
 func {%s= goName %}Read(w []byte, vec *{%s= typeString %} {%s= natDecl %}) (_ []byte, err error) {
+    {%- if tuple.wr.originateFromTL2 -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+    {%- else -%}
     for i := range *vec {
         {%s= tuple.element.t.TypeReadingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false) %}
     }
     return w, nil
+    {%- endif -%}
 }
 
 func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s= wrapWithError(writeElementNeedsError, "[]byte") %} {
+    {%- if tuple.wr.originateFromTL2 -%}
+        {%- if writeElementNeedsError -%}
+    return w, basictl.TL2Error("not implemented for tl2 type")
+        {%- else -%}
+    return w
+        {%- endif -%}
+    {%- else -%}
     for _, elem := range *vec {
         {%s= tuple.element.t.TypeWritingCode(bytesVersion, directImports, tuple.wr.ins, "elem", tuple.element.Bare(), formatNatArgs(nil, tuple.element.natArgs), false, false, writeElementNeedsError) %}
     }
@@ -1224,11 +1289,12 @@ func {%s= goName %}Write(w []byte, vec *{%s= typeString %} {%s= natDecl %}) {%s=
     {%- else -%}
     return w
     {%- endif -%}
+    {%- endif -%}
 }
 {%- if tuple.wr.gen.options.GenerateTL2 -%}
 
 {%- if tuple.wr.wantsTL2 -%}
-func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= natDecl %}) []int {
+func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %}) []int {
     currentSize := 0
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1251,7 +1317,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
         {%- if len(trivialSize) == 0 -%}
         currentPosition := len(sizes)
         {%- endif -%}
-        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false) %}
         currentSize += {%s= sizeValue %}
         {%- if tuple.element.t.trw.isSizeWrittenInData() -%}
         currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
@@ -1263,7 +1329,7 @@ func {%s= goName %}CalculateLayout(sizes []int, vec *{%s= typeString %} {%s= nat
     return sizes
 }
 
-func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %} {%s= natDecl %}) ([]byte, []int) {
+func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString %}) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -1291,7 +1357,7 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
     }
     {%- else -%}
     for i := 0; i < {%v= tuple.size %}; i++ {
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
     {%- endif -%}
     return w, sizes
@@ -1350,7 +1416,7 @@ func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl
     }
     {%- else -%}
     for i := 0; i < lastIndex; i++ {
-        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false, formatNatArgs(nil, tuple.element.natArgs)) %}
+        {%s= tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
 
     // reset elements if received less elements

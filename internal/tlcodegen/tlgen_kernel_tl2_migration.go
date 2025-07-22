@@ -485,33 +485,34 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				newField.Name = "_"
 				newField.IsIgnored = true
 			}
+			// TODO: decide to force all fields to be non optional
 			// if it has field mask
-			if field.Mask != nil {
-				newField.IsOptional = true
-				if !field.IsRepeated {
-					comb := associatedCombinator[field.FieldType.Type]
-					if comb != nil && len(associatedWrappers[comb]) > 0 {
-						wrapper := associatedWrappers[comb][0]
-						if _, ok := wrapper.trw.(*TypeRWBool); ok {
-							newField.IsOptional = false
-							newField.Type.SomeType = &tlast.TL2TypeApplication{
-								Name: tlast.TL2TypeName{Name: "maybe"},
-								Arguments: []tlast.TL2TypeArgument{
-									{
-										Type: tlast.TL2TypeRef{
-											SomeType: &tlast.TL2TypeApplication{
-												Name: tlast.TL2TypeName{Name: "bool"},
-											},
-										},
-									},
-								},
-							}
-							newFields = append(newFields, newField)
-							continue
-						}
-					}
-				}
-			}
+			//if field.Mask != nil {
+			//	newField.IsOptional = true
+			//	if !field.IsRepeated {
+			//		comb := associatedCombinator[field.FieldType.Type]
+			//		if comb != nil && len(associatedWrappers[comb]) > 0 {
+			//			wrapper := associatedWrappers[comb][0]
+			//			if _, ok := wrapper.trw.(*TypeRWBool); ok {
+			//				newField.IsOptional = false
+			//				newField.Type.SomeType = &tlast.TL2TypeApplication{
+			//					Name: tlast.TL2TypeName{Name: "maybe"},
+			//					Arguments: []tlast.TL2TypeArgument{
+			//						{
+			//							Type: tlast.TL2TypeRef{
+			//								SomeType: &tlast.TL2TypeApplication{
+			//									Name: tlast.TL2TypeName{Name: "bool"},
+			//								},
+			//							},
+			//						},
+			//					},
+			//				}
+			//				newFields = append(newFields, newField)
+			//				continue
+			//			}
+			//		}
+			//	}
+			//}
 			calculatingType := &newField.Type
 			// if is repeated
 			if field.IsRepeated {
@@ -666,10 +667,6 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				// init name
 				tl2Combinator.TypeDecl.Name = baseName
 
-				if tl2Combinator.TypeDecl.Name.String() == "dictionary" {
-					//print("debug")
-				}
-
 				constantArgs := utils.Keys(setOfConstantNatArgs)
 				sort.Ints(constantArgs)
 				for _, arg := range constantArgs {
@@ -677,10 +674,10 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				}
 				// add annotations
 				if isRef {
-					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "tl1"})
+					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl1Ref})
 				}
 				if len(constantArgs) != 0 {
-					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: "tl2ext"})
+					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl2Ext})
 				}
 
 				// init templates
@@ -820,7 +817,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			if len(function.TemplateArguments) > 0 {
 				tl2Combinator.Annotations = append(tl2Combinator.Annotations,
 					tlast.TL2Annotation{
-						Name: "tl1_diagonal",
+						Name: tl1Diagonal,
 					},
 				)
 			}
@@ -1034,7 +1031,7 @@ func getTypesInfoFromTL2State(state []FileToWrite) map[tlast.TL2TypeName][]tlast
 			if name.String() == "vector" {
 				//print("debug")
 			}
-			if combinator.HasAnnotation("tl2ext") {
+			if combinator.HasAnnotation(tl2Ext) {
 				suffix := ""
 				for _, argument := range combinator.TypeDecl.TemplateArguments {
 					if argument.Category.IsUint32() {

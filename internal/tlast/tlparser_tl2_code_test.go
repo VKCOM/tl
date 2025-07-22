@@ -308,10 +308,18 @@ testNs.testName =
 
 			t.Run("union with constructors with one constructor", func(t *testing.T) {
 				it, _ := setupIterator(`
+testNs.testName = Green x:int
+	;`)
+				_, _, err := parseTL2Combinator(it)
+				assert.NoError(t, err)
+			})
+
+			t.Run("union with constructors with one constructor with leading vb", func(t *testing.T) {
+				it, _ := setupIterator(`
 testNs.testName = | Green x:int
 	;`)
 				_, _, err := parseTL2Combinator(it)
-				assert.Error(t, err)
+				assert.NoError(t, err)
 			})
 
 			t.Run("union with constructors with zero constructor", func(t *testing.T) {
@@ -322,7 +330,7 @@ testNs.testName = |
 				assert.Error(t, err)
 			})
 
-			t.Run("union with constructors with one constructor", func(t *testing.T) {
+			t.Run("union with constructors with one constructor and empty alternative", func(t *testing.T) {
 				it, _ := setupIterator(`
 testNs.testName = Green x:int |
 	;`)

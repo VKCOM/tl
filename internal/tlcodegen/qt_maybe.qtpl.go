@@ -65,20 +65,27 @@ func (item *`)
 	qw422016.N().S(`) ReadBoxed(w []byte`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
-    if w, err = basictl.ReadBool(w, &item.Ok, `)
-	qw422016.N().S(emptyTag)
-	qw422016.N().S(`, `)
-	qw422016.N().S(okTag)
-	qw422016.N().S(`); err != nil {
+`)
+	if maybe.wr.originateFromTL2 {
+		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+	} else {
+		qw422016.N().S(`    if w, err = basictl.ReadBool(w, &item.Ok, `)
+		qw422016.N().S(emptyTag)
+		qw422016.N().S(`, `)
+		qw422016.N().S(okTag)
+		qw422016.N().S(`); err != nil {
         return w, err
     }
     if item.Ok {
         `)
-	qw422016.N().S(maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true))
-	qw422016.N().S(`
+		qw422016.N().S(maybe.element.t.TypeReadingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true))
+		qw422016.N().S(`
     }
     return w, nil
-}
+`)
+	}
+	qw422016.N().S(`}
 
 func (item *`)
 	qw422016.N().S(goName)
@@ -86,56 +93,63 @@ func (item *`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if writeElementNeedsError {
-		qw422016.N().S(`    return item.WriteBoxed(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+	if maybe.wr.originateFromTL2 {
+		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
-		qw422016.N().S(`    return item.WriteBoxed(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`), nil
+		if writeElementNeedsError {
+			qw422016.N().S(`    return item.WriteBoxed(w`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 `)
+		} else {
+			qw422016.N().S(`    return item.WriteBoxed(w`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`), nil
+`)
+		}
 	}
 	qw422016.N().S(`}
 
-func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) WriteBoxed(w []byte`)
-	qw422016.N().S(natArgsDecl)
-	qw422016.N().S(`) `)
-	qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
-	qw422016.N().S(` {
+`)
+	if !maybe.wr.originateFromTL2 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) WriteBoxed(w []byte`)
+		qw422016.N().S(natArgsDecl)
+		qw422016.N().S(`) `)
+		qw422016.N().S(wrapWithError(writeElementNeedsError, "[]byte"))
+		qw422016.N().S(` {
     if item.Ok {
         w = basictl.NatWrite(w, `)
-	qw422016.N().S(okTag)
-	qw422016.N().S(`)
+		qw422016.N().S(okTag)
+		qw422016.N().S(`)
         `)
-	qw422016.N().S(maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true, writeElementNeedsError))
-	qw422016.N().S(`
+		qw422016.N().S(maybe.element.t.TypeWritingCode(bytesVersion, directImports, maybe.wr.ins, "item.Value", maybe.element.Bare(), formatNatArgs(nil, maybe.element.natArgs), false, true, writeElementNeedsError))
+		qw422016.N().S(`
     }
 `)
-	if writeElementNeedsError {
-		qw422016.N().S(`    return basictl.NatWrite(w, `)
-		qw422016.N().S(emptyTag)
-		qw422016.N().S(`), nil
+		if writeElementNeedsError {
+			qw422016.N().S(`    return basictl.NatWrite(w, `)
+			qw422016.N().S(emptyTag)
+			qw422016.N().S(`), nil
 `)
-	} else {
-		qw422016.N().S(`    return basictl.NatWrite(w, `)
-		qw422016.N().S(emptyTag)
-		qw422016.N().S(`)
+		} else {
+			qw422016.N().S(`    return basictl.NatWrite(w, `)
+			qw422016.N().S(emptyTag)
+			qw422016.N().S(`)
+`)
+		}
+		qw422016.N().S(`}
 `)
 	}
-	qw422016.N().S(`}
-
+	qw422016.N().S(`
 `)
 	if maybe.wr.gen.options.GenerateTL2 {
 		if maybe.wr.wantsTL2 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) CalculateLayout(sizes []int`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) []int {
+			qw422016.N().S(`) CalculateLayout(sizes []int) []int {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
     if item.Ok {
@@ -155,7 +169,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
 `)
 			sizeValue := "sizes[currentPosition]"
@@ -193,9 +207,7 @@ func (item *`)
 
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) ([]byte, []int) {
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
 
@@ -226,7 +238,7 @@ func (item *`)
 			qw422016.N().S(` != 0 {
         w[currentPosition] |= (1 << 1)
         `)
-			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
 `)
 			if len(trivialSize) == 0 {
@@ -250,9 +262,7 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalReadTL2(r []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
+		qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
 `)
 		if !maybe.wr.wantsTL2 {
 			qw422016.N().S(`    return r, `)
@@ -293,7 +303,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`        `)
-			qw422016.N().S(maybe.element.t.ReadTL2Call(directImports, bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive, formatNatArgs(nil, maybe.element.natArgs)))
+			qw422016.N().S(maybe.element.t.ReadTL2Call(directImports, bytesVersion, "r", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
         } else {
         `)

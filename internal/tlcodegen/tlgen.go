@@ -130,6 +130,10 @@ type ActualNatArg struct {
 	isTL2FakeArith bool // for only tl2 purposes
 }
 
+func (arg *ActualNatArg) IsTL2() bool {
+	return arg.isField && arg.FieldIndex <= 0
+}
+
 type HalfResolvedArgument struct { // TODO - better name
 	Name string                 // if empty, this is not argument position
 	Args []HalfResolvedArgument // recursion
@@ -2441,6 +2445,27 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 				}
 			}
 		}
+		for _, combinator := range tl2.Combinators {
+			if combinator.IsFunction {
+				for _, m := range combinator.Annotations {
+					// to ignore diagonal legacy
+					if m.Name == tl1Diagonal {
+						continue
+					}
+					if _, ok := allAnnotations[m.Name]; !ok {
+						if _, ok := gen.supportedAnnotations[m.Name]; !ok {
+							e1 := m.PR.BeautifulError(fmt.Errorf("annotation %q not known to tlgen", m.Name))
+							if gen.options.WarningsAreErrors {
+								return nil, e1
+							}
+							e1.PrintWarning(options.ErrorWriter, nil)
+						}
+						allAnnotations[m.Name] = struct{}{}
+						gen.allAnnotations = append(gen.allAnnotations, m.Name)
+					}
+				}
+			}
+		}
 		if len(gen.allAnnotations) > 32 {
 			return nil, fmt.Errorf("too many (%d) differnet annotations, max is 32 for now", len(gen.allAnnotations))
 		}
@@ -2492,9 +2517,6 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			if !typ.IsFunction {
 				t = tlast.TypeRef{Type: typ.TypeDecl.Name, PR: typ.TypeDecl.PR}
 			}
-			if t.String() == "cases.TestInplaceStructArgs" {
-				//print("debug")
-			}
 			_, _, _, _, err = gen.getType(LocalResolveContext{allowAnyConstructor: true}, t, nil)
 			if err != nil {
 				return nil, err
@@ -2503,7 +2525,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	}
 
 	for _, combinator := range tl2.Combinators {
-		if combinator.HasAnnotation("tl1_diagonal") {
+		if combinator.HasAnnotation(tl1Diagonal) {
 			continue
 		}
 		ref := tlast.TL2TypeRef{SomeType: &tlast.TL2TypeApplication{Name: combinator.ReferenceName()}}

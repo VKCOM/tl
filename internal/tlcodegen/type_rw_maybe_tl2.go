@@ -10,8 +10,8 @@ func (trw *TypeRWMaybe) calculateLayoutCall(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string) string {
-	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), joinWithCommas(natArgs))
+) string {
+	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject))
 }
 
 func (trw *TypeRWMaybe) writeTL2Call(
@@ -23,12 +23,10 @@ func (trw *TypeRWMaybe) writeTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
-	return fmt.Sprintf("%[4]s, %[1]s = %[2]s.InternalWriteTL2(%[4]s, %[1]s%[3]s)",
+	return fmt.Sprintf("%[3]s, %[1]s = %[2]s.InternalWriteTL2(%[3]s, %[1]s)",
 		targetSizes,
 		addAsteriskAndBrackets(refObject, targetObject),
-		joinWithCommas(natArgs),
 		targetBytes,
 	)
 }
@@ -41,12 +39,10 @@ func (trw *TypeRWMaybe) readTL2Call(
 	canDependOnLocalBit bool,
 	ins *InternalNamespace,
 	refObject bool,
-	natArgs []string,
 ) string {
-	return fmt.Sprintf("if %[4]s, err = %[2]s.InternalReadTL2(%[4]s%[3]s); err != nil { return %[4]s, err }",
+	return fmt.Sprintf("if %[3]s, err = %[2]s.InternalReadTL2(%[3]s); err != nil { return %[3]s, err }",
 		"",
 		addAsteriskAndBrackets(refObject, targetObject),
-		joinWithCommas(natArgs),
 		targetBytes,
 	)
 }

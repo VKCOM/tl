@@ -328,7 +328,7 @@ func parseTL2TypeDefinition(tokens tokenIterator, position Position) (state Opti
 	return
 }
 
-// TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
+// TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)*;
 func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalState, restTokens tokenIterator, result TL2UnionType) {
 	defer func() {
 		if !state.StartProcessing {
@@ -391,8 +391,8 @@ func parseTL2UnionType(tokens tokenIterator, position Position) (state OptionalS
 		return
 	}
 
-	if len(result.Variants) < 2 {
-		state.Fail("expected at least 2 variants of union type")
+	if len(result.Variants) < 1 {
+		state.Fail("expected at least 1 variants of union type")
 	}
 
 	result.PR.End = restTokens.front().pos

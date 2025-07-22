@@ -119,16 +119,21 @@ func (item *`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) (_ []byte, err error) {
 `)
-	if writeNeedsError {
-		qw422016.N().S(`    return item.Write(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 	} else {
-		qw422016.N().S(`    return item.Write(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`), nil
+		if writeNeedsError {
+			qw422016.N().S(`    return item.Write(w`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
 `)
+		} else {
+			qw422016.N().S(`    return item.Write(w`)
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`), nil
+`)
+		}
 	}
 	qw422016.N().S(`}
 
@@ -149,15 +154,22 @@ func (item *`)
 		qw422016.N().S(`) ReadBoxed(w []byte`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
-    if w, err = basictl.NatReadExactTag(w, `)
-		qw422016.N().S(tlTag)
-		qw422016.N().S(`); err != nil {
+`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		} else {
+			qw422016.N().S(`    if w, err = basictl.NatReadExactTag(w, `)
+			qw422016.N().S(tlTag)
+			qw422016.N().S(`); err != nil {
         return w, err
     }
     return item.Read(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
-}
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
+`)
+		}
+		qw422016.N().S(`}
 
 func (item *`)
 		qw422016.N().S(goName)
@@ -165,16 +177,21 @@ func (item *`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) (_ []byte, err error) {
 `)
-		if writeNeedsError {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
 `)
 		} else {
-			qw422016.N().S(`    return item.WriteBoxed(w`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`), nil
+			if writeNeedsError {
+				qw422016.N().S(`    return item.WriteBoxed(w`)
+				qw422016.N().S(natArgsCall)
+				qw422016.N().S(`)
 `)
+			} else {
+				qw422016.N().S(`    return item.WriteBoxed(w`)
+				qw422016.N().S(natArgsCall)
+				qw422016.N().S(`), nil
+`)
+			}
 		}
 		qw422016.N().S(`}
 
@@ -185,13 +202,25 @@ func (item *`)
 		qw422016.N().S(`) `)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
-    w = basictl.NatWrite(w, `)
-		qw422016.N().S(tlTag)
-		qw422016.N().S(`)
+`)
+		if struct_.wr.originateFromTL2 {
+			if writeNeedsError {
+				qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+			} else {
+				qw422016.N().S(`    return w
+`)
+			}
+		} else {
+			qw422016.N().S(`    w = basictl.NatWrite(w, `)
+			qw422016.N().S(tlTag)
+			qw422016.N().S(`)
     return item.Write(w`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
-}
+			qw422016.N().S(natArgsCall)
+			qw422016.N().S(`)
+`)
+		}
+		qw422016.N().S(`}
 
 `)
 	}
@@ -292,6 +321,27 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 		qw422016.N().S(fieldsMaskComment)
 		qw422016.N().S(`
 `)
+	}
+	if struct_.wr.originateFromTL2 {
+		masks := make(map[int]bool)
+		for _, field := range struct_.Fields {
+			if field.fieldMask != nil {
+				masks[-field.fieldMask.FieldIndex] = true
+			}
+		}
+		keys := utils.Keys(masks)
+		sort.Ints(keys)
+
+		if len(masks) > 0 {
+			qw422016.N().S(`
+`)
+			for _, mask := range keys {
+				qw422016.N().S(`    mask`)
+				qw422016.N().D(mask)
+				qw422016.N().S(` uint32
+`)
+			}
+		}
 	}
 	qw422016.N().S(`}
 `)
@@ -1592,21 +1642,35 @@ func (struct_ *TypeRWStruct) streamfunctionCode(qw422016 *qt422016.Writer, bytes
 	qw422016.N().S(`) ReadResult(w []byte, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
-    `)
-	qw422016.N().S(struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true))
-	qw422016.N().S(`
-}
+`)
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+	} else {
+		qw422016.N().S(`    `)
+		qw422016.N().S(struct_.ResultType.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true, true))
+		qw422016.N().S(`
+`)
+	}
+	qw422016.N().S(`}
 
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) WriteResult(w []byte, ret `)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) (_ []byte, err error) {
-    `)
-	qw422016.N().S(struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods))
-	qw422016.N().S(`
+`)
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+	} else {
+		qw422016.N().S(`    `)
+		qw422016.N().S(struct_.ResultType.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, false, struct_.ResultType.hasErrorInWriteMethods))
+		qw422016.N().S(`
     return w, nil
-}
+`)
+	}
+	qw422016.N().S(`}
 `)
 	if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 {
 		qw422016.N().S(`
@@ -1634,7 +1698,7 @@ func (item *`)
 
     if block & (1 << 1) != 0 {
         `)
-		qw422016.N().S(struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true, formatNatArgs(struct_.Fields, struct_.ResultNatArgs)))
+		qw422016.N().S(struct_.ResultType.ReadTL2Call(directImports, bytesVersion, "currentR", "ret", true, struct_.wr.ins, true))
 		qw422016.N().S(`
     } else {
         `)
@@ -1656,8 +1720,8 @@ func (item *`)
 			sizeValue = trivialSize
 		}
 		nonEmptyCondition := struct_.ResultType.TypeJSONEmptyCondition(false, "ret", false)
-		calculateResultLayout := struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs))
-		writeResult := struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false, formatNatArgs(struct_.Fields, struct_.ResultNatArgs))
+		calculateResultLayout := struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false)
+		writeResult := struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false)
 
 		qw422016.N().S(`	var sizes []int
 	if ctx != nil {
@@ -2044,6 +2108,16 @@ func (struct_ *TypeRWStruct) randomFields(bytesVersion bool, directImports *Dire
 }
 
 func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
+	if struct_.wr.originateFromTL2 {
+		if struct_.wr.hasErrorInWriteMethods {
+			qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		} else {
+			qw422016.N().S(`    return w
+`)
+		}
+		return
+	}
 	if struct_.isTypeDef() {
 		field := struct_.Fields[0]
 
@@ -2126,6 +2200,11 @@ func (struct_ *TypeRWStruct) writeFields(bytesVersion bool, directImports *Direc
 }
 
 func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    return w, basictl.TL2Error("not implemented for tl2 type")
+`)
+		return
+	}
 	if struct_.isTypeDef() {
 		field := struct_.Fields[0]
 
@@ -2227,8 +2306,8 @@ func (struct_ *TypeRWStruct) readFields(bytesVersion bool, directImports *Direct
 func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
-	natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
+	//        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
+	//        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
 	if struct_.isTypeDef() && struct_.wr.unionParent == nil {
 		field := struct_.Fields[0]
@@ -2238,9 +2317,7 @@ func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, by
 			qw422016.N().S(`
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) CalculateLayout(sizes []int`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) []int {
+			qw422016.N().S(`) CalculateLayout(sizes []int) []int {
 `)
 			if field.t.trw.doesCalculateLayoutUseObject(true) {
 				qw422016.N().S(`    ptr := (*`)
@@ -2249,16 +2326,14 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true))
 			qw422016.N().S(`
     return sizes
 }
 
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) ([]byte, []int) {
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 `)
 			if field.t.trw.doesWriteTL2UseObject(false) {
 				qw422016.N().S(`    ptr := (*`)
@@ -2267,7 +2342,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true))
 			qw422016.N().S(`
     return w, sizes
 }
@@ -2276,9 +2351,7 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []byte {
+		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 `)
 		if !struct_.wr.wantsTL2 {
 			qw422016.N().S(`    return w
@@ -2288,12 +2361,8 @@ func (item *`)
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0]`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-    w, _ = item.InternalWriteTL2(w, sizes`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+    sizes = item.CalculateLayout(sizes[:0])
+    w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
@@ -2304,9 +2373,7 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) InternalReadTL2(r []byte`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
+		qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
 `)
 		if !struct_.wr.wantsTL2 {
 			qw422016.N().S(`    return r, `)
@@ -2323,7 +2390,7 @@ func (item *`)
 `)
 			}
 			qw422016.N().S(`    `)
-			qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true, formatNatArgs(struct_.Fields, field.natArgs)))
+			qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "r", "ptr", false, struct_.wr.ins, true))
 			qw422016.N().S(`
     return r, nil
 `)
@@ -2332,12 +2399,8 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) (_ []byte, err error) {
-    return item.InternalReadTL2(r`)
-		qw422016.N().S(natArgsCall)
-		qw422016.N().S(`)
+		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+    return item.InternalReadTL2(r)
 }
 `)
 	} else {
@@ -2346,9 +2409,7 @@ func (item *`)
 		if struct_.wr.wantsTL2 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) CalculateLayout(sizes []int`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) []int {
+			qw422016.N().S(`) CalculateLayout(sizes []int) []int {
 `)
 			if struct_.isTypeDef() {
 				qw422016.N().S(`    ptr := (*`)
@@ -2417,7 +2478,7 @@ func (item *`)
 `)
 					}
 				}
-				if field.fieldMask != nil {
+				if field.fieldMask != nil && field.fieldMask.IsTL2() {
 					qw422016.N().S(`    if `)
 					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 					qw422016.N().S(` & (1 << `)
@@ -2434,7 +2495,7 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`    `)
-				qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive))
 				qw422016.N().S(`
 `)
 				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
@@ -2508,7 +2569,7 @@ func (item *`)
 					qw422016.N().S(`    }
 `)
 				}
-				if field.fieldMask != nil {
+				if field.fieldMask != nil && field.fieldMask.IsTL2() {
 					qw422016.N().S(`    }
 `)
 				}
@@ -2527,9 +2588,7 @@ func (item *`)
 
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) ([]byte, []int) {
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 `)
 			if struct_.isTypeDef() {
 				qw422016.N().S(`    ptr := (*`)
@@ -2612,7 +2671,7 @@ func (item *`)
 				qw422016.N().S(fieldName)
 				qw422016.N().S(`
 `)
-				if field.fieldMask != nil {
+				if field.fieldMask != nil && field.fieldMask.IsTL2() {
 					qw422016.N().S(`    if `)
 					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 					qw422016.N().S(` & (1 << `)
@@ -2653,7 +2712,7 @@ func (item *`)
 				qw422016.E().V((fieldIndex + 1) % 8)
 				qw422016.N().S(`)
     `)
-				qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive))
 				qw422016.N().S(`
 `)
 				if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) {
@@ -2671,7 +2730,7 @@ func (item *`)
 					qw422016.N().S(`    }
 `)
 				}
-				if field.fieldMask != nil {
+				if field.fieldMask != nil && field.fieldMask.IsTL2() {
 					qw422016.N().S(`    }
 `)
 				}
@@ -2687,9 +2746,7 @@ func (item *`)
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []byte {
+		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 `)
 		if !struct_.wr.wantsTL2 {
 			qw422016.N().S(`    return w
@@ -2699,12 +2756,8 @@ func (item *`)
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0]`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-    w, _ = item.InternalWriteTL2(w, sizes`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+    sizes = item.CalculateLayout(sizes[:0])
+    w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
@@ -2718,9 +2771,7 @@ func (item *`)
 			if struct_.wr.unionParent == nil {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
-				qw422016.N().S(`) InternalReadTL2(r []byte`)
-				qw422016.N().S(natArgsDecl)
-				qw422016.N().S(`) (_ []byte, err error) {
+				qw422016.N().S(`) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
     if len(r) < currentSize {
@@ -2750,9 +2801,7 @@ func (item *`)
 			} else {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
-				qw422016.N().S(`) InternalReadTL2(r []byte, block byte`)
-				qw422016.N().S(natArgsDecl)
-				qw422016.N().S(`) (_ []byte, err error) {
+				qw422016.N().S(`) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 `)
 				initCurrentR := false
 				for _, field := range struct_.Fields {
@@ -2829,7 +2878,7 @@ func (item *`)
         }
 `)
 				}
-				if field.fieldMask != nil {
+				if field.fieldMask != nil && field.fieldMask.IsTL2() {
 					qw422016.N().S(`        if `)
 					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 					qw422016.N().S(` & (1 << `)
@@ -2838,10 +2887,10 @@ func (item *`)
 `)
 				}
 				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive, formatNatArgs(struct_.Fields, field.natArgs)))
+				qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive))
 				qw422016.N().S(`
 `)
-				if field.fieldMask != nil {
+				if field.fieldMask != nil && field.fieldMask.IsTL2() {
 					qw422016.N().S(`        } else {
             return currentR, basictl.TL2Error("field mask contradiction: field item." + "`)
 					qw422016.N().S(field.goName)
@@ -2880,9 +2929,7 @@ func (item *`)
 		if !struct_.wr.wantsTL2 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) (_ []byte, err error) {
+			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
         return r, `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
@@ -2893,9 +2940,7 @@ func (item *`)
 		} else {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext`)
-			qw422016.N().S(natArgsDecl)
-			qw422016.N().S(`) (_ []byte, err error) {
+			qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 `)
 			if struct_.wr.unionParent != nil {
 				qw422016.N().S(`    currentSize := 0
@@ -2923,15 +2968,11 @@ func (item *`)
 				qw422016.N().D(struct_.wr.unionIndex)
 				qw422016.N().S(`)
     }
-    _, err = item.InternalReadTL2(currentR, block`)
-				qw422016.N().S(natArgsCall)
-				qw422016.N().S(`)
+    _, err = item.InternalReadTL2(currentR, block)
     return r, err
 `)
 			} else {
-				qw422016.N().S(`    return item.InternalReadTL2(r`)
-				qw422016.N().S(natArgsCall)
-				qw422016.N().S(`)
+				qw422016.N().S(`    return item.InternalReadTL2(r)
 `)
 			}
 			qw422016.N().S(`}
