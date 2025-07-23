@@ -406,13 +406,16 @@ func streamhandlerStructs(qw422016 *qt422016.Writer, shortPackageName string, na
 		if fun, ok := wr.trw.(*TypeRWStruct); ok && fun.ResultType != nil {
 			tlName := wr.tlName.String()
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+			hasRaw := inNameFilter(wr.tlName, wr.gen.rawHandlerWhileList)
 
-			qw422016.N().S(`Raw`)
-			qw422016.N().S(funcTypeString)
-			qw422016.N().S(` func(ctx context.Context, hctx *rpc.HandlerContext) error // `)
-			qw422016.N().S(tlName)
-			qw422016.N().S(`
+			if hasRaw {
+				qw422016.N().S(`Raw`)
+				qw422016.N().S(funcTypeString)
+				qw422016.N().S(` func(ctx context.Context, hctx *rpc.HandlerContext) error // `)
+				qw422016.N().S(tlName)
+				qw422016.N().S(`
 `)
+			}
 		}
 	}
 }
@@ -440,6 +443,7 @@ switch tag {
 			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
 			funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
 			tlName := wr.tlName.String()
+			hasRaw := inNameFilter(wr.tlName, wr.gen.rawHandlerWhileList)
 
 			qw422016.N().S(`case `)
 			qw422016.N().S(tlTag)
@@ -449,24 +453,28 @@ switch tag {
     hctx.RequestFunctionName = "`)
 			qw422016.N().S(tlName)
 			qw422016.N().S(`"
-    if h.Raw`)
-			qw422016.N().S(funcTypeString)
-			qw422016.N().S(` != nil && !hctx.BodyFormatTL2() {
+`)
+			if hasRaw {
+				qw422016.N().S(`    if h.Raw`)
+				qw422016.N().S(funcTypeString)
+				qw422016.N().S(` != nil && !hctx.BodyFormatTL2() {
         hctx.Request = r
         err = h.Raw`)
-			qw422016.N().S(funcTypeString)
-			qw422016.N().S(`(ctx, hctx)
+				qw422016.N().S(funcTypeString)
+				qw422016.N().S(`(ctx, hctx)
         if rpc.IsHijackedResponse(err) {
             return err
         }
         if err != nil {
             return internal.ErrorServerHandle("`)
-			qw422016.N().S(tlName)
-			qw422016.N().S(`", err)
+				qw422016.N().S(tlName)
+				qw422016.N().S(`", err)
         }
         return nil
     }
-    if h.`)
+`)
+			}
+			qw422016.N().S(`    if h.`)
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(` != nil {
         var args `)
