@@ -368,21 +368,28 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
 	for i, field := range struct_.Fields {
-		if field.fieldMask == nil {
+		if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" {
 			continue
 		}
 		fieldTypeString := ""
 		isTrueType := "bool"
-		maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
-		natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
 		asterisk := addAsterisk(field.recursive, "")
+		maskFunArg := false
+		natArgUse := ""
+		if field.GenerateLegacySettersForTL2Name != "" {
+			maskFunArg = true
+			natArgUse = "nat_" + field.GenerateLegacySettersForTL2Name
+		} else if field.fieldMask != nil {
+			maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
+			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
+		}
 
 		if !field.t.IsTrueType() {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 			isTrueType = fieldTypeString
 
 		}
-		if !field.fieldMask.isArith {
+		if field.GenerateLegacySettersForTL2Name != "" || !field.fieldMask.isArith {
 			// Example
 			//     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
 			//     @any notify.getScheduledNotifications#f53ad7bd  = notify.Notification 0;
@@ -394,15 +401,18 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			}
 			getName := "G" + setName[1:]
 
-			if !field.t.IsTrueType() && field.fieldMask.IsTL2() {
+			if !field.t.IsTrueType() && field.fieldMask != nil && field.fieldMask.IsTL2() {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
 				qw422016.N().S(`) `)
 				qw422016.N().S(getName)
 				qw422016.N().S(`() `)
+				qw422016.N().S(asterisk)
 				qw422016.N().S(isTrueType)
 				qw422016.N().S(` {
-    return item.`)
+    return `)
+				qw422016.N().S(asterisk)
+				qw422016.N().S(`item.`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`
 }

@@ -1218,6 +1218,9 @@ type Field struct {
 	halfResolved HalfResolvedArgument
 
 	origTL tlast.Field
+
+	// for tl1 - tl2 smooth migration, not affecting tl1 (if it is not empty bitnumber has meaning)
+	GenerateLegacySettersForTL2Name string
 }
 
 func (f *Field) Bare() bool {

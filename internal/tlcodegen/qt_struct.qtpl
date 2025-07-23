@@ -172,13 +172,20 @@ type {%s= goName %} struct {
 {%- func (struct_ *TypeRWStruct)fieldMaskGettersAndSetters(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%- for i, field := range struct_.Fields -%}
-        {%- if field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
+        {%- if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" -%} {%- continue -%} {%- endif -%}
         {%- code
             fieldTypeString := ""
             isTrueType := "bool"
-            maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
-            natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
             asterisk := addAsterisk(field.recursive, "")
+            maskFunArg := false
+            natArgUse := ""
+            if field.GenerateLegacySettersForTL2Name != "" {
+                maskFunArg = true
+                natArgUse = "nat_" + field.GenerateLegacySettersForTL2Name
+            } else if field.fieldMask != nil {
+                maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
+                natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
+            }
         -%}
         {%- if !field.t.IsTrueType() -%}
         {%- code
@@ -186,7 +193,7 @@ type {%s= goName %} struct {
             isTrueType = fieldTypeString
         -%}
         {%- endif -%}
-        {%- if !field.fieldMask.isArith -%}
+        {%- if field.GenerateLegacySettersForTL2Name != "" || !field.fieldMask.isArith -%}
             {%- code
                 // Example
                 //     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
@@ -199,9 +206,9 @@ type {%s= goName %} struct {
                 }
                 getName := "G" + setName[1:]
             -%}
-            {%- if !field.t.IsTrueType() && field.fieldMask.IsTL2() -%}
-func (item *{%s= goName %}) {%s= getName %}() {%s= isTrueType %} {
-    return item.{%s= field.goName %}
+            {%- if !field.t.IsTrueType() && field.fieldMask != nil && field.fieldMask.IsTL2() -%}
+func (item *{%s= goName %}) {%s= getName %}() {%s= asterisk %}{%s= isTrueType %} {
+    return {%s= asterisk %}item.{%s= field.goName %}
 }
             {%- endif -%}
             {%- if maskFunArg -%}

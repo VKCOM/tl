@@ -1364,7 +1364,7 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, vec *{%s= typeString 
 }
 {%- endif -%}
 
-func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}{%s= natDecl %}) (_ []byte, err error) {
+func {%s= goName %}InternalReadTL2(r []byte, vec *{%s= typeString %}) (_ []byte, err error) {
 {%- if !tuple.wr.wantsTL2 -%}
     return r, {%s= tuple.wr.gen.InternalPrefix()%}ErrorTL2SerializersNotGenerated({%q= typeString %})
 {%- else -%}

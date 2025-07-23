@@ -421,9 +421,7 @@ func (item *`)
 		}
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) []byte {
+		qw422016.N().S(`) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 `)
 		if !union.wr.wantsTL2 {
 			qw422016.N().S(`    return w
@@ -433,12 +431,8 @@ func (item *`)
     if ctx != nil {
         sizes = ctx.SizeBuffer
     }
-    sizes = item.CalculateLayout(sizes[:0]`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
-    w, _ = item.InternalWriteTL2(w, sizes`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+    sizes = item.CalculateLayout(sizes[:0])
+    w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes[:0]
     }
@@ -449,9 +443,7 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext`)
-		qw422016.N().S(natArgsDecl)
-		qw422016.N().S(`) ([]byte, error) {
+		qw422016.N().S(`) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
 `)
 		if !union.wr.wantsTL2 {
 			qw422016.N().S(`    return r, `)
@@ -461,9 +453,7 @@ func (item *`)
 			qw422016.N().S(`)
 `)
 		} else {
-			qw422016.N().S(`    return item.InternalReadTL2(r`)
-			qw422016.N().S(natArgsCall)
-			qw422016.N().S(`)
+			qw422016.N().S(`    return item.InternalReadTL2(r)
 `)
 		}
 		qw422016.N().S(`}

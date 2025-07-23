@@ -131,7 +131,7 @@ type ActualNatArg struct {
 }
 
 func (arg *ActualNatArg) IsTL2() bool {
-	return arg.isField && arg.FieldIndex <= 0
+	return arg.isField && arg.FieldIndex < 0
 }
 
 type HalfResolvedArgument struct { // TODO - better name
