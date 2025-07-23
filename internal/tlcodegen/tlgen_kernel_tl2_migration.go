@@ -475,8 +475,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		return
 	}
 
-	addFields := func(oldFields []tlast.Field, natIsConstant map[string]bool, natTemples map[string]bool) (newFields []tlast.TL2Field) {
-		natTemples = utils.CopyMap(natTemples)
+	addFields := func(oldFields []tlast.Field, natIsConstant map[string]bool, natTemplates map[string]bool) (newFields []tlast.TL2Field) {
+		originalNatTemplates := utils.CopyMap(natTemplates)
+		natTemplates = utils.CopyMap(natTemplates)
 		for _, field := range oldFields {
 			newField := tlast.TL2Field{}
 			// name
@@ -487,32 +488,43 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			}
 			// TODO: decide to force all fields to be non optional
 			// if it has field mask
-			//if field.Mask != nil {
-			//	newField.IsOptional = true
-			//	if !field.IsRepeated {
-			//		comb := associatedCombinator[field.FieldType.Type]
-			//		if comb != nil && len(associatedWrappers[comb]) > 0 {
-			//			wrapper := associatedWrappers[comb][0]
-			//			if _, ok := wrapper.trw.(*TypeRWBool); ok {
-			//				newField.IsOptional = false
-			//				newField.Type.SomeType = &tlast.TL2TypeApplication{
-			//					Name: tlast.TL2TypeName{Name: "maybe"},
-			//					Arguments: []tlast.TL2TypeArgument{
-			//						{
-			//							Type: tlast.TL2TypeRef{
-			//								SomeType: &tlast.TL2TypeApplication{
-			//									Name: tlast.TL2TypeName{Name: "bool"},
-			//								},
-			//							},
-			//						},
-			//					},
-			//				}
-			//				newFields = append(newFields, newField)
-			//				continue
-			//			}
-			//		}
-			//	}
-			//}
+			isTrue := field.FieldType.Type.String() == "true" || field.FieldType.Type.String() == "True"
+			if field.Mask != nil {
+				if !originalNatTemplates[field.Mask.MaskName] {
+					newField.IsOptional = true
+					if !field.IsRepeated {
+						comb := associatedCombinator[field.FieldType.Type]
+						if comb != nil && len(associatedWrappers[comb]) > 0 {
+							wrapper := associatedWrappers[comb][0]
+							if _, ok := wrapper.trw.(*TypeRWBool); ok {
+								newField.IsOptional = false
+								newField.Type.SomeType = &tlast.TL2TypeApplication{
+									Name: tlast.TL2TypeName{Name: "maybe"},
+									Arguments: []tlast.TL2TypeArgument{
+										{
+											Type: tlast.TL2TypeRef{
+												SomeType: &tlast.TL2TypeApplication{
+													Name: tlast.TL2TypeName{Name: "bool"},
+												},
+											},
+										},
+									},
+								}
+								newFields = append(newFields, newField)
+								continue
+							}
+						}
+					}
+				}
+				if field.FieldType.Bare && isTrue {
+					newField.IsOptional = false
+					newField.Type.SomeType = &tlast.TL2TypeApplication{
+						Name: tlast.TL2TypeName{Name: "bool"},
+					}
+					newFields = append(newFields, newField)
+					continue
+				}
+			}
 			calculatingType := &newField.Type
 			// if is repeated
 			if field.IsRepeated {
@@ -534,19 +546,20 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				}
 			}
 			// calculate type
-			*calculatingType = resolveType(field.FieldType, natIsConstant, natTemples)
+			*calculatingType = resolveType(field.FieldType, natIsConstant, natTemplates)
 			// advance context
 			if field.FieldType.String() == "#" {
-				natTemples[field.FieldName] = true
+				natTemplates[field.FieldName] = true
 			}
 			// add comment
-			newField.CommentBefore = field.CommentBefore
-			if field.CommentRight != "" {
-				if newField.CommentBefore != "" {
-					newField.CommentBefore += "\n"
-				}
-				newField.CommentBefore += field.CommentRight
-			}
+			newField.CommentBefore = appendComment(
+				newField.CommentBefore,
+				field.CommentBefore,
+			)
+			newField.CommentBefore = appendComment(
+				newField.CommentBefore,
+				field.CommentRight,
+			)
 			newFields = append(newFields, newField)
 		}
 		return
@@ -750,7 +763,10 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 									}
 								}
 								if writeOriginalName {
-									newVariant.CommentBefore = fmt.Sprintf("// tlgen:tl1name:\"%s\"", combinator.Construct.Name.String())
+									newVariant.CommentBefore = appendComment(
+										newVariant.CommentBefore,
+										fmt.Sprintf("// tlgen:tl1name:\"%s\"", combinator.Construct.Name.String()),
+									)
 								}
 							}
 
@@ -762,19 +778,17 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 								newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
 							}
 
-							if i != 0 && combinator.CommentBefore != "" {
-								if newVariant.CommentBefore != "" {
-									newVariant.CommentBefore += "\n"
-								}
-								newVariant.CommentBefore += combinator.CommentBefore
+							if i != 0 {
+								newVariant.CommentBefore = appendComment(
+									newVariant.CommentBefore,
+									combinator.CommentBefore,
+								)
 							}
 
-							if combinator.CommentRight != "" {
-								if newVariant.CommentBefore != "" {
-									newVariant.CommentBefore += "\n"
-								}
-								newVariant.CommentBefore += combinator.CommentRight
-							}
+							newVariant.CommentBefore = appendComment(
+								newVariant.CommentBefore,
+								combinator.CommentRight,
+							)
 
 							tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
 						}
@@ -784,16 +798,20 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				}
 
 				if isRef {
-					tl2Combinator.CommentBefore = fmt.Sprintf("// tlgen:tl1type:\"%s\"", combinator0.TypeDecl.String())
+					tl2Combinator.CommentBefore = appendComment(
+						tl2Combinator.CommentBefore,
+						fmt.Sprintf("// tlgen:tl1type:\"%s\"", combinator0.TypeDecl.String()),
+					)
 				} else {
 					// add comment
-					tl2Combinator.CommentBefore = combinator0.CommentBefore
-					if combinator0.CommentRight != "" {
-						if tl2Combinator.CommentBefore != "" {
-							tl2Combinator.CommentBefore += "\n"
-						}
-						tl2Combinator.CommentBefore += combinator0.CommentRight
-					}
+					tl2Combinator.CommentBefore = appendComment(
+						tl2Combinator.CommentBefore,
+						combinator0.CommentBefore,
+					)
+					tl2Combinator.CommentBefore = appendComment(
+						tl2Combinator.CommentBefore,
+						combinator0.CommentRight,
+					)
 				}
 				file.Combinators = append(file.Combinators, tl2Combinator)
 			}
@@ -846,13 +864,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				}
 			}
 			// add comment
-			tl2Combinator.CommentBefore = function.CommentBefore
-			if function.CommentRight != "" {
-				if tl2Combinator.CommentBefore != "" {
-					tl2Combinator.CommentBefore += "\n"
-				}
-				tl2Combinator.CommentBefore += function.CommentRight
-			}
+			tl2Combinator.CommentBefore = appendComment(tl2Combinator.CommentBefore, function.CommentBefore)
+			tl2Combinator.CommentBefore = appendComment(tl2Combinator.CommentBefore, function.CommentRight)
+
 			file.Combinators = append(file.Combinators, tl2Combinator)
 		}
 
@@ -1198,4 +1212,14 @@ func compareNames(name1, name2 tlast.Name) bool {
 	} else {
 		return emptyI
 	}
+}
+
+func appendComment(comment string, newLines string) string {
+	if newLines == "" {
+		return comment
+	}
+	if comment == "" {
+		return newLines
+	}
+	return comment + "\n" + newLines
 }

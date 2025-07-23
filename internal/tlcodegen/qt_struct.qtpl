@@ -197,9 +197,14 @@ type {%s= goName %} struct {
                     setName = struct_.fieldsDec.deconflictName("Set" + utils.UpperFirst(field.goName))
                     struct_.setNames[i] = setName
                 }
+                getName := "G" + setName[1:]
             -%}
+            {%- if !field.t.IsTrueType() && field.fieldMask.IsTL2() -%}
+func (item *{%s= goName %}) {%s= getName %}() {%s= isTrueType %} {
+    return item.{%s= field.goName %}
+}
+            {%- endif -%}
             {%- if maskFunArg -%}
-
 func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}, {%s= natArgUse %} *uint32) {
             {%- else -%}
 func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
