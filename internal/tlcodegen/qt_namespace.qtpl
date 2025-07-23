@@ -237,8 +237,11 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
             {%- code
                 tlName := wr.tlName.String()
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
+                hasRaw := inNameFilter(wr.tlName, wr.gen.rawHandlerWhileList)
             -%}
+        {%- if hasRaw -%}
 Raw{%s= funcTypeString %} func(ctx context.Context, hctx *rpc.HandlerContext) error // {%s= tlName %}
+        {%- endif -%}
         {%- endif -%}
     {%- endfor -%}
 {%- endfunc -%}
@@ -252,9 +255,11 @@ switch tag {
                 tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
                 funcTypeString := wr.TypeString2(false, directImports, nil, true, true)
                 tlName := wr.tlName.String()
+                hasRaw := inNameFilter(wr.tlName, wr.gen.rawHandlerWhileList)
             -%}
 case {%s= tlTag %}: // {%s= tlName %}
     hctx.RequestFunctionName = "{%s= tlName %}"
+{%- if hasRaw -%}
     if h.Raw{%s= funcTypeString %} != nil && !hctx.BodyFormatTL2() {
         hctx.Request = r
         err = h.Raw{%s= funcTypeString %}(ctx, hctx)
@@ -266,6 +271,7 @@ case {%s= tlTag %}: // {%s= tlName %}
         }
         return nil
     }
+{%- endif -%}
     if h.{%s= funcTypeString %} != nil {
         var args {%s= funcTypeString %}
 {%- if fun.wr.gen.options.GenerateTL2 -%}

@@ -69,6 +69,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate byte versions for. Empty means none, '*' means all.")
 	flag.StringVar(&opt.TypesWhileList, "typesWhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate code. Empty means none, '*' means all")
+	flag.StringVar(&opt.RawHandlerWhileList, "rawHandlerWhiteList", "",
+		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate RAW function handlers. Empty means none, '*' means all")
 	flag.StringVar(&opt.TL2WhiteList, "tl2WhiteList", "*",
 		"comma-separated list of fully-qualified top-level types or namespaces (if have trailing '.'), to generate TL2 code. Empty means none, '*' means all")
 	flag.BoolVar(&opt.GenerateRandomCode, "generateRandomCode", false,

@@ -330,6 +330,7 @@ type Gen2Options struct {
 	BasicRPCPath           string
 	BytesWhiteList         string
 	TypesWhileList         string
+	RawHandlerWhileList    string
 	GenerateRandomCode     bool
 	GenerateLegacyJsonRead bool
 	SchemaDocumentation    bool
@@ -358,7 +359,8 @@ type Gen2Options struct {
 
 type Gen2 struct {
 	// options
-	options *Gen2Options // pointer so code modifying options in GenerateCode refers to the same structure
+	options             *Gen2Options // pointer so code modifying options in GenerateCode refers to the same structure
+	rawHandlerWhileList []string
 
 	// artifacts
 	RootPackageName string
@@ -2057,6 +2059,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
 	gen.supportedAnnotations = map[string]int{"read": 0, "any": 1, "internal": 2, "write": 3, "readwrite": 4, "kphp": 5}
+	gen.rawHandlerWhileList = prepareNameFilter(options.RawHandlerWhileList)
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
