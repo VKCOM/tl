@@ -392,10 +392,24 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				setName = struct_.fieldsDec.deconflictName("Set" + utils.UpperFirst(field.goName))
 				struct_.setNames[i] = setName
 			}
+			getName := "G" + setName[1:]
 
-			if maskFunArg {
+			if !field.t.IsTrueType() && field.fieldMask.IsTL2() {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) `)
+				qw422016.N().S(getName)
+				qw422016.N().S(`() `)
+				qw422016.N().S(isTrueType)
+				qw422016.N().S(` {
+    return item.`)
+				qw422016.N().S(field.goName)
 				qw422016.N().S(`
-func (item *`)
+}
+`)
+			}
+			if maskFunArg {
+				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
 				qw422016.N().S(`) `)
 				qw422016.N().S(setName)

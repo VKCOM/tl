@@ -51,9 +51,9 @@ cases.testEnum =
 	| TestEnum3;
 cases.testEnumContainer = value:cases.testEnum;
 // BLOCK: TEST FIELD MASKS
-cases.testRecursiveFieldmask = f0:uint32 f1?:uint32 f2?:uint32 t1?:true t2?:true t3?:true;
-cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3?:true f4?:true;
-cases.testOutFieldMask = f1?:uint32 f2?:true f3:[]int;
+cases.testRecursiveFieldmask = f0:uint32 f1?:uint32 f2?:uint32 t1:bool t2:bool t3:bool;
+cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3:bool f4:bool;
+cases.testOutFieldMask = f1:uint32 f2:bool f3:[]int;
 cases.testOutFieldMaskContainer = f:uint32 inner:cases.testOutFieldMask;
 cases.testBeforeReadBitValidation = n:uint32 a?:[]int b?:[]int;
 cases.testAllPossibleFieldConfigs = 
@@ -68,20 +68,18 @@ cases.testAllPossibleFieldConfigs =
 	f03:[]int
 	// local fieldmask, no nat dependencies in type
 	f10?:int
-	// local fieldmask, true type
-	f11?:true
+	f11:bool
 	// local fieldmask, have some local nat dependencies in type
 	f12?:[]int
 	// local fieldmask, have only external nat dependencies in type
 	f13?:[]int
 	// outer fieldmask, no nat dependencies in type
-	f20?:int
-	// outer fieldmask, true type
-	f21?:true
+	f20:int
+	f21:bool
 	// outer fieldmask, have some local nat dependencies in type
-	f22?:[]int
+	f22:[]int
 	// outer fieldmask, have only external nat dependencies in type
-	f23?:[]int;
+	f23:[]int;
 cases.testAllPossibleFieldConfigsContainer = outer:uint32 value:cases.testAllPossibleFieldConfigs;
 // BLOCK: TEST JSON TRANSALTION SPECS
 cases.replace7 = n:uint32 m:uint32 a:[][]int;
@@ -158,7 +156,7 @@ casesTL2.testVectorBool = x:vector<bool>;
 casesTL2.testArrayFixedBool = a1:[1]bool a2:[0]bool a3:[7]bool a4:[8]bool a5:[11]bool a6:[16]bool;
 casesTL2.testArrayFlexibleBool = n:uint32 arr:[]bool;
 casesTL2.testFixedParam = x:casesTL2.testObjectWithParam_N<4>;
-@tl2ext casesTL2.testObjectWithParam_N<n:uint32> = x?:int y:[n]int;
+@tl2ext casesTL2.testObjectWithParam_N<n:uint32> = x:int y:[n]int;
 casesTL2.testParamsGeneration = 
 	n1:uint32
 	n2:uint32
@@ -166,10 +164,10 @@ casesTL2.testParamsGeneration =
 	x2:casesTL2.testObjectWithMuiltiParams_M<2>
 	x3:casesTL2.testObjectWithMuiltiParams_N<3>
 	x4:casesTL2.testObjectWithMuiltiParams;
-casesTL2.testObjectWithMuiltiParams = f1?:[]int f2?:[]int y:[][]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = f1?:[n]int f2?:[]int y:[n][]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = f1?:[]int f2?:[m]int y:[][m]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1?:[n]int f2?:[m]int y:[n][m]int;
+casesTL2.testObjectWithMuiltiParams = f1:[]int f2:[]int y:[][]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = f1:[n]int f2:[]int y:[n][]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = f1:[]int f2:[m]int y:[][m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1:[n]int f2:[m]int y:[n][m]int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => int;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => true;
 @read casesTL2.testFunctionNoDep3#f020849b x:int => vector<int>;
