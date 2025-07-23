@@ -11,7 +11,7 @@ func (trw *TypeRWMaybe) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s%[3]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject))
+	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject))
 }
 
 func (trw *TypeRWMaybe) writeTL2Call(

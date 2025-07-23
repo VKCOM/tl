@@ -220,28 +220,11 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		kernelType.originateFromTL2 = false
 
 		notParsedError := comb.TypeDecl.PRName.BeautifulError(fmt.Errorf("can't find reference to tl1-type"))
-		comment, found := "", false
-		for _, line := range strings.Split(comb.CommentBefore, "\n") {
-			comment, found = strings.CutPrefix(line, "// tlgen:tl1type:")
-			if found {
-				comment = strings.TrimSpace(comment)
-				break
-			}
-		}
+		found, comment := extractTLGenTag(comb.CommentBefore, "tlgen:tl1type")
 
 		if !found {
 			return nil, notParsedError
 		}
-
-		comment, found = strings.CutPrefix(comment, "\"")
-		if !found {
-			return nil, notParsedError
-		}
-		comment, found = strings.CutSuffix(comment, "\"")
-		if !found {
-			return nil, notParsedError
-		}
-
 		parts := strings.Split(comment, " ")
 		if len(parts) == 0 {
 			return nil, notParsedError
@@ -293,18 +276,6 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 						name:    tl2Arg,
 					},
 				}
-				////make it fake number
-				//tl1Context.localNatArgs[arg] = LocalNatArg{
-				//	natArg: ActualNatArg{
-				//		isArith: true,
-				//		Arith: tlast.Arithmetic{
-				//			Nums: []uint32{math.MaxUint32},
-				//			Res:  math.MaxUint32,
-				//		},
-				//		isField:        false,
-				//		isTL2FakeArith: true,
-				//	},
-				//}
 			}
 		}
 		wr, _, _, _, err := gen.getType(tl1Context, tl1Ref, nil)
@@ -504,6 +475,19 @@ func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field
 				},
 			})
 		}
+		// generate tl2 legacy setters
+		if strings.Contains(refField.CommentBefore, "tlgen:addLegacySetters") {
+			maskNameFound, maskName := extractTLGenTag(refField.CommentBefore, "tlgen:addLegacySetters:name")
+			maskBitFound, maskBit := extractTLGenTag(refField.CommentBefore, "tlgen:addLegacySetters:bit")
+			if maskNameFound && maskBitFound {
+				field.GenerateLegacySettersForTL2Name = maskName
+				bitUint64, err := strconv.ParseUint(maskBit, 10, 32)
+				if err != nil {
+					return err
+				}
+				field.BitNumber = uint32(bitUint64)
+			}
+		}
 		*fields = append(*fields, field)
 	}
 	return nil
@@ -694,27 +678,7 @@ func getTypeNames(tl2Name tlast.TL2TypeName, argTail string) (localName string, 
 }
 
 func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstructor, argTail string) (namespace string, localName string, globalName string, fieldName string, err error) {
-	comment, found := "", false
-	for _, line := range strings.Split(constructor.CommentBefore, "\n") {
-		comment, found = strings.CutPrefix(line, "// tlgen:tl1name:")
-		if found {
-			comment = strings.TrimSpace(comment)
-			break
-		}
-	}
-
-	if found {
-		comment, found = strings.CutPrefix(comment, "\"")
-		if !found {
-			err = fmt.Errorf("wrong format for tl1name reference: no open quote")
-			return
-		}
-		comment, found = strings.CutSuffix(comment, "\"")
-		if !found {
-			err = fmt.Errorf("wrong format for tl1name reference: no close quote")
-			return
-		}
-	}
+	found, comment := extractTLGenTag(constructor.CommentBefore, "tlgen:tl1name")
 
 	if found {
 		tl1Namespace, tl1Name := "", comment
@@ -782,4 +746,30 @@ func (gen *Gen2) isTL1Ref(ref tlast.TL2TypeRef) bool {
 		return false
 	}
 	return comb.HasAnnotation(tl1Ref)
+}
+
+// finds value for tags in comment with template {tag}:"{value}"
+func extractTLGenTag(comment string, tag string) (found bool, value string) {
+	index := strings.Index(comment, tag)
+	if index == -1 {
+		return
+	}
+	comment = comment[index+len(tag):]
+	index = strings.Index(comment, ":")
+	if index == -1 {
+		return
+	}
+	comment = comment[index+1:]
+	index = strings.Index(comment, "\"")
+	if index == -1 {
+		return
+	}
+	comment = comment[index+1:]
+	index = strings.Index(comment, "\"")
+	if index == -1 {
+		return
+	}
+	found = true
+	value = comment[:index]
+	return
 }

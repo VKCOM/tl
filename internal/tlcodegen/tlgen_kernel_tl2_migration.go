@@ -480,16 +480,17 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		natTemplates = utils.CopyMap(natTemplates)
 		for _, field := range oldFields {
 			newField := tlast.TL2Field{}
+			appendLegacySetterComment := false
 			// name
 			newField.Name = lowerFirst(field.FieldName)
 			if newField.Name == "" {
 				newField.Name = "_"
 				newField.IsIgnored = true
 			}
-			// TODO: decide to force all fields to be non optional
 			// if it has field mask
 			isTrue := field.FieldType.Type.String() == "true" || field.FieldType.Type.String() == "True"
 			if field.Mask != nil {
+				// local nat dependencies convert to optional (expect x:n.0?Bool)
 				if !originalNatTemplates[field.Mask.MaskName] {
 					newField.IsOptional = true
 					if !field.IsRepeated {
@@ -516,6 +517,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 						}
 					}
 				}
+				// convert x:n.0?true -> x:bool
 				if field.FieldType.Bare && isTrue {
 					newField.IsOptional = false
 					newField.Type.SomeType = &tlast.TL2TypeApplication{
@@ -523,6 +525,10 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 					}
 					newFields = append(newFields, newField)
 					continue
+				}
+				// outer (non-local) nat dependencies add comment for legacy Set/IsSet
+				if originalNatTemplates[field.Mask.MaskName] && !natIsConstant[field.Mask.MaskName] {
+					appendLegacySetterComment = true
 				}
 			}
 			calculatingType := &newField.Type
@@ -560,6 +566,16 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				newField.CommentBefore,
 				field.CommentRight,
 			)
+			if appendLegacySetterComment {
+				newField.CommentBefore = appendComment(
+					newField.CommentBefore,
+					fmt.Sprintf("// tlgen:addLegacySetters:name:\"%s\"", field.Mask.MaskName),
+				)
+				newField.CommentBefore = appendComment(
+					newField.CommentBefore,
+					fmt.Sprintf("// tlgen:addLegacySetters:bit:\"%d\"", field.Mask.BitNumber),
+				)
+			}
 			newFields = append(newFields, newField)
 		}
 		return

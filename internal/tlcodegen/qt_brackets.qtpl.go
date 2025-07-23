@@ -2329,7 +2329,6 @@ func `)
 			qw422016.N().S(goName)
 			qw422016.N().S(`InternalReadTL2(r []byte, vec *`)
 			qw422016.N().S(typeString)
-			qw422016.N().S(natDecl)
 			qw422016.N().S(`) (_ []byte, err error) {
 `)
 			if !tuple.wr.wantsTL2 {

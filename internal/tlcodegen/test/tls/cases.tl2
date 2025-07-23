@@ -53,7 +53,12 @@ cases.testEnumContainer = value:cases.testEnum;
 // BLOCK: TEST FIELD MASKS
 cases.testRecursiveFieldmask = f0:uint32 f1?:uint32 f2?:uint32 t1:bool t2:bool t3:bool;
 cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3:bool f4:bool;
-cases.testOutFieldMask = f1:uint32 f2:bool f3:[]int;
+cases.testOutFieldMask = 
+	// tlgen:addLegacySetters:name:"f"
+	// tlgen:addLegacySetters:bit:"0"
+	f1:uint32
+	f2:bool
+	f3:[]int;
 cases.testOutFieldMaskContainer = f:uint32 inner:cases.testOutFieldMask;
 cases.testBeforeReadBitValidation = n:uint32 a?:[]int b?:[]int;
 cases.testAllPossibleFieldConfigs = 
@@ -74,11 +79,17 @@ cases.testAllPossibleFieldConfigs =
 	// local fieldmask, have only external nat dependencies in type
 	f13?:[]int
 	// outer fieldmask, no nat dependencies in type
+	// tlgen:addLegacySetters:name:"outer"
+	// tlgen:addLegacySetters:bit:"0"
 	f20:int
 	f21:bool
 	// outer fieldmask, have some local nat dependencies in type
+	// tlgen:addLegacySetters:name:"outer"
+	// tlgen:addLegacySetters:bit:"2"
 	f22:[]int
 	// outer fieldmask, have only external nat dependencies in type
+	// tlgen:addLegacySetters:name:"outer"
+	// tlgen:addLegacySetters:bit:"3"
 	f23:[]int;
 cases.testAllPossibleFieldConfigsContainer = outer:uint32 value:cases.testAllPossibleFieldConfigs;
 // BLOCK: TEST JSON TRANSALTION SPECS
@@ -164,9 +175,26 @@ casesTL2.testParamsGeneration =
 	x2:casesTL2.testObjectWithMuiltiParams_M<2>
 	x3:casesTL2.testObjectWithMuiltiParams_N<3>
 	x4:casesTL2.testObjectWithMuiltiParams;
-casesTL2.testObjectWithMuiltiParams = f1:[]int f2:[]int y:[][]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = f1:[n]int f2:[]int y:[n][]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = f1:[]int f2:[m]int y:[][m]int;
+casesTL2.testObjectWithMuiltiParams = 
+	// tlgen:addLegacySetters:name:"n"
+	// tlgen:addLegacySetters:bit:"0"
+	f1:[]int
+	// tlgen:addLegacySetters:name:"m"
+	// tlgen:addLegacySetters:bit:"0"
+	f2:[]int
+	y:[][]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = 
+	f1:[n]int
+	// tlgen:addLegacySetters:name:"m"
+	// tlgen:addLegacySetters:bit:"0"
+	f2:[]int
+	y:[n][]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = 
+	// tlgen:addLegacySetters:name:"n"
+	// tlgen:addLegacySetters:bit:"0"
+	f1:[]int
+	f2:[m]int
+	y:[][m]int;
 @tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1:[n]int f2:[m]int y:[n][m]int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => int;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => true;
