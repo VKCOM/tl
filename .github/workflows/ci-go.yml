@@ -1,13 +1,22 @@
 name: CI
 run-name: CI for TLGen
-on: ["push", "pull_request"]
+on: [ "push", "pull_request" ]
 jobs:
   ci-go:
-    runs-on: ubuntu-latest
+    name: CI for (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -21,8 +30,10 @@ jobs:
         run: go test -v ./...
 
       - uses: dominikh/staticcheck-action@v1.3.0
+        if: matrix.os == 'ubuntu-latest'
         with:
           install-go: false
 
       - name: Codegen helpers_cpp
+        if: matrix.os == 'ubuntu-latest'
         run: cd scripts && bash move-basictl-cpp.sh
