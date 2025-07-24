@@ -2551,32 +2551,44 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 
 	// additional php check
 	if gen.options.LinterPHPCheck {
+		storeOption := gen.options.InplaceSimpleStructs
+		gen.options.InplaceSimpleStructs = true
+
 		namesToIgnoreMap := make(map[string]bool)
 		for _, s := range PHPNamesToIgnoreForLinterCheck {
 			namesToIgnoreMap[strings.ToLower(s)] = true
 		}
 
-		storeOption := gen.options.InplaceSimpleStructs
-		gen.options.InplaceSimpleStructs = true
+		isFlatType := func(t *TypeRWWrapper) bool {
+			fieldStruct, isStruct := t.trw.(*TypeRWStruct)
+			return isStruct &&
+				fieldStruct.PhpCanBeSimplify() &&
+				strings.ToLower(t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(t.origTL[0].Construct.Name.String())
+		}
+
 		for _, wrapper := range sortedTypes {
 			if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
 				for _, field := range strct_.Fields {
 					if field.t.originateFromTL2 {
 						continue
 					}
-					fieldStruct, isStruct := field.t.trw.(*TypeRWStruct)
-					if isStruct &&
-						!field.bare &&
-						fieldStruct.PhpCanBeSimplify() &&
-						strings.ToLower(field.t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(field.t.origTL[0].Construct.Name.String()) {
-						if namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
-							continue
-						}
-						return nil, field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't have boxed reference in field to flat type due to php generator issuies"))
+					if !field.bare && isFlatType(field.t) && !namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
+						return nil, field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't have boxed reference in field to flat type due to php generator issues"))
 					}
 				}
 			}
 		}
+
+		for _, wrapper := range sortedTypes {
+			if isFlatType(wrapper) && !namesToIgnoreMap[strings.ToLower(wrapper.tlName.String())] {
+				for _, argument := range wrapper.origTL[0].TemplateArguments {
+					if !argument.IsNat {
+						return nil, argument.PR.BeautifulError(fmt.Errorf("flat types can't have type templates due to php generator issues"))
+					}
+				}
+			}
+		}
+
 		gen.options.InplaceSimpleStructs = storeOption
 	}
 
