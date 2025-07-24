@@ -37,7 +37,6 @@ func parseCommentBefore(begin tokenIterator, end tokenIterator) string {
 	return commentBefore
 }
 
-// comment is everything from the last empty line up to combinator
 func parseCommentRight(begin tokenIterator, end tokenIterator) string {
 	commentRight := strings.TrimSpace(begin.front().pos.fileContent[begin.front().pos.offset:end.front().pos.offset])
 	//if commentRight != "" {

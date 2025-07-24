@@ -615,7 +615,7 @@ func parseCombinator(commentStart tokenIterator, tokens tokenIterator, isFunctio
 }
 
 func ParseTL(str string) (TL, error) {
-	return ParseTLFile(str, "", LexerOptions{AllowMLC: true, LexerLanguage: tl1}, os.Stdout)
+	return ParseTLFile(str, "", LexerOptions{LexerLanguage: tl1}, os.Stdout)
 }
 
 // ParseTLFile TL := TypesSection [ type ... ] FunctionSection [ function ... ]
@@ -630,19 +630,6 @@ func ParseTLFile(str, file string, opts LexerOptions, errorWriter io.Writer) (TL
 
 	if str != recombined { // We test on all user files forever
 		log.Panicf("invariant violation in tokenizer, %s", ContactAuthorsString)
-	}
-
-	it := tokenIterator{tokens: allTokens}
-	for ; it.count() != 0; it.popFront() {
-		tok := it.front()
-		if tok.tokenType == comment && strings.HasPrefix(tok.val, "/*") {
-			tok.val = tok.val[:2] // do not print the whole comment, but only the first line
-			e1 := parseErrToken(fmt.Errorf("multiline comments are not part of language"), tok, tok.pos)
-			if !opts.AllowMLC {
-				return TL{}, e1
-			}
-			e1.PrintWarning(errorWriter, nil)
-		}
 	}
 
 	functionSection := false

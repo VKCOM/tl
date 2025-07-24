@@ -17,8 +17,8 @@ myInt64 int64 = MyInt64;
 // c:(innerType (Maybe int)) d:(innerType (Maybe Int)) = AllBoxed;
 
 // Multiline comment before combinator
-///*----- Test Multiple native wrappers
-//*/
+//----- Test Multiple native wrappers
+//
 multiPoint a:3*[int] b:3*[Int] c:3*[int32] d:3*[Int32] e:3*[myInt32] f:3*[MyInt32]= MultiPoint;
 
 nativeWrappers a:int b:Int c:int32 d:Int32 e:myInt32 f:MyInt32 = NativeWrappers; // combinator comment
@@ -58,9 +58,6 @@ noStr x:int = NoStr;
 useStr x:string = UseStr;
 halfStr x:noStr y:useStr = HalfStr;
 ab.topLevel1 a:noStr b:noStr = ab.TopLevel1;
-///* Multiline comment to the right of TopLevel1
-//Second line of comment
-//*/
 
 ab.topLevel2 a:noStr b:useStr = ab.TopLevel2;
 // skipped comment
@@ -86,9 +83,6 @@ ab.testMaybe n:# a:(Maybe int) b:(Maybe ab.myType) c:(Maybe cd.myType) d:(Maybe 
 
 innerMaybe {X:#} a:(Maybe (tuple int X)) = InnerMaybe X;
 maybeTest1 n:# a:(Maybe int) b:(Maybe Int) c:(Maybe (tuple int 3)) d:(Maybe (tuple Int 3))
-///* Multiline comment for field d
-//continues on the second line */
-// This comment is skipped
 
 // This comment is before field e
 // Second line of comment before field e
@@ -154,8 +148,7 @@ au.nionA b:int = a.MyUnion;
 
 ab.empty = ab.Response; // Union comment - Empty
 ab.code x:int = ab.Response; // Union comment - Code
-ab.alias int = ab.Response; /* Union comment - Multiline
-alias */
+ab.alias int = ab.Response;
 
 // Also union comment
 // Multiline Alias
@@ -177,8 +170,8 @@ a.color = a.Color;
 a.red   = a.Color; // Enum comment - red
 a.green = a.Color; // Enum comment - green
 b.red   = a.Color;
-a.blue  = a.Color; /* Enum comment - blue, but
-continues on the next line */
+a.blue  = a.Color; // Enum comment - blue, but
+// continues on the next line
 
 //----- Test Dictionaries
 usefulService.userEntityPaymentItemPromo#24c7ec9f
