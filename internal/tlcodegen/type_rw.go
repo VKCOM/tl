@@ -100,6 +100,8 @@ type TypeRWWrapper struct {
 
 	fileName string
 
+	originateFromTL2 bool
+
 	// cpp info
 	hppDetailsFileName string
 	cppDetailsFileName string

@@ -322,6 +322,7 @@ type Gen2Options struct {
 
 	// Linter
 	Schema2Compare string
+	LinterPHPCheck bool
 
 	// Go
 	BasicPackageNameFull   string // if empty, will be created
@@ -2197,6 +2198,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			}
 			// TODO: RETURN ORIGINAL COMBINATOR
 			tl = append(tl, &tlast.Combinator{
+				CommentRight: "// tlgen:nolint",
 				TypeDecl: tlast.TypeDeclaration{
 					Name: tlast.Name{
 						Name: "ReqResult",
@@ -2224,12 +2226,14 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 				},
 			})
 			tl = append(tl, &tlast.Combinator{
+				CommentRight: "// tlgen:nolint",
 				TypeDecl: tlast.TypeDeclaration{
 					Name: rpcFunctionTypeRef.Type,
 				},
 				Construct: tlast.Constructor{Name: rpcFunctionTypeRef.Type},
 			})
 			tl = append(tl, &tlast.Combinator{
+				CommentRight: "// tlgen:nolint",
 				TypeDecl: tlast.TypeDeclaration{
 					Name: rpcFunctionResultTypeRef.Type,
 				},
@@ -2544,6 +2548,38 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		visitedNodes = map[*TypeRWWrapper]bool{}
 		v.hasErrorInWriteMethods = v.MarkWriteHasError(visitedNodes)
 	}
+
+	// additional php check
+	if gen.options.LinterPHPCheck {
+		namesToIgnoreMap := make(map[string]bool)
+		for _, s := range PHPNamesToIgnoreForLinterCheck {
+			namesToIgnoreMap[strings.ToLower(s)] = true
+		}
+
+		storeOption := gen.options.InplaceSimpleStructs
+		gen.options.InplaceSimpleStructs = true
+		for _, wrapper := range sortedTypes {
+			if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
+				for _, field := range strct_.Fields {
+					if field.t.originateFromTL2 {
+						continue
+					}
+					fieldStruct, isStruct := field.t.trw.(*TypeRWStruct)
+					if isStruct &&
+						!field.bare &&
+						fieldStruct.PhpCanBeSimplify() &&
+						strings.ToLower(field.t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(field.t.origTL[0].Construct.Name.String()) {
+						if namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
+							continue
+						}
+						return nil, field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't have boxed reference in field to flat type due to php generator issuies"))
+					}
+				}
+			}
+		}
+		gen.options.InplaceSimpleStructs = storeOption
+	}
+
 	// detect recursion loops first
 	if options.Verbose {
 		if skippedDueToWhitelist != 0 {
