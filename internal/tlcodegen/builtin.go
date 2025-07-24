@@ -100,9 +100,7 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 				rep = tlast.ArithmeticOrType{IsArith: true, Arith: insideField.ScaleRepeat.Scale.Arith}
 			}
 			tWithArgs := insideField.ScaleRepeat.Rep[0].FieldType
-			if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil {
-				return tWithArgs, insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("brackets must contain reference to single type, fields are not allowed here"))
-			} else if insideField.ScaleRepeat.Rep[0].IsRepeated {
+			if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil || insideField.ScaleRepeat.Rep[0].IsRepeated {
 				return tWithArgs, insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("brackets must contain reference to single type, fields are not allowed here"))
 			}
 			if toVector {
