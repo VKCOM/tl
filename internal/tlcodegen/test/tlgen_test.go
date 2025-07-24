@@ -227,7 +227,6 @@ myType#eadc11aa {T:Type}
 			})
 
 			assert.Error(t, err)
-
 		})
 
 		t.Run("not fail for special cases", func(t *testing.T) {
@@ -307,6 +306,147 @@ myType#12345678 x:[[[TYPE_HERE]]] = MyType;
 @read myTestFunction x:myType = MyType;`
 
 					ast, err := tlast.ParseTL(strings.Replace(data, "[[[TYPE_HERE]]]", s+argsToAdd[s], 1))
+					if err != nil {
+						t.Error(err)
+						return
+					}
+
+					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+						ErrorWriter:    io.Discard,
+						Verbose:        true,
+						LinterPHPCheck: true,
+					})
+
+					assert.NoError(t, err)
+				})
+			}
+		})
+	})
+
+	t.Run("Issue with non-polymorphic types", func(t *testing.T) {
+		t.Run("fail case", func(t *testing.T) {
+			data := `int#a8509bda ? = Int;
+vector#12345679 {t:Type} # [t] = Vector t;
+myType x:vector<int> y:vector<int> = MyType;
+---functions---
+@read myTestFunction x:MyType = MyType;`
+
+			ast, err := tlast.ParseTL(data)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+				ErrorWriter:    io.Discard,
+				Verbose:        true,
+				LinterPHPCheck: true,
+			})
+
+			assert.Error(t, err)
+		})
+
+		t.Run("correct case", func(t *testing.T) {
+			data := `int#a8509bda ? = Int;
+vector#12345679 {t:Type} # [t] = Vector t;
+myType2 x:vector<int> y:vector<int> = MyType;
+---functions---
+@read myTestFunction x:MyType = MyType;`
+
+			ast, err := tlast.ParseTL(data)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+
+			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+				ErrorWriter:    io.Discard,
+				Verbose:        true,
+				LinterPHPCheck: true,
+			})
+
+			assert.NoError(t, err)
+		})
+
+		t.Run("not fail for special cases", func(t *testing.T) {
+			argsToAdd := map[string]string{
+				"Vector":            "<int>",
+				"Tuple":             "<int, 2>",
+				"Dictionary":        "<int>",
+				"IntKeyDictionary":  "<int>",
+				"LongKeyDictionary": "<int>",
+				"Maybe":             "<int>",
+			}
+			for _, s := range tlcodegen.PHPNamesToIgnoreForLinterCheck {
+				t.Run(s, func(t *testing.T) {
+					if s == "#" {
+						return
+					}
+					data := `// Builtin types
+int#a8509bda ? = Int;
+long#22076cba ? = Long;
+float#824dab22 ? = Float;    // 4 bytes -- single precision
+double#2210c154 ? = Double;  // 8 bytes -- double precision
+string#b5286e24 ? = String;
+
+// Common aliases with checks
+positiveInt int = PositiveInt;
+positiveLong long = PositiveLong;
+nonNegativeInt int = NonNegativeInt;
+nonNegativeLong long = NonNegativeLong;
+
+// Boolean emulation
+boolFalse#bc799737 = Bool;
+boolTrue#997275b5 = Bool;
+
+// Boolean for diagonal queries
+boolStat statTrue:int statFalse:int statUnknown:int = BoolStat;
+
+// Vector
+vector#1cb5c415 {t:Type} # [t] = Vector t;
+tuple#9770768a {t:Type} {n:#} [t] = Tuple t n;
+vectorTotal {t:Type} total_count:int vector:%(Vector t) = VectorTotal t;
+
+
+statOne key:string value:string = StatOne;
+//stat vector:%(Vector %statOne) = Stat;
+stat#9d56e6b2 %(Dictionary string) = Stat;
+
+dictionaryField {t:Type} key:string value:t = DictionaryField t;
+dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
+
+intKeyDictionaryField {t:Type}
+    key:int
+    value:t
+    = IntKeyDictionaryField t;
+
+intKeyDictionary#07bafc42 {t:Type}
+    %(Vector %(intKeyDictionaryField t))
+    = IntKeyDictionary t;
+
+longKeyDictionaryField {t:Type}
+    key:long
+    value:t
+    = LongKeyDictionaryField t;
+
+longKeyDictionary#b424d8f1 {t:Type}
+    %(Vector %(longKeyDictionaryField t))
+    = LongKeyDictionary t;
+
+resultFalse#27930a7b {t:Type} = Maybe t;
+resultTrue#3f9c8ef8 {t:Type} result:t = Maybe t;
+
+
+pair {X:Type} {Y:Type} a:X b:Y = Pair X Y;
+
+map {X:Type} {Y:Type} key:X value:Y = Map X Y;
+
+true = True; // this can be used as void type and serialized to empty array in PHP
+
+---functions---
+@read myTestFunction x:[[[TYPE_HERE]]] = [[[TYPE_HERE]]];`
+
+					ast, err := tlast.ParseTL(strings.Replace(data, "[[[TYPE_HERE]]]", s+argsToAdd[s], -1))
 					if err != nil {
 						t.Error(err)
 						return
