@@ -36,7 +36,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryFieldString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlHalfStr"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInner"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInnerMaybe0"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt"
@@ -55,38 +54,18 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNoStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairFloatDouble"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntLong"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairIntPairMultiPointString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlPairMultiPointString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace10"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace10Elem"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace11ElemLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace11Long"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace12"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace12Elem"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace13"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace13ElemLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace13Long"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace14ElemElemLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace14ElemLong"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace14Long"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace15"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace15Elem"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace15Elem1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace15Elem2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace17"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace18"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace43"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace5"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace7"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace8"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace9"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTestMaybe2"
@@ -148,7 +127,6 @@ type (
 	HalfStr                                      = tlHalfStr.HalfStr
 	Hren                                         = cycle_38a9bf76d71419ee85afa2cdeb3445c4.Hren
 	HrenMaybe                                    = cycle_38a9bf76d71419ee85afa2cdeb3445c4.HrenMaybe
-	Inner                                        = tlInner.Inner
 	InnerMaybe                                   = tlInnerMaybe.InnerMaybe
 	InnerMaybe0                                  = tlInnerMaybe0.InnerMaybe0
 	Int                                          = tlInt.Int
@@ -173,38 +151,18 @@ type (
 	NoStr                                        = tlNoStr.NoStr
 	PairFloatDouble                              = tlPairFloatDouble.PairFloatDouble
 	PairIntInt                                   = tlPairIntInt.PairIntInt
-	PairIntLong                                  = tlPairIntLong.PairIntLong
 	PairIntPairMultiPointString                  = tlPairIntPairMultiPointString.PairIntPairMultiPointString
 	PairMultiPointString                         = tlPairMultiPointString.PairMultiPointString
 	Replace                                      = tlReplace.Replace
 	Replace1                                     = tlReplace1.Replace1
-	Replace10                                    = tlReplace10.Replace10
-	Replace10Elem                                = tlReplace10Elem.Replace10Elem
-	Replace11ElemLong                            = tlReplace11ElemLong.Replace11ElemLong
-	Replace11Long                                = tlReplace11Long.Replace11Long
-	Replace12                                    = tlReplace12.Replace12
-	Replace12Elem                                = tlReplace12Elem.Replace12Elem
 	Replace13                                    = tlReplace13.Replace13
-	Replace13ElemLong                            = tlReplace13ElemLong.Replace13ElemLong
-	Replace13Long                                = tlReplace13Long.Replace13Long
-	Replace14ElemElemLong                        = tlReplace14ElemElemLong.Replace14ElemElemLong
-	Replace14ElemLong                            = tlReplace14ElemLong.Replace14ElemLong
-	Replace14Long                                = tlReplace14Long.Replace14Long
-	Replace15                                    = tlReplace15.Replace15
-	Replace15Elem                                = tlReplace15Elem.Replace15Elem
-	Replace15Elem1                               = tlReplace15Elem1.Replace15Elem1
-	Replace15Elem2                               = tlReplace15Elem2.Replace15Elem2
 	Replace17                                    = tlReplace17.Replace17
-	Replace18                                    = tlReplace18.Replace18
 	Replace2                                     = tlReplace2.Replace2
 	Replace3                                     = tlReplace3.Replace3
 	Replace4                                     = tlReplace4.Replace4
 	Replace43                                    = tlReplace43.Replace43
 	Replace5                                     = tlReplace5.Replace5
 	Replace6                                     = tlReplace6.Replace6
-	Replace7                                     = tlReplace7.Replace7
-	Replace8                                     = tlReplace8.Replace8
-	Replace9                                     = tlReplace9.Replace9
 	String                                       = tlString.String
 	TestMaybe                                    = tlTestMaybe.TestMaybe
 	TestMaybe2                                   = tlTestMaybe2.TestMaybe2

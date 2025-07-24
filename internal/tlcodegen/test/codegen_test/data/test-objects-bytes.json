@@ -246,23 +246,6 @@
 				}
 			]
 		},
-		"TestReadOrder": {
-			"TestingType": "cases.replace7",
-			"Successes": [
-				{
-					"Bytes": "00000001 00000002 00000001 00000002",
-					"BytesTL2": "15 0e 01 00 00 00 02 00 00 00 0b 01 09 02 01 00 00 00 02 00 00 00",
-					"IsTLBytesBoxed": false,
-					"IsTL2DataFixed": false
-				},
-				{
-					"Bytes": "00000002 00000001 00000002 00000001",
-					"BytesTL2": "17 0e 02 00 00 00 01 00 00 00 0d 02 05 01 02 00 00 00 05 01 01 00 00 00",
-					"IsTLBytesBoxed": false,
-					"IsTL2DataFixed": false
-				}
-			]
-		},
 		"TestReadWithDifferentNatDependencies": {
 			"TestingType": "cases.testAllPossibleFieldConfigsContainer",
 			"Successes": [

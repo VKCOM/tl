@@ -9,10 +9,11 @@ package casetests
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/vkcom/tl/internal/utils"
 	"math/rand"
 	"os"
+	"testing"
+
+	"github.com/vkcom/tl/internal/utils"
 
 	common "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tl"
 	cases "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/tlcases"
@@ -22,7 +23,6 @@ import (
 	"github.com/vkcom/tl/pkg/basictl"
 
 	"github.com/stretchr/testify/assert"
-	"testing"
 
 	testformat "github.com/vkcom/tl/internal/tlcodegen/test/codegen_test/golang/common"
 )
@@ -158,11 +158,6 @@ func TestAppendNewCasesForTesting(t *testing.T) {
 
 	// write your samples here
 	newSamples := []Sample{
-		{
-			testName:          "TestReadOrder",
-			sample:            &cases.Replace7{N: 2, M: 1, A: [][]int32{[]int32{2}, []int32{1}}},
-			expectingHexValue: "00000002 00000001 00000002 00000001",
-		},
 		{
 			testName: "TestInplace",
 			sample: &cases.TestInplaceStructArgs{

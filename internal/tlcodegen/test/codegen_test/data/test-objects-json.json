@@ -1,23 +1,5 @@
 {
   "Tests": {
-    "TestReadOrder": {
-      "TestingType": "cases.replace7",
-      "Successes": [
-        {
-          "GoldenInput": "{\"n\":1,\"m\":2,\"a\":[[1,2]]}",
-          "Alternatives": [
-            "{\"n\": 1,\"m\": 2,\"a\": [[1,2]]}",
-            "{\"n\": 1,\"m\": 2,\"a\": [[1,2]]}",
-            "{\"m\": 2,\"n\": 1,\"a\": [[1,2]]}",
-            "{\"a\": [[1,2]],\"n\": 1,\"m\": 2}",
-            "{\"m\": 2,\"a\": [[1,2]],\"n\": 1}",
-            "{\"a\": [[1,2]],\"m\": 2,\"n\": 1}"
-          ],
-          "IncorrectAlternatives": null
-        }
-      ],
-      "Failures": null
-    },
     "TestArray": {
       "TestingType": "cases.testArray",
       "Successes": [

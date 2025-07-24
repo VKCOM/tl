@@ -116,24 +116,10 @@ replace3 a:3*[int] = Replace3;
 replace4 {n:#} a:n*[int] = Replace4 n;
 replace5 n:# a:n*[int] = Replace5;
 replace6 # a:[int] = Replace6;
-replace7 n:# m:# a:n*[m*[int]] = Replace7;
-replace8 n:# a:[3*[int]] = Replace8;
-replace9 n:# a:[3*[(Inner n)]] = Replace9;
-replace10 n:# a:[3*[a:int b:int]] = Replace10;
-replace11 {n:#} {X:Type} k:# a:k*[b:n.0?3*[(Pair int X)] c:n*[int]] = Replace11 n X;
-replace12 n:# a:[3*[a:n.0?int]] = Replace12;
-replace13 {n:#} {X:Type} k:# a:k*[b:n.0?k*[(Pair int X)] c:k.0?n*[int]] = Replace13 n X;
-replace14 {n:#} {X:Type} k:# a:k*[b:n.0?3*[x:int y:k*[X]] c:int] = Replace14 n X;
-replace15 n:# a:n*[x:int y:int] b:n*[x:long y:long] c:n*[x:int y:int z:int]= Replace15;
-// replace16 n:int k:# m:# a:z*[b:# c:z*[int] k:# d:k*[int]] = Replace16; - interesting errors
-// replace16 n:int k:# m:# a:[b:# c:n*[int] k:# d:k*[int]] = Replace16; - interesting errors
 replace17 # x:[int] a:int # y:[int] = Replace17;
-replace18 # a:[# [# [int]]] = Replace18;
 
 replace n:# a:(replace1 n) a1:(replace1 3) b:replace2
- c:replace3 d:(replace4 n) d1:(replace4 3) e:replace5 g:replace6 h:replace7
- i:replace8 j:replace9 k:replace10 l:(replace11 n long) m:replace12 o:(replace13 n long)
- p:(replace14 n long) q:replace15
+ c:replace3 d:(replace4 n) d1:(replace4 3) e:replace5 g:replace6
 = Replace;
 
 

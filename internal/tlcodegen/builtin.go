@@ -8,7 +8,6 @@ package tlcodegen
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -87,64 +86,7 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 	for typeIndex := 0; typeIndex < len(tl); typeIndex++ { // We append anonymous types while iterating
 		typ := tl[typeIndex]
 		var newFields []tlast.Field
-		replaceRep := func(repFields []tlast.Field) tlast.TypeRef {
-			// All complex expressions will be replaced by a new type
-			// Deconflict names and tags
-			constructorName := typ.Construct.Name
-			constructorName.Name += "Elem"
-			typeName := constructorName
-			typeName.Name = ToUpperFirst(typeName.Name)
-			suffix := ""
-			for s := 1; ; s++ {
-				if _, ok := constructorNames[constructorName.String()+suffix]; !ok {
-					break
-				}
-				suffix = strconv.Itoa(s)
-			}
-			constructorName.Name += suffix
-			suffix = ""
-			for s := 1; ; s++ {
-				if _, ok := typeNames[typeName.String()+suffix]; !ok {
-					break
-				}
-				suffix = strconv.Itoa(s)
-			}
-			typeName.Name += suffix
-			tag := uint32(0) // copy to reference local var
-			res := &tlast.Combinator{
-				Construct:         tlast.Constructor{Name: constructorName, ID: &tag},
-				TemplateArguments: typ.TemplateArguments,
-				Fields:            repFields,
-				TypeDecl:          tlast.TypeDeclaration{Name: typeName},
-			}
-			constructorNames[constructorName.String()] = res
-			typeNames[typeName.String()] = res
-			for _, f := range newFields {
-				if f.FieldType.Type.String() == "#" && f.FieldName != "" {
-					// This appending cannot lead to new name collision between fields and template arguments
-					res.TemplateArguments = append(res.TemplateArguments, tlast.TemplateArgument{
-						FieldName: f.FieldName,
-						IsNat:     true,
-						PR:        f.PRName, // TODO - line below is better for some cases
-						// PR:        f.FieldType.PR,
-					})
-				}
-			}
-			// TODO - no idea how to set PR correctly
-			tWithArgs := tlast.TypeRef{
-				Type: constructorName,
-			}
-			for _, a := range res.TemplateArguments {
-				tWithArgs.Args = append(tWithArgs.Args, tlast.ArithmeticOrType{T: tlast.TypeRef{
-					Type: tlast.Name{Name: a.FieldName},
-				}})
-				res.TypeDecl.Arguments = append(res.TypeDecl.Arguments, a.FieldName)
-			}
-			tl = append(tl, res)
-			return tWithArgs
-		}
-		var replaceRepeated func(toVector bool, insideField tlast.Field, originalCommentRight string) (tlast.TypeRef, error)
-		replaceRepeated = func(toVector bool, insideField tlast.Field, originalCommentRight string) (tlast.TypeRef, error) {
+		replaceRepeated := func(toVector bool, insideField tlast.Field, originalCommentRight string) (tlast.TypeRef, error) {
 			if len(insideField.ScaleRepeat.Rep) == 0 {
 				return tlast.TypeRef{}, insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("repetition with no fields is not allowed"))
 			}
@@ -158,31 +100,10 @@ func (gen *Gen2) ReplaceSquareBracketsElem(tl tlast.TL) (tlast.TL, error) {
 				rep = tlast.ArithmeticOrType{IsArith: true, Arith: insideField.ScaleRepeat.Scale.Arith}
 			}
 			tWithArgs := insideField.ScaleRepeat.Rep[0].FieldType
-			if len(insideField.ScaleRepeat.Rep) == 2 &&
-				insideField.ScaleRepeat.Rep[0].FieldName == "" && insideField.ScaleRepeat.Rep[0].Mask == nil && insideField.ScaleRepeat.Rep[0].FieldType.String() == "#" &&
-				insideField.ScaleRepeat.Rep[1].FieldName == "" && insideField.ScaleRepeat.Rep[1].Mask == nil && insideField.ScaleRepeat.Rep[1].IsRepeated &&
-				!insideField.ScaleRepeat.Rep[1].ScaleRepeat.ExplicitScale {
-				// This is experimental support for transformation of [# [int]] into [__vector<int>]
-				insideField.ScaleRepeat.Rep[1].ScaleRepeat.ExplicitScale = true
-				var err error
-				if tWithArgs, err = replaceRepeated(true, insideField.ScaleRepeat.Rep[1], originalCommentRight); err != nil {
-					return tWithArgs, err
-				}
-			} else if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil {
-				tWithArgs = replaceRep(insideField.ScaleRepeat.Rep)
-				if doLint(originalCommentRight) {
-					e1 := insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("tlgen has to invent name for type inside brackets, please give a good name to it manually"))
-
-					if gen.options.WarningsAreErrors {
-						return tWithArgs, e1
-					}
-					e1.PrintWarning(gen.options.ErrorWriter, nil)
-				}
+			if len(insideField.ScaleRepeat.Rep) != 1 || insideField.ScaleRepeat.Rep[0].FieldName != "" || insideField.ScaleRepeat.Rep[0].Mask != nil {
+				return tWithArgs, insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("brackets must contain reference to single type, fields are not allowed here"))
 			} else if insideField.ScaleRepeat.Rep[0].IsRepeated {
-				var err error
-				if tWithArgs, err = replaceRepeated(false, insideField.ScaleRepeat.Rep[0], originalCommentRight); err != nil {
-					return tWithArgs, err
-				}
+				return tWithArgs, insideField.ScaleRepeat.PR.BeautifulError(fmt.Errorf("brackets must contain reference to single type, fields are not allowed here"))
 			}
 			if toVector {
 				newFieldType := tlast.TypeRef{
