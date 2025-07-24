@@ -10,22 +10,13 @@ package tlReplace
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace1"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace10"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace11Long"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace12"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace13"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace13Long"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace14Long"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace15"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace43"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace5"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace7"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace8"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace9"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -42,19 +33,10 @@ type Replace struct {
 	D1 tlReplace43.Replace43
 	E  tlReplace5.Replace5
 	G  tlReplace6.Replace6
-	H  tlReplace7.Replace7
-	I  tlReplace8.Replace8
-	J  tlReplace9.Replace9
-	K  tlReplace10.Replace10
-	L  tlReplace11Long.Replace11Long
-	M  tlReplace12.Replace12
-	O  tlReplace13Long.Replace13Long
-	P  tlReplace14Long.Replace14Long
-	Q  tlReplace15.Replace15
 }
 
 func (Replace) TLName() string { return "replace" }
-func (Replace) TLTag() uint32  { return 0x323db63e }
+func (Replace) TLTag() uint32  { return 0xebb26b29 }
 
 func (item *Replace) Reset() {
 	item.N = 0
@@ -66,25 +48,11 @@ func (item *Replace) Reset() {
 	item.D1.Reset()
 	item.E.Reset()
 	item.G.Reset()
-	item.H.Reset()
-	item.I.Reset()
-	item.J.Reset()
-	item.K.Reset()
-	item.L.Reset()
-	item.M.Reset()
-	item.O.Reset()
-	item.P.Reset()
-	item.Q.Reset()
 }
 
 func (item *Replace) FillRandom(rg *basictl.RandGenerator) {
-	var maskN uint32
-	maskN = basictl.RandomUint(rg)
-	maskN = rg.LimitValue(maskN)
-	item.N = 0
-	if maskN&(1<<0) != 0 {
-		item.N |= (1 << 0)
-	}
+	item.N = basictl.RandomUint(rg)
+	item.N = rg.LimitValue(item.N)
 	item.A.FillRandom(rg, item.N)
 	item.A1.FillRandom(rg)
 	item.B.FillRandom(rg)
@@ -93,15 +61,6 @@ func (item *Replace) FillRandom(rg *basictl.RandGenerator) {
 	item.D1.FillRandom(rg)
 	item.E.FillRandom(rg)
 	item.G.FillRandom(rg)
-	item.H.FillRandom(rg)
-	item.I.FillRandom(rg)
-	item.J.FillRandom(rg)
-	item.K.FillRandom(rg)
-	item.L.FillRandom(rg, item.N)
-	item.M.FillRandom(rg)
-	item.O.FillRandom(rg, item.N)
-	item.P.FillRandom(rg, item.N)
-	item.Q.FillRandom(rg)
 }
 
 func (item *Replace) Read(w []byte) (_ []byte, err error) {
@@ -129,34 +88,7 @@ func (item *Replace) Read(w []byte) (_ []byte, err error) {
 	if w, err = item.E.Read(w); err != nil {
 		return w, err
 	}
-	if w, err = item.G.Read(w); err != nil {
-		return w, err
-	}
-	if w, err = item.H.Read(w); err != nil {
-		return w, err
-	}
-	if w, err = item.I.Read(w); err != nil {
-		return w, err
-	}
-	if w, err = item.J.Read(w); err != nil {
-		return w, err
-	}
-	if w, err = item.K.Read(w); err != nil {
-		return w, err
-	}
-	if w, err = item.L.Read(w, item.N); err != nil {
-		return w, err
-	}
-	if w, err = item.M.Read(w); err != nil {
-		return w, err
-	}
-	if w, err = item.O.Read(w, item.N); err != nil {
-		return w, err
-	}
-	if w, err = item.P.Read(w, item.N); err != nil {
-		return w, err
-	}
-	return item.Q.Read(w)
+	return item.G.Read(w)
 }
 
 func (item *Replace) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -181,38 +113,11 @@ func (item *Replace) Write(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	w = item.G.Write(w)
-	if w, err = item.H.Write(w); err != nil {
-		return w, err
-	}
-	if w, err = item.I.Write(w); err != nil {
-		return w, err
-	}
-	if w, err = item.J.Write(w); err != nil {
-		return w, err
-	}
-	if w, err = item.K.Write(w); err != nil {
-		return w, err
-	}
-	if w, err = item.L.Write(w, item.N); err != nil {
-		return w, err
-	}
-	if w, err = item.M.Write(w); err != nil {
-		return w, err
-	}
-	if w, err = item.O.Write(w, item.N); err != nil {
-		return w, err
-	}
-	if w, err = item.P.Write(w, item.N); err != nil {
-		return w, err
-	}
-	if w, err = item.Q.Write(w); err != nil {
-		return w, err
-	}
 	return w, nil
 }
 
 func (item *Replace) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x323db63e); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xebb26b29); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -223,7 +128,7 @@ func (item *Replace) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 }
 
 func (item *Replace) WriteBoxed(w []byte) (_ []byte, err error) {
-	w = basictl.NatWrite(w, 0x323db63e)
+	w = basictl.NatWrite(w, 0xebb26b29)
 	return item.Write(w)
 }
 
@@ -245,15 +150,6 @@ func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	var propD1Presented bool
 	var propEPresented bool
 	var propGPresented bool
-	var propHPresented bool
-	var propIPresented bool
-	var propJPresented bool
-	var propKPresented bool
-	var rawL []byte
-	var propMPresented bool
-	var rawO []byte
-	var rawP []byte
-	var propQPresented bool
 
 	if in != nil {
 		in.Delim('{')
@@ -336,78 +232,6 @@ func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 					return err
 				}
 				propGPresented = true
-			case "h":
-				if propHPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "h")
-				}
-				if err := item.H.ReadJSON(legacyTypeNames, in); err != nil {
-					return err
-				}
-				propHPresented = true
-			case "i":
-				if propIPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "i")
-				}
-				if err := item.I.ReadJSON(legacyTypeNames, in); err != nil {
-					return err
-				}
-				propIPresented = true
-			case "j":
-				if propJPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "j")
-				}
-				if err := item.J.ReadJSON(legacyTypeNames, in); err != nil {
-					return err
-				}
-				propJPresented = true
-			case "k":
-				if propKPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "k")
-				}
-				if err := item.K.ReadJSON(legacyTypeNames, in); err != nil {
-					return err
-				}
-				propKPresented = true
-			case "l":
-				if rawL != nil {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "l")
-				}
-				rawL = in.Raw()
-				if !in.Ok() {
-					return in.Error()
-				}
-			case "m":
-				if propMPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "m")
-				}
-				if err := item.M.ReadJSON(legacyTypeNames, in); err != nil {
-					return err
-				}
-				propMPresented = true
-			case "o":
-				if rawO != nil {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "o")
-				}
-				rawO = in.Raw()
-				if !in.Ok() {
-					return in.Error()
-				}
-			case "p":
-				if rawP != nil {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "p")
-				}
-				rawP = in.Raw()
-				if !in.Ok() {
-					return in.Error()
-				}
-			case "q":
-				if propQPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("replace", "q")
-				}
-				if err := item.Q.ReadJSON(legacyTypeNames, in); err != nil {
-					return err
-				}
-				propQPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("replace", key)
 			}
@@ -439,24 +263,6 @@ func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 	if !propGPresented {
 		item.G.Reset()
 	}
-	if !propHPresented {
-		item.H.Reset()
-	}
-	if !propIPresented {
-		item.I.Reset()
-	}
-	if !propJPresented {
-		item.J.Reset()
-	}
-	if !propKPresented {
-		item.K.Reset()
-	}
-	if !propMPresented {
-		item.M.Reset()
-	}
-	if !propQPresented {
-		item.Q.Reset()
-	}
 	var inAPointer *basictl.JsonLexer
 	inA := basictl.JsonLexer{Data: rawA}
 	if rawA != nil {
@@ -472,33 +278,6 @@ func (item *Replace) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 		inDPointer = &inD
 	}
 	if err := item.D.ReadJSON(legacyTypeNames, inDPointer, item.N); err != nil {
-		return err
-	}
-
-	var inLPointer *basictl.JsonLexer
-	inL := basictl.JsonLexer{Data: rawL}
-	if rawL != nil {
-		inLPointer = &inL
-	}
-	if err := item.L.ReadJSON(legacyTypeNames, inLPointer, item.N); err != nil {
-		return err
-	}
-
-	var inOPointer *basictl.JsonLexer
-	inO := basictl.JsonLexer{Data: rawO}
-	if rawO != nil {
-		inOPointer = &inO
-	}
-	if err := item.O.ReadJSON(legacyTypeNames, inOPointer, item.N); err != nil {
-		return err
-	}
-
-	var inPPointer *basictl.JsonLexer
-	inP := basictl.JsonLexer{Data: rawP}
-	if rawP != nil {
-		inPPointer = &inP
-	}
-	if err := item.P.ReadJSON(legacyTypeNames, inPPointer, item.N); err != nil {
 		return err
 	}
 
@@ -555,51 +334,6 @@ func (item *Replace) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ [
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"g":`...)
 	w = item.G.WriteJSONOpt(tctx, w)
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"h":`...)
-	if w, err = item.H.WriteJSONOpt(tctx, w); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"i":`...)
-	if w, err = item.I.WriteJSONOpt(tctx, w); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"j":`...)
-	if w, err = item.J.WriteJSONOpt(tctx, w); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"k":`...)
-	if w, err = item.K.WriteJSONOpt(tctx, w); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"l":`...)
-	if w, err = item.L.WriteJSONOpt(tctx, w, item.N); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"m":`...)
-	if w, err = item.M.WriteJSONOpt(tctx, w); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"o":`...)
-	if w, err = item.O.WriteJSONOpt(tctx, w, item.N); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"p":`...)
-	if w, err = item.P.WriteJSONOpt(tctx, w, item.N); err != nil {
-		return w, err
-	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"q":`...)
-	if w, err = item.Q.WriteJSONOpt(tctx, w); err != nil {
-		return w, err
-	}
 	return append(w, '}'), nil
 }
 
@@ -710,105 +444,6 @@ func (item *Replace) CalculateLayout(sizes []int) []int {
 	sizes = item.G.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.H
-	currentPosition = len(sizes)
-	sizes = item.H.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.I
-	currentPosition = len(sizes)
-	sizes = item.I.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.J
-	currentPosition = len(sizes)
-	sizes = item.J.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.K
-	currentPosition = len(sizes)
-	sizes = item.K.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.L
-	currentPosition = len(sizes)
-	sizes = item.L.CalculateLayout(sizes, item.N)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.M
-	currentPosition = len(sizes)
-	sizes = item.M.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.O
-	currentPosition = len(sizes)
-	sizes = item.O.CalculateLayout(sizes, item.N)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 3
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.P
-	currentPosition = len(sizes)
-	sizes = item.P.CalculateLayout(sizes, item.N)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 3
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.Q
-	currentPosition = len(sizes)
-	sizes = item.Q.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 3
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	} else {
@@ -929,98 +564,6 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 1)
 		w, sizes = item.G.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.H
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = item.H.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.I
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = item.I.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.J
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 4)
-		w, sizes = item.J.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.K
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 5)
-		w, sizes = item.K.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.L
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 6)
-		w, sizes = item.L.InternalWriteTL2(w, sizes, item.N)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.M
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 7)
-		w, sizes = item.M.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-
-	// add byte for fields with index 16..23
-	w[currentBlockPosition] = currentBlock
-	currentBlock = 0
-	if serializedSize != currentSize {
-		currentBlockPosition = len(w)
-		w = append(w, 0)
-		serializedSize += 1
-	} else {
-		return w, sizes
-	}
-	// write item.O
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 0)
-		w, sizes = item.O.InternalWriteTL2(w, sizes, item.N)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.P
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 1)
-		w, sizes = item.P.InternalWriteTL2(w, sizes, item.N)
-	} else {
-		sizes = sizes[1:]
-	}
-	// write item.Q
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = item.Q.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -1162,96 +705,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 	} else {
 		item.G.Reset()
-	}
-
-	// read item.H
-	if block&(1<<2) != 0 {
-		if currentR, err = item.H.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.H.Reset()
-	}
-
-	// read item.I
-	if block&(1<<3) != 0 {
-		if currentR, err = item.I.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.I.Reset()
-	}
-
-	// read item.J
-	if block&(1<<4) != 0 {
-		if currentR, err = item.J.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.J.Reset()
-	}
-
-	// read item.K
-	if block&(1<<5) != 0 {
-		if currentR, err = item.K.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.K.Reset()
-	}
-
-	// read item.L
-	if block&(1<<6) != 0 {
-		if currentR, err = item.L.InternalReadTL2(currentR, item.N); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.L.Reset()
-	}
-
-	// read item.M
-	if block&(1<<7) != 0 {
-		if currentR, err = item.M.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.M.Reset()
-	}
-
-	// read next block for fields 16..23
-	if len(currentR) > 0 {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-			return currentR, err
-		}
-	} else {
-		block = 0
-	}
-
-	// read item.O
-	if block&(1<<0) != 0 {
-		if currentR, err = item.O.InternalReadTL2(currentR, item.N); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.O.Reset()
-	}
-
-	// read item.P
-	if block&(1<<1) != 0 {
-		if currentR, err = item.P.InternalReadTL2(currentR, item.N); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.P.Reset()
-	}
-
-	// read item.Q
-	if block&(1<<2) != 0 {
-		if currentR, err = item.Q.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		item.Q.Reset()
 	}
 
 	return r, nil

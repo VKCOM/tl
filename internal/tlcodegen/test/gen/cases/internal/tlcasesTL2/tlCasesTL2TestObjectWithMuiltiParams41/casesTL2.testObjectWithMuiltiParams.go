@@ -11,7 +11,6 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinTuple1Int"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinTuple4Int"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinTuple4Tuple1Int"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -21,13 +20,12 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTL2TestObjectWithMuiltiParams41 struct {
 	F1 [4]int32 // Conditional: 4.0
 	F2 [1]int32 // Conditional: 1.0
-	Y  [4][1]int32
 }
 
 func (CasesTL2TestObjectWithMuiltiParams41) TLName() string {
 	return "casesTL2.testObjectWithMuiltiParams"
 }
-func (CasesTL2TestObjectWithMuiltiParams41) TLTag() uint32 { return 0xfbdfdaa3 }
+func (CasesTL2TestObjectWithMuiltiParams41) TLTag() uint32 { return 0x76444f62 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF1() bool { return 4&(1<<0) != 0 }
 
@@ -36,7 +34,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF2() bool { return 1&(1<<
 func (item *CasesTL2TestObjectWithMuiltiParams41) Reset() {
 	tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
 	tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
-	tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntReset(&item.Y)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGenerator) {
@@ -50,7 +47,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGen
 	} else {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
 	}
-	tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntFillRandom(rg, &item.Y)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err error) {
@@ -68,7 +64,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err 
 	} else {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
 	}
-	return tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntRead(w, &item.Y)
+	return w, nil
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteGeneral(w []byte) (_ []byte, err error) {
@@ -82,12 +78,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) Write(w []byte) []byte {
 	if 1&(1<<0) != 0 {
 		w = tlBuiltinTuple1Int.BuiltinTuple1IntWrite(w, &item.F2)
 	}
-	w = tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntWrite(w, &item.Y)
 	return w
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xfbdfdaa3); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0x76444f62); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -98,7 +93,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) WriteBoxedGeneral(w []byte) (_
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xfbdfdaa3)
+	w = basictl.NatWrite(w, 0x76444f62)
 	return item.Write(w)
 }
 
@@ -109,7 +104,6 @@ func (item CasesTL2TestObjectWithMuiltiParams41) String() string {
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	var propF1Presented bool
 	var propF2Presented bool
-	var propYPresented bool
 
 	if in != nil {
 		in.Delim('{')
@@ -142,14 +136,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool,
 					return err
 				}
 				propF2Presented = true
-			case "y":
-				if propYPresented {
-					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "y")
-				}
-				if err := tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntReadJSON(legacyTypeNames, in, &item.Y); err != nil {
-					return err
-				}
-				propYPresented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams", key)
 			}
@@ -165,9 +151,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool,
 	}
 	if !propF2Presented {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
-	}
-	if !propYPresented {
-		tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntReset(&item.Y)
 	}
 	return nil
 }
@@ -193,9 +176,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) WriteJSONOpt(tctx *basictl.JSO
 		w = append(w, `"f2":`...)
 		w = tlBuiltinTuple1Int.BuiltinTuple1IntWriteJSONOpt(tctx, w, &item.F2)
 	}
-	w = basictl.JSONAddCommaIfNeeded(w)
-	w = append(w, `"y":`...)
-	w = tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntWriteJSONOpt(tctx, w, &item.Y)
 	return append(w, '}')
 }
 
@@ -241,17 +221,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int) [
 		} else {
 			sizes = sizes[:currentPosition+1]
 		}
-	}
-
-	// calculate layout for item.Y
-	currentPosition = len(sizes)
-	sizes = tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntCalculateLayout(sizes, &item.Y)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
 	}
 
 	// append byte for each section until last mentioned field
@@ -301,15 +270,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, siz
 		} else {
 			sizes = sizes[1:]
 		}
-	}
-	// write item.Y
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntInternalWriteTL2(w, sizes, &item.Y)
-	} else {
-		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -385,15 +345,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 		}
 	} else {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
-	}
-
-	// read item.Y
-	if block&(1<<3) != 0 {
-		if currentR, err = tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntInternalReadTL2(currentR, &item.Y); err != nil {
-			return currentR, err
-		}
-	} else {
-		tlBuiltinTuple4Tuple1Int.BuiltinTuple4Tuple1IntReset(&item.Y)
 	}
 
 	return r, nil

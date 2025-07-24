@@ -122,15 +122,6 @@
         }
       ]
     },
-    "TestReadOrder": {
-      "TestingType": "cases.replace7",
-      "Successes": [
-        {
-          "DataAsBytes": "00000001 00000002 00000001 00000002",
-          "DataAsJson": "{\"n\":1,\"m\":2,\"a\":[[1,2]]}"
-        }
-      ]
-    },
     "TestTuple": {
       "TestingType": "cases.testTuple",
       "Successes": [

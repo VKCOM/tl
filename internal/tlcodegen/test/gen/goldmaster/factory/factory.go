@@ -40,18 +40,11 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNativeWrappers"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlNoStr"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace10"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace12"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace15"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace17"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace18"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace5"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace6"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace7"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace8"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlReplace9"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTestMaybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTestMaybe2"
@@ -198,19 +191,12 @@ func init() {
 	meta.SetGlobalFactoryCreateForObject(0x103a40cf, func() meta.Object { var ret cycle_730fc36a9abee714fd77cf74c905e6e2.MyZero3; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x344ddf50, func() meta.Object { var ret tlNativeWrappers.NativeWrappers; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x3a728324, func() meta.Object { var ret tlNoStr.NoStr; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x323db63e, func() meta.Object { var ret tlReplace.Replace; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xfc81f008, func() meta.Object { var ret tlReplace10.Replace10; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xec121094, func() meta.Object { var ret tlReplace12.Replace12; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x2280e430, func() meta.Object { var ret tlReplace15.Replace15; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xebb26b29, func() meta.Object { var ret tlReplace.Replace; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xf46f9b9b, func() meta.Object { var ret tlReplace17.Replace17; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x704dd712, func() meta.Object { var ret tlReplace18.Replace18; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xe2d4ebee, func() meta.Object { var ret tlReplace2.Replace2; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x51e324e4, func() meta.Object { var ret tlReplace3.Replace3; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x8b5bc78a, func() meta.Object { var ret tlReplace5.Replace5; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xabd49d06, func() meta.Object { var ret tlReplace6.Replace6; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xf4c66d9f, func() meta.Object { var ret tlReplace7.Replace7; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0xd626c117, func() meta.Object { var ret tlReplace8.Replace8; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x95d598c5, func() meta.Object { var ret tlReplace9.Replace9; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xff8f7db8, func() meta.Object { var ret cycle_16847572a0831d4cd4c0c0fb513151f3.Service5EmptyOutput; return &ret })
 	meta.SetGlobalFactoryCreateForFunction(0x7cf362ba, func() meta.Object { var ret tlService5Insert.Service5Insert; return &ret }, func() meta.Function { var ret tlService5Insert.Service5Insert; return &ret }, func() meta.Function { var ret tlService5LongInsert.Service5LongInsert; return &ret })
 	meta.SetGlobalFactoryCreateForFunction(0x7cf362bc, func() meta.Object { var ret tlService5InsertList.Service5InsertList; return &ret }, func() meta.Function { var ret tlService5InsertList.Service5InsertList; return &ret }, nil)

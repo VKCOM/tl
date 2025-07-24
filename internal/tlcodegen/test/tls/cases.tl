@@ -79,11 +79,6 @@ cases.testAllPossibleFieldConfigsContainer outer:#
     value:(cases.testAllPossibleFieldConfigs outer)
 = cases.TestAllPossibleFieldConfigsContainer;
 
-// BLOCK: TEST JSON TRANSALTION SPECS
-cases.replace7 n:# m:# a:n*[m*[int]] = cases.Replace7;
-cases.replace7plus n:# m:# a:n.0?n*[m*[int]] = cases.Replace7plus;
-cases.replace7plusplus N:# M:# A:N.0?N*[M*[int]] = cases.Replace7plusplus;
-
 // BLOCK: TEST INPLACING ARGUMENTS
 cases.testInplaceStructArgs a1:# a2:# a3:# arg:cases.inplace1<a1, a2, a3, int> = cases.TestInplaceStructArgs;
 cases.testInplaceStructArgs2 a1:# a2:# a3:# arg:cases.inplace1<a1, a2, a3, pair<tuple<int, a3>, tuple<int, a2>>> = cases.TestInplaceStructArgs2;
@@ -193,8 +188,7 @@ casesTL2.testParamsGeneration
 
 casesTL2.testObjectWithMuiltiParams {n:#} {m:#}
     f1:n.0?n*[int]
-    f2:m.0?m*[int]
-    y:n*[m*[int]] = casesTL2.TestObjectWithMuiltiParams n m;
+    f2:m.0?m*[int] = casesTL2.TestObjectWithMuiltiParams n m;
 
 
 @read casesTL2.testFunctionNoDep1 x:int => Int;

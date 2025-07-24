@@ -8,9 +8,10 @@ package test
 
 import (
 	"errors"
-	"github.com/TwiN/go-color"
 	"strings"
 	"testing"
+
+	"github.com/TwiN/go-color"
 
 	"github.com/stretchr/testify/require"
 
@@ -60,7 +61,7 @@ func TestBeautiful(t *testing.T) {
 			"anonymous inner square bracket RED",
 			"a {n:#} data:[[int]] = A n;\nb n:# x:(a n) = B;",
 			"",
-			"a {n:#} data:[" + color.InRed("") + "[int]] = A n;\n              " + color.InWhite("^--") + " replacing with canonical tuples: anonymous scale repeat can be used only in top-level square brackets  (line 1 col 15)\n",
+			"a {n:#} data:" + color.InRed("[[int]]") + " = A n;\n             " + color.InWhite("^^^^^^^--") + " replacing with canonical tuples: brackets must contain reference to single type, fields are not allowed here  (line 1 col 14)\n",
 		},
 		{
 			"wrong scale type from template args PURPLE",
