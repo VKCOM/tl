@@ -180,25 +180,25 @@ func TestBeautiful(t *testing.T) {
 		{
 			"field mask error",
 			"foo x?field_mask.0",
-			"",
+			"foo x" + color.InRed("?") + "field_mask.0\n     " + color.InWhite("^--") + " type declaration error: field type is expected here (missed '()' around complex type?)  (line 1 col 6)\n",
 			"",
 		},
 		{
 			"field mask error",
 			"foo x.field_mask?0",
-			"",
+			"foo x.field_mask" + color.InRed("?") + "0\n                " + color.InWhite("^--") + " type declaration error: field type is expected here (missed '()' around complex type?)  (line 1 col 17)\n",
 			"",
 		},
 		{
 			"field mask error",
 			"foo field_mask.0?x",
-			"",
+			"foo field_mask.0?x" + color.InRed("") + "\n                  " + color.InWhite("^--") + " type declaration error: field type is expected here (missed '()' around complex type?)  (line 1 col 19)\n",
 			"",
 		},
 		{
 			"field mask error",
 			"foo field_mask?0.x",
-			"",
+			"foo field_mask" + color.InRed("?") + "0.x\n              " + color.InWhite("^--") + " type declaration error: field type is expected here (missed '()' around complex type?)  (line 1 col 15)\n",
 			"",
 		},
 		{
@@ -268,9 +268,6 @@ service5.hrenOutput = service5.Output;
 	for i, test := range errorTests {
 		errorBuffer.Reset()
 		t.Run(test.name, func(t *testing.T) {
-			if test.name == "field mask error" {
-				t.Skip()
-			}
 			var parseError *tlast.ParseError
 			if ast, err := tlast.ParseTL(test.sourceTL); err != nil && errors.As(err, &parseError) {
 				parseError.ConsolePrint(&errorBuffer, err, false)
