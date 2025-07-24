@@ -55,6 +55,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 	// Linter
 	flag.StringVar(&opt.Schema2Compare, "schema-to-compare", "",
 		`path to old version TL schema to compare on backward compatibility`)
+	flag.BoolVar(&opt.LinterPHPCheck, "linter-php-check", false,
+		"check types to be correct for php generator")
 
 	// Go
 	flag.StringVar(&opt.BasicPackageNameFull, "basicPkgPath", "",

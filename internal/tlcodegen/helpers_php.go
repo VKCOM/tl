@@ -6,6 +6,27 @@
 
 package tlcodegen
 
+var PHPNamesToIgnoreForLinterCheck = []string{
+	// primitives from https://github.com/VKCOM/kphp/blob/ff72b37bda68cf282c37a92d23bc763de6f47795/common/tl2php/combinator-to-php.cpp#L84
+	"String",
+	"Int",
+	"#",
+	"Long",
+	"Double",
+	"Float",
+	"Bool",
+	//"False", no such type?
+	"True",
+	// brackets from https://github.com/VKCOM/kphp/blob/ff72b37bda68cf282c37a92d23bc763de6f47795/common/tl2php/combinator-to-php.cpp#L104
+	"Vector",
+	"Tuple",
+	"Dictionary",
+	"IntKeyDictionary",
+	"LongKeyDictionary",
+	// and Maybe
+	"Maybe",
+}
+
 const BasicTlPathPHP = "tl_streams.php"
 const BasicTLCodePHP = `<?php
 
