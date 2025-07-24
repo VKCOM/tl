@@ -134,7 +134,6 @@ func numberLexeme(s string) (string, bool) {
 type LexerOptions struct {
 	AllowBuiltin bool // allows constructor to start from '_' (underscore), used only internally by tlgen
 	AllowDirty   bool // allows to use '_' (underscore) as constructor name, will be removed after combined.tl is cleaned up
-	AllowMLC     bool // allow multiline comments. They are treated as warnings.
 
 	LexerLanguage // default value is tl1
 }
@@ -191,10 +190,6 @@ func (l *lexer) validateTokens() ([]token, error) {
 				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - boxed types are not supported in tl2", curToken.val), curToken, curToken.pos)
 			case typesSection, functionsSection:
 				err = parseErrToken(fmt.Errorf("illegal token for tl2: \"%s\" - sections are not supported in tl2", curToken.val), curToken, curToken.pos)
-			case comment:
-				if strings.HasPrefix(curToken.val, "/*") {
-					err = parseErrToken(fmt.Errorf("multiline comments are not allowed in tl2: \"%s\"", curToken.val), curToken, curToken.pos)
-				}
 			}
 		default:
 			return l.tokens, fmt.Errorf("unknown language code \"%d\"", l.opts.LexerLanguage)
@@ -246,7 +241,7 @@ func (l *lexer) nextToken() error {
 	switch {
 	case l.checkPrimitive():
 		return nil
-	case l.str[0] == '\r':
+	case l.str[0] == '\r': // windows
 		if strings.HasPrefix(l.str, "\r\n") {
 			l.advance(2, newLine)
 			l.position.line++
@@ -272,7 +267,27 @@ func (l *lexer) nextToken() error {
 	case l.str[0] == '@':
 		return l.lexFunctionModifier()
 	case l.str[0] == '/':
-		return l.lexComment()
+		if strings.HasPrefix(l.str, "//") {
+			// bad newline error will be generated in newline processing
+			index := strings.Index(l.str, "\r\n")
+			if i := strings.IndexByte(l.str, '\r'); index < 0 || (i >= 0 && i < index) {
+				index = i
+			}
+			if i := strings.IndexByte(l.str, '\n'); index < 0 || (i >= 0 && i < index) {
+				index = i
+			}
+			if index < 0 {
+				index = len(l.str)
+			}
+			l.advance(index, comment)
+			return nil
+		}
+		if strings.HasPrefix(l.str, "/*") { // separate case for better error text
+			tok := l.advance(2, undefined)
+			return parseErrToken(fmt.Errorf("multiline comments are not part of language"), tok, tok.pos)
+		}
+		tok := l.advance(1, undefined)
+		return parseErrToken(fmt.Errorf("'//' expected as a comment start"), tok, tok.pos)
 	case l.str[0] == '-':
 		return l.lexSection()
 	case l.str[0] == '#':
@@ -315,42 +330,6 @@ func (l *lexer) lexFunctionModifier() error {
 	}
 	l.advance(1+len(w), annotation)
 	return nil
-}
-
-func (l *lexer) lexComment() error {
-	if len(l.str) <= 1 {
-		tok := l.advance(len(l.str), undefined)
-		return parseErrToken(fmt.Errorf("'//' expected as a comment start"), tok, tok.pos)
-	}
-	switch l.str[1] {
-	case '\n':
-		tok := l.advance(1, undefined)
-		return parseErrToken(fmt.Errorf("'//' expected as a comment start"), tok, tok.pos)
-	case '/': // separate case, otherwise beautiful error printing breaks, because token will contain a newline
-		index := strings.IndexByte(l.str, '\n')
-		if index < 0 {
-			index = len(l.str)
-		}
-		l.advance(index, comment)
-		return nil
-	case '*':
-		// from index 2 to not allow /*/
-		closeBlockCommentIndex := strings.Index(l.str[2:], "*/")
-		if closeBlockCommentIndex < 0 {
-			tok := l.advance(2, undefined)
-			return parseErrToken(fmt.Errorf("multiline comment start without closing '*/'"), tok, tok.pos)
-		}
-		commentBlock := l.advance(2+closeBlockCommentIndex+2, comment) // /* ... */
-		nlIndex := strings.LastIndexByte(commentBlock.val, '\n')
-		if nlIndex >= 0 {
-			l.position.line += strings.Count(commentBlock.val, "\n")
-			l.position.column = 1 + len(commentBlock.val) - (nlIndex + 1) // 1 - 1 cancel out
-			l.position.startLineOffset = commentBlock.pos.offset + (nlIndex + 1)
-		}
-		return nil
-	}
-	tok := l.advance(2, undefined)
-	return parseErrToken(fmt.Errorf("'//' expected as a comment start"), tok, tok.pos)
 }
 
 func (l *lexer) lexSection() error {

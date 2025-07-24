@@ -2161,7 +2161,6 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 	btl, err := tlast.ParseTLFile(builtinBeautifulText, "<builtin>", tlast.LexerOptions{
 		AllowBuiltin: true,
 		AllowDirty:   false,
-		AllowMLC:     false,
 	}, options.ErrorWriter) // We need references to token positions for beautification, so we decided to parse as a TL file
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse internal builtin type representation for beautification: %w", err)

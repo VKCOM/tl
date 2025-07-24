@@ -303,7 +303,6 @@ func parseTlFile(file string, replaceStrange bool, opt *tlcodegen.Gen2Options) (
 	tl, err := tlast.ParseTLFile(dataStr, file, tlast.LexerOptions{
 		AllowBuiltin: false,
 		AllowDirty:   !replaceStrange,
-		AllowMLC:     !opt.WarningsAreErrors,
 	}, opt.ErrorWriter)
 	if err != nil {
 		return tl, err // Do not add excess info to already long parse error

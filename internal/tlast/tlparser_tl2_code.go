@@ -78,7 +78,7 @@ func zeroOrMore[T any](parser OptionalParse[T]) OptionalParse[[]T] {
 }
 
 func ParseTL2(str string) (TL2File, error) {
-	return ParseTL2File(str, "", LexerOptions{AllowMLC: true, LexerLanguage: tl2}, os.Stdout)
+	return ParseTL2File(str, "", LexerOptions{LexerLanguage: tl2}, os.Stdout)
 }
 
 // TL2File := TL2Combinator* EOF;
