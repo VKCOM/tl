@@ -104,10 +104,11 @@ func (e *ParseError) consolePrint(out io.Writer, err error, c string, isWarning 
 		ourLineRed = strings.ReplaceAll(ourLineRed, "\t", tabSpaces)
 	}
 	errLineBeforeBegin := strings.Repeat(" ", len(ourLineBeforeBegin))
-	errLineRed := strings.Repeat("^", len(ourLineRed))
-	if len(errLineRed) == 0 {
-		errLineRed = "^"
+	arrowText := strings.Repeat("^", len(ourLineRed))
+	if len(arrowText) == 0 {
+		arrowText = "^"
 	}
+	arrowText += "--" // arrow handle
 	tail := ""
 	if e.Pos.End.offset < 0 || e.Pos.End.offset > len(fc) {
 		anyCorrupted = true
@@ -135,7 +136,8 @@ func (e *ParseError) consolePrint(out io.Writer, err error, c string, isWarning 
 		_, _ = fmt.Fprintf(out, "beautiful error context corrupted, %s, please report with TL file\n", color.InRed("internal error"))
 	} else {
 		_, _ = fmt.Fprintf(out, "%s%s%s\n", ourLineBeforeBegin, color.Colorize(c, ourLineRed), after1)
-		_, _ = fmt.Fprintf(out, "%s%s-- %s%s\n", errLineBeforeBegin, color.InRed(errLineRed), warnText, after2) // keep lines same length in bytes
+		// color.InWhite() keeps lines same length in bytes, so arrow points to correct text even if printed into file
+		_, _ = fmt.Fprintf(out, "%s%s %s%s\n", errLineBeforeBegin, color.InWhite(arrowText), warnText, after2)
 	}
 }
 
