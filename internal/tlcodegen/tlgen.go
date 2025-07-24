@@ -2560,12 +2560,21 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 		}
 
 		isFlatType := func(t *TypeRWWrapper) bool {
-			fieldStruct, isStruct := t.trw.(*TypeRWStruct)
+			struct_, isStruct := t.trw.(*TypeRWStruct)
 			return isStruct &&
-				fieldStruct.PhpCanBeSimplify() &&
+				struct_.PhpCanBeSimplify() &&
 				strings.ToLower(t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(t.origTL[0].Construct.Name.String())
 		}
 
+		isNotPolymorphicType := func(t *TypeRWWrapper) bool {
+			_, isStruct := t.trw.(*TypeRWStruct)
+			return isStruct &&
+				t.unionParent == nil &&
+				len(t.origTL) == 1 &&
+				strings.ToLower(t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(t.origTL[0].Construct.Name.String())
+		}
+
+		// issue 1
 		for _, wrapper := range sortedTypes {
 			if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
 				for _, field := range strct_.Fields {
@@ -2579,11 +2588,23 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			}
 		}
 
+		// issue 2
 		for _, wrapper := range sortedTypes {
 			if isFlatType(wrapper) && !namesToIgnoreMap[strings.ToLower(wrapper.tlName.String())] {
 				for _, argument := range wrapper.origTL[0].TemplateArguments {
 					if !argument.IsNat {
 						return nil, argument.PR.BeautifulError(fmt.Errorf("flat types can't have type templates due to php generator issues"))
+					}
+				}
+			}
+		}
+
+		// issue 3
+		for _, wrapper := range sortedTypes {
+			if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
+				for _, field := range strct_.Fields {
+					if !field.bare && isNotPolymorphicType(field.t) && !namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
+						return nil, field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't reference type with a single constructor with the same name in field due to php generator issues"))
 					}
 				}
 			}
