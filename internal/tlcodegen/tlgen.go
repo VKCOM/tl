@@ -2567,7 +2567,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			struct_, isStruct := t.trw.(*TypeRWStruct)
 			return isStruct &&
 				struct_.PhpCanBeSimplify() &&
-				strings.ToLower(t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(t.origTL[0].Construct.Name.String())
+				strings.EqualFold(t.origTL[0].TypeDecl.Name.String(), t.origTL[0].Construct.Name.String())
 		}
 
 		isNotPolymorphicType := func(t *TypeRWWrapper) bool {
@@ -2575,7 +2575,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			return isStruct &&
 				t.unionParent == nil &&
 				len(t.origTL) == 1 &&
-				strings.ToLower(t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(t.origTL[0].Construct.Name.String())
+				strings.EqualFold(t.origTL[0].TypeDecl.Name.String(), t.origTL[0].Construct.Name.String())
 		}
 
 		// tmp
