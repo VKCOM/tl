@@ -58,16 +58,17 @@ myType#12345678 x:Vector<int> = MyType;
 			}
 
 			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-				ErrorWriter:    io.Discard,
-				Verbose:        true,
-				LinterPHPCheck: true,
+				ErrorWriter:       io.Discard,
+				Verbose:           true,
+				LinterPHPCheck:    true,
+				WarningsAreErrors: true,
 			})
 
 			assert.Error(t, err)
 		})
 
 		t.Run("no fail when all flat types are bare", func(t *testing.T) {
-			data := `vector2#1cb5c415 {t:Type} n:# m:n*[t] = Vector t;
+			data := `vector2#1cb5c415 {t:Type} n:# m:n*[t] = Vector2 t;
 myType#12345678 x:vector2<int> = MyType;
 ---functions---
 @read myTestFunction x:myType = MyType;`
@@ -79,9 +80,10 @@ myType#12345678 x:vector2<int> = MyType;
 			}
 
 			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-				ErrorWriter:    io.Discard,
-				Verbose:        true,
-				LinterPHPCheck: true,
+				ErrorWriter:       io.Discard,
+				Verbose:           true,
+				LinterPHPCheck:    true,
+				WarningsAreErrors: true,
 			})
 
 			assert.NoError(t, err)
@@ -170,12 +172,17 @@ myType#12345678 x:[[[TYPE_HERE]]] = MyType;
 					}
 
 					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-						ErrorWriter:    io.Discard,
-						Verbose:        true,
-						LinterPHPCheck: true,
+						ErrorWriter:       io.Discard,
+						Verbose:           true,
+						LinterPHPCheck:    true,
+						WarningsAreErrors: true,
 					})
 
-					assert.NoError(t, err)
+					if s == "True" {
+						assert.Error(t, err)
+					} else {
+						assert.NoError(t, err)
+					}
 				})
 			}
 		})
@@ -196,9 +203,10 @@ myType#12345678 {t:Type} x:vector<T> = MyType T;
 			}
 
 			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-				ErrorWriter:    io.Discard,
-				Verbose:        true,
-				LinterPHPCheck: true,
+				ErrorWriter:       io.Discard,
+				Verbose:           true,
+				LinterPHPCheck:    true,
+				WarningsAreErrors: true,
 			})
 
 			assert.Error(t, err)
@@ -221,9 +229,10 @@ myType#eadc11aa {T:Type}
 			}
 
 			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-				ErrorWriter:    io.Discard,
-				Verbose:        true,
-				LinterPHPCheck: true,
+				ErrorWriter:       io.Discard,
+				Verbose:           true,
+				LinterPHPCheck:    true,
+				WarningsAreErrors: true,
 			})
 
 			assert.Error(t, err)
@@ -312,12 +321,17 @@ myType#12345678 x:[[[TYPE_HERE]]] = MyType;
 					}
 
 					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-						ErrorWriter:    io.Discard,
-						Verbose:        true,
-						LinterPHPCheck: true,
+						ErrorWriter:       io.Discard,
+						Verbose:           true,
+						LinterPHPCheck:    true,
+						WarningsAreErrors: true,
 					})
 
-					assert.NoError(t, err)
+					if s == "True" {
+						assert.Error(t, err)
+					} else {
+						assert.NoError(t, err)
+					}
 				})
 			}
 		})
@@ -338,9 +352,11 @@ myType x:vector<int> y:vector<int> = MyType;
 			}
 
 			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-				ErrorWriter:    io.Discard,
-				Verbose:        true,
-				LinterPHPCheck: true,
+				ErrorWriter:                     io.Discard,
+				Verbose:                         true,
+				LinterPHPCheck:                  true,
+				LinterPHPNonPolymorphicBoxedRef: true,
+				WarningsAreErrors:               true,
 			})
 
 			assert.Error(t, err)
@@ -360,9 +376,11 @@ myType2 x:vector<int> y:vector<int> = MyType;
 			}
 
 			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-				ErrorWriter:    io.Discard,
-				Verbose:        true,
-				LinterPHPCheck: true,
+				ErrorWriter:                     io.Discard,
+				Verbose:                         true,
+				LinterPHPCheck:                  true,
+				LinterPHPNonPolymorphicBoxedRef: true,
+				WarningsAreErrors:               true,
 			})
 
 			assert.NoError(t, err)
@@ -453,12 +471,17 @@ true = True; // this can be used as void type and serialized to empty array in P
 					}
 
 					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
-						ErrorWriter:    io.Discard,
-						Verbose:        true,
-						LinterPHPCheck: true,
+						ErrorWriter:       io.Discard,
+						Verbose:           true,
+						LinterPHPCheck:    true,
+						WarningsAreErrors: true,
 					})
 
-					assert.NoError(t, err)
+					if s == "True" {
+						assert.Error(t, err)
+					} else {
+						assert.NoError(t, err)
+					}
 				})
 			}
 		})

@@ -66,7 +66,11 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			)
 			initIfDefault = false
 		}
-		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, args)
+		var newArgs *TypeArgumentsTree
+		if args != nil {
+			newArgs = args.children[0]
+		}
+		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, newArgs)
 		for i := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
 		}
@@ -96,7 +100,11 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 			fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
 		}
 		{
-			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, args)
+			var newArgs *TypeArgumentsTree
+			if args != nil {
+				newArgs = args.children[0]
+			}
+			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, newArgs)
 			for i := range bodyWriter {
 				bodyWriter[i] = "  " + bodyWriter[i]
 			}
