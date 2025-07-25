@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"io"
 	"log"
 	"os"
@@ -322,7 +323,10 @@ type Gen2Options struct {
 
 	// Linter
 	Schema2Compare string
-	LinterPHPCheck bool
+
+	// Linter php
+	LinterPHPCheck                  bool
+	LinterPHPNonPolymorphicBoxedRef bool
 
 	// Go
 	BasicPackageNameFull   string // if empty, will be created
@@ -2551,7 +2555,7 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 
 	// additional php check
 	if gen.options.LinterPHPCheck {
-		storeOption := gen.options.InplaceSimpleStructs
+		storedOption := gen.options.InplaceSimpleStructs
 		gen.options.InplaceSimpleStructs = true
 
 		namesToIgnoreMap := make(map[string]bool)
@@ -2574,6 +2578,10 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 				strings.ToLower(t.origTL[0].TypeDecl.Name.String()) == strings.ToLower(t.origTL[0].Construct.Name.String())
 		}
 
+		// tmp
+		namespacesToIgnore := []string{"tls", "healthTargeting", "healthSteps"}
+		namespacesToIgnoreMap := utils.SliceToSet(namespacesToIgnore)
+
 		// issue 1
 		for _, wrapper := range sortedTypes {
 			if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
@@ -2581,8 +2589,15 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 					if field.t.originateFromTL2 {
 						continue
 					}
+					if PHPSpecialMembersTypes(field.t) != "" {
+						continue
+					}
 					if !field.bare && isFlatType(field.t) && !namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
-						return nil, field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't have boxed reference in field to flat type due to php generator issues"))
+						linterErr := field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't have boxed reference in field to flat type due to php generator issues (instance: %s)", wrapper.CanonicalStringTop()))
+						if gen.options.WarningsAreErrors && !namespacesToIgnoreMap[field.t.tlName.Namespace] {
+							return nil, linterErr
+						}
+						linterErr.PrintWarning(gen.options.ErrorWriter, nil)
 					}
 				}
 			}
@@ -2593,24 +2608,37 @@ func GenerateCode(tl tlast.TL, options Gen2Options) (*Gen2, error) {
 			if isFlatType(wrapper) && !namesToIgnoreMap[strings.ToLower(wrapper.tlName.String())] {
 				for _, argument := range wrapper.origTL[0].TemplateArguments {
 					if !argument.IsNat {
-						return nil, argument.PR.BeautifulError(fmt.Errorf("flat types can't have type templates due to php generator issues"))
+						linterErr := argument.PR.BeautifulError(fmt.Errorf("flat types can't have type templates due to php generator issues"))
+						if gen.options.WarningsAreErrors {
+							return nil, linterErr
+						}
+						linterErr.PrintWarning(gen.options.ErrorWriter, nil)
 					}
 				}
 			}
 		}
 
-		// issue 3
-		for _, wrapper := range sortedTypes {
-			if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
-				for _, field := range strct_.Fields {
-					if !field.bare && isNotPolymorphicType(field.t) && !namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
-						return nil, field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't reference type with a single constructor with the same name in field due to php generator issues"))
+		if gen.options.LinterPHPNonPolymorphicBoxedRef {
+			// issue 3
+			for _, wrapper := range sortedTypes {
+				if strct_, ok := wrapper.trw.(*TypeRWStruct); ok {
+					for _, field := range strct_.Fields {
+						if PHPSpecialMembersTypes(field.t) != "" {
+							continue
+						}
+						if !field.bare && isNotPolymorphicType(field.t) && !namesToIgnoreMap[strings.ToLower(field.t.tlName.String())] {
+							linterErr := field.origTL.FieldType.PR.BeautifulError(fmt.Errorf("can't boxed reference type with a single constructor with the same name in field due to php generator issues"))
+							if gen.options.WarningsAreErrors {
+								return nil, linterErr
+							}
+							linterErr.PrintWarning(gen.options.ErrorWriter, nil)
+						}
 					}
 				}
 			}
 		}
 
-		gen.options.InplaceSimpleStructs = storeOption
+		gen.options.InplaceSimpleStructs = storedOption
 	}
 
 	// detect recursion loops first

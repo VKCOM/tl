@@ -54,7 +54,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%d", len(trw.PhpClassName(false, true)))
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args)
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[0])
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -156,7 +156,7 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < count(%[2]s); %[1]s++) {", index, targetName),
 		)
 		{
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[%[2]s]", targetName, index), trw.element.bare, args)
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[%[2]s]", targetName, index), trw.element.bare, args.children[0])
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
