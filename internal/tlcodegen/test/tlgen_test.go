@@ -65,6 +65,7 @@ myType#12345678 x:Vector<int> = MyType;
 			})
 
 			assert.Error(t, err)
+			assert.Equal(t, "can't have boxed reference in field to flat type due to php generator issues (instance: myTestFunction)", err.Error())
 		})
 
 		t.Run("no fail when all flat types are bare", func(t *testing.T) {
@@ -192,7 +193,7 @@ myType#12345678 x:[[[TYPE_HERE]]] = MyType;
 		t.Run("fail on non-special type with template", func(t *testing.T) {
 			data := `int#a8509bda ? = Int;
 vector#12345679 {t:Type} # [t] = Vector t;
-myType#12345678 {t:Type} x:vector<T> = MyType T;
+myType#12345678 {T:Type} x:vector<T> = MyType T;
 ---functions---
 @read myTestFunction x:myType<int> = MyType<int>;`
 
@@ -210,6 +211,7 @@ myType#12345678 {t:Type} x:vector<T> = MyType T;
 			})
 
 			assert.Error(t, err)
+			assert.Equal(t, "flat types can't have type templates due to php generator issues", err.Error())
 		})
 
 		// similar reference for original issue
@@ -360,12 +362,13 @@ myType x:vector<int> y:vector<int> = MyType;
 			})
 
 			assert.Error(t, err)
+			assert.Equal(t, "can't boxed reference type with a single constructor with the same name in field due to php generator issues", err.Error())
 		})
 
 		t.Run("correct case", func(t *testing.T) {
 			data := `int#a8509bda ? = Int;
 vector#12345679 {t:Type} # [t] = Vector t;
-myType2 x:vector<int> y:vector<int> = MyType;
+myType2 x:vector<int> y:vector<int> = MyType; // tlgen:nolint
 ---functions---
 @read myTestFunction x:MyType = MyType;`
 
