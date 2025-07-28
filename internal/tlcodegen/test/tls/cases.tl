@@ -199,3 +199,5 @@ casesTL2.testObjectWithMuiltiParams {n:#} {m:#}
 
 @read casesTL2.testFunctionWithDep1 n:# => Tuple<int, n>;
 @read casesTL2.testFunctionWithDep2 n:# => benchmarks.VrutoyPositions n;
+
+casesGo.testNames write:int read:int = casesGo.TestNames;
