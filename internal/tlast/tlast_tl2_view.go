@@ -172,7 +172,13 @@ func (t TL2TypeDefinition) printWithNewLineOption(sb *strings.Builder, options f
 		for i, variant := range t.UnionType.Variants {
 			if !options.ignoreComments && len(variant.CommentBefore) != 0 {
 				sb.WriteString(newLineSep)
-				sb.WriteString(variant.CommentBefore)
+				lines := strings.Split(variant.CommentBefore, "\n")
+				for l, line := range lines {
+					sb.WriteString(strings.TrimSpace(line))
+					if l != len(lines)-1 {
+						sb.WriteString(newLineSep)
+					}
+				}
 				forceNewline = true
 			}
 			if i != 0 || forceNewline {
