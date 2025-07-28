@@ -330,6 +330,7 @@ func init() {
 	fillObject("cases_bytes.testEnumContainer#32b92037", "#32b92037", &TLItem{tag: 0x32b92037, annotations: 0x0, tlName: "cases_bytes.testEnumContainer", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases_bytes.testTuple#2dd3bacf", "#2dd3bacf", &TLItem{tag: 0x2dd3bacf, annotations: 0x0, tlName: "cases_bytes.testTuple", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases_bytes.testVector#3647c8ae", "#3647c8ae", &TLItem{tag: 0x3647c8ae, annotations: 0x0, tlName: "cases_bytes.testVector", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("casesGo.testNames#6b61936a", "#6b61936a", &TLItem{tag: 0x6b61936a, annotations: 0x0, tlName: "casesGo.testNames", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.myCycle1#d3ca919d", "#d3ca919d", &TLItem{tag: 0xd3ca919d, annotations: 0x0, tlName: "cases.myCycle1", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.myCycle2#5444c9a2", "#5444c9a2", &TLItem{tag: 0x5444c9a2, annotations: 0x0, tlName: "cases.myCycle2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.myCycle3#7624f86b", "#7624f86b", &TLItem{tag: 0x7624f86b, annotations: 0x0, tlName: "cases.myCycle3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
