@@ -46,6 +46,7 @@ const (
 	CasesTestUnion2                                 = 0x464f96c4 // cases.testUnion2
 	CasesTestUnionContainer                         = 0x4497a381 // cases.testUnionContainer
 	CasesTestVector                                 = 0x4975695c // cases.testVector
+	CasesGoTestNames                                = 0x6b61936a // casesGo.testNames
 	CasesTL2TestArrayFixedBool                      = 0xf704cf4e // casesTL2.testArrayFixedBool
 	CasesTL2TestArrayFlexibleBool                   = 0x974a9b29 // casesTL2.testArrayFlexibleBool
 	CasesTL2TestFixedParam                          = 0x22c48297 // casesTL2.testFixedParam
