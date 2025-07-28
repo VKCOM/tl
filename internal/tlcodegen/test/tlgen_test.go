@@ -47,7 +47,7 @@ func TestGen(t *testing.T) {
 func TestMigrationOneStep(t *testing.T) {
 	var nextState []tlcodegen.FileToWrite
 	var stepSuccess bool
-	stepSuccess, nextState = assertMigrationStep(
+	stepSuccess, _ = assertMigrationStep(
 		t,
 		nextState,
 		`
@@ -83,7 +83,7 @@ c.t2 f1:pair<c.t1, double> = c.T2;
 func TestMigrationNameConversion(t *testing.T) {
 	var nextState []tlcodegen.FileToWrite
 	var stepSuccess bool
-	stepSuccess, nextState = assertMigrationStep(
+	stepSuccess, _ = assertMigrationStep(
 		t,
 		nextState,
 		`
@@ -142,7 +142,7 @@ b.t1 x:tuple<int, 2> = b.T1;
 	)
 	assert.True(t, stepSuccess)
 
-	stepSuccess, nextState = assertMigrationStep(
+	stepSuccess, _ = assertMigrationStep(
 		t,
 		nextState,
 		`
@@ -269,7 +269,7 @@ c.t2 = f1:pair<c.t1,double>;
 	assert.True(t, stepSuccess)
 
 	// STEP 4: remove c. and decide to move __common_namespace.
-	stepSuccess, nextState = assertMigrationStep(
+	stepSuccess, _ = assertMigrationStep(
 		t,
 		nextState,
 		`
@@ -377,7 +377,7 @@ myType#12345678 x:Vector<int> = MyType;
 				return
 			}
 
-			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+			_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 				ErrorWriter:       io.Discard,
 				Verbose:           true,
 				LinterPHPCheck:    true,
@@ -400,7 +400,7 @@ myType#12345678 x:vector2<int> = MyType;
 				return
 			}
 
-			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+			_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 				ErrorWriter:       io.Discard,
 				Verbose:           true,
 				LinterPHPCheck:    true,
@@ -492,7 +492,7 @@ myType#12345678 x:[[[TYPE_HERE]]] = MyType;
 						return
 					}
 
-					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+					_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 						ErrorWriter:       io.Discard,
 						Verbose:           true,
 						LinterPHPCheck:    true,
@@ -523,7 +523,7 @@ myType#12345678 {T:Type} x:vector<T> = MyType T;
 				return
 			}
 
-			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+			_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 				ErrorWriter:       io.Discard,
 				Verbose:           true,
 				LinterPHPCheck:    true,
@@ -550,7 +550,7 @@ myType#eadc11aa {T:Type}
 				return
 			}
 
-			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+			_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 				ErrorWriter:       io.Discard,
 				Verbose:           true,
 				LinterPHPCheck:    true,
@@ -642,7 +642,7 @@ myType#12345678 x:[[[TYPE_HERE]]] = MyType;
 						return
 					}
 
-					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+					_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 						ErrorWriter:       io.Discard,
 						Verbose:           true,
 						LinterPHPCheck:    true,
@@ -673,7 +673,7 @@ myType x:vector<int> y:vector<int> = MyType;
 				return
 			}
 
-			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+			_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 				ErrorWriter:                     io.Discard,
 				Verbose:                         true,
 				LinterPHPCheck:                  true,
@@ -698,7 +698,7 @@ myType2 x:vector<int> y:vector<int> = MyType; // tlgen:nolint
 				return
 			}
 
-			_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+			_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 				ErrorWriter:                     io.Discard,
 				Verbose:                         true,
 				LinterPHPCheck:                  true,
@@ -793,7 +793,7 @@ true = True; // this can be used as void type and serialized to empty array in P
 						return
 					}
 
-					_, err = tlcodegen.GenerateCode(ast, tlcodegen.Gen2Options{
+					_, err = tlcodegen.GenerateCode(ast, tlast.TL2File{}, tlcodegen.Gen2Options{
 						ErrorWriter:       io.Discard,
 						Verbose:           true,
 						LinterPHPCheck:    true,

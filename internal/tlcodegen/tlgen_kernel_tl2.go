@@ -307,8 +307,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	kernelType.fileName = comb.TypeDecl.Name.String()
 	kernelType.goLocalName, kernelType.goGlobalName = getCombinatorNames(*comb, argTail)
 
-	var err error
-	err = gen.genTypeDeclaration(&kernelType, comb.TypeDecl.Type, resolveMapping, resolvedRef)
+	err := gen.genTypeDeclaration(&kernelType, comb.TypeDecl.Type, resolveMapping, resolvedRef)
 
 	return &kernelType, err
 }
