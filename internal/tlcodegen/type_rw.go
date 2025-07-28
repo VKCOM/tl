@@ -77,6 +77,13 @@ func (d *Deconflicter) fillCPPIdentifiers() { // TODO - full list
 	}
 }
 
+func (d *Deconflicter) fillGolangIdentifies() {
+	d.deconflictName("Write")
+	d.deconflictName("Read")
+	d.deconflictName("WriteTL2")
+	d.deconflictName("ReadTL2")
+}
+
 type TypeRWWrapper struct {
 	gen *Gen2 // options and packages are here
 

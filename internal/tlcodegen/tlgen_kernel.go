@@ -411,6 +411,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		IsEnum: isEnum,
 	}
 	res.fieldsDecCPP.fillCPPIdentifiers()
+	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
 
 	// Removing prefix/suffix common with union name.
@@ -504,6 +505,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 		wr: myWrapper,
 	}
 	res.fieldsDecCPP.fillCPPIdentifiers()
+	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
 	for i, field := range tlType.Fields {
 		fieldType, fieldTypeBare, fieldNatArgs, fieldHalfResolved, err := gen.getType(lrc, field.FieldType, nil)
