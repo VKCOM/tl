@@ -294,7 +294,7 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingPartInfo, error) {
 		}
 
 		errorText.WriteString("}\n(add depended namespaces to whitelist or remove unnecessary ones)")
-		return nil, fmt.Errorf(errorText.String())
+		return nil, fmt.Errorf("%s", errorText.String())
 	}
 
 	affectedNamespaces := utils.SliceToSet(utils.Keys(referencingConstructors))

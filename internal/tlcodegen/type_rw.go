@@ -111,8 +111,6 @@ type TypeRWWrapper struct {
 	// php info
 	phpInfo PhpClassMeta
 
-	originateFromTL2 bool
-
 	// tl1 info
 	tlTag  uint32     // TODO - turn into function
 	tlName tlast.Name // TODO - turn into function constructor name or union name for code generation
