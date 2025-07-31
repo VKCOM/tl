@@ -2657,7 +2657,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 		}
 
 		// tmp
-		namespacesToIgnore := []string{"tls", "healthTargeting", "healthSteps"}
+		namespacesToIgnore := []string{"tls"}
 		namespacesToIgnoreMap := utils.SliceToSet(namespacesToIgnore)
 
 		// issue 1
