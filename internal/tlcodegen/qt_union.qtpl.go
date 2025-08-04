@@ -666,9 +666,19 @@ func (item *`)
 		qw422016.N().S(`
 `)
 	}
+	if len(union.wr.NatParams) == 0 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&tctx, in)
+}
+
+`)
+	}
 	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer`)
+	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
@@ -711,7 +721,7 @@ func (item *`)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(tag2)
 				qw422016.N().S(`:
-            if !legacyTypeNames && _jtype == `)
+            if !tctx.LegacyTypeNames && _jtype == `)
 				qw422016.N().Q(nameWithTag2)
 				qw422016.N().S(` {
                 return `)
@@ -726,7 +736,7 @@ func (item *`)
 			} else {
 				qw422016.N().S(`:`)
 			}
-			qw422016.N().S(`            if !legacyTypeNames && _jtype == `)
+			qw422016.N().S(`            if !tctx.LegacyTypeNames && _jtype == `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(` {
                 return `)
@@ -788,7 +798,7 @@ func (item *`)
 				qw422016.N().S(`, `)
 				qw422016.N().Q(tag2)
 				qw422016.N().S(`:
-            if !legacyTypeNames && _tag == `)
+            if !tctx.LegacyTypeNames && _tag == `)
 				qw422016.N().Q(nameWithTag2)
 				qw422016.N().S(` {
                 return `)
@@ -803,7 +813,7 @@ func (item *`)
 			} else {
 				qw422016.N().S(`:`)
 			}
-			qw422016.N().S(`            if !legacyTypeNames && _tag == `)
+			qw422016.N().S(`            if !tctx.LegacyTypeNames && _tag == `)
 			qw422016.N().Q(nameWithTag)
 			qw422016.N().S(` {
                 return `)

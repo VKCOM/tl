@@ -306,7 +306,14 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 }
 
         {%- endif -%}
-func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+{%- if len(struct_.wr.NatParams) == 0 -%}
+func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&tctx, in)
+}
+
+{%- endif -%}
+func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
     ptr := (*{%s= fieldTypeString %})(item)
     {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
     return nil
@@ -520,7 +527,14 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 }
 
 {%- endif -%}
-func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+{%- if len(struct_.wr.NatParams) == 0 -%}
+func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&tctx, in)
+}
+
+{%- endif -%}
+func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
     {%-
         code // init values for after read processing
         needSomeRaw := false
@@ -889,6 +903,9 @@ func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
 {%- endif -%}
 
 func (item *{%s= goName %}) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *{%s= retArg  %}) error {
+    {%- if struct_.ResultType.TypeJSON2ReadingRequiresContext() -%}
+    tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    {%- endif -%}
     {%s= struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true) %}
     return nil
 }

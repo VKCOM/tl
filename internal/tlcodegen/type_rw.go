@@ -609,6 +609,10 @@ func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *D
 	return w.trw.typeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
 }
 
+func (w *TypeRWWrapper) TypeJSON2ReadingRequiresContext() bool {
+	return w.trw.typeJSON2ReadingRequiresContext()
+}
+
 func (w *TypeRWWrapper) IsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if !ok {
@@ -1193,6 +1197,7 @@ type TypeRW interface {
 	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string
 	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
+	typeJSON2ReadingRequiresContext() bool
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
 	TypeRWCPPData

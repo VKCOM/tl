@@ -192,7 +192,7 @@ func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s=
 }
 
 {%- endif -%}
-func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -266,7 +266,7 @@ func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s=
 }
 
 {%- endif -%}
-func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -579,7 +579,7 @@ func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, m *{%s= t
 }
 
 {%- endif -%}
-func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *{%s= typeString %} {%s= valueNatArgsDecl %}) error {
 	var data map[{%s= keyTypeString %}]{%s= valueTypeString %}
 	if *m == nil {
 	    *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %}, 0)
@@ -891,7 +891,7 @@ func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s=
 }
 
 {%- endif -%}
-func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     *vec = (*vec)[:cap(*vec)]
     index := 0
     if in != nil {
@@ -1199,7 +1199,7 @@ func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s=
 }
 
 {%- endif -%}
-func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     if uint32(cap(*vec)) < nat_n {
         *vec = make([]{%s= elementTypeString %}, nat_n)
     } else {
@@ -1443,7 +1443,7 @@ func {%s= goName %}ReadJSONLegacy(legacyTypeNames bool, j interface{}, vec *{%s=
 }
 
 {%- endif -%}
-func {%s= goName %}ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
+func {%s= goName %}ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *{%s= typeString %} {%s= natDecl %}) error {
     index := 0
     if in != nil {
         in.Delim('[')
