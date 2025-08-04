@@ -123,5 +123,9 @@ func (trw *TypeRWMaybe) typeJSONReadingCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWMaybe) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+	return fmt.Sprintf("if err := %s.ReadJSONGeneral(tctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWMaybe) typeJSON2ReadingRequiresContext() bool {
+	return true
 }

@@ -278,6 +278,7 @@ func (item TLItem) String() string {
 	}
 	return nil
 }
+
 func (item *TLItem) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSON(w), nil
 }

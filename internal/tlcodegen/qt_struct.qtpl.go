@@ -631,9 +631,19 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 
 `)
 		}
+		if len(struct_.wr.NatParams) == 0 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&tctx, in)
+}
+
+`)
+		}
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer`)
+		qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) error {
     ptr := (*`)
@@ -1048,9 +1058,19 @@ func (item *`)
 
 `)
 	}
+	if len(struct_.wr.NatParams) == 0 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    return item.ReadJSONGeneral(&tctx, in)
+}
+
+`)
+	}
 	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer`)
+	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
@@ -1802,7 +1822,12 @@ func (item *`)
 	qw422016.N().S(`) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) error {
-    `)
+`)
+	if struct_.ResultType.TypeJSON2ReadingRequiresContext() {
+		qw422016.N().S(`    tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+`)
+	}
+	qw422016.N().S(`    `)
 	qw422016.N().S(struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true))
 	qw422016.N().S(`
     return nil

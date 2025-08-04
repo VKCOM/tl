@@ -30,6 +30,14 @@ const (
 type JSONWriteContext struct {
 	LegacyTypeNames bool
 	Short           bool
+
+	IsTL2 bool
+}
+
+type JSONReadContext struct {
+	LegacyTypeNames bool
+
+	IsTL2 bool
 }
 
 type JsonLexer = jlexer.Lexer
