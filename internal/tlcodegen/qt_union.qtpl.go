@@ -671,7 +671,12 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+`)
+		if union.wr.originateFromTL2 {
+			qw422016.N().S(`    tctx.IsTL2 = true
+`)
+		}
+		qw422016.N().S(`    return item.ReadJSONGeneral(&tctx, in)
 }
 
 `)
@@ -897,7 +902,12 @@ func (item `)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
     tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+`)
+	if union.wr.originateFromTL2 {
+		qw422016.N().S(`    tctx.IsTL2 = true
+`)
+	}
+	qw422016.N().S(`    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }

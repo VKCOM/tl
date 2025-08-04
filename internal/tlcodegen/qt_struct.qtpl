@@ -309,6 +309,9 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    {%- if struct_.wr.originateFromTL2 -%}
+    tctx.IsTL2 = true
+    {%- endif -%}
     return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -330,6 +333,9 @@ func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w [
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     tctx := basictl.JSONWriteContext{}
+    {%- if struct_.wr.originateFromTL2 -%}
+    tctx.IsTL2 = true
+    {%- endif -%}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 
@@ -530,6 +536,9 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 {%- if len(struct_.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    {%- if struct_.wr.originateFromTL2 -%}
+    tctx.IsTL2 = true
+    {%- endif -%}
     return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -760,6 +769,9 @@ func (item *{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w [
 
 func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     tctx := basictl.JSONWriteContext{}
+    {%- if struct_.wr.originateFromTL2 -%}
+    tctx.IsTL2 = true
+    {%- endif -%}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
@@ -1309,7 +1321,17 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
         {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
-        {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive) -%}
+        {%- code
+            nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+            if fieldRecursive {
+                nilCheck := fmt.Sprintf("%s != nil", fieldName)
+                if nonEmptyCondition == "" {
+                    nonEmptyCondition = nilCheck
+                } else {
+                    nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
+                }
+            }
+        -%}
         {%- if nonEmptyCondition != "" -%}
     if {%s= nonEmptyCondition %} {
         {%- endif -%}
@@ -1436,7 +1458,17 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
         {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
     if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
-            {%- code nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive) -%}
+            {%- code
+                nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+                if fieldRecursive {
+                    nilCheck := fmt.Sprintf("%s != nil", fieldName)
+                    if nonEmptyCondition == "" {
+                        nonEmptyCondition = nilCheck
+                    } else {
+                        nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
+                    }
+                }
+            -%}
             {%- if nonEmptyCondition != "" -%}
     if {%s= nonEmptyCondition %} {
             {%- endif -%}

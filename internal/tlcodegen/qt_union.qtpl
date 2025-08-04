@@ -360,6 +360,9 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 {%- if len(union.wr.NatParams) == 0 -%}
 func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+    {%- if union.wr.originateFromTL2 -%}
+    tctx.IsTL2 = true
+    {%- endif -%}
     return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -462,6 +465,9 @@ func (item {%s= asterisk %}{%s= goName %}) WriteJSONGeneral(tctx *basictl.JSONWr
 
 func (item {%s= asterisk %}{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     tctx := basictl.JSONWriteContext{}
+    {%- if union.wr.originateFromTL2 -%}
+    tctx.IsTL2 = true
+    {%- endif -%}
     return item.WriteJSONOpt(&tctx, w{%s= natArgsCall %})
 }
 func (item {%s= asterisk %}{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
