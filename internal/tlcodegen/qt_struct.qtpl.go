@@ -636,7 +636,12 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 			qw422016.N().S(goName)
 			qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+`)
+			if struct_.wr.originateFromTL2 {
+				qw422016.N().S(`    tctx.IsTL2 = true
+`)
+			}
+			qw422016.N().S(`    return item.ReadJSONGeneral(&tctx, in)
 }
 
 `)
@@ -683,7 +688,12 @@ func (item *`)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
     tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    tctx.IsTL2 = true
+`)
+		}
+		qw422016.N().S(`    return item.WriteJSONOpt(&tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 }
@@ -1063,7 +1073,12 @@ func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
     tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-    return item.ReadJSONGeneral(&tctx, in)
+`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    tctx.IsTL2 = true
+`)
+		}
+		qw422016.N().S(`    return item.ReadJSONGeneral(&tctx, in)
 }
 
 `)
@@ -1573,7 +1588,12 @@ func (item *`)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
     tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+`)
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    tctx.IsTL2 = true
+`)
+	}
+	qw422016.N().S(`    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
@@ -2548,6 +2568,14 @@ func (item *`)
 `)
 				}
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+				if fieldRecursive {
+					nilCheck := fmt.Sprintf("%s != nil", fieldName)
+					if nonEmptyCondition == "" {
+						nonEmptyCondition = nilCheck
+					} else {
+						nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
+					}
+				}
 
 				if nonEmptyCondition != "" {
 					qw422016.N().S(`    if `)
@@ -2741,6 +2769,14 @@ func (item *`)
 `)
 				}
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+				if fieldRecursive {
+					nilCheck := fmt.Sprintf("%s != nil", fieldName)
+					if nonEmptyCondition == "" {
+						nonEmptyCondition = nilCheck
+					} else {
+						nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
+					}
+				}
 
 				if nonEmptyCondition != "" {
 					qw422016.N().S(`    if `)
