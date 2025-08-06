@@ -622,6 +622,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			if len(combinators) == 0 {
 				continue
 			}
+			sort.Slice(combinators, func(i, j int) bool {
+				return combinators[i].OriginalOrderIndex <= combinators[j].OriginalOrderIndex
+			})
 			combinator0 := combinators[0]
 
 			// basic info
@@ -752,6 +755,18 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 						tl2Combinator.TypeDecl.Type.IsUnionType = true
 						for i, combinator := range combinators {
 							newVariant := tlast.TL2UnionConstructor{}
+							// add original comment
+							if i != 0 {
+								newVariant.CommentBefore = appendComment(
+									newVariant.CommentBefore,
+									combinator.CommentBefore,
+								)
+							}
+
+							newVariant.CommentBefore = appendComment(
+								newVariant.CommentBefore,
+								combinator.CommentRight,
+							)
 							newVariant.Name = upperFirst(combinator.Construct.Name.Name)
 							// name convert
 							{
@@ -793,18 +808,6 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 								newVariant.IsTypeAlias = false
 								newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
 							}
-
-							if i != 0 {
-								newVariant.CommentBefore = appendComment(
-									newVariant.CommentBefore,
-									combinator.CommentBefore,
-								)
-							}
-
-							newVariant.CommentBefore = appendComment(
-								newVariant.CommentBefore,
-								combinator.CommentRight,
-							)
 
 							tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
 						}

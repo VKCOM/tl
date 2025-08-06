@@ -146,6 +146,9 @@ func (w *TypeRWWrapper) IsTopLevel() bool {
 			if w.tl2IsResult {
 				return false
 			}
+			if w.tl2IsBuiltinBrackets {
+				return false
+			}
 			if w.tl2Origin.IsFunction {
 				return true
 			}
@@ -1253,6 +1256,10 @@ func (f *Field) HasNatArguments() bool {
 
 func (f *Field) IsLocalIndependent() bool {
 	return !f.IsAffectingLocalFieldMasks() && !f.IsTypeDependsFromLocalFields()
+}
+
+func (f *Field) IsTL2Omitted() bool {
+	return f.originalName == "_"
 }
 
 func wrapWithError(wrap bool, wrappedType string) string {

@@ -209,3 +209,26 @@ func MaybeBoolReadTL2(r []byte, b *bool) (_ []byte, err error) {
 	}
 	return r, err
 }
+
+func SkipSizedValue(r []byte) (_ []byte, err error) {
+	var l int
+	if r, err = TL2ReadSize(r, &l); err != nil {
+		return r, err
+	}
+	if len(r) < l {
+		return r, TL2Error("not enough data to skip: expected %d, got %d", l, len(r))
+	}
+	r = r[l:]
+	return r, err
+}
+
+func SkipFixedSizedValue(r []byte, l int) (_ []byte, err error) {
+	if l < 0 {
+		return r, TL2Error("can skip only non negative number of elements")
+	}
+	if len(r) < l {
+		return r, TL2Error("not enough data to skip: expected %d, got %d", l, len(r))
+	}
+	r = r[l:]
+	return r, err
+}

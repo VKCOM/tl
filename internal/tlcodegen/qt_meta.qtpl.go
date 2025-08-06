@@ -194,6 +194,7 @@ type TLItem struct {
     tag                uint32
     annotations        uint32
     tlName             string
+    isTL2              bool
 
     resultTypeContainsUnionTypes bool
     argumentsTypesContainUnionTypes bool
@@ -209,6 +210,7 @@ type TLItem struct {
 
 func (item TLItem) TLTag() uint32            { return item.tag }
 func (item TLItem) TLName() string           { return item.tlName }
+func (item TLItem) IsTL2() bool              { return item.isTL2 }
 func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
@@ -337,6 +339,14 @@ func SetGlobalFactoryCreateForObject(itemTag uint32, createObject func() Object)
     item.createObject = createObject
 }
 
+func SetGlobalFactoryCreateForObjectTL2(itemName string, createObject func() Object) {
+	item := itemsByName[itemName]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
+	}
+	item.createObject = createObject
+}
+
 func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
     item := itemsByTag[itemTag]
     if item == nil {
@@ -399,6 +409,15 @@ func fillObject(n1 string, n2 string, item *TLItem)  {
 	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
 }
 
+func fillObjectTL2(item *TLItem)  {
+	itemsByName[item.tlName] = item
+	if item.tag != 0 {
+	    itemsByTag[item.tag] = item
+	}
+	item.createObject = pleaseImportFactoryObject
+	item.createObjectBytes = pleaseImportFactoryBytesObject
+}
+
 func fillFunction(n1 string, n2 string, item *TLItem)  {
     fillObject(n1, n2, item)
 	item.createFunction = pleaseImportFactoryFunction
@@ -407,7 +426,13 @@ func fillFunction(n1 string, n2 string, item *TLItem)  {
 
 func init() {
 `)
-	for _, wr := range typeWrappers {
+	tl1Wrappers, tl2Wrappers := ExtractTopLevelTypes(typeWrappers)
+
+	if len(tl1Wrappers) != 0 {
+		qw422016.N().S(`// TL
+`)
+	}
+	for _, wr := range tl1Wrappers {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
 			continue
 		}
@@ -435,11 +460,58 @@ func init() {
 			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
 			qw422016.N().S(`, tlName: "`)
 			wr.tlName.StreamString(qw422016)
-			qw422016.N().S(`", resultTypeContainsUnionTypes:`)
+			qw422016.N().S(`", isTL2: false, resultTypeContainsUnionTypes:`)
 			qw422016.N().V(resultTypeContainsUnionTypes)
 			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
 			qw422016.N().V(argumentsTypesContainUnionTypes)
 			qw422016.N().S(`})`)
+		}
+		qw422016.N().S(`
+`)
+	}
+	if len(tl2Wrappers) != 0 {
+		qw422016.N().S(`// TL2
+`)
+	}
+	for _, wr := range tl2Wrappers {
+		if fun, ok := wr.trw.(*TypeRWStruct); ok {
+			resultTypeContainsUnionTypes := false
+			argumentsTypesContainUnionTypes := false
+
+			if fun.ResultType != nil {
+				resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
+				argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
+
+				qw422016.N().S(`fillFunction("`)
+				wr.tlName.StreamString(qw422016)
+				qw422016.N().S(`#`)
+				qw422016.N().S(fmt.Sprintf("%08x", wr.tlTag))
+				qw422016.N().S(`",`)
+				qw422016.N().Q(fmt.Sprintf("#%08x", wr.tlTag))
+				qw422016.N().S(`,`)
+			} else {
+				qw422016.N().S(`fillObjectTL2(`)
+			}
+			qw422016.N().S(`&TLItem{tag:`)
+			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+			qw422016.N().S(`, annotations:`)
+			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
+			qw422016.N().S(`, tlName: "`)
+			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(`", isTL2: true, resultTypeContainsUnionTypes:`)
+			qw422016.N().V(resultTypeContainsUnionTypes)
+			qw422016.N().S(`, argumentsTypesContainUnionTypes:`)
+			qw422016.N().V(argumentsTypesContainUnionTypes)
+			qw422016.N().S(`})`)
+		}
+		if _, ok := wr.trw.(*TypeRWUnion); ok {
+			qw422016.N().S(`fillObjectTL2(&TLItem{tag:`)
+			qw422016.N().S(fmt.Sprintf("0x%08x", wr.tlTag))
+			qw422016.N().S(`, annotations:`)
+			qw422016.N().S(fmt.Sprintf("0x%x", wr.AnnotationsMask()))
+			qw422016.N().S(`, tlName: "`)
+			wr.tlName.StreamString(qw422016)
+			qw422016.N().S(`", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})`)
 		}
 		qw422016.N().S(`
 `)
