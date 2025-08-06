@@ -153,6 +153,7 @@ type TLItem struct {
     tag                uint32
     annotations        uint32
     tlName             string
+    isTL2              bool
 
     resultTypeContainsUnionTypes bool
     argumentsTypesContainUnionTypes bool
@@ -168,6 +169,7 @@ type TLItem struct {
 
 func (item TLItem) TLTag() uint32            { return item.tag }
 func (item TLItem) TLName() string           { return item.tlName }
+func (item TLItem) IsTL2() bool              { return item.isTL2 }
 func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
@@ -285,6 +287,14 @@ func SetGlobalFactoryCreateForObject(itemTag uint32, createObject func() Object)
     item.createObject = createObject
 }
 
+func SetGlobalFactoryCreateForObjectTL2(itemName string, createObject func() Object) {
+	item := itemsByName[itemName]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
+	}
+	item.createObject = createObject
+}
+
 func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
     item := itemsByTag[itemTag]
     if item == nil {
@@ -347,6 +357,15 @@ func fillObject(n1 string, n2 string, item *TLItem)  {
 	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
 }
 
+func fillObjectTL2(item *TLItem)  {
+	itemsByName[item.tlName] = item
+	if item.tag != 0 {
+	    itemsByTag[item.tag] = item
+	}
+	item.createObject = pleaseImportFactoryObject
+	item.createObjectBytes = pleaseImportFactoryBytesObject
+}
+
 func fillFunction(n1 string, n2 string, item *TLItem)  {
     fillObject(n1, n2, item)
 	item.createFunction = pleaseImportFactoryFunction
@@ -354,7 +373,13 @@ func fillFunction(n1 string, n2 string, item *TLItem)  {
 }
 
 func init() {
-{%- for _, wr := range typeWrappers  -%}
+{%- code
+    tl1Wrappers, tl2Wrappers := ExtractTopLevelTypes(typeWrappers)
+-%}
+{%- if len(tl1Wrappers) != 0 -%}
+// TL
+{%- endif -%}
+{%- for _, wr := range tl1Wrappers  -%}
     {%- if wr.tlTag == 0 || !wr.IsTopLevel() -%} {%- continue -%} {%- endif -%}
 {%- stripspace -%}
     {%- if fun, ok := wr.trw.(*TypeRWStruct); ok && len(wr.NatParams) == 0 -%}
@@ -373,7 +398,37 @@ func init() {
         {%- endif -%}
         "{%= wr.tlName.String() %}#{%s= fmt.Sprintf("%08x", wr.tlTag) %}",
         {%q= fmt.Sprintf("#%08x", wr.tlTag) %},
-        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", resultTypeContainsUnionTypes: {%v= resultTypeContainsUnionTypes %}, argumentsTypesContainUnionTypes: {%v= argumentsTypesContainUnionTypes %}})
+        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", isTL2: false, resultTypeContainsUnionTypes: {%v= resultTypeContainsUnionTypes %}, argumentsTypesContainUnionTypes: {%v= argumentsTypesContainUnionTypes %}})
+    {%- endif -%}
+{%- endstripspace -%}
+
+{%- endfor -%}
+{%- if len(tl2Wrappers) != 0 -%}
+// TL2
+{%- endif -%}
+{%- for _, wr := range tl2Wrappers  -%}
+{%- stripspace -%}
+    {%- if fun, ok := wr.trw.(*TypeRWStruct); ok -%}
+        {%- code
+            resultTypeContainsUnionTypes := false
+            argumentsTypesContainUnionTypes := false
+        -%}
+        {%- if fun.ResultType != nil -%}
+            {%- code
+                resultTypeContainsUnionTypes = fun.wr.DoesReturnTypeContainUnionTypes()
+                argumentsTypesContainUnionTypes = fun.wr.DoArgumentsContainUnionTypes()
+            -%}
+        fillFunction(
+        "{%= wr.tlName.String() %}#{%s= fmt.Sprintf("%08x", wr.tlTag) %}",
+        {%q= fmt.Sprintf("#%08x", wr.tlTag) %},
+        {%- else -%}
+        fillObjectTL2(
+        {%- endif -%}
+        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", isTL2: true, resultTypeContainsUnionTypes: {%v= resultTypeContainsUnionTypes %}, argumentsTypesContainUnionTypes: {%v= argumentsTypesContainUnionTypes %}})
+    {%- endif -%}
+    {%- if _, ok := wr.trw.(*TypeRWUnion); ok -%}
+        fillObjectTL2(
+        &TLItem{tag: {%s= fmt.Sprintf("0x%08x", wr.tlTag) %}, annotations: {%s= fmt.Sprintf("0x%x", wr.AnnotationsMask()) %}, tlName: "{%= wr.tlName.String() %}", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
     {%- endif -%}
 {%- endstripspace -%}
 

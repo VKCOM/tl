@@ -264,3 +264,24 @@ var _ = basictl.NatWrite
 	}
 	return nil
 }
+
+func ExtractTopLevelTypes(typeWrappers []*TypeRWWrapper) (tl1Wrappers []*TypeRWWrapper, tl2Wrappers []*TypeRWWrapper) {
+	tl1Wrappers = make([]*TypeRWWrapper, 0)
+	tl2Wrappers = make([]*TypeRWWrapper, 0)
+	for _, wr := range typeWrappers {
+		if wr.IsTopLevel() && len(wr.NatParams) == 0 {
+			_, isStruct := wr.trw.(*TypeRWStruct)
+			_, isUnion := wr.trw.(*TypeRWUnion)
+			if wr.originateFromTL2 {
+				if isStruct || isUnion {
+					tl2Wrappers = append(tl2Wrappers, wr)
+				}
+			} else {
+				if isStruct && wr.tlTag != 0 {
+					tl1Wrappers = append(tl1Wrappers, wr)
+				}
+			}
+		}
+	}
+	return
+}

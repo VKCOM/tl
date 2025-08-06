@@ -296,12 +296,18 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	argTail := kernelType.wrapperNameTail()
 
 	// calculate exact type
-	if comb.TypeDecl.Name.String() == "a.t2" {
-		print("debug")
-		print("\n")
-	}
 	kernelType.tl2Name = comb.TypeDecl.Name
 	kernelType.tl2Origin = comb
+
+	// TODO: for tl1 meta
+	kernelType.tlName = tlast.Name{
+		Namespace: kernelType.tl2Name.Namespace,
+		Name:      kernelType.tl2Name.Name,
+	}
+	if comb.TypeDecl.ID != nil {
+		kernelType.tlTag = *comb.TypeDecl.ID
+	}
+
 	kernelType.ns = replaceNamespace(comb.TypeDecl.Name.Namespace)
 	kernelType.ns.types = append(kernelType.ns.types, &kernelType)
 	kernelType.fileName = comb.TypeDecl.Name.String()
@@ -329,6 +335,8 @@ func (gen *Gen2) genTypeDeclaration(
 		}
 		kernelType.trw = &union
 		hasNonEnum := false
+		yetCreatedNames := make(map[string]bool)
+		yetParsedNames := make(map[string]int)
 		for i, variant := range typeDecl.UnionType.Variants {
 			if !variant.IsTypeAlias {
 				hasNonEnum = hasNonEnum || len(variant.Fields) > 0
@@ -351,13 +359,24 @@ func (gen *Gen2) genTypeDeclaration(
 			}
 			variantType.wr = &variantWrapper
 			field := Field{
-				originalName: variant.Name,
-
 				t: &variantWrapper,
 			}
 			var err error
 			var targetNamespace string
-			targetNamespace, variantWrapper.goLocalName, variantWrapper.goGlobalName, field.goName, err = getVariantNames(kernelType.tl2Name, variant, argTail)
+			targetNamespace, variantWrapper.goLocalName, variantWrapper.goGlobalName, variantWrapper.tlName, field.goName, err = getVariantNames(kernelType.tl2Name, typeDecl.UnionType.Variants, i, yetCreatedNames, argTail)
+
+			field.originalName = variantWrapper.tlName.String()
+			field.goName = union.fieldsDec.deconflictName(field.goName)
+
+			yetCreatedNames[field.goName] = true
+			if index, ok := yetParsedNames[variantWrapper.tlName.String()]; ok {
+				return tlast.BeautifulError2(
+					variant.PRName.BeautifulError(fmt.Errorf("can't have such name (or it's tl1 legacy variant) due to duplication")),
+					typeDecl.UnionType.Variants[index].PRName.BeautifulError(fmt.Errorf("first apperance of such name (or it's tl1 legacy variant)")),
+				)
+			} else {
+				yetParsedNames[variantWrapper.tlName.String()] = i
+			}
 
 			variantWrapper.ns = gen.getNamespace(targetNamespace)
 			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
@@ -653,6 +672,9 @@ func snakeToCamelCase(s string) string {
 			newS += strings.ToUpper(part[:1]) + part[1:]
 		}
 	}
+	if newS == "" {
+		return newS
+	}
 	return strings.ToUpper(newS[:1]) + newS[1:]
 }
 
@@ -676,8 +698,30 @@ func getTypeNames(tl2Name tlast.TL2TypeName, argTail string) (localName string, 
 	return snakeToCamelCase(tName) + argTail, snakeToCamelCase(tNs+"_"+tName) + argTail
 }
 
-func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstructor, argTail string) (namespace string, localName string, globalName string, fieldName string, err error) {
-	found, comment := extractTLGenTag(constructor.CommentBefore, "tlgen:tl1name")
+func getVariantNames(tl2Name tlast.TL2TypeName, constructors []tlast.TL2UnionConstructor, constructorId int, yetCreatedNames map[string]bool, argTail string) (namespace string, localName string, globalName string, tlName tlast.Name, fieldName string, err error) {
+	// TODO: tl1 legacy...
+	const Tag = "tlgen:tl1name"
+	prefix := strings.ToLower(tl2Name.Name)
+	suffix := strings.ToLower(tl2Name.Name)
+
+	for _, unionConstructor := range constructors {
+		localFound, localComment := extractTLGenTag(unionConstructor.CommentBefore, Tag)
+		if localFound {
+			_, tl1Name := "", localComment
+			if strings.Contains(tl1Name, ".") {
+				_, tl1Name, _ = strings.Cut(tl1Name, ".")
+			}
+			if !strings.HasPrefix(tl1Name, prefix) {
+				prefix = ""
+			}
+			if !strings.HasSuffix(tl1Name, suffix) {
+				suffix = ""
+			}
+		}
+	}
+
+	constructor := constructors[constructorId]
+	found, comment := extractTLGenTag(constructor.CommentBefore, Tag)
 
 	if found {
 		tl1Namespace, tl1Name := "", comment
@@ -685,6 +729,7 @@ func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstr
 			tl1Namespace, tl1Name, _ = strings.Cut(tl1Name, ".")
 		}
 		namespace = tl1Namespace
+		tlName = tlast.Name{Namespace: tl1Namespace, Name: tl1Name}
 		localName, globalName = getTypeNames(
 			tlast.TL2TypeName{
 				Namespace: tl1Namespace,
@@ -693,13 +738,19 @@ func getVariantNames(tl2Name tlast.TL2TypeName, constructor tlast.TL2UnionConstr
 			argTail,
 		)
 		nameSuffix := tl1Name
-		if strings.HasPrefix(strings.ToLower(tl1Name), strings.ToLower(tl2Name.Name)) {
-			nameSuffix = tl1Name[len(tl2Name.Name):]
+		if prefix != "" && strings.HasPrefix(strings.ToLower(tl1Name), prefix) {
+			nameSuffix = tl1Name[len(prefix):]
+		} else if suffix != "" && strings.HasSuffix(strings.ToLower(tl1Name), suffix) {
+			nameSuffix = tl1Name[:len(tl1Name)-len(suffix)]
 		}
 		fieldName = snakeToCamelCase(nameSuffix)
+		if yetCreatedNames[fieldName] {
+			fieldName = snakeToCamelCase(tl1Namespace + "_" + nameSuffix)
+		}
 		return
 	} else {
 		namespace = tl2Name.Namespace
+		tlName = tlast.Name{Namespace: namespace, Name: tl2Name.Name + constructor.Name}
 		localName, globalName = getTypeNames(
 			tlast.TL2TypeName{
 				Namespace: tl2Name.Namespace,

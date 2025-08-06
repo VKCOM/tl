@@ -74,6 +74,22 @@ func (trw *TypeRWStruct) readTL2Call(
 	)
 }
 
+func (trw *TypeRWStruct) skipTL2Call(
+	directImports *DirectImports,
+	bytesVersion bool,
+	targetBytes string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+) string {
+	if trw.isUnwrapType() {
+		return trw.Fields[0].t.SkipTL2Call(directImports, bytesVersion, targetBytes, canDependOnLocalBit, ins, refObject)
+	}
+	return fmt.Sprintf(`if %[2]s, err = basictl.SkipSizedValue(%[2]s); err != nil { return %[2]s, err }`,
+		"",
+		targetBytes)
+}
+
 func (trw *TypeRWStruct) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
 	//	return false

@@ -47,6 +47,19 @@ func (trw *TypeRWMaybe) readTL2Call(
 	)
 }
 
+func (trw *TypeRWMaybe) skipTL2Call(
+	directImports *DirectImports,
+	bytesVersion bool,
+	targetBytes string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+) string {
+	return fmt.Sprintf(`if %[2]s, err = basictl.SkipSizedValue(%[2]s); err != nil { return %[2]s, err }`,
+		"",
+		targetBytes)
+}
+
 func (trw *TypeRWMaybe) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return true
 }
