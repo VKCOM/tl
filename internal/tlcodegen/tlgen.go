@@ -63,6 +63,15 @@ var (
 	errTypeParamNameCollision = fmt.Errorf("type-parametr name collision ")
 )
 
+// For debugging
+var DEBUG = false
+
+func debugf(format string, args ...any) {
+	if DEBUG {
+		fmt.Printf(format, args)
+	}
+}
+
 type LocalResolveContext struct {
 	localTypeArgs map[string]LocalTypeArg
 	localNatArgs  map[string]LocalNatArg
@@ -2022,6 +2031,9 @@ func (gen *Gen2) addCodeFile(filepathName string, code string) error {
 }
 
 func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, error) {
+	if options.Verbose {
+		DEBUG = true
+	}
 	gen := &Gen2{
 		options:    &options,
 		Code:       map[string]string{},

@@ -892,7 +892,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		newState = append(newState, FileToWrite{Path: part.File, Ast: file})
 	}
 
-	printDebugInfo(associatedWrappers, natUsage, info)
+	if DEBUG {
+		printDebugInfo(associatedWrappers, natUsage, info)
+	}
 
 	return gen.MergeMigrationState(prevState, newState)
 }
@@ -1062,7 +1064,7 @@ func getTypesInfoFromTL2State(state []FileToWrite) map[tlast.TL2TypeName][]tlast
 			}
 			name := combinator.TypeDecl.Name
 			if name.String() == "vector" {
-				//print("debug")
+				//debugf("debug")
 			}
 			if combinator.HasAnnotation(tl2Ext) {
 				suffix := ""
