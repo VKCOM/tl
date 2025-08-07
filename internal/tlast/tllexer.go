@@ -9,6 +9,7 @@ package tlast
 import (
 	"fmt"
 	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -278,6 +279,15 @@ func (l *lexer) nextToken() error {
 			}
 			if index < 0 {
 				index = len(l.str)
+			}
+			for i := 0; i != index; {
+				utf, size := utf8.DecodeRuneInString(l.str[i:index])
+				if utf == utf8.RuneError && size == 1 {
+					l.advance(i, comment) // skip good characters
+					tok := l.advance(1, undefined)
+					return parseErrToken(fmt.Errorf("utf-8 character expected"), tok, tok.pos)
+				}
+				i += size
 			}
 			l.advance(index, comment)
 			return nil
