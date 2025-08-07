@@ -471,10 +471,10 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 			typeConstructName.Name = typeConstructName.Name[:len(typeConstructName.Name)-len(typeSuffix)]
 		}
 		if typ.Construct.Name.String() == "d1.ct4" {
-			print("debug")
+			debugf("debug")
 		}
 		if typ.Construct.Name.String() == "a1.t1Variant1" {
-			print("debug")
+			debugf("debug")
 		}
 		fieldGoName := canonicalGoName(typeConstructName, typ.Construct.Name.Namespace)
 		if res.fieldsDec.hasConflict(fieldGoName) { // try global, if local is already used
