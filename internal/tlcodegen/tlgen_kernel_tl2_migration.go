@@ -411,6 +411,8 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		comb := associatedCombinator[ref.Type]
 		if comb != nil {
 			tname := info.TypeFromName(ref.Type)
+
+			// check bracket case
 			isBracket := false
 			if len(associatedWrappers[comb]) > 0 {
 				wrapper := associatedWrappers[comb][0]
@@ -419,6 +421,14 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				isBracket = comb.Builtin && (comb.Construct.Name.String() == BuiltinTupleName ||
 					comb.Construct.Name.String() == BuiltinVectorName)
 			}
+
+			// check bool case
+			isBool := false
+			if len(associatedWrappers[comb]) > 0 {
+				wrapper := associatedWrappers[comb][0]
+				_, isBool = wrapper.trw.(*TypeRWBool)
+			}
+
 			if isBracket {
 				newRef.IsBracket = true
 				newRef.BracketType = new(tlast.TL2BracketType)
@@ -440,6 +450,13 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 					}
 				}
 				newRef.BracketType.ArrayType = resolveType(ref.Args[arrayIndex].T, natIsConstant, natTemples)
+			} else if isBool {
+				newRef.SomeType = &tlast.TL2TypeApplication{
+					Name: tlast.TL2TypeName{
+						Namespace: "",
+						Name:      "bool",
+					},
+				}
 			} else {
 				newRef.SomeType = &tlast.TL2TypeApplication{
 					Name: tlast.TL2TypeName{
@@ -498,18 +515,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 						if comb != nil && len(associatedWrappers[comb]) > 0 {
 							wrapper := associatedWrappers[comb][0]
 							if _, ok := wrapper.trw.(*TypeRWBool); ok {
-								newField.IsOptional = false
+								newField.IsOptional = true
 								newField.Type.SomeType = &tlast.TL2TypeApplication{
-									Name: tlast.TL2TypeName{Name: "maybe"},
-									Arguments: []tlast.TL2TypeArgument{
-										{
-											Type: tlast.TL2TypeRef{
-												SomeType: &tlast.TL2TypeApplication{
-													Name: tlast.TL2TypeName{Name: "bool"},
-												},
-											},
-										},
-									},
+									Name: tlast.TL2TypeName{Name: "legacy_bool"},
 								}
 								newFields = append(newFields, newField)
 								continue
@@ -626,6 +634,15 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				return combinators[i].OriginalOrderIndex <= combinators[j].OriginalOrderIndex
 			})
 			combinator0 := combinators[0]
+
+			// remove legacy types
+			if len(associatedWrappers[combinator0]) > 0 {
+				// remove all alterations of bool
+				wrapper := associatedWrappers[combinator0][0]
+				if _, ok := wrapper.trw.(*TypeRWBool); ok {
+					continue
+				}
+			}
 
 			// basic info
 			baseName := tlast.TL2TypeName{Namespace: name.Namespace, Name: lowerFirst(name.Name)}

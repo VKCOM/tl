@@ -149,10 +149,13 @@ func (w *TypeRWWrapper) IsTopLevel() bool {
 			if w.tl2IsBuiltinBrackets {
 				return false
 			}
-			if w.tl2Origin.IsFunction {
-				return true
+			if w.tl2Origin != nil {
+				if w.tl2Origin.IsFunction {
+					return true
+				}
+				return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
 			}
-			return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
+			return false
 		} else {
 			return false
 		}
@@ -172,8 +175,10 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
 			} else if w.tl2IsBuiltinBrackets {
 				s.WriteString("__builtin_brackets")
-			} else {
+			} else if w.tl2Origin != nil {
 				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
+			} else {
+				s.WriteString(w.tl2Name.String())
 			}
 		} else {
 			originType := w.unionParent.wr.tl2Origin
