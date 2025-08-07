@@ -68,7 +68,7 @@ var DEBUG = false
 
 func debugf(format string, args ...any) {
 	if DEBUG {
-		fmt.Printf(format, args)
+		fmt.Printf(format, args...)
 	}
 }
 

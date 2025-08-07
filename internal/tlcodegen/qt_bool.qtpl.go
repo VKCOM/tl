@@ -17,6 +17,9 @@ var (
 )
 
 func (trw *TypeRWBool) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
+	if trw.wr.originateFromTL2 {
+		return
+	}
 	qw422016.N().S(`const ( `)
 	trw.streamgenerateBoolAlias(qw422016)
 	qw422016.N().S(` )

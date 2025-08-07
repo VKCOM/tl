@@ -169,6 +169,9 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	name := typeApplication.Name
 	comb, ok := gen.tl2Combinators[name.String()]
 	if !ok {
+		if name.String() == "bool" || name.String() == "legacy_bool" {
+			return gen.genBoolTL2(&kernelType, name.String() == "legacy_bool")
+		}
 		return nil, typeApplication.PRName.BeautifulError(fmt.Errorf("reference to unknown type %q", name))
 	}
 	if comb.IsFunction {
@@ -313,12 +316,12 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	kernelType.fileName = comb.TypeDecl.Name.String()
 	kernelType.goLocalName, kernelType.goGlobalName = getCombinatorNames(*comb, argTail)
 
-	err := gen.genTypeDeclaration(&kernelType, comb.TypeDecl.Type, resolveMapping, resolvedRef)
+	err := gen.genTypeDeclarationTL2(&kernelType, comb.TypeDecl.Type, resolveMapping, resolvedRef)
 
 	return &kernelType, err
 }
 
-func (gen *Gen2) genTypeDeclaration(
+func (gen *Gen2) genTypeDeclarationTL2(
 	kernelType *TypeRWWrapper,
 	typeDecl tlast.TL2TypeDefinition,
 	resolveMapping ResolvedTL2References,
@@ -407,7 +410,7 @@ func (gen *Gen2) genTypeDeclaration(
 				_, isUnion := typeDefWr.trw.(*TypeRWUnion)
 				variantType.Fields[0].bare = !isUnion
 			} else {
-				err = gen.genFields(resolveMapping, &variantType.Fields, variant.Fields)
+				err = gen.genFieldsTL2(resolveMapping, &variantType.Fields, variant.Fields)
 				if err != nil {
 					return err
 				}
@@ -424,7 +427,7 @@ func (gen *Gen2) genTypeDeclaration(
 			Fields: []Field{},
 		}
 		kernelType.trw = &strct
-		err := gen.genFields(resolveMapping, &strct.Fields, typeDecl.ConstructorFields)
+		err := gen.genFieldsTL2(resolveMapping, &strct.Fields, typeDecl.ConstructorFields)
 		if err != nil {
 			return err
 		}
@@ -454,7 +457,7 @@ func (gen *Gen2) genTypeDeclaration(
 	return nil
 }
 
-func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field, refFields []tlast.TL2Field) error {
+func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, fields *[]Field, refFields []tlast.TL2Field) error {
 	for i, refField := range refFields {
 		// init
 		field := Field{
@@ -478,6 +481,9 @@ func (gen *Gen2) genFields(resolveMapping ResolvedTL2References, fields *[]Field
 		field.t, err = gen.genTypeTL2(resolvedRefType)
 		if err != nil {
 			return err
+		}
+		if bl, isBool := field.t.trw.(*TypeRWBool); isBool && refField.IsOptional && !bl.isTL2Legacy {
+			return refField.PRName.BeautifulError(fmt.Errorf("field with type \"bool\" can't be optional (use any maybe-like wrapper)"))
 		}
 		// tl1 boxed only for union
 		_, isUnion := field.t.trw.(*TypeRWUnion)
@@ -533,7 +539,7 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 	}
 	kernelType.trw = &functionType
 
-	err = gen.genFields(
+	err = gen.genFieldsTL2(
 		ResolvedTL2References{
 			ResolvedNats:  map[string]uint32{},
 			ResolvedTypes: map[string]tlast.TL2TypeRef{},
@@ -575,7 +581,7 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 		gen.generatedTypes[functionType.ResultType.goGlobalName] = functionType.ResultType
 		gen.generatedTypesList = append(gen.generatedTypesList, functionType.ResultType)
 
-		err = gen.genTypeDeclaration(
+		err = gen.genTypeDeclarationTL2(
 			functionType.ResultType,
 			comb.FuncDecl.ReturnType,
 			ResolvedTL2References{
@@ -660,6 +666,29 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 	kernelType.ns = elementRef.t.ns
 	kernelType.ns.types = append(kernelType.ns.types, kernelType)
 	kernelType.fileName = elementRef.t.fileName
+
+	return kernelType, nil
+}
+
+func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isLegacy bool) (*TypeRWWrapper, error) {
+	boolType := TypeRWBool{wr: kernelType}
+	kernelType.trw = &boolType
+
+	if isLegacy {
+		kernelType.tl2Name = tlast.TL2TypeName{Name: "legacy_bool"}
+
+		kernelType.fileName = "legacy_bool"
+		kernelType.goGlobalName = "LegacyBool"
+		kernelType.goLocalName = "LegacyBool"
+
+		boolType.isTL2Legacy = true
+	} else {
+		kernelType.tl2Name = tlast.TL2TypeName{Name: "bool"}
+
+		kernelType.fileName = "bool"
+		kernelType.goGlobalName = "Bool"
+		kernelType.goLocalName = "Bool"
+	}
 
 	return kernelType, nil
 }

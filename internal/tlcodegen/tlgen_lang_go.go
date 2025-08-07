@@ -256,6 +256,9 @@ var _ = basictl.NatWrite
 		}
 		formattedCode, err := format.Source([]byte(code))
 		if err != nil {
+			if filepathName == "internal/tl/tlBool/bool.go" {
+				debugf("debug\n")
+			}
 			// We generate code still, because it will be easy to debug when the wrong file is written out
 			fmt.Printf("generator %s: source file %q will not compile due to error: %v", color.InRed("internal error"), filepathName, err)
 			continue
