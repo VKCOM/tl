@@ -100,6 +100,20 @@ dictionary#1f4c618f {t:Type} %(Vector %(DictionaryField t)) = Dictionary t;
 		require.EqualError(t, err, "expect tag with exactly 8 lowercase hex digits here")
 	})
 
+	t.Run("non-utf8 char", func(t *testing.T) {
+		str := "foo#1234567f = \x80Foo;"
+		lex := newLexer(str, "", LexerOptions{})
+		_, err := lex.generateTokens()
+		require.EqualError(t, err, "undefined symbol: \"\\x80\"")
+	})
+
+	t.Run("non-utf8 comment", func(t *testing.T) {
+		str := "foo#1234567f = Foo; // \x80 ha"
+		lex := newLexer(str, "", LexerOptions{})
+		_, err := lex.generateTokens()
+		require.EqualError(t, err, "utf-8 character expected")
+	})
+
 	t.Run("From random to random byte", func(t *testing.T) {
 		for j := 1; j <= 400; j++ {
 			from := rand.Intn(len(combinedBytes))
