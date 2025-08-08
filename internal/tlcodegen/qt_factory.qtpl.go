@@ -212,6 +212,16 @@ package `)
 		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
 	})
 
+	sortedTL2Combinators := make([]*tlast.TL2Combinator, 0)
+	for _, combinator := range gen.tl2Combinators {
+		if combinator.IsFunction || combinator.TypeDecl.ID != nil {
+			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+		}
+	}
+	slices.SortStableFunc(sortedTL2Combinators, func(a, b *tlast.TL2Combinator) int {
+		return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
+	})
+
 	qw422016.N().S(`const (
 `)
 	for _, c := range sortedConstructors {
@@ -224,6 +234,23 @@ package `)
 		qw422016.N().S(fmt.Sprintf("%#08x", c.Crc32()))
 		qw422016.N().S(` // `)
 		qw422016.N().S(c.Construct.Name.String())
+		qw422016.N().S(`
+`)
+	}
+	for _, c := range sortedTL2Combinators {
+		refName := c.ReferenceName()
+		refMagic := c.FuncDecl.ID
+		if !c.IsFunction {
+			refMagic = c.TypeDecl.ID
+		}
+		name := snakeToCamelCase(refName.Namespace + "_" + refName.Name)
+
+		qw422016.N().S(`        `)
+		qw422016.E().S(name)
+		qw422016.N().S(` = `)
+		qw422016.N().S(fmt.Sprintf("%#08x", *refMagic))
+		qw422016.N().S(` // `)
+		qw422016.N().S(refName.String())
 		qw422016.N().S(`
 `)
 	}

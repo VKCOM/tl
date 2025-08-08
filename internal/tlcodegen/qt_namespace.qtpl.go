@@ -191,7 +191,7 @@ func streamtypesAlias(qw422016 *qt422016.Writer, gen *Gen2, anyTypeAlias bool, n
 	for _, wr := range types {
 		_, ok := wr.trw.(*TypeRWBool)
 
-		if ok {
+		if ok && !wr.originateFromTL2 {
 			localTypeString := wr.TypeString2(false, directImports, nil, true, true)
 			globalTypeString := wr.TypeString2(false, directImports, nil, false, true)
 

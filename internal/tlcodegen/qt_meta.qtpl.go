@@ -373,6 +373,14 @@ func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Ob
     item.createObjectBytes = createObject
 }
 
+func SetGlobalFactoryCreateForObjectBytesTL2(itemName string, createObject func() Object) {
+    item := itemsByName[itemName]
+    if item == nil {
+        panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
+    }
+    item.createObjectBytes = createObject
+}
+
 func SetGlobalFactoryCreateForEnumElementBytes(itemTag uint32) {
     item := itemsByTag[itemTag]
     if item == nil {

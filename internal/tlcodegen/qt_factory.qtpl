@@ -113,11 +113,32 @@ package {%s= pkgName %}
     slices.SortStableFunc(sortedConstructors, func(a, b *tlast.Combinator) int {
         return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
     })
+
+    sortedTL2Combinators := make([]*tlast.TL2Combinator, 0)
+    for _, combinator := range gen.tl2Combinators {
+        if combinator.IsFunction || combinator.TypeDecl.ID != nil {
+            sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+        }
+    }
+    slices.SortStableFunc(sortedTL2Combinators, func(a, b *tlast.TL2Combinator) int {
+        return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
+    })
 -%}
 const (
     {%- for _, c := range sortedConstructors -%}
         {%- if c.Crc32() == 0 -%} {%- continue -%} {%- endif -%}
         {%s= canonicalGoName(c.Construct.Name, "") %} = {%s= fmt.Sprintf("%#08x", c.Crc32()) %} // {%s= c.Construct.Name.String() %}
+    {%- endfor -%}
+    {%- for _, c := range sortedTL2Combinators -%}
+        {%- code
+            refName := c.ReferenceName()
+            refMagic := c.FuncDecl.ID
+            if !c.IsFunction {
+                refMagic = c.TypeDecl.ID
+            }
+            name := snakeToCamelCase(refName.Namespace + "_" + refName.Name)
+        -%}
+        {%s name %} = {%s= fmt.Sprintf("%#08x", *refMagic) %} // {%s= refName.String() %}
     {%- endfor -%}
 )
 {%- endfunc  -%}
