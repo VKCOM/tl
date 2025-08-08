@@ -1390,13 +1390,22 @@ func (item *`)
         }
 `)
 			}
-			for i := firstAffectedNat; i < len(affectedFields); i++ {
-				qw422016.N().S(`        item.`)
-				qw422016.N().S(affectedFields[i].goName)
+			if struct_.wr.originateFromTL2 {
+				qw422016.N().S(`            `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(bits[i])
+				qw422016.E().V(field.BitNumber)
 				qw422016.N().S(`
 `)
+			} else {
+				for i := firstAffectedNat; i < len(affectedFields); i++ {
+					qw422016.N().S(`        item.`)
+					qw422016.N().S(affectedFields[i].goName)
+					qw422016.N().S(` |= 1 << `)
+					qw422016.E().V(bits[i])
+					qw422016.N().S(`
+`)
+				}
 			}
 			qw422016.N().S(`    }
 `)
