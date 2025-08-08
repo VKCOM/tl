@@ -63,7 +63,7 @@ func (item *BenchmarksVrutoyPositions) WriteBoxed(w []byte, nat_n uint32) (_ []b
 	return item.Write(w, nat_n)
 }
 
-func (item *BenchmarksVrutoyPositions) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32) error {
+func (item *BenchmarksVrutoyPositions) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
 	var rawNextPositions []byte
 
 	if in != nil {
@@ -98,7 +98,7 @@ func (item *BenchmarksVrutoyPositions) ReadJSON(legacyTypeNames bool, in *basict
 	if rawNextPositions != nil {
 		inNextPositionsPointer = &inNextPositions
 	}
-	if err := tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionReadJSON(legacyTypeNames, inNextPositionsPointer, &item.NextPositions, nat_n); err != nil {
+	if err := tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionReadJSONGeneral(tctx, inNextPositionsPointer, &item.NextPositions, nat_n); err != nil {
 		return err
 	}
 
@@ -128,7 +128,7 @@ func (item *BenchmarksVrutoyPositions) WriteJSONOpt(tctx *basictl.JSONWriteConte
 	return append(w, '}'), nil
 }
 
-func (item *BenchmarksVrutoyPositions) CalculateLayout(sizes []int, nat_n uint32) []int {
+func (item *BenchmarksVrutoyPositions) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -138,7 +138,7 @@ func (item *BenchmarksVrutoyPositions) CalculateLayout(sizes []int, nat_n uint32
 	// calculate layout for item.NextPositions
 	currentPosition := len(sizes)
 	if len(item.NextPositions) != 0 {
-		sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions, nat_n)
+		sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -159,7 +159,7 @@ func (item *BenchmarksVrutoyPositions) CalculateLayout(sizes []int, nat_n uint32
 	return sizes
 }
 
-func (item *BenchmarksVrutoyPositions) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+func (item *BenchmarksVrutoyPositions) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -180,7 +180,7 @@ func (item *BenchmarksVrutoyPositions) InternalWriteTL2(w []byte, sizes []int, n
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions, nat_n)
+			w, sizes = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionInternalWriteTL2(w, sizes, &item.NextPositions)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -189,20 +189,20 @@ func (item *BenchmarksVrutoyPositions) InternalWriteTL2(w []byte, sizes []int, n
 	return w, sizes
 }
 
-func (item *BenchmarksVrutoyPositions) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_n uint32) []byte {
+func (item *BenchmarksVrutoyPositions) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_n)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_n)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *BenchmarksVrutoyPositions) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *BenchmarksVrutoyPositions) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -237,7 +237,7 @@ func (item *BenchmarksVrutoyPositions) InternalReadTL2(r []byte, nat_n uint32) (
 
 	// read item.NextPositions
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionInternalReadTL2(currentR, &item.NextPositions, nat_n); err != nil {
+		if currentR, err = tlBuiltinTupleBenchmarksVruPosition.BuiltinTupleBenchmarksVruPositionInternalReadTL2(currentR, &item.NextPositions); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -247,6 +247,6 @@ func (item *BenchmarksVrutoyPositions) InternalReadTL2(r []byte, nat_n uint32) (
 	return r, nil
 }
 
-func (item *BenchmarksVrutoyPositions) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_n uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_n)
+func (item *BenchmarksVrutoyPositions) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

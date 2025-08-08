@@ -65,6 +65,11 @@ func (item CasesBytesTestEnumContainer) String() string {
 }
 
 func (item *CasesBytesTestEnumContainer) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestEnumContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
 	if in != nil {
@@ -80,7 +85,7 @@ func (item *CasesBytesTestEnumContainer) ReadJSON(legacyTypeNames bool, in *basi
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testEnumContainer", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true

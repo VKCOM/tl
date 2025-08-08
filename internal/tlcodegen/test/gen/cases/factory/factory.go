@@ -80,6 +80,7 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
+	// TL
 	meta.SetGlobalFactoryCreateForObject(0xd31bd0fd, func() meta.Object { var ret tlBenchmarksVruHash.BenchmarksVruHash; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x32792c04, func() meta.Object { var ret tlBenchmarksVruPosition.BenchmarksVruPosition; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xfb442ca5, func() meta.Object {

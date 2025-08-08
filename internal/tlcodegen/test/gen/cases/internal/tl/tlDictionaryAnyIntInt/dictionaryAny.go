@@ -66,8 +66,13 @@ func (item DictionaryAnyIntInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryAnyIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryAnyIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[int32]int32)(item)
-	if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -185,8 +190,13 @@ func (item DictionaryAnyIntIntBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *DictionaryAnyIntIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryAnyIntIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt)(item)
-	if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

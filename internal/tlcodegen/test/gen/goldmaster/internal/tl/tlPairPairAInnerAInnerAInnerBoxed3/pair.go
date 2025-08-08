@@ -70,7 +70,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) WriteBoxed(w []byte, nat_XXI uint3
 	return item.Write(w, nat_XXI, nat_XYI)
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_XXI uint32, nat_XYI uint32) error {
+func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_XXI uint32, nat_XYI uint32) error {
 	var rawA []byte
 	var propBPresented bool
 
@@ -95,7 +95,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSON(legacyTypeNames bool, in 
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -117,7 +117,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) ReadJSON(legacyTypeNames bool, in 
 	if rawA != nil {
 		inAPointer = &inA
 	}
-	if err := item.A.ReadJSON(legacyTypeNames, inAPointer, nat_XXI, nat_XYI); err != nil {
+	if err := item.A.ReadJSONGeneral(tctx, inAPointer, nat_XXI, nat_XYI); err != nil {
 		return err
 	}
 
@@ -146,7 +146,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) WriteJSONOpt(tctx *basictl.JSONWri
 	return append(w, '}'), nil
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, nat_XXI uint32, nat_XYI uint32) []int {
+func (item *PairPairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -155,7 +155,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, nat_X
 
 	// calculate layout for item.A
 	currentPosition := len(sizes)
-	sizes = item.A.CalculateLayout(sizes, nat_XXI, nat_XYI)
+	sizes = item.A.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -186,7 +186,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, nat_X
 	return sizes
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes []int, nat_XXI uint32, nat_XYI uint32) ([]byte, []int) {
+func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -206,7 +206,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes [
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 1)
-		w, sizes = item.A.InternalWriteTL2(w, sizes, nat_XXI, nat_XYI)
+		w, sizes = item.A.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -223,20 +223,20 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_XXI uint32, nat_XYI uint32) []byte {
+func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_XXI, nat_XYI)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_XXI, nat_XYI)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
+func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -271,7 +271,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte, nat_XXI 
 
 	// read item.A
 	if block&(1<<1) != 0 {
-		if currentR, err = item.A.InternalReadTL2(currentR, nat_XXI, nat_XYI); err != nil {
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -290,6 +290,6 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte, nat_XXI 
 	return r, nil
 }
 
-func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_XXI uint32, nat_XYI uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_XXI, nat_XYI)
+func (item *PairPairAInnerAInnerAInnerBoxed3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

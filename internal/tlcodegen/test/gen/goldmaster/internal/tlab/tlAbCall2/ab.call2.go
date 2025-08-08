@@ -126,7 +126,8 @@ func (item *AbCall2) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret 
 }
 
 func (item *AbCall2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlCdTypeB.CdTypeB) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -166,6 +167,11 @@ func (item AbCall2) String() string {
 }
 
 func (item *AbCall2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbCall2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -181,7 +187,7 @@ func (item *AbCall2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.call2", "x")
 				}
-				if err := item.X.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propXPresented = true

@@ -76,6 +76,11 @@ func (item Replace17) String() string {
 }
 
 func (item *Replace17) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Replace17) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propAPresented bool
 	var propYPresented bool
@@ -93,7 +98,7 @@ func (item *Replace17) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace17", "x")
 				}
-				if err := BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.X); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true
@@ -109,7 +114,7 @@ func (item *Replace17) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propYPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace17", "y")
 				}
-				if err := BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Y); err != nil {
+				if err := BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
 				propYPresented = true

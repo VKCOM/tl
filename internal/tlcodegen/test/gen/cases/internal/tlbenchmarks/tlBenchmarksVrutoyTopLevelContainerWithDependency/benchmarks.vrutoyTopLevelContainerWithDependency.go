@@ -81,6 +81,11 @@ func (item BenchmarksVrutoyTopLevelContainerWithDependency) String() string {
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawValue []byte
 
@@ -127,7 +132,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) ReadJSON(legacyType
 	if rawValue != nil {
 		inValuePointer = &inValue
 	}
-	if err := item.Value.ReadJSON(legacyTypeNames, inValuePointer, item.N); err != nil {
+	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, item.N); err != nil {
 		return err
 	}
 
@@ -187,7 +192,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) CalculateLayout(siz
 
 	// calculate layout for item.Value
 	currentPosition := len(sizes)
-	sizes = item.Value.CalculateLayout(sizes, item.N)
+	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -235,7 +240,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) InternalWriteTL2(w 
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 2)
-		w, sizes = item.Value.InternalWriteTL2(w, sizes, item.N)
+		w, sizes = item.Value.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -300,7 +305,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) InternalReadTL2(r [
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = item.Value.InternalReadTL2(currentR, item.N); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

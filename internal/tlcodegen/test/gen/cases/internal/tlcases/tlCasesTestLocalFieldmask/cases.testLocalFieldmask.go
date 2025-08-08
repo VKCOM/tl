@@ -125,6 +125,11 @@ func (item CasesTestLocalFieldmask) String() string {
 }
 
 func (item *CasesTestLocalFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propF1Presented bool
 	var propF2Presented bool
 	var trueTypeF3Presented bool
@@ -206,11 +211,11 @@ func (item *CasesTestLocalFieldmask) ReadJSON(legacyTypeNames bool, in *basictl.
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeF3Presented && !trueTypeF3Value && (item.F2&(1<<1) != 0) {
-		return internal.ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit f2.1 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeF4Presented && !trueTypeF4Value && (item.F2&(1<<1) != 0) {
-		return internal.ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit f2.1 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
 	}
 	return nil
 }
@@ -275,40 +280,34 @@ func (item *CasesTestLocalFieldmask) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F2
-	if item.F1&(1<<0) != 0 {
-		if item.F2 != 0 {
+	if item.F2 != 0 {
 
-			lastUsedByte = 1
-			currentSize += 4
-		}
+		lastUsedByte = 1
+		currentSize += 4
 	}
 
 	var trueF3 tlTrue.True
 	// calculate layout for trueF3
 	currentPosition := len(sizes)
-	if item.F2&(1<<1) != 0 {
-		sizes = trueF3.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = trueF3.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	var trueF4 tlTrue.True
 	// calculate layout for trueF4
 	currentPosition = len(sizes)
-	if item.F2&(1<<1) != 0 {
-		sizes = trueF4.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = trueF4.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// append byte for each section until last mentioned field
@@ -346,38 +345,32 @@ func (item *CasesTestLocalFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]
 		}
 	}
 	// write item.F2
-	if item.F1&(1<<0) != 0 {
-		if item.F2 != 0 {
-			serializedSize += 4
-			if 4 != 0 {
-				currentBlock |= (1 << 2)
-				w = basictl.NatWrite(w, item.F2)
-			}
+	if item.F2 != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.NatWrite(w, item.F2)
 		}
 	}
 	var trueF3 tlTrue.True
 	// write trueF3
-	if item.F2&(1<<1) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = trueF3.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 3)
+		w, sizes = trueF3.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
 	}
 	var trueF4 tlTrue.True
 	// write trueF4
-	if item.F2&(1<<1) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = trueF4.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 4)
+		w, sizes = trueF4.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -440,43 +433,11 @@ func (item *CasesTestLocalFieldmask) InternalReadTL2(r []byte) (_ []byte, err er
 
 	// read item.F2
 	if block&(1<<2) != 0 {
-		if item.F1&(1<<0) != 0 {
-			if currentR, err = basictl.NatRead(currentR, &item.F2); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F2" + "is presented but depending bit is absent")
+		if currentR, err = basictl.NatRead(currentR, &item.F2); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.F2 = 0
-	}
-
-	var trueF3 tlTrue.True
-	// read trueF3
-	if block&(1<<3) != 0 {
-		if item.F2&(1<<1) != 0 {
-			if currentR, err = trueF3.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F3" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueF3.Reset()
-	}
-
-	var trueF4 tlTrue.True
-	// read trueF4
-	if block&(1<<4) != 0 {
-		if item.F2&(1<<1) != 0 {
-			if currentR, err = trueF4.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F4" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueF4.Reset()
 	}
 
 	return r, nil

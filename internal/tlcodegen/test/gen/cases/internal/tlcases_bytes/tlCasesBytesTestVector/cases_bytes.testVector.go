@@ -65,6 +65,11 @@ func (item CasesBytesTestVector) String() string {
 }
 
 func (item *CasesBytesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArrPresented bool
 
 	if in != nil {
@@ -80,7 +85,7 @@ func (item *CasesBytesTestVector) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testVector", "arr")
 				}
-				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSON(legacyTypeNames, in, &item.Arr); err != nil {
+				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
 				propArrPresented = true
@@ -304,6 +309,11 @@ func (item CasesBytesTestVectorBytes) String() string {
 }
 
 func (item *CasesBytesTestVectorBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestVectorBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propArrPresented bool
 
 	if in != nil {
@@ -319,7 +329,7 @@ func (item *CasesBytesTestVectorBytes) ReadJSON(legacyTypeNames bool, in *basict
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testVector", "arr")
 				}
-				if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSON(legacyTypeNames, in, &item.Arr); err != nil {
+				if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
 				propArrPresented = true

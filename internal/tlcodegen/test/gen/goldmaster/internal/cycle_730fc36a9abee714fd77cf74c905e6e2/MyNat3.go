@@ -194,18 +194,29 @@ func (item *MyNat3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, erro
 }
 
 func (item *MyNat3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyNat3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("MyNat3", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "myZero3#103a40cf", "myZero3", "#103a40cf":
-		if !legacyTypeNames && _tag == "myZero3#103a40cf" {
+		if tctx.IsTL2 && _tag != "myZero3" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat3", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "myZero3#103a40cf" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat3", "myZero3#103a40cf")
 		}
 		item.index = 0
 	case "myPlus3#692c291b", "myPlus3", "#692c291b":
-		if !legacyTypeNames && _tag == "myPlus3#692c291b" {
+		if tctx.IsTL2 && _tag != "myPlus3" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat3", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "myPlus3#692c291b" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat3", "myPlus3#692c291b")
 		}
 		item.index = 1
@@ -218,7 +229,7 @@ func (item *MyNat3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueMyPlus3.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueMyPlus3.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -239,17 +250,25 @@ func (item *MyNat3) WriteJSON(w []byte) []byte {
 func (item *MyNat3) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"myZero3#103a40cf"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"myZero3"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"myZero3#103a40cf"`...)
+			} else {
+				w = append(w, `{"type":"myZero3"`...)
+			}
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"myPlus3#692c291b"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"myPlus3"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"myPlus3#692c291b"`...)
+			} else {
+				w = append(w, `{"type":"myPlus3"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueMyPlus3.WriteJSONOpt(tctx, w)
@@ -329,8 +348,13 @@ func (item MyPlus3) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyPlus3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyPlus3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*MyNat3)(item)
-	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
+	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -376,13 +400,15 @@ func (item *MyPlus3) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for ptr
 	currentPosition := len(sizes)
-	sizes = (*ptr).CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
+	if ptr != nil {
+		sizes = (*ptr).CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
+		}
 	}
 
 	// append byte for each section until last mentioned field
@@ -419,13 +445,15 @@ func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
 	// write ptr
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 1)
-		w, sizes = ptr.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
+	if ptr != nil {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = ptr.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
+		}
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -547,6 +575,11 @@ func (item MyZero3) String() string {
 }
 
 func (item *MyZero3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyZero3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

@@ -139,6 +139,11 @@ func (item CasesTestBeforeReadBitValidation) String() string {
 }
 
 func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawA []byte
 	var rawB []byte
@@ -203,7 +208,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in 
 		if rawA != nil {
 			inAPointer = &inA
 		}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inAPointer, &item.A, item.N); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, item.N); err != nil {
 			return err
 		}
 
@@ -216,7 +221,7 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSON(legacyTypeNames bool, in 
 		if rawB != nil {
 			inBPointer = &inB
 		}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inBPointer, &item.B, item.N); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inBPointer, &item.B, item.N); err != nil {
 			return err
 		}
 
@@ -286,31 +291,27 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int) []int
 
 	// calculate layout for item.A
 	currentPosition := len(sizes)
-	if item.N&(1<<0) != 0 {
-		if len(item.A) != 0 {
-			sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A, item.N)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 1
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	if len(item.A) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
 	// calculate layout for item.B
 	currentPosition = len(sizes)
-	if item.N&(1<<1) != 0 {
-		if len(item.B) != 0 {
-			sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.B, item.N)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 1
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	if len(item.B) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.B)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
@@ -349,29 +350,25 @@ func (item *CasesTestBeforeReadBitValidation) InternalWriteTL2(w []byte, sizes [
 		}
 	}
 	// write item.A
-	if item.N&(1<<0) != 0 {
-		if len(item.A) != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 2)
-				w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A, item.N)
-			} else {
-				sizes = sizes[1:]
-			}
+	if len(item.A) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 	// write item.B
-	if item.N&(1<<1) != 0 {
-		if len(item.B) != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 3)
-				w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.B, item.N)
-			} else {
-				sizes = sizes[1:]
-			}
+	if len(item.B) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 3)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.B)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -435,12 +432,8 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 
 	// read item.A
 	if block&(1<<2) != 0 {
-		if item.N&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A, item.N); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.A = item.A[:0]
@@ -448,12 +441,8 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 
 	// read item.B
 	if block&(1<<3) != 0 {
-		if item.N&(1<<1) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.B, item.N); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "B" + "is presented but depending bit is absent")
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.B); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.B = item.B[:0]

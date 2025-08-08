@@ -95,7 +95,7 @@ func (item *CasesTL2TestFunctionWithDep2) ReadResultTL2(r []byte, ctx *basictl.T
 	}
 
 	if block&(1<<1) != 0 {
-		if currentR, err = ret.InternalReadTL2(currentR, item.N); err != nil {
+		if currentR, err = ret.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -110,7 +110,7 @@ func (item *CasesTL2TestFunctionWithDep2) WriteResultTL2(w []byte, ctx *basictl.
 		sizes = ctx.SizeBuffer
 	}
 	// write structured result
-	sizes = ret.CalculateLayout(sizes, item.N)
+	sizes = ret.CalculateLayout(sizes)
 	totalSize := 0
 	totalSize += 1
 	totalSize += sizes[0]
@@ -118,7 +118,7 @@ func (item *CasesTL2TestFunctionWithDep2) WriteResultTL2(w []byte, ctx *basictl.
 	w = basictl.TL2WriteSize(w, totalSize)
 	if totalSize != 0 {
 		w = append(w, 1<<1)
-		w, sizes = ret.InternalWriteTL2(w, sizes, item.N)
+		w, sizes = ret.InternalWriteTL2(w, sizes)
 	}
 
 	if ctx != nil {
@@ -128,7 +128,8 @@ func (item *CasesTL2TestFunctionWithDep2) WriteResultTL2(w []byte, ctx *basictl.
 }
 
 func (item *CasesTL2TestFunctionWithDep2) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions) error {
-	if err := ret.ReadJSON(legacyTypeNames, in, item.N); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in, item.N); err != nil {
 		return err
 	}
 	return nil
@@ -174,6 +175,11 @@ func (item CasesTL2TestFunctionWithDep2) String() string {
 }
 
 func (item *CasesTL2TestFunctionWithDep2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestFunctionWithDep2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 
 	if in != nil {

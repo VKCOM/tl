@@ -116,7 +116,7 @@ func BuiltinVectorAColorInternalReadTL2(r []byte, vec *[]tlAColor.AColor) (_ []b
 	return r, nil
 }
 
-func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlAColor.AColor) error {
+func BuiltinVectorAColorReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlAColor.AColor) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, ve
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

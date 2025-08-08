@@ -65,6 +65,11 @@ func (item CasesTL2TestVectorBool) String() string {
 }
 
 func (item *CasesTL2TestVectorBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestVectorBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -80,7 +85,7 @@ func (item *CasesTL2TestVectorBool) ReadJSON(legacyTypeNames bool, in *basictl.J
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testVectorBool", "x")
 				}
-				if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSON(legacyTypeNames, in, &item.X); err != nil {
+				if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true

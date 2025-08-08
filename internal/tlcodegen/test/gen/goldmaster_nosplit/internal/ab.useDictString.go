@@ -69,6 +69,11 @@ func (item AbUseDictString) String() string {
 }
 
 func (item *AbUseDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbUseDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
 
@@ -93,7 +98,7 @@ func (item *AbUseDictString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 				if propTagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
-				if err := BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames, in, &item.Tags); err != nil {
+				if err := BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
 				propTagsPresented = true
@@ -358,6 +363,11 @@ func (item AbUseDictStringBytes) String() string {
 }
 
 func (item *AbUseDictStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbUseDictStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propTagsPresented bool
 
@@ -382,7 +392,7 @@ func (item *AbUseDictStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 				if propTagsPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.useDictString", "tags")
 				}
-				if err := BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames, in, &item.Tags); err != nil {
+				if err := BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx, in, &item.Tags); err != nil {
 					return err
 				}
 				propTagsPresented = true

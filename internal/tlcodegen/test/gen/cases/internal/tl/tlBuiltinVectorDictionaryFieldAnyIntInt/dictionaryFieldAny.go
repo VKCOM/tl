@@ -171,7 +171,7 @@ func BuiltinVectorDictionaryFieldAnyIntIntInternalReadTL2(r []byte, m *map[int32
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldAnyIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[int32]int32) error {
+func BuiltinVectorDictionaryFieldAnyIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32]int32) error {
 	var data map[int32]int32
 	if *m == nil {
 		*m = make(map[int32]int32, 0)
@@ -337,7 +337,7 @@ func BuiltinVectorDictionaryFieldAnyIntIntBytesInternalReadTL2(r []byte, vec *[]
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) error {
+func BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryFieldAnyIntInt.DictionaryFieldAnyIntInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {

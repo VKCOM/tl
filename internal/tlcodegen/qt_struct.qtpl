@@ -1621,15 +1621,19 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
             {%- endif -%}
         {%- endif -%}
 
+        {%- code /** ?TRUE -> BOOL CASE **/ -%}
+        {%- if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() -%}
+            {%- continue -%}
+        {%- endif -%}
         {%- if isTrue -%}
     var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}
-    {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}
+        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}
     // skip {%d= fieldIndex + 1 -%}-th field
     if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
         {%s= field.t.SkipTL2Call(directImports, bytesVersion, "currentR", field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
     }
-    {%- else -%}
+        {%- else -%}
     // read {%s= fieldName %}
     if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
         {%- if fieldRecursive -%}
@@ -1656,7 +1660,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
         {%- endif -%}
         {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive) %}
     }
-    {%- endif -%}
+        {%- endif -%}
     {%- endfor -%}
 
     return r, nil

@@ -51,7 +51,7 @@ func BuiltinVectorDictionaryElemUglyIntStringWrite(w []byte, vec []tlDictionaryE
 	return w
 }
 
-func BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes []int, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) []int {
+func BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes []int, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -61,7 +61,7 @@ func BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes []int, vec *[
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
-		sizes = elem.CalculateLayout(sizes, nat_t)
+		sizes = elem.CalculateLayout(sizes)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -69,7 +69,7 @@ func BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes []int, vec *[
 	return sizes
 }
 
-func BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) ([]byte, []int) {
+func BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -80,12 +80,12 @@ func BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w []byte, sizes []
 
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(r []byte, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(r []byte, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -109,14 +109,14 @@ func BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(r []byte, vec *[]tl
 	}
 	*vec = (*vec)[:elementCount]
 	for i := 0; i < elementCount; i++ {
-		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemUglyIntStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) error {
+func BuiltinVectorDictionaryElemUglyIntStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryElemUglyIntString.DictionaryElemUglyIntString, nat_t uint32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorDictionaryElemUglyIntStringReadJSON(legacyTypeNames bool, in *
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in, nat_t); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_t); err != nil {
 				return err
 			}
 			in.WantComma()

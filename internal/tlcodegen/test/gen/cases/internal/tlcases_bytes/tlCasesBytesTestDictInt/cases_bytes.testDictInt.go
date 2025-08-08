@@ -66,6 +66,11 @@ func (item CasesBytesTestDictInt) String() string {
 }
 
 func (item *CasesBytesTestDictInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 
 	if in != nil {
@@ -81,7 +86,7 @@ func (item *CasesBytesTestDictInt) ReadJSON(legacyTypeNames bool, in *basictl.Js
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictInt", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntReadJSON(legacyTypeNames, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -305,6 +310,11 @@ func (item CasesBytesTestDictIntBytes) String() string {
 }
 
 func (item *CasesBytesTestDictIntBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestDictIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 
 	if in != nil {
@@ -320,7 +330,7 @@ func (item *CasesBytesTestDictIntBytes) ReadJSON(legacyTypeNames bool, in *basic
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictInt", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSON(legacyTypeNames, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyIntInt.BuiltinVectorDictionaryFieldAnyIntIntBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true

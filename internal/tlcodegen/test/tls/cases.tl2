@@ -141,7 +141,12 @@ benchmarks.vruPosition =
 	file_offset:long
 	// incremented after each block.
 	seq_number?:long;
-benchmarks.vrutoyTopLevelUnion = Big next_positions:vector<benchmarks.vruPosition> | Empty;
+benchmarks.vrutoyTopLevelUnion = 
+	// tlgen:tl1name:"benchmarks.vrutoytopLevelUnionBig"
+	| VrutoytopLevelUnionBig
+		next_positions:vector<benchmarks.vruPosition>
+	// tlgen:tl1name:"benchmarks.vrutoytopLevelUnionEmpty"
+	| VrutoytopLevelUnionEmpty;
 benchmarks.vrutoyTopLevelContainer = value:benchmarks.vrutoyTopLevelUnion;
 benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruPosition;
 benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions;

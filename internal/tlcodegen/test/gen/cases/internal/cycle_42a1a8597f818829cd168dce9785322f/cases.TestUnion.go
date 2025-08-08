@@ -185,13 +185,21 @@ func (item *CasesTestUnion) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]by
 }
 
 func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("cases.TestUnion", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "cases.testUnion1#4b4f09b1", "cases.testUnion1", "#4b4f09b1":
-		if !legacyTypeNames && _tag == "cases.testUnion1#4b4f09b1" {
+		if tctx.IsTL2 && _tag != "cases.testUnion1" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "cases.testUnion1#4b4f09b1" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion1#4b4f09b1")
 		}
 		item.index = 0
@@ -200,11 +208,14 @@ func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.value1.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "cases.testUnion2#464f96c4", "cases.testUnion2", "#464f96c4":
-		if !legacyTypeNames && _tag == "cases.testUnion2#464f96c4" {
+		if tctx.IsTL2 && _tag != "cases.testUnion2" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "cases.testUnion2#464f96c4" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestUnion", "cases.testUnion2#464f96c4")
 		}
 		item.index = 1
@@ -213,7 +224,7 @@ func (item *CasesTestUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.value2.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -234,19 +245,27 @@ func (item *CasesTestUnion) WriteJSON(w []byte) []byte {
 func (item *CasesTestUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"cases.testUnion1#4b4f09b1"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"cases.testUnion1"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cases.testUnion1#4b4f09b1"`...)
+			} else {
+				w = append(w, `{"type":"cases.testUnion1"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.value1.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"cases.testUnion2#464f96c4"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"cases.testUnion2"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cases.testUnion2#464f96c4"`...)
+			} else {
+				w = append(w, `{"type":"cases.testUnion2"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.value2.WriteJSONOpt(tctx, w)
@@ -326,6 +345,11 @@ func (item CasesTestUnion1) String() string {
 }
 
 func (item *CasesTestUnion1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestUnion1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
 	if in != nil {
@@ -560,6 +584,11 @@ func (item CasesTestUnion2) String() string {
 }
 
 func (item *CasesTestUnion2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestUnion2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
 	if in != nil {

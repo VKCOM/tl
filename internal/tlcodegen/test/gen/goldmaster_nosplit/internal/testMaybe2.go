@@ -76,6 +76,11 @@ func (item TestMaybe2) String() string {
 }
 
 func (item *TestMaybe2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TestMaybe2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propAPresented bool
 	var propGPresented bool
@@ -101,7 +106,7 @@ func (item *TestMaybe2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("testMaybe2", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -109,7 +114,7 @@ func (item *TestMaybe2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propGPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("testMaybe2", "g")
 				}
-				if err := item.G.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.G.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propGPresented = true

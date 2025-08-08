@@ -182,13 +182,21 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadTL2(r []byte, ctx *basictl.TL2Rea
 }
 
 func (item *BenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("benchmarks.VrutoyTopLevelUnion", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "benchmarks.vrutoytopLevelUnionBig#ef556bee", "benchmarks.vrutoytopLevelUnionBig", "#ef556bee":
-		if !legacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionBig#ef556bee" {
+		if tctx.IsTL2 && _tag != "benchmarks.vrutoytopLevelUnionBig" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionBig#ef556bee" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionBig#ef556bee")
 		}
 		item.index = 0
@@ -197,11 +205,14 @@ func (item *BenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *ba
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueBig.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueBig.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "benchmarks.vrutoytopLevelUnionEmpty#ce27c770", "benchmarks.vrutoytopLevelUnionEmpty", "#ce27c770":
-		if !legacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionEmpty#ce27c770" {
+		if tctx.IsTL2 && _tag != "benchmarks.vrutoytopLevelUnionEmpty" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "benchmarks.vrutoytopLevelUnionEmpty#ce27c770" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("benchmarks.VrutoyTopLevelUnion", "benchmarks.vrutoytopLevelUnionEmpty#ce27c770")
 		}
 		item.index = 1
@@ -223,19 +234,27 @@ func (item *BenchmarksVrutoyTopLevelUnion) WriteJSON(w []byte) []byte {
 func (item *BenchmarksVrutoyTopLevelUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig#ef556bee"`...)
+			} else {
+				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionBig"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueBig.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty#ce27c770"`...)
+			} else {
+				w = append(w, `{"type":"benchmarks.vrutoytopLevelUnionEmpty"`...)
+			}
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -313,6 +332,11 @@ func (item BenchmarksVrutoytopLevelUnionBig) String() string {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPositionsPresented bool
 
 	if in != nil {
@@ -328,7 +352,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadJSON(legacyTypeNames bool, in 
 				if propNextPositionsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vrutoytopLevelUnionBig", "next_positions")
 				}
-				if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames, in, &item.NextPositions); err != nil {
+				if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSONGeneral(tctx, in, &item.NextPositions); err != nil {
 					return err
 				}
 				propNextPositionsPresented = true
@@ -550,6 +574,11 @@ func (item BenchmarksVrutoytopLevelUnionEmpty) String() string {
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

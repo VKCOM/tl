@@ -119,6 +119,11 @@ func (item TestMaybe) String() string {
 }
 
 func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propAPresented bool
 	var propBPresented bool
@@ -148,7 +153,7 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -156,7 +161,7 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -164,7 +169,7 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "c")
 				}
-				if err := item.C.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propCPresented = true
@@ -172,7 +177,7 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "d")
 				}
-				if err := item.D.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propDPresented = true
@@ -188,7 +193,7 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propFPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("testMaybe", "f")
 				}
-				if err := item.F.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.F.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propFPresented = true
@@ -225,7 +230,7 @@ func (item *TestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 	if rawE != nil {
 		inEPointer = &inE
 	}
-	if err := item.E.ReadJSON(legacyTypeNames, inEPointer, item.N); err != nil {
+	if err := item.E.ReadJSONGeneral(tctx, inEPointer, item.N); err != nil {
 		return err
 	}
 
@@ -373,7 +378,7 @@ func (item *TestMaybe) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.E
 	currentPosition = len(sizes)
 	if item.E.Ok {
-		sizes = item.E.CalculateLayout(sizes, item.N)
+		sizes = item.E.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -478,7 +483,7 @@ func (item *TestMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 6)
-			w, sizes = item.E.InternalWriteTL2(w, sizes, item.N)
+			w, sizes = item.E.InternalWriteTL2(w, sizes)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -589,7 +594,7 @@ func (item *TestMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.E
 	if block&(1<<6) != 0 {
-		if currentR, err = item.E.InternalReadTL2(currentR, item.N); err != nil {
+		if currentR, err = item.E.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

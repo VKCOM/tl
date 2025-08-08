@@ -165,7 +165,7 @@ func BuiltinVectorDictionaryFieldStringInternalReadTL2(r []byte, m *map[string]s
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]string) error {
+func BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
 	var data map[string]string
 	if *m == nil {
 		*m = make(map[string]string, 0)
@@ -320,7 +320,7 @@ func BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r []byte, vec *[]tlD
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) error {
+func BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {

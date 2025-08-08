@@ -138,7 +138,7 @@ func (item *TupleInt3BoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error)
 	return r, nil
 }
 
-func (item *TupleInt3BoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *TupleInt3BoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -150,7 +150,7 @@ func (item *TupleInt3BoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.Json
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSON(legacyTypeNames, in2Pointer, &item.Value); err != nil {
+		if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
 			return err
 		}
 	}

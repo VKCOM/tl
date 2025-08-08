@@ -69,7 +69,7 @@ func (item *DictionaryElemTupleStringInt) WriteBoxed(w []byte, nat_k uint32) (_ 
 	return item.Write(w, nat_k)
 }
 
-func (item *DictionaryElemTupleStringInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_k uint32) error {
+func (item *DictionaryElemTupleStringInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_k uint32) error {
 	var rawKey []byte
 	var propValuePresented bool
 
@@ -116,7 +116,7 @@ func (item *DictionaryElemTupleStringInt) ReadJSON(legacyTypeNames bool, in *bas
 	if rawKey != nil {
 		inKeyPointer = &inKey
 	}
-	if err := tlBuiltinTupleString.BuiltinTupleStringReadJSON(legacyTypeNames, inKeyPointer, &item.Key, nat_k); err != nil {
+	if err := tlBuiltinTupleString.BuiltinTupleStringReadJSONGeneral(tctx, inKeyPointer, &item.Key, nat_k); err != nil {
 		return err
 	}
 
@@ -153,7 +153,7 @@ func (item *DictionaryElemTupleStringInt) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	return append(w, '}'), nil
 }
 
-func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uint32) []int {
+func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -163,7 +163,7 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uin
 	// calculate layout for item.Key
 	currentPosition := len(sizes)
 	if len(item.Key) != 0 {
-		sizes = tlBuiltinTupleString.BuiltinTupleStringCalculateLayout(sizes, &item.Key, nat_k)
+		sizes = tlBuiltinTupleString.BuiltinTupleStringCalculateLayout(sizes, &item.Key)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -191,7 +191,7 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uin
 	return sizes
 }
 
-func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int, nat_k uint32) ([]byte, []int) {
+func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -212,7 +212,7 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinTupleString.BuiltinTupleStringInternalWriteTL2(w, sizes, &item.Key, nat_k)
+			w, sizes = tlBuiltinTupleString.BuiltinTupleStringInternalWriteTL2(w, sizes, &item.Key)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -229,20 +229,20 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 	return w, sizes
 }
 
-func (item *DictionaryElemTupleStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_k uint32) []byte {
+func (item *DictionaryElemTupleStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_k)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_k)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32) (_ []byte, err error) {
+func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -277,7 +277,7 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleString.BuiltinTupleStringInternalReadTL2(currentR, &item.Key, nat_k); err != nil {
+		if currentR, err = tlBuiltinTupleString.BuiltinTupleStringInternalReadTL2(currentR, &item.Key); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -296,6 +296,6 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32
 	return r, nil
 }
 
-func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_k uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_k)
+func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

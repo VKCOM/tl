@@ -140,7 +140,8 @@ func (item *Service5LongInsert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteCo
 }
 
 func (item *Service5LongInsert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *Service5LongOutput) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -180,6 +181,11 @@ func (item Service5LongInsert) String() string {
 }
 
 func (item *Service5LongInsert) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5LongInsert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagsPresented bool
 	var trueTypePersistentPresented bool
 	var trueTypePersistentValue bool
@@ -229,7 +235,7 @@ func (item *Service5LongInsert) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypePersistentPresented && !trueTypePersistentValue && (item.Flags&(1<<0) != 0) {
-		return ErrorInvalidJSON("service5Long.insert", "fieldmask bit flags.0 is indefinite because of the contradictions in values")
+		return ErrorInvalidJSON("service5Long.insert", "fieldmask bit item.Flags.0 is indefinite because of the contradictions in values")
 	}
 	return nil
 }
@@ -287,15 +293,13 @@ func (item *Service5LongInsert) CalculateLayout(sizes []int) []int {
 	var truePersistent True
 	// calculate layout for truePersistent
 	currentPosition := len(sizes)
-	if item.Flags&(1<<0) != 0 {
-		sizes = truePersistent.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = truePersistent.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// append byte for each section until last mentioned field
@@ -334,15 +338,13 @@ func (item *Service5LongInsert) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	}
 	var truePersistent True
 	// write truePersistent
-	if item.Flags&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = truePersistent.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 2)
+		w, sizes = truePersistent.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -401,20 +403,6 @@ func (item *Service5LongInsert) InternalReadTL2(r []byte) (_ []byte, err error) 
 		}
 	} else {
 		item.Flags = 0
-	}
-
-	var truePersistent True
-	// read truePersistent
-	if block&(1<<2) != 0 {
-		if item.Flags&(1<<0) != 0 {
-			if currentR, err = truePersistent.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "Persistent" + "is presented but depending bit is absent")
-		}
-	} else {
-		truePersistent.Reset()
 	}
 
 	return r, nil

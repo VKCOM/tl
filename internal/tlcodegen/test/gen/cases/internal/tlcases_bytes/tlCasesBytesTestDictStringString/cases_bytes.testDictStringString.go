@@ -66,6 +66,11 @@ func (item CasesBytesTestDictStringString) String() string {
 }
 
 func (item *CasesBytesTestDictStringString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestDictStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 
 	if in != nil {
@@ -81,7 +86,7 @@ func (item *CasesBytesTestDictStringString) ReadJSON(legacyTypeNames bool, in *b
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictStringString", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -305,6 +310,11 @@ func (item CasesBytesTestDictStringStringBytes) String() string {
 }
 
 func (item *CasesBytesTestDictStringStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestDictStringStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDictPresented bool
 
 	if in != nil {
@@ -320,7 +330,7 @@ func (item *CasesBytesTestDictStringStringBytes) ReadJSON(legacyTypeNames bool, 
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictStringString", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true

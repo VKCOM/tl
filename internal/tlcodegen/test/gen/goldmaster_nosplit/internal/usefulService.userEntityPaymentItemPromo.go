@@ -59,7 +59,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteBoxed(w []byte, nat_fi
 	return item.Write(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_fields_mask uint32) error {
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propContentPresented bool
 
 	if in != nil {
@@ -116,7 +116,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONOpt(tctx *basictl.
 	return append(w, '}')
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int, nat_fields_mask uint32) []int {
+func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -144,7 +144,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int
 	return sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, sizes []int, nat_fields_mask uint32) ([]byte, []int) {
+func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -172,20 +172,20 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, 
 	return w, sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_fields_mask)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_fields_mask)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
+func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -230,8 +230,8 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte, n
 	return r, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_fields_mask)
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type UsefulServiceUserEntityPaymentItemPromoBoxedMaybe struct {
@@ -273,14 +273,14 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) WriteBoxed(w []by
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) CalculateLayout(sizes []int, nat_t uint32) []int {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if item.Ok {
 		sizes[sizePosition] += 1
 		sizes[sizePosition] += basictl.TL2CalculateSize(1)
 		currentPosition := len(sizes)
-		sizes = item.Value.CalculateLayout(sizes, nat_t)
+		sizes = item.Value.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			sizes[sizePosition] += sizes[currentPosition]
 			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
@@ -289,7 +289,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) CalculateLayout(s
 	return sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, nat_t uint32) ([]byte, []int) {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -304,7 +304,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalWriteTL2(
 		w = basictl.TL2WriteSize(w, 1)
 		if sizes[0] != 0 {
 			w[currentPosition] |= (1 << 1)
-			w, sizes = item.Value.InternalWriteTL2(w, sizes, nat_t)
+			w, sizes = item.Value.InternalWriteTL2(w, sizes)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -312,7 +312,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalWriteTL2(
 	return w, sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -339,7 +339,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = item.Value.InternalReadTL2(r, nat_t); err != nil {
+			if r, err = item.Value.InternalReadTL2(r); err != nil {
 				return r, err
 			}
 		} else {
@@ -352,7 +352,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) InternalReadTL2(r
 	return r, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -364,7 +364,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromoBoxedMaybe) ReadJSON(legacyTy
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer, nat_t); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer, nat_t); err != nil {
 			return err
 		}
 	}

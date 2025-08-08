@@ -124,7 +124,7 @@ func (item *UsefulServiceGetUserEntity) ReadResultTL2(r []byte, ctx *basictl.TL2
 	}
 
 	if block&(1<<1) != 0 {
-		if currentR, err = (*ret).InternalReadTL2(currentR, item.FieldsMask); err != nil {
+		if currentR, err = (*ret).InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -139,7 +139,7 @@ func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, ctx *basictl.TL
 		sizes = ctx.SizeBuffer
 	}
 	// write structured result
-	sizes = ret.CalculateLayout(sizes, item.FieldsMask)
+	sizes = ret.CalculateLayout(sizes)
 	totalSize := 0
 	if ret.Ok {
 		totalSize += 1
@@ -149,7 +149,7 @@ func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, ctx *basictl.TL
 	w = basictl.TL2WriteSize(w, totalSize)
 	if totalSize != 0 {
 		w = append(w, 1<<1)
-		w, sizes = ret.InternalWriteTL2(w, sizes, item.FieldsMask)
+		w, sizes = ret.InternalWriteTL2(w, sizes)
 	}
 
 	if ctx != nil {
@@ -159,7 +159,8 @@ func (item *UsefulServiceGetUserEntity) WriteResultTL2(w []byte, ctx *basictl.TL
 }
 
 func (item *UsefulServiceGetUserEntity) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *UsefulServiceGetUserEntityResultBoxedMaybe) error {
-	if err := ret.ReadJSON(legacyTypeNames, in, item.FieldsMask); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in, item.FieldsMask); err != nil {
 		return err
 	}
 	return nil
@@ -199,6 +200,11 @@ func (item UsefulServiceGetUserEntity) String() string {
 }
 
 func (item *UsefulServiceGetUserEntity) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *UsefulServiceGetUserEntity) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propStageIdPresented bool
 
@@ -301,14 +307,12 @@ func (item *UsefulServiceGetUserEntity) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.StageId
-	if item.FieldsMask&(1<<0) != 0 {
-		if len(item.StageId) != 0 {
+	if len(item.StageId) != 0 {
 
-			if len(item.StageId) != 0 {
-				lastUsedByte = 1
-				currentSize += len(item.StageId)
-				currentSize += basictl.TL2CalculateSize(len(item.StageId))
-			}
+		if len(item.StageId) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.StageId)
+			currentSize += basictl.TL2CalculateSize(len(item.StageId))
 		}
 	}
 
@@ -347,14 +351,12 @@ func (item *UsefulServiceGetUserEntity) InternalWriteTL2(w []byte, sizes []int) 
 		}
 	}
 	// write item.StageId
-	if item.FieldsMask&(1<<0) != 0 {
+	if len(item.StageId) != 0 {
+		serializedSize += len(item.StageId)
 		if len(item.StageId) != 0 {
-			serializedSize += len(item.StageId)
-			if len(item.StageId) != 0 {
-				serializedSize += basictl.TL2CalculateSize(len(item.StageId))
-				currentBlock |= (1 << 2)
-				w = basictl.StringWriteTL2(w, item.StageId)
-			}
+			serializedSize += basictl.TL2CalculateSize(len(item.StageId))
+			currentBlock |= (1 << 2)
+			w = basictl.StringWriteTL2(w, item.StageId)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -418,12 +420,8 @@ func (item *UsefulServiceGetUserEntity) InternalReadTL2(r []byte) (_ []byte, err
 
 	// read item.StageId
 	if block&(1<<2) != 0 {
-		if item.FieldsMask&(1<<0) != 0 {
-			if currentR, err = basictl.StringReadTL2(currentR, &item.StageId); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "StageId" + "is presented but depending bit is absent")
+		if currentR, err = basictl.StringReadTL2(currentR, &item.StageId); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.StageId = ""

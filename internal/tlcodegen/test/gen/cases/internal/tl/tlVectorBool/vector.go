@@ -65,8 +65,13 @@ func (item VectorBool) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]bool)(item)
-	if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorBool.BuiltinVectorBoolReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

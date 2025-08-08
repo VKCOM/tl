@@ -79,6 +79,11 @@ func (item Hren) String() string {
 }
 
 func (item *Hren) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Hren) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPresented bool
 
 	if in != nil {
@@ -98,7 +103,7 @@ func (item *Hren) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 					var value HrenMaybe
 					item.Next = &value
 				}
-				if err := item.Next.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Next.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propNextPresented = true
@@ -161,7 +166,7 @@ func (item *Hren) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.Next
 	currentPosition := len(sizes)
-	if item.Next != nil && item.Next.Ok {
+	if item.Next != nil && item.Next != nil && item.Next.Ok {
 		sizes = (*item.Next).CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
@@ -199,7 +204,7 @@ func (item *Hren) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	w = append(w, 0)
 	serializedSize += 1
 	// write item.Next
-	if item.Next != nil && item.Next.Ok {
+	if item.Next != nil && item.Next != nil && item.Next.Ok {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
@@ -401,7 +406,7 @@ func (item *HrenMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *HrenMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *HrenMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -413,7 +418,7 @@ func (item *HrenMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	}

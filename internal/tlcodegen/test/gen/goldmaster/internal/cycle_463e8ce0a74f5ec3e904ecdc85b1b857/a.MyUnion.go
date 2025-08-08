@@ -185,13 +185,21 @@ func (item *AMyUnion) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, er
 }
 
 func (item *AMyUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AMyUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("a.MyUnion", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "a.uNionA#a7662843", "a.uNionA", "#a7662843":
-		if !legacyTypeNames && _tag == "a.uNionA#a7662843" {
+		if tctx.IsTL2 && _tag != "a.uNionA" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyUnion", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "a.uNionA#a7662843" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyUnion", "a.uNionA#a7662843")
 		}
 		item.index = 0
@@ -200,11 +208,14 @@ func (item *AMyUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueUNionA.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueUNionA.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "au.nionA#df61f632", "au.nionA", "#df61f632":
-		if !legacyTypeNames && _tag == "au.nionA#df61f632" {
+		if tctx.IsTL2 && _tag != "au.nionA" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyUnion", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "au.nionA#df61f632" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.MyUnion", "au.nionA#df61f632")
 		}
 		item.index = 1
@@ -213,7 +224,7 @@ func (item *AMyUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueNionA.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueNionA.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -234,19 +245,27 @@ func (item *AMyUnion) WriteJSON(w []byte) []byte {
 func (item *AMyUnion) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"a.uNionA#a7662843"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"a.uNionA"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"a.uNionA#a7662843"`...)
+			} else {
+				w = append(w, `{"type":"a.uNionA"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueUNionA.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"au.nionA#df61f632"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"au.nionA"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"au.nionA#df61f632"`...)
+			} else {
+				w = append(w, `{"type":"au.nionA"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueNionA.WriteJSONOpt(tctx, w)
@@ -326,6 +345,11 @@ func (item AUNionA) String() string {
 }
 
 func (item *AUNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AUNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -560,6 +584,11 @@ func (item AuNionA) String() string {
 }
 
 func (item *AuNionA) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AuNionA) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propBPresented bool
 
 	if in != nil {

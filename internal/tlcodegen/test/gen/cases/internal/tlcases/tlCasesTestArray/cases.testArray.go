@@ -79,6 +79,11 @@ func (item CasesTestArray) String() string {
 }
 
 func (item *CasesTestArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawArr []byte
 
@@ -125,7 +130,7 @@ func (item *CasesTestArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 	if rawArr != nil {
 		inArrPointer = &inArr
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inArrPointer, &item.Arr, item.N); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inArrPointer, &item.Arr, item.N); err != nil {
 		return err
 	}
 
@@ -190,7 +195,7 @@ func (item *CasesTestArray) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Arr
 	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.Arr, item.N)
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -240,7 +245,7 @@ func (item *CasesTestArray) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.Arr, item.N)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.Arr)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -306,7 +311,7 @@ func (item *CasesTestArray) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.Arr
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.Arr, item.N); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
 		}
 	} else {
