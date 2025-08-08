@@ -168,10 +168,10 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	typeApplication := *resolvedRef.SomeType
 	name := typeApplication.Name
 	comb, ok := gen.tl2Combinators[name.String()]
+	if name.String() == "bool" || name.String() == "legacy_bool" {
+		return gen.genBoolTL2(&kernelType, name.String() == "legacy_bool")
+	}
 	if !ok {
-		if name.String() == "bool" || name.String() == "legacy_bool" {
-			return gen.genBoolTL2(&kernelType, name.String() == "legacy_bool")
-		}
 		return nil, typeApplication.PRName.BeautifulError(fmt.Errorf("reference to unknown type %q", name))
 	}
 	if comb.IsFunction {
@@ -284,6 +284,10 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 		wr, _, _, _, err := gen.getType(tl1Context, tl1Ref, nil)
 		wr.wantsTL2 = true
 		return wr, err
+	}
+
+	if comb.HasAnnotation(tl2Maybe) {
+		return gen.genMaybeTL2(&kernelType, comb, resolveMapping)
 	}
 
 	// some namespace optimization
@@ -689,6 +693,86 @@ func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isLegacy bool) (*TypeRWWr
 		kernelType.goGlobalName = "Bool"
 		kernelType.goLocalName = "Bool"
 	}
+
+	return kernelType, nil
+}
+
+func (gen *Gen2) genMaybeTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combinator, resolveMapping ResolvedTL2References) (*TypeRWWrapper, error) {
+	// check can be maybe
+	nonMaybeErr := fmt.Errorf("this type can't be maybe due to definition of maybe (ideal: @maybe maybe<t:type> = None | Some t;)")
+
+	// {0?}<t:type> = {1?} | {2?};
+	if len(comb.TypeDecl.TemplateArguments) != 1 ||
+		!comb.TypeDecl.TemplateArguments[0].Category.IsType() ||
+		!comb.TypeDecl.Type.IsUnionType ||
+		len(comb.TypeDecl.Type.UnionType.Variants) != 2 {
+		return nil, comb.TypeDecl.PRName.BeautifulError(nonMaybeErr)
+	}
+	variants := comb.TypeDecl.Type.UnionType.Variants
+	emptyVariant, valueVariant := variants[0], variants[1]
+	if emptyVariant.IsTypeAlias ||
+		len(emptyVariant.Fields) != 0 {
+		return nil, emptyVariant.PRName.BeautifulError(fmt.Errorf("first constructor must be empty"))
+	}
+
+	valueRef := valueVariant.TypeAlias
+	if valueVariant.IsTypeAlias {
+		// {0?}<{4?}:type> = {1?} | {2?} {4?};
+		if valueVariant.TypeAlias.String() != comb.TypeDecl.TemplateArguments[0].Name {
+			return nil, valueVariant.PRName.BeautifulError(fmt.Errorf("second constructor can be alias only to first type argument"))
+		}
+	} else {
+		// {0?}<{4?}:type> = {1?} | {2?} {3?}:{4?};
+		if len(valueVariant.Fields) == 0 {
+			return nil, valueVariant.PRName.BeautifulError(fmt.Errorf("second constructor must be non-empty"))
+		}
+		valueRef = valueVariant.Fields[0].Type
+		if len(valueVariant.Fields) != 1 ||
+			valueVariant.Fields[0].IsOptional ||
+			valueVariant.Fields[0].IsIgnored ||
+			valueVariant.Fields[0].Type.IsBracket ||
+			valueVariant.Fields[0].Type.SomeType == nil ||
+			valueVariant.Fields[0].Type.SomeType.Name.String() != comb.TypeDecl.TemplateArguments[0].Name {
+			return nil, comb.TypeDecl.PRName.BeautifulError(nonMaybeErr)
+		}
+	}
+
+	var err error
+	valueRef, err = resolveMapping.resolveRef(valueRef)
+	if err != nil {
+		return nil, err
+	}
+
+	maybeType := TypeRWMaybe{wr: kernelType}
+	maybeType.element.goName = "Value"
+	maybeType.element.t, err = gen.genTypeTL2(valueRef)
+
+	if err != nil {
+		return nil, err
+	}
+
+	kernelType.trw = &maybeType
+	kernelType.tl2Name = comb.TypeDecl.Name
+	kernelType.tl2Origin = comb
+
+	elementRef := maybeType.element
+
+	_, isUnion := elementRef.t.trw.(*TypeRWUnion)
+	kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
+		isNat:   false,
+		isArith: false,
+		tip:     elementRef.t,
+		bare:    !isUnion,
+	})
+
+	suffix := snakeToCamelCase(comb.TypeDecl.Name.Namespace + "_" + comb.TypeDecl.Name.Name)
+
+	kernelType.goLocalName = snakeToCamelCase(elementRef.t.goGlobalName + ifString(!isUnion, suffix, "Boxed"+suffix))
+	kernelType.goGlobalName = snakeToCamelCase(elementRef.t.goGlobalName + ifString(!isUnion, suffix, "Boxed"+suffix))
+
+	kernelType.ns = elementRef.t.ns
+	kernelType.ns.types = append(kernelType.ns.types, kernelType)
+	kernelType.fileName = elementRef.t.fileName
 
 	return kernelType, nil
 }
