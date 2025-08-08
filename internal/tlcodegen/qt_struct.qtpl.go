@@ -2998,9 +2998,9 @@ func (item *`)
         block = 0
     }
 `)
-					if tl2MasksToStore[fieldIndex/8+1] {
+					if tl2MasksToStore[(fieldIndex+1)/8+1] {
 						qw422016.N().S(`    item.mask`)
-						qw422016.N().D(fieldIndex/8 + 1)
+						qw422016.N().D((fieldIndex+1)/8 + 1)
 						qw422016.N().S(` = block
 `)
 					}
