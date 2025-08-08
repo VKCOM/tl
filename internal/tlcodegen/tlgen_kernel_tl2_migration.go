@@ -803,7 +803,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 									typeName := combinator.TypeDecl.Name.Name
 									constructorName := combinator.Construct.Name.Name
 
-									if strings.HasPrefix(strings.ToLower(constructorName), strings.ToLower(typeName)) {
+									if strings.HasPrefix(constructorName, lowerFirst(typeName)) {
 										nameAfterPrefix := constructorName[len(typeName):]
 										if len(nameAfterPrefix) > 0 {
 											firstLetter := strings.ToLower(nameAfterPrefix)[0]
