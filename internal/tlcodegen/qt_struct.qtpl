@@ -690,9 +690,13 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} |= 1 << {%v field.BitNumber %}
         }
         {%- endif -%}
-        {%- for i := firstAffectedNat; i < len(affectedFields); i++-%}
+        {%- if struct_.wr.originateFromTL2 -%}
+            {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} |= 1 << {%v field.BitNumber %}
+        {%- else -%}
+            {%- for i := firstAffectedNat; i < len(affectedFields); i++-%}
         item.{%s= affectedFields[i].goName %} |= 1 << {%v bits[i] %}
-        {%- endfor -%}
+            {%- endfor -%}
+        {%- endif -%}
     }
         {%- endif -%}
     {%- endfor -%}
