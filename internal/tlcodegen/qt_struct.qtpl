@@ -1300,6 +1300,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     {%- code
          currentPositionFirstUsage := -1
          for i, field := range struct_.Fields {
+            if field.t.IsTrueType() && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() { continue }
             if struct_.wr.originateFromTL2 && field.IsTL2Omitted() { continue }
             _, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
             if len(trivialSize) == 0 {
@@ -1325,6 +1326,10 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
             isSizeConstant, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
         -%}
 
+        {%- code /** ?TRUE -> BOOL CASE **/ -%}
+        {%- if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() -%}
+            {%- continue -%}
+        {%- endif -%}
         {%- if isTrue -%}
     var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}
@@ -1470,6 +1475,10 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
             }
             _, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
         -%}
+        {%- code /** ?TRUE -> BOOL CASE **/ -%}
+        {%- if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() -%}
+            {%- continue -%}
+        {%- endif -%}
         {%- if isTrue -%}
     var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}

@@ -711,18 +711,6 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 		currentSize += 4
 	}
 
-	var trueF11 tlTrue.True
-	// calculate layout for trueF11
-	currentPosition = len(sizes)
-	sizes = trueF11.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	// calculate layout for item.F12
 	currentPosition = len(sizes)
 	if len(item.F12) != 0 {
@@ -875,16 +863,6 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			currentBlock |= (1 << 6)
 			w = basictl.IntWrite(w, item.F10)
 		}
-	}
-	var trueF11 tlTrue.True
-	// write trueF11
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 7)
-		w, sizes = trueF11.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 
 	// add byte for fields with index 8..15

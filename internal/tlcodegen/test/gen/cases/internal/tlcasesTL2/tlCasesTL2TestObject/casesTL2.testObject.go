@@ -413,18 +413,6 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var trueF1 tlTrue.True
-	// calculate layout for trueF1
-	currentPosition := len(sizes)
-	sizes = trueF1.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	// calculate layout for item.F2
 	if item.F2 {
 
@@ -433,7 +421,7 @@ func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F3
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	if len(item.F3) != 0 {
 		sizes = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, &item.F3)
 		if sizes[currentPosition] != 0 {
@@ -522,16 +510,6 @@ func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.N)
 		}
-	}
-	var trueF1 tlTrue.True
-	// write trueF1
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = trueF1.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 	// write item.F2
 	if item.F2 {

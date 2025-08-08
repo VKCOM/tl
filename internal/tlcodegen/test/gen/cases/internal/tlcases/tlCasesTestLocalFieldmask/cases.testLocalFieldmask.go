@@ -9,7 +9,6 @@ package tlCasesTestLocalFieldmask
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -286,30 +285,6 @@ func (item *CasesTestLocalFieldmask) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var trueF3 tlTrue.True
-	// calculate layout for trueF3
-	currentPosition := len(sizes)
-	sizes = trueF3.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueF4 tlTrue.True
-	// calculate layout for trueF4
-	currentPosition = len(sizes)
-	sizes = trueF4.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
 		currentSize += lastUsedByte
@@ -351,26 +326,6 @@ func (item *CasesTestLocalFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]
 			currentBlock |= (1 << 2)
 			w = basictl.NatWrite(w, item.F2)
 		}
-	}
-	var trueF3 tlTrue.True
-	// write trueF3
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = trueF3.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueF4 tlTrue.True
-	// write trueF4
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 4)
-		w, sizes = trueF4.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
