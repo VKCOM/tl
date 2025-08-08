@@ -171,7 +171,7 @@ func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[ui
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemStrangeStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[uint32]string) error {
+func BuiltinVectorDictionaryElemStrangeStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[uint32]string) error {
 	var data map[uint32]string
 	if *m == nil {
 		*m = make(map[uint32]string, 0)

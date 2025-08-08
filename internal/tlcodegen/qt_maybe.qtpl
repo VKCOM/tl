@@ -208,7 +208,7 @@ func (item *{%s= goName %}) ReadJSONLegacy(legacyTypeNames bool, j interface{}{%
 }
 
 {%- endif -%}
-func (item *{%s= goName %}) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
+func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer{%s= natArgsDecl %}) error {
   _ok, _jvalue, err := {%s= maybe.wr.gen.InternalPrefix()%}Json2ReadMaybe({%q= tlName %}, in)
   if err != nil {
     return err

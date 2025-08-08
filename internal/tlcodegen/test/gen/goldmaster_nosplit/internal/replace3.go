@@ -62,6 +62,11 @@ func (item Replace3) String() string {
 }
 
 func (item *Replace3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Replace3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -77,7 +82,7 @@ func (item *Replace3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("replace3", "a")
 				}
-				if err := BuiltinTuple3IntReadJSON(legacyTypeNames, in, &item.A); err != nil {
+				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
 				propAPresented = true

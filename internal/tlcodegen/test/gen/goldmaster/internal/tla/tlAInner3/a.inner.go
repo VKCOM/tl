@@ -65,6 +65,11 @@ func (item AInner3) String() string {
 }
 
 func (item *AInner3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AInner3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -80,7 +85,7 @@ func (item *AInner3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("a.inner", "a")
 				}
-				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSON(legacyTypeNames, in, &item.A); err != nil {
+				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
 				propAPresented = true

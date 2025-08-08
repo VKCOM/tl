@@ -118,7 +118,7 @@ func BuiltinTuple0IntBoxedInternalReadTL2(r []byte, vec *[0]int32) (_ []byte, er
 	return r, nil
 }
 
-func BuiltinTuple0IntBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[0]int32) error {
+func BuiltinTuple0IntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[0]int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')

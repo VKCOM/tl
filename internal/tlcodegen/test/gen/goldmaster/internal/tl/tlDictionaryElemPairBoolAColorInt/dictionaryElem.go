@@ -72,6 +72,11 @@ func (item DictionaryElemPairBoolAColorInt) String() string {
 }
 
 func (item *DictionaryElemPairBoolAColorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemPairBoolAColorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -88,7 +93,7 @@ func (item *DictionaryElemPairBoolAColorInt) ReadJSON(legacyTypeNames bool, in *
 				if propKeyPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "key")
 				}
-				if err := item.Key.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Key.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propKeyPresented = true

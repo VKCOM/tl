@@ -65,8 +65,13 @@ func (item MyInt64) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyInt64) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyInt64) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*tlInt64.Int64)(item)
-	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
+	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil

@@ -134,7 +134,7 @@ func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *AColorBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *AColorBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -146,7 +146,7 @@ func (item *AColorBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	}

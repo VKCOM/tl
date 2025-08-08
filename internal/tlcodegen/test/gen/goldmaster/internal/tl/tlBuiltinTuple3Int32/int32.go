@@ -115,7 +115,7 @@ func BuiltinTuple3Int32InternalReadTL2(r []byte, vec *[3]tlInt32.Int32) (_ []byt
 	return r, nil
 }
 
-func BuiltinTuple3Int32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]tlInt32.Int32) error {
+func BuiltinTuple3Int32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]tlInt32.Int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -126,7 +126,7 @@ func BuiltinTuple3Int32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec
 			if index == 3 {
 				return internal.ErrorWrongSequenceLength("[3]tlInt32.Int32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

@@ -62,7 +62,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) WriteBoxed(w []byte, nat_a1 uint3
 	return item.Write(w, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) error {
+func (item *CasesInplace1PairTupleIntTupleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) error {
 	var rawValue []byte
 
 	if in != nil {
@@ -97,7 +97,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) ReadJSON(legacyTypeNames bool, in
 	if rawValue != nil {
 		inValuePointer = &inValue
 	}
-	if err := item.Value.ReadJSON(legacyTypeNames, inValuePointer, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
 		return err
 	}
 
@@ -123,7 +123,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) WriteJSONOpt(tctx *basictl.JSONWr
 	return append(w, '}'), nil
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) CalculateLayout(sizes []int, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) []int {
+func (item *CasesInplace1PairTupleIntTupleInt) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -132,7 +132,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) CalculateLayout(sizes []int, nat_
 
 	// calculate layout for item.Value
 	currentPosition := len(sizes)
-	sizes = item.Value.CalculateLayout(sizes, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn)
+	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -152,7 +152,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) CalculateLayout(sizes []int, nat_
 	return sizes
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes []int, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) ([]byte, []int) {
+func (item *CasesInplace1PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -172,7 +172,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes 
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 1)
-		w, sizes = item.Value.InternalWriteTL2(w, sizes, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn)
+		w, sizes = item.Value.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -180,20 +180,20 @@ func (item *CasesInplace1PairTupleIntTupleInt) InternalWriteTL2(w []byte, sizes 
 	return w, sizes
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) []byte {
+func (item *CasesInplace1PairTupleIntTupleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) InternalReadTL2(r []byte, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
+func (item *CasesInplace1PairTupleIntTupleInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -228,7 +228,7 @@ func (item *CasesInplace1PairTupleIntTupleInt) InternalReadTL2(r []byte, nat_a1 
 
 	// read item.Value
 	if block&(1<<1) != 0 {
-		if currentR, err = item.Value.InternalReadTL2(currentR, nat_a2, nat_a3, nat_a1, nat_XXn, nat_XYn); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -238,6 +238,6 @@ func (item *CasesInplace1PairTupleIntTupleInt) InternalReadTL2(r []byte, nat_a1 
 	return r, nil
 }
 
-func (item *CasesInplace1PairTupleIntTupleInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_a1 uint32, nat_a2 uint32, nat_a3 uint32, nat_XXn uint32, nat_XYn uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_a1, nat_a2, nat_a3, nat_XXn, nat_XYn)
+func (item *CasesInplace1PairTupleIntTupleInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

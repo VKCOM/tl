@@ -65,6 +65,11 @@ func (item CasesBytesTestTuple) String() string {
 }
 
 func (item *CasesBytesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTplPresented bool
 
 	if in != nil {
@@ -80,7 +85,7 @@ func (item *CasesBytesTestTuple) ReadJSON(legacyTypeNames bool, in *basictl.Json
 				if propTplPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testTuple", "tpl")
 				}
-				if err := tlBuiltinTuple4String.BuiltinTuple4StringReadJSON(legacyTypeNames, in, &item.Tpl); err != nil {
+				if err := tlBuiltinTuple4String.BuiltinTuple4StringReadJSONGeneral(tctx, in, &item.Tpl); err != nil {
 					return err
 				}
 				propTplPresented = true
@@ -296,6 +301,11 @@ func (item CasesBytesTestTupleBytes) String() string {
 }
 
 func (item *CasesBytesTestTupleBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestTupleBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTplPresented bool
 
 	if in != nil {
@@ -311,7 +321,7 @@ func (item *CasesBytesTestTupleBytes) ReadJSON(legacyTypeNames bool, in *basictl
 				if propTplPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testTuple", "tpl")
 				}
-				if err := tlBuiltinTuple4String.BuiltinTuple4StringBytesReadJSON(legacyTypeNames, in, &item.Tpl); err != nil {
+				if err := tlBuiltinTuple4String.BuiltinTuple4StringBytesReadJSONGeneral(tctx, in, &item.Tpl); err != nil {
 					return err
 				}
 				propTplPresented = true

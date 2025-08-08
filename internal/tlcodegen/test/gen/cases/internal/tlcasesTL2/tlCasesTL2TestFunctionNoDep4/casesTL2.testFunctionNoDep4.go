@@ -164,6 +164,11 @@ func (item CasesTL2TestFunctionNoDep4) String() string {
 }
 
 func (item *CasesTL2TestFunctionNoDep4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestFunctionNoDep4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {

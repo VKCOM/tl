@@ -62,8 +62,13 @@ func (item VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorAColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]AColor)(item)
-	if err := BuiltinVectorAColorReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := BuiltinVectorAColorReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -181,8 +186,13 @@ func (item VectorCyc1MyCycle) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorCyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorCyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]Cyc1MyCycle)(item)
-	if err := BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -300,8 +310,13 @@ func (item VectorDictionaryFieldString) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorDictionaryFieldString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorDictionaryFieldString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[string]string)(item)
-	if err := BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -419,8 +434,13 @@ func (item VectorDictionaryFieldStringBytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorDictionaryFieldStringBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorDictionaryFieldStringBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]DictionaryFieldStringBytes)(item)
-	if err := BuiltinVectorDictionaryFieldStringBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -534,9 +554,9 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteB
 	return item.Write(w, nat_t)
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if err := BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSON(legacyTypeNames, in, ptr, nat_t); err != nil {
+	if err := BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx, in, ptr, nat_t); err != nil {
 		return err
 	}
 	return nil
@@ -558,41 +578,41 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJ
 	return w
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int, nat_t uint32) []int {
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int) []int {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, ptr, nat_t)
+	sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, ptr)
 	return sizes
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int, nat_t uint32) ([]byte, []int) {
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	w, sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, ptr, nat_t)
+	w, sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, ptr)
 	return w, sizes
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_t uint32) []byte {
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_t)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_t)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalReadTL2(r []byte) (_ []byte, err error) {
 	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	if r, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr, nat_t); err != nil {
+	if r, err = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalReadTL2(r, ptr); err != nil {
 		return r, err
 	}
 	return r, nil
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_t uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_t)
+func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type VectorInt []int32
@@ -644,8 +664,13 @@ func (item VectorInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]int32)(item)
-	if err := BuiltinVectorIntReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := BuiltinVectorIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -840,7 +865,7 @@ func (item *VectorIntBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error)
 	return r, nil
 }
 
-func (item *VectorIntBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *VectorIntBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -852,7 +877,7 @@ func (item *VectorIntBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.Json
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := BuiltinVectorIntReadJSON(legacyTypeNames, in2Pointer, &item.Value); err != nil {
+		if err := BuiltinVectorIntReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
 			return err
 		}
 	}
@@ -1006,7 +1031,7 @@ func (item *VectorIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *VectorIntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *VectorIntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -1018,7 +1043,7 @@ func (item *VectorIntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := BuiltinVectorIntReadJSON(legacyTypeNames, in2Pointer, &item.Value); err != nil {
+		if err := BuiltinVectorIntReadJSONGeneral(tctx, in2Pointer, &item.Value); err != nil {
 			return err
 		}
 	}

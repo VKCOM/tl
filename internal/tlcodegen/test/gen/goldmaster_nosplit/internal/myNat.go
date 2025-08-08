@@ -124,6 +124,11 @@ func (item MyNat) String() string {
 }
 
 func (item *MyNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 
@@ -152,7 +157,7 @@ func (item *MyNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 					var value MyNat
 					item.A = &value
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -233,7 +238,7 @@ func (item *MyNat) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.A
 	currentPosition := len(sizes)
-	if item.FieldsMask&(1<<0) != 0 {
+	if item.A != nil {
 		sizes = (*item.A).CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
@@ -279,7 +284,7 @@ func (item *MyNat) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		}
 	}
 	// write item.A
-	if item.FieldsMask&(1<<0) != 0 {
+	if item.A != nil {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
@@ -354,12 +359,8 @@ func (item *MyNat) InternalReadTL2(r []byte) (_ []byte, err error) {
 			var newValue MyNat
 			item.A = &newValue
 		}
-		if item.FieldsMask&(1<<0) != 0 {
-			if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 	} else {
 		if item.A == nil {

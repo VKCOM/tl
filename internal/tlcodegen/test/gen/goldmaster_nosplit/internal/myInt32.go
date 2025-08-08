@@ -112,7 +112,7 @@ func BuiltinTuple3MyInt32InternalReadTL2(r []byte, vec *[3]MyInt32) (_ []byte, e
 	return r, nil
 }
 
-func BuiltinTuple3MyInt32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]MyInt32) error {
+func BuiltinTuple3MyInt32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]MyInt32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -123,7 +123,7 @@ func BuiltinTuple3MyInt32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, v
 			if index == 3 {
 				return ErrorWrongSequenceLength("[3]MyInt32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -251,7 +251,7 @@ func BuiltinTuple3MyInt32BoxedInternalReadTL2(r []byte, vec *[3]MyInt32) (_ []by
 	return r, nil
 }
 
-func BuiltinTuple3MyInt32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]MyInt32) error {
+func BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]MyInt32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -262,7 +262,7 @@ func BuiltinTuple3MyInt32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 			if index == 3 {
 				return ErrorWrongSequenceLength("[3]MyInt32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -340,8 +340,13 @@ func (item MyInt32) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyInt32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyInt32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*Int32)(item)
-	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
+	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil

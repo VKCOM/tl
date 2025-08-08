@@ -71,6 +71,11 @@ func (item BenchmarksVruHash) String() string {
 }
 
 func (item *BenchmarksVruHash) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchmarksVruHash) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLowPresented bool
 	var propHighPresented bool
 

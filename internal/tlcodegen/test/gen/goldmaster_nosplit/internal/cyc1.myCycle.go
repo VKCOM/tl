@@ -116,7 +116,7 @@ func BuiltinVectorCyc1MyCycleInternalReadTL2(r []byte, vec *[]Cyc1MyCycle) (_ []
 	return r, nil
 }
 
-func BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]Cyc1MyCycle) error {
+func BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]Cyc1MyCycle) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -241,6 +241,11 @@ func (item Cyc1MyCycle) String() string {
 }
 
 func (item *Cyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Cyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 
@@ -265,7 +270,7 @@ func (item *Cyc1MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cyc1.myCycle", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -344,15 +349,13 @@ func (item *Cyc1MyCycle) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.A
 	currentPosition := len(sizes)
-	if item.FieldsMask&(1<<0) != 0 {
-		sizes = item.A.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = item.A.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// append byte for each section until last mentioned field
@@ -390,15 +393,13 @@ func (item *Cyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int)
 		}
 	}
 	// write item.A
-	if item.FieldsMask&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = item.A.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 2)
+		w, sizes = item.A.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -461,12 +462,8 @@ func (item *Cyc1MyCycle) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.A
 	if block&(1<<2) != 0 {
-		if item.FieldsMask&(1<<0) != 0 {
-			if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.A.Reset()

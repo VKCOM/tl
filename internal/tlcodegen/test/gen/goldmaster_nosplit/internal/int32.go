@@ -112,7 +112,7 @@ func BuiltinTuple3Int32InternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, err e
 	return r, nil
 }
 
-func BuiltinTuple3Int32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]Int32) error {
+func BuiltinTuple3Int32ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]Int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -123,7 +123,7 @@ func BuiltinTuple3Int32ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec
 			if index == 3 {
 				return ErrorWrongSequenceLength("[3]Int32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -251,7 +251,7 @@ func BuiltinTuple3Int32BoxedInternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, 
 	return r, nil
 }
 
-func BuiltinTuple3Int32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]Int32) error {
+func BuiltinTuple3Int32BoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]Int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -262,7 +262,7 @@ func BuiltinTuple3Int32BoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 			if index == 3 {
 				return ErrorWrongSequenceLength("[3]Int32", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -340,6 +340,11 @@ func (item Int32) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *Int32) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Int32) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*int32)(item)
 	if err := Json2ReadInt32(in, ptr); err != nil {
 		return err

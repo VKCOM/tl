@@ -48,7 +48,7 @@ func BuiltinTuple2PairTupleIntTupleIntWrite(w []byte, vec *[2]tlPairTupleIntTupl
 	return w, nil
 }
 
-func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) []int {
+func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -58,7 +58,7 @@ func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPai
 
 	for i := 0; i < 2; i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes, nat_tXn, nat_tYn)
+		sizes = (*vec)[i].CalculateLayout(sizes)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -67,7 +67,7 @@ func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPai
 	return sizes
 }
 
-func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) ([]byte, []int) {
+func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -77,12 +77,12 @@ func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, ve
 	}
 
 	for i := 0; i < 2; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes, nat_tXn, nat_tYn)
+		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) (_ []byte, err error) {
+func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -106,7 +106,7 @@ func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTu
 		lastIndex = 2
 	}
 	for i := 0; i < lastIndex; i++ {
-		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_tXn, nat_tYn); err != nil {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
@@ -119,7 +119,7 @@ func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTu
 	return r, nil
 }
 
-func BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) error {
+func BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_tXn uint32, nat_tYn uint32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -130,7 +130,7 @@ func BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames bool, in *basictl
 			if index == 2 {
 				return internal.ErrorWrongSequenceLength("[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", index+1, 2)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in, nat_tXn, nat_tYn); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_tXn, nat_tYn); err != nil {
 				return err
 			}
 			in.WantComma()

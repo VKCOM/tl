@@ -97,6 +97,11 @@ func (item UnionArgsUse) String() string {
 }
 
 func (item *UnionArgsUse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *UnionArgsUse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKPresented bool
 	var propNPresented bool
 	var rawA []byte
@@ -164,7 +169,7 @@ func (item *UnionArgsUse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 	if rawA != nil {
 		inAPointer = &inA
 	}
-	if err := item.A.ReadJSON(legacyTypeNames, inAPointer, item.K); err != nil {
+	if err := item.A.ReadJSONGeneral(tctx, inAPointer, item.K); err != nil {
 		return err
 	}
 
@@ -173,7 +178,7 @@ func (item *UnionArgsUse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 	if rawB != nil {
 		inBPointer = &inB
 	}
-	if err := item.B.ReadJSON(legacyTypeNames, inBPointer, item.N); err != nil {
+	if err := item.B.ReadJSONGeneral(tctx, inBPointer, item.N); err != nil {
 		return err
 	}
 
@@ -252,7 +257,7 @@ func (item *UnionArgsUse) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.A
 	currentPosition := len(sizes)
-	sizes = item.A.CalculateLayout(sizes, item.K)
+	sizes = item.A.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -263,7 +268,7 @@ func (item *UnionArgsUse) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.B
 	currentPosition = len(sizes)
-	sizes = item.B.CalculateLayout(sizes, item.N)
+	sizes = item.B.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -319,7 +324,7 @@ func (item *UnionArgsUse) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 3)
-		w, sizes = item.A.InternalWriteTL2(w, sizes, item.K)
+		w, sizes = item.A.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -328,7 +333,7 @@ func (item *UnionArgsUse) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 4)
-		w, sizes = item.B.InternalWriteTL2(w, sizes, item.N)
+		w, sizes = item.B.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -402,7 +407,7 @@ func (item *UnionArgsUse) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.A
 	if block&(1<<3) != 0 {
-		if currentR, err = item.A.InternalReadTL2(currentR, item.K); err != nil {
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -411,7 +416,7 @@ func (item *UnionArgsUse) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.B
 	if block&(1<<4) != 0 {
-		if currentR, err = item.B.InternalReadTL2(currentR, item.N); err != nil {
+		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

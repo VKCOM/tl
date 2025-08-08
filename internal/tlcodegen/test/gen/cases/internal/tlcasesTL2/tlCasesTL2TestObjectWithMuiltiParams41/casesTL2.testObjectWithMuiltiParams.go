@@ -102,6 +102,11 @@ func (item CasesTL2TestObjectWithMuiltiParams41) String() string {
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propF1Presented bool
 	var propF2Presented bool
 
@@ -121,7 +126,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool,
 				if 4&(1<<0) == 0 {
 					return internal.ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f1' is defined, while corresponding implicit fieldmask bit is 0")
 				}
-				if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSON(legacyTypeNames, in, &item.F1); err != nil {
+				if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.F1); err != nil {
 					return err
 				}
 				propF1Presented = true
@@ -132,7 +137,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSON(legacyTypeNames bool,
 				if 1&(1<<0) == 0 {
 					return internal.ErrorInvalidJSON("casesTL2.testObjectWithMuiltiParams", "field 'f2' is defined, while corresponding implicit fieldmask bit is 0")
 				}
-				if err := tlBuiltinTuple1Int.BuiltinTuple1IntReadJSON(legacyTypeNames, in, &item.F2); err != nil {
+				if err := tlBuiltinTuple1Int.BuiltinTuple1IntReadJSONGeneral(tctx, in, &item.F2); err != nil {
 					return err
 				}
 				propF2Presented = true
@@ -199,28 +204,24 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int) [
 
 	// calculate layout for item.F1
 	currentPosition := len(sizes)
-	if 4&(1<<0) != 0 {
-		sizes = tlBuiltinTuple4Int.BuiltinTuple4IntCalculateLayout(sizes, &item.F1)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = tlBuiltinTuple4Int.BuiltinTuple4IntCalculateLayout(sizes, &item.F1)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// calculate layout for item.F2
 	currentPosition = len(sizes)
-	if 1&(1<<0) != 0 {
-		sizes = tlBuiltinTuple1Int.BuiltinTuple1IntCalculateLayout(sizes, &item.F2)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = tlBuiltinTuple1Int.BuiltinTuple1IntCalculateLayout(sizes, &item.F2)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// append byte for each section until last mentioned field
@@ -250,26 +251,22 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, siz
 	w = append(w, 0)
 	serializedSize += 1
 	// write item.F1
-	if 4&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinTuple4Int.BuiltinTuple4IntInternalWriteTL2(w, sizes, &item.F1)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 1)
+		w, sizes = tlBuiltinTuple4Int.BuiltinTuple4IntInternalWriteTL2(w, sizes, &item.F1)
+	} else {
+		sizes = sizes[1:]
 	}
 	// write item.F2
-	if 1&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinTuple1Int.BuiltinTuple1IntInternalWriteTL2(w, sizes, &item.F2)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 2)
+		w, sizes = tlBuiltinTuple1Int.BuiltinTuple1IntInternalWriteTL2(w, sizes, &item.F2)
+	} else {
+		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -323,12 +320,8 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 
 	// read item.F1
 	if block&(1<<1) != 0 {
-		if 4&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTuple4Int.BuiltinTuple4IntInternalReadTL2(currentR, &item.F1); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
+		if currentR, err = tlBuiltinTuple4Int.BuiltinTuple4IntInternalReadTL2(currentR, &item.F1); err != nil {
+			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
@@ -336,12 +329,8 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 
 	// read item.F2
 	if block&(1<<2) != 0 {
-		if 1&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTuple1Int.BuiltinTuple1IntInternalReadTL2(currentR, &item.F2); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F2" + "is presented but depending bit is absent")
+		if currentR, err = tlBuiltinTuple1Int.BuiltinTuple1IntInternalReadTL2(currentR, &item.F2); err != nil {
+			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)

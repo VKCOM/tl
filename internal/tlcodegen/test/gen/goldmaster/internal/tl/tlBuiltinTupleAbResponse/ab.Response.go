@@ -49,66 +49,41 @@ func BuiltinTupleAbResponseWrite(w []byte, vec []cycle_b62dd5050d0a18c7485fd980c
 	return w, nil
 }
 
-func BuiltinTupleAbResponseCalculateLayout(sizes []int, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) []int {
+func BuiltinTupleAbResponseCalculateLayout(sizes []int, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if nat_n != 0 {
-		currentSize += basictl.TL2CalculateSize(int(nat_n))
+	if len(*vec) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
+	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	}
-
-	// append empty objects if not enough
-	for i := lastIndex; i < nat_n; i++ {
-		var elem cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
-		currentPosition := len(sizes)
+		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
-
 	sizes[sizePosition] = currentSize
 	return sizes
 }
 
-func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) ([]byte, []int) {
+func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if nat_n != 0 {
-		w = basictl.TL2WriteSize(w, int(nat_n))
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
-	}
-
-	// append empty objects if not enough
-	for i := lastIndex; i < nat_n; i++ {
-		var elem cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
 		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -127,31 +102,22 @@ func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]cycle_b62dd5050d0a18
 		}
 	}
 
-	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n)
-	} else {
-		*vec = (*vec)[:nat_n]
+	if cap(*vec) < elementCount {
+		*vec = make([]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, elementCount)
 	}
-
-	lastIndex := uint32(elementCount)
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
-	for i := lastIndex; i < nat_n; i++ {
-		(*vec)[i].Reset()
-	}
-
 	return r, nil
 }
-func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) error {
+func BuiltinTupleAbResponseReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n)
 	} else {
@@ -165,9 +131,16 @@ func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return internal.ErrorInvalidJSON("[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse", "array is longer than expected")
+				if isTL2 {
+					var newValue cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return internal.ErrorInvalidJSON("[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse", "array is longer than expected")
+				}
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -177,8 +150,12 @@ func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 			return internal.ErrorInvalidJSON("[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return internal.ErrorWrongSequenceLength("[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return internal.ErrorWrongSequenceLength("[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -188,6 +165,9 @@ func BuiltinTupleAbResponseWriteJSON(w []byte, vec []cycle_b62dd5050d0a18c7485fd
 	return BuiltinTupleAbResponseWriteJSONOpt(&tctx, w, vec, nat_n)
 }
 func BuiltinTupleAbResponseWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse, nat_n uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]cycle_b62dd5050d0a18c7485fd980c087f32c.AbResponse", len(vec), nat_n)
 	}

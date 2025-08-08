@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/TwiN/go-color v1.4.1
+	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/google/go-cmp v0.5.8
 	github.com/mailru/easyjson v0.7.8-0.20240109111231-141f9c7d7ffe
 	github.com/stretchr/testify v1.8.4
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/charmbracelet/bubbletea v1.3.4 // indirect
 	github.com/charmbracelet/lipgloss v1.0.0 // indirect
 	github.com/charmbracelet/x/ansi v0.8.0 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect

@@ -411,6 +411,8 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		comb := associatedCombinator[ref.Type]
 		if comb != nil {
 			tname := info.TypeFromName(ref.Type)
+
+			// check bracket case
 			isBracket := false
 			if len(associatedWrappers[comb]) > 0 {
 				wrapper := associatedWrappers[comb][0]
@@ -419,6 +421,14 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				isBracket = comb.Builtin && (comb.Construct.Name.String() == BuiltinTupleName ||
 					comb.Construct.Name.String() == BuiltinVectorName)
 			}
+
+			// check bool case
+			isBool := false
+			if len(associatedWrappers[comb]) > 0 {
+				wrapper := associatedWrappers[comb][0]
+				_, isBool = wrapper.trw.(*TypeRWBool)
+			}
+
 			if isBracket {
 				newRef.IsBracket = true
 				newRef.BracketType = new(tlast.TL2BracketType)
@@ -440,6 +450,13 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 					}
 				}
 				newRef.BracketType.ArrayType = resolveType(ref.Args[arrayIndex].T, natIsConstant, natTemples)
+			} else if isBool {
+				newRef.SomeType = &tlast.TL2TypeApplication{
+					Name: tlast.TL2TypeName{
+						Namespace: "",
+						Name:      "bool",
+					},
+				}
 			} else {
 				newRef.SomeType = &tlast.TL2TypeApplication{
 					Name: tlast.TL2TypeName{
@@ -498,18 +515,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 						if comb != nil && len(associatedWrappers[comb]) > 0 {
 							wrapper := associatedWrappers[comb][0]
 							if _, ok := wrapper.trw.(*TypeRWBool); ok {
-								newField.IsOptional = false
+								newField.IsOptional = true
 								newField.Type.SomeType = &tlast.TL2TypeApplication{
-									Name: tlast.TL2TypeName{Name: "maybe"},
-									Arguments: []tlast.TL2TypeArgument{
-										{
-											Type: tlast.TL2TypeRef{
-												SomeType: &tlast.TL2TypeApplication{
-													Name: tlast.TL2TypeName{Name: "bool"},
-												},
-											},
-										},
-									},
+									Name: tlast.TL2TypeName{Name: "legacy_bool"},
 								}
 								newFields = append(newFields, newField)
 								continue
@@ -622,7 +630,23 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			if len(combinators) == 0 {
 				continue
 			}
+			sort.Slice(combinators, func(i, j int) bool {
+				return combinators[i].OriginalOrderIndex <= combinators[j].OriginalOrderIndex
+			})
 			combinator0 := combinators[0]
+
+			isMaybe := false
+			// work with legacy types
+			if len(associatedWrappers[combinator0]) > 0 {
+				// remove all alterations of bool
+				wrapper := associatedWrappers[combinator0][0]
+				if _, ok := wrapper.trw.(*TypeRWBool); ok {
+					continue
+				}
+				if _, ok := wrapper.trw.(*TypeRWMaybe); ok {
+					isMaybe = true
+				}
+			}
 
 			// basic info
 			baseName := tlast.TL2TypeName{Namespace: name.Namespace, Name: lowerFirst(name.Name)}
@@ -704,6 +728,11 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				// add annotations
 				if isRef {
 					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl1Ref})
+				} else {
+					// only tl2 special info
+					if isMaybe {
+						tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl2Maybe})
+					}
 				}
 				if len(constantArgs) != 0 {
 					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl2Ext})
@@ -752,6 +781,18 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 						tl2Combinator.TypeDecl.Type.IsUnionType = true
 						for i, combinator := range combinators {
 							newVariant := tlast.TL2UnionConstructor{}
+							// add original comment
+							if i != 0 {
+								newVariant.CommentBefore = appendComment(
+									newVariant.CommentBefore,
+									combinator.CommentBefore,
+								)
+							}
+
+							newVariant.CommentBefore = appendComment(
+								newVariant.CommentBefore,
+								combinator.CommentRight,
+							)
 							newVariant.Name = upperFirst(combinator.Construct.Name.Name)
 							// name convert
 							{
@@ -762,7 +803,7 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 									typeName := combinator.TypeDecl.Name.Name
 									constructorName := combinator.Construct.Name.Name
 
-									if strings.HasPrefix(strings.ToLower(constructorName), strings.ToLower(typeName)) {
+									if strings.HasPrefix(constructorName, lowerFirst(typeName)) {
 										nameAfterPrefix := constructorName[len(typeName):]
 										if len(nameAfterPrefix) > 0 {
 											firstLetter := strings.ToLower(nameAfterPrefix)[0]
@@ -793,18 +834,6 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 								newVariant.IsTypeAlias = false
 								newVariant.Fields = addFields(combinator.Fields, natIsConstant, natTemplates)
 							}
-
-							if i != 0 {
-								newVariant.CommentBefore = appendComment(
-									newVariant.CommentBefore,
-									combinator.CommentBefore,
-								)
-							}
-
-							newVariant.CommentBefore = appendComment(
-								newVariant.CommentBefore,
-								combinator.CommentRight,
-							)
 
 							tl2Combinator.TypeDecl.Type.UnionType.Variants = append(tl2Combinator.TypeDecl.Type.UnionType.Variants, newVariant)
 						}
@@ -889,7 +918,9 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 		newState = append(newState, FileToWrite{Path: part.File, Ast: file})
 	}
 
-	printDebugInfo(associatedWrappers, natUsage, info)
+	if DEBUG {
+		printDebugInfo(associatedWrappers, natUsage, info)
+	}
 
 	return gen.MergeMigrationState(prevState, newState)
 }
@@ -1059,7 +1090,7 @@ func getTypesInfoFromTL2State(state []FileToWrite) map[tlast.TL2TypeName][]tlast
 			}
 			name := combinator.TypeDecl.Name
 			if name.String() == "vector" {
-				//print("debug")
+				//debugf("debug")
 			}
 			if combinator.HasAnnotation(tl2Ext) {
 				suffix := ""

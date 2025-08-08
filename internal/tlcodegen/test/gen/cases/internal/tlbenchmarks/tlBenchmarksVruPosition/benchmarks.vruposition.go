@@ -9,7 +9,6 @@ package tlBenchmarksVruPosition
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVruHash"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -194,6 +193,11 @@ func (item BenchmarksVruPosition) String() string {
 }
 
 func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var trueTypeCommitBitPresented bool
 	var trueTypeCommitBitValue bool
@@ -288,7 +292,7 @@ func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.Js
 				if propHashPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruposition", "hash")
 				}
-				if err := item.Hash.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Hash.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propHashPresented = true
@@ -366,23 +370,23 @@ func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.Js
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeCommitBitPresented && !trueTypeCommitBitValue && (item.FieldsMask&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.0 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeMetaBlockPresented && !trueTypeMetaBlockValue && (item.FieldsMask&(1<<1) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.1 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeSplitPayloadPresented && !trueTypeSplitPayloadValue && (item.FieldsMask&(1<<3) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.3 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeRotationBlockPresented && !trueTypeRotationBlockValue && (item.FieldsMask&(1<<5) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.5 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeCanonicalHashPresented && !trueTypeCanonicalHashValue && (item.FieldsMask&(1<<15) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.15 is indefinite because of the contradictions in values")
 	}
 	return nil
 }
@@ -482,76 +486,6 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var trueCommitBit tlTrue.True
-	// calculate layout for trueCommitBit
-	currentPosition := len(sizes)
-	if item.FieldsMask&(1<<0) != 0 {
-		sizes = trueCommitBit.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	var trueMetaBlock tlTrue.True
-	// calculate layout for trueMetaBlock
-	currentPosition = len(sizes)
-	if item.FieldsMask&(1<<1) != 0 {
-		sizes = trueMetaBlock.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	var trueSplitPayload tlTrue.True
-	// calculate layout for trueSplitPayload
-	currentPosition = len(sizes)
-	if item.FieldsMask&(1<<3) != 0 {
-		sizes = trueSplitPayload.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	var trueRotationBlock tlTrue.True
-	// calculate layout for trueRotationBlock
-	currentPosition = len(sizes)
-	if item.FieldsMask&(1<<5) != 0 {
-		sizes = trueRotationBlock.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	var trueCanonicalHash tlTrue.True
-	// calculate layout for trueCanonicalHash
-	currentPosition = len(sizes)
-	if item.FieldsMask&(1<<15) != 0 {
-		sizes = trueCanonicalHash.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
 	// calculate layout for item.PayloadOffset
 	if item.PayloadOffset != 0 {
 
@@ -567,7 +501,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Hash
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Hash.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 2
@@ -585,12 +519,10 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.SeqNumber
-	if item.FieldsMask&(1<<14) != 0 {
-		if item.SeqNumber != 0 {
+	if item.SeqNumber != 0 {
 
-			lastUsedByte = 2
-			currentSize += 8
-		}
+		lastUsedByte = 2
+		currentSize += 8
 	}
 
 	// append byte for each section until last mentioned field
@@ -625,66 +557,6 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 		if 4 != 0 {
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.FieldsMask)
-		}
-	}
-	var trueCommitBit tlTrue.True
-	// write trueCommitBit
-	if item.FieldsMask&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = trueCommitBit.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-	var trueMetaBlock tlTrue.True
-	// write trueMetaBlock
-	if item.FieldsMask&(1<<1) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = trueMetaBlock.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-	var trueSplitPayload tlTrue.True
-	// write trueSplitPayload
-	if item.FieldsMask&(1<<3) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = trueSplitPayload.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-	var trueRotationBlock tlTrue.True
-	// write trueRotationBlock
-	if item.FieldsMask&(1<<5) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 5)
-			w, sizes = trueRotationBlock.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
-	}
-	var trueCanonicalHash tlTrue.True
-	// write trueCanonicalHash
-	if item.FieldsMask&(1<<15) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 6)
-			w, sizes = trueCanonicalHash.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
 		}
 	}
 	// write item.PayloadOffset
@@ -732,13 +604,11 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 		}
 	}
 	// write item.SeqNumber
-	if item.FieldsMask&(1<<14) != 0 {
-		if item.SeqNumber != 0 {
-			serializedSize += 8
-			if 8 != 0 {
-				currentBlock |= (1 << 3)
-				w = basictl.LongWrite(w, item.SeqNumber)
-			}
+	if item.SeqNumber != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 3)
+			w = basictl.LongWrite(w, item.SeqNumber)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -800,76 +670,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 		item.FieldsMask = 0
 	}
 
-	var trueCommitBit tlTrue.True
-	// read trueCommitBit
-	if block&(1<<2) != 0 {
-		if item.FieldsMask&(1<<0) != 0 {
-			if currentR, err = trueCommitBit.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "CommitBit" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueCommitBit.Reset()
-	}
-
-	var trueMetaBlock tlTrue.True
-	// read trueMetaBlock
-	if block&(1<<3) != 0 {
-		if item.FieldsMask&(1<<1) != 0 {
-			if currentR, err = trueMetaBlock.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "MetaBlock" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueMetaBlock.Reset()
-	}
-
-	var trueSplitPayload tlTrue.True
-	// read trueSplitPayload
-	if block&(1<<4) != 0 {
-		if item.FieldsMask&(1<<3) != 0 {
-			if currentR, err = trueSplitPayload.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "SplitPayload" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueSplitPayload.Reset()
-	}
-
-	var trueRotationBlock tlTrue.True
-	// read trueRotationBlock
-	if block&(1<<5) != 0 {
-		if item.FieldsMask&(1<<5) != 0 {
-			if currentR, err = trueRotationBlock.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "RotationBlock" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueRotationBlock.Reset()
-	}
-
-	var trueCanonicalHash tlTrue.True
-	// read trueCanonicalHash
-	if block&(1<<6) != 0 {
-		if item.FieldsMask&(1<<15) != 0 {
-			if currentR, err = trueCanonicalHash.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "CanonicalHash" + "is presented but depending bit is absent")
-		}
-	} else {
-		trueCanonicalHash.Reset()
-	}
-
 	// read item.PayloadOffset
 	if block&(1<<7) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.PayloadOffset); err != nil {
@@ -917,12 +717,8 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 
 	// read item.SeqNumber
 	if block&(1<<3) != 0 {
-		if item.FieldsMask&(1<<14) != 0 {
-			if currentR, err = basictl.LongRead(currentR, &item.SeqNumber); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "SeqNumber" + "is presented but depending bit is absent")
+		if currentR, err = basictl.LongRead(currentR, &item.SeqNumber); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.SeqNumber = 0

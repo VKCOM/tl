@@ -68,7 +68,7 @@ func (struct_ *TypeRWStruct) StreamGenerateCode(qw422016 *qt422016.Writer, bytes
 	struct_.streamtypeDefinition(qw422016, bytesVersion, directImports)
 	qw422016.N().S(`
 `)
-	if struct_.wr.tlTag != 0 {
+	if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 {
 		// anonymous square brackets citizens or other exotic type
 
 		qw422016.N().S(`func (`)
@@ -148,7 +148,7 @@ func (item *`)
 	qw422016.N().S(` }
 
 `)
-	if struct_.wr.tlTag != 0 {
+	if struct_.wr.tlTag != 0 || struct_.wr.originateFromTL2 {
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadBoxed(w []byte`)
@@ -312,6 +312,9 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 		}
 
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		qw422016.N().S(`    `)
 		qw422016.N().S(prefixComment)
 		qw422016.N().S(field.goName)
@@ -368,6 +371,9 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
 	for i, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" {
 			continue
 		}
@@ -410,9 +416,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				qw422016.N().S(asterisk)
 				qw422016.N().S(isTrueType)
 				qw422016.N().S(` {
-    return `)
-				qw422016.N().S(asterisk)
-				qw422016.N().S(`item.`)
+    return item.`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`
 }
@@ -631,9 +635,24 @@ func (struct_ *TypeRWStruct) streamgenerateJSONCode(qw422016 *qt422016.Writer, b
 
 `)
 		}
+		if len(struct_.wr.NatParams) == 0 {
+			qw422016.N().S(`func (item *`)
+			qw422016.N().S(goName)
+			qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+`)
+			if struct_.wr.originateFromTL2 {
+				qw422016.N().S(`    tctx.IsTL2 = true
+`)
+			}
+			qw422016.N().S(`    return item.ReadJSONGeneral(&tctx, in)
+}
+
+`)
+		}
 		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer`)
+		qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 		qw422016.N().S(natArgsDecl)
 		qw422016.N().S(`) error {
     ptr := (*`)
@@ -673,7 +692,12 @@ func (item *`)
 		qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 		qw422016.N().S(` {
     tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    tctx.IsTL2 = true
+`)
+		}
+		qw422016.N().S(`    return item.WriteJSONOpt(&tctx, w`)
 		qw422016.N().S(natArgsCall)
 		qw422016.N().S(`)
 }
@@ -1048,9 +1072,24 @@ func (item *`)
 
 `)
 	}
+	if len(struct_.wr.NatParams) == 0 {
+		qw422016.N().S(`func (item *`)
+		qw422016.N().S(goName)
+		qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+    tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+`)
+		if struct_.wr.originateFromTL2 {
+			qw422016.N().S(`    tctx.IsTL2 = true
+`)
+		}
+		qw422016.N().S(`    return item.ReadJSONGeneral(&tctx, in)
+}
+
+`)
+	}
 	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer`)
+	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
 `)
@@ -1060,6 +1099,9 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.originalName == "" {
 			continue
 		}
@@ -1121,6 +1163,9 @@ func (item *`)
 		for _, field := range struct_.Fields {
 			/* TODO: skip anonymous names */
 
+			if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+				continue
+			}
 			if field.originalName == "" {
 				continue
 			}
@@ -1266,6 +1311,12 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.originalName == "" {
 			continue
 		}
@@ -1301,6 +1352,9 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.originalName == "" {
 			continue
 		}
@@ -1336,13 +1390,22 @@ func (item *`)
         }
 `)
 			}
-			for i := firstAffectedNat; i < len(affectedFields); i++ {
-				qw422016.N().S(`        item.`)
-				qw422016.N().S(affectedFields[i].goName)
+			if struct_.wr.originateFromTL2 {
+				qw422016.N().S(`            `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(bits[i])
+				qw422016.E().V(field.BitNumber)
 				qw422016.N().S(`
 `)
+			} else {
+				for i := firstAffectedNat; i < len(affectedFields); i++ {
+					qw422016.N().S(`        item.`)
+					qw422016.N().S(affectedFields[i].goName)
+					qw422016.N().S(` |= 1 << `)
+					qw422016.E().V(bits[i])
+					qw422016.N().S(`
+`)
+				}
 			}
 			qw422016.N().S(`    }
 `)
@@ -1353,6 +1416,9 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.originalName == "" {
 			continue
 		}
@@ -1415,20 +1481,21 @@ func (item *`)
 	/* BLOCK: trueType with false values validation */
 
 	for _, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField {
 			continue
 		}
-		fieldMask := struct_.Fields[field.fieldMask.FieldIndex]
-		fieldMaskName := fieldMask.goName
-		bit := field.BitNumber
+		bit := int(field.BitNumber)
 
 		qw422016.N().S(`        // tries to set bit to zero if it is 1
         if trueType`)
 		qw422016.N().S(field.goName)
 		qw422016.N().S(`Presented && !trueType`)
 		qw422016.N().S(field.goName)
-		qw422016.N().S(`Value && (item.`)
-		qw422016.N().S(fieldMaskName)
+		qw422016.N().S(`Value && (`)
+		qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 		qw422016.N().S(` & (1 << `)
 		qw422016.E().V(bit)
 		qw422016.N().S(`) != 0) {
@@ -1437,9 +1504,9 @@ func (item *`)
 		qw422016.N().S(`ErrorInvalidJSON(`)
 		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "fieldmask bit `)
-		qw422016.N().S(fieldMask.originalName)
+		qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 		qw422016.N().S(`.`)
-		qw422016.N().D(field.fieldMask.FieldIndex)
+		qw422016.N().D(bit)
 		qw422016.N().S(` is indefinite because of the contradictions in values")
         }
 `)
@@ -1553,7 +1620,12 @@ func (item *`)
 	qw422016.N().S(wrapWithError(writeNeedsError, "[]byte"))
 	qw422016.N().S(` {
     tctx := basictl.JSONWriteContext{}
-    return item.WriteJSONOpt(&tctx, w`)
+`)
+	if struct_.wr.originateFromTL2 {
+		qw422016.N().S(`    tctx.IsTL2 = true
+`)
+	}
+	qw422016.N().S(`    return item.WriteJSONOpt(&tctx, w`)
 	qw422016.N().S(natArgsCall)
 	qw422016.N().S(`)
 }
@@ -1567,6 +1639,9 @@ func (item *`)
     w = append(w, '{')
 `)
 	for _, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		// field names will be mandatory soon, except for typedefs which are processed separately
 
 		if field.originalName == "" {
@@ -1802,7 +1877,12 @@ func (item *`)
 	qw422016.N().S(`) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *`)
 	qw422016.N().S(retArg)
 	qw422016.N().S(`) error {
-    `)
+`)
+	if struct_.ResultType.TypeJSON2ReadingRequiresContext() {
+		qw422016.N().S(`    tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+`)
+	}
+	qw422016.N().S(`    `)
 	qw422016.N().S(struct_.ResultType.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), true))
 	qw422016.N().S(`
     return nil
@@ -1856,6 +1936,9 @@ func (item *`)
 }
 `)
 	for fieldId, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 {
 			bits := make([]uint32, 0)
 			for i := range affectedBits {
@@ -1963,6 +2046,9 @@ func (struct_ *TypeRWStruct) streamresetFields(qw422016 *qt422016.Writer, bytesV
 		return
 	}
 	for _, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.t.IsTrueType() {
 			continue
 		}
@@ -2019,6 +2105,9 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		}
 	}
 	for fieldId, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.t.IsTrueType() {
 			continue
 		}
@@ -2166,6 +2255,9 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 		return
 	}
 	for _, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		writingCode := ""
 		if field.t.IsTrueType() {
 			if field.Bare() {
@@ -2255,6 +2347,9 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 	lastWritten := false
 
 	for i, field := range struct_.Fields {
+		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			continue
+		}
 		if field.t.IsTrueType() && field.Bare() {
 			continue
 		}
@@ -2470,6 +2565,12 @@ func (item *`)
 			}
 			currentPositionFirstUsage := -1
 			for i, field := range struct_.Fields {
+				if field.t.IsTrueType() && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
+				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+					continue
+				}
 				_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
 				if len(trivialSize) == 0 {
 					currentPositionFirstUsage = i
@@ -2478,6 +2579,9 @@ func (item *`)
 			}
 
 			for fieldIndex, field := range struct_.Fields {
+				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+					continue
+				}
 				isTrue := field.t.IsTrueType()
 				fieldName := fmt.Sprintf("item.%s", field.goName)
 				if isTrue {
@@ -2493,6 +2597,11 @@ func (item *`)
 
 				qw422016.N().S(`
 `)
+				/** ?TRUE -> BOOL CASE **/
+
+				if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if isTrue {
 					qw422016.N().S(`    var `)
 					qw422016.N().S(fieldName)
@@ -2523,6 +2632,15 @@ func (item *`)
 `)
 				}
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+				_, isMaybe := field.t.trw.(*TypeRWMaybe)
+				if fieldRecursive && !isMaybe {
+					nilCheck := fmt.Sprintf("%s != nil", fieldName)
+					if nonEmptyCondition == "" {
+						nonEmptyCondition = nilCheck
+					} else {
+						nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
+					}
+				}
 
 				if nonEmptyCondition != "" {
 					qw422016.N().S(`    if `)
@@ -2665,6 +2783,9 @@ func (item *`)
 `)
 			}
 			for fieldIndex, field := range struct_.Fields {
+				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+					continue
+				}
 				if (fieldIndex+1)%8 == 0 {
 					qw422016.N().S(`
         // add byte for fields with index `)
@@ -2695,6 +2816,11 @@ func (item *`)
 				}
 				_, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
 
+				/** ?TRUE -> BOOL CASE **/
+
+				if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if isTrue {
 					qw422016.N().S(`    var `)
 					qw422016.N().S(fieldName)
@@ -2716,6 +2842,15 @@ func (item *`)
 `)
 				}
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+				_, isMaybe := field.t.trw.(*TypeRWMaybe)
+				if fieldRecursive && !isMaybe {
+					nilCheck := fmt.Sprintf("%s != nil", fieldName)
+					if nonEmptyCondition == "" {
+						nonEmptyCondition = nilCheck
+					} else {
+						nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
+					}
+				}
 
 				if nonEmptyCondition != "" {
 					qw422016.N().S(`    if `)
@@ -2887,15 +3022,20 @@ func (item *`)
         block = 0
     }
 `)
-					if tl2MasksToStore[1] {
+					if tl2MasksToStore[(fieldIndex+1)/8+1] {
 						qw422016.N().S(`    item.mask`)
-						qw422016.N().D(fieldIndex / 8)
+						qw422016.N().D((fieldIndex+1)/8 + 1)
 						qw422016.N().S(` = block
 `)
 					}
 				}
 				qw422016.N().S(`
 `)
+				/** ?TRUE -> BOOL CASE **/
+
+				if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if isTrue {
 					qw422016.N().S(`    var `)
 					qw422016.N().S(fieldName)
@@ -2904,66 +3044,80 @@ func (item *`)
 					qw422016.N().S(`
 `)
 				}
-				qw422016.N().S(`    // read `)
-				qw422016.N().S(fieldName)
-				qw422016.N().S(`
+				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+					qw422016.N().S(`    // skip `)
+					qw422016.N().D(fieldIndex + 1)
+					qw422016.N().S(`-th field
     if block & (1 << `)
-				qw422016.N().D((fieldIndex + 1) % 8)
-				qw422016.N().S(`) != 0 {
-`)
-				if fieldRecursive {
-					qw422016.N().S(`        if `)
-					qw422016.N().S(fieldName)
-					qw422016.N().S(` == nil {
-            var newValue `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-					qw422016.N().S(`
-            `)
-					qw422016.N().S(fieldName)
-					qw422016.N().S(` = &newValue
-        }
-`)
-				}
-				if field.fieldMask != nil && field.fieldMask.IsTL2() {
-					qw422016.N().S(`        if `)
-					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
-					qw422016.N().S(` & (1 << `)
-					qw422016.E().V(field.BitNumber)
+					qw422016.N().D((fieldIndex + 1) % 8)
 					qw422016.N().S(`) != 0 {
-`)
-				}
-				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive))
-				qw422016.N().S(`
-`)
-				if field.fieldMask != nil && field.fieldMask.IsTL2() {
-					qw422016.N().S(`        } else {
-            return currentR, basictl.TL2Error("field mask contradiction: field item." + "`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(`" + "is presented but depending bit is absent")
-        }
-`)
-				}
-				qw422016.N().S(`    } else {
-`)
-				if fieldRecursive {
-					qw422016.N().S(`        if `)
-					qw422016.N().S(fieldName)
-					qw422016.N().S(` == nil {
-            var newValue `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+        `)
+					qw422016.N().S(field.t.SkipTL2Call(directImports, bytesVersion, "currentR", field.fieldMask == nil, struct_.wr.ins, fieldRecursive))
 					qw422016.N().S(`
-            `)
-					qw422016.N().S(fieldName)
-					qw422016.N().S(` = &newValue
-        }
-`)
-				}
-				qw422016.N().S(`        `)
-				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive))
-				qw422016.N().S(`
     }
 `)
+				} else {
+					qw422016.N().S(`    // read `)
+					qw422016.N().S(fieldName)
+					qw422016.N().S(`
+    if block & (1 << `)
+					qw422016.N().D((fieldIndex + 1) % 8)
+					qw422016.N().S(`) != 0 {
+`)
+					if fieldRecursive {
+						qw422016.N().S(`        if `)
+						qw422016.N().S(fieldName)
+						qw422016.N().S(` == nil {
+            var newValue `)
+						qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+						qw422016.N().S(`
+            `)
+						qw422016.N().S(fieldName)
+						qw422016.N().S(` = &newValue
+        }
+`)
+					}
+					if field.fieldMask != nil && field.fieldMask.IsTL2() {
+						qw422016.N().S(`        if `)
+						qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+						qw422016.N().S(` & (1 << `)
+						qw422016.E().V(field.BitNumber)
+						qw422016.N().S(`) != 0 {
+`)
+					}
+					qw422016.N().S(`        `)
+					qw422016.N().S(field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive))
+					qw422016.N().S(`
+`)
+					if field.fieldMask != nil && field.fieldMask.IsTL2() {
+						qw422016.N().S(`        } else {
+            return currentR, basictl.TL2Error("field mask contradiction: field item." + "`)
+						qw422016.N().S(field.goName)
+						qw422016.N().S(`" + "is presented but depending bit is absent")
+        }
+`)
+					}
+					qw422016.N().S(`    } else {
+`)
+					if fieldRecursive {
+						qw422016.N().S(`        if `)
+						qw422016.N().S(fieldName)
+						qw422016.N().S(` == nil {
+            var newValue `)
+						qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
+						qw422016.N().S(`
+            `)
+						qw422016.N().S(fieldName)
+						qw422016.N().S(` = &newValue
+        }
+`)
+					}
+					qw422016.N().S(`        `)
+					qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive))
+					qw422016.N().S(`
+    }
+`)
+				}
 			}
 			qw422016.N().S(`
     return r, nil

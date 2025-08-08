@@ -59,7 +59,7 @@ func (item *AInner) WriteBoxed(w []byte, nat_I uint32) (_ []byte, err error) {
 	return item.Write(w, nat_I)
 }
 
-func (item *AInner) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_I uint32) error {
+func (item *AInner) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_I uint32) error {
 	var rawA []byte
 
 	if in != nil {
@@ -94,7 +94,7 @@ func (item *AInner) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_I 
 	if rawA != nil {
 		inAPointer = &inA
 	}
-	if err := BuiltinTupleIntReadJSON(legacyTypeNames, inAPointer, &item.A, nat_I); err != nil {
+	if err := BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, nat_I); err != nil {
 		return err
 	}
 
@@ -124,7 +124,7 @@ func (item *AInner) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_I
 	return append(w, '}'), nil
 }
 
-func (item *AInner) CalculateLayout(sizes []int, nat_I uint32) []int {
+func (item *AInner) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -134,7 +134,7 @@ func (item *AInner) CalculateLayout(sizes []int, nat_I uint32) []int {
 	// calculate layout for item.A
 	currentPosition := len(sizes)
 	if len(item.A) != 0 {
-		sizes = BuiltinTupleIntCalculateLayout(sizes, &item.A, nat_I)
+		sizes = BuiltinTupleIntCalculateLayout(sizes, &item.A)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -155,7 +155,7 @@ func (item *AInner) CalculateLayout(sizes []int, nat_I uint32) []int {
 	return sizes
 }
 
-func (item *AInner) InternalWriteTL2(w []byte, sizes []int, nat_I uint32) ([]byte, []int) {
+func (item *AInner) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -176,7 +176,7 @@ func (item *AInner) InternalWriteTL2(w []byte, sizes []int, nat_I uint32) ([]byt
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A, nat_I)
+			w, sizes = BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -185,20 +185,20 @@ func (item *AInner) InternalWriteTL2(w []byte, sizes []int, nat_I uint32) ([]byt
 	return w, sizes
 }
 
-func (item *AInner) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_I uint32) []byte {
+func (item *AInner) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_I)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_I)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *AInner) InternalReadTL2(r []byte, nat_I uint32) (_ []byte, err error) {
+func (item *AInner) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -233,7 +233,7 @@ func (item *AInner) InternalReadTL2(r []byte, nat_I uint32) (_ []byte, err error
 
 	// read item.A
 	if block&(1<<1) != 0 {
-		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.A, nat_I); err != nil {
+		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -243,8 +243,8 @@ func (item *AInner) InternalReadTL2(r []byte, nat_I uint32) (_ []byte, err error
 	return r, nil
 }
 
-func (item *AInner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_I uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_I)
+func (item *AInner) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type AInner3 struct {
@@ -296,6 +296,11 @@ func (item AInner3) String() string {
 }
 
 func (item *AInner3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AInner3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -311,7 +316,7 @@ func (item *AInner3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("a.inner", "a")
 				}
-				if err := BuiltinTuple3IntReadJSON(legacyTypeNames, in, &item.A); err != nil {
+				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
 				propAPresented = true

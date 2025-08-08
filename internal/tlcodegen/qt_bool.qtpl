@@ -1,5 +1,6 @@
 {%- import "fmt" -%}
 {%- func  (trw *TypeRWBool) GenerateCode(bytesVersion bool, directImports *DirectImports) -%}
+{%- if trw.wr.originateFromTL2 -%} {%- return -%} {%- endif -%}
 const ( {%= trw.generateBoolAlias() %} )
 func {%s= addBytes(trw.wr.goGlobalName, bytesVersion) %}ReadBoxed(w []byte, v *bool) ([]byte, error) {
     return basictl.ReadBool(w, v, {%s= trw.falseGoName %}, {%s= trw.trueGoName %})

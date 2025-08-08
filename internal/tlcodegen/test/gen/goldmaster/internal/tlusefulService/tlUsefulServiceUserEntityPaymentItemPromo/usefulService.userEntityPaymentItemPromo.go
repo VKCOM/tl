@@ -61,7 +61,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteBoxed(w []byte, nat_fi
 	return item.Write(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_fields_mask uint32) error {
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propContentPresented bool
 
 	if in != nil {
@@ -118,7 +118,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) WriteJSONOpt(tctx *basictl.
 	return append(w, '}')
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int, nat_fields_mask uint32) []int {
+func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -146,7 +146,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int
 	return sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, sizes []int, nat_fields_mask uint32) ([]byte, []int) {
+func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -174,20 +174,20 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, 
 	return w, sizes
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceUserEntityPaymentItemPromo) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_fields_mask)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_fields_mask)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
+func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -232,6 +232,6 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte, n
 	return r, nil
 }
 
-func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_fields_mask)
+func (item *UsefulServiceUserEntityPaymentItemPromo) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

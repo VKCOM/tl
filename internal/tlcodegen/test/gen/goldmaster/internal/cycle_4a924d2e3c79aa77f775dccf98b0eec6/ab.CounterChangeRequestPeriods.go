@@ -190,13 +190,21 @@ func (item *AbCounterChangeRequestPeriods) ReadTL2(r []byte, ctx *basictl.TL2Rea
 }
 
 func (item *AbCounterChangeRequestPeriods) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbCounterChangeRequestPeriods) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("ab.CounterChangeRequestPeriods", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "ab.counterChangeRequestPeriodsMany#14a35d80", "ab.counterChangeRequestPeriodsMany", "#14a35d80":
-		if !legacyTypeNames && _tag == "ab.counterChangeRequestPeriodsMany#14a35d80" {
+		if tctx.IsTL2 && _tag != "ab.counterChangeRequestPeriodsMany" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsMany#14a35d80" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "ab.counterChangeRequestPeriodsMany#14a35d80")
 		}
 		item.index = 0
@@ -205,11 +213,14 @@ func (item *AbCounterChangeRequestPeriods) ReadJSON(legacyTypeNames bool, in *ba
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueMany.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueMany.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "ab.counterChangeRequestPeriodsOne#d9c36de5", "ab.counterChangeRequestPeriodsOne", "#d9c36de5":
-		if !legacyTypeNames && _tag == "ab.counterChangeRequestPeriodsOne#d9c36de5" {
+		if tctx.IsTL2 && _tag != "ab.counterChangeRequestPeriodsOne" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.counterChangeRequestPeriodsOne#d9c36de5" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("ab.CounterChangeRequestPeriods", "ab.counterChangeRequestPeriodsOne#d9c36de5")
 		}
 		item.index = 1
@@ -218,7 +229,7 @@ func (item *AbCounterChangeRequestPeriods) ReadJSON(legacyTypeNames bool, in *ba
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueOne.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueOne.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -239,19 +250,27 @@ func (item *AbCounterChangeRequestPeriods) WriteJSON(w []byte) []byte {
 func (item *AbCounterChangeRequestPeriods) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany#14a35d80"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany#14a35d80"`...)
+			} else {
+				w = append(w, `{"type":"ab.counterChangeRequestPeriodsMany"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueMany.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne#d9c36de5"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne#d9c36de5"`...)
+			} else {
+				w = append(w, `{"type":"ab.counterChangeRequestPeriodsOne"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueOne.WriteJSONOpt(tctx, w)
@@ -331,6 +350,11 @@ func (item AbCounterChangeRequestPeriodsMany) String() string {
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbCounterChangeRequestPeriodsMany) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectsPeridosPresented bool
 
 	if in != nil {
@@ -346,7 +370,7 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadJSON(legacyTypeNames bool, in
 				if propObjectsPeridosPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("ab.counterChangeRequestPeriodsMany", "objects_peridos")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.ObjectsPeridos); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.ObjectsPeridos); err != nil {
 					return err
 				}
 				propObjectsPeridosPresented = true
@@ -574,6 +598,11 @@ func (item AbCounterChangeRequestPeriodsOne) String() string {
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbCounterChangeRequestPeriodsOne) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPeriodPresented bool
 
 	if in != nil {

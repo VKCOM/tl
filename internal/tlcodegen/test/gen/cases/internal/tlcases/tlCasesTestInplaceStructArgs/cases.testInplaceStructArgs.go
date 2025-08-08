@@ -94,6 +94,11 @@ func (item CasesTestInplaceStructArgs) String() string {
 }
 
 func (item *CasesTestInplaceStructArgs) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestInplaceStructArgs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propA1Presented bool
 	var propA2Presented bool
 	var propA3Presented bool
@@ -164,7 +169,7 @@ func (item *CasesTestInplaceStructArgs) ReadJSON(legacyTypeNames bool, in *basic
 	if rawArg != nil {
 		inArgPointer = &inArg
 	}
-	if err := item.Arg.ReadJSON(legacyTypeNames, inArgPointer, item.A1, item.A2, item.A3); err != nil {
+	if err := item.Arg.ReadJSONGeneral(tctx, inArgPointer, item.A1, item.A2, item.A3); err != nil {
 		return err
 	}
 
@@ -252,7 +257,7 @@ func (item *CasesTestInplaceStructArgs) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.Arg
 	currentPosition := len(sizes)
-	sizes = item.Arg.CalculateLayout(sizes, item.A1, item.A2, item.A3)
+	sizes = item.Arg.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -316,7 +321,7 @@ func (item *CasesTestInplaceStructArgs) InternalWriteTL2(w []byte, sizes []int) 
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 4)
-		w, sizes = item.Arg.InternalWriteTL2(w, sizes, item.A1, item.A2, item.A3)
+		w, sizes = item.Arg.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -399,7 +404,7 @@ func (item *CasesTestInplaceStructArgs) InternalReadTL2(r []byte) (_ []byte, err
 
 	// read item.Arg
 	if block&(1<<4) != 0 {
-		if currentR, err = item.Arg.InternalReadTL2(currentR, item.A1, item.A2, item.A3); err != nil {
+		if currentR, err = item.Arg.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

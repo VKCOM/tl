@@ -95,6 +95,11 @@ func (item CasesTestAllPossibleFieldConfigsContainer) String() string {
 }
 
 func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propOuterPresented bool
 	var rawValue []byte
 
@@ -141,7 +146,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) ReadJSON(legacyTypeNames 
 	if rawValue != nil {
 		inValuePointer = &inValue
 	}
-	if err := item.Value.ReadJSON(legacyTypeNames, inValuePointer, item.Outer); err != nil {
+	if err := item.Value.ReadJSONGeneral(tctx, inValuePointer, item.Outer); err != nil {
 		return err
 	}
 
@@ -201,7 +206,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) CalculateLayout(sizes []i
 
 	// calculate layout for item.Value
 	currentPosition := len(sizes)
-	sizes = item.Value.CalculateLayout(sizes, item.Outer)
+	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -249,7 +254,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalWriteTL2(w []byte
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 2)
-		w, sizes = item.Value.InternalWriteTL2(w, sizes, item.Outer)
+		w, sizes = item.Value.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -314,7 +319,7 @@ func (item *CasesTestAllPossibleFieldConfigsContainer) InternalReadTL2(r []byte)
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = item.Value.InternalReadTL2(currentR, item.Outer); err != nil {
+		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

@@ -10,7 +10,6 @@ package tlService5Insert
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -144,7 +143,8 @@ func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
 }
 
 func (item *Service5Insert) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -184,6 +184,11 @@ func (item Service5Insert) String() string {
 }
 
 func (item *Service5Insert) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5Insert) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagsPresented bool
 	var trueTypePersistentPresented bool
 	var trueTypePersistentValue bool
@@ -233,7 +238,7 @@ func (item *Service5Insert) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypePersistentPresented && !trueTypePersistentValue && (item.Flags&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("service5.insert", "fieldmask bit flags.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("service5.insert", "fieldmask bit item.Flags.0 is indefinite because of the contradictions in values")
 	}
 	return nil
 }
@@ -288,20 +293,6 @@ func (item *Service5Insert) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var truePersistent tlTrue.True
-	// calculate layout for truePersistent
-	currentPosition := len(sizes)
-	if item.Flags&(1<<0) != 0 {
-		sizes = truePersistent.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
 		currentSize += lastUsedByte
@@ -334,18 +325,6 @@ func (item *Service5Insert) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 		if 4 != 0 {
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.Flags)
-		}
-	}
-	var truePersistent tlTrue.True
-	// write truePersistent
-	if item.Flags&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = truePersistent.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -405,20 +384,6 @@ func (item *Service5Insert) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 	} else {
 		item.Flags = 0
-	}
-
-	var truePersistent tlTrue.True
-	// read truePersistent
-	if block&(1<<2) != 0 {
-		if item.Flags&(1<<0) != 0 {
-			if currentR, err = truePersistent.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "Persistent" + "is presented but depending bit is absent")
-		}
-	} else {
-		truePersistent.Reset()
 	}
 
 	return r, nil

@@ -69,6 +69,11 @@ func (item Cyc3MyCycle) String() string {
 }
 
 func (item *Cyc3MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Cyc3MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 
@@ -93,7 +98,7 @@ func (item *Cyc3MyCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cyc3.myCycle", "a")
 				}
-				if err := BuiltinVectorCyc1MyCycleReadJSON(legacyTypeNames, in, &item.A); err != nil {
+				if err := BuiltinVectorCyc1MyCycleReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -420,7 +425,7 @@ func (item *Cyc3MyCycleMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *Cyc3MyCycleMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *Cyc3MyCycleMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -432,7 +437,7 @@ func (item *Cyc3MyCycleMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	}

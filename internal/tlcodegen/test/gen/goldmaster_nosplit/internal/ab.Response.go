@@ -68,6 +68,11 @@ func (item AbAlias) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *AbAlias) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbAlias) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*int32)(item)
 	if err := Json2ReadInt32(in, ptr); err != nil {
 		return err
@@ -114,7 +119,7 @@ func (item *AbAlias) CalculateLayout(sizes []int) []int {
 	currentSize += basictl.TL2CalculateSize(2)
 
 	// calculate layout for ptr
-	if *ptr != 0 {
+	if ptr != nil && *ptr != 0 {
 
 		lastUsedByte = 1
 		currentSize += 4
@@ -154,7 +159,7 @@ func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	w = basictl.TL2WriteSize(w, 2)
 	serializedSize += basictl.TL2CalculateSize(2)
 	// write ptr
-	if *ptr != 0 {
+	if ptr != nil && *ptr != 0 {
 		serializedSize += 4
 		if 4 != 0 {
 			currentBlock |= (1 << 1)
@@ -289,6 +294,11 @@ func (item AbCode) String() string {
 }
 
 func (item *AbCode) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbCode) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -525,6 +535,11 @@ func (item AbEmpty) String() string {
 }
 
 func (item *AbEmpty) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbEmpty) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -880,18 +895,29 @@ func (item *AbResponse) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, 
 }
 
 func (item *AbResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("ab.Response", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "ab.empty#1ec6a63e", "ab.empty", "#1ec6a63e":
-		if !legacyTypeNames && _tag == "ab.empty#1ec6a63e" {
+		if tctx.IsTL2 && _tag != "ab.empty" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.empty#1ec6a63e" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "ab.empty#1ec6a63e")
 		}
 		item.index = 0
 	case "ab.code#7651b1ac", "ab.code", "#7651b1ac":
-		if !legacyTypeNames && _tag == "ab.code#7651b1ac" {
+		if tctx.IsTL2 && _tag != "ab.code" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.code#7651b1ac" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "ab.code#7651b1ac")
 		}
 		item.index = 1
@@ -900,11 +926,14 @@ func (item *AbResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueCode.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueCode.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "ab.alias#944aaa97", "ab.alias", "#944aaa97":
-		if !legacyTypeNames && _tag == "ab.alias#944aaa97" {
+		if tctx.IsTL2 && _tag != "ab.alias" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.alias#944aaa97" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "ab.alias#944aaa97")
 		}
 		item.index = 2
@@ -913,11 +942,14 @@ func (item *AbResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueAlias.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueAlias.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "cd.response#8c202f64", "cd.response", "#8c202f64":
-		if !legacyTypeNames && _tag == "cd.response#8c202f64" {
+		if tctx.IsTL2 && _tag != "cd.response" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "cd.response#8c202f64" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "cd.response#8c202f64")
 		}
 		item.index = 3
@@ -926,7 +958,7 @@ func (item *AbResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueResponse.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueResponse.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -947,26 +979,38 @@ func (item *AbResponse) WriteJSON(w []byte) []byte {
 func (item *AbResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.empty#1ec6a63e"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.empty"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.empty#1ec6a63e"`...)
+			} else {
+				w = append(w, `{"type":"ab.empty"`...)
+			}
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.code#7651b1ac"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.code"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.code#7651b1ac"`...)
+			} else {
+				w = append(w, `{"type":"ab.code"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueCode.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 2:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.alias#944aaa97"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.alias"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.alias#944aaa97"`...)
+			} else {
+				w = append(w, `{"type":"ab.alias"`...)
+			}
 		}
 		if item.valueAlias != 0 {
 			w = append(w, `,"value":`...)
@@ -974,10 +1018,14 @@ func (item *AbResponse) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) [
 		}
 		return append(w, '}')
 	case 3:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"cd.response#8c202f64"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"cd.response"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cd.response#8c202f64"`...)
+			} else {
+				w = append(w, `{"type":"cd.response"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueResponse.WriteJSONOpt(tctx, w)
@@ -1225,18 +1273,29 @@ func (item *AbResponseBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]b
 }
 
 func (item *AbResponseBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("ab.Response", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "ab.empty#1ec6a63e", "ab.empty", "#1ec6a63e":
-		if !legacyTypeNames && _tag == "ab.empty#1ec6a63e" {
+		if tctx.IsTL2 && _tag != "ab.empty" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.empty#1ec6a63e" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "ab.empty#1ec6a63e")
 		}
 		item.index = 0
 	case "ab.code#7651b1ac", "ab.code", "#7651b1ac":
-		if !legacyTypeNames && _tag == "ab.code#7651b1ac" {
+		if tctx.IsTL2 && _tag != "ab.code" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.code#7651b1ac" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "ab.code#7651b1ac")
 		}
 		item.index = 1
@@ -1245,11 +1304,14 @@ func (item *AbResponseBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueCode.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueCode.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "ab.alias#944aaa97", "ab.alias", "#944aaa97":
-		if !legacyTypeNames && _tag == "ab.alias#944aaa97" {
+		if tctx.IsTL2 && _tag != "ab.alias" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "ab.alias#944aaa97" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "ab.alias#944aaa97")
 		}
 		item.index = 2
@@ -1258,11 +1320,14 @@ func (item *AbResponseBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueAlias.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueAlias.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "cd.response#8c202f64", "cd.response", "#8c202f64":
-		if !legacyTypeNames && _tag == "cd.response#8c202f64" {
+		if tctx.IsTL2 && _tag != "cd.response" {
+			return ErrorInvalidUnionLegacyTagJSON("ab.Response", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "cd.response#8c202f64" {
 			return ErrorInvalidUnionLegacyTagJSON("ab.Response", "cd.response#8c202f64")
 		}
 		item.index = 3
@@ -1271,7 +1336,7 @@ func (item *AbResponseBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueResponse.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueResponse.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -1292,26 +1357,38 @@ func (item *AbResponseBytes) WriteJSON(w []byte) []byte {
 func (item *AbResponseBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.empty#1ec6a63e"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.empty"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.empty#1ec6a63e"`...)
+			} else {
+				w = append(w, `{"type":"ab.empty"`...)
+			}
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.code#7651b1ac"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.code"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.code#7651b1ac"`...)
+			} else {
+				w = append(w, `{"type":"ab.code"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueCode.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 2:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"ab.alias#944aaa97"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"ab.alias"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"ab.alias#944aaa97"`...)
+			} else {
+				w = append(w, `{"type":"ab.alias"`...)
+			}
 		}
 		if item.valueAlias != 0 {
 			w = append(w, `,"value":`...)
@@ -1319,10 +1396,14 @@ func (item *AbResponseBytes) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 		}
 		return append(w, '}')
 	case 3:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"cd.response#8c202f64"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"cd.response"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"cd.response#8c202f64"`...)
+			} else {
+				w = append(w, `{"type":"cd.response"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueResponse.WriteJSONOpt(tctx, w)
@@ -1383,66 +1464,41 @@ func BuiltinTupleAbResponseWrite(w []byte, vec []AbResponse, nat_n uint32) (_ []
 	return w, nil
 }
 
-func BuiltinTupleAbResponseCalculateLayout(sizes []int, vec *[]AbResponse, nat_n uint32) []int {
+func BuiltinTupleAbResponseCalculateLayout(sizes []int, vec *[]AbResponse) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if nat_n != 0 {
-		currentSize += basictl.TL2CalculateSize(int(nat_n))
+	if len(*vec) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
+	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	}
-
-	// append empty objects if not enough
-	for i := lastIndex; i < nat_n; i++ {
-		var elem AbResponse
-		currentPosition := len(sizes)
+		elem := (*vec)[i]
 		sizes = elem.CalculateLayout(sizes)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
-
 	sizes[sizePosition] = currentSize
 	return sizes
 }
 
-func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, vec *[]AbResponse, nat_n uint32) ([]byte, []int) {
+func BuiltinTupleAbResponseInternalWriteTL2(w []byte, sizes []int, vec *[]AbResponse) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if nat_n != 0 {
-		w = basictl.TL2WriteSize(w, int(nat_n))
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
-	}
-
-	// append empty objects if not enough
-	for i := lastIndex; i < nat_n; i++ {
-		var elem AbResponse
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
 		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]AbResponse, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]AbResponse) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1461,31 +1517,22 @@ func BuiltinTupleAbResponseInternalReadTL2(r []byte, vec *[]AbResponse, nat_n ui
 		}
 	}
 
-	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]AbResponse, nat_n)
-	} else {
-		*vec = (*vec)[:nat_n]
+	if cap(*vec) < elementCount {
+		*vec = make([]AbResponse, elementCount)
 	}
-
-	lastIndex := uint32(elementCount)
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
 		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
-	for i := lastIndex; i < nat_n; i++ {
-		(*vec)[i].Reset()
-	}
-
 	return r, nil
 }
-func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]AbResponse, nat_n uint32) error {
+func BuiltinTupleAbResponseReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]AbResponse, nat_n uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]AbResponse, nat_n)
 	} else {
@@ -1499,9 +1546,16 @@ func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return ErrorInvalidJSON("[]AbResponse", "array is longer than expected")
+				if isTL2 {
+					var newValue AbResponse
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return ErrorInvalidJSON("[]AbResponse", "array is longer than expected")
+				}
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -1511,8 +1565,12 @@ func BuiltinTupleAbResponseReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 			return ErrorInvalidJSON("[]AbResponse", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return ErrorWrongSequenceLength("[]AbResponse", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return ErrorWrongSequenceLength("[]AbResponse", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -1522,6 +1580,9 @@ func BuiltinTupleAbResponseWriteJSON(w []byte, vec []AbResponse, nat_n uint32) (
 	return BuiltinTupleAbResponseWriteJSONOpt(&tctx, w, vec, nat_n)
 }
 func BuiltinTupleAbResponseWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []AbResponse, nat_n uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, ErrorWrongSequenceLength("[]AbResponse", len(vec), nat_n)
 	}
@@ -1595,6 +1656,11 @@ func (item CdResponse) String() string {
 }
 
 func (item *CdResponse) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CdResponse) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propStrPresented bool
 
@@ -1893,6 +1959,11 @@ func (item CdResponseBytes) String() string {
 }
 
 func (item *CdResponseBytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CdResponseBytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propStrPresented bool
 

@@ -79,6 +79,11 @@ func (item Hren) String() string {
 }
 
 func (item *Hren) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Hren) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNextPresented bool
 
 	if in != nil {
@@ -98,7 +103,7 @@ func (item *Hren) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 					var value HrenMaybe
 					item.Next = &value
 				}
-				if err := item.Next.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Next.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propNextPresented = true
@@ -401,7 +406,7 @@ func (item *HrenMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *HrenMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *HrenMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -413,7 +418,7 @@ func (item *HrenMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	}

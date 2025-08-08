@@ -65,8 +65,13 @@ func (item TupleString4) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleString4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleString4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[4]string)(item)
-	if err := tlBuiltinTuple4String.BuiltinTuple4StringReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinTuple4String.BuiltinTuple4StringReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil
@@ -184,8 +189,13 @@ func (item TupleString4Bytes) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleString4Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleString4Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[4][]byte)(item)
-	if err := tlBuiltinTuple4String.BuiltinTuple4StringBytesReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinTuple4String.BuiltinTuple4StringBytesReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

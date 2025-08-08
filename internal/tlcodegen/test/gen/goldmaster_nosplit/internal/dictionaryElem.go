@@ -171,7 +171,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(r []byte, m *map[in
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemIntPairIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[int32]PairIntInt) error {
+func BuiltinVectorDictionaryElemIntPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32]PairIntInt) error {
 	var data map[int32]PairIntInt
 	if *m == nil {
 		*m = make(map[int32]PairIntInt, 0)
@@ -199,7 +199,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntReadJSON(legacyTypeNames bool, in *
 				return err
 			}
 			var value PairIntInt
-			if err := value.ReadJSON(legacyTypeNames, in); err != nil {
+			if err := value.ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			data[key] = value
@@ -393,7 +393,7 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(r []byte, m *map[i
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemLongPairIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[int64]PairIntInt) error {
+func BuiltinVectorDictionaryElemLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]PairIntInt) error {
 	var data map[int64]PairIntInt
 	if *m == nil {
 		*m = make(map[int64]PairIntInt, 0)
@@ -421,7 +421,7 @@ func BuiltinVectorDictionaryElemLongPairIntIntReadJSON(legacyTypeNames bool, in 
 				return err
 			}
 			var value PairIntInt
-			if err := value.ReadJSON(legacyTypeNames, in); err != nil {
+			if err := value.ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			data[key] = value
@@ -562,7 +562,7 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(r []byte, vec *
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]DictionaryElemPairBoolAColorInt) error {
+func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryElemPairBoolAColorInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -576,7 +576,7 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSON(legacyTypeNames bool, 
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -706,7 +706,7 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntInternalReadTL2(r []byte, vec 
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]DictionaryElemPairFloatDoubleInt) error {
+func BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryElemPairFloatDoubleInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -720,7 +720,7 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntReadJSON(legacyTypeNames bool,
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -850,7 +850,7 @@ func BuiltinVectorDictionaryElemPairIntIntIntInternalReadTL2(r []byte, vec *[]Di
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemPairIntIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]DictionaryElemPairIntIntInt) error {
+func BuiltinVectorDictionaryElemPairIntIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryElemPairIntIntInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -864,7 +864,7 @@ func BuiltinVectorDictionaryElemPairIntIntIntReadJSON(legacyTypeNames bool, in *
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -994,7 +994,7 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(r 
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]DictionaryElemPairIntPairMultiPointStringInt) error {
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryElemPairIntPairMultiPointStringInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -1008,7 +1008,7 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTyp
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -1185,7 +1185,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(r []byte, m *map
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemStringPairIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]PairIntInt) error {
+func BuiltinVectorDictionaryElemStringPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]PairIntInt) error {
 	var data map[string]PairIntInt
 	if *m == nil {
 		*m = make(map[string]PairIntInt, 0)
@@ -1205,7 +1205,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntReadJSON(legacyTypeNames bool, i
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value PairIntInt
-			if err := value.ReadJSON(legacyTypeNames, in); err != nil {
+			if err := value.ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			data[key] = value
@@ -1280,7 +1280,7 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []DictionaryEl
 	return w, nil
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]DictionaryElemTupleStringInt, nat_t uint32) []int {
+func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]DictionaryElemTupleStringInt) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -1290,7 +1290,7 @@ func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
-		sizes = elem.CalculateLayout(sizes, nat_t)
+		sizes = elem.CalculateLayout(sizes)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -1298,7 +1298,7 @@ func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *
 	return sizes
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, vec *[]DictionaryElemTupleStringInt, nat_t uint32) ([]byte, []int) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, vec *[]DictionaryElemTupleStringInt) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -1309,12 +1309,12 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes [
 
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]DictionaryElemTupleStringInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1338,14 +1338,14 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]D
 	}
 	*vec = (*vec)[:elementCount]
 	for i := 0; i < elementCount; i++ {
-		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]DictionaryElemTupleStringInt, nat_t uint32) error {
+func BuiltinVectorDictionaryElemTupleStringIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]DictionaryElemTupleStringInt, nat_t uint32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -1359,7 +1359,7 @@ func BuiltinVectorDictionaryElemTupleStringIntReadJSON(legacyTypeNames bool, in 
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in, nat_t); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_t); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -1444,6 +1444,11 @@ func (item DictionaryElemIntPairIntInt) String() string {
 }
 
 func (item *DictionaryElemIntPairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemIntPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -1468,7 +1473,7 @@ func (item *DictionaryElemIntPairIntInt) ReadJSON(legacyTypeNames bool, in *basi
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true
@@ -1725,6 +1730,11 @@ func (item DictionaryElemLongPairIntInt) String() string {
 }
 
 func (item *DictionaryElemLongPairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemLongPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -1749,7 +1759,7 @@ func (item *DictionaryElemLongPairIntInt) ReadJSON(legacyTypeNames bool, in *bas
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true
@@ -2006,6 +2016,11 @@ func (item DictionaryElemPairBoolAColorInt) String() string {
 }
 
 func (item *DictionaryElemPairBoolAColorInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemPairBoolAColorInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -2022,7 +2037,7 @@ func (item *DictionaryElemPairBoolAColorInt) ReadJSON(legacyTypeNames bool, in *
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "key")
 				}
-				if err := item.Key.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Key.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propKeyPresented = true
@@ -2287,6 +2302,11 @@ func (item DictionaryElemPairFloatDoubleInt) String() string {
 }
 
 func (item *DictionaryElemPairFloatDoubleInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemPairFloatDoubleInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -2303,7 +2323,7 @@ func (item *DictionaryElemPairFloatDoubleInt) ReadJSON(legacyTypeNames bool, in 
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "key")
 				}
-				if err := item.Key.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Key.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propKeyPresented = true
@@ -2568,6 +2588,11 @@ func (item DictionaryElemPairIntIntInt) String() string {
 }
 
 func (item *DictionaryElemPairIntIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemPairIntIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -2584,7 +2609,7 @@ func (item *DictionaryElemPairIntIntInt) ReadJSON(legacyTypeNames bool, in *basi
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "key")
 				}
-				if err := item.Key.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Key.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propKeyPresented = true
@@ -2849,6 +2874,11 @@ func (item DictionaryElemPairIntPairMultiPointStringInt) String() string {
 }
 
 func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -2865,7 +2895,7 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) ReadJSON(legacyTypeNam
 				if propKeyPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "key")
 				}
-				if err := item.Key.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Key.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propKeyPresented = true
@@ -3130,6 +3160,11 @@ func (item DictionaryElemStringPairIntInt) String() string {
 }
 
 func (item *DictionaryElemStringPairIntInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemStringPairIntInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -3154,7 +3189,7 @@ func (item *DictionaryElemStringPairIntInt) ReadJSON(legacyTypeNames bool, in *b
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("dictionaryElem", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true
@@ -3412,7 +3447,7 @@ func (item *DictionaryElemTupleStringInt) WriteBoxed(w []byte, nat_k uint32) (_ 
 	return item.Write(w, nat_k)
 }
 
-func (item *DictionaryElemTupleStringInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_k uint32) error {
+func (item *DictionaryElemTupleStringInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_k uint32) error {
 	var rawKey []byte
 	var propValuePresented bool
 
@@ -3459,7 +3494,7 @@ func (item *DictionaryElemTupleStringInt) ReadJSON(legacyTypeNames bool, in *bas
 	if rawKey != nil {
 		inKeyPointer = &inKey
 	}
-	if err := BuiltinTupleStringReadJSON(legacyTypeNames, inKeyPointer, &item.Key, nat_k); err != nil {
+	if err := BuiltinTupleStringReadJSONGeneral(tctx, inKeyPointer, &item.Key, nat_k); err != nil {
 		return err
 	}
 
@@ -3496,7 +3531,7 @@ func (item *DictionaryElemTupleStringInt) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	return append(w, '}'), nil
 }
 
-func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uint32) []int {
+func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -3506,7 +3541,7 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uin
 	// calculate layout for item.Key
 	currentPosition := len(sizes)
 	if len(item.Key) != 0 {
-		sizes = BuiltinTupleStringCalculateLayout(sizes, &item.Key, nat_k)
+		sizes = BuiltinTupleStringCalculateLayout(sizes, &item.Key)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -3534,7 +3569,7 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, nat_k uin
 	return sizes
 }
 
-func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int, nat_k uint32) ([]byte, []int) {
+func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -3555,7 +3590,7 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = BuiltinTupleStringInternalWriteTL2(w, sizes, &item.Key, nat_k)
+			w, sizes = BuiltinTupleStringInternalWriteTL2(w, sizes, &item.Key)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -3572,20 +3607,20 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 	return w, sizes
 }
 
-func (item *DictionaryElemTupleStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_k uint32) []byte {
+func (item *DictionaryElemTupleStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_k)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_k)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32) (_ []byte, err error) {
+func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -3620,7 +3655,7 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = BuiltinTupleStringInternalReadTL2(currentR, &item.Key, nat_k); err != nil {
+		if currentR, err = BuiltinTupleStringInternalReadTL2(currentR, &item.Key); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -3639,6 +3674,6 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte, nat_k uint32
 	return r, nil
 }
 
-func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_k uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_k)
+func (item *DictionaryElemTupleStringInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

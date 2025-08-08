@@ -114,7 +114,8 @@ func (item *AbCall10) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret
 }
 
 func (item *AbCall10) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *AColor) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -154,6 +155,11 @@ func (item AbCall10) String() string {
 }
 
 func (item *AbCall10) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbCall10) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

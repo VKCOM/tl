@@ -169,37 +169,57 @@ func (item *AColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, erro
 }
 
 func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_jtype := in.UnsafeString()
 	if !in.Ok() {
 		return ErrorInvalidJSON("a.Color", "expected string")
 	}
 	switch _jtype {
 	case "a.color#f35d7a69", "a.color", "#f35d7a69":
-		if !legacyTypeNames && _jtype == "a.color#f35d7a69" {
+		if tctx.IsTL2 && _jtype != "a.color" {
+			return ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.color#f35d7a69" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.color#f35d7a69")
 		}
 		item.index = 0
 		return nil
 	case "a.red#b83a723d", "a.red", "#b83a723d":
-		if !legacyTypeNames && _jtype == "a.red#b83a723d" {
+		if tctx.IsTL2 && _jtype != "a.red" {
+			return ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.red#b83a723d" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.red#b83a723d")
 		}
 		item.index = 1
 		return nil
 	case "a.green#6127e7b8", "a.green", "#6127e7b8":
-		if !legacyTypeNames && _jtype == "a.green#6127e7b8" {
+		if tctx.IsTL2 && _jtype != "a.green" {
+			return ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.green#6127e7b8" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.green#6127e7b8")
 		}
 		item.index = 2
 		return nil
 	case "b.red#a9471844", "b.red", "#a9471844":
-		if !legacyTypeNames && _jtype == "b.red#a9471844" {
+		if tctx.IsTL2 && _jtype != "b.red" {
+			return ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "b.red#a9471844" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "b.red#a9471844")
 		}
 		item.index = 3
 		return nil
 	case "a.blue#623360f3", "a.blue", "#623360f3":
-		if !legacyTypeNames && _jtype == "a.blue#623360f3" {
+		if tctx.IsTL2 && _jtype != "a.blue" {
+			return ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.blue#623360f3" {
 			return ErrorInvalidUnionLegacyTagJSON("a.Color", "a.blue#623360f3")
 		}
 		item.index = 4
@@ -363,7 +383,7 @@ func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 
-func (item *AColorBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *AColorBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -375,7 +395,7 @@ func (item *AColorBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	}
@@ -514,7 +534,7 @@ func BuiltinVectorAColorInternalReadTL2(r []byte, vec *[]AColor) (_ []byte, err 
 	return r, nil
 }
 
-func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]AColor) error {
+func BuiltinVectorAColorReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]AColor) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -528,7 +548,7 @@ func BuiltinVectorAColorReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, ve
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

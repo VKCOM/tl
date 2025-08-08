@@ -125,6 +125,11 @@ func (item CasesTL2TestParamsGeneration) String() string {
 }
 
 func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestParamsGeneration) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propN1Presented bool
 	var propN2Presented bool
 	var propX1Presented bool
@@ -161,7 +166,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *bas
 				if propX1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testParamsGeneration", "x1")
 				}
-				if err := item.X1.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X1.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propX1Presented = true
@@ -213,7 +218,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *bas
 	if rawX2 != nil {
 		inX2Pointer = &inX2
 	}
-	if err := item.X2.ReadJSON(legacyTypeNames, inX2Pointer, item.N1); err != nil {
+	if err := item.X2.ReadJSONGeneral(tctx, inX2Pointer, item.N1); err != nil {
 		return err
 	}
 
@@ -222,7 +227,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *bas
 	if rawX3 != nil {
 		inX3Pointer = &inX3
 	}
-	if err := item.X3.ReadJSON(legacyTypeNames, inX3Pointer, item.N2); err != nil {
+	if err := item.X3.ReadJSONGeneral(tctx, inX3Pointer, item.N2); err != nil {
 		return err
 	}
 
@@ -231,7 +236,7 @@ func (item *CasesTL2TestParamsGeneration) ReadJSON(legacyTypeNames bool, in *bas
 	if rawX4 != nil {
 		inX4Pointer = &inX4
 	}
-	if err := item.X4.ReadJSON(legacyTypeNames, inX4Pointer, item.N1, item.N2); err != nil {
+	if err := item.X4.ReadJSONGeneral(tctx, inX4Pointer, item.N1, item.N2); err != nil {
 		return err
 	}
 
@@ -329,7 +334,7 @@ func (item *CasesTL2TestParamsGeneration) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.X2
 	currentPosition = len(sizes)
-	sizes = item.X2.CalculateLayout(sizes, item.N1)
+	sizes = item.X2.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -340,7 +345,7 @@ func (item *CasesTL2TestParamsGeneration) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.X3
 	currentPosition = len(sizes)
-	sizes = item.X3.CalculateLayout(sizes, item.N2)
+	sizes = item.X3.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -351,7 +356,7 @@ func (item *CasesTL2TestParamsGeneration) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.X4
 	currentPosition = len(sizes)
-	sizes = item.X4.CalculateLayout(sizes, item.N1, item.N2)
+	sizes = item.X4.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -416,7 +421,7 @@ func (item *CasesTL2TestParamsGeneration) InternalWriteTL2(w []byte, sizes []int
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 4)
-		w, sizes = item.X2.InternalWriteTL2(w, sizes, item.N1)
+		w, sizes = item.X2.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -425,7 +430,7 @@ func (item *CasesTL2TestParamsGeneration) InternalWriteTL2(w []byte, sizes []int
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 5)
-		w, sizes = item.X3.InternalWriteTL2(w, sizes, item.N2)
+		w, sizes = item.X3.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -434,7 +439,7 @@ func (item *CasesTL2TestParamsGeneration) InternalWriteTL2(w []byte, sizes []int
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 6)
-		w, sizes = item.X4.InternalWriteTL2(w, sizes, item.N1, item.N2)
+		w, sizes = item.X4.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -517,7 +522,7 @@ func (item *CasesTL2TestParamsGeneration) InternalReadTL2(r []byte) (_ []byte, e
 
 	// read item.X2
 	if block&(1<<4) != 0 {
-		if currentR, err = item.X2.InternalReadTL2(currentR, item.N1); err != nil {
+		if currentR, err = item.X2.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -526,7 +531,7 @@ func (item *CasesTL2TestParamsGeneration) InternalReadTL2(r []byte) (_ []byte, e
 
 	// read item.X3
 	if block&(1<<5) != 0 {
-		if currentR, err = item.X3.InternalReadTL2(currentR, item.N2); err != nil {
+		if currentR, err = item.X3.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -535,7 +540,7 @@ func (item *CasesTL2TestParamsGeneration) InternalReadTL2(r []byte) (_ []byte, e
 
 	// read item.X4
 	if block&(1<<6) != 0 {
-		if currentR, err = item.X4.InternalReadTL2(currentR, item.N1, item.N2); err != nil {
+		if currentR, err = item.X4.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

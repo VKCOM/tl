@@ -39,6 +39,15 @@ type TypeRWTL2 interface {
 		refObject bool,
 	) string
 
+	skipTL2Call(
+		directImports *DirectImports,
+		bytesVersion bool,
+		targetBytes string,
+		canDependOnLocalBit bool,
+		ins *InternalNamespace,
+		refObject bool,
+	) string
+
 	doesReadTL2UseObject(canDependOnLocalBit bool) bool
 	doesReadTL2UseBytes(canDependOnLocalBit bool) bool
 }
@@ -81,4 +90,16 @@ func (w *TypeRWWrapper) ReadTL2Call(
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.readTL2Call(directImports, bytesVersion, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
+}
+
+func (w *TypeRWWrapper) SkipTL2Call(
+	directImports *DirectImports,
+	bytesVersion bool,
+	targetBytes string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+) string {
+	bytesVersion = bytesVersion && w.hasBytesVersion
+	return w.trw.skipTL2Call(directImports, bytesVersion, targetBytes, canDependOnLocalBit, ins, refObject)
 }

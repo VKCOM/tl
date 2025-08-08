@@ -146,10 +146,16 @@ func (w *TypeRWWrapper) IsTopLevel() bool {
 			if w.tl2IsResult {
 				return false
 			}
-			if w.tl2Origin.IsFunction {
-				return true
+			if w.tl2IsBuiltinBrackets {
+				return false
 			}
-			return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
+			if w.tl2Origin != nil {
+				if w.tl2Origin.IsFunction {
+					return true
+				}
+				return len(w.tl2Origin.TypeDecl.TemplateArguments) == 0
+			}
+			return false
 		} else {
 			return false
 		}
@@ -169,8 +175,10 @@ func (w *TypeRWWrapper) CanonicalString(bare bool) string {
 				s.WriteString(w.tl2Origin.FuncDecl.Name.String() + "__Result")
 			} else if w.tl2IsBuiltinBrackets {
 				s.WriteString("__builtin_brackets")
-			} else {
+			} else if w.tl2Origin != nil {
 				s.WriteString(w.tl2Origin.TypeDecl.Name.String())
+			} else {
+				s.WriteString(w.tl2Name.String())
 			}
 		} else {
 			originType := w.unionParent.wr.tl2Origin
@@ -607,6 +615,10 @@ func (w *TypeRWWrapper) TypeJSONReadingCode(bytesVersion bool, directImports *Di
 func (w *TypeRWWrapper) TypeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
 	return w.trw.typeJSON2ReadingCode(bytesVersion, directImports, ins, jvalue, val, natArgs, ref)
+}
+
+func (w *TypeRWWrapper) TypeJSON2ReadingRequiresContext() bool {
+	return w.trw.typeJSON2ReadingRequiresContext()
 }
 
 func (w *TypeRWWrapper) IsTrueType() bool {
@@ -1193,6 +1205,7 @@ type TypeRW interface {
 	typeJSONWritingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, val string, natArgs []string, ref bool, needError bool) string
 	typeJSONReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
 	typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string
+	typeJSON2ReadingRequiresContext() bool
 	GenerateCode(bytesVersion bool, directImports *DirectImports) string
 
 	TypeRWCPPData
@@ -1248,6 +1261,10 @@ func (f *Field) HasNatArguments() bool {
 
 func (f *Field) IsLocalIndependent() bool {
 	return !f.IsAffectingLocalFieldMasks() && !f.IsTypeDependsFromLocalFields()
+}
+
+func (f *Field) IsTL2Omitted() bool {
+	return f.originalName == "_"
 }
 
 func wrapWithError(wrap bool, wrappedType string) string {

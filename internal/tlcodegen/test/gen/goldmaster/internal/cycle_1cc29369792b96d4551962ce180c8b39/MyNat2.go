@@ -194,18 +194,29 @@ func (item *MyNat2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, erro
 }
 
 func (item *MyNat2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyNat2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("MyNat2", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "myZero#8d868379", "myZero", "#8d868379":
-		if !legacyTypeNames && _tag == "myZero#8d868379" {
+		if tctx.IsTL2 && _tag != "myZero" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "myZero#8d868379" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", "myZero#8d868379")
 		}
 		item.index = 0
 	case "myPlus#79e0c6df", "myPlus", "#79e0c6df":
-		if !legacyTypeNames && _tag == "myPlus#79e0c6df" {
+		if tctx.IsTL2 && _tag != "myPlus" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "myPlus#79e0c6df" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyNat2", "myPlus#79e0c6df")
 		}
 		item.index = 1
@@ -218,7 +229,7 @@ func (item *MyNat2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueMyPlus.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueMyPlus.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -239,17 +250,25 @@ func (item *MyNat2) WriteJSON(w []byte) []byte {
 func (item *MyNat2) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"myZero#8d868379"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"myZero"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"myZero#8d868379"`...)
+			} else {
+				w = append(w, `{"type":"myZero"`...)
+			}
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"myPlus#79e0c6df"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"myPlus"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"myPlus#79e0c6df"`...)
+			} else {
+				w = append(w, `{"type":"myPlus"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueMyPlus.WriteJSONOpt(tctx, w)
@@ -329,6 +348,11 @@ func (item MyPlus) String() string {
 }
 
 func (item *MyPlus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyPlus) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -344,7 +368,7 @@ func (item *MyPlus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myPlus", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -566,6 +590,11 @@ func (item MyZero) String() string {
 }
 
 func (item *MyZero) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyZero) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

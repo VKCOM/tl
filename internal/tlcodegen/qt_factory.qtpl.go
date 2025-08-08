@@ -65,7 +65,13 @@ func CreateObjectFromName(name string) meta.Object {
 
 func init() {
 `)
-	for _, wr := range typeWrappers {
+	tl1Wrappers, tl2Wrappers := ExtractTopLevelTypes(typeWrappers)
+
+	if len(tl1Wrappers) != 0 {
+		qw422016.N().S(`// TL
+`)
+	}
+	for _, wr := range tl1Wrappers {
 		if wr.tlTag == 0 || !wr.IsTopLevel() {
 			continue
 		}
@@ -111,6 +117,64 @@ func init() {
 `)
 		}
 	}
+	if len(tl2Wrappers) != 0 {
+		qw422016.N().S(`// TL2
+`)
+	}
+	for _, wr := range tl2Wrappers {
+		if fun, ok := wr.trw.(*TypeRWStruct); ok {
+			tlTag := fmt.Sprintf("0x%08x", wr.tlTag)
+
+			if wr.unionParent != nil && wr.unionParent.IsEnum {
+				qw422016.N().S(`            meta.SetGlobalFactoryCreateForEnumElement(`)
+				qw422016.E().S(tlTag)
+				qw422016.N().S(`)
+`)
+				continue
+			}
+			qw422016.N().S(`    `)
+			if fun.ResultType != nil {
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForFunction(`)
+				qw422016.N().S(tlTag)
+				qw422016.N().S(`,func() meta.Object { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret },func() meta.Function { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret },`)
+				if wr.WrLong != nil {
+					qw422016.N().S(`func() meta.Function { var ret`)
+					qw422016.N().S(` `)
+					qw422016.N().S(wr.WrLong.TypeString2(false, directImports, nil, false, true))
+					qw422016.N().S(`; return &ret },`)
+				} else {
+					qw422016.N().S(`nil,`)
+				}
+			} else {
+				qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectTL2(`)
+				qw422016.N().Q(wr.tlName.String())
+				qw422016.N().S(`,func() meta.Object { var ret`)
+				qw422016.N().S(` `)
+				qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+				qw422016.N().S(`; return &ret }`)
+			}
+			qw422016.N().S(`)`)
+			qw422016.N().S(`
+`)
+		}
+		if _, ok := wr.trw.(*TypeRWUnion); ok {
+			qw422016.N().S(`    `)
+			qw422016.N().S(`meta.SetGlobalFactoryCreateForObjectTL2(`)
+			qw422016.N().Q(wr.tlName.String())
+			qw422016.N().S(`,func() meta.Object { var ret`)
+			qw422016.N().S(` `)
+			qw422016.N().S(wr.TypeString2(false, directImports, nil, false, true))
+			qw422016.N().S(`; return &ret })`)
+			qw422016.N().S(`
+`)
+		}
+	}
 	qw422016.N().S(`}
 
 `)
@@ -148,6 +212,16 @@ package `)
 		return stringCompare(a.Construct.Name.String(), b.Construct.Name.String())
 	})
 
+	sortedTL2Combinators := make([]*tlast.TL2Combinator, 0)
+	for _, combinator := range gen.tl2Combinators {
+		if combinator.IsFunction || combinator.TypeDecl.ID != nil {
+			sortedTL2Combinators = append(sortedTL2Combinators, combinator)
+		}
+	}
+	slices.SortStableFunc(sortedTL2Combinators, func(a, b *tlast.TL2Combinator) int {
+		return stringCompare(a.ReferenceName().String(), b.ReferenceName().String())
+	})
+
 	qw422016.N().S(`const (
 `)
 	for _, c := range sortedConstructors {
@@ -160,6 +234,23 @@ package `)
 		qw422016.N().S(fmt.Sprintf("%#08x", c.Crc32()))
 		qw422016.N().S(` // `)
 		qw422016.N().S(c.Construct.Name.String())
+		qw422016.N().S(`
+`)
+	}
+	for _, c := range sortedTL2Combinators {
+		refName := c.ReferenceName()
+		refMagic := c.FuncDecl.ID
+		if !c.IsFunction {
+			refMagic = c.TypeDecl.ID
+		}
+		name := snakeToCamelCase(refName.Namespace + "_" + refName.Name)
+
+		qw422016.N().S(`        `)
+		qw422016.E().S(name)
+		qw422016.N().S(` = `)
+		qw422016.N().S(fmt.Sprintf("%#08x", *refMagic))
+		qw422016.N().S(` // `)
+		qw422016.N().S(refName.String())
 		qw422016.N().S(`
 `)
 	}

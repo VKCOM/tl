@@ -65,8 +65,13 @@ func (item TupleInt4) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleInt4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleInt4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[4]int32)(item)
-	if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

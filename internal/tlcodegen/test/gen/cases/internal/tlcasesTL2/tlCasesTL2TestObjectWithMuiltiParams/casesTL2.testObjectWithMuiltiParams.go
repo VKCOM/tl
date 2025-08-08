@@ -124,7 +124,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteBoxed(w []byte, nat_n uint3
 	return item.Write(w, nat_n, nat_m)
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32, nat_m uint32) error {
+func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32, nat_m uint32) error {
 	var rawF1 []byte
 	var rawF2 []byte
 
@@ -174,7 +174,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSON(legacyTypeNames bool, i
 		if rawF1 != nil {
 			inF1Pointer = &inF1
 		}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inF1Pointer, &item.F1, nat_n); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inF1Pointer, &item.F1, nat_n); err != nil {
 			return err
 		}
 
@@ -190,7 +190,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSON(legacyTypeNames bool, i
 		if rawF2 != nil {
 			inF2Pointer = &inF2
 		}
-		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inF2Pointer, &item.F2, nat_m); err != nil {
+		if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inF2Pointer, &item.F2, nat_m); err != nil {
 			return err
 		}
 
@@ -226,7 +226,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(tctx *basictl.JSONW
 	return append(w, '}'), nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int, nat_n uint32, nat_m uint32) []int {
+func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -235,31 +235,27 @@ func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int, nat
 
 	// calculate layout for item.F1
 	currentPosition := len(sizes)
-	if nat_n&(1<<0) != 0 {
-		if len(item.F1) != 0 {
-			sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F1, nat_n)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 1
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	if len(item.F1) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F1)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
 	// calculate layout for item.F2
 	currentPosition = len(sizes)
-	if nat_m&(1<<0) != 0 {
-		if len(item.F2) != 0 {
-			sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F2, nat_m)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 1
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	if len(item.F2) != 0 {
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F2)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
@@ -274,7 +270,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int, nat
 	return sizes
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) InternalWriteTL2(w []byte, sizes []int, nat_n uint32, nat_m uint32) ([]byte, []int) {
+func (item *CasesTL2TestObjectWithMuiltiParams) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -290,49 +286,45 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalWriteTL2(w []byte, sizes
 	w = append(w, 0)
 	serializedSize += 1
 	// write item.F1
-	if nat_n&(1<<0) != 0 {
-		if len(item.F1) != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 1)
-				w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F1, nat_n)
-			} else {
-				sizes = sizes[1:]
-			}
+	if len(item.F1) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F1)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 	// write item.F2
-	if nat_m&(1<<0) != 0 {
-		if len(item.F2) != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 2)
-				w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F2, nat_m)
-			} else {
-				sizes = sizes[1:]
-			}
+	if len(item.F2) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F2)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_n uint32, nat_m uint32) []byte {
+func (item *CasesTL2TestObjectWithMuiltiParams) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_n, nat_m)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_n, nat_m)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
+func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -367,12 +359,8 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte, nat_n 
 
 	// read item.F1
 	if block&(1<<1) != 0 {
-		if nat_n&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F1, nat_n); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F1" + "is presented but depending bit is absent")
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F1); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.F1 = item.F1[:0]
@@ -380,12 +368,8 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte, nat_n 
 
 	// read item.F2
 	if block&(1<<2) != 0 {
-		if nat_m&(1<<0) != 0 {
-			if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F2, nat_m); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "F2" + "is presented but depending bit is absent")
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F2); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.F2 = item.F2[:0]
@@ -394,6 +378,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte, nat_n 
 	return r, nil
 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_n uint32, nat_m uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_n, nat_m)
+func (item *CasesTL2TestObjectWithMuiltiParams) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

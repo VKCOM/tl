@@ -73,6 +73,11 @@ func (item CdUseCycle) String() string {
 }
 
 func (item *CdUseCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CdUseCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 
@@ -89,7 +94,7 @@ func (item *CdUseCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cd.useCycle", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -97,7 +102,7 @@ func (item *CdUseCycle) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cd.useCycle", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true

@@ -113,6 +113,7 @@ func CreateObjectFromNameBytes(name string) meta.Object {
 }
 
 func init() {
+	// TL
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0x623360f3)
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0xf35d7a69)
 	meta.SetGlobalFactoryCreateForEnumElementBytes(0x6127e7b8)

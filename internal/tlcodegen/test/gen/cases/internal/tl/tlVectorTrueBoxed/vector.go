@@ -66,8 +66,13 @@ func (item VectorTrueBoxed) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorTrueBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorTrueBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlTrue.True)(item)
-	if err := tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

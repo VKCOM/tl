@@ -99,6 +99,11 @@ func (item CasesMyCycle3) String() string {
 }
 
 func (item *CasesMyCycle3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesMyCycle3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propAPresented bool
 
@@ -123,7 +128,7 @@ func (item *CasesMyCycle3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.myCycle3", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -202,15 +207,13 @@ func (item *CasesMyCycle3) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.A
 	currentPosition := len(sizes)
-	if item.FieldsMask&(1<<0) != 0 {
-		sizes = item.A.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = item.A.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// append byte for each section until last mentioned field
@@ -248,15 +251,13 @@ func (item *CasesMyCycle3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 		}
 	}
 	// write item.A
-	if item.FieldsMask&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = item.A.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 2)
+		w, sizes = item.A.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
@@ -319,12 +320,8 @@ func (item *CasesMyCycle3) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.A
 	if block&(1<<2) != 0 {
-		if item.FieldsMask&(1<<0) != 0 {
-			if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "A" + "is presented but depending bit is absent")
+		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.A.Reset()

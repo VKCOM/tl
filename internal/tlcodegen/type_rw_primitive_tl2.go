@@ -89,6 +89,37 @@ func (trw *TypeRWPrimitive) readTL2Call(
 	)
 }
 
+func (trw *TypeRWPrimitive) skipTL2Call(
+	directImports *DirectImports,
+	bytesVersion bool,
+	targetBytes string,
+	canDependOnLocalBit bool,
+	ins *InternalNamespace,
+	refObject bool,
+) string {
+	size := 0
+	switch trw.goType {
+	case "int32":
+		size = 4
+	case "uint32":
+		size = 4
+	case "int64":
+		size = 8
+	case "string":
+		return fmt.Sprintf(`if %[2]s, err = basictl.SkipSizedValue(%[2]s); err != nil { return %[2]s, err }`,
+			"",
+			targetBytes)
+	case "float32":
+		size = 4
+	case "float64":
+		size = 8
+	}
+	return fmt.Sprintf(`if %[2]s, err = basictl.SkipFixedSizedValue(%[2]s, %[3]d); err != nil { return %[2]s, err }`,
+		"",
+		targetBytes,
+		size)
+}
+
 func (trw *TypeRWPrimitive) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
 	return true
 }

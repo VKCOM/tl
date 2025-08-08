@@ -256,6 +256,9 @@ var _ = basictl.NatWrite
 		}
 		formattedCode, err := format.Source([]byte(code))
 		if err != nil {
+			if filepathName == "internal/tl/tlBool/bool.go" {
+				debugf("debug\n")
+			}
 			// We generate code still, because it will be easy to debug when the wrong file is written out
 			fmt.Printf("generator %s: source file %q will not compile due to error: %v", color.InRed("internal error"), filepathName, err)
 			continue
@@ -263,4 +266,25 @@ var _ = basictl.NatWrite
 		gen.Code[filepathName] = string(formattedCode)
 	}
 	return nil
+}
+
+func ExtractTopLevelTypes(typeWrappers []*TypeRWWrapper) (tl1Wrappers []*TypeRWWrapper, tl2Wrappers []*TypeRWWrapper) {
+	tl1Wrappers = make([]*TypeRWWrapper, 0)
+	tl2Wrappers = make([]*TypeRWWrapper, 0)
+	for _, wr := range typeWrappers {
+		if wr.IsTopLevel() && len(wr.NatParams) == 0 {
+			_, isStruct := wr.trw.(*TypeRWStruct)
+			_, isUnion := wr.trw.(*TypeRWUnion)
+			if wr.originateFromTL2 {
+				if isStruct || isUnion {
+					tl2Wrappers = append(tl2Wrappers, wr)
+				}
+			} else {
+				if isStruct && wr.tlTag != 0 {
+					tl1Wrappers = append(tl1Wrappers, wr)
+				}
+			}
+		}
+	}
+	return
 }

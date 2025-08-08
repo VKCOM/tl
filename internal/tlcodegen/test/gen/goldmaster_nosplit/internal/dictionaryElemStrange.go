@@ -171,7 +171,7 @@ func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[ui
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemStrangeStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[uint32]string) error {
+func BuiltinVectorDictionaryElemStrangeStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[uint32]string) error {
 	var data map[uint32]string
 	if *m == nil {
 		*m = make(map[uint32]string, 0)
@@ -321,6 +321,11 @@ func (item DictionaryElemStrangeString) String() string {
 }
 
 func (item *DictionaryElemStrangeString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryElemStrangeString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -423,14 +428,12 @@ func (item *DictionaryElemStrangeString) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	if item.Key&(1<<31) != 0 {
-		if len(item.Value) != 0 {
+	if len(item.Value) != 0 {
 
-			if len(item.Value) != 0 {
-				lastUsedByte = 1
-				currentSize += len(item.Value)
-				currentSize += basictl.TL2CalculateSize(len(item.Value))
-			}
+		if len(item.Value) != 0 {
+			lastUsedByte = 1
+			currentSize += len(item.Value)
+			currentSize += basictl.TL2CalculateSize(len(item.Value))
 		}
 	}
 
@@ -469,14 +472,12 @@ func (item *DictionaryElemStrangeString) InternalWriteTL2(w []byte, sizes []int)
 		}
 	}
 	// write item.Value
-	if item.Key&(1<<31) != 0 {
+	if len(item.Value) != 0 {
+		serializedSize += len(item.Value)
 		if len(item.Value) != 0 {
-			serializedSize += len(item.Value)
-			if len(item.Value) != 0 {
-				serializedSize += basictl.TL2CalculateSize(len(item.Value))
-				currentBlock |= (1 << 2)
-				w = basictl.StringWriteTL2(w, item.Value)
-			}
+			serializedSize += basictl.TL2CalculateSize(len(item.Value))
+			currentBlock |= (1 << 2)
+			w = basictl.StringWriteTL2(w, item.Value)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -540,12 +541,8 @@ func (item *DictionaryElemStrangeString) InternalReadTL2(r []byte) (_ []byte, er
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if item.Key&(1<<31) != 0 {
-			if currentR, err = basictl.StringReadTL2(currentR, &item.Value); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "Value" + "is presented but depending bit is absent")
+		if currentR, err = basictl.StringReadTL2(currentR, &item.Value); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.Value = ""

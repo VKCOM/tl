@@ -114,7 +114,7 @@ func BuiltinVectorStringInternalReadTL2(r []byte, vec *[]string) (_ []byte, err 
 	return r, nil
 }
 
-func BuiltinVectorStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]string) error {
+func BuiltinVectorStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]string) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -254,7 +254,7 @@ func BuiltinVectorStringBytesInternalReadTL2(r []byte, vec *[][]byte) (_ []byte,
 	return r, nil
 }
 
-func BuiltinVectorStringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][]byte) error {
+func BuiltinVectorStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][]byte) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {

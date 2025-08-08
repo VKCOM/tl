@@ -163,12 +163,39 @@ func StringReadBytesTL2(r []byte, dst *[]byte) (_ []byte, err error) {
 	return r[l:], nil
 }
 
+func ByteWriteTL2(w []byte, b byte) []byte {
+	w = append(w, b)
+	return w
+}
+
 func ByteReadTL2(r []byte, b *byte) ([]byte, error) {
 	if len(r) == 0 {
 		return r, io.ErrUnexpectedEOF
 	}
 	*b = r[0]
 	return r[1:], nil
+}
+
+func ByteBoolWriteTL2(w []byte, b bool) []byte {
+	if b {
+		w = append(w, 1)
+	} else {
+		w = append(w, 0)
+	}
+	return w
+}
+
+func ByteBoolReadTL2(r []byte, b *bool) (_ []byte, err error) {
+	var byt byte
+	if r, err = ByteReadTL2(r, &byt); err != nil {
+		return r, err
+	}
+	if byt == 0 {
+		*b = false
+	} else {
+		*b = true
+	}
+	return r, nil
 }
 
 func MaybeBoolWriteTL2(w []byte, b bool) []byte {
@@ -207,5 +234,28 @@ func MaybeBoolReadTL2(r []byte, b *bool) (_ []byte, err error) {
 
 		*b = (block & (1 << 1)) != 0
 	}
+	return r, err
+}
+
+func SkipSizedValue(r []byte) (_ []byte, err error) {
+	var l int
+	if r, err = TL2ReadSize(r, &l); err != nil {
+		return r, err
+	}
+	if len(r) < l {
+		return r, TL2Error("not enough data to skip: expected %d, got %d", l, len(r))
+	}
+	r = r[l:]
+	return r, err
+}
+
+func SkipFixedSizedValue(r []byte, l int) (_ []byte, err error) {
+	if l < 0 {
+		return r, TL2Error("can skip only non negative number of elements")
+	}
+	if len(r) < l {
+		return r, TL2Error("not enough data to skip: expected %d, got %d", l, len(r))
+	}
+	r = r[l:]
 	return r, err
 }

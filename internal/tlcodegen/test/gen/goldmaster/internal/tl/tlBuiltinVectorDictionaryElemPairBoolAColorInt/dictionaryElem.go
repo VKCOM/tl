@@ -116,7 +116,7 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(r []byte, vec *
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt) error {
+func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntReadJSON(legacyTypeNames bool, 
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

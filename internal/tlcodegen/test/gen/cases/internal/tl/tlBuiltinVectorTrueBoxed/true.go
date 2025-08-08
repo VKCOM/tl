@@ -116,7 +116,7 @@ func BuiltinVectorTrueBoxedInternalReadTL2(r []byte, vec *[]tlTrue.True) (_ []by
 	return r, nil
 }
 
-func BuiltinVectorTrueBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlTrue.True) error {
+func BuiltinVectorTrueBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlTrue.True) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorTrueBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer,
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

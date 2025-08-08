@@ -240,5 +240,9 @@ func (trw *TypeRWBrackets) typeJSONReadingCode(bytesVersion bool, directImports 
 
 func (trw *TypeRWBrackets) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
 	goGlobalName := addBytes(trw.wr.goGlobalName, bytesVersion)
-	return fmt.Sprintf("if err := %sReadJSON(legacyTypeNames, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
+	return fmt.Sprintf("if err := %sReadJSONGeneral(tctx, %s, %s%s); err != nil { return err }", trw.wr.ins.Prefix(directImports, ins)+goGlobalName, jvalue, addAmpersand(ref, val), joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWBrackets) typeJSON2ReadingRequiresContext() bool {
+	return true
 }

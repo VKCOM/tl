@@ -69,6 +69,11 @@ func (item AbTopLevel2) String() string {
 }
 
 func (item *AbTopLevel2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbTopLevel2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 
@@ -85,7 +90,7 @@ func (item *AbTopLevel2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -93,7 +98,7 @@ func (item *AbTopLevel2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -351,6 +356,11 @@ func (item AbTopLevel2Bytes) String() string {
 }
 
 func (item *AbTopLevel2Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbTopLevel2Bytes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 
@@ -367,7 +377,7 @@ func (item *AbTopLevel2Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -375,7 +385,7 @@ func (item *AbTopLevel2Bytes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.topLevel2", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true

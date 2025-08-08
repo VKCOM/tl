@@ -62,6 +62,11 @@ func (item MaybeWrapperInt3) String() string {
 }
 
 func (item *MaybeWrapperInt3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MaybeWrapperInt3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -77,7 +82,7 @@ func (item *MaybeWrapperInt3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("maybeWrapper", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true

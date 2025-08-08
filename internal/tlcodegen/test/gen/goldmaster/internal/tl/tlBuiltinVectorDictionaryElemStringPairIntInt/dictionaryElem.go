@@ -166,7 +166,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(r []byte, m *map
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemStringPairIntIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]tlPairIntInt.PairIntInt) error {
+func BuiltinVectorDictionaryElemStringPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]tlPairIntInt.PairIntInt) error {
 	var data map[string]tlPairIntInt.PairIntInt
 	if *m == nil {
 		*m = make(map[string]tlPairIntInt.PairIntInt, 0)
@@ -186,7 +186,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntReadJSON(legacyTypeNames bool, i
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value tlPairIntInt.PairIntInt
-			if err := value.ReadJSON(legacyTypeNames, in); err != nil {
+			if err := value.ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			data[key] = value

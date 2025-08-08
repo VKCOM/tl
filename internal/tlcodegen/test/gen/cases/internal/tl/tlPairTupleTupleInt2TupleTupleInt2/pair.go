@@ -71,7 +71,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) WriteBoxed(w []byte, nat_X uint32,
 	return item.Write(w, nat_X, nat_Y)
 }
 
-func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
+func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_X uint32, nat_Y uint32) error {
 	var rawX []byte
 	var rawY []byte
 
@@ -115,7 +115,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSON(legacyTypeNames bool, in 
 	if rawX != nil {
 		inXPointer = &inX
 	}
-	if err := tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadJSON(legacyTypeNames, inXPointer, &item.X, nat_X); err != nil {
+	if err := tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadJSONGeneral(tctx, inXPointer, &item.X, nat_X); err != nil {
 		return err
 	}
 
@@ -124,7 +124,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) ReadJSON(legacyTypeNames bool, in 
 	if rawY != nil {
 		inYPointer = &inY
 	}
-	if err := tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadJSON(legacyTypeNames, inYPointer, &item.Y, nat_Y); err != nil {
+	if err := tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2ReadJSONGeneral(tctx, inYPointer, &item.Y, nat_Y); err != nil {
 		return err
 	}
 
@@ -163,7 +163,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) WriteJSONOpt(tctx *basictl.JSONWri
 	return append(w, '}'), nil
 }
 
-func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, nat_X uint32, nat_Y uint32) []int {
+func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -173,7 +173,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, nat_X
 	// calculate layout for item.X
 	currentPosition := len(sizes)
 	if len(item.X) != 0 {
-		sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, &item.X, nat_X)
+		sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, &item.X)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -186,7 +186,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, nat_X
 	// calculate layout for item.Y
 	currentPosition = len(sizes)
 	if len(item.Y) != 0 {
-		sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, &item.Y, nat_Y)
+		sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2CalculateLayout(sizes, &item.Y)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -207,7 +207,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) CalculateLayout(sizes []int, nat_X
 	return sizes
 }
 
-func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes []int, nat_X uint32, nat_Y uint32) ([]byte, []int) {
+func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -228,7 +228,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes [
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, &item.X, nat_X)
+			w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, &item.X)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -239,7 +239,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes [
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, &item.Y, nat_Y)
+			w, sizes = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalWriteTL2(w, sizes, &item.Y)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -248,20 +248,20 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *PairTupleTupleInt2TupleTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_X uint32, nat_Y uint32) []byte {
+func (item *PairTupleTupleInt2TupleTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_X, nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_X, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *PairTupleTupleInt2TupleTupleInt2) InternalReadTL2(r []byte, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
+func (item *PairTupleTupleInt2TupleTupleInt2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -296,7 +296,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalReadTL2(r []byte, nat_X ui
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalReadTL2(currentR, &item.X, nat_X); err != nil {
+		if currentR, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -305,7 +305,7 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalReadTL2(r []byte, nat_X ui
 
 	// read item.Y
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalReadTL2(currentR, &item.Y, nat_Y); err != nil {
+		if currentR, err = tlBuiltinTupleTupleInt2.BuiltinTupleTupleInt2InternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -315,6 +315,6 @@ func (item *PairTupleTupleInt2TupleTupleInt2) InternalReadTL2(r []byte, nat_X ui
 	return r, nil
 }
 
-func (item *PairTupleTupleInt2TupleTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_X uint32, nat_Y uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_X, nat_Y)
+func (item *PairTupleTupleInt2TupleTupleInt2) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }

@@ -177,7 +177,11 @@ func (trw *TypeRWUnion) typeJSONReadingCode(bytesVersion bool, directImports *Di
 }
 
 func (trw *TypeRWUnion) typeJSON2ReadingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, jvalue string, val string, natArgs []string, ref bool) string {
-	return fmt.Sprintf("if err := %s.ReadJSON(legacyTypeNames, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+	return fmt.Sprintf("if err := %s.ReadJSONGeneral(tctx, %s %s); err != nil { return err }", val, jvalue, joinWithCommas(natArgs))
+}
+
+func (trw *TypeRWUnion) typeJSON2ReadingRequiresContext() bool {
+	return true
 }
 
 func (trw *TypeRWUnion) HasShortFieldCollision(wr *TypeRWWrapper) bool {

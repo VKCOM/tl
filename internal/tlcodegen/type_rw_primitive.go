@@ -170,6 +170,10 @@ func (trw *TypeRWPrimitive) typeJSON2ReadingCode(bytesVersion bool, directImport
 	return wrapLast(false, fmt.Sprintf("%s(%s, %s)", readJSONValue, jvalue, addAmpersand(ref, val)))
 }
 
+func (trw *TypeRWPrimitive) typeJSON2ReadingRequiresContext() bool {
+	return false
+}
+
 func (trw *TypeRWPrimitive) GenerateCode(byteVersion bool, directImports *DirectImports) string {
 	return ""
 }

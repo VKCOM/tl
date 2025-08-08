@@ -105,6 +105,11 @@ func (item CasesTL2TestArrayFixedBool) String() string {
 }
 
 func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestArrayFixedBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propA1Presented bool
 	var propA2Presented bool
 	var propA3Presented bool
@@ -125,7 +130,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 				if propA1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a1")
 				}
-				if err := tlBuiltinTuple1Bool.BuiltinTuple1BoolReadJSON(legacyTypeNames, in, &item.A1); err != nil {
+				if err := tlBuiltinTuple1Bool.BuiltinTuple1BoolReadJSONGeneral(tctx, in, &item.A1); err != nil {
 					return err
 				}
 				propA1Presented = true
@@ -133,7 +138,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 				if propA2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a2")
 				}
-				if err := tlBuiltinTuple0Bool.BuiltinTuple0BoolReadJSON(legacyTypeNames, in, &item.A2); err != nil {
+				if err := tlBuiltinTuple0Bool.BuiltinTuple0BoolReadJSONGeneral(tctx, in, &item.A2); err != nil {
 					return err
 				}
 				propA2Presented = true
@@ -141,7 +146,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 				if propA3Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a3")
 				}
-				if err := tlBuiltinTuple7Bool.BuiltinTuple7BoolReadJSON(legacyTypeNames, in, &item.A3); err != nil {
+				if err := tlBuiltinTuple7Bool.BuiltinTuple7BoolReadJSONGeneral(tctx, in, &item.A3); err != nil {
 					return err
 				}
 				propA3Presented = true
@@ -149,7 +154,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 				if propA4Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a4")
 				}
-				if err := tlBuiltinTuple8Bool.BuiltinTuple8BoolReadJSON(legacyTypeNames, in, &item.A4); err != nil {
+				if err := tlBuiltinTuple8Bool.BuiltinTuple8BoolReadJSONGeneral(tctx, in, &item.A4); err != nil {
 					return err
 				}
 				propA4Presented = true
@@ -157,7 +162,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 				if propA5Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a5")
 				}
-				if err := tlBuiltinTuple11Bool.BuiltinTuple11BoolReadJSON(legacyTypeNames, in, &item.A5); err != nil {
+				if err := tlBuiltinTuple11Bool.BuiltinTuple11BoolReadJSONGeneral(tctx, in, &item.A5); err != nil {
 					return err
 				}
 				propA5Presented = true
@@ -165,7 +170,7 @@ func (item *CasesTL2TestArrayFixedBool) ReadJSON(legacyTypeNames bool, in *basic
 				if propA6Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testArrayFixedBool", "a6")
 				}
-				if err := tlBuiltinTuple16Bool.BuiltinTuple16BoolReadJSON(legacyTypeNames, in, &item.A6); err != nil {
+				if err := tlBuiltinTuple16Bool.BuiltinTuple16BoolReadJSONGeneral(tctx, in, &item.A6); err != nil {
 					return err
 				}
 				propA6Presented = true

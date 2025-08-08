@@ -151,6 +151,11 @@ func (item ListService5Output) String() string {
 }
 
 func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFlagPresented bool
 	var propHeadPresented bool
 	var propTailPresented bool
@@ -176,7 +181,7 @@ func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 				if propHeadPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("list", "head")
 				}
-				if err := item.Head.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Head.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propHeadPresented = true
@@ -188,7 +193,7 @@ func (item *ListService5Output) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 					var value ListService5Output
 					item.Tail = &value
 				}
-				if err := item.Tail.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Tail.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propTailPresented = true
@@ -280,20 +285,18 @@ func (item *ListService5Output) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.Head
 	currentPosition := len(sizes)
-	if item.Flag&(1<<0) != 0 {
-		sizes = item.Head.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	sizes = item.Head.CalculateLayout(sizes)
+	if sizes[currentPosition] != 0 {
+		lastUsedByte = 1
+		currentSize += sizes[currentPosition]
+		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+	} else {
+		sizes = sizes[:currentPosition+1]
 	}
 
 	// calculate layout for item.Tail
 	currentPosition = len(sizes)
-	if item.Flag&(1<<0) != 0 {
+	if item.Tail != nil {
 		sizes = (*item.Tail).CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
@@ -339,18 +342,16 @@ func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 		}
 	}
 	// write item.Head
-	if item.Flag&(1<<0) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = item.Head.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	serializedSize += sizes[0]
+	if sizes[0] != 0 {
+		serializedSize += basictl.TL2CalculateSize(sizes[0])
+		currentBlock |= (1 << 2)
+		w, sizes = item.Head.InternalWriteTL2(w, sizes)
+	} else {
+		sizes = sizes[1:]
 	}
 	// write item.Tail
-	if item.Flag&(1<<0) != 0 {
+	if item.Tail != nil {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
@@ -421,12 +422,8 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 
 	// read item.Head
 	if block&(1<<2) != 0 {
-		if item.Flag&(1<<0) != 0 {
-			if currentR, err = item.Head.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "Head" + "is presented but depending bit is absent")
+		if currentR, err = item.Head.InternalReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.Head.Reset()
@@ -438,12 +435,8 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 			var newValue ListService5Output
 			item.Tail = &newValue
 		}
-		if item.Flag&(1<<0) != 0 {
-			if currentR, err = item.Tail.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "Tail" + "is presented but depending bit is absent")
+		if currentR, err = item.Tail.InternalReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 	} else {
 		if item.Tail == nil {

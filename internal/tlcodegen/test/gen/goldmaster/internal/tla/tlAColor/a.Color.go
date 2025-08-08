@@ -169,37 +169,57 @@ func (item *AColor) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, erro
 }
 
 func (item *AColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_jtype := in.UnsafeString()
 	if !in.Ok() {
 		return internal.ErrorInvalidJSON("a.Color", "expected string")
 	}
 	switch _jtype {
 	case "a.color#f35d7a69", "a.color", "#f35d7a69":
-		if !legacyTypeNames && _jtype == "a.color#f35d7a69" {
+		if tctx.IsTL2 && _jtype != "a.color" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.color#f35d7a69" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.color#f35d7a69")
 		}
 		item.index = 0
 		return nil
 	case "a.red#b83a723d", "a.red", "#b83a723d":
-		if !legacyTypeNames && _jtype == "a.red#b83a723d" {
+		if tctx.IsTL2 && _jtype != "a.red" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.red#b83a723d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.red#b83a723d")
 		}
 		item.index = 1
 		return nil
 	case "a.green#6127e7b8", "a.green", "#6127e7b8":
-		if !legacyTypeNames && _jtype == "a.green#6127e7b8" {
+		if tctx.IsTL2 && _jtype != "a.green" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.green#6127e7b8" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.green#6127e7b8")
 		}
 		item.index = 2
 		return nil
 	case "b.red#a9471844", "b.red", "#a9471844":
-		if !legacyTypeNames && _jtype == "b.red#a9471844" {
+		if tctx.IsTL2 && _jtype != "b.red" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "b.red#a9471844" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "b.red#a9471844")
 		}
 		item.index = 3
 		return nil
 	case "a.blue#623360f3", "a.blue", "#623360f3":
-		if !legacyTypeNames && _jtype == "a.blue#623360f3" {
+		if tctx.IsTL2 && _jtype != "a.blue" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "a.blue#623360f3" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("a.Color", "a.blue#623360f3")
 		}
 		item.index = 4

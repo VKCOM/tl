@@ -84,6 +84,11 @@ func (item CasesTL2TestObjectWithParam4) String() string {
 }
 
 func (item *CasesTL2TestObjectWithParam4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propYPresented bool
 
@@ -111,7 +116,7 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSON(legacyTypeNames bool, in *bas
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam", "y")
 				}
-				if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSON(legacyTypeNames, in, &item.Y); err != nil {
+				if err := tlBuiltinTuple4Int.BuiltinTuple4IntReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
 				propYPresented = true
@@ -175,12 +180,10 @@ func (item *CasesTL2TestObjectWithParam4) CalculateLayout(sizes []int) []int {
 	lastUsedByte := 0
 
 	// calculate layout for item.X
-	if 4&(1<<0) != 0 {
-		if item.X != 0 {
+	if item.X != 0 {
 
-			lastUsedByte = 1
-			currentSize += 4
-		}
+		lastUsedByte = 1
+		currentSize += 4
 	}
 
 	// calculate layout for item.Y
@@ -221,13 +224,11 @@ func (item *CasesTL2TestObjectWithParam4) InternalWriteTL2(w []byte, sizes []int
 	w = append(w, 0)
 	serializedSize += 1
 	// write item.X
-	if 4&(1<<0) != 0 {
-		if item.X != 0 {
-			serializedSize += 4
-			if 4 != 0 {
-				currentBlock |= (1 << 1)
-				w = basictl.IntWrite(w, item.X)
-			}
+	if item.X != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 1)
+			w = basictl.IntWrite(w, item.X)
 		}
 	}
 	// write item.Y
@@ -291,12 +292,8 @@ func (item *CasesTL2TestObjectWithParam4) InternalReadTL2(r []byte) (_ []byte, e
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if 4&(1<<0) != 0 {
-			if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "X" + "is presented but depending bit is absent")
+		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.X = 0

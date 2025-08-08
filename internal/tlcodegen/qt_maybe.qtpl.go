@@ -348,7 +348,7 @@ func (item *`)
 	}
 	qw422016.N().S(`func (item *`)
 	qw422016.N().S(goName)
-	qw422016.N().S(`) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer`)
+	qw422016.N().S(`) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer`)
 	qw422016.N().S(natArgsDecl)
 	qw422016.N().S(`) error {
   _ok, _jvalue, err := `)

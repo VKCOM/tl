@@ -151,25 +151,39 @@ func (item *CasesTestEnum) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byt
 }
 
 func (item *CasesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_jtype := in.UnsafeString()
 	if !in.Ok() {
 		return internal.ErrorInvalidJSON("cases.TestEnum", "expected string")
 	}
 	switch _jtype {
 	case "cases.testEnum1#6c6c55ac", "cases.testEnum1", "#6c6c55ac":
-		if !legacyTypeNames && _jtype == "cases.testEnum1#6c6c55ac" {
+		if tctx.IsTL2 && _jtype != "cases.testEnum1" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "cases.testEnum1#6c6c55ac" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum1#6c6c55ac")
 		}
 		item.index = 0
 		return nil
 	case "cases.testEnum2#86ea88ce", "cases.testEnum2", "#86ea88ce":
-		if !legacyTypeNames && _jtype == "cases.testEnum2#86ea88ce" {
+		if tctx.IsTL2 && _jtype != "cases.testEnum2" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "cases.testEnum2#86ea88ce" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum2#86ea88ce")
 		}
 		item.index = 1
 		return nil
 	case "cases.testEnum3#69b83e2f", "cases.testEnum3", "#69b83e2f":
-		if !legacyTypeNames && _jtype == "cases.testEnum3#69b83e2f" {
+		if tctx.IsTL2 && _jtype != "cases.testEnum3" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "cases.testEnum3#69b83e2f" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases.TestEnum", "cases.testEnum3#69b83e2f")
 		}
 		item.index = 2

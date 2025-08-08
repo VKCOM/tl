@@ -62,7 +62,7 @@ func (item *Replace4) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err error) {
 	return item.Write(w, nat_n)
 }
 
-func (item *Replace4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32) error {
+func (item *Replace4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
 	var rawA []byte
 
 	if in != nil {
@@ -97,7 +97,7 @@ func (item *Replace4) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_
 	if rawA != nil {
 		inAPointer = &inA
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inAPointer, &item.A, nat_n); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, nat_n); err != nil {
 		return err
 	}
 
@@ -127,7 +127,7 @@ func (item *Replace4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat
 	return append(w, '}'), nil
 }
 
-func (item *Replace4) CalculateLayout(sizes []int, nat_n uint32) []int {
+func (item *Replace4) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -137,7 +137,7 @@ func (item *Replace4) CalculateLayout(sizes []int, nat_n uint32) []int {
 	// calculate layout for item.A
 	currentPosition := len(sizes)
 	if len(item.A) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A, nat_n)
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -158,7 +158,7 @@ func (item *Replace4) CalculateLayout(sizes []int, nat_n uint32) []int {
 	return sizes
 }
 
-func (item *Replace4) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]byte, []int) {
+func (item *Replace4) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -179,7 +179,7 @@ func (item *Replace4) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]b
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A, nat_n)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -188,20 +188,20 @@ func (item *Replace4) InternalWriteTL2(w []byte, sizes []int, nat_n uint32) ([]b
 	return w, sizes
 }
 
-func (item *Replace4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_n uint32) []byte {
+func (item *Replace4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_n)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_n)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *Replace4) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err error) {
+func (item *Replace4) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -236,7 +236,7 @@ func (item *Replace4) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err err
 
 	// read item.A
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A, nat_n); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -246,6 +246,6 @@ func (item *Replace4) InternalReadTL2(r []byte, nat_n uint32) (_ []byte, err err
 	return r, nil
 }
 
-func (item *Replace4) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_n uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_n)
+func (item *Replace4) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
