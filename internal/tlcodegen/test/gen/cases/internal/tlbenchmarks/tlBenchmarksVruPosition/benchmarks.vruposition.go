@@ -9,7 +9,6 @@ package tlBenchmarksVruPosition
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlbenchmarks/tlBenchmarksVruHash"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -487,66 +486,6 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var trueCommitBit tlTrue.True
-	// calculate layout for trueCommitBit
-	currentPosition := len(sizes)
-	sizes = trueCommitBit.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueMetaBlock tlTrue.True
-	// calculate layout for trueMetaBlock
-	currentPosition = len(sizes)
-	sizes = trueMetaBlock.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueSplitPayload tlTrue.True
-	// calculate layout for trueSplitPayload
-	currentPosition = len(sizes)
-	sizes = trueSplitPayload.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueRotationBlock tlTrue.True
-	// calculate layout for trueRotationBlock
-	currentPosition = len(sizes)
-	sizes = trueRotationBlock.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueCanonicalHash tlTrue.True
-	// calculate layout for trueCanonicalHash
-	currentPosition = len(sizes)
-	sizes = trueCanonicalHash.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	// calculate layout for item.PayloadOffset
 	if item.PayloadOffset != 0 {
 
@@ -562,7 +501,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Hash
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = item.Hash.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 2
@@ -619,56 +558,6 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.FieldsMask)
 		}
-	}
-	var trueCommitBit tlTrue.True
-	// write trueCommitBit
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = trueCommitBit.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueMetaBlock tlTrue.True
-	// write trueMetaBlock
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = trueMetaBlock.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueSplitPayload tlTrue.True
-	// write trueSplitPayload
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 4)
-		w, sizes = trueSplitPayload.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueRotationBlock tlTrue.True
-	// write trueRotationBlock
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 5)
-		w, sizes = trueRotationBlock.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueCanonicalHash tlTrue.True
-	// write trueCanonicalHash
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 6)
-		w, sizes = trueCanonicalHash.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 	// write item.PayloadOffset
 	if item.PayloadOffset != 0 {

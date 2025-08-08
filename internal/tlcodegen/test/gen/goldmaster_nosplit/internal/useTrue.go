@@ -299,21 +299,9 @@ func (item *UseTrue) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var trueA True
-	// calculate layout for trueA
-	currentPosition := len(sizes)
-	sizes = trueA.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	var trueB True
 	// calculate layout for trueB
-	currentPosition = len(sizes)
+	currentPosition := len(sizes)
 	sizes = trueB.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -387,16 +375,6 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.Fm)
 		}
-	}
-	var trueA True
-	// write trueA
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = trueA.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 	var trueB True
 	// write trueB

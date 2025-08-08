@@ -10,7 +10,6 @@ package tlService5Insert
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/cycle_16847572a0831d4cd4c0c0fb513151f3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -294,18 +293,6 @@ func (item *Service5Insert) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var truePersistent tlTrue.True
-	// calculate layout for truePersistent
-	currentPosition := len(sizes)
-	sizes = truePersistent.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
 		currentSize += lastUsedByte
@@ -339,16 +326,6 @@ func (item *Service5Insert) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 			currentBlock |= (1 << 1)
 			w = basictl.NatWrite(w, item.Flags)
 		}
-	}
-	var truePersistent tlTrue.True
-	// write truePersistent
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = truePersistent.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes

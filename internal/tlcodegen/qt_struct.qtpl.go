@@ -2565,6 +2565,9 @@ func (item *`)
 			}
 			currentPositionFirstUsage := -1
 			for i, field := range struct_.Fields {
+				if field.t.IsTrueType() && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
 					continue
 				}
@@ -2594,6 +2597,11 @@ func (item *`)
 
 				qw422016.N().S(`
 `)
+				/** ?TRUE -> BOOL CASE **/
+
+				if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if isTrue {
 					qw422016.N().S(`    var `)
 					qw422016.N().S(fieldName)
@@ -2807,6 +2815,11 @@ func (item *`)
 				}
 				_, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
 
+				/** ?TRUE -> BOOL CASE **/
+
+				if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if isTrue {
 					qw422016.N().S(`    var `)
 					qw422016.N().S(fieldName)

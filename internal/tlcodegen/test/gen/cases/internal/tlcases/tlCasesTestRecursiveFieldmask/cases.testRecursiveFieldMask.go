@@ -9,7 +9,6 @@ package tlCasesTestRecursiveFieldmask
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -380,42 +379,6 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var trueT1 tlTrue.True
-	// calculate layout for trueT1
-	currentPosition := len(sizes)
-	sizes = trueT1.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueT2 tlTrue.True
-	// calculate layout for trueT2
-	currentPosition = len(sizes)
-	sizes = trueT2.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	var trueT3 tlTrue.True
-	// calculate layout for trueT3
-	currentPosition = len(sizes)
-	sizes = trueT3.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
 		currentSize += lastUsedByte
@@ -465,36 +428,6 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 			currentBlock |= (1 << 3)
 			w = basictl.NatWrite(w, item.F2)
 		}
-	}
-	var trueT1 tlTrue.True
-	// write trueT1
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 4)
-		w, sizes = trueT1.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueT2 tlTrue.True
-	// write trueT2
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 5)
-		w, sizes = trueT2.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
-	}
-	var trueT3 tlTrue.True
-	// write trueT3
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 6)
-		w, sizes = trueT3.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
 	}
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
