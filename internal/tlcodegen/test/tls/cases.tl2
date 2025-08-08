@@ -12,7 +12,7 @@ dictionary<t:type> = vector<dictionaryField<t>>;
 dictionaryFieldAny<k:type,v:type> = key:k value:v;
 dictionaryAny<k:type,v:type> = []dictionaryFieldAny<k,v>;
 true = ;
-maybe<t:type> = 
+@tl2Maybe maybe<t:type> = 
 	// tlgen:tl1name:"resultFalse"
 	| ResultFalse
 	// tlgen:tl1name:"resultTrue"
@@ -92,10 +92,6 @@ cases.testAllPossibleFieldConfigs =
 	// tlgen:addLegacySetters:bit:"3"
 	f23:[]int;
 cases.testAllPossibleFieldConfigsContainer = outer:uint32 value:cases.testAllPossibleFieldConfigs;
-// BLOCK: TEST JSON TRANSALTION SPECS
-cases.replace7 = n:uint32 m:uint32 a:[][]int;
-cases.replace7plus = n:uint32 m:uint32 a?:[][]int;
-cases.replace7plusplus = n:uint32 m:uint32 a?:[][]int;
 // BLOCK: TEST INPLACING ARGUMENTS
 cases.testInplaceStructArgs = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<int>;
 cases.testInplaceStructArgs2 = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<pair<tuple<int>,tuple<int>>>;
@@ -149,18 +145,13 @@ benchmarks.vrutoyTopLevelUnion = Big next_positions:vector<benchmarks.vruPositio
 benchmarks.vrutoyTopLevelContainer = value:benchmarks.vrutoyTopLevelUnion;
 benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruPosition;
 benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions;
-// Boolean emulation
-bool = 
-	| False
-	// bool comment
-	| True;
 casesTL2.testObject = 
 	n:uint32
 	f1?:true
 	f2:bool
 	f3:vector<bool>
 	f4:benchmarks.vrutoyPositions
-	f5:maybe<bool>
+	f5?:legacy_bool
 	f6:vector<benchmarks.vrutoyTopLevelUnion>
 	f7?:vector<true>;
 casesTL2.testVectorBool = x:vector<bool>;
@@ -181,21 +172,18 @@ casesTL2.testObjectWithMuiltiParams =
 	f1:[]int
 	// tlgen:addLegacySetters:name:"m"
 	// tlgen:addLegacySetters:bit:"0"
-	f2:[]int
-	y:[][]int;
+	f2:[]int;
 @tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = 
 	f1:[n]int
 	// tlgen:addLegacySetters:name:"m"
 	// tlgen:addLegacySetters:bit:"0"
-	f2:[]int
-	y:[n][]int;
+	f2:[]int;
 @tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = 
 	// tlgen:addLegacySetters:name:"n"
 	// tlgen:addLegacySetters:bit:"0"
 	f1:[]int
-	f2:[m]int
-	y:[][m]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1:[n]int f2:[m]int y:[n][m]int;
+	f2:[m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1:[n]int f2:[m]int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => int;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => true;
 @read casesTL2.testFunctionNoDep3#f020849b x:int => vector<int>;

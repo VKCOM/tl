@@ -635,12 +635,16 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			})
 			combinator0 := combinators[0]
 
-			// remove legacy types
+			isMaybe := false
+			// work with legacy types
 			if len(associatedWrappers[combinator0]) > 0 {
 				// remove all alterations of bool
 				wrapper := associatedWrappers[combinator0][0]
 				if _, ok := wrapper.trw.(*TypeRWBool); ok {
 					continue
+				}
+				if _, ok := wrapper.trw.(*TypeRWMaybe); ok {
+					isMaybe = true
 				}
 			}
 
@@ -724,6 +728,11 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				// add annotations
 				if isRef {
 					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl1Ref})
+				} else {
+					// only tl2 special info
+					if isMaybe {
+						tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl2Maybe})
+					}
 				}
 				if len(constantArgs) != 0 {
 					tl2Combinator.Annotations = append(tl2Combinator.Annotations, tlast.TL2Annotation{Name: tl2Ext})
