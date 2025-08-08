@@ -110,7 +110,7 @@ func {%s= typeString %}() {%s= wr.unionParent.wr.TypeString2(false, directImport
     {%- code
          _, ok := wr.trw.(*TypeRWBool)
     -%}
-        {%- if ok -%}
+        {%- if ok && !wr.originateFromTL2 -%}
             {%- code
                 localTypeString := wr.TypeString2(false, directImports, nil, true, true)
                 globalTypeString := wr.TypeString2(false, directImports, nil, false, true)

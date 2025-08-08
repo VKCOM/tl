@@ -416,9 +416,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				qw422016.N().S(asterisk)
 				qw422016.N().S(isTrueType)
 				qw422016.N().S(` {
-    return `)
-				qw422016.N().S(asterisk)
-				qw422016.N().S(`item.`)
+    return item.`)
 				qw422016.N().S(field.goName)
 				qw422016.N().S(`
 }
@@ -1480,17 +1478,15 @@ func (item *`)
 		if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField {
 			continue
 		}
-		fieldMask := struct_.Fields[field.fieldMask.FieldIndex]
-		fieldMaskName := fieldMask.goName
-		bit := field.BitNumber
+		bit := int(field.BitNumber)
 
 		qw422016.N().S(`        // tries to set bit to zero if it is 1
         if trueType`)
 		qw422016.N().S(field.goName)
 		qw422016.N().S(`Presented && !trueType`)
 		qw422016.N().S(field.goName)
-		qw422016.N().S(`Value && (item.`)
-		qw422016.N().S(fieldMaskName)
+		qw422016.N().S(`Value && (`)
+		qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 		qw422016.N().S(` & (1 << `)
 		qw422016.E().V(bit)
 		qw422016.N().S(`) != 0) {
@@ -1499,9 +1495,9 @@ func (item *`)
 		qw422016.N().S(`ErrorInvalidJSON(`)
 		qw422016.N().Q(tlName)
 		qw422016.N().S(`, "fieldmask bit `)
-		qw422016.N().S(fieldMask.originalName)
+		qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
 		qw422016.N().S(`.`)
-		qw422016.N().D(field.fieldMask.FieldIndex)
+		qw422016.N().D(bit)
 		qw422016.N().S(` is indefinite because of the contradictions in values")
         }
 `)

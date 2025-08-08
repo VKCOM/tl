@@ -70,9 +70,14 @@ func (rtl2c *ResolvedTL2References) resolveRef(ref tlast.TL2TypeRef) (newRef tla
 				newIndex.IsNumber = true
 				newIndex.Number = oldIndex.Number
 			} else {
-				newIndex.Type, err = rtl2c.resolveRef(oldIndex.Type)
-				if err != nil {
-					return
+				if resolvedNumber, ok := rtl2c.ResolvedNats[oldIndex.Type.String()]; ok {
+					newIndex.IsNumber = true
+					newIndex.Number = resolvedNumber
+				} else {
+					newIndex.Type, err = rtl2c.resolveRef(oldIndex.Type)
+					if err != nil {
+						return
+					}
 				}
 			}
 		}
@@ -693,6 +698,9 @@ func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isLegacy bool) (*TypeRWWr
 		kernelType.goGlobalName = "Bool"
 		kernelType.goLocalName = "Bool"
 	}
+
+	kernelType.ns = gen.getNamespace("")
+	kernelType.ns.types = append(kernelType.ns.types, kernelType)
 
 	return kernelType, nil
 }

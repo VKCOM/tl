@@ -210,7 +210,7 @@ type {%s= goName %} struct {
             -%}
             {%- if !field.t.IsTrueType() && field.fieldMask != nil && field.fieldMask.IsTL2() -%}
 func (item *{%s= goName %}) {%s= getName %}() {%s= asterisk %}{%s= isTrueType %} {
-    return {%s= asterisk %}item.{%s= field.goName %}
+    return item.{%s= field.goName %}
 }
             {%- endif -%}
             {%- if maskFunArg -%}
@@ -730,13 +730,11 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
         {%- code
-            fieldMask := struct_.Fields[field.fieldMask.FieldIndex]
-            fieldMaskName := fieldMask.goName
-            bit := field.BitNumber
+            bit := int(field.BitNumber)
         -%}
         // tries to set bit to zero if it is 1
-        if trueType{%s= field.goName %}Presented && !trueType{%s= field.goName %}Value && (item.{%s= fieldMaskName %} & (1 << {%v bit %}) != 0) {
-            return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "fieldmask bit {%s= fieldMask.originalName %}.{%d= field.fieldMask.FieldIndex %} is indefinite because of the contradictions in values")
+        if trueType{%s= field.goName %}Presented && !trueType{%s= field.goName %}Value && ({%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v bit %}) != 0) {
+            return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "fieldmask bit {%s= formatNatArg(struct_.Fields, *field.fieldMask) %}.{%d= bit %} is indefinite because of the contradictions in values")
         }
     {%- endfor -%}
     return nil
