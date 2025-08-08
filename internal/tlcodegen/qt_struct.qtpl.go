@@ -2632,7 +2632,8 @@ func (item *`)
 `)
 				}
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
-				if fieldRecursive {
+				_, isMaybe := field.t.trw.(*TypeRWMaybe)
+				if fieldRecursive && !isMaybe {
 					nilCheck := fmt.Sprintf("%s != nil", fieldName)
 					if nonEmptyCondition == "" {
 						nonEmptyCondition = nilCheck
@@ -2841,7 +2842,8 @@ func (item *`)
 `)
 				}
 				nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
-				if fieldRecursive {
+				_, isMaybe := field.t.trw.(*TypeRWMaybe)
+				if fieldRecursive && !isMaybe {
 					nilCheck := fmt.Sprintf("%s != nil", fieldName)
 					if nonEmptyCondition == "" {
 						nonEmptyCondition = nilCheck

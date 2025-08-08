@@ -1346,7 +1346,8 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
         {%- endif -%}
         {%- code
             nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
-            if fieldRecursive {
+           _, isMaybe := field.t.trw.(*TypeRWMaybe);
+           if fieldRecursive && !isMaybe {
                 nilCheck := fmt.Sprintf("%s != nil", fieldName)
                 if nonEmptyCondition == "" {
                     nonEmptyCondition = nilCheck
@@ -1488,7 +1489,8 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
         {%- endif -%}
             {%- code
                 nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
-                if fieldRecursive {
+                _, isMaybe := field.t.trw.(*TypeRWMaybe);
+                if fieldRecursive && !isMaybe {
                     nilCheck := fmt.Sprintf("%s != nil", fieldName)
                     if nonEmptyCondition == "" {
                         nonEmptyCondition = nilCheck
