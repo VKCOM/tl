@@ -116,7 +116,7 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(r 
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) error {
+func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntReadJSON(legacyTyp
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

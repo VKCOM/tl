@@ -60,6 +60,11 @@ func (item Service5LongEmptyOutput) String() string {
 }
 
 func (item *Service5LongEmptyOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5LongEmptyOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -343,6 +348,11 @@ func (item *Service5LongOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (
 }
 
 func (item *Service5LongOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("service5Long.Output", in)
 	if err != nil {
 		return err
@@ -350,19 +360,25 @@ func (item *Service5LongOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 	switch _tag {
 	case "service5Long.emptyOutput#ff8f7db9", "service5Long.emptyOutput", "#ff8f7db9",
 		"service5.emptyOutput#ff8f7db8", "service5.emptyOutput", "#ff8f7db8":
-		if !legacyTypeNames && _tag == "service5.emptyOutput#ff8f7db8" {
+		if !tctx.LegacyTypeNames && _tag == "service5.emptyOutput#ff8f7db8" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5.emptyOutput#ff8f7db8")
 		}
-		if !legacyTypeNames && _tag == "service5Long.emptyOutput#ff8f7db9" {
+		if tctx.IsTL2 && _tag != "service5Long.emptyOutput" {
+			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "service5Long.emptyOutput#ff8f7db9" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.emptyOutput#ff8f7db9")
 		}
 		item.index = 0
 	case "service5Long.stringOutput#dc170ff5", "service5Long.stringOutput", "#dc170ff5",
 		"service5.stringOutput#dc170ff4", "service5.stringOutput", "#dc170ff4":
-		if !legacyTypeNames && _tag == "service5.stringOutput#dc170ff4" {
+		if !tctx.LegacyTypeNames && _tag == "service5.stringOutput#dc170ff4" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5.stringOutput#dc170ff4")
 		}
-		if !legacyTypeNames && _tag == "service5Long.stringOutput#dc170ff5" {
+		if tctx.IsTL2 && _tag != "service5Long.stringOutput" {
+			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "service5Long.stringOutput#dc170ff5" {
 			return ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.stringOutput#dc170ff5")
 		}
 		item.index = 1
@@ -371,7 +387,7 @@ func (item *Service5LongOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueString.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueString.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -392,32 +408,40 @@ func (item *Service5LongOutput) WriteJSON(w []byte) []byte {
 func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.Short {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"service5.emptyOutput#ff8f7db8"`...)
-			} else {
-				w = append(w, `{"type":"service5.emptyOutput"`...)
-			}
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"service5Long.emptyOutput"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"service5Long.emptyOutput#ff8f7db9"`...)
+			if tctx.Short {
+				if tctx.LegacyTypeNames {
+					w = append(w, `{"type":"service5.emptyOutput#ff8f7db8"`...)
+				} else {
+					w = append(w, `{"type":"service5.emptyOutput"`...)
+				}
 			} else {
-				w = append(w, `{"type":"service5Long.emptyOutput"`...)
+				if tctx.LegacyTypeNames {
+					w = append(w, `{"type":"service5Long.emptyOutput#ff8f7db9"`...)
+				} else {
+					w = append(w, `{"type":"service5Long.emptyOutput"`...)
+				}
 			}
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.Short {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"service5.stringOutput#dc170ff4"`...)
-			} else {
-				w = append(w, `{"type":"service5.stringOutput"`...)
-			}
+		if tctx.IsTL2 {
+			w = append(w, `{"type":"service5Long.stringOutput"`...)
 		} else {
-			if tctx.LegacyTypeNames {
-				w = append(w, `{"type":"service5Long.stringOutput#dc170ff5"`...)
+			if tctx.Short {
+				if tctx.LegacyTypeNames {
+					w = append(w, `{"type":"service5.stringOutput#dc170ff4"`...)
+				} else {
+					w = append(w, `{"type":"service5.stringOutput"`...)
+				}
 			} else {
-				w = append(w, `{"type":"service5Long.stringOutput"`...)
+				if tctx.LegacyTypeNames {
+					w = append(w, `{"type":"service5Long.stringOutput#dc170ff5"`...)
+				} else {
+					w = append(w, `{"type":"service5Long.stringOutput"`...)
+				}
 			}
 		}
 		w = append(w, `,"value":`...)
@@ -505,6 +529,11 @@ func (item Service5LongStringOutput) String() string {
 }
 
 func (item *Service5LongStringOutput) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5LongStringOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propHttpCodePresented bool
 	var propResponsePresented bool
 

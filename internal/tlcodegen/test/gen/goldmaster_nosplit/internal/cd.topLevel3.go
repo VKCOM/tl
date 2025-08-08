@@ -69,6 +69,11 @@ func (item CdTopLevel3) String() string {
 }
 
 func (item *CdTopLevel3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CdTopLevel3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 
@@ -85,7 +90,7 @@ func (item *CdTopLevel3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.topLevel3", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -93,7 +98,7 @@ func (item *CdTopLevel3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("cd.topLevel3", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true

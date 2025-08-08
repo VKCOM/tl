@@ -62,6 +62,11 @@ func (item AbTypeC) String() string {
 }
 
 func (item *AbTypeC) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbTypeC) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -77,7 +82,7 @@ func (item *AbTypeC) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 				if propXPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.typeC", "x")
 				}
-				if err := item.X.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propXPresented = true

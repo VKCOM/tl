@@ -115,7 +115,7 @@ func BuiltinTuple4StringInternalReadTL2(r []byte, vec *[4]string) (_ []byte, err
 	return r, nil
 }
 
-func BuiltinTuple4StringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[4]string) error {
+func BuiltinTuple4StringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[4]string) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -255,7 +255,7 @@ func BuiltinTuple4StringBytesInternalReadTL2(r []byte, vec *[4][]byte) (_ []byte
 	return r, nil
 }
 
-func BuiltinTuple4StringBytesReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[4][]byte) error {
+func BuiltinTuple4StringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[4][]byte) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')

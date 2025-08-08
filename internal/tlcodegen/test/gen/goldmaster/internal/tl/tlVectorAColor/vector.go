@@ -66,8 +66,13 @@ func (item VectorAColor) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorAColor) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorAColor) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlAColor.AColor)(item)
-	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorAColor.BuiltinVectorAColorReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

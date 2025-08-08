@@ -65,7 +65,7 @@ func (item *UnionArgsXXX1Int) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err 
 	return item.Write(w, nat_Y)
 }
 
-func (item *UnionArgsXXX1Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
+func (item *UnionArgsXXX1Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var rawX []byte
 
 	if in != nil {
@@ -100,7 +100,7 @@ func (item *UnionArgsXXX1Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 	if rawX != nil {
 		inXPointer = &inX
 	}
-	if err := BuiltinTupleIntReadJSON(legacyTypeNames, inXPointer, &item.X, nat_Y); err != nil {
+	if err := BuiltinTupleIntReadJSONGeneral(tctx, inXPointer, &item.X, nat_Y); err != nil {
 		return err
 	}
 
@@ -130,7 +130,7 @@ func (item *UnionArgsXXX1Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	return append(w, '}'), nil
 }
 
-func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
+func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -140,7 +140,7 @@ func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
 	// calculate layout for item.X
 	currentPosition := len(sizes)
 	if len(item.X) != 0 {
-		sizes = BuiltinTupleIntCalculateLayout(sizes, &item.X, nat_Y)
+		sizes = BuiltinTupleIntCalculateLayout(sizes, &item.X)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -161,7 +161,7 @@ func (item *UnionArgsXXX1Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
 	return sizes
 }
 
-func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -182,7 +182,7 @@ func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = BuiltinTupleIntInternalWriteTL2(w, sizes, &item.X, nat_Y)
+			w, sizes = BuiltinTupleIntInternalWriteTL2(w, sizes, &item.X)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -191,25 +191,25 @@ func (item *UnionArgsXXX1Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	return w, sizes
 }
 
-func (item *UnionArgsXXX1Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+func (item *UnionArgsXXX1Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UnionArgsXXX1Int) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX1Int) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.X, nat_Y); err != nil {
+		if currentR, err = BuiltinTupleIntInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -219,7 +219,7 @@ func (item *UnionArgsXXX1Int) InternalReadTL2(r []byte, block byte, nat_Y uint32
 	return r, nil
 }
 
-func (item *UnionArgsXXX1Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX1Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -247,7 +247,7 @@ func (item *UnionArgsXXX1Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat
 	if index != 0 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
 	}
-	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -303,7 +303,7 @@ func (item *UnionArgsXXX1Long) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err
 	return item.Write(w, nat_Y)
 }
 
-func (item *UnionArgsXXX1Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
+func (item *UnionArgsXXX1Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var rawX []byte
 
 	if in != nil {
@@ -338,7 +338,7 @@ func (item *UnionArgsXXX1Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 	if rawX != nil {
 		inXPointer = &inX
 	}
-	if err := BuiltinTupleLongReadJSON(legacyTypeNames, inXPointer, &item.X, nat_Y); err != nil {
+	if err := BuiltinTupleLongReadJSONGeneral(tctx, inXPointer, &item.X, nat_Y); err != nil {
 		return err
 	}
 
@@ -368,7 +368,7 @@ func (item *UnionArgsXXX1Long) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	return append(w, '}'), nil
 }
 
-func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int, nat_Y uint32) []int {
+func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -378,7 +378,7 @@ func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int, nat_Y uint32) []int 
 	// calculate layout for item.X
 	currentPosition := len(sizes)
 	if len(item.X) != 0 {
-		sizes = BuiltinTupleLongCalculateLayout(sizes, &item.X, nat_Y)
+		sizes = BuiltinTupleLongCalculateLayout(sizes, &item.X)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -399,7 +399,7 @@ func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int, nat_Y uint32) []int 
 	return sizes
 }
 
-func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -420,7 +420,7 @@ func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = BuiltinTupleLongInternalWriteTL2(w, sizes, &item.X, nat_Y)
+			w, sizes = BuiltinTupleLongInternalWriteTL2(w, sizes, &item.X)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -429,25 +429,25 @@ func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 	return w, sizes
 }
 
-func (item *UnionArgsXXX1Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+func (item *UnionArgsXXX1Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if currentR, err = BuiltinTupleLongInternalReadTL2(currentR, &item.X, nat_Y); err != nil {
+		if currentR, err = BuiltinTupleLongInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -457,7 +457,7 @@ func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte, nat_Y uint3
 	return r, nil
 }
 
-func (item *UnionArgsXXX1Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX1Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -485,7 +485,7 @@ func (item *UnionArgsXXX1Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, na
 	if index != 0 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 0)
 	}
-	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -539,7 +539,7 @@ func (item *UnionArgsXXX2Int) WriteBoxed(w []byte, nat_Y uint32) []byte {
 	return item.Write(w, nat_Y)
 }
 
-func (item *UnionArgsXXX2Int) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
+func (item *UnionArgsXXX2Int) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -596,7 +596,7 @@ func (item *UnionArgsXXX2Int) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 	return append(w, '}')
 }
 
-func (item *UnionArgsXXX2Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
+func (item *UnionArgsXXX2Int) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -625,7 +625,7 @@ func (item *UnionArgsXXX2Int) CalculateLayout(sizes []int, nat_Y uint32) []int {
 	return sizes
 }
 
-func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -658,20 +658,20 @@ func (item *UnionArgsXXX2Int) InternalWriteTL2(w []byte, sizes []int, nat_Y uint
 	return w, sizes
 }
 
-func (item *UnionArgsXXX2Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+func (item *UnionArgsXXX2Int) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UnionArgsXXX2Int) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX2Int) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 
 	// read item.A
@@ -686,7 +686,7 @@ func (item *UnionArgsXXX2Int) InternalReadTL2(r []byte, block byte, nat_Y uint32
 	return r, nil
 }
 
-func (item *UnionArgsXXX2Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX2Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -714,7 +714,7 @@ func (item *UnionArgsXXX2Int) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat
 	if index != 1 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
 	}
-	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -768,7 +768,7 @@ func (item *UnionArgsXXX2Long) WriteBoxed(w []byte, nat_Y uint32) []byte {
 	return item.Write(w, nat_Y)
 }
 
-func (item *UnionArgsXXX2Long) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
+func (item *UnionArgsXXX2Long) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	var propAPresented bool
 
 	if in != nil {
@@ -825,7 +825,7 @@ func (item *UnionArgsXXX2Long) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []
 	return append(w, '}')
 }
 
-func (item *UnionArgsXXX2Long) CalculateLayout(sizes []int, nat_Y uint32) []int {
+func (item *UnionArgsXXX2Long) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -854,7 +854,7 @@ func (item *UnionArgsXXX2Long) CalculateLayout(sizes []int, nat_Y uint32) []int 
 	return sizes
 }
 
-func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -887,20 +887,20 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int, nat_Y uin
 	return w, sizes
 }
 
-func (item *UnionArgsXXX2Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+func (item *UnionArgsXXX2Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 
 	// read item.A
@@ -915,7 +915,7 @@ func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte, nat_Y uint3
 	return r, nil
 }
 
-func (item *UnionArgsXXX2Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXX2Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -943,7 +943,7 @@ func (item *UnionArgsXXX2Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, na
 	if index != 1 {
 		return r, basictl.TL2Error("unexpected constructor number %d, instead of %d", index, 1)
 	}
-	_, err = item.InternalReadTL2(currentR, block, nat_Y)
+	_, err = item.InternalReadTL2(currentR, block)
 	return r, err
 }
 
@@ -1045,27 +1045,27 @@ func (item *UnionArgsXXXInt) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err e
 	return w, nil
 }
 
-func (item *UnionArgsXXXInt) CalculateLayout(sizes []int, nat_Y uint32) []int {
+func (item *UnionArgsXXXInt) CalculateLayout(sizes []int) []int {
 	switch item.index {
 	case 0:
-		sizes = item.value1.CalculateLayout(sizes, nat_Y)
+		sizes = item.value1.CalculateLayout(sizes)
 	case 1:
-		sizes = item.value2.CalculateLayout(sizes, nat_Y)
+		sizes = item.value2.CalculateLayout(sizes)
 	}
 	return sizes
 }
 
-func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+func (item *UnionArgsXXXInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	switch item.index {
 	case 0:
-		w, sizes = item.value1.InternalWriteTL2(w, sizes, nat_Y)
+		w, sizes = item.value1.InternalWriteTL2(w, sizes)
 	case 1:
-		w, sizes = item.value2.InternalWriteTL2(w, sizes, nat_Y)
+		w, sizes = item.value2.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func (item *UnionArgsXXXInt) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXXInt) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1091,41 +1091,44 @@ func (item *UnionArgsXXXInt) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, 
 	}
 	switch item.index {
 	case 0:
-		if currentR, err = item.value1.InternalReadTL2(currentR, block, nat_Y); err != nil {
+		if currentR, err = item.value1.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	case 1:
-		if currentR, err = item.value2.InternalReadTL2(currentR, block, nat_Y); err != nil {
+		if currentR, err = item.value2.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	}
 	return r, nil
 }
-func (item *UnionArgsXXXInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+func (item *UnionArgsXXXInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UnionArgsXXXInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) ([]byte, error) {
-	return item.InternalReadTL2(r, nat_Y)
+func (item *UnionArgsXXXInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
 }
 
-func (item *UnionArgsXXXInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
+func (item *UnionArgsXXXInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	_tag, _value, err := Json2ReadUnion("UnionArgsXXX", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
-		if !legacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
+		if tctx.IsTL2 && _tag != "unionArgsXXX1" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX1#e7978c97")
 		}
 		item.index = 0
@@ -1134,11 +1137,14 @@ func (item *UnionArgsXXXInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.value1.ReadJSON(legacyTypeNames, in2Pointer, nat_Y); err != nil {
+		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
 	case "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
-		if !legacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
+		if tctx.IsTL2 && _tag != "unionArgsXXX2" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX2#6daed784")
 		}
 		item.index = 1
@@ -1147,7 +1153,7 @@ func (item *UnionArgsXXXInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexe
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.value2.ReadJSON(legacyTypeNames, in2Pointer, nat_Y); err != nil {
+		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
 	default:
@@ -1168,10 +1174,14 @@ func (item *UnionArgsXXXInt) WriteJSON(w []byte, nat_Y uint32) (_ []byte, err er
 func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"unionArgsXXX1"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
+			} else {
+				w = append(w, `{"type":"unionArgsXXX1"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.value1.WriteJSONOpt(tctx, w, nat_Y); err != nil {
@@ -1179,10 +1189,14 @@ func (item *UnionArgsXXXInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 		}
 		return append(w, '}'), nil
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"unionArgsXXX2"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
+			} else {
+				w = append(w, `{"type":"unionArgsXXX2"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.value2.WriteJSONOpt(tctx, w, nat_Y)
@@ -1290,27 +1304,27 @@ func (item *UnionArgsXXXLong) WriteBoxed(w []byte, nat_Y uint32) (_ []byte, err 
 	return w, nil
 }
 
-func (item *UnionArgsXXXLong) CalculateLayout(sizes []int, nat_Y uint32) []int {
+func (item *UnionArgsXXXLong) CalculateLayout(sizes []int) []int {
 	switch item.index {
 	case 0:
-		sizes = item.value1.CalculateLayout(sizes, nat_Y)
+		sizes = item.value1.CalculateLayout(sizes)
 	case 1:
-		sizes = item.value2.CalculateLayout(sizes, nat_Y)
+		sizes = item.value2.CalculateLayout(sizes)
 	}
 	return sizes
 }
 
-func (item *UnionArgsXXXLong) InternalWriteTL2(w []byte, sizes []int, nat_Y uint32) ([]byte, []int) {
+func (item *UnionArgsXXXLong) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	switch item.index {
 	case 0:
-		w, sizes = item.value1.InternalWriteTL2(w, sizes, nat_Y)
+		w, sizes = item.value1.InternalWriteTL2(w, sizes)
 	case 1:
-		w, sizes = item.value2.InternalWriteTL2(w, sizes, nat_Y)
+		w, sizes = item.value2.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte, err error) {
+func (item *UnionArgsXXXLong) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -1336,41 +1350,44 @@ func (item *UnionArgsXXXLong) InternalReadTL2(r []byte, nat_Y uint32) (_ []byte,
 	}
 	switch item.index {
 	case 0:
-		if currentR, err = item.value1.InternalReadTL2(currentR, block, nat_Y); err != nil {
+		if currentR, err = item.value1.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	case 1:
-		if currentR, err = item.value2.InternalReadTL2(currentR, block, nat_Y); err != nil {
+		if currentR, err = item.value2.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	}
 	return r, nil
 }
-func (item *UnionArgsXXXLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_Y uint32) []byte {
+func (item *UnionArgsXXXLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_Y)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_Y)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UnionArgsXXXLong) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_Y uint32) ([]byte, error) {
-	return item.InternalReadTL2(r, nat_Y)
+func (item *UnionArgsXXXLong) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) ([]byte, error) {
+	return item.InternalReadTL2(r)
 }
 
-func (item *UnionArgsXXXLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_Y uint32) error {
+func (item *UnionArgsXXXLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_Y uint32) error {
 	_tag, _value, err := Json2ReadUnion("UnionArgsXXX", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "unionArgsXXX1#e7978c97", "unionArgsXXX1", "#e7978c97":
-		if !legacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
+		if tctx.IsTL2 && _tag != "unionArgsXXX1" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX1#e7978c97" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX1#e7978c97")
 		}
 		item.index = 0
@@ -1379,11 +1396,14 @@ func (item *UnionArgsXXXLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.value1.ReadJSON(legacyTypeNames, in2Pointer, nat_Y); err != nil {
+		if err := item.value1.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
 	case "unionArgsXXX2#6daed784", "unionArgsXXX2", "#6daed784":
-		if !legacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
+		if tctx.IsTL2 && _tag != "unionArgsXXX2" {
+			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "unionArgsXXX2#6daed784" {
 			return ErrorInvalidUnionLegacyTagJSON("UnionArgsXXX", "unionArgsXXX2#6daed784")
 		}
 		item.index = 1
@@ -1392,7 +1412,7 @@ func (item *UnionArgsXXXLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.value2.ReadJSON(legacyTypeNames, in2Pointer, nat_Y); err != nil {
+		if err := item.value2.ReadJSONGeneral(tctx, in2Pointer, nat_Y); err != nil {
 			return err
 		}
 	default:
@@ -1413,10 +1433,14 @@ func (item *UnionArgsXXXLong) WriteJSON(w []byte, nat_Y uint32) (_ []byte, err e
 func (item *UnionArgsXXXLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, nat_Y uint32) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"unionArgsXXX1"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"unionArgsXXX1#e7978c97"`...)
+			} else {
+				w = append(w, `{"type":"unionArgsXXX1"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		if w, err = item.value1.WriteJSONOpt(tctx, w, nat_Y); err != nil {
@@ -1424,10 +1448,14 @@ func (item *UnionArgsXXXLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []b
 		}
 		return append(w, '}'), nil
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"unionArgsXXX2"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"unionArgsXXX2#6daed784"`...)
+			} else {
+				w = append(w, `{"type":"unionArgsXXX2"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.value2.WriteJSONOpt(tctx, w, nat_Y)

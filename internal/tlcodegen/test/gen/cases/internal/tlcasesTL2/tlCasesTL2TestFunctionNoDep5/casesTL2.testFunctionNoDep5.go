@@ -127,7 +127,8 @@ func (item *CasesTL2TestFunctionNoDep5) WriteResultTL2(w []byte, ctx *basictl.TL
 }
 
 func (item *CasesTL2TestFunctionNoDep5) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlCasesTL2TestObject.CasesTL2TestObject) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -173,6 +174,11 @@ func (item CasesTL2TestFunctionNoDep5) String() string {
 }
 
 func (item *CasesTL2TestFunctionNoDep5) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestFunctionNoDep5) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {

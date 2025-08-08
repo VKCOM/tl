@@ -64,7 +64,7 @@ func (item *UsefulServiceGetUserEntityResult) WriteBoxed(w []byte, nat_fields_ma
 	return item.Write(w, nat_fields_mask)
 }
 
-func (item *UsefulServiceGetUserEntityResult) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_fields_mask uint32) error {
+func (item *UsefulServiceGetUserEntityResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propEntityIdPresented bool
 	var rawPaymentItems []byte
 
@@ -111,7 +111,7 @@ func (item *UsefulServiceGetUserEntityResult) ReadJSON(legacyTypeNames bool, in 
 	if rawPaymentItems != nil {
 		inPaymentItemsPointer = &inPaymentItems
 	}
-	if err := item.PaymentItems.ReadJSON(legacyTypeNames, inPaymentItemsPointer, nat_fields_mask); err != nil {
+	if err := item.PaymentItems.ReadJSONGeneral(tctx, inPaymentItemsPointer, nat_fields_mask); err != nil {
 		return err
 	}
 
@@ -146,7 +146,7 @@ func (item *UsefulServiceGetUserEntityResult) WriteJSONOpt(tctx *basictl.JSONWri
 	return append(w, '}')
 }
 
-func (item *UsefulServiceGetUserEntityResult) CalculateLayout(sizes []int, nat_fields_mask uint32) []int {
+func (item *UsefulServiceGetUserEntityResult) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
@@ -166,7 +166,7 @@ func (item *UsefulServiceGetUserEntityResult) CalculateLayout(sizes []int, nat_f
 	// calculate layout for item.PaymentItems
 	currentPosition := len(sizes)
 	if item.PaymentItems.Ok {
-		sizes = item.PaymentItems.CalculateLayout(sizes, nat_fields_mask)
+		sizes = item.PaymentItems.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -187,7 +187,7 @@ func (item *UsefulServiceGetUserEntityResult) CalculateLayout(sizes []int, nat_f
 	return sizes
 }
 
-func (item *UsefulServiceGetUserEntityResult) InternalWriteTL2(w []byte, sizes []int, nat_fields_mask uint32) ([]byte, []int) {
+func (item *UsefulServiceGetUserEntityResult) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -217,7 +217,7 @@ func (item *UsefulServiceGetUserEntityResult) InternalWriteTL2(w []byte, sizes [
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = item.PaymentItems.InternalWriteTL2(w, sizes, nat_fields_mask)
+			w, sizes = item.PaymentItems.InternalWriteTL2(w, sizes)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -226,20 +226,20 @@ func (item *UsefulServiceGetUserEntityResult) InternalWriteTL2(w []byte, sizes [
 	return w, sizes
 }
 
-func (item *UsefulServiceGetUserEntityResult) WriteTL2(w []byte, ctx *basictl.TL2WriteContext, nat_fields_mask uint32) []byte {
+func (item *UsefulServiceGetUserEntityResult) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer
 	}
-	sizes = item.CalculateLayout(sizes[:0], nat_fields_mask)
-	w, _ = item.InternalWriteTL2(w, sizes, nat_fields_mask)
+	sizes = item.CalculateLayout(sizes[:0])
+	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes[:0]
 	}
 	return w
 }
 
-func (item *UsefulServiceGetUserEntityResult) InternalReadTL2(r []byte, nat_fields_mask uint32) (_ []byte, err error) {
+func (item *UsefulServiceGetUserEntityResult) InternalReadTL2(r []byte) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -283,7 +283,7 @@ func (item *UsefulServiceGetUserEntityResult) InternalReadTL2(r []byte, nat_fiel
 
 	// read item.PaymentItems
 	if block&(1<<2) != 0 {
-		if currentR, err = item.PaymentItems.InternalReadTL2(currentR, nat_fields_mask); err != nil {
+		if currentR, err = item.PaymentItems.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -293,8 +293,8 @@ func (item *UsefulServiceGetUserEntityResult) InternalReadTL2(r []byte, nat_fiel
 	return r, nil
 }
 
-func (item *UsefulServiceGetUserEntityResult) ReadTL2(r []byte, ctx *basictl.TL2ReadContext, nat_fields_mask uint32) (_ []byte, err error) {
-	return item.InternalReadTL2(r, nat_fields_mask)
+func (item *UsefulServiceGetUserEntityResult) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, err error) {
+	return item.InternalReadTL2(r)
 }
 
 type UsefulServiceGetUserEntityResultBoxedMaybe struct {
@@ -336,14 +336,14 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) WriteBoxed(w []byte, nat
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) CalculateLayout(sizes []int, nat_t uint32) []int {
+func (item *UsefulServiceGetUserEntityResultBoxedMaybe) CalculateLayout(sizes []int) []int {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 	if item.Ok {
 		sizes[sizePosition] += 1
 		sizes[sizePosition] += basictl.TL2CalculateSize(1)
 		currentPosition := len(sizes)
-		sizes = item.Value.CalculateLayout(sizes, nat_t)
+		sizes = item.Value.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
 			sizes[sizePosition] += sizes[currentPosition]
 			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
@@ -352,7 +352,7 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) CalculateLayout(sizes []
 	return sizes
 }
 
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, nat_t uint32) ([]byte, []int) {
+func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -367,7 +367,7 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalWriteTL2(w []byt
 		w = basictl.TL2WriteSize(w, 1)
 		if sizes[0] != 0 {
 			w[currentPosition] |= (1 << 1)
-			w, sizes = item.Value.InternalWriteTL2(w, sizes, nat_t)
+			w, sizes = item.Value.InternalWriteTL2(w, sizes)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -375,7 +375,7 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalWriteTL2(w []byt
 	return w, sizes
 }
 
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalReadTL2(r []byte, nat_t uint32) (_ []byte, err error) {
+func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
 	saveR := r
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
@@ -402,7 +402,7 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalReadTL2(r []byte
 		}
 		item.Ok = true
 		if block&(1<<1) != 0 {
-			if r, err = item.Value.InternalReadTL2(r, nat_t); err != nil {
+			if r, err = item.Value.InternalReadTL2(r); err != nil {
 				return r, err
 			}
 		} else {
@@ -415,7 +415,7 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) InternalReadTL2(r []byte
 	return r, nil
 }
 
-func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -427,7 +427,7 @@ func (item *UsefulServiceGetUserEntityResultBoxedMaybe) ReadJSON(legacyTypeNames
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer, nat_t); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer, nat_t); err != nil {
 			return err
 		}
 	}

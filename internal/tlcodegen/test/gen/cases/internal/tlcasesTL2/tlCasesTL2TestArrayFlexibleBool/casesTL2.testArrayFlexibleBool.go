@@ -79,6 +79,11 @@ func (item CasesTL2TestArrayFlexibleBool) String() string {
 }
 
 func (item *CasesTL2TestArrayFlexibleBool) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestArrayFlexibleBool) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawArr []byte
 
@@ -125,7 +130,7 @@ func (item *CasesTL2TestArrayFlexibleBool) ReadJSON(legacyTypeNames bool, in *ba
 	if rawArr != nil {
 		inArrPointer = &inArr
 	}
-	if err := tlBuiltinTupleBool.BuiltinTupleBoolReadJSON(legacyTypeNames, inArrPointer, &item.Arr, item.N); err != nil {
+	if err := tlBuiltinTupleBool.BuiltinTupleBoolReadJSONGeneral(tctx, inArrPointer, &item.Arr, item.N); err != nil {
 		return err
 	}
 
@@ -190,7 +195,7 @@ func (item *CasesTL2TestArrayFlexibleBool) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Arr
 	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
-		sizes = tlBuiltinTupleBool.BuiltinTupleBoolCalculateLayout(sizes, &item.Arr, item.N)
+		sizes = tlBuiltinTupleBool.BuiltinTupleBoolCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -240,7 +245,7 @@ func (item *CasesTL2TestArrayFlexibleBool) InternalWriteTL2(w []byte, sizes []in
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinTupleBool.BuiltinTupleBoolInternalWriteTL2(w, sizes, &item.Arr, item.N)
+			w, sizes = tlBuiltinTupleBool.BuiltinTupleBoolInternalWriteTL2(w, sizes, &item.Arr)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -306,7 +311,7 @@ func (item *CasesTL2TestArrayFlexibleBool) InternalReadTL2(r []byte) (_ []byte, 
 
 	// read item.Arr
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinTupleBool.BuiltinTupleBoolInternalReadTL2(currentR, &item.Arr, item.N); err != nil {
+		if currentR, err = tlBuiltinTupleBool.BuiltinTupleBoolInternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
 		}
 	} else {

@@ -151,25 +151,39 @@ func (item *CasesBytesTestEnum) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (
 }
 
 func (item *CasesBytesTestEnum) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesBytesTestEnum) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_jtype := in.UnsafeString()
 	if !in.Ok() {
 		return internal.ErrorInvalidJSON("cases_bytes.TestEnum", "expected string")
 	}
 	switch _jtype {
 	case "cases_bytes.testEnum1#58aad3f5", "cases_bytes.testEnum1", "#58aad3f5":
-		if !legacyTypeNames && _jtype == "cases_bytes.testEnum1#58aad3f5" {
+		if tctx.IsTL2 && _jtype != "cases_bytes.testEnum1" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "cases_bytes.testEnum1#58aad3f5" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum1#58aad3f5")
 		}
 		item.index = 0
 		return nil
 	case "cases_bytes.testEnum2#00b47add", "cases_bytes.testEnum2", "#00b47add":
-		if !legacyTypeNames && _jtype == "cases_bytes.testEnum2#00b47add" {
+		if tctx.IsTL2 && _jtype != "cases_bytes.testEnum2" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "cases_bytes.testEnum2#00b47add" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum2#00b47add")
 		}
 		item.index = 1
 		return nil
 	case "cases_bytes.testEnum3#81911ffa", "cases_bytes.testEnum3", "#81911ffa":
-		if !legacyTypeNames && _jtype == "cases_bytes.testEnum3#81911ffa" {
+		if tctx.IsTL2 && _jtype != "cases_bytes.testEnum3" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "cases_bytes.testEnum3#81911ffa" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("cases_bytes.TestEnum", "cases_bytes.testEnum3#81911ffa")
 		}
 		item.index = 2

@@ -116,7 +116,7 @@ func BuiltinVectorBenchmarksVruPositionInternalReadTL2(r []byte, vec *[]tlBenchm
 	return r, nil
 }
 
-func BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition) error {
+func BuiltinVectorBenchmarksVruPositionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames bool, in *basict
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

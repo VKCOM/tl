@@ -105,6 +105,11 @@ func (item NativeWrappers) String() string {
 }
 
 func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *NativeWrappers) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	var propCPresented bool
@@ -141,7 +146,7 @@ func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propCPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "c")
 				}
-				if err := item.C.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propCPresented = true
@@ -149,7 +154,7 @@ func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propDPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "d")
 				}
-				if err := item.D.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propDPresented = true
@@ -157,7 +162,7 @@ func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propEPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "e")
 				}
-				if err := item.E.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.E.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propEPresented = true
@@ -165,7 +170,7 @@ func (item *NativeWrappers) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propFPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("nativeWrappers", "f")
 				}
-				if err := item.F.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.F.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propFPresented = true

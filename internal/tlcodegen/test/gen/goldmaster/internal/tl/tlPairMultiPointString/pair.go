@@ -72,6 +72,11 @@ func (item PairMultiPointString) String() string {
 }
 
 func (item *PairMultiPointString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *PairMultiPointString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 
@@ -88,7 +93,7 @@ func (item *PairMultiPointString) ReadJSON(legacyTypeNames bool, in *basictl.Jso
 				if propAPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("pair", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true

@@ -66,8 +66,13 @@ func (item VectorBenchmarksVruPosition) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorBenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorBenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

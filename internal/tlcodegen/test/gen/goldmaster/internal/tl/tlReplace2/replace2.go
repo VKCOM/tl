@@ -79,6 +79,11 @@ func (item Replace2) String() string {
 }
 
 func (item *Replace2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Replace2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawA []byte
 
@@ -125,7 +130,7 @@ func (item *Replace2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 	if rawA != nil {
 		inAPointer = &inA
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inAPointer, &item.A, item.N); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, item.N); err != nil {
 		return err
 	}
 
@@ -190,7 +195,7 @@ func (item *Replace2) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.A
 	currentPosition := len(sizes)
 	if len(item.A) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A, item.N)
+		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -240,7 +245,7 @@ func (item *Replace2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A, item.N)
+			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.A)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -306,7 +311,7 @@ func (item *Replace2) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.A
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A, item.N); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
 		}
 	} else {

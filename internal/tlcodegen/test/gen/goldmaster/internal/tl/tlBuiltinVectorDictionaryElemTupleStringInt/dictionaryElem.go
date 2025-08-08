@@ -53,7 +53,7 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []tlDictionary
 	return w, nil
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) []int {
+func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
@@ -63,7 +63,7 @@ func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *
 	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
 		elem := (*vec)[i]
-		sizes = elem.CalculateLayout(sizes, nat_t)
+		sizes = elem.CalculateLayout(sizes)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
@@ -71,7 +71,7 @@ func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *
 	return sizes
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) ([]byte, []int) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
@@ -82,12 +82,12 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes [
 
 	for i := 0; i < len(*vec); i++ {
 		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes, nat_t)
+		w, sizes = elem.InternalWriteTL2(w, sizes)
 	}
 	return w, sizes
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) (_ []byte, err error) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -111,14 +111,14 @@ func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]t
 	}
 	*vec = (*vec)[:elementCount]
 	for i := 0; i < elementCount; i++ {
-		if currentR, err = (*vec)[i].InternalReadTL2(currentR, nat_t); err != nil {
+		if currentR, err = (*vec)[i].InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	}
 	return r, nil
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) error {
+func BuiltinVectorDictionaryElemTupleStringIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt, nat_t uint32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -132,7 +132,7 @@ func BuiltinVectorDictionaryElemTupleStringIntReadJSON(legacyTypeNames bool, in 
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in, nat_t); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_t); err != nil {
 				return err
 			}
 			in.WantComma()

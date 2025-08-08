@@ -116,7 +116,7 @@ func BuiltinVectorDictionaryFieldAnyDoubleIntInternalReadTL2(r []byte, vec *[]tl
 	return r, nil
 }
 
-func BuiltinVectorDictionaryFieldAnyDoubleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) error {
+func BuiltinVectorDictionaryFieldAnyDoubleIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorDictionaryFieldAnyDoubleIntReadJSON(legacyTypeNames bool, in *
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

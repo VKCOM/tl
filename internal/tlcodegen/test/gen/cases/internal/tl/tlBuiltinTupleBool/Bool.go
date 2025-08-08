@@ -49,61 +49,51 @@ func BuiltinTupleBoolWrite(w []byte, vec []bool, nat_n uint32) (_ []byte, err er
 	return w, nil
 }
 
-func BuiltinTupleBoolCalculateLayout(sizes []int, vec *[]bool, nat_n uint32) []int {
+func BuiltinTupleBoolCalculateLayout(sizes []int, vec *[]bool) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if nat_n != 0 {
-		currentSize += basictl.TL2CalculateSize(int(nat_n))
+	if len(*vec) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
 	// special case for bool
-	currentSize += (int(nat_n) + 7) / 8
-
+	currentSize += (len(*vec) + 7) / 8
 	sizes[sizePosition] = currentSize
 	return sizes
 }
 
-func BuiltinTupleBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool, nat_n uint32) ([]byte, []int) {
+func BuiltinTupleBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if nat_n != 0 {
-		w = basictl.TL2WriteSize(w, int(nat_n))
-	}
-
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
 	// special case for bool
-	blocksCount := (lastIndex + 7) / 8
-	index := uint32(0)
-	for i := uint32(0); i < blocksCount; i++ {
-		block := byte(0)
-		blockSize := uint32(8)
-		if index+blockSize > lastIndex {
-			blockSize = lastIndex - index
+	blockCount := (len(*vec) + 7) / 8
+	index := 0
+	for i := 0; i < blockCount; i++ {
+		var block byte
+
+		blockSize := 8
+		if index+blockSize > len(*vec) {
+			blockSize = len(*vec) - index
 		}
-		for j := uint32(0); j < blockSize; j++ {
+		for j := 0; j < blockSize; j++ {
 			if (*vec)[index] {
 				block |= (1 << j)
 			}
 			index += 1
 		}
-		w = append(w, block)
-	}
 
-	// append empty objects if not enough
-	for i := blocksCount; i < (nat_n+7)/8; i++ {
-		w = append(w, 0)
+		w = append(w, block)
 	}
 	return w, sizes
 }
 
-func BuiltinTupleBoolInternalReadTL2(r []byte, vec *[]bool, nat_n uint32) (_ []byte, err error) {
+func BuiltinTupleBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -122,44 +112,35 @@ func BuiltinTupleBoolInternalReadTL2(r []byte, vec *[]bool, nat_n uint32) (_ []b
 		}
 	}
 
-	if uint32(cap(*vec)) < nat_n {
-		*vec = make([]bool, nat_n)
-	} else {
-		*vec = (*vec)[:nat_n]
+	if cap(*vec) < elementCount {
+		*vec = make([]bool, elementCount)
 	}
-
-	lastIndex := uint32(elementCount)
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
+	*vec = (*vec)[:elementCount]
 	// special case for bool
-	blocksCount := (lastIndex + 7) / 8
-	index := uint32(0)
-	for i := uint32(0); i < blocksCount; i++ {
+	blocksCount := (elementCount + 7) / 8
+	index := 0
+	for i := 0; i < blocksCount; i++ {
 		var block byte
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return currentR, err
 		}
 
-		blockSize := uint32(8)
-		if index+blockSize > lastIndex {
-			blockSize = lastIndex - index
+		blockSize := 8
+		if index+blockSize > elementCount {
+			blockSize = elementCount - index
 		}
-		for j := uint32(0); j < blockSize; j++ {
+		for j := 0; j < blockSize; j++ {
 			(*vec)[index] = (block & (1 << j)) != 0
 			index += 1
 		}
 	}
-
-	// reset elements if received less elements
-	for i := index; i < nat_n; i++ {
-		(*vec)[i] = false
-	}
-
 	return r, nil
 }
-func BuiltinTupleBoolReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]bool, nat_n uint32) error {
+func BuiltinTupleBoolReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]bool, nat_n uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]bool, nat_n)
 	} else {
@@ -173,7 +154,14 @@ func BuiltinTupleBoolReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return internal.ErrorInvalidJSON("[]bool", "array is longer than expected")
+				if isTL2 {
+					var newValue bool
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return internal.ErrorInvalidJSON("[]bool", "array is longer than expected")
+				}
 			}
 			if err := internal.Json2ReadBool(in, &(*vec)[index]); err != nil {
 				return err
@@ -185,8 +173,12 @@ func BuiltinTupleBoolReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *
 			return internal.ErrorInvalidJSON("[]bool", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return internal.ErrorWrongSequenceLength("[]bool", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return internal.ErrorWrongSequenceLength("[]bool", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -196,6 +188,9 @@ func BuiltinTupleBoolWriteJSON(w []byte, vec []bool, nat_n uint32) (_ []byte, er
 	return BuiltinTupleBoolWriteJSONOpt(&tctx, w, vec, nat_n)
 }
 func BuiltinTupleBoolWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []bool, nat_n uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]bool", len(vec), nat_n)
 	}

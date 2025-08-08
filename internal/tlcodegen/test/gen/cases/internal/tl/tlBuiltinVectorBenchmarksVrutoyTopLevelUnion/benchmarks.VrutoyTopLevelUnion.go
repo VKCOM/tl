@@ -116,7 +116,7 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(r []byte, vec *[]
 	return r, nil
 }
 
-func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) error {
+func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -130,7 +130,7 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSON(legacyTypeNames bool, in
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

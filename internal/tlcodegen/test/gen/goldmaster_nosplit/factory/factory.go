@@ -31,6 +31,7 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
+	// TL
 	meta.SetGlobalFactoryCreateForEnumElement(0x623360f3)
 	meta.SetGlobalFactoryCreateForEnumElement(0xf35d7a69)
 	meta.SetGlobalFactoryCreateForEnumElement(0x6127e7b8)

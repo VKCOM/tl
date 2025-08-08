@@ -65,8 +65,13 @@ func (item TupleIntBoxed3) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleIntBoxed3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleIntBoxed3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[3]int32)(item)
-	if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

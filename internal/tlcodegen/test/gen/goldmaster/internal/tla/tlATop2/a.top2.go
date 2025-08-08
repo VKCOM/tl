@@ -87,6 +87,11 @@ func (item ATop2) String() string {
 }
 
 func (item *ATop2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *ATop2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propMPresented bool
 	var rawC []byte
@@ -145,7 +150,7 @@ func (item *ATop2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	if rawC != nil {
 		inCPointer = &inC
 	}
-	if err := item.C.ReadJSON(legacyTypeNames, inCPointer, item.M, item.N, item.N); err != nil {
+	if err := item.C.ReadJSONGeneral(tctx, inCPointer, item.M, item.N, item.N); err != nil {
 		return err
 	}
 
@@ -219,7 +224,7 @@ func (item *ATop2) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.C
 	currentPosition := len(sizes)
-	sizes = item.C.CalculateLayout(sizes, item.M, item.N, item.N)
+	sizes = item.C.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -275,7 +280,7 @@ func (item *ATop2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 3)
-		w, sizes = item.C.InternalWriteTL2(w, sizes, item.M, item.N, item.N)
+		w, sizes = item.C.InternalWriteTL2(w, sizes)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -349,7 +354,7 @@ func (item *ATop2) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.C
 	if block&(1<<3) != 0 {
-		if currentR, err = item.C.InternalReadTL2(currentR, item.M, item.N, item.N); err != nil {
+		if currentR, err = item.C.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {

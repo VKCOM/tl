@@ -52,66 +52,41 @@ func BuiltinTupleTuplePairTupleIntTupleInt2Write(w []byte, vec [][2]tlPairTupleI
 	return w, nil
 }
 
-func BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes []int, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) []int {
+func BuiltinTupleTuplePairTupleIntTupleInt2CalculateLayout(sizes []int, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) []int {
 	currentSize := 0
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if nat_n != 0 {
-		currentSize += basictl.TL2CalculateSize(int(nat_n))
+	if len(*vec) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(*vec))
 	}
-
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
+	for i := 0; i < len(*vec); i++ {
 		currentPosition := len(sizes)
-		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &(*vec)[i], nat_ttXn, nat_ttYn)
+		elem := (*vec)[i]
+		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &elem)
 		currentSize += sizes[currentPosition]
 		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
 	}
-
-	// append empty objects if not enough
-	for i := lastIndex; i < nat_n; i++ {
-		var elem [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
-		currentPosition := len(sizes)
-		sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, &elem, nat_ttXn, nat_ttYn)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	}
-
 	sizes[sizePosition] = currentSize
 	return sizes
 }
 
-func BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w []byte, sizes []int, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) ([]byte, []int) {
+func BuiltinTupleTuplePairTupleIntTupleInt2InternalWriteTL2(w []byte, sizes []int, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
 	w = basictl.TL2WriteSize(w, currentSize)
-	if nat_n != 0 {
-		w = basictl.TL2WriteSize(w, int(nat_n))
+	if len(*vec) != 0 {
+		w = basictl.TL2WriteSize(w, len(*vec))
 	}
 
-	lastIndex := uint32(len(*vec))
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
-		w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, &(*vec)[i], nat_ttXn, nat_ttYn)
-	}
-
-	// append empty objects if not enough
-	for i := lastIndex; i < nat_n; i++ {
-		var elem [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
-		w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, &elem, nat_ttXn, nat_ttYn)
+	for i := 0; i < len(*vec); i++ {
+		elem := (*vec)[i]
+		w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, &elem)
 	}
 	return w, sizes
 }
 
-func BuiltinTupleTuplePairTupleIntTupleInt2InternalReadTL2(r []byte, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+func BuiltinTupleTuplePairTupleIntTupleInt2InternalReadTL2(r []byte, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) (_ []byte, err error) {
 	currentSize := 0
 	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
@@ -130,31 +105,22 @@ func BuiltinTupleTuplePairTupleIntTupleInt2InternalReadTL2(r []byte, vec *[][2]t
 		}
 	}
 
-	if uint32(cap(*vec)) < nat_n {
-		*vec = make([][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n)
-	} else {
-		*vec = (*vec)[:nat_n]
+	if cap(*vec) < elementCount {
+		*vec = make([][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, elementCount)
 	}
-
-	lastIndex := uint32(elementCount)
-	if lastIndex > nat_n {
-		lastIndex = nat_n
-	}
-
-	for i := uint32(0); i < lastIndex; i++ {
-		if currentR, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(currentR, &(*vec)[i], nat_ttXn, nat_ttYn); err != nil {
+	*vec = (*vec)[:elementCount]
+	for i := 0; i < elementCount; i++ {
+		if currentR, err = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
-	for i := lastIndex; i < nat_n; i++ {
-		tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReset(&(*vec)[i])
-	}
-
 	return r, nil
 }
-func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) error {
+func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n)
 	} else {
@@ -168,9 +134,16 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSON(legacyTypeNames bool, in *ba
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return internal.ErrorInvalidJSON("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", "array is longer than expected")
+				if isTL2 {
+					var newValue [2]tlPairTupleIntTupleInt.PairTupleIntTupleInt
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return internal.ErrorInvalidJSON("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", "array is longer than expected")
+				}
 			}
-			if err := tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReadJSON(legacyTypeNames, in, &(*vec)[index], nat_ttXn, nat_ttYn); err != nil {
+			if err := tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntReadJSONGeneral(tctx, in, &(*vec)[index], nat_ttXn, nat_ttYn); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -180,8 +153,12 @@ func BuiltinTupleTuplePairTupleIntTupleInt2ReadJSON(legacyTypeNames bool, in *ba
 			return internal.ErrorInvalidJSON("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return internal.ErrorWrongSequenceLength("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return internal.ErrorWrongSequenceLength("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -191,6 +168,9 @@ func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSON(w []byte, vec [][2]tlPairTu
 	return BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(&tctx, w, vec, nat_n, nat_ttXn, nat_ttYn)
 }
 func BuiltinTupleTuplePairTupleIntTupleInt2WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec [][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt, nat_n uint32, nat_ttXn uint32, nat_ttYn uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[][2]tlPairTupleIntTupleInt.PairTupleIntTupleInt", len(vec), nat_n)
 	}

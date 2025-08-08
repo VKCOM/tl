@@ -66,8 +66,13 @@ func (item VectorBenchmarksVrutoyTopLevelUnion) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorBenchmarksVrutoyTopLevelUnion) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion)(item)
-	if err := tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

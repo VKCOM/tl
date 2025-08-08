@@ -139,7 +139,7 @@ func BuiltinTuple0BoolInternalReadTL2(r []byte, vec *[0]bool) (_ []byte, err err
 	return r, nil
 }
 
-func BuiltinTuple0BoolReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[0]bool) error {
+func BuiltinTuple0BoolReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[0]bool) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')

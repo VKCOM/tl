@@ -90,6 +90,11 @@ func (item AbTestMaybe) String() string {
 }
 
 func (item *AbTestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AbTestMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var propAPresented bool
 	var propBPresented bool
@@ -117,7 +122,7 @@ func (item *AbTestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "a")
 				}
-				if err := item.A.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.A.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -125,7 +130,7 @@ func (item *AbTestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "b")
 				}
-				if err := item.B.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.B.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -133,7 +138,7 @@ func (item *AbTestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propCPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "c")
 				}
-				if err := item.C.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propCPresented = true
@@ -141,7 +146,7 @@ func (item *AbTestMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propDPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("ab.testMaybe", "d")
 				}
-				if err := item.D.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propDPresented = true

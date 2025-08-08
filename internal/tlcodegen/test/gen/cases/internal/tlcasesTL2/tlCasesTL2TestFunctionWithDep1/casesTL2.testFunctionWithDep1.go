@@ -99,7 +99,7 @@ func (item *CasesTL2TestFunctionWithDep1) ReadResultTL2(r []byte, ctx *basictl.T
 	}
 
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, ret, item.N); err != nil {
+		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, ret); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -114,7 +114,7 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultTL2(w []byte, ctx *basictl.
 		sizes = ctx.SizeBuffer
 	}
 	// write structured result
-	sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &ret, item.N)
+	sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &ret)
 	totalSize := 0
 	if len(ret) != 0 {
 		totalSize += 1
@@ -124,7 +124,7 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultTL2(w []byte, ctx *basictl.
 	w = basictl.TL2WriteSize(w, totalSize)
 	if totalSize != 0 {
 		w = append(w, 1<<1)
-		w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &ret, item.N)
+		w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &ret)
 	}
 
 	if ctx != nil {
@@ -134,7 +134,8 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultTL2(w []byte, ctx *basictl.
 }
 
 func (item *CasesTL2TestFunctionWithDep1) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int32) error {
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, in, ret, item.N); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, in, ret, item.N); err != nil {
 		return err
 	}
 	return nil
@@ -180,6 +181,11 @@ func (item CasesTL2TestFunctionWithDep1) String() string {
 }
 
 func (item *CasesTL2TestFunctionWithDep1) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *CasesTL2TestFunctionWithDep1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 
 	if in != nil {

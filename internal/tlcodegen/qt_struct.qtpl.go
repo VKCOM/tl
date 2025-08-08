@@ -3016,6 +3016,11 @@ func (item *`)
 				}
 				qw422016.N().S(`
 `)
+				/** ?TRUE -> BOOL CASE **/
+
+				if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
+					continue
+				}
 				if isTrue {
 					qw422016.N().S(`    var `)
 					qw422016.N().S(fieldName)

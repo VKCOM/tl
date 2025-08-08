@@ -139,7 +139,7 @@ func BuiltinVectorBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err erro
 	return r, nil
 }
 
-func BuiltinVectorBoolReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]bool) error {
+func BuiltinVectorBoolReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]bool) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {

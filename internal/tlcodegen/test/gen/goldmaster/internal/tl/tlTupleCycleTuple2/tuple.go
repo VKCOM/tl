@@ -69,8 +69,13 @@ func (item TupleCycleTuple2) String() string {
 	return string(w)
 }
 func (item *TupleCycleTuple2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleCycleTuple2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[2]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	if err := cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTuple2CycleTupleReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

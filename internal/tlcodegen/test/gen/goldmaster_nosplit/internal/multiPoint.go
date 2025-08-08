@@ -97,6 +97,11 @@ func (item MultiPoint) String() string {
 }
 
 func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MultiPoint) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propAPresented bool
 	var propBPresented bool
 	var propCPresented bool
@@ -117,7 +122,7 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propAPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "a")
 				}
-				if err := BuiltinTuple3IntReadJSON(legacyTypeNames, in, &item.A); err != nil {
+				if err := BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.A); err != nil {
 					return err
 				}
 				propAPresented = true
@@ -125,7 +130,7 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propBPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "b")
 				}
-				if err := BuiltinTuple3IntBoxedReadJSON(legacyTypeNames, in, &item.B); err != nil {
+				if err := BuiltinTuple3IntBoxedReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -133,7 +138,7 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propCPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "c")
 				}
-				if err := BuiltinTuple3Int32ReadJSON(legacyTypeNames, in, &item.C); err != nil {
+				if err := BuiltinTuple3Int32ReadJSONGeneral(tctx, in, &item.C); err != nil {
 					return err
 				}
 				propCPresented = true
@@ -141,7 +146,7 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propDPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "d")
 				}
-				if err := BuiltinTuple3Int32BoxedReadJSON(legacyTypeNames, in, &item.D); err != nil {
+				if err := BuiltinTuple3Int32BoxedReadJSONGeneral(tctx, in, &item.D); err != nil {
 					return err
 				}
 				propDPresented = true
@@ -149,7 +154,7 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propEPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "e")
 				}
-				if err := BuiltinTuple3MyInt32ReadJSON(legacyTypeNames, in, &item.E); err != nil {
+				if err := BuiltinTuple3MyInt32ReadJSONGeneral(tctx, in, &item.E); err != nil {
 					return err
 				}
 				propEPresented = true
@@ -157,7 +162,7 @@ func (item *MultiPoint) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propFPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("multiPoint", "f")
 				}
-				if err := BuiltinTuple3MyInt32BoxedReadJSON(legacyTypeNames, in, &item.F); err != nil {
+				if err := BuiltinTuple3MyInt32BoxedReadJSONGeneral(tctx, in, &item.F); err != nil {
 					return err
 				}
 				propFPresented = true
