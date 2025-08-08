@@ -1612,8 +1612,8 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     } else {
         block = 0
     }
-            {%- if tl2MasksToStore[fieldIndex / 8 + 1] -%}
-    item.mask{%d fieldIndex / 8 + 1%} = block
+            {%- if tl2MasksToStore[(fieldIndex + 1) / 8 + 1] -%}
+    item.mask{%d (fieldIndex + 1) / 8 + 1 %} = block
             {%- endif -%}
         {%- endif -%}
 
