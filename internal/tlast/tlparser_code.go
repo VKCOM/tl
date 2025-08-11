@@ -649,6 +649,7 @@ func ParseTLFile(str, file string, opts LexerOptions, errorWriter io.Writer) (TL
 	functionSection := false
 	var res TL
 
+	orderIndex := 0
 	rest := tokenIterator{tokens: allTokens}
 	commentStart := rest
 	for !rest.expect(eof) {
@@ -672,6 +673,8 @@ func ParseTLFile(str, file string, opts LexerOptions, errorWriter io.Writer) (TL
 			}
 			return nil, fmt.Errorf("type declaration error: %w", err)
 		}
+		td.OriginalOrderIndex = orderIndex
+		orderIndex++
 		res = append(res, &td)
 		commentStart = rest
 	}
