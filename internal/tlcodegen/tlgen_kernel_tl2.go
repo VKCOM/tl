@@ -3,6 +3,7 @@ package tlcodegen
 import (
 	"fmt"
 	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 	"math"
 	"strconv"
 	"strings"
@@ -894,7 +895,7 @@ func (w *TypeRWWrapper) wrapperNameTail() (tail string) {
 				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
 			}
 		} else {
-			b.WriteString(a.tip.goGlobalName)
+			b.WriteString(utils.UpperFirst(a.tip.goGlobalName))
 		}
 	}
 	return b.String()

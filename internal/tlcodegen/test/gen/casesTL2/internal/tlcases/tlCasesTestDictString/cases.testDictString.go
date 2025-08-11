@@ -9,7 +9,7 @@ package tlCasesTestDictString
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorDictionaryFieldint32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorDictionaryFieldInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -24,11 +24,11 @@ func (CasesTestDictString) TLName() string { return "cases.testDictString" }
 func (CasesTestDictString) TLTag() uint32  { return 0x00000000 }
 
 func (item *CasesTestDictString) Reset() {
-	tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32Reset(item.Dict)
+	tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32Reset(item.Dict)
 }
 
 func (item *CasesTestDictString) FillRandom(rg *basictl.RandGenerator) {
-	tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32FillRandom(rg, &item.Dict)
+	tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32FillRandom(rg, &item.Dict)
 }
 
 func (item *CasesTestDictString) Read(w []byte) (_ []byte, err error) {
@@ -81,7 +81,7 @@ func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testDictString", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32ReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32ReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -96,7 +96,7 @@ func (item *CasesTestDictString) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 		}
 	}
 	if !propDictPresented {
-		tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32Reset(item.Dict)
+		tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32Reset(item.Dict)
 	}
 	return nil
 }
@@ -116,7 +116,7 @@ func (item *CasesTestDictString) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32WriteJSONOpt(tctx, w, item.Dict)
+	w = tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32WriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
@@ -144,7 +144,7 @@ func (item *CasesTestDictString) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Dict
 	currentPosition := len(sizes)
 	if len(item.Dict) != 0 {
-		sizes = tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32CalculateLayout(sizes, &item.Dict)
+		sizes = tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32CalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -186,7 +186,7 @@ func (item *CasesTestDictString) InternalWriteTL2(w []byte, sizes []int) ([]byte
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32InternalWriteTL2(w, sizes, &item.Dict)
+			w, sizes = tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32InternalWriteTL2(w, sizes, &item.Dict)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -243,11 +243,11 @@ func (item *CasesTestDictString) InternalReadTL2(r []byte) (_ []byte, err error)
 
 	// read item.Dict
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32InternalReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32InternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinVectorDictionaryFieldint32.BuiltinVectorDictionaryFieldint32Reset(item.Dict)
+		tlBuiltinVectorDictionaryFieldInt32.BuiltinVectorDictionaryFieldInt32Reset(item.Dict)
 	}
 
 	return r, nil

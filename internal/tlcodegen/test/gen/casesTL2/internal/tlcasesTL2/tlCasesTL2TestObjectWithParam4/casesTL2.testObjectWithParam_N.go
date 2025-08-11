@@ -9,7 +9,7 @@ package tlCasesTL2TestObjectWithParam4
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinTuple4int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinTuple4Int32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -26,12 +26,12 @@ func (CasesTL2TestObjectWithParam4) TLTag() uint32  { return 0x00000000 }
 
 func (item *CasesTL2TestObjectWithParam4) Reset() {
 	item.X = 0
-	tlBuiltinTuple4int32.BuiltinTuple4int32Reset(&item.Y)
+	tlBuiltinTuple4Int32.BuiltinTuple4Int32Reset(&item.Y)
 }
 
 func (item *CasesTL2TestObjectWithParam4) FillRandom(rg *basictl.RandGenerator) {
 	item.X = basictl.RandomInt(rg)
-	tlBuiltinTuple4int32.BuiltinTuple4int32FillRandom(rg, &item.Y)
+	tlBuiltinTuple4Int32.BuiltinTuple4Int32FillRandom(rg, &item.Y)
 }
 
 func (item *CasesTL2TestObjectWithParam4) Read(w []byte) (_ []byte, err error) {
@@ -93,7 +93,7 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam_N", "y")
 				}
-				if err := tlBuiltinTuple4int32.BuiltinTuple4int32ReadJSONGeneral(tctx, in, &item.Y); err != nil {
+				if err := tlBuiltinTuple4Int32.BuiltinTuple4Int32ReadJSONGeneral(tctx, in, &item.Y); err != nil {
 					return err
 				}
 				propYPresented = true
@@ -111,7 +111,7 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 		item.X = 0
 	}
 	if !propYPresented {
-		tlBuiltinTuple4int32.BuiltinTuple4int32Reset(&item.Y)
+		tlBuiltinTuple4Int32.BuiltinTuple4Int32Reset(&item.Y)
 	}
 	return nil
 }
@@ -137,7 +137,7 @@ func (item *CasesTL2TestObjectWithParam4) WriteJSONOpt(tctx *basictl.JSONWriteCo
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
-	w = tlBuiltinTuple4int32.BuiltinTuple4int32WriteJSONOpt(tctx, w, &item.Y)
+	w = tlBuiltinTuple4Int32.BuiltinTuple4Int32WriteJSONOpt(tctx, w, &item.Y)
 	return append(w, '}')
 }
 
@@ -168,7 +168,7 @@ func (item *CasesTL2TestObjectWithParam4) CalculateLayout(sizes []int) []int {
 
 	// calculate layout for item.Y
 	currentPosition := len(sizes)
-	sizes = tlBuiltinTuple4int32.BuiltinTuple4int32CalculateLayout(sizes, &item.Y)
+	sizes = tlBuiltinTuple4Int32.BuiltinTuple4Int32CalculateLayout(sizes, &item.Y)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -216,7 +216,7 @@ func (item *CasesTL2TestObjectWithParam4) InternalWriteTL2(w []byte, sizes []int
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 2)
-		w, sizes = tlBuiltinTuple4int32.BuiltinTuple4int32InternalWriteTL2(w, sizes, &item.Y)
+		w, sizes = tlBuiltinTuple4Int32.BuiltinTuple4Int32InternalWriteTL2(w, sizes, &item.Y)
 	} else {
 		sizes = sizes[1:]
 	}
@@ -281,11 +281,11 @@ func (item *CasesTL2TestObjectWithParam4) InternalReadTL2(r []byte) (_ []byte, e
 
 	// read item.Y
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinTuple4int32.BuiltinTuple4int32InternalReadTL2(currentR, &item.Y); err != nil {
+		if currentR, err = tlBuiltinTuple4Int32.BuiltinTuple4Int32InternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinTuple4int32.BuiltinTuple4int32Reset(&item.Y)
+		tlBuiltinTuple4Int32.BuiltinTuple4Int32Reset(&item.Y)
 	}
 
 	return r, nil

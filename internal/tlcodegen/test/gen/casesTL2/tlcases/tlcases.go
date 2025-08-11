@@ -13,12 +13,12 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlCasesTestEnum1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlCasesTestEnum2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlCasesTestEnum3"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace1PairTupleint32Tupleint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace1int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace2PairTupleint32Tupleint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace2int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace3TuplePairTupleint32Tupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace3Tupleint322"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace1Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace1PairTupleInt32TupleInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace2Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace2PairTupleInt32TupleInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace3TupleInt322"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace3TuplePairTupleInt32TupleInt322"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesTestAllPossibleFieldConfigs"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesTestAllPossibleFieldConfigsContainer"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesTestArray"
@@ -41,12 +41,12 @@ import (
 )
 
 type (
-	Inplace1PairTupleint32Tupleint32       = tlCasesInplace1PairTupleint32Tupleint32.CasesInplace1PairTupleint32Tupleint32
-	Inplace1int32                          = tlCasesInplace1int32.CasesInplace1int32
-	Inplace2PairTupleint32Tupleint32       = tlCasesInplace2PairTupleint32Tupleint32.CasesInplace2PairTupleint32Tupleint32
-	Inplace2int32                          = tlCasesInplace2int32.CasesInplace2int32
-	Inplace3TuplePairTupleint32Tupleint322 = tlCasesInplace3TuplePairTupleint32Tupleint322.CasesInplace3TuplePairTupleint32Tupleint322
-	Inplace3Tupleint322                    = tlCasesInplace3Tupleint322.CasesInplace3Tupleint322
+	Inplace1Int32                          = tlCasesInplace1Int32.CasesInplace1Int32
+	Inplace1PairTupleInt32TupleInt32       = tlCasesInplace1PairTupleInt32TupleInt32.CasesInplace1PairTupleInt32TupleInt32
+	Inplace2Int32                          = tlCasesInplace2Int32.CasesInplace2Int32
+	Inplace2PairTupleInt32TupleInt32       = tlCasesInplace2PairTupleInt32TupleInt32.CasesInplace2PairTupleInt32TupleInt32
+	Inplace3TupleInt322                    = tlCasesInplace3TupleInt322.CasesInplace3TupleInt322
+	Inplace3TuplePairTupleInt32TupleInt322 = tlCasesInplace3TuplePairTupleInt32TupleInt322.CasesInplace3TuplePairTupleInt32TupleInt322
 	MyCycle1                               = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle1
 	MyCycle2                               = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle2
 	MyCycle3                               = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle3

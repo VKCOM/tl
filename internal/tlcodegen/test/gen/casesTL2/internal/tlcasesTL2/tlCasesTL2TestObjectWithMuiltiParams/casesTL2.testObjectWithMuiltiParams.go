@@ -9,7 +9,7 @@ package tlCasesTL2TestObjectWithMuiltiParams
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorint32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -60,8 +60,8 @@ func (item *CasesTL2TestObjectWithMuiltiParams) Reset() {
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) FillRandom(rg *basictl.RandGenerator) {
-	tlBuiltinVectorint32.BuiltinVectorint32FillRandom(rg, &item.F1)
-	tlBuiltinVectorint32.BuiltinVectorint32FillRandom(rg, &item.F2)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F1)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F2)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) Read(w []byte) (_ []byte, err error) {
@@ -115,7 +115,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 				if propF1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f1")
 				}
-				if err := tlBuiltinVectorint32.BuiltinVectorint32ReadJSONGeneral(tctx, in, &item.F1); err != nil {
+				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.F1); err != nil {
 					return err
 				}
 				propF1Presented = true
@@ -123,7 +123,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) ReadJSONGeneral(tctx *basictl.JS
 				if propF2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams", "f2")
 				}
-				if err := tlBuiltinVectorint32.BuiltinVectorint32ReadJSONGeneral(tctx, in, &item.F2); err != nil {
+				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.F2); err != nil {
 					return err
 				}
 				propF2Presented = true
@@ -161,14 +161,14 @@ func (item *CasesTL2TestObjectWithMuiltiParams) WriteJSONOpt(tctx *basictl.JSONW
 	backupIndexF1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f1":`...)
-	w = tlBuiltinVectorint32.BuiltinVectorint32WriteJSONOpt(tctx, w, item.F1)
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.F1)
 	if (len(item.F1) != 0) == false {
 		w = w[:backupIndexF1]
 	}
 	backupIndexF2 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f2":`...)
-	w = tlBuiltinVectorint32.BuiltinVectorint32WriteJSONOpt(tctx, w, item.F2)
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.F2)
 	if (len(item.F2) != 0) == false {
 		w = w[:backupIndexF2]
 	}
@@ -196,7 +196,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int) []i
 	// calculate layout for item.F1
 	currentPosition := len(sizes)
 	if len(item.F1) != 0 {
-		sizes = tlBuiltinVectorint32.BuiltinVectorint32CalculateLayout(sizes, &item.F1)
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.F1)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -209,7 +209,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) CalculateLayout(sizes []int) []i
 	// calculate layout for item.F2
 	currentPosition = len(sizes)
 	if len(item.F2) != 0 {
-		sizes = tlBuiltinVectorint32.BuiltinVectorint32CalculateLayout(sizes, &item.F2)
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.F2)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -251,7 +251,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalWriteTL2(w []byte, sizes
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinVectorint32.BuiltinVectorint32InternalWriteTL2(w, sizes, &item.F1)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.F1)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -262,7 +262,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalWriteTL2(w []byte, sizes
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinVectorint32.BuiltinVectorint32InternalWriteTL2(w, sizes, &item.F2)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.F2)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -319,7 +319,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte) (_ []b
 
 	// read item.F1
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorint32.BuiltinVectorint32InternalReadTL2(currentR, &item.F1); err != nil {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F1); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -328,7 +328,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) InternalReadTL2(r []byte) (_ []b
 
 	// read item.F2
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinVectorint32.BuiltinVectorint32InternalReadTL2(currentR, &item.F2); err != nil {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F2); err != nil {
 			return currentR, err
 		}
 	} else {

@@ -9,7 +9,7 @@ package tlCasesTestInplaceStructArgs2
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace1PairTupleint32Tupleint32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesInplace1PairTupleInt32TupleInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -20,7 +20,7 @@ type CasesTestInplaceStructArgs2 struct {
 	A1  uint32
 	A2  uint32
 	A3  uint32
-	Arg tlCasesInplace1PairTupleint32Tupleint32.CasesInplace1PairTupleint32Tupleint32
+	Arg tlCasesInplace1PairTupleInt32TupleInt32.CasesInplace1PairTupleInt32TupleInt32
 }
 
 func (CasesTestInplaceStructArgs2) TLName() string { return "cases.testInplaceStructArgs2" }

@@ -9,7 +9,7 @@ package tlCasesTestTuple
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleint324"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleInt324"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -17,7 +17,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesTestTuple struct {
-	Tpl tlTupleint324.Tupleint324
+	Tpl tlTupleInt324.TupleInt324
 }
 
 func (CasesTestTuple) TLName() string { return "cases.testTuple" }

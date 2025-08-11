@@ -9,8 +9,8 @@ package tlCasesBytesTestDictInt
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorDictionaryFieldAnyint32int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldAnyint32int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorDictionaryFieldAnyInt32Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldAnyInt32Int32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -25,11 +25,11 @@ func (CasesBytesTestDictInt) TLName() string { return "cases_bytes.testDictInt" 
 func (CasesBytesTestDictInt) TLTag() uint32  { return 0x00000000 }
 
 func (item *CasesBytesTestDictInt) Reset() {
-	tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32Reset(item.Dict)
+	tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32Reset(item.Dict)
 }
 
 func (item *CasesBytesTestDictInt) FillRandom(rg *basictl.RandGenerator) {
-	tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32FillRandom(rg, &item.Dict)
+	tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32FillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictInt) Read(w []byte) (_ []byte, err error) {
@@ -82,7 +82,7 @@ func (item *CasesBytesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictInt", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32ReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32ReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -97,7 +97,7 @@ func (item *CasesBytesTestDictInt) ReadJSONGeneral(tctx *basictl.JSONReadContext
 		}
 	}
 	if !propDictPresented {
-		tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32Reset(item.Dict)
+		tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32Reset(item.Dict)
 	}
 	return nil
 }
@@ -117,7 +117,7 @@ func (item *CasesBytesTestDictInt) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32WriteJSONOpt(tctx, w, item.Dict)
+	w = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32WriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
@@ -145,7 +145,7 @@ func (item *CasesBytesTestDictInt) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Dict
 	currentPosition := len(sizes)
 	if len(item.Dict) != 0 {
-		sizes = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32CalculateLayout(sizes, &item.Dict)
+		sizes = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32CalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -187,7 +187,7 @@ func (item *CasesBytesTestDictInt) InternalWriteTL2(w []byte, sizes []int) ([]by
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32InternalWriteTL2(w, sizes, &item.Dict)
+			w, sizes = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32InternalWriteTL2(w, sizes, &item.Dict)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -244,11 +244,11 @@ func (item *CasesBytesTestDictInt) InternalReadTL2(r []byte) (_ []byte, err erro
 
 	// read item.Dict
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32InternalReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32InternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32Reset(item.Dict)
+		tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32Reset(item.Dict)
 	}
 
 	return r, nil
@@ -259,7 +259,7 @@ func (item *CasesBytesTestDictInt) ReadTL2(r []byte, ctx *basictl.TL2ReadContext
 }
 
 type CasesBytesTestDictIntBytes struct {
-	Dict []tlDictionaryFieldAnyint32int32.DictionaryFieldAnyint32int32
+	Dict []tlDictionaryFieldAnyInt32Int32.DictionaryFieldAnyInt32Int32
 }
 
 func (CasesBytesTestDictIntBytes) TLName() string { return "cases_bytes.testDictInt" }
@@ -270,7 +270,7 @@ func (item *CasesBytesTestDictIntBytes) Reset() {
 }
 
 func (item *CasesBytesTestDictIntBytes) FillRandom(rg *basictl.RandGenerator) {
-	tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32BytesFillRandom(rg, &item.Dict)
+	tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32BytesFillRandom(rg, &item.Dict)
 }
 
 func (item *CasesBytesTestDictIntBytes) Read(w []byte) (_ []byte, err error) {
@@ -323,7 +323,7 @@ func (item *CasesBytesTestDictIntBytes) ReadJSONGeneral(tctx *basictl.JSONReadCo
 				if propDictPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testDictInt", "dict")
 				}
-				if err := tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32BytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32BytesReadJSONGeneral(tctx, in, &item.Dict); err != nil {
 					return err
 				}
 				propDictPresented = true
@@ -358,7 +358,7 @@ func (item *CasesBytesTestDictIntBytes) WriteJSONOpt(tctx *basictl.JSONWriteCont
 	backupIndexDict := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"dict":`...)
-	w = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32BytesWriteJSONOpt(tctx, w, item.Dict)
+	w = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32BytesWriteJSONOpt(tctx, w, item.Dict)
 	if (len(item.Dict) != 0) == false {
 		w = w[:backupIndexDict]
 	}
@@ -386,7 +386,7 @@ func (item *CasesBytesTestDictIntBytes) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Dict
 	currentPosition := len(sizes)
 	if len(item.Dict) != 0 {
-		sizes = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32BytesCalculateLayout(sizes, &item.Dict)
+		sizes = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32BytesCalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -428,7 +428,7 @@ func (item *CasesBytesTestDictIntBytes) InternalWriteTL2(w []byte, sizes []int) 
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32BytesInternalWriteTL2(w, sizes, &item.Dict)
+			w, sizes = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32BytesInternalWriteTL2(w, sizes, &item.Dict)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -485,7 +485,7 @@ func (item *CasesBytesTestDictIntBytes) InternalReadTL2(r []byte) (_ []byte, err
 
 	// read item.Dict
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorDictionaryFieldAnyint32int32.BuiltinVectorDictionaryFieldAnyint32int32BytesInternalReadTL2(currentR, &item.Dict); err != nil {
+		if currentR, err = tlBuiltinVectorDictionaryFieldAnyInt32Int32.BuiltinVectorDictionaryFieldAnyInt32Int32BytesInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
 		}
 	} else {

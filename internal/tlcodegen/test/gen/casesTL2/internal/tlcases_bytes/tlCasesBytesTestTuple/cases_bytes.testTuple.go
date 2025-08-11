@@ -9,7 +9,7 @@ package tlCasesBytesTestTuple
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTuplestring4"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleString4"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -17,7 +17,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesBytesTestTuple struct {
-	Tpl tlTuplestring4.Tuplestring4
+	Tpl tlTupleString4.TupleString4
 }
 
 func (CasesBytesTestTuple) TLName() string { return "cases_bytes.testTuple" }
@@ -250,7 +250,7 @@ func (item *CasesBytesTestTuple) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 }
 
 type CasesBytesTestTupleBytes struct {
-	Tpl tlTuplestring4.Tuplestring4Bytes
+	Tpl tlTupleString4.TupleString4Bytes
 }
 
 func (CasesBytesTestTupleBytes) TLName() string { return "cases_bytes.testTuple" }

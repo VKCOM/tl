@@ -9,7 +9,7 @@ package tlCasesTestVector
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorint32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -28,7 +28,7 @@ func (item *CasesTestVector) Reset() {
 }
 
 func (item *CasesTestVector) FillRandom(rg *basictl.RandGenerator) {
-	tlBuiltinVectorint32.BuiltinVectorint32FillRandom(rg, &item.Arr)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.Arr)
 }
 
 func (item *CasesTestVector) Read(w []byte) (_ []byte, err error) {
@@ -81,7 +81,7 @@ func (item *CasesTestVector) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testVector", "arr")
 				}
-				if err := tlBuiltinVectorint32.BuiltinVectorint32ReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
 				propArrPresented = true
@@ -116,7 +116,7 @@ func (item *CasesTestVector) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	w = tlBuiltinVectorint32.BuiltinVectorint32WriteJSONOpt(tctx, w, item.Arr)
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.Arr)
 	if (len(item.Arr) != 0) == false {
 		w = w[:backupIndexArr]
 	}
@@ -144,7 +144,7 @@ func (item *CasesTestVector) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Arr
 	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
-		sizes = tlBuiltinVectorint32.BuiltinVectorint32CalculateLayout(sizes, &item.Arr)
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -186,7 +186,7 @@ func (item *CasesTestVector) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinVectorint32.BuiltinVectorint32InternalWriteTL2(w, sizes, &item.Arr)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.Arr)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -243,7 +243,7 @@ func (item *CasesTestVector) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.Arr
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorint32.BuiltinVectorint32InternalReadTL2(currentR, &item.Arr); err != nil {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
 		}
 	} else {

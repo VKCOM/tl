@@ -8,72 +8,72 @@
 package tl
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyfloat64int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyint32int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldAnyfloat64int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldAnyint32int32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldstring"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionarystring"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyFloat64Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyInt32Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldAnyFloat64Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldAnyInt32Int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryFieldString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlInt32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlInt32Maybe"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlInt64"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairTupleTuplePairTupleint32Tupleint322TupleTuplePairTupleint32Tupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairTupleTupleint322TupleTupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairTupleint32Tupleint32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairTupleInt32TupleInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairTupleTupleInt322TupleTupleInt322"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlPairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32TupleInt322"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTrue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTuplePairTupleint32Tupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleTuplePairTupleint32Tupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleTupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleint322"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleint324"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTuplestring4"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleInt322"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleInt324"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTuplePairTupleInt32TupleInt322"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleString4"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleTupleInt322"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTupleTuplePairTupleInt32TupleInt322"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorBool"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorDictionaryFieldint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorDictionaryFieldstring"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorDictionaryFieldInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorDictionaryFieldString"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorInt32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorString"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorTrue"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorint32"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlVectorstring"
 )
 
 type (
-	DictionaryAnyfloat64int32                                                  = tlDictionaryAnyfloat64int32.DictionaryAnyfloat64int32
-	DictionaryAnyint32int32                                                    = tlDictionaryAnyint32int32.DictionaryAnyint32int32
-	DictionaryAnyint32int32Bytes                                               = tlDictionaryAnyint32int32.DictionaryAnyint32int32Bytes
-	DictionaryFieldAnyfloat64int32                                             = tlDictionaryFieldAnyfloat64int32.DictionaryFieldAnyfloat64int32
-	DictionaryFieldAnyint32int32                                               = tlDictionaryFieldAnyint32int32.DictionaryFieldAnyint32int32
-	DictionaryFieldint32                                                       = tlDictionaryFieldint32.DictionaryFieldint32
-	DictionaryFieldint32Bytes                                                  = tlDictionaryFieldint32.DictionaryFieldint32Bytes
-	DictionaryFieldstring                                                      = tlDictionaryFieldstring.DictionaryFieldstring
-	DictionaryFieldstringBytes                                                 = tlDictionaryFieldstring.DictionaryFieldstringBytes
-	Dictionaryint32                                                            = tlDictionaryint32.Dictionaryint32
-	Dictionaryint32Bytes                                                       = tlDictionaryint32.Dictionaryint32Bytes
-	Dictionarystring                                                           = tlDictionarystring.Dictionarystring
-	DictionarystringBytes                                                      = tlDictionarystring.DictionarystringBytes
+	DictionaryAnyFloat64Int32                                                  = tlDictionaryAnyFloat64Int32.DictionaryAnyFloat64Int32
+	DictionaryAnyInt32Int32                                                    = tlDictionaryAnyInt32Int32.DictionaryAnyInt32Int32
+	DictionaryAnyInt32Int32Bytes                                               = tlDictionaryAnyInt32Int32.DictionaryAnyInt32Int32Bytes
+	DictionaryFieldAnyFloat64Int32                                             = tlDictionaryFieldAnyFloat64Int32.DictionaryFieldAnyFloat64Int32
+	DictionaryFieldAnyInt32Int32                                               = tlDictionaryFieldAnyInt32Int32.DictionaryFieldAnyInt32Int32
+	DictionaryFieldInt32                                                       = tlDictionaryFieldInt32.DictionaryFieldInt32
+	DictionaryFieldInt32Bytes                                                  = tlDictionaryFieldInt32.DictionaryFieldInt32Bytes
+	DictionaryFieldString                                                      = tlDictionaryFieldString.DictionaryFieldString
+	DictionaryFieldStringBytes                                                 = tlDictionaryFieldString.DictionaryFieldStringBytes
+	DictionaryInt32                                                            = tlDictionaryInt32.DictionaryInt32
+	DictionaryInt32Bytes                                                       = tlDictionaryInt32.DictionaryInt32Bytes
+	DictionaryString                                                           = tlDictionaryString.DictionaryString
+	DictionaryStringBytes                                                      = tlDictionaryString.DictionaryStringBytes
 	Int32                                                                      = tlInt32.Int32
 	Int32Maybe                                                                 = tlInt32Maybe.Int32Maybe
 	Int64                                                                      = tlInt64.Int64
-	PairTupleTuplePairTupleint32Tupleint322TupleTuplePairTupleint32Tupleint322 = tlPairTupleTuplePairTupleint32Tupleint322TupleTuplePairTupleint32Tupleint322.PairTupleTuplePairTupleint32Tupleint322TupleTuplePairTupleint32Tupleint322
-	PairTupleTupleint322TupleTupleint322                                       = tlPairTupleTupleint322TupleTupleint322.PairTupleTupleint322TupleTupleint322
-	PairTupleint32Tupleint32                                                   = tlPairTupleint32Tupleint32.PairTupleint32Tupleint32
+	PairTupleInt32TupleInt32                                                   = tlPairTupleInt32TupleInt32.PairTupleInt32TupleInt32
+	PairTupleTupleInt322TupleTupleInt322                                       = tlPairTupleTupleInt322TupleTupleInt322.PairTupleTupleInt322TupleTupleInt322
+	PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32TupleInt322 = tlPairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32TupleInt322.PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32TupleInt322
 	True                                                                       = tlTrue.True
-	TuplePairTupleint32Tupleint322                                             = tlTuplePairTupleint32Tupleint322.TuplePairTupleint32Tupleint322
-	TupleTuplePairTupleint32Tupleint322                                        = tlTupleTuplePairTupleint32Tupleint322.TupleTuplePairTupleint32Tupleint322
-	TupleTupleint322                                                           = tlTupleTupleint322.TupleTupleint322
-	Tupleint32                                                                 = tlTupleint32.Tupleint32
-	Tupleint322                                                                = tlTupleint322.Tupleint322
-	Tupleint324                                                                = tlTupleint324.Tupleint324
-	Tuplestring4                                                               = tlTuplestring4.Tuplestring4
-	Tuplestring4Bytes                                                          = tlTuplestring4.Tuplestring4Bytes
+	TupleInt32                                                                 = tlTupleInt32.TupleInt32
+	TupleInt322                                                                = tlTupleInt322.TupleInt322
+	TupleInt324                                                                = tlTupleInt324.TupleInt324
+	TuplePairTupleInt32TupleInt322                                             = tlTuplePairTupleInt32TupleInt322.TuplePairTupleInt32TupleInt322
+	TupleString4                                                               = tlTupleString4.TupleString4
+	TupleString4Bytes                                                          = tlTupleString4.TupleString4Bytes
+	TupleTupleInt322                                                           = tlTupleTupleInt322.TupleTupleInt322
+	TupleTuplePairTupleInt32TupleInt322                                        = tlTupleTuplePairTupleInt32TupleInt322.TupleTuplePairTupleInt32TupleInt322
 	VectorBool                                                                 = tlVectorBool.VectorBool
-	VectorDictionaryFieldint32                                                 = tlVectorDictionaryFieldint32.VectorDictionaryFieldint32
-	VectorDictionaryFieldint32Bytes                                            = tlVectorDictionaryFieldint32.VectorDictionaryFieldint32Bytes
-	VectorDictionaryFieldstring                                                = tlVectorDictionaryFieldstring.VectorDictionaryFieldstring
-	VectorDictionaryFieldstringBytes                                           = tlVectorDictionaryFieldstring.VectorDictionaryFieldstringBytes
+	VectorDictionaryFieldInt32                                                 = tlVectorDictionaryFieldInt32.VectorDictionaryFieldInt32
+	VectorDictionaryFieldInt32Bytes                                            = tlVectorDictionaryFieldInt32.VectorDictionaryFieldInt32Bytes
+	VectorDictionaryFieldString                                                = tlVectorDictionaryFieldString.VectorDictionaryFieldString
+	VectorDictionaryFieldStringBytes                                           = tlVectorDictionaryFieldString.VectorDictionaryFieldStringBytes
+	VectorInt32                                                                = tlVectorInt32.VectorInt32
+	VectorString                                                               = tlVectorString.VectorString
+	VectorStringBytes                                                          = tlVectorString.VectorStringBytes
 	VectorTrue                                                                 = tlVectorTrue.VectorTrue
-	Vectorint32                                                                = tlVectorint32.Vectorint32
-	Vectorstring                                                               = tlVectorstring.Vectorstring
-	VectorstringBytes                                                          = tlVectorstring.VectorstringBytes
 )
