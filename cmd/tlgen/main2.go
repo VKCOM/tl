@@ -198,6 +198,12 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		ast = append(ast, tl...)
 		fullAst = append(fullAst, fullTl...)
 	}
+	for i := range fullAst { // we do not use it in fullAst, but might in the future
+		fullAst[i].OriginalOrderIndex = i
+	}
+	for i := range ast {
+		ast[i].OriginalOrderIndex = i
+	}
 	// parse tl2
 	pathsTL2, err := utils.WalkDeterministic(tl2Ext, args...)
 	if err != nil {
@@ -210,6 +216,7 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 		astTL2.Combinators = append(astTL2.Combinators, tl2.Combinators...)
 	}
+
 	gen, err := tlcodegen.GenerateCode(ast, astTL2, *opt)
 	if err != nil {
 		return err // Do not add excess info to already long parse error
