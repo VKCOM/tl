@@ -109,7 +109,7 @@ goldmaster_nocompile: build
 
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build
-	@./target/bin/tlgen --split-internal -v \
+	@./target/bin/tlgen -v \
 		--tl2-migration-file=./$(TLS_PATH)/cases.tl2 \
 		./$(TLS_PATH)/cases.tl
 
