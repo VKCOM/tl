@@ -9,7 +9,7 @@ package tlCasesTL2TestFunctionWithDep1
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorint32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -86,7 +86,7 @@ func (item *CasesTL2TestFunctionWithDep1) ReadResultTL2(r []byte, ctx *basictl.T
 	}
 
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinVectorint32.BuiltinVectorint32InternalReadTL2(currentR, ret); err != nil {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, ret); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -101,7 +101,7 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultTL2(w []byte, ctx *basictl.
 		sizes = ctx.SizeBuffer
 	}
 	// write structured result
-	sizes = tlBuiltinVectorint32.BuiltinVectorint32CalculateLayout(sizes, &ret)
+	sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &ret)
 	totalSize := 0
 	if len(ret) != 0 {
 		totalSize += 1
@@ -111,7 +111,7 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultTL2(w []byte, ctx *basictl.
 	w = basictl.TL2WriteSize(w, totalSize)
 	if totalSize != 0 {
 		w = append(w, 1<<1)
-		w, sizes = tlBuiltinVectorint32.BuiltinVectorint32InternalWriteTL2(w, sizes, &ret)
+		w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &ret)
 	}
 
 	if ctx != nil {
@@ -122,7 +122,7 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultTL2(w []byte, ctx *basictl.
 
 func (item *CasesTL2TestFunctionWithDep1) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int32) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
-	if err := tlBuiltinVectorint32.BuiltinVectorint32ReadJSONGeneral(tctx, in, ret); err != nil {
+	if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -134,7 +134,7 @@ func (item *CasesTL2TestFunctionWithDep1) WriteResultJSON(w []byte, ret []int32)
 }
 
 func (item *CasesTL2TestFunctionWithDep1) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret []int32) (_ []byte, err error) {
-	w = tlBuiltinVectorint32.BuiltinVectorint32WriteJSONOpt(tctx, w, ret)
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, ret)
 	return w, nil
 }
 

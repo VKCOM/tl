@@ -9,7 +9,7 @@ package tlCasesTestDictAny
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyfloat64int32"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlDictionaryAnyFloat64Int32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -17,7 +17,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesTestDictAny struct {
-	Dict tlDictionaryAnyfloat64int32.DictionaryAnyfloat64int32
+	Dict tlDictionaryAnyFloat64Int32.DictionaryAnyFloat64Int32
 }
 
 func (CasesTestDictAny) TLName() string { return "cases.testDictAny" }

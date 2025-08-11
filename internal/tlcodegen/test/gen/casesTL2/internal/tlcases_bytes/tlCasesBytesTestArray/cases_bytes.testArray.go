@@ -9,7 +9,7 @@ package tlCasesBytesTestArray
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorstring"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlBuiltinVectorString"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -31,7 +31,7 @@ func (item *CasesBytesTestArray) Reset() {
 
 func (item *CasesBytesTestArray) FillRandom(rg *basictl.RandGenerator) {
 	item.N = basictl.RandomUint(rg)
-	tlBuiltinVectorstring.BuiltinVectorstringFillRandom(rg, &item.Arr)
+	tlBuiltinVectorString.BuiltinVectorStringFillRandom(rg, &item.Arr)
 }
 
 func (item *CasesBytesTestArray) Read(w []byte) (_ []byte, err error) {
@@ -93,7 +93,7 @@ func (item *CasesBytesTestArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, 
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "arr")
 				}
-				if err := tlBuiltinVectorstring.BuiltinVectorstringReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
 				propArrPresented = true
@@ -138,7 +138,7 @@ func (item *CasesBytesTestArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w 
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	w = tlBuiltinVectorstring.BuiltinVectorstringWriteJSONOpt(tctx, w, item.Arr)
+	w = tlBuiltinVectorString.BuiltinVectorStringWriteJSONOpt(tctx, w, item.Arr)
 	if (len(item.Arr) != 0) == false {
 		w = w[:backupIndexArr]
 	}
@@ -173,7 +173,7 @@ func (item *CasesBytesTestArray) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Arr
 	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
-		sizes = tlBuiltinVectorstring.BuiltinVectorstringCalculateLayout(sizes, &item.Arr)
+		sizes = tlBuiltinVectorString.BuiltinVectorStringCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -223,7 +223,7 @@ func (item *CasesBytesTestArray) InternalWriteTL2(w []byte, sizes []int) ([]byte
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinVectorstring.BuiltinVectorstringInternalWriteTL2(w, sizes, &item.Arr)
+			w, sizes = tlBuiltinVectorString.BuiltinVectorStringInternalWriteTL2(w, sizes, &item.Arr)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -289,7 +289,7 @@ func (item *CasesBytesTestArray) InternalReadTL2(r []byte) (_ []byte, err error)
 
 	// read item.Arr
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinVectorstring.BuiltinVectorstringInternalReadTL2(currentR, &item.Arr); err != nil {
+		if currentR, err = tlBuiltinVectorString.BuiltinVectorStringInternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -318,7 +318,7 @@ func (item *CasesBytesTestArrayBytes) Reset() {
 
 func (item *CasesBytesTestArrayBytes) FillRandom(rg *basictl.RandGenerator) {
 	item.N = basictl.RandomUint(rg)
-	tlBuiltinVectorstring.BuiltinVectorstringBytesFillRandom(rg, &item.Arr)
+	tlBuiltinVectorString.BuiltinVectorStringBytesFillRandom(rg, &item.Arr)
 }
 
 func (item *CasesBytesTestArrayBytes) Read(w []byte) (_ []byte, err error) {
@@ -380,7 +380,7 @@ func (item *CasesBytesTestArrayBytes) ReadJSONGeneral(tctx *basictl.JSONReadCont
 				if propArrPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases_bytes.testArray", "arr")
 				}
-				if err := tlBuiltinVectorstring.BuiltinVectorstringBytesReadJSONGeneral(tctx, in, &item.Arr); err != nil {
+				if err := tlBuiltinVectorString.BuiltinVectorStringBytesReadJSONGeneral(tctx, in, &item.Arr); err != nil {
 					return err
 				}
 				propArrPresented = true
@@ -425,7 +425,7 @@ func (item *CasesBytesTestArrayBytes) WriteJSONOpt(tctx *basictl.JSONWriteContex
 	backupIndexArr := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"arr":`...)
-	w = tlBuiltinVectorstring.BuiltinVectorstringBytesWriteJSONOpt(tctx, w, item.Arr)
+	w = tlBuiltinVectorString.BuiltinVectorStringBytesWriteJSONOpt(tctx, w, item.Arr)
 	if (len(item.Arr) != 0) == false {
 		w = w[:backupIndexArr]
 	}
@@ -460,7 +460,7 @@ func (item *CasesBytesTestArrayBytes) CalculateLayout(sizes []int) []int {
 	// calculate layout for item.Arr
 	currentPosition := len(sizes)
 	if len(item.Arr) != 0 {
-		sizes = tlBuiltinVectorstring.BuiltinVectorstringBytesCalculateLayout(sizes, &item.Arr)
+		sizes = tlBuiltinVectorString.BuiltinVectorStringBytesCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -510,7 +510,7 @@ func (item *CasesBytesTestArrayBytes) InternalWriteTL2(w []byte, sizes []int) ([
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinVectorstring.BuiltinVectorstringBytesInternalWriteTL2(w, sizes, &item.Arr)
+			w, sizes = tlBuiltinVectorString.BuiltinVectorStringBytesInternalWriteTL2(w, sizes, &item.Arr)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -576,7 +576,7 @@ func (item *CasesBytesTestArrayBytes) InternalReadTL2(r []byte) (_ []byte, err e
 
 	// read item.Arr
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinVectorstring.BuiltinVectorstringBytesInternalReadTL2(currentR, &item.Arr); err != nil {
+		if currentR, err = tlBuiltinVectorString.BuiltinVectorStringBytesInternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
 		}
 	} else {
