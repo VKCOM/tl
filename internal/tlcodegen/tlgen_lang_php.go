@@ -375,9 +375,12 @@ func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
 	return ""
 }
 
-func phpFormatArgs(args []string) string {
+func phpFormatArgs(args []string, isFirst bool) string {
 	s := ""
-	for _, arg := range args {
+	for i, arg := range args {
+		if isFirst && i == 0 {
+			s += arg
+		}
 		s += ", " + arg
 	}
 	return s
