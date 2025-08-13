@@ -354,6 +354,28 @@ interface RpcResponse {
 #endif
 `
 
+const RpcFunctionFetchersPHP = `<?php
+
+%s#ifndef KPHP
+
+use VK\TL;
+
+
+interface RpcFunctionFetcher {
+
+  /**
+   * @return \VK\TL\RpcFunctionReturnResult
+   */
+   public function typedFetch();
+
+  /**
+   * @param \VK\TL\RpcFunctionReturnResult $result
+   */
+   public function typedStore($result);
+}
+
+#endif`
+
 const TLInterfacesPathPHP = "tl_interfaces.php"
 const TLInterfacesCodePHP = `<?php
 
