@@ -413,3 +413,36 @@ interface Writeable {
 
 interface TL_Object extends Readable, Writeable {}
 `
+
+const TLInterfacesCodeWithoutStreamPHP = `<?php
+
+namespace VK\TL;
+
+use VK\TL;
+
+interface Readable {
+  /**
+   * @return bool
+   */
+  public function read();
+
+  /**
+   * @return bool
+   */
+  public function read_boxed();
+}
+
+interface Writeable {
+  /**
+   * @return bool
+   */
+  public function write();
+
+  /**
+   * @return bool
+   */
+  public function write_boxed();
+}
+
+interface TL_Object extends Readable, Writeable {}
+`
