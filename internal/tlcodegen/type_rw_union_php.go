@@ -82,36 +82,54 @@ use VK\TL;
 }
 
 func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper) string {
+	useBuiltin := targetType.gen.options.UseBuiltinDataProviders
 	if !targetType.gen.options.AddFunctionBodies {
 		return ""
 	}
-	natParamsComment := strings.Join(
-		utils.MapSlice(
-			targetType.PHPGetNatTypeDependenciesDeclAsArray(),
-			func(s string) string { return fmt.Sprintf("\n   * @param int $%s", s) }),
-		"",
-	)
-	natParamsDecl := strings.Join(
-		utils.MapSlice(
-			targetType.PHPGetNatTypeDependenciesDeclAsArray(),
-			func(s string) string { return ", $" + s }),
-		"",
-	)
+
+	readArgNames := make([]string, 0)
+	readArgTypes := make([]string, 0)
+	writeArgNames := make([]string, 0)
+	writeArgTypes := make([]string, 0)
+
+	if !useBuiltin {
+		readArgNames = append(readArgNames, "stream")
+		readArgTypes = append(readArgTypes, `TL\tl_input_stream`)
+
+		writeArgNames = append(writeArgNames, "stream")
+		writeArgTypes = append(writeArgTypes, `TL\tl_output_stream`)
+	}
+
+	for _, name := range targetType.PHPGetNatTypeDependenciesDeclAsArray() {
+		readArgNames = append(readArgNames, name)
+		readArgTypes = append(readArgTypes, "int")
+
+		writeArgNames = append(writeArgNames, name)
+		writeArgTypes = append(writeArgTypes, "int")
+	}
+
 	ioCode := ""
 	ioCode += fmt.Sprintf(`
-  /**
-   * @param TL\tl_input_stream $stream%[1]s
-   * @return bool 
-   */
-  public function read_boxed($stream%[2]s);
+%[1]s
+  public function read_boxed(%[2]s);
 
-  /**
-   * @param TL\tl_output_stream $stream%[1]s
-   * @return bool 
-   */
-  public function write_boxed($stream%[2]s);`,
-		natParamsComment,
-		natParamsDecl)
+%[3]s
+  public function write_boxed(%[4]s);`,
+		phpFunctionCommentFormat(
+			readArgNames,
+			readArgTypes,
+			"bool",
+			"  ",
+		),
+		phpFunctionArgumentsFormat(readArgNames),
+		phpFunctionCommentFormat(
+			writeArgNames,
+			writeArgTypes,
+			"bool",
+			"  ",
+		),
+		phpFunctionArgumentsFormat(writeArgNames),
+	)
 
 	return ioCode
 }

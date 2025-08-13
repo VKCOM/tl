@@ -113,11 +113,17 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 
 func (gen *Gen2) PhpAdditionalFiles() error {
 	if gen.options.AddFunctionBodies {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
-			return err
-		}
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
-			return err
+		if gen.options.UseBuiltinDataProviders {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodeWithoutStreamPHP); err != nil {
+				return err
+			}
+		} else {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
+				return err
+			}
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
+				return err
+			}
 		}
 	}
 	if gen.options.AddRPCTypes {
@@ -405,4 +411,16 @@ func phpFunctionCommentFormat(argNames []string, argTypes []string, returnType s
 	}
 	result = append(result, shift+" */")
 	return strings.Join(result, "\n")
+}
+
+func phpFunctionArgumentsFormat(argNames []string) string {
+	s := ""
+	for i, name := range argNames {
+		if i != 0 {
+			s += ", "
+		}
+		s += "$"
+		s += name
+	}
+	return s
 }
