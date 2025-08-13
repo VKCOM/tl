@@ -12,6 +12,7 @@ import (
 )
 
 type TypeRWPrimitive struct {
+	gen    *Gen2
 	tlType string
 
 	goType         string

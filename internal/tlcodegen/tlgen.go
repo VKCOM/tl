@@ -370,6 +370,7 @@ type Gen2Options struct {
 	AddRPCTypes                  bool
 	AddFetchers                  bool
 	InplaceSimpleStructs         bool
+	UseBuiltinDataProviders      bool
 
 	// .tlo
 	TLOPath           string
@@ -2086,6 +2087,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
+			gen:               gen,
 			tlType:            "#",
 			goType:            "uint32",
 			cppPrimitiveType:  "uint32_t",
@@ -2100,6 +2102,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.NatWrite",
 			readValue:         "basictl.NatRead",
 		}, {
+			gen:               gen,
 			tlType:            "int",
 			goType:            "int32",
 			cppPrimitiveType:  "int32_t",
@@ -2114,6 +2117,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.IntWrite",
 			readValue:         "basictl.IntRead",
 		}, {
+			gen:               gen,
 			tlType:            "long",
 			goType:            "int64",
 			cppPrimitiveType:  "int64_t",
@@ -2128,6 +2132,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.LongWrite",
 			readValue:         "basictl.LongRead",
 		}, {
+			gen:               gen,
 			tlType:            "float",
 			goType:            "float32",
 			cppPrimitiveType:  "float",
@@ -2142,6 +2147,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.FloatWrite",
 			readValue:         "basictl.FloatRead",
 		}, {
+			gen:               gen,
 			tlType:            "double",
 			goType:            "float64",
 			cppPrimitiveType:  "double",
@@ -2156,6 +2162,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.DoubleWrite",
 			readValue:         "basictl.DoubleRead",
 		}, {
+			gen:               gen,
 			tlType:            "string",
 			goType:            "string",
 			cppPrimitiveType:  "std::string",
@@ -2173,6 +2180,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	}
 	if gen.options.GenerateTL2 {
 		primitiveTypesList = append(primitiveTypesList, &TypeRWPrimitive{
+			gen:               gen,
 			tlType:            "uint32",
 			goType:            "uint32",
 			cppPrimitiveType:  "uint32_t",
