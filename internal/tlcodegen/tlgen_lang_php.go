@@ -127,6 +127,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
 			return err
 		}
+		if gen.options.AddFetchers {
+			if err := gen.addCodeFile(filepath.Join("RPCFunctionFetcher.php"), fmt.Sprintf(RpcFunctionFetchersPHP, gen.copyrightText)); err != nil {
+				return err
+			}
+		}
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
@@ -376,4 +381,25 @@ func phpFormatArgs(args []string) string {
 		s += ", " + arg
 	}
 	return s
+}
+
+func phpFunctionCommentFormat(argNames []string, argTypes []string, returnType string, shift string) string {
+	if len(argNames) != len(argTypes) {
+		return ""
+	}
+	result := make([]string, 0)
+	result = append(result, shift+"/**")
+	if len(argNames) == 0 {
+		result = append(result, shift+" * @kphp-inline")
+	} else {
+		for i := range argNames {
+			result = append(result, shift+fmt.Sprintf(" * @param $%[1]s %[2]s", argNames[i], argTypes[i]))
+		}
+	}
+	if returnType != "" {
+		result = append(result, shift+" *")
+		result = append(result, shift+" * @return "+returnType)
+	}
+	result = append(result, shift+" */")
+	return strings.Join(result, "\n")
 }

@@ -376,6 +376,7 @@ type Gen2Options struct {
 	AddFunctionBodies            bool
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
+	AddFetchers                  bool
 	InplaceSimpleStructs         bool
 
 	// .tlo
