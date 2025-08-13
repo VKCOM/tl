@@ -53,6 +53,27 @@ func (trw *TypeRWStruct) PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex i
 	return localTree
 }
 
+func (trw *TypeRWStruct) PHPGetResultNatDependenciesValuesAsTypeTree() (TypeArgumentsTree, bool) {
+	if trw.ResultType == nil {
+		return TypeArgumentsTree{}, false
+	}
+	tree := TypeArgumentsTree{}
+	localTree := TypeArgumentsTree{}
+	trw.wr.PHPGetNatTypeDependenciesDecl(&tree)
+	tree.FillAllLeafs()
+
+	genericsMap := make(map[string]*TypeArgumentsTree)
+	for _, child := range tree.children {
+		if child != nil {
+			genericsMap[child.name] = child
+		}
+	}
+
+	trw.ResultType.PHPGetNatTypeDependenciesDecl(&localTree)
+	trw.phpGetFieldArgsTree(trw.ResultType, &trw.wr.origTL[0].FuncDecl, &localTree, &genericsMap)
+	return localTree, true
+}
+
 func (trw *TypeRWStruct) PHPGetFieldMask(fieldIndex int) string {
 	fieldMask := trw.Fields[fieldIndex].fieldMask
 	if fieldMask != nil {
@@ -262,6 +283,147 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
+
+		if trw.wr.gen.options.AddFetchers {
+			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
+			argsAsArray := args.EnumerateWithPrefixes()
+
+			argsAsFields := strings.Join(
+				utils.MapSlice(
+					argsAsArray,
+					func(arg string) string {
+						return fmt.Sprintf(
+							`  /** @var int */
+  public %[1]s = 0;
+`,
+							arg,
+						)
+					},
+				),
+				"\n",
+			)
+
+			if argsAsFields != "" {
+				argsAsFields += "\n"
+			}
+
+			constructorComment := `  /**
+   * @kphp-inline
+   */`
+			constructorArgs := ""
+			constructorBody := ""
+
+			if len(argsAsArray) > 0 {
+				constructorComment = "  /**\n"
+				for i, arg := range argsAsArray {
+					suffix, _ := strings.CutPrefix(arg, "$")
+
+					constructorComment += fmt.Sprintf("   * @param $%s int\n", suffix)
+
+					if i != 0 {
+						constructorArgs += ", "
+					}
+					constructorArgs += arg
+
+					constructorBody += fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", suffix)
+				}
+				constructorComment += "   */"
+			}
+
+			if trw.PhpClassName(false, true) == "test_getInfo4" {
+				print("gigi")
+			}
+
+			for i, child := range args.children {
+				if child == nil {
+					continue
+				}
+				*args.children[i].value = fmt.Sprintf("$this->%s", child.name)
+			}
+
+			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args)
+			readCall := strings.Builder{}
+			for _, line := range readCallLines {
+				targetLines := []string{line}
+				if strings.Contains(line, "return false;") {
+					prefix, _, _ := strings.Cut(line, "return false;")
+					targetLines[0] = prefix + fmt.Sprintf("raise_fetching_error(\"can't fetch %s_result\");", trw.PhpClassName(false, true))
+					targetLines = append(targetLines, prefix+"return null;")
+				}
+				for _, targetLine := range targetLines {
+					readCall.WriteString(strings.Repeat(" ", 4))
+					readCall.WriteString(targetLine)
+					readCall.WriteString("\n")
+				}
+			}
+
+			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args)
+			writeCall := strings.Builder{}
+			for _, line := range writeCallLines {
+				targetLines := []string{line}
+				if strings.Contains(line, "return false;") {
+					prefix, _, _ := strings.Cut(line, "return false;")
+					targetLines[0] = prefix + fmt.Sprintf("raise_storing_error(\"can't store %s_result\");", trw.PhpClassName(false, true))
+					targetLines = append(targetLines, prefix+"return;")
+				}
+				for _, targetLine := range targetLines {
+					writeCall.WriteString(strings.Repeat(" ", 6))
+					writeCall.WriteString(targetLine)
+					writeCall.WriteString("\n")
+				}
+			}
+
+			code.WriteString(
+				fmt.Sprintf(
+					`
+/**
+ * @kphp-tl-class
+ */
+class %[1]s_fetcher implements \RpcFunctionFetcher {
+%[4]s%[6]s
+  public function __construct(%[7]s) {
+%[8]s  }
+
+%[9]s
+  public function typedFetch($stream) {
+	$result = new %[1]s_result();
+%[3]s
+	return $result;
+  }
+  
+%[10]s
+  public function typedStore($stream, $result) {
+    if ($result instanceof %[1]s_result) {
+%[5]s
+    } else {
+      raise_storing_error("%[1]s_result expected");
+    }
+  }
+}
+`,
+					trw.PhpClassName(false, true),
+					trw.ResultType.trw.PhpTypeName(true, true),
+					readCall.String(),
+					argsAsFields,
+					writeCall.String(),
+					constructorComment,
+					constructorArgs,
+					constructorBody,
+					phpFunctionCommentFormat(
+						[]string{"stream"},
+						[]string{`TL\tl_input_stream`},
+						`VK\TL\RpcFunctionReturnResult`,
+						"  ",
+					),
+					phpFunctionCommentFormat(
+						[]string{"stream", "result"},
+						[]string{`TL\tl_output_stream`, `VK\TL\RpcFunctionReturnResult`},
+						``,
+						"  ",
+					),
+				),
+			)
+		}
 	}
 }
 
@@ -329,6 +491,47 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			),
 		)
 
+		if trw.wr.gen.options.AddFetchers {
+			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
+			argsArray := strings.Join(args.ListAllValues(), ", ")
+
+			code.WriteString(
+				fmt.Sprintf(`
+%[5]s
+  public function customStore($stream) {
+    print('%[1]s::customStore()<br/>');
+    set_last_stored_tl_function_magic(%[3]s);
+    $this->write_boxed($stream);
+    return new %[1]s_fetcher(%[4]s);
+  }
+
+%[6]s
+  public function customFetch($stream) {
+    print('%[1]s::customFetch()<br/>');
+    set_current_tl_function('%[2]s');
+    $this->read($stream);
+    return new %[1]s_fetcher(%[4]s);
+  }
+`,
+					trw.PhpClassName(false, true),
+					trw.wr.tlName.String(),
+					fmt.Sprintf("0x%08x", trw.wr.tlTag),
+					argsArray,
+					phpFunctionCommentFormat(
+						[]string{`stream`},
+						[]string{`TL\tl_output_stream`},
+						`\RpcFunctionFetcher`,
+						"  ",
+					),
+					phpFunctionCommentFormat(
+						[]string{`stream`},
+						[]string{`TL\tl_input_stream`},
+						`\RpcFunctionFetcher`,
+						"  ",
+					),
+				),
+			)
+		}
 	}
 }
 
