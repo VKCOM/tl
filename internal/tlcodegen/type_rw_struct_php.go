@@ -1124,6 +1124,7 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 }
 
 func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{fmt.Sprintf("$success = RPC_READ%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
 	}
@@ -1132,12 +1133,21 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 		if trw.PhpCanBeSimplify() {
 			var result []string
 			if !bare {
-				result = append(result,
-					"[$magic, $success] = $stream->read_uint32();",
-					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result,
+						"$magic = fetch_int() & 0xFFFFFFFF;",
+						fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				} else {
+					result = append(result,
+						"[$magic, $success] = $stream->read_uint32();",
+						fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
 			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs)...)
@@ -1146,12 +1156,21 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
 			var result []string
 			if !bare {
-				result = append(result,
-					"[$magic, $success] = $stream->read_uint32();",
-					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result,
+						"$magic = fetch_int() & 0xFFFFFFFF;",
+						fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				} else {
+					result = append(result,
+						"[$magic, $success] = $stream->read_uint32();",
+						fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			result = append(result, fmt.Sprintf("%[1]s = true;", targetName))
 			return result
@@ -1165,12 +1184,21 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 			trw.wr.tlName.Namespace == "" {
 			var result []string
 			if !bare {
-				result = append(result,
-					"[$magic, $success] = $stream->read_uint32();",
-					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result,
+						"$magic = fetch_int() & 0xFFFFFFFF;",
+						fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				} else {
+					result = append(result,
+						"[$magic, $success] = $stream->read_uint32();",
+						fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args)...)
 			return result
@@ -1185,7 +1213,12 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 		)
 	}
 	result = append(result,
-		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
+		fmt.Sprintf("$success = %[2]s->read%[1]s(%[4]s%[3]s);",
+			ifString(bare, "", "_boxed"),
+			targetName,
+			phpFormatArgs(args.ListAllValues(), useBuiltIn),
+			ifString(useBuiltIn, "", "$stream"),
+		),
 		"if (!$success) {",
 		"  return false;",
 		"}",
@@ -1194,6 +1227,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 }
 
 func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{fmt.Sprintf("$success = RPC_WRITE%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
 	}
@@ -1202,12 +1236,16 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 		if trw.PhpCanBeSimplify() {
 			var result []string
 			if !bare {
-				result = append(result,
-					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
-					"if (!$success) {",
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+				} else {
+					result = append(result,
+						fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+						"if (!$success) {",
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
 			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)
@@ -1216,12 +1254,16 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
 			var result []string
 			if !bare {
-				result = append(result,
-					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
-					"if (!$success) {",
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+				} else {
+					result = append(result,
+						fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+						"if (!$success) {",
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			return result
 		}
@@ -1234,12 +1276,16 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 			trw.wr.tlName.Namespace == "" {
 			var result []string
 			if !bare {
-				result = append(result,
-					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
-					"if (!$success) {",
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+				} else {
+					result = append(result,
+						fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+						"if (!$success) {",
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args)...)
 			return result
@@ -1249,7 +1295,13 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("$success = %[2]s->write%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
+		fmt.Sprintf(
+			"$success = %[2]s->write%[1]s(%[4]s%[3]s);",
+			ifString(bare, "", "_boxed"),
+			targetName,
+			phpFormatArgs(args.ListAllValues(), useBuiltIn),
+			ifString(useBuiltIn, "", "$stream"),
+		),
 		"if (!$success) {",
 		"  return false;",
 		"}",

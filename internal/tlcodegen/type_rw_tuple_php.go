@@ -48,6 +48,7 @@ func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWW
 }
 
 func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
@@ -58,12 +59,16 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
-		result = append(result,
-			"[$vector_size, $success] = $stream->read_uint32();",
-			"if (!$success) {",
-			"  return false;",
-			"}",
-		)
+		if useBuiltIn {
+			result = append(result, "$vector_size = fetch_int() & 0xFFFFFFFF;")
+		} else {
+			result = append(result,
+				"[$vector_size, $success] = $stream->read_uint32();",
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			)
+		}
 		if initIfDefault {
 			result = append(result,
 				// TODO MAKE MORE EFFICIENT
@@ -119,11 +124,17 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}
+		if useBuiltIn {
+			result = append(result, "$dict_size = fetch_int() & 0xFFFFFFFF;")
+		} else {
+			result = append(result,
+				"[$dict_size, $success] = $stream->read_uint32();",
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			)
+		}
 		result = append(result,
-			"[$dict_size, $success] = $stream->read_uint32();",
-			"if (!$success) {",
-			"  return false;",
-			"}",
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("%[1]s = [];", targetName),
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < $dict_size; %[1]s++) {", index),
@@ -140,17 +151,22 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 }
 
 func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
-		result = append(result,
-			fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
-			"if (!$success) {",
-			"  return false;",
-			"}",
-		)
+		if useBuiltIn {
+			result = append(result, fmt.Sprintf("store_int(count(%[1]s));", targetName))
+		} else {
+			result = append(result,
+				fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			)
+		}
 		result = append(result,
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < count(%[2]s); %[1]s++) {", index, targetName),
@@ -185,12 +201,16 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		return result
 	// actual map / dictionary
 	case trw.dictLike:
-		result = append(result,
-			fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
-			"if (!$success) {",
-			"  return false;",
-			"}",
-		)
+		if useBuiltIn {
+			result = append(result, fmt.Sprintf("store_int(count(%[1]s));", targetName))
+		} else {
+			result = append(result,
+				fmt.Sprintf("$success = $stream->write_uint32(count(%[1]s));", targetName),
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			)
+		}
 		keyElement := "$key"
 		valueElement := "$value"
 		result = append(result,

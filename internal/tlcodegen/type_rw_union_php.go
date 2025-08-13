@@ -131,31 +131,56 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		panic("union can't be bare")
 	}
 	var result []string
-	result = append(result,
-		"[$tag, $success] = $stream->read_uint32();",
-		"if (!$success) {",
-		"  return false;",
-		"}",
-		"switch ($tag) {",
-	)
-	for _, field := range trw.Fields {
-		curType := field.t
+	if trw.wr.gen.options.UseBuiltinDataProviders {
 		result = append(result,
-			fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
-			fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
-			fmt.Sprintf("    $success = $variant->read($stream%s);", phpFormatArgs(args.ListAllValues())),
-			"    if (!$success) {",
-			"      return false;",
-			"    }",
-			fmt.Sprintf("    %[1]s = $variant;", targetName),
-			"    break;",
+			"$tag = fetch_int() & 0xFFFFFFFF;",
+			"switch ($tag) {",
+		)
+		for _, field := range trw.Fields {
+			curType := field.t
+			result = append(result,
+				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+				fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
+				fmt.Sprintf("    $success = $variant->read(%s);", phpFormatArgs(args.ListAllValues(), true)),
+				"    if (!$success) {",
+				"      return false;",
+				"    }",
+				fmt.Sprintf("    %[1]s = $variant;", targetName),
+				"    break;",
+			)
+		}
+		result = append(result,
+			"  default:",
+			"    return false;",
+			"}",
+		)
+	} else {
+		result = append(result,
+			"[$tag, $success] = $stream->read_uint32();",
+			"if (!$success) {",
+			"  return false;",
+			"}",
+			"switch ($tag) {",
+		)
+		for _, field := range trw.Fields {
+			curType := field.t
+			result = append(result,
+				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+				fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
+				fmt.Sprintf("    $success = $variant->read($stream%s);", phpFormatArgs(args.ListAllValues(), false)),
+				"    if (!$success) {",
+				"      return false;",
+				"    }",
+				fmt.Sprintf("    %[1]s = $variant;", targetName),
+				"    break;",
+			)
+		}
+		result = append(result,
+			"  default:",
+			"    return false;",
+			"}",
 		)
 	}
-	result = append(result,
-		"  default:",
-		"    return false;",
-		"}",
-	)
 	return result
 }
 
@@ -164,15 +189,27 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *T
 		panic("union can't be bare")
 	}
 	var result []string
-	result = append(result,
-		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
-		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
-		"}",
-		fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args.ListAllValues())),
-		"if (!$success) {",
-		"  return false;",
-		"}",
-	)
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		result = append(result,
+			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+			"}",
+			fmt.Sprintf("$success = %[1]s->write_boxed(%[2]s);", targetName, phpFormatArgs(args.ListAllValues(), true)),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		)
+	} else {
+		result = append(result,
+			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+			"}",
+			fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args.ListAllValues(), false)),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		)
+	}
 
 	return result
 }
