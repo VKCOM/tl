@@ -388,14 +388,11 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			}
 
 			storeArgNames = append(storeArgNames, "result")
-			storeArgTypes = append(storeArgTypes, `VK\TL\RpcFunctionReturnResult`)
+			storeArgTypes = append(storeArgTypes, `TL\RpcFunctionReturnResult`)
 
 			code.WriteString(
 				fmt.Sprintf(
 					`
-/**
- * @kphp-tl-class
- */
 class %[1]s_fetcher implements \RpcFunctionFetcher {
 %[4]s%[6]s
   public function __construct(%[7]s) {
@@ -403,9 +400,9 @@ class %[1]s_fetcher implements \RpcFunctionFetcher {
 
 %[9]s
   public function typedFetch(%[11]s) {
-	$result = new %[1]s_result();
+    $result = new %[1]s_result();
 %[3]s
-	return $result;
+    return $result;
   }
   
 %[10]s
@@ -429,7 +426,7 @@ class %[1]s_fetcher implements \RpcFunctionFetcher {
 					phpFunctionCommentFormat(
 						fetchArgNames,
 						fetchArgTypes,
-						`VK\TL\RpcFunctionReturnResult`,
+						`TL\RpcFunctionReturnResult`,
 						"  ",
 					),
 					phpFunctionCommentFormat(
@@ -1087,7 +1084,9 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 		implementingInterfaces = append(implementingInterfaces, "TL\\RpcFunction")
 	}
 
-	if trw.wr.gen.options.AddFunctionBodies && len(trw.wr.origTL[0].TemplateArguments) == 0 {
+	if trw.wr.gen.options.AddFunctionBodies &&
+		len(trw.wr.origTL[0].TemplateArguments) == 0 &&
+		!trw.wr.gen.options.UseBuiltinDataProviders {
 		implementingInterfaces = append(implementingInterfaces, "TL\\Readable")
 		implementingInterfaces = append(implementingInterfaces, "TL\\Writeable")
 	}
@@ -1185,7 +1184,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{
 			"/** TODO */",
-			fmt.Sprintf("$success = RPC_READ%s(%s%s);",
+			fmt.Sprintf("/** $success = RPC_READ%s(%s%s); */",
 				ifString(bare, "", "_boxed"),
 				ifString(useBuiltIn, "", "$stream, "),
 				targetName,
@@ -1295,7 +1294,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{
 			"/** TODO */",
-			fmt.Sprintf("$success = RPC_WRITE%s(%s%s);",
+			fmt.Sprintf("/** $success = RPC_WRITE%s(%s%s); */",
 				ifString(bare, "", "_boxed"),
 				ifString(useBuiltIn, "", "$stream, "),
 				targetName,

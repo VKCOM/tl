@@ -114,9 +114,9 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 func (gen *Gen2) PhpAdditionalFiles() error {
 	if gen.options.AddFunctionBodies {
 		if gen.options.UseBuiltinDataProviders {
-			if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodeWithoutStreamPHP); err != nil {
-				return err
-			}
+			//if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodeWithoutStreamPHP); err != nil {
+			//	return err
+			//}
 		} else {
 			if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
 				return err
@@ -127,8 +127,14 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 		}
 	}
 	if gen.options.AddRPCTypes {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
-			return err
+		if gen.options.UseBuiltinDataProviders {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionWithFetchersPHP, gen.copyrightText)); err != nil {
+				return err
+			}
+		} else {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
+				return err
+			}
 		}
 		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
 			return err
@@ -386,8 +392,9 @@ func phpFormatArgs(args []string, isFirst bool) string {
 	for i, arg := range args {
 		if isFirst && i == 0 {
 			s += arg
+		} else {
+			s += ", " + arg
 		}
-		s += ", " + arg
 	}
 	return s
 }

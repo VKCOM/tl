@@ -309,6 +309,49 @@ interface RpcFunctionReturnResult {
 
 #endif
 `
+
+const RpcFunctionWithFetchersPHP = `<?php
+
+%s#ifndef KPHP
+
+namespace VK\TL;
+
+/**
+ * @kphp-tl-class
+ */
+interface RpcFunction {
+
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName();
+
+  /**
+   * @kphp-inline
+   *
+   * @return \RpcFunctionFetcher
+   */
+  public function customStore();
+
+  /**
+   * @kphp-inline
+   *
+   * @return \RpcFunctionFetcher
+   */
+  public function customFetch();
+}
+
+/**
+ * @kphp-tl-class
+ */
+interface RpcFunctionReturnResult {
+
+}
+
+#endif
+`
 const RpcResponsePHP = `<?php
 
 %s#ifndef KPHP
@@ -409,39 +452,6 @@ interface Writeable {
    * @return bool
    */
   public function write_boxed($stream);
-}
-
-interface TL_Object extends Readable, Writeable {}
-`
-
-const TLInterfacesCodeWithoutStreamPHP = `<?php
-
-namespace VK\TL;
-
-use VK\TL;
-
-interface Readable {
-  /**
-   * @return bool
-   */
-  public function read();
-
-  /**
-   * @return bool
-   */
-  public function read_boxed();
-}
-
-interface Writeable {
-  /**
-   * @return bool
-   */
-  public function write();
-
-  /**
-   * @return bool
-   */
-  public function write_boxed();
 }
 
 interface TL_Object extends Readable, Writeable {}
