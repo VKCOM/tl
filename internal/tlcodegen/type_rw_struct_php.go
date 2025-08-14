@@ -682,19 +682,16 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			argTypes = append(argTypes, "int")
 		}
 
-		magicRead := []string{
-			"    [$magic, $success] = $stream->read_uint32();",
-			fmt.Sprintf("    if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+		magicWrite := []string{
+			fmt.Sprintf("    $success = $stream->write_uint32(0x%08[1]x)", trw.wr.tlTag),
+			"    if (!$success) {",
 			"      return false;",
 			"    }",
 		}
 
 		if useBuiltin {
-			magicRead = []string{
-				"    $magic = fetch_int() & 0xFFFFFFFF;",
-				fmt.Sprintf("    if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
-				"      return false;",
-				"    }",
+			magicWrite = []string{
+				fmt.Sprintf("    store_int(0x%08[1]x);", trw.wr.tlTag),
 			}
 		}
 
@@ -707,7 +704,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 `,
 			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
 			phpFunctionArgumentsFormat(argNames),
-			strings.Join(magicRead, "\n"),
+			strings.Join(magicWrite, "\n"),
 		))
 
 		code.WriteString(fmt.Sprintf(`
