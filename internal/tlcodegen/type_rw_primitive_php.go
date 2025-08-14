@@ -68,6 +68,26 @@ func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, init
 	if !bare {
 		panic("can't be boxed")
 	}
+	if trw.gen.options.UseBuiltinDataProviders {
+		switch trw.goType {
+		case "int32":
+			return []string{fmt.Sprintf("%s = fetch_int();", targetName)}
+		case "int64":
+			return []string{fmt.Sprintf("%s = fetch_long();", targetName)}
+		case "uint32":
+			return []string{fmt.Sprintf("%s = fetch_int() & 0xFFFFFFFF;", targetName)}
+		case "uint64":
+			return []string{fmt.Sprintf("%s = fetch_long() & 0xFFFFFFFFFFFFFFFF;", targetName)}
+		case "float32":
+			return []string{fmt.Sprintf("%s = fetch_float();", targetName)}
+		case "float64":
+			return []string{fmt.Sprintf("%s = fetch_double();", targetName)}
+		case "string":
+			return []string{fmt.Sprintf("%s = fetch_string();", targetName)}
+		default:
+			return []string{fmt.Sprintf("<? %s>", trw.tlType)}
+		}
+	}
 	return []string{
 		fmt.Sprintf("[%[1]s, $success] = $stream->read_%[2]s();", targetName, trw.phpIOMethodsSuffix()),
 		"if (!$success) {",
@@ -79,6 +99,26 @@ func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, init
 func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	if !bare {
 		panic("can't be boxed")
+	}
+	if trw.gen.options.UseBuiltinDataProviders {
+		switch trw.goType {
+		case "int32":
+			return []string{fmt.Sprintf("store_int(%s);", targetName)}
+		case "int64":
+			return []string{fmt.Sprintf("store_long(%s);", targetName)}
+		case "uint32":
+			return []string{fmt.Sprintf("store_int(%s);", targetName)}
+		case "uint64":
+			return []string{fmt.Sprintf("store_long(%s);", targetName)}
+		case "float32":
+			return []string{fmt.Sprintf("store_float(%s);", targetName)}
+		case "float64":
+			return []string{fmt.Sprintf("store_double(%s);", targetName)}
+		case "string":
+			return []string{fmt.Sprintf("store_string(%s);", targetName)}
+		default:
+			return []string{fmt.Sprintf("<? %s>", trw.tlType)}
+		}
 	}
 	return []string{
 		fmt.Sprintf("$success = $stream->write_%[2]s(%[1]s);", targetName, trw.phpIOMethodsSuffix()),

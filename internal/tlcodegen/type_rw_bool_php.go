@@ -36,16 +36,29 @@ func (trw *TypeRWBool) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapp
 
 func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
 	if !bare {
-		return []string{
-			fmt.Sprintf(
-				"[%[1]s, $success] = $stream->read_bool(0x%08[2]x, 0x%08[3]x);",
-				targetName,
-				trw.falseTag,
-				trw.trueTag,
-			),
-			"if (!$success) {",
-			"  return false;",
-			"}",
+		if trw.wr.gen.options.UseBuiltinDataProviders {
+			return []string{
+				"$magic = fetch_int() & 0xFFFFFFFF;",
+				fmt.Sprintf("if ($magic == 0x%08[1]x) {", trw.falseTag),
+				fmt.Sprintf("  %[1]s = false;", targetName),
+				fmt.Sprintf("} elseif ($magic == 0x%08[1]x) {", trw.trueTag),
+				fmt.Sprintf("  %[1]s = true;", targetName),
+				"} else {",
+				"  return false;",
+				"}",
+			}
+		} else {
+			return []string{
+				fmt.Sprintf(
+					"[%[1]s, $success] = $stream->read_bool(0x%08[2]x, 0x%08[3]x);",
+					targetName,
+					trw.falseTag,
+					trw.trueTag,
+				),
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			}
 		}
 	}
 	return nil
@@ -53,16 +66,26 @@ func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, initIfDef
 
 func (trw *TypeRWBool) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
 	if !bare {
-		return []string{
-			fmt.Sprintf(
-				"$success = $stream->write_bool(%[1]s, 0x%08[2]x, 0x%08[3]x);",
-				targetName,
-				trw.falseTag,
-				trw.trueTag,
-			),
-			"if (!$success) {",
-			"  return false;",
-			"}",
+		if trw.wr.gen.options.UseBuiltinDataProviders {
+			return []string{
+				fmt.Sprintf("if (%[1]s) {", targetName),
+				fmt.Sprintf("  store_int(0x%08[1]x);", trw.trueTag),
+				"} else {",
+				fmt.Sprintf("  store_int(0x%08[1]x);", trw.falseTag),
+				"}",
+			}
+		} else {
+			return []string{
+				fmt.Sprintf(
+					"$success = $stream->write_bool(%[1]s, 0x%08[2]x, 0x%08[3]x);",
+					targetName,
+					trw.falseTag,
+					trw.trueTag,
+				),
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			}
 		}
 	}
 	return nil

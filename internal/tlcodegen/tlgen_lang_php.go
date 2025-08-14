@@ -113,19 +113,36 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 
 func (gen *Gen2) PhpAdditionalFiles() error {
 	if gen.options.AddFunctionBodies {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
-			return err
-		}
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
-			return err
+		if gen.options.UseBuiltinDataProviders {
+			//if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodeWithoutStreamPHP); err != nil {
+			//	return err
+			//}
+		} else {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
+				return err
+			}
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
+				return err
+			}
 		}
 	}
 	if gen.options.AddRPCTypes {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
-			return err
+		if gen.options.UseBuiltinDataProviders {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionWithFetchersPHP, gen.copyrightText)); err != nil {
+				return err
+			}
+		} else {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
+				return err
+			}
 		}
 		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
 			return err
+		}
+		if gen.options.AddFetchers {
+			if err := gen.addCodeFile(filepath.Join("RPCFunctionFetcher.php"), fmt.Sprintf(RpcFunctionFetchersPHP, gen.copyrightText)); err != nil {
+				return err
+			}
 		}
 	}
 	if gen.options.AddMetaData {
@@ -370,10 +387,47 @@ func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
 	return ""
 }
 
-func phpFormatArgs(args []string) string {
+func phpFormatArgs(args []string, isFirst bool) string {
 	s := ""
-	for _, arg := range args {
-		s += ", " + arg
+	for i, arg := range args {
+		if isFirst && i == 0 {
+			s += arg
+		} else {
+			s += ", " + arg
+		}
+	}
+	return s
+}
+
+func phpFunctionCommentFormat(argNames []string, argTypes []string, returnType string, shift string) string {
+	if len(argNames) != len(argTypes) {
+		return ""
+	}
+	result := make([]string, 0)
+	result = append(result, shift+"/**")
+	if len(argNames) == 0 {
+		result = append(result, shift+" * @kphp-inline")
+	} else {
+		for i := range argNames {
+			result = append(result, shift+fmt.Sprintf(" * @param $%[1]s %[2]s", argNames[i], argTypes[i]))
+		}
+	}
+	if returnType != "" {
+		result = append(result, shift+" *")
+		result = append(result, shift+" * @return "+returnType)
+	}
+	result = append(result, shift+" */")
+	return strings.Join(result, "\n")
+}
+
+func phpFunctionArgumentsFormat(argNames []string) string {
+	s := ""
+	for i, name := range argNames {
+		if i != 0 {
+			s += ", "
+		}
+		s += "$"
+		s += name
 	}
 	return s
 }

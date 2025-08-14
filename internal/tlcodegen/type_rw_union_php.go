@@ -82,36 +82,54 @@ use VK\TL;
 }
 
 func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper) string {
+	useBuiltin := targetType.gen.options.UseBuiltinDataProviders
 	if !targetType.gen.options.AddFunctionBodies {
 		return ""
 	}
-	natParamsComment := strings.Join(
-		utils.MapSlice(
-			targetType.PHPGetNatTypeDependenciesDeclAsArray(),
-			func(s string) string { return fmt.Sprintf("\n   * @param int $%s", s) }),
-		"",
-	)
-	natParamsDecl := strings.Join(
-		utils.MapSlice(
-			targetType.PHPGetNatTypeDependenciesDeclAsArray(),
-			func(s string) string { return ", $" + s }),
-		"",
-	)
+
+	readArgNames := make([]string, 0)
+	readArgTypes := make([]string, 0)
+	writeArgNames := make([]string, 0)
+	writeArgTypes := make([]string, 0)
+
+	if !useBuiltin {
+		readArgNames = append(readArgNames, "stream")
+		readArgTypes = append(readArgTypes, `TL\tl_input_stream`)
+
+		writeArgNames = append(writeArgNames, "stream")
+		writeArgTypes = append(writeArgTypes, `TL\tl_output_stream`)
+	}
+
+	for _, name := range targetType.PHPGetNatTypeDependenciesDeclAsArray() {
+		readArgNames = append(readArgNames, name)
+		readArgTypes = append(readArgTypes, "int")
+
+		writeArgNames = append(writeArgNames, name)
+		writeArgTypes = append(writeArgTypes, "int")
+	}
+
 	ioCode := ""
 	ioCode += fmt.Sprintf(`
-  /**
-   * @param TL\tl_input_stream $stream%[1]s
-   * @return bool 
-   */
-  public function read_boxed($stream%[2]s);
+%[1]s
+  public function read_boxed(%[2]s);
 
-  /**
-   * @param TL\tl_output_stream $stream%[1]s
-   * @return bool 
-   */
-  public function write_boxed($stream%[2]s);`,
-		natParamsComment,
-		natParamsDecl)
+%[3]s
+  public function write_boxed(%[4]s);`,
+		phpFunctionCommentFormat(
+			readArgNames,
+			readArgTypes,
+			"bool",
+			"  ",
+		),
+		phpFunctionArgumentsFormat(readArgNames),
+		phpFunctionCommentFormat(
+			writeArgNames,
+			writeArgTypes,
+			"bool",
+			"  ",
+		),
+		phpFunctionArgumentsFormat(writeArgNames),
+	)
 
 	return ioCode
 }
@@ -131,31 +149,58 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		panic("union can't be bare")
 	}
 	var result []string
-	result = append(result,
-		"[$tag, $success] = $stream->read_uint32();",
-		"if (!$success) {",
-		"  return false;",
-		"}",
-		"switch ($tag) {",
-	)
-	for _, field := range trw.Fields {
-		curType := field.t
+	if trw.wr.gen.options.UseBuiltinDataProviders {
 		result = append(result,
-			fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
-			fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
-			fmt.Sprintf("    $success = $variant->read($stream%s);", phpFormatArgs(args.ListAllValues())),
-			"    if (!$success) {",
-			"      return false;",
-			"    }",
-			fmt.Sprintf("    %[1]s = $variant;", targetName),
-			"    break;",
+			"$tag = fetch_int() & 0xFFFFFFFF;",
+			"switch ($tag) {",
+		)
+		for i, field := range trw.Fields {
+			curType := field.t
+			name := fmt.Sprintf("$variant%d", i)
+			result = append(result,
+				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    $success = %[2]s->read(%[1]s);", phpFormatArgs(args.ListAllValues(), true), name),
+				"    if (!$success) {",
+				"      return false;",
+				"    }",
+				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
+				"    break;",
+			)
+		}
+		result = append(result,
+			"  default:",
+			"    return false;",
+			"}",
+		)
+	} else {
+		result = append(result,
+			"[$tag, $success] = $stream->read_uint32();",
+			"if (!$success) {",
+			"  return false;",
+			"}",
+			"switch ($tag) {",
+		)
+		for i, field := range trw.Fields {
+			curType := field.t
+			name := fmt.Sprintf("$variant%d", i)
+			result = append(result,
+				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    $success = %[2]s->read($stream%[1]s);", phpFormatArgs(args.ListAllValues(), false), name),
+				"    if (!$success) {",
+				"      return false;",
+				"    }",
+				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
+				"    break;",
+			)
+		}
+		result = append(result,
+			"  default:",
+			"    return false;",
+			"}",
 		)
 	}
-	result = append(result,
-		"  default:",
-		"    return false;",
-		"}",
-	)
 	return result
 }
 
@@ -164,15 +209,27 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *T
 		panic("union can't be bare")
 	}
 	var result []string
-	result = append(result,
-		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
-		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
-		"}",
-		fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args.ListAllValues())),
-		"if (!$success) {",
-		"  return false;",
-		"}",
-	)
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		result = append(result,
+			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+			"}",
+			fmt.Sprintf("$success = %[1]s->write_boxed(%[2]s);", targetName, phpFormatArgs(args.ListAllValues(), true)),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		)
+	} else {
+		result = append(result,
+			fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
+			"}",
+			fmt.Sprintf("$success = %[1]s->write_boxed($stream%[2]s);", targetName, phpFormatArgs(args.ListAllValues(), false)),
+			"if (!$success) {",
+			"  return false;",
+			"}",
+		)
+	}
 
 	return result
 }
