@@ -154,16 +154,17 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			"$tag = fetch_int() & 0xFFFFFFFF;",
 			"switch ($tag) {",
 		)
-		for _, field := range trw.Fields {
+		for i, field := range trw.Fields {
 			curType := field.t
+			name := fmt.Sprintf("$variant%d", i)
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
-				fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
-				fmt.Sprintf("    $success = $variant->read(%s);", phpFormatArgs(args.ListAllValues(), true)),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    $success = %[2]s->read(%[1]s);", phpFormatArgs(args.ListAllValues(), true), name),
 				"    if (!$success) {",
 				"      return false;",
 				"    }",
-				fmt.Sprintf("    %[1]s = $variant;", targetName),
+				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
 				"    break;",
 			)
 		}
@@ -180,16 +181,17 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 			"}",
 			"switch ($tag) {",
 		)
-		for _, field := range trw.Fields {
+		for i, field := range trw.Fields {
 			curType := field.t
+			name := fmt.Sprintf("$variant%d", i)
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
-				fmt.Sprintf("    $variant = new %s();", curType.trw.PhpTypeName(true, true)),
-				fmt.Sprintf("    $success = $variant->read($stream%s);", phpFormatArgs(args.ListAllValues(), false)),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    $success = %[2]s->read($stream%[1]s);", phpFormatArgs(args.ListAllValues(), false), name),
 				"    if (!$success) {",
 				"      return false;",
 				"    }",
-				fmt.Sprintf("    %[1]s = $variant;", targetName),
+				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
 				"    break;",
 			)
 		}
