@@ -203,6 +203,72 @@ func (gen *Gen2) phpCreateMeta() error {
 
 use VK\TL;
 
+class tl_meta {
+  /** @var tl_item[] */
+  private $tl_item_by_tag = [];
+
+  /** @var tl_item[] */
+  private $tl_item_by_name = [];
+
+  /**
+   * @param string $tl_name
+   * @return tl_item|null
+   */
+  function tl_item_by_name($tl_name) {
+    if (array_key_exists($tl_name, $this->tl_item_by_name)) {
+        return $this->tl_item_by_name[$tl_name];
+    }
+    return null;
+  }
+
+  /**
+   * @return tl_item[]
+   */
+  function all_items_by_names() {
+    return $this->tl_item_by_name;
+  }
+
+  /**
+   * @param int $tl_tag
+   * @return tl_item|null
+   */
+  function tl_item_by_tag($tl_tag) {
+    if (array_key_exists($tl_tag, $this->tl_item_by_tag)) {
+        return $this->tl_item_by_tag[$tl_tag];
+    }
+    return null;
+  }
+
+  function __construct() {`, gen.copyrightText))
+
+	for _, wr := range gen.PhpSelectTypesForGeneration() {
+		if strct, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 && strct.ResultType != nil {
+			code.WriteString(fmt.Sprintf(`
+    $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
+    $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
+    $this->tl_item_by_tag[0x%08[1]x] = $item%08[1]x;`,
+				wr.tlTag,
+				wr.AnnotationsMask(),
+				wr.tlName.String(),
+			))
+		}
+	}
+
+	code.WriteString(`
+  }
+}
+`)
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_meta.php"), code.String()); err != nil {
+		return err
+	}
+
+	codeItem := strings.Builder{}
+	codeItem.WriteString(fmt.Sprintf(`<?php
+
+%snamespace VK\TL;
+
+use VK\TL;
+
 class tl_item {
   /** @var int */
   public $tag = 0;
@@ -224,65 +290,19 @@ class tl_item {
     $this->tl_name = $tl_name;
   }
 }
+`, gen.copyrightText))
 
-class tl_meta {
-  /** @var tl_item[] */
-  private $tl_item_by_tag = [];
-
-  /** @var tl_item[] */
-  private $tl_item_by_name = [];
-
-  /**
-   * @param string $tl_name
-   * @return tl_item|null
-   */
-  function tl_item_by_name($tl_name) {
-    if (array_key_exists($tl_name, $this->tl_item_by_name)) {
-        return $this->tl_item_by_name[$tl_name];
-    }
-    return null;
-  }
-
-  /**
-   * @param int $tl_tag
-   * @return tl_item|null
-   */
-  function tl_item_by_tag($tl_tag) {
-    if (array_key_exists($tl_tag, $this->tl_item_by_tag)) {
-        return $this->tl_item_by_tag[$tl_tag];
-    }
-    return null;
-  }
-
-  function __construct() {`, gen.copyrightText))
-
-	for _, wr := range gen.PhpSelectTypesForGeneration() {
-		if _, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 {
-			code.WriteString(fmt.Sprintf(`
-    $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
-    $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
-    $this->tl_item_by_tag[0x%08[1]x] = $item%08[1]x;`,
-				wr.tlTag,
-				wr.AnnotationsMask(),
-				wr.tlName.String(),
-			))
-		}
-	}
-
-	code.WriteString(`
-  }
-}
-`)
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", "meta.php"), code.String()); err != nil {
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_item.php"), codeItem.String()); err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (gen *Gen2) phpCreateFactory() error {
 	addFactory := func(wr *TypeRWWrapper) bool {
-		_, iStruct := wr.trw.(*TypeRWStruct)
-		return iStruct && len(wr.origTL[0].TemplateArguments) == 0 && wr.PHPUnionParent() == nil
+		strct, iStruct := wr.trw.(*TypeRWStruct)
+		return iStruct && len(wr.origTL[0].TemplateArguments) == 0 && strct.ResultType != nil
 	}
 
 	var code strings.Builder
@@ -307,20 +327,19 @@ include "RpcResponse.php";`
 %[1]snamespace VK\TL;
 
 use VK\TL;
-
-include "tl_interfaces.php";%[3]s
+%[3]s
 
 %[2]s
 class tl_factory {
-  /** @var mixed[] */ // TODO
+  /** @var (callable(): RpcFunction)[] */ // TODO
   private $tl_factory_by_tag = [];
 
-  /** @var mixed[] */ // TODO
+  /** @var (callable(): RpcFunction)[] */ // TODO
   private $tl_factory_by_name = [];
 
   /**
    * @param string $tl_name
-   * @return TL\TL_Object|null
+   * @return RpcFunction|null
    */
   function tl_object_by_name($tl_name) {
     if (array_key_exists($tl_name, $this->tl_factory_by_name)) {
@@ -331,7 +350,7 @@ class tl_factory {
 
   /**
    * @param int $tl_tag
-   * @return TL\TL_Object|null
+   * @return RpcFunction|null
    */
   function tl_object_by_tag($tl_tag) {
     if (array_key_exists($tl_tag, $this->tl_factory_by_tag)) {
@@ -345,6 +364,7 @@ class tl_factory {
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
 		if addFactory(wr) {
 			code.WriteString(fmt.Sprintf(`
+    /** @var $item%08[1]x (callable(): RpcFunction) */
     $item%08[1]x = function () { return new %[4]s(); };
     $this->tl_factory_by_name["%[3]s"] = $item%08[1]x;
     $this->tl_factory_by_tag[0x%08[1]x] = $item%08[1]x;`,
@@ -360,7 +380,7 @@ class tl_factory {
   }
 }
 `)
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", "factory.php"), code.String()); err != nil {
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_factory.php"), code.String()); err != nil {
 		return err
 	}
 	return nil
