@@ -882,6 +882,11 @@ func (t *TypeArgumentsTree) FillAllLeafs() {
 	fillAllLeafsRecursive(t, &curIndex, &values)
 }
 
+func (t *TypeArgumentsTree) FillAllLeafsWithValues(values []string) {
+	curIndex := 0
+	fillAllLeafsRecursive(t, &curIndex, &values)
+}
+
 func (t *TypeArgumentsTree) CloneValuesFrom(src *TypeArgumentsTree) {
 	if t == nil {
 		return

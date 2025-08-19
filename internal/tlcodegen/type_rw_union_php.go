@@ -101,6 +101,7 @@ func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper
 	}
 
 	for _, name := range targetType.PHPGetNatTypeDependenciesDeclAsArray() {
+		name, _ = strings.CutPrefix(name, "$")
 		readArgNames = append(readArgNames, name)
 		readArgTypes = append(readArgTypes, "int")
 
@@ -144,9 +145,12 @@ func (trw *TypeRWUnion) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	}
 }
 
-func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if bare {
 		panic("union can't be bare")
+	}
+	variantName := func(tag uint32, index int) string {
+		return fmt.Sprintf("$variant0x%08x", tag)
 	}
 	var result []string
 	if trw.wr.gen.options.UseBuiltinDataProviders {
@@ -156,7 +160,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		)
 		for i, field := range trw.Fields {
 			curType := field.t
-			name := fmt.Sprintf("$variant%d", i)
+			name := variantName(field.t.tlTag, i)
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
@@ -183,7 +187,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		)
 		for i, field := range trw.Fields {
 			curType := field.t
-			name := fmt.Sprintf("$variant%d", i)
+			name := variantName(field.t.tlTag, i)
 			result = append(result,
 				fmt.Sprintf("  case 0x%08[1]x:", curType.tlTag),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
@@ -204,7 +208,7 @@ func (trw *TypeRWUnion) PhpReadMethodCall(targetName string, bare bool, initIfDe
 	return result
 }
 
-func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if bare {
 		panic("union can't be bare")
 	}

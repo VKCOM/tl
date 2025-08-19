@@ -8,7 +8,9 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -29,8 +31,8 @@ type TypeRWPHPData interface {
 	// PhpDefaultValue return default value for field of this type (can be null)
 	PhpDefaultValue() string
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
-	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string
-	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string
+	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
 }
 
 type PhpClassMeta struct {
@@ -95,19 +97,37 @@ func (gen *Gen2) PhpChoosePaths() {
 }
 
 func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
-	createdTypes := make(map[string]bool)
+	createdTypes := make(map[string]int)
 	wrappers := make([]*TypeRWWrapper, 0)
 
+	duplicates := make(map[string][]*TypeRWWrapper)
+
 	for _, wrapper := range gen.generatedTypesList {
-		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
+		phpTypeName := wrapper.trw.PhpClassName(true, true)
+		if i, ok := createdTypes[phpTypeName]; ok {
+			if len(duplicates[phpTypeName]) == 0 {
+				duplicates[phpTypeName] = append(duplicates[phpTypeName], wrappers[i])
+			}
+			duplicates[phpTypeName] = append(duplicates[phpTypeName], wrapper)
 			continue
 		}
 		if !wrapper.PHPNeedsCode() {
 			continue
 		}
-		createdTypes[wrapper.trw.PhpClassName(true, true)] = true
+		createdTypes[phpTypeName] = len(wrappers)
 		wrappers = append(wrappers, wrapper)
 	}
+
+	duplicatedNames := utils.Keys(duplicates)
+	sort.Strings(duplicatedNames)
+
+	for _, name := range duplicatedNames {
+		fmt.Printf("Duplicates for php type %q:\n", name)
+		for _, wrapper := range duplicates[name] {
+			fmt.Printf("\t%s\n", wrapper.goGlobalName)
+		}
+	}
+
 	return wrappers
 }
 

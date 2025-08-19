@@ -34,7 +34,7 @@ func (trw *TypeRWBool) PhpDefaultValue() string {
 func (trw *TypeRWBool) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool) {
 }
 
-func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		if trw.wr.gen.options.UseBuiltinDataProviders {
 			return []string{
@@ -64,7 +64,7 @@ func (trw *TypeRWBool) PhpReadMethodCall(targetName string, bare bool, initIfDef
 	return nil
 }
 
-func (trw *TypeRWBool) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWBool) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		if trw.wr.gen.options.UseBuiltinDataProviders {
 			return []string{
