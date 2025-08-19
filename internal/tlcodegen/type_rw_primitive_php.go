@@ -64,7 +64,7 @@ func (trw *TypeRWPrimitive) phpIOMethodsSuffix() string {
 	}
 }
 
-func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		panic("can't be boxed")
 	}
@@ -96,7 +96,7 @@ func (trw *TypeRWPrimitive) PhpReadMethodCall(targetName string, bare bool, init
 	}
 }
 
-func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWPrimitive) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		panic("can't be boxed")
 	}

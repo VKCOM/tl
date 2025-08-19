@@ -47,15 +47,24 @@ func (trw *TypeRWBrackets) PhpIterateReachableTypes(reachableTypes *map[*TypeRWW
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWBrackets) PhpHasPrimitiveInnerElement() bool {
+	if vec, ok := trw.element.t.trw.(*TypeRWBrackets); ok {
+		return vec.PhpHasPrimitiveInnerElement()
+	}
+	core := trw.element.t.PHPGenCoreType()
+	_, ok := core.trw.(*TypeRWPrimitive)
+	return ok
+}
+
+func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
 	result := make([]string, 0)
 	switch {
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
-		elementName := fmt.Sprintf("$obj%d", len(trw.PhpClassName(false, true)))
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[0])
+		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[0], supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -88,10 +97,10 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		return result
 	// tuple with size as last argument
 	case !trw.vectorLike && !trw.dictLike:
-		elementName := fmt.Sprintf("$obj%d", len(trw.PhpClassName(false, true)))
+		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
 		tupleSize := *args.children[0].value
 		//elementArgs := args[1:]
-		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[1])
+		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[1], supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
@@ -116,11 +125,11 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	case trw.dictLike:
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
-		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args)
+		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args, supportSuffix)
 		for i := range keyRead {
 			keyRead[i] = "  " + keyRead[i]
 		}
-		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, true, args)
+		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, true, args, supportSuffix)
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}
@@ -150,9 +159,11 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	return []string{fmt.Sprintf("<??? %s read>", trw.wr.goGlobalName)}
 }
 
-func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
-	index := fmt.Sprintf("$i%d", len(trw.PhpClassName(false, true)))
+	layerIndex := len(trw.PhpClassName(false, true))
+	index := fmt.Sprintf("$i%d", layerIndex)
+	elementObj := fmt.Sprintf("$obj%s_%d", supportSuffix, layerIndex)
 	result := make([]string, 0)
 	switch {
 	// actual vector
@@ -172,7 +183,8 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < count(%[2]s); %[1]s++) {", index, targetName),
 		)
 		{
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[%[2]s]", targetName, index), trw.element.bare, args.children[0])
+			result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, index)))
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.bare, args.children[0], supportSuffix)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
@@ -191,7 +203,8 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
 		)
 		{
-			elementRead := trw.element.t.trw.PhpWriteMethodCall(fmt.Sprintf("%[1]s[%[2]s]", targetName, index), trw.element.bare, elementArgs)
+			result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", elementObj, fmt.Sprintf("%[1]s[%[2]s]", targetName, index)))
+			elementRead := trw.element.t.trw.PhpWriteMethodCall(elementObj, trw.element.bare, elementArgs, supportSuffix)
 			for i := range elementRead {
 				elementRead[i] = "  " + elementRead[i]
 			}
@@ -211,18 +224,18 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 				"}",
 			)
 		}
-		keyElement := "$key"
-		valueElement := "$value"
+		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
+		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
 		result = append(result,
 			fmt.Sprintf("ksort(%[1]s);", targetName),
 			fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
 		)
 		{
-			keyRead := trw.dictKeyField.t.trw.PhpWriteMethodCall(keyElement, trw.dictKeyField.bare, args)
+			keyRead := trw.dictKeyField.t.trw.PhpWriteMethodCall(keyElement, trw.dictKeyField.bare, args, supportSuffix)
 			for i := range keyRead {
 				keyRead[i] = "  " + keyRead[i]
 			}
-			valueRead := trw.dictValueField.t.trw.PhpWriteMethodCall(valueElement, trw.dictValueField.bare, args)
+			valueRead := trw.dictValueField.t.trw.PhpWriteMethodCall(valueElement, trw.dictValueField.bare, args, supportSuffix)
 			for i := range valueRead {
 				valueRead[i] = "  " + valueRead[i]
 			}

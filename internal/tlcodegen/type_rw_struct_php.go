@@ -334,42 +334,55 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				print("gigi")
 			}
 
-			for i, child := range args.children {
-				if child == nil {
-					continue
-				}
-				*args.children[i].value = fmt.Sprintf("$this->%s", child.name)
-			}
+			args.FillAllLeafsWithValues(utils.MapSlice(argsAsArray, func(a string) string {
+				suffix, _ := strings.CutPrefix(a, "$")
+				return fmt.Sprintf("$this->%s", suffix)
+			}))
 
-			readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args)
 			readCall := strings.Builder{}
-			for _, line := range readCallLines {
-				targetLines := []string{line}
-				if strings.Contains(line, "return false;") {
-					prefix, _, _ := strings.Cut(line, "return false;")
-					targetLines[0] = prefix + fmt.Sprintf("raise_fetching_error(\"can't fetch %s_result\");", trw.PhpClassName(false, true))
-					targetLines = append(targetLines, prefix+"return null;")
-				}
-				for _, targetLine := range targetLines {
-					readCall.WriteString(strings.Repeat(" ", 4))
-					readCall.WriteString(targetLine)
-					readCall.WriteString("\n")
-				}
+			writeCall := strings.Builder{}
+
+			if trw.wr.tlName.String() == "rpcProxy.diagonalTargets" {
+				print("debug")
 			}
 
-			writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args)
-			writeCall := strings.Builder{}
-			for _, line := range writeCallLines {
-				targetLines := []string{line}
-				if strings.Contains(line, "return false;") {
-					prefix, _, _ := strings.Cut(line, "return false;")
-					targetLines[0] = prefix + fmt.Sprintf("raise_storing_error(\"can't store %s_result\");", trw.PhpClassName(false, true))
-					targetLines = append(targetLines, prefix+"return;")
+			/** TODO make it better */
+			if trw.wr.origTL[0].OriginalDescriptor != nil &&
+				trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor != nil &&
+				len(trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor.TemplateArguments) != 0 {
+				readCall.WriteString(`    /** TODO FOR DIAGONAL */
+    return null;`)
+				writeCall.WriteString(`    /** TODO FOR DIAGONAL */
+    return null;`)
+			} else {
+				readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args, "")
+				for _, line := range readCallLines {
+					targetLines := []string{line}
+					if strings.Contains(line, "return false;") {
+						prefix, _, _ := strings.Cut(line, "return false;")
+						targetLines[0] = prefix + fmt.Sprintf("raise_fetching_error(\"can't fetch %s_result\");", trw.PhpClassName(false, true))
+						targetLines = append(targetLines, prefix+"return null;")
+					}
+					for _, targetLine := range targetLines {
+						readCall.WriteString(strings.Repeat(" ", 4))
+						readCall.WriteString(targetLine)
+						readCall.WriteString("\n")
+					}
 				}
-				for _, targetLine := range targetLines {
-					writeCall.WriteString(strings.Repeat(" ", 6))
-					writeCall.WriteString(targetLine)
-					writeCall.WriteString("\n")
+
+				writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args, "")
+				for _, line := range writeCallLines {
+					targetLines := []string{line}
+					if strings.Contains(line, "return false;") {
+						prefix, _, _ := strings.Cut(line, "return false;")
+						targetLines[0] = prefix + fmt.Sprintf("raise_storing_error(\"can't store %s_result\");", trw.PhpClassName(false, true))
+						targetLines = append(targetLines, prefix+"return;")
+					}
+					for _, targetLine := range targetLines {
+						writeCall.WriteString(strings.Repeat(" ", 6))
+						writeCall.WriteString(targetLine)
+						writeCall.WriteString("\n")
+					}
 				}
 			}
 
@@ -568,6 +581,12 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 }
 
 func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
+	if trw.PhpClassName(false, true) == "tree_stats_objectsListSimilarCompactInt" {
+		print("debug")
+	}
+	if trw.PhpClassName(false, true) == "vectorTotal__array_int" {
+		print("debug")
+	}
 	useBuiltin := trw.wr.gen.options.UseBuiltinDataProviders
 	if trw.wr.gen.options.AddFunctionBodies {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
@@ -638,7 +657,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				shift += 1
 			}
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree)
+			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree, strconv.Itoa(i))
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
 			}
@@ -720,7 +739,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			shift := 2
 			textTab := func() string { return strings.Repeat(tab, shift) }
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree)
+			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree, strconv.Itoa(i))
 			if fieldRead == nil {
 				continue
 			}
@@ -1176,7 +1195,7 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	return nil
 }
 
-func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{
@@ -1210,7 +1229,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 				}
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs)...)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs, supportSuffix)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
@@ -1260,7 +1279,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 					)
 				}
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args)...)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args, supportSuffix)...)
 			return result
 		}
 	}
@@ -1286,7 +1305,7 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 	return result
 }
 
-func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
 		return []string{
@@ -1315,7 +1334,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 				}
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
@@ -1354,7 +1373,7 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 					)
 				}
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args)...)
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args, supportSuffix)...)
 			return result
 		}
 	}

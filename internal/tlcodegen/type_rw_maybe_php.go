@@ -45,12 +45,12 @@ func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		var result []string
 		if trw.wr.gen.options.UseBuiltinDataProviders {
 			result = append(result,
-				"$maybeContainsValue = false",
+				"$maybeContainsValue = false;",
 				"$magic = fetch_int() & 0xFFFFFFFF;",
 				fmt.Sprintf("if ($magic == 0x%08[1]x) {", trw.emptyTag),
 				"  $maybeContainsValue = false;",
@@ -86,7 +86,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		if args != nil {
 			newArgs = args.children[0]
 		}
-		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, newArgs)
+		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix)
 		for i := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
 		}
@@ -101,7 +101,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 	return nil
 }
 
-func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
 		var result []string
 		if trw.wr.gen.options.UseBuiltinDataProviders {
@@ -133,7 +133,7 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 			if args != nil {
 				newArgs = args.children[0]
 			}
-			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, newArgs)
+			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, newArgs, supportSuffix)
 			for i := range bodyWriter {
 				bodyWriter[i] = "  " + bodyWriter[i]
 			}
