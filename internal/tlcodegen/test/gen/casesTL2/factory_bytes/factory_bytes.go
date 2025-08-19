@@ -38,6 +38,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesTestTuple"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesTestUnionContainer"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcases/tlCasesTestVector"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcasesGo/tlCasesGoTestNames"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcasesTL2/tlCasesTL2TestArrayFixedBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcasesTL2/tlCasesTL2TestArrayFlexibleBool"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlcasesTL2/tlCasesTL2TestFixedParam"
@@ -111,6 +112,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForObjectBytesTL2("cases_bytes.testEnumContainer", func() meta.Object { var ret tlCasesBytesTestEnumContainer.CasesBytesTestEnumContainer; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytesTL2("cases_bytes.testTuple", func() meta.Object { var ret tlCasesBytesTestTuple.CasesBytesTestTupleBytes; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytesTL2("cases_bytes.testVector", func() meta.Object { var ret tlCasesBytesTestVector.CasesBytesTestVectorBytes; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytesTL2("casesGo.testNames", func() meta.Object { var ret tlCasesGoTestNames.CasesGoTestNames; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytesTL2("cases.myCycle1", func() meta.Object { var ret cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle1; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytesTL2("cases.myCycle2", func() meta.Object { var ret cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle2; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytesTL2("cases.myCycle3", func() meta.Object { var ret cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle3; return &ret })

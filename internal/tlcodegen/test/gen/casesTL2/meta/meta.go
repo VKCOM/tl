@@ -357,6 +357,7 @@ func init() {
 	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "cases_bytes.testEnumContainer", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "cases_bytes.testTuple", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "cases_bytes.testVector", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "casesGo.testNames", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "cases.myCycle1", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "cases.myCycle2", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObjectTL2(&TLItem{tag: 0x00000000, annotations: 0x0, tlName: "cases.myCycle3", isTL2: true, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
