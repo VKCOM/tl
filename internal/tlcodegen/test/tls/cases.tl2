@@ -189,6 +189,7 @@ casesTL2.testObjectWithMuiltiParams =
 	f1:[]int
 	f2:[m]int;
 @tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1:[n]int f2:[m]int;
+casesGo.testNames = write:int read:int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => int;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => true;
 @read casesTL2.testFunctionNoDep3#f020849b x:int => vector<int>;

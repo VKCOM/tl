@@ -8,7 +8,7 @@
 package tlCasesGoTestNames
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -21,7 +21,7 @@ type CasesGoTestNames struct {
 }
 
 func (CasesGoTestNames) TLName() string { return "casesGo.testNames" }
-func (CasesGoTestNames) TLTag() uint32  { return 0x6b61936a }
+func (CasesGoTestNames) TLTag() uint32  { return 0x00000000 }
 
 func (item *CasesGoTestNames) Reset() {
 	item.Write0 = 0
@@ -34,36 +34,27 @@ func (item *CasesGoTestNames) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesGoTestNames) Read(w []byte) (_ []byte, err error) {
-	if w, err = basictl.IntRead(w, &item.Write0); err != nil {
-		return w, err
-	}
-	return basictl.IntRead(w, &item.Read0)
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesGoTestNames) WriteGeneral(w []byte) (_ []byte, err error) {
-	return item.Write(w), nil
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesGoTestNames) Write(w []byte) []byte {
-	w = basictl.IntWrite(w, item.Write0)
-	w = basictl.IntWrite(w, item.Read0)
 	return w
 }
 
 func (item *CasesGoTestNames) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0x6b61936a); err != nil {
-		return w, err
-	}
-	return item.Read(w)
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesGoTestNames) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteBoxed(w), nil
+	return w, basictl.TL2Error("not implemented for tl2 type")
 }
 
 func (item *CasesGoTestNames) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0x6b61936a)
-	return item.Write(w)
+	return w
 }
 
 func (item CasesGoTestNames) String() string {
@@ -72,6 +63,7 @@ func (item CasesGoTestNames) String() string {
 
 func (item *CasesGoTestNames) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
 	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	tctx.IsTL2 = true
 	return item.ReadJSONGeneral(&tctx, in)
 }
 
@@ -130,6 +122,7 @@ func (item *CasesGoTestNames) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w
 
 func (item *CasesGoTestNames) WriteJSON(w []byte) []byte {
 	tctx := basictl.JSONWriteContext{}
+	tctx.IsTL2 = true
 	return item.WriteJSONOpt(&tctx, w)
 }
 func (item *CasesGoTestNames) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {

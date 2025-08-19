@@ -355,6 +355,9 @@ func (gen *Gen2) genTypeDeclarationTL2(
 				hasNonEnum = hasNonEnum || len(variant.Fields) > 0
 			}
 			variantType := TypeRWStruct{}
+			variantType.fieldsDecCPP.fillCPPIdentifiers()
+			variantType.fieldsDec.fillGolangIdentifies()
+
 			variantWrapper := TypeRWWrapper{
 				gen: gen,
 				trw: &variantType,
@@ -420,7 +423,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 				_, isUnion := typeDefWr.trw.(*TypeRWUnion)
 				variantType.Fields[0].bare = !isUnion
 			} else {
-				err = gen.genFieldsTL2(resolveMapping, &variantType.Fields, variant.Fields)
+				err = gen.genFieldsTL2(resolveMapping, &variantType, variant.Fields)
 				if err != nil {
 					return err
 				}
@@ -436,8 +439,11 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			wr:     kernelType,
 			Fields: []Field{},
 		}
+		strct.fieldsDecCPP.fillCPPIdentifiers()
+		strct.fieldsDec.fillGolangIdentifies()
+
 		kernelType.trw = &strct
-		err := gen.genFieldsTL2(resolveMapping, &strct.Fields, typeDecl.ConstructorFields)
+		err := gen.genFieldsTL2(resolveMapping, &strct, typeDecl.ConstructorFields)
 		if err != nil {
 			return err
 		}
@@ -450,6 +456,9 @@ func (gen *Gen2) genTypeDeclarationTL2(
 				},
 			},
 		}
+		kernelInterface.fieldsDecCPP.fillCPPIdentifiers()
+		kernelInterface.fieldsDec.fillGolangIdentifies()
+
 		kernelType.trw = &kernelInterface
 		resolvedTypedef, err := resolveMapping.resolveRef(typeDecl.TypeAlias)
 		if err != nil {
@@ -467,12 +476,14 @@ func (gen *Gen2) genTypeDeclarationTL2(
 	return nil
 }
 
-func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, fields *[]Field, refFields []tlast.TL2Field) error {
+func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeRWStruct, refFields []tlast.TL2Field) error {
+	fields := &strct.Fields
 	for i, refField := range refFields {
 		// init
 		field := Field{
 			originalName: refField.Name,
-			goName:       snakeToCamelCase(refField.Name),
+			goName:       strct.fieldsDec.deconflictName(snakeToCamelCase(refField.Name)),
+			cppName:      strct.fieldsDecCPP.deconflictName(refField.Name),
 		}
 		// add fieldmask
 		if refField.IsOptional {
@@ -547,6 +558,9 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 	functionType := TypeRWStruct{
 		wr: kernelType,
 	}
+	functionType.fieldsDecCPP.fillCPPIdentifiers()
+	functionType.fieldsDec.fillGolangIdentifies()
+
 	kernelType.trw = &functionType
 
 	err = gen.genFieldsTL2(
@@ -554,7 +568,7 @@ func (gen *Gen2) genFunctionTL2(kernelType *TypeRWWrapper, comb *tlast.TL2Combin
 			ResolvedNats:  map[string]uint32{},
 			ResolvedTypes: map[string]tlast.TL2TypeRef{},
 		},
-		&functionType.Fields,
+		&functionType,
 		comb.FuncDecl.Arguments,
 	)
 
