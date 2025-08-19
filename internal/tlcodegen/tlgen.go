@@ -2323,7 +2323,9 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			})
 			for _, typ := range tl {
 				if typ.IsFunction && len(typ.TemplateArguments) == 1 {
+					copyOriginal := *typ
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
+					typ.OriginalDescriptor = &copyOriginal
 				} else if !typ.IsFunction &&
 					rpcResultsMapping[typ.Construct.Name.String()] != "" &&
 					typ.TypeDecl.Name.String() == rpcRequestResultName {
