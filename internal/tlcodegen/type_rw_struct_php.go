@@ -640,46 +640,95 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
 			phpFunctionArgumentsFormat(argNames),
 		))
-		const tab = "  "
-		for i, field := range trw.Fields {
-			fieldMask := trw.PHPGetFieldMask(i)
-			shift := 2
-			textTab := func() string { return strings.Repeat(tab, shift) }
-			if fieldMask != "" {
-				code.WriteString(
-					fmt.Sprintf(
-						"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {\n",
-						textTab(),
-						fieldMask,
-						field.BitNumber,
-					),
-				)
-				shift += 1
-			}
-			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree, strconv.Itoa(i))
-			for _, line := range fieldRead {
-				code.WriteString(textTab() + line + "\n")
-			}
-			if fieldMask != "" {
-				shift -= 1
-				code.WriteString(fmt.Sprintf("%[1]s} else {\n", textTab()))
-				shift += 1
-				_, defaultValue := fieldTypeAndDefaultValue(field)
-				code.WriteString(fmt.Sprintf(
-					"%[1]s%[2]s = %[3]s;\n",
-					textTab(),
-					"$this->"+field.originalName,
-					defaultValue,
-				))
-				shift -= 1
-				code.WriteString(fmt.Sprintf("%[1]s}\n", textTab()))
-			}
+
+		for _, line := range trw.phpStructReadCode("$this", nil) {
+			code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", strings.Repeat("  ", 2), line))
 		}
 
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 	}
+}
+
+//func (trw *TypeRWStruct) phpStructReadCode(code *strings.Builder) {
+//	const tab = "  "
+//	for i, field := range trw.Fields {
+//		fieldMask := trw.PHPGetFieldMask(i)
+//		shift := 2
+//		textTab := func() string { return strings.Repeat(tab, shift) }
+//		if fieldMask != "" {
+//			code.WriteString(
+//				fmt.Sprintf(
+//					"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {\n",
+//					textTab(),
+//					fieldMask,
+//					field.BitNumber,
+//				),
+//			)
+//			shift += 1
+//		}
+//		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
+//		fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree, strconv.Itoa(i))
+//		for _, line := range fieldRead {
+//			code.WriteString(textTab() + line + "\n")
+//		}
+//		if fieldMask != "" {
+//			shift -= 1
+//			code.WriteString(fmt.Sprintf("%[1]s} else {\n", textTab()))
+//			shift += 1
+//			_, defaultValue := fieldTypeAndDefaultValue(field)
+//			code.WriteString(fmt.Sprintf(
+//				"%[1]s%[2]s = %[3]s;\n",
+//				textTab(),
+//				"$this->"+field.originalName,
+//				defaultValue,
+//			))
+//			shift -= 1
+//			code.WriteString(fmt.Sprintf("%[1]s}\n", textTab()))
+//		}
+//	}
+//}
+
+func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *TypeArgumentsTree) []string {
+	result := make([]string, 0)
+	const tab = "  "
+	for i, field := range trw.Fields {
+		fieldMask := trw.PHPGetFieldMask(i)
+		shift := 0
+		textTab := func() string { return strings.Repeat(tab, shift) }
+		if fieldMask != "" {
+			result = append(result,
+				fmt.Sprintf(
+					"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {",
+					textTab(),
+					fieldMask,
+					field.BitNumber,
+				),
+			)
+			shift += 1
+		}
+		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, calculatedArgs)
+		fieldRead := field.t.trw.PhpReadMethodCall(targetName+"->"+field.originalName, field.bare, true, &tree, strconv.Itoa(i))
+		for _, line := range fieldRead {
+			result = append(result, textTab()+line)
+		}
+		if fieldMask != "" {
+			shift -= 1
+			result = append(result, fmt.Sprintf("%[1]s} else {", textTab()))
+			shift += 1
+			_, defaultValue := fieldTypeAndDefaultValue(field)
+			result = append(result, fmt.Sprintf(
+				"%[1]s%[2]s = %[3]s;",
+				textTab(),
+				targetName+"->"+field.originalName,
+				defaultValue,
+			))
+			shift -= 1
+			result = append(result, fmt.Sprintf("%[1]s}", textTab()))
+		}
+	}
+
+	return result
 }
 
 func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
@@ -733,39 +782,80 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
 			phpFunctionArgumentsFormat(argNames),
 		))
-		const tab = "  "
-		for i, field := range trw.Fields {
-			fieldMask := trw.PHPGetFieldMask(i)
-			shift := 2
-			textTab := func() string { return strings.Repeat(tab, shift) }
-			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree, strconv.Itoa(i))
-			if fieldRead == nil {
-				continue
-			}
-			if fieldMask != "" {
-				code.WriteString(
-					fmt.Sprintf(
-						"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {\n",
-						textTab(),
-						fieldMask,
-						field.BitNumber,
-					),
-				)
-				shift += 1
-			}
-			for _, line := range fieldRead {
-				code.WriteString(textTab() + line + "\n")
-			}
-			if fieldMask != "" {
-				shift -= 1
-				code.WriteString(fmt.Sprintf("%[1]s}\n", textTab()))
-			}
+
+		for _, line := range trw.phpStructWriteCode("$this", nil) {
+			code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", strings.Repeat("  ", 2), line))
 		}
 
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
 	}
+}
+
+//func (trw *TypeRWStruct) phpStructWriteCode(code *strings.Builder) {
+//	const tab = "  "
+//	for i, field := range trw.Fields {
+//		fieldMask := trw.PHPGetFieldMask(i)
+//		shift := 2
+//		textTab := func() string { return strings.Repeat(tab, shift) }
+//		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
+//		fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree, strconv.Itoa(i))
+//		if fieldRead == nil {
+//			continue
+//		}
+//		if fieldMask != "" {
+//			code.WriteString(
+//				fmt.Sprintf(
+//					"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {\n",
+//					textTab(),
+//					fieldMask,
+//					field.BitNumber,
+//				),
+//			)
+//			shift += 1
+//		}
+//		for _, line := range fieldRead {
+//			code.WriteString(textTab() + line + "\n")
+//		}
+//		if fieldMask != "" {
+//			shift -= 1
+//			code.WriteString(fmt.Sprintf("%[1]s}\n", textTab()))
+//		}
+//	}
+//}
+
+func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs *TypeArgumentsTree) []string {
+	result := make([]string, 0)
+	const tab = "  "
+	for i, field := range trw.Fields {
+		fieldMask := trw.PHPGetFieldMask(i)
+		shift := 0
+		textTab := func() string { return strings.Repeat(tab, shift) }
+		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, calculatedArgs)
+		fieldRead := field.t.trw.PhpWriteMethodCall(targetName+"->"+field.originalName, field.bare, &tree, strconv.Itoa(i))
+		if fieldRead == nil {
+			continue
+		}
+		if fieldMask != "" {
+			result = append(result,
+				fmt.Sprintf(
+					"%[1]sif ((%[2]s & (1 << %[3]d)) != 0) {",
+					textTab(),
+					fieldMask,
+					field.BitNumber,
+				),
+			)
+			shift += 1
+		}
+		for _, line := range fieldRead {
+			result = append(result, textTab()+line)
+		}
+		if fieldMask != "" {
+			shift -= 1
+			result = append(result, fmt.Sprintf("%[1]s}", textTab()))
+		}
+	}
+	return result
 }
 
 func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, usedFieldMasksIndecies []int, usedFieldMasks map[int][]Field) {
