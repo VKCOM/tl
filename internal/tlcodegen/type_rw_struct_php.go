@@ -53,6 +53,27 @@ func (trw *TypeRWStruct) PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex i
 	return localTree
 }
 
+func (trw *TypeRWStruct) PHPGetResultNatDependenciesValuesAsTypeTree() (TypeArgumentsTree, bool) {
+	if trw.ResultType == nil {
+		return TypeArgumentsTree{}, false
+	}
+	tree := TypeArgumentsTree{}
+	localTree := TypeArgumentsTree{}
+	trw.wr.PHPGetNatTypeDependenciesDecl(&tree)
+	tree.FillAllLeafs()
+
+	genericsMap := make(map[string]*TypeArgumentsTree)
+	for _, child := range tree.children {
+		if child != nil {
+			genericsMap[child.name] = child
+		}
+	}
+
+	trw.ResultType.PHPGetNatTypeDependenciesDecl(&localTree)
+	trw.phpGetFieldArgsTree(trw.ResultType, &trw.wr.origTL[0].FuncDecl, &localTree, &genericsMap)
+	return localTree, true
+}
+
 func (trw *TypeRWStruct) PHPGetFieldMask(fieldIndex int) string {
 	fieldMask := trw.Fields[fieldIndex].fieldMask
 	if fieldMask != nil {
@@ -262,6 +283,176 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				trw.ResultType.trw.PhpDefaultValue(),
 			),
 		)
+
+		if trw.wr.gen.options.AddFetchers {
+			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
+			argsAsArray := args.EnumerateWithPrefixes()
+
+			argsAsFields := strings.Join(
+				utils.MapSlice(
+					argsAsArray,
+					func(arg string) string {
+						return fmt.Sprintf(
+							`  /** @var int */
+  public %[1]s = 0;
+`,
+							arg,
+						)
+					},
+				),
+				"\n",
+			)
+
+			if argsAsFields != "" {
+				argsAsFields += "\n"
+			}
+
+			constructorComment := `  /**
+   * @kphp-inline
+   */`
+			constructorArgs := ""
+			constructorBody := ""
+
+			if len(argsAsArray) > 0 {
+				constructorComment = "  /**\n"
+				for i, arg := range argsAsArray {
+					suffix, _ := strings.CutPrefix(arg, "$")
+
+					constructorComment += fmt.Sprintf("   * @param $%s int\n", suffix)
+
+					if i != 0 {
+						constructorArgs += ", "
+					}
+					constructorArgs += arg
+
+					constructorBody += fmt.Sprintf("    $this->%[1]s = $%[1]s;\n", suffix)
+				}
+				constructorComment += "   */"
+			}
+
+			if trw.PhpClassName(false, true) == "test_getInfo4" {
+				print("gigi")
+			}
+
+			args.FillAllLeafsWithValues(utils.MapSlice(argsAsArray, func(a string) string {
+				suffix, _ := strings.CutPrefix(a, "$")
+				return fmt.Sprintf("$this->%s", suffix)
+			}))
+
+			readCall := strings.Builder{}
+			writeCall := strings.Builder{}
+
+			if trw.wr.tlName.String() == "rpcProxy.diagonalTargets" {
+				print("debug")
+			}
+
+			/** TODO make it better */
+			if trw.wr.origTL[0].OriginalDescriptor != nil &&
+				trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor != nil &&
+				len(trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor.TemplateArguments) != 0 {
+				readCall.WriteString(`    /** TODO FOR DIAGONAL */
+    return null;`)
+				writeCall.WriteString(`    /** TODO FOR DIAGONAL */
+    return null;`)
+			} else {
+				readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args, "")
+				for _, line := range readCallLines {
+					targetLines := []string{line}
+					if strings.Contains(line, "return false;") {
+						prefix, _, _ := strings.Cut(line, "return false;")
+						targetLines[0] = prefix + fmt.Sprintf("raise_fetching_error(\"can't fetch %s_result\");", trw.PhpClassName(false, true))
+						targetLines = append(targetLines, prefix+"return null;")
+					}
+					for _, targetLine := range targetLines {
+						readCall.WriteString(strings.Repeat(" ", 4))
+						readCall.WriteString(targetLine)
+						readCall.WriteString("\n")
+					}
+				}
+
+				writeCallLines := trw.ResultType.trw.PhpWriteMethodCall("$result->value", false, &args, "")
+				for _, line := range writeCallLines {
+					targetLines := []string{line}
+					if strings.Contains(line, "return false;") {
+						prefix, _, _ := strings.Cut(line, "return false;")
+						targetLines[0] = prefix + fmt.Sprintf("raise_storing_error(\"can't store %s_result\");", trw.PhpClassName(false, true))
+						targetLines = append(targetLines, prefix+"return;")
+					}
+					for _, targetLine := range targetLines {
+						writeCall.WriteString(strings.Repeat(" ", 6))
+						writeCall.WriteString(targetLine)
+						writeCall.WriteString("\n")
+					}
+				}
+			}
+
+			var fetchArgNames []string
+			var fetchArgTypes []string
+
+			var storeArgNames []string
+			var storeArgTypes []string
+
+			if !trw.wr.gen.options.UseBuiltinDataProviders {
+				fetchArgNames = append(fetchArgNames, "stream")
+				fetchArgTypes = append(fetchArgTypes, `TL\tl_input_stream`)
+
+				storeArgNames = append(storeArgNames, "stream")
+				storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
+			}
+
+			storeArgNames = append(storeArgNames, "result")
+			storeArgTypes = append(storeArgTypes, `TL\RpcFunctionReturnResult`)
+
+			code.WriteString(
+				fmt.Sprintf(
+					`
+class %[1]s_fetcher implements \RpcFunctionFetcher {
+%[4]s%[6]s
+  public function __construct(%[7]s) {
+%[8]s  }
+
+%[9]s
+  public function typedFetch(%[11]s) {
+    $result = new %[1]s_result();
+%[3]s
+    return $result;
+  }
+  
+%[10]s
+  public function typedStore(%[12]s) {
+    if ($result instanceof %[1]s_result) {
+%[5]s
+    } else {
+      raise_storing_error("%[1]s_result expected");
+    }
+  }
+}
+`,
+					trw.PhpClassName(false, true),
+					trw.ResultType.trw.PhpTypeName(true, true),
+					readCall.String(),
+					argsAsFields,
+					writeCall.String(),
+					constructorComment,
+					constructorArgs,
+					constructorBody,
+					phpFunctionCommentFormat(
+						fetchArgNames,
+						fetchArgTypes,
+						`TL\RpcFunctionReturnResult`,
+						"  ",
+					),
+					phpFunctionCommentFormat(
+						storeArgNames,
+						storeArgTypes,
+						``,
+						"  ",
+					),
+					phpFunctionArgumentsFormat(fetchArgNames),
+					phpFunctionArgumentsFormat(storeArgNames),
+				),
+			)
+		}
 	}
 }
 
@@ -329,51 +520,125 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			),
 		)
 
+		if trw.wr.gen.options.AddFetchers {
+			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
+			argsArray := strings.Join(args.ListAllValues(), ", ")
+
+			var fetchArgNames []string
+			var fetchArgTypes []string
+
+			var storeArgNames []string
+			var storeArgTypes []string
+
+			if !trw.wr.gen.options.UseBuiltinDataProviders {
+				fetchArgNames = append(fetchArgNames, "stream")
+				fetchArgTypes = append(fetchArgTypes, `TL\tl_input_stream`)
+
+				storeArgNames = append(storeArgNames, "stream")
+				storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
+			}
+
+			code.WriteString(
+				fmt.Sprintf(`
+%[5]s
+  public function customFetch(%[7]s) {
+    print('%[1]s::customFetch()<br/>');
+    set_current_tl_function('%[2]s');
+    $this->read(%[7]s);
+    return new %[1]s_fetcher(%[4]s);
+  }
+
+%[6]s
+  public function customStore(%[8]s) {
+    print('%[1]s::customStore()<br/>');
+    set_last_stored_tl_function_magic(%[3]s);
+    $this->write_boxed(%[8]s);
+    return new %[1]s_fetcher(%[4]s);
+  }
+`,
+					trw.PhpClassName(false, true),
+					trw.wr.tlName.String(),
+					fmt.Sprintf("0x%08x", trw.wr.tlTag),
+					argsArray,
+					phpFunctionCommentFormat(
+						fetchArgNames,
+						fetchArgTypes,
+						`\RpcFunctionFetcher`,
+						"  ",
+					),
+					phpFunctionCommentFormat(
+						storeArgNames,
+						storeArgTypes,
+						`\RpcFunctionFetcher`,
+						"  ",
+					),
+					phpFunctionArgumentsFormat(fetchArgNames),
+					phpFunctionArgumentsFormat(storeArgNames),
+				),
+			)
+		}
 	}
 }
 
 func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
+	if trw.PhpClassName(false, true) == "tree_stats_objectsListSimilarCompactInt" {
+		print("debug")
+	}
+	if trw.PhpClassName(false, true) == "vectorTotal__array_int" {
+		print("debug")
+	}
+	useBuiltin := trw.wr.gen.options.UseBuiltinDataProviders
 	if trw.wr.gen.options.AddFunctionBodies {
-		natParamsComment := strings.Join(
-			utils.MapSlice(
-				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return fmt.Sprintf("\n   * @param int %s", s) }),
-			"",
-		)
-		natParamsDecl := strings.Join(
-			utils.MapSlice(
-				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return ", " + s }),
-			"",
-		)
+		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
+		natParams = utils.MapSlice(natParams, func(a string) string {
+			s, _ := strings.CutPrefix(a, "$")
+			return s
+		})
+		argNames := make([]string, 0)
+		argTypes := make([]string, 0)
+		if !useBuiltin {
+			argNames = append(argNames, "stream")
+			argTypes = append(argTypes, `TL\tl_input_stream`)
+		}
+		for _, param := range natParams {
+			argNames = append(argNames, param)
+			argTypes = append(argTypes, "int")
+		}
+
+		magicRead := []string{
+			"    [$magic, $success] = $stream->read_uint32();",
+			fmt.Sprintf("    if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+			"      return false;",
+			"    }",
+		}
+
+		if useBuiltin {
+			magicRead = []string{
+				"    $magic = fetch_int() & 0xFFFFFFFF;",
+				fmt.Sprintf("    if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+				"      return false;",
+				"    }",
+			}
+		}
+
 		code.WriteString(fmt.Sprintf(`
-  /**
-   * @param TL\tl_input_stream $stream%[1]s
-   * @return bool 
-   */
-  public function read_boxed($stream%[2]s) {
-    [$magic, $success] = $stream->read_uint32();
-    if (!$success || $magic != 0x%08[3]x) {
-      return false;
-    }
-    return $this->read($stream%[2]s);
+%[1]s
+  public function read_boxed(%[2]s) {
+%[3]s
+    return $this->read(%[2]s);
   }
 `,
-			natParamsComment,
-			natParamsDecl,
-			trw.wr.tlTag,
+			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
+			phpFunctionArgumentsFormat(argNames),
+			strings.Join(magicRead, "\n"),
 		))
 
 		code.WriteString(fmt.Sprintf(`
-  /**
-   * @param TL\tl_input_stream $stream%[1]s
-   * @return bool 
-   */
-  public function read($stream%[2]s) {
+%[1]s
+  public function read(%[2]s) {
 `,
-			natParamsComment,
-			natParamsDecl,
-			trw.wr.tlTag,
+			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
+			phpFunctionArgumentsFormat(argNames),
 		))
 		const tab = "  "
 		for i, field := range trw.Fields {
@@ -392,7 +657,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 				shift += 1
 			}
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree)
+			fieldRead := field.t.trw.PhpReadMethodCall("$this->"+field.originalName, field.bare, true, &tree, strconv.Itoa(i))
 			for _, line := range fieldRead {
 				code.WriteString(textTab() + line + "\n")
 			}
@@ -418,47 +683,55 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 }
 
 func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
+	useBuiltin := trw.wr.gen.options.UseBuiltinDataProviders
 	if trw.wr.gen.options.AddFunctionBodies {
-		natParamsComment := strings.Join(
-			utils.MapSlice(
-				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return fmt.Sprintf("\n   * @param int %s", s) }),
-			"",
-		)
-		natParamsDecl := strings.Join(
-			utils.MapSlice(
-				trw.wr.PHPGetNatTypeDependenciesDeclAsArray(),
-				func(s string) string { return ", " + s }),
-			"",
-		)
+		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
+		natParams = utils.MapSlice(natParams, func(a string) string {
+			s, _ := strings.CutPrefix(a, "$")
+			return s
+		})
+		argNames := make([]string, 0)
+		argTypes := make([]string, 0)
+		if !useBuiltin {
+			argNames = append(argNames, "stream")
+			argTypes = append(argTypes, `TL\tl_output_stream`)
+		}
+		for _, param := range natParams {
+			argNames = append(argNames, param)
+			argTypes = append(argTypes, "int")
+		}
+
+		magicWrite := []string{
+			fmt.Sprintf("    $success = $stream->write_uint32(0x%08[1]x)", trw.wr.tlTag),
+			"    if (!$success) {",
+			"      return false;",
+			"    }",
+		}
+
+		if useBuiltin {
+			magicWrite = []string{
+				fmt.Sprintf("    store_int(0x%08[1]x);", trw.wr.tlTag),
+			}
+		}
+
 		code.WriteString(fmt.Sprintf(`
-  /**
-   * @param TL\tl_output_stream $stream%[1]s
-   * @return bool 
-   */
-  public function write_boxed($stream%[2]s) {
-    $success = $stream->write_uint32(0x%08[3]x);
-    if (!$success) {
-      return false;
-    }
-    return $this->write($stream%[2]s);
+%[1]s
+  public function write_boxed(%[2]s) {
+%[3]s
+    return $this->write(%[2]s);
   }
 `,
-			natParamsComment,
-			natParamsDecl,
-			trw.wr.tlTag,
+			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
+			phpFunctionArgumentsFormat(argNames),
+			strings.Join(magicWrite, "\n"),
 		))
 
 		code.WriteString(fmt.Sprintf(`
-  /**
-   * @param TL\tl_output_stream $stream%[1]s
-   * @return bool 
-   */
-  public function write($stream%[2]s) {
+%[1]s
+  public function write(%[2]s) {
 `,
-			natParamsComment,
-			natParamsDecl,
-			trw.wr.tlTag,
+			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
+			phpFunctionArgumentsFormat(argNames),
 		))
 		const tab = "  "
 		for i, field := range trw.Fields {
@@ -466,7 +739,7 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 			shift := 2
 			textTab := func() string { return strings.Repeat(tab, shift) }
 			tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(i, nil)
-			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree)
+			fieldRead := field.t.trw.PhpWriteMethodCall("$this->"+field.originalName, field.bare, &tree, strconv.Itoa(i))
 			if fieldRead == nil {
 				continue
 			}
@@ -827,7 +1100,9 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 		implementingInterfaces = append(implementingInterfaces, "TL\\RpcFunction")
 	}
 
-	if trw.wr.gen.options.AddFunctionBodies && len(trw.wr.origTL[0].TemplateArguments) == 0 {
+	if trw.wr.gen.options.AddFunctionBodies &&
+		len(trw.wr.origTL[0].TemplateArguments) == 0 &&
+		!trw.wr.gen.options.UseBuiltinDataProviders {
 		implementingInterfaces = append(implementingInterfaces, "TL\\Readable")
 		implementingInterfaces = append(implementingInterfaces, "TL\\Writeable")
 	}
@@ -920,35 +1195,61 @@ func (trw *TypeRWStruct) PhpConstructorNeedsUnion() (unionParent *TypeRWWrapper)
 	return nil
 }
 
-func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
+	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		return []string{fmt.Sprintf("$success = RPC_READ%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
+		return []string{
+			"/** TODO */",
+			fmt.Sprintf("/** $success = RPC_READ%s(%s%s); */",
+				ifString(bare, "", "_boxed"),
+				ifString(useBuiltIn, "", "$stream, "),
+				targetName,
+			),
+		}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			var result []string
 			if !bare {
-				result = append(result,
-					"[$magic, $success] = $stream->read_uint32();",
-					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result,
+						"$magic = fetch_int() & 0xFFFFFFFF;",
+						fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				} else {
+					result = append(result,
+						"[$magic, $success] = $stream->read_uint32();",
+						fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs)...)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs, supportSuffix)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
 			var result []string
 			if !bare {
-				result = append(result,
-					"[$magic, $success] = $stream->read_uint32();",
-					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result,
+						"$magic = fetch_int() & 0xFFFFFFFF;",
+						fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				} else {
+					result = append(result,
+						"[$magic, $success] = $stream->read_uint32();",
+						fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			result = append(result, fmt.Sprintf("%[1]s = true;", targetName))
 			return result
@@ -962,14 +1263,23 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 			trw.wr.tlName.Namespace == "" {
 			var result []string
 			if !bare {
-				result = append(result,
-					"[$magic, $success] = $stream->read_uint32();",
-					fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result,
+						"$magic = fetch_int() & 0xFFFFFFFF;",
+						fmt.Sprintf("if ($magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				} else {
+					result = append(result,
+						"[$magic, $success] = $stream->read_uint32();",
+						fmt.Sprintf("if (!$success || $magic != 0x%08[1]x) {", trw.wr.tlTag),
+						"  return false;",
+						"}",
+					)
+				}
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args)...)
+			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, bare, initIfDefault, args, supportSuffix)...)
 			return result
 		}
 	}
@@ -982,7 +1292,12 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 		)
 	}
 	result = append(result,
-		fmt.Sprintf("$success = %[2]s->read%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
+		fmt.Sprintf("$success = %[2]s->read%[1]s(%[4]s%[3]s);",
+			ifString(bare, "", "_boxed"),
+			targetName,
+			phpFormatArgs(args.ListAllValues(), useBuiltIn),
+			ifString(useBuiltIn, "", "$stream"),
+		),
 		"if (!$success) {",
 		"  return false;",
 		"}",
@@ -990,35 +1305,51 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 	return result
 }
 
-func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
+	useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
 	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
-		return []string{fmt.Sprintf("$success = RPC_WRITE%s($stream, %s);", ifString(bare, "", "_boxed"), targetName)}
+		return []string{
+			"/** TODO */",
+			fmt.Sprintf("/** $success = RPC_WRITE%s(%s%s); */",
+				ifString(bare, "", "_boxed"),
+				ifString(useBuiltIn, "", "$stream, "),
+				targetName,
+			),
+		}
 	}
 	unionParent := trw.PhpConstructorNeedsUnion()
 	if unionParent == nil {
 		if trw.PhpCanBeSimplify() {
 			var result []string
 			if !bare {
-				result = append(result,
-					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
-					"if (!$success) {",
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+				} else {
+					result = append(result,
+						fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+						"if (!$success) {",
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
-			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, &newArgs)...)
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix)...)
 			return result
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
 			var result []string
 			if !bare {
-				result = append(result,
-					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
-					"if (!$success) {",
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+				} else {
+					result = append(result,
+						fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+						"if (!$success) {",
+						"  return false;",
+						"}",
+					)
+				}
 			}
 			return result
 		}
@@ -1031,14 +1362,18 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 			trw.wr.tlName.Namespace == "" {
 			var result []string
 			if !bare {
-				result = append(result,
-					fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
-					"if (!$success) {",
-					"  return false;",
-					"}",
-				)
+				if useBuiltIn {
+					result = append(result, fmt.Sprintf("store_int(0x%08[1]x);", trw.wr.tlTag))
+				} else {
+					result = append(result,
+						fmt.Sprintf("$success = $stream->write_uint32(0x%08[1]x);", trw.wr.tlTag),
+						"if (!$success) {",
+						"  return false;",
+						"}",
+					)
+				}
 			}
-			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args)...)
+			result = append(result, trw.Fields[0].t.trw.PhpWriteMethodCall(targetName, bare, args, supportSuffix)...)
 			return result
 		}
 	}
@@ -1046,7 +1381,13 @@ func (trw *TypeRWStruct) PhpWriteMethodCall(targetName string, bare bool, args *
 		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
 		fmt.Sprintf("  %[1]s = %[2]s;", targetName, trw.PhpDefaultInit()),
 		"}",
-		fmt.Sprintf("$success = %[2]s->write%[1]s($stream%[3]s);", ifString(bare, "", "_boxed"), targetName, phpFormatArgs(args.ListAllValues())),
+		fmt.Sprintf(
+			"$success = %[2]s->write%[1]s(%[4]s%[3]s);",
+			ifString(bare, "", "_boxed"),
+			targetName,
+			phpFormatArgs(args.ListAllValues(), useBuiltIn),
+			ifString(useBuiltIn, "", "$stream"),
+		),
 		"if (!$success) {",
 		"  return false;",
 		"}",

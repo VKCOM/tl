@@ -8,7 +8,9 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/utils"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -29,8 +31,8 @@ type TypeRWPHPData interface {
 	// PhpDefaultValue return default value for field of this type (can be null)
 	PhpDefaultValue() string
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
-	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string
-	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string
+	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
 }
 
 type PhpClassMeta struct {
@@ -95,37 +97,72 @@ func (gen *Gen2) PhpChoosePaths() {
 }
 
 func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
-	createdTypes := make(map[string]bool)
+	createdTypes := make(map[string]int)
 	wrappers := make([]*TypeRWWrapper, 0)
 
+	duplicates := make(map[string][]*TypeRWWrapper)
+
 	for _, wrapper := range gen.generatedTypesList {
-		if createdTypes[wrapper.trw.PhpClassName(true, true)] {
+		phpTypeName := wrapper.trw.PhpClassName(true, true)
+		if i, ok := createdTypes[phpTypeName]; ok {
+			if len(duplicates[phpTypeName]) == 0 {
+				duplicates[phpTypeName] = append(duplicates[phpTypeName], wrappers[i])
+			}
+			duplicates[phpTypeName] = append(duplicates[phpTypeName], wrapper)
 			continue
 		}
 		if !wrapper.PHPNeedsCode() {
 			continue
 		}
-		createdTypes[wrapper.trw.PhpClassName(true, true)] = true
+		createdTypes[phpTypeName] = len(wrappers)
 		wrappers = append(wrappers, wrapper)
 	}
+
+	duplicatedNames := utils.Keys(duplicates)
+	sort.Strings(duplicatedNames)
+
+	for _, name := range duplicatedNames {
+		fmt.Printf("Duplicates for php type %q:\n", name)
+		for _, wrapper := range duplicates[name] {
+			fmt.Printf("\t%s\n", wrapper.goGlobalName)
+		}
+	}
+
 	return wrappers
 }
 
 func (gen *Gen2) PhpAdditionalFiles() error {
 	if gen.options.AddFunctionBodies {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
-			return err
-		}
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
-			return err
+		if gen.options.UseBuiltinDataProviders {
+			//if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodeWithoutStreamPHP); err != nil {
+			//	return err
+			//}
+		} else {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", BasicTlPathPHP), BasicTLCodePHP); err != nil {
+				return err
+			}
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", TLInterfacesPathPHP), TLInterfacesCodePHP); err != nil {
+				return err
+			}
 		}
 	}
 	if gen.options.AddRPCTypes {
-		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
-			return err
+		if gen.options.UseBuiltinDataProviders {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionWithFetchersPHP, gen.copyrightText)); err != nil {
+				return err
+			}
+		} else {
+			if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunction.php"), fmt.Sprintf(RpcFunctionPHP, gen.copyrightText)); err != nil {
+				return err
+			}
 		}
 		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
 			return err
+		}
+		if gen.options.AddFetchers {
+			if err := gen.addCodeFile(filepath.Join("RPCFunctionFetcher.php"), fmt.Sprintf(RpcFunctionFetchersPHP, gen.copyrightText)); err != nil {
+				return err
+			}
 		}
 	}
 	if gen.options.AddMetaData {
@@ -186,6 +223,72 @@ func (gen *Gen2) phpCreateMeta() error {
 
 use VK\TL;
 
+class tl_meta {
+  /** @var tl_item[] */
+  private $tl_item_by_tag = [];
+
+  /** @var tl_item[] */
+  private $tl_item_by_name = [];
+
+  /**
+   * @param string $tl_name
+   * @return tl_item|null
+   */
+  function tl_item_by_name($tl_name) {
+    if (array_key_exists($tl_name, $this->tl_item_by_name)) {
+        return $this->tl_item_by_name[$tl_name];
+    }
+    return null;
+  }
+
+  /**
+   * @return tl_item[]
+   */
+  function all_items_by_names() {
+    return $this->tl_item_by_name;
+  }
+
+  /**
+   * @param int $tl_tag
+   * @return tl_item|null
+   */
+  function tl_item_by_tag($tl_tag) {
+    if (array_key_exists($tl_tag, $this->tl_item_by_tag)) {
+        return $this->tl_item_by_tag[$tl_tag];
+    }
+    return null;
+  }
+
+  function __construct() {`, gen.copyrightText))
+
+	for _, wr := range gen.PhpSelectTypesForGeneration() {
+		if strct, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 && strct.ResultType != nil {
+			code.WriteString(fmt.Sprintf(`
+    $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
+    $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
+    $this->tl_item_by_tag[0x%08[1]x] = $item%08[1]x;`,
+				wr.tlTag,
+				wr.AnnotationsMask(),
+				wr.tlName.String(),
+			))
+		}
+	}
+
+	code.WriteString(`
+  }
+}
+`)
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_meta.php"), code.String()); err != nil {
+		return err
+	}
+
+	codeItem := strings.Builder{}
+	codeItem.WriteString(fmt.Sprintf(`<?php
+
+%snamespace VK\TL;
+
+use VK\TL;
+
 class tl_item {
   /** @var int */
   public $tag = 0;
@@ -207,65 +310,19 @@ class tl_item {
     $this->tl_name = $tl_name;
   }
 }
+`, gen.copyrightText))
 
-class tl_meta {
-  /** @var tl_item[] */
-  private $tl_item_by_tag = [];
-
-  /** @var tl_item[] */
-  private $tl_item_by_name = [];
-
-  /**
-   * @param string $tl_name
-   * @return tl_item|null
-   */
-  function tl_item_by_name($tl_name) {
-    if (array_key_exists($tl_name, $this->tl_item_by_name)) {
-        return $this->tl_item_by_name[$tl_name];
-    }
-    return null;
-  }
-
-  /**
-   * @param int $tl_tag
-   * @return tl_item|null
-   */
-  function tl_item_by_tag($tl_tag) {
-    if (array_key_exists($tl_tag, $this->tl_item_by_tag)) {
-        return $this->tl_item_by_tag[$tl_tag];
-    }
-    return null;
-  }
-
-  function __construct() {`, gen.copyrightText))
-
-	for _, wr := range gen.PhpSelectTypesForGeneration() {
-		if _, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 {
-			code.WriteString(fmt.Sprintf(`
-    $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
-    $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
-    $this->tl_item_by_tag[0x%08[1]x] = $item%08[1]x;`,
-				wr.tlTag,
-				wr.AnnotationsMask(),
-				wr.tlName.String(),
-			))
-		}
-	}
-
-	code.WriteString(`
-  }
-}
-`)
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", "meta.php"), code.String()); err != nil {
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_item.php"), codeItem.String()); err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (gen *Gen2) phpCreateFactory() error {
 	addFactory := func(wr *TypeRWWrapper) bool {
-		_, iStruct := wr.trw.(*TypeRWStruct)
-		return iStruct && len(wr.origTL[0].TemplateArguments) == 0 && wr.PHPUnionParent() == nil
+		strct, iStruct := wr.trw.(*TypeRWStruct)
+		return iStruct && len(wr.origTL[0].TemplateArguments) == 0 && strct.ResultType != nil
 	}
 
 	var code strings.Builder
@@ -290,20 +347,19 @@ include "RpcResponse.php";`
 %[1]snamespace VK\TL;
 
 use VK\TL;
-
-include "tl_interfaces.php";%[3]s
+%[3]s
 
 %[2]s
 class tl_factory {
-  /** @var mixed[] */ // TODO
+  /** @var (callable(): RpcFunction)[] */ // TODO
   private $tl_factory_by_tag = [];
 
-  /** @var mixed[] */ // TODO
+  /** @var (callable(): RpcFunction)[] */ // TODO
   private $tl_factory_by_name = [];
 
   /**
    * @param string $tl_name
-   * @return TL\TL_Object|null
+   * @return RpcFunction|null
    */
   function tl_object_by_name($tl_name) {
     if (array_key_exists($tl_name, $this->tl_factory_by_name)) {
@@ -314,7 +370,7 @@ class tl_factory {
 
   /**
    * @param int $tl_tag
-   * @return TL\TL_Object|null
+   * @return RpcFunction|null
    */
   function tl_object_by_tag($tl_tag) {
     if (array_key_exists($tl_tag, $this->tl_factory_by_tag)) {
@@ -328,6 +384,7 @@ class tl_factory {
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
 		if addFactory(wr) {
 			code.WriteString(fmt.Sprintf(`
+    /** @var $item%08[1]x (callable(): RpcFunction) */
     $item%08[1]x = function () { return new %[4]s(); };
     $this->tl_factory_by_name["%[3]s"] = $item%08[1]x;
     $this->tl_factory_by_tag[0x%08[1]x] = $item%08[1]x;`,
@@ -343,7 +400,7 @@ class tl_factory {
   }
 }
 `)
-	if err := gen.addCodeFile(filepath.Join("VK", "TL", "factory.php"), code.String()); err != nil {
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_factory.php"), code.String()); err != nil {
 		return err
 	}
 	return nil
@@ -370,10 +427,47 @@ func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
 	return ""
 }
 
-func phpFormatArgs(args []string) string {
+func phpFormatArgs(args []string, isFirst bool) string {
 	s := ""
-	for _, arg := range args {
-		s += ", " + arg
+	for i, arg := range args {
+		if isFirst && i == 0 {
+			s += arg
+		} else {
+			s += ", " + arg
+		}
+	}
+	return s
+}
+
+func phpFunctionCommentFormat(argNames []string, argTypes []string, returnType string, shift string) string {
+	if len(argNames) != len(argTypes) {
+		return ""
+	}
+	result := make([]string, 0)
+	result = append(result, shift+"/**")
+	if len(argNames) == 0 {
+		result = append(result, shift+" * @kphp-inline")
+	} else {
+		for i := range argNames {
+			result = append(result, shift+fmt.Sprintf(" * @param $%[1]s %[2]s", argNames[i], argTypes[i]))
+		}
+	}
+	if returnType != "" {
+		result = append(result, shift+" *")
+		result = append(result, shift+" * @return "+returnType)
+	}
+	result = append(result, shift+" */")
+	return strings.Join(result, "\n")
+}
+
+func phpFunctionArgumentsFormat(argNames []string) string {
+	s := ""
+	for i, name := range argNames {
+		if i != 0 {
+			s += ", "
+		}
+		s += "$"
+		s += name
 	}
 	return s
 }
