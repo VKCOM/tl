@@ -125,11 +125,11 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	case trw.dictLike:
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
-		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args, supportSuffix)
+		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix)
 		for i := range keyRead {
 			keyRead[i] = "  " + keyRead[i]
 		}
-		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, true, args, supportSuffix)
+		valueRead := trw.dictValueField.t.trw.PhpReadMethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix)
 		for i := range valueRead {
 			valueRead[i] = "  " + valueRead[i]
 		}
@@ -148,6 +148,10 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 			fmt.Sprintf("%[1]s = [];", targetName),
 			fmt.Sprintf("for(%[1]s = 0; %[1]s < $dict_size; %[1]s++) {", index),
 		)
+		result = append(result, fmt.Sprintf("  /** @var %[1]s */", trw.dictKeyField.t.trw.PhpTypeName(true, true)))
+		result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", keyElement, trw.dictKeyField.t.trw.PhpDefaultInit()))
+		result = append(result, fmt.Sprintf("  /** @var %[1]s */", trw.dictValueField.t.trw.PhpTypeName(true, true)))
+		result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", valueElement, trw.dictValueField.t.trw.PhpDefaultInit()))
 		result = append(result, keyRead...)
 		result = append(result, valueRead...)
 		result = append(result,

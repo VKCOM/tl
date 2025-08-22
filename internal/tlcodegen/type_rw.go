@@ -892,7 +892,9 @@ func (t *TypeArgumentsTree) CloneValuesFrom(src *TypeArgumentsTree) {
 		return
 	}
 	if t.leaf {
+		t.leaf = src.leaf
 		t.value = src.value
+		t.children = src.children
 		return
 	}
 	for i, child := range t.children {
