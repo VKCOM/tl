@@ -47,15 +47,17 @@ func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 
 func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
+		maybeContainsValueName := fmt.Sprintf("$maybeContainsValue_%[1]s", supportSuffix)
 		var result []string
 		if trw.wr.gen.options.UseBuiltinDataProviders {
 			result = append(result,
-				"$maybeContainsValue = false;",
+				"/** @var bool */",
+				fmt.Sprintf("%[1]s = false;", maybeContainsValueName),
 				"$magic = fetch_int() & 0xFFFFFFFF;",
 				fmt.Sprintf("if ($magic == 0x%08[1]x) {", trw.emptyTag),
-				"  $maybeContainsValue = false;",
+				fmt.Sprintf("  %[1]s = false;", maybeContainsValueName),
 				fmt.Sprintf("} elseif ($magic == 0x%08[1]x) {", trw.okTag),
-				"  $maybeContainsValue = true;",
+				fmt.Sprintf("  %[1]s = true;", maybeContainsValueName),
 				"} else {",
 				"  return false;",
 				"}",
@@ -63,16 +65,17 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		} else {
 			result = append(result,
 				fmt.Sprintf(
-					"[$maybeContainsValue, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x);",
+					"[%[3]s, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x);",
 					trw.emptyTag,
 					trw.okTag,
+					maybeContainsValueName,
 				),
 				"if (!$success) {",
 				"  return false;",
 				"}",
 			)
 		}
-		result = append(result, "if ($maybeContainsValue) {")
+		result = append(result, fmt.Sprintf("if (%[1]s) {", maybeContainsValueName))
 
 		if trw.element.t == trw.getInnerTarget().t && initIfDefault {
 			result = append(result,
