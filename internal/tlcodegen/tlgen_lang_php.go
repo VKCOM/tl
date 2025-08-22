@@ -38,6 +38,8 @@ type TypeRWPHPData interface {
 type PhpClassMeta struct {
 	UsedOnlyInInternal bool
 	UsedInFunctions    bool
+
+	IsDuplicate bool
 }
 
 func (gen *Gen2) generateCodePHP(bytesWhiteList []string) error {
@@ -123,7 +125,10 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 
 	for _, name := range duplicatedNames {
 		fmt.Printf("Duplicates for php type %q:\n", name)
-		for _, wrapper := range duplicates[name] {
+		for i, wrapper := range duplicates[name] {
+			if i != 0 {
+				wrapper.phpInfo.IsDuplicate = true
+			}
 			fmt.Printf("\t%s\n", wrapper.goGlobalName)
 		}
 	}
