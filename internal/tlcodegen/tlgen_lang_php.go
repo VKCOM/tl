@@ -219,6 +219,18 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 	}
 }
 
+func phpAddMetaAndFactory(wr *TypeRWWrapper) bool {
+	strct, iStruct := wr.trw.(*TypeRWStruct)
+	if iStruct && strct.ResultType != nil {
+		if strct.wr.origTL[0].OriginalDescriptor != nil &&
+			strct.wr.origTL[0].OriginalDescriptor.OriginalDescriptor != nil {
+			return len(strct.wr.origTL[0].OriginalDescriptor.OriginalDescriptor.TemplateArguments) == 0
+		}
+		return true
+	}
+	return false
+}
+
 func (gen *Gen2) phpCreateMeta() error {
 	var code strings.Builder
 
@@ -267,7 +279,7 @@ class tl_meta {
   function __construct() {`, gen.copyrightText))
 
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
-		if strct, iStruct := wr.trw.(*TypeRWStruct); iStruct && len(wr.origTL[0].TemplateArguments) == 0 && strct.ResultType != nil {
+		if phpAddMetaAndFactory(wr) {
 			code.WriteString(fmt.Sprintf(`
     $item%08[1]x = new tl_item(0x%08[1]x, 0x%[2]x, "%[3]s");
     $this->tl_item_by_name["%[3]s"] = $item%08[1]x;
@@ -325,11 +337,6 @@ class tl_item {
 }
 
 func (gen *Gen2) phpCreateFactory() error {
-	addFactory := func(wr *TypeRWWrapper) bool {
-		strct, iStruct := wr.trw.(*TypeRWStruct)
-		return iStruct && len(wr.origTL[0].TemplateArguments) == 0 && strct.ResultType != nil
-	}
-
 	var code strings.Builder
 
 	includes := ""
@@ -387,7 +394,7 @@ class tl_factory {
   function __construct() {`, gen.copyrightText, includes, includesOfRPC))
 
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
-		if addFactory(wr) {
+		if phpAddMetaAndFactory(wr) {
 			code.WriteString(fmt.Sprintf(`
     /** @var $item%08[1]x (callable(): RpcFunction) */
     $item%08[1]x = function () { return new %[4]s(); };

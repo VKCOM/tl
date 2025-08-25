@@ -351,10 +351,6 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				constructorComment += "   */"
 			}
 
-			if trw.PhpClassName(false, true) == "test_getInfo4" {
-				print("gigi")
-			}
-
 			args.FillAllLeafsWithValues(utils.MapSlice(argsAsArray, func(a string) string {
 				suffix, _ := strings.CutPrefix(a, "$")
 				return fmt.Sprintf("$this->%s", suffix)
@@ -363,10 +359,6 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			readCall := strings.Builder{}
 			writeCall := strings.Builder{}
 
-			if trw.wr.tlName.String() == "rpcProxy.diagonalTargets" {
-				print("debug")
-			}
-
 			/** TODO make it better */
 			if trw.wr.origTL[0].OriginalDescriptor != nil &&
 				trw.wr.origTL[0].OriginalDescriptor.OriginalDescriptor != nil &&
@@ -374,9 +366,6 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				readCall.WriteString(`    /** TODO FOR DIAGONAL */`)
 				writeCall.WriteString(`    /** TODO FOR DIAGONAL */`)
 			} else {
-				if trw.PhpClassName(false, true) == "notify_getScheduledNotifications" {
-					print("debug")
-				}
 				readCallLines := trw.ResultType.trw.PhpReadMethodCall("$result->value", false, true, &args, "")
 				for _, line := range readCallLines {
 					targetLines := []string{line}
@@ -542,24 +531,24 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			),
 		)
 
+		args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
+		argsArray := strings.Join(args.ListAllValues(), ", ")
+
+		var fetchArgNames []string
+		var fetchArgTypes []string
+
+		var storeArgNames []string
+		var storeArgTypes []string
+
+		if !trw.wr.gen.options.UseBuiltinDataProviders {
+			fetchArgNames = append(fetchArgNames, "stream")
+			fetchArgTypes = append(fetchArgTypes, `TL\tl_input_stream`)
+
+			storeArgNames = append(storeArgNames, "stream")
+			storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
+		}
+
 		if trw.wr.gen.options.AddFetchers {
-			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
-			argsArray := strings.Join(args.ListAllValues(), ", ")
-
-			var fetchArgNames []string
-			var fetchArgTypes []string
-
-			var storeArgNames []string
-			var storeArgTypes []string
-
-			if !trw.wr.gen.options.UseBuiltinDataProviders {
-				fetchArgNames = append(fetchArgNames, "stream")
-				fetchArgTypes = append(fetchArgTypes, `TL\tl_input_stream`)
-
-				storeArgNames = append(storeArgNames, "stream")
-				storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
-			}
-
 			code.WriteString(
 				fmt.Sprintf(`
 %[5]s
@@ -598,17 +587,44 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					phpFunctionArgumentsFormat(storeArgNames),
 				),
 			)
+		} else {
+			code.WriteString(
+				fmt.Sprintf(`
+%[5]s
+  public function customFetch(%[7]s) {
+    return null;
+  }
+
+%[6]s
+  public function customStore(%[8]s) {
+    return null;
+  }
+`,
+					trw.PhpClassName(false, true),
+					trw.wr.tlName.String(),
+					fmt.Sprintf("0x%08x", trw.wr.tlTag),
+					argsArray,
+					phpFunctionCommentFormat(
+						fetchArgNames,
+						fetchArgTypes,
+						`\RpcFunctionFetcher`,
+						"  ",
+					),
+					phpFunctionCommentFormat(
+						storeArgNames,
+						storeArgTypes,
+						`\RpcFunctionFetcher`,
+						"  ",
+					),
+					phpFunctionArgumentsFormat(fetchArgNames),
+					phpFunctionArgumentsFormat(storeArgNames),
+				),
+			)
 		}
 	}
 }
 
 func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
-	if trw.PhpClassName(false, true) == "tree_stats_objectsListSimilarCompactInt" {
-		print("debug")
-	}
-	if trw.PhpClassName(false, true) == "vectorTotal__array_int" {
-		print("debug")
-	}
 	useBuiltin := trw.wr.gen.options.UseBuiltinDataProviders
 	if trw.wr.gen.options.AddFunctionBodies {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
@@ -662,10 +678,6 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			phpFunctionCommentFormat(argNames, argTypes, "bool", "  "),
 			phpFunctionArgumentsFormat(argNames),
 		))
-
-		if trw.PhpClassName(false, true) == "healthSteps_response__array_array_healthSteps_GetSeasonRouteFriendResult" {
-			print("debug")
-		}
 
 		for _, line := range trw.phpStructReadCode("$this", nil) {
 			code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", strings.Repeat("  ", 2), line))
@@ -1258,9 +1270,6 @@ func (trw *TypeRWStruct) PhpReadMethodCall(targetName string, bare bool, initIfD
 			var result []string
 			if !bare {
 				result = trw.phpStructReadMagic(useBuiltIn, result)
-			}
-			if trw.wr.goGlobalName == "VectorHealthStepsGetSeasonRouteFriendResult" {
-				print("debug")
 			}
 			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
 			result = append(result, trw.Fields[0].t.trw.PhpReadMethodCall(targetName, trw.Fields[0].bare, initIfDefault, &newArgs, supportSuffix)...)
