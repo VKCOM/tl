@@ -90,6 +90,12 @@ type Object interface {
 type Function interface {
 	Object
 
+`)
+	if gen.options.GenerateRandomCode {
+		qw422016.N().S(`    FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error)
+`)
+	}
+	qw422016.N().S(`
     // tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
     // pass empty basictl.JSONWriteContext{} if you do not know which options you need
 	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
