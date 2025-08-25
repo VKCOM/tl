@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/vkcom/tl/pkg/basictl"
 	"golang.org/x/exp/slices"
 )
 
@@ -216,9 +217,15 @@ var _ = basictl.NatWrite
 		if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
 			return err
 		}
-		if gen.options.BasicPackageNameFull == "" {
-			filepathName = filepath.Join(BasicTLGoPackageName, BasicTLGoPackageName+goExt) // TODO if contains GlobalPackgeName as prefix, there could be name collisions
-			code = fmt.Sprintf(basicTLCodeHeader, HeaderComment, BasicTLGoPackageName) + basicTLCodeBody
+		if gen.BasicPackageRelativePath != "" {
+			// TODO if contains GlobalPackgeName as prefix, there could be name collisions
+			filepathName := filepath.Join(gen.BasicPackageRelativePath, "basictl"+goExt)
+			code = basictl.BasicTLContent(HeaderComment, BasicTLGoPackageName)
+			if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
+				return err
+			}
+			filepathName = filepath.Join(gen.BasicPackageRelativePath, "basictl2"+goExt)
+			code = basictl.BasicTL2Content(HeaderComment, BasicTLGoPackageName)
 			if err := gen.addCodeFile(filepathName, gen.copyrightText+code); err != nil {
 				return err
 			}

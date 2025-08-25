@@ -450,9 +450,9 @@ switch tag {
 			qw422016.N().S(`: // `)
 			qw422016.N().S(tlName)
 			qw422016.N().S(`
-    hctx.RequestFunctionName = "`)
+    hctx.SetRequestFunctionName("`)
 			qw422016.N().S(tlName)
-			qw422016.N().S(`"
+			qw422016.N().S(`")
 `)
 			if hasRaw {
 				qw422016.N().S(`    if h.Raw`)

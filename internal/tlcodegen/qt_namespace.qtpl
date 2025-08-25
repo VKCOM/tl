@@ -258,7 +258,7 @@ switch tag {
                 hasRaw := inNameFilter(wr.tlName, wr.gen.rawHandlerWhileList)
             -%}
 case {%s= tlTag %}: // {%s= tlName %}
-    hctx.RequestFunctionName = "{%s= tlName %}"
+    hctx.SetRequestFunctionName("{%s= tlName %}")
 {%- if hasRaw -%}
     if h.Raw{%s= funcTypeString %} != nil && !hctx.BodyFormatTL2() {
         hctx.Request = r

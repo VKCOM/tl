@@ -8,7 +8,6 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
 	"io"
 	"log"
 	"os"
@@ -23,7 +22,7 @@ import (
 	"github.com/TwiN/go-color"
 	"github.com/google/go-cmp/cmp"
 	"github.com/vkcom/tl/internal/tlast"
-
+	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
 )
 
@@ -393,10 +392,11 @@ type Gen2 struct {
 	RootPackageName string
 
 	// golang specific
-	BasicPackageNameFull string // basic types are in separate namespace to minimize conflicts
-	GlobalPackageName    string // we generate all go types in this package, because we need circular dependencies
-	FactoryPackageName   string
-	MetaPackageName      string
+	BasicPackageNameFull     string // basic types are in separate namespace to minimize conflicts
+	BasicPackageRelativePath string // if cannot determine relative path, will not be written
+	GlobalPackageName        string // we generate all go types in this package, because we need circular dependencies
+	FactoryPackageName       string
+	MetaPackageName          string
 
 	// c++ specific
 	RootCPPNamespaceElements    []string
@@ -1948,10 +1948,13 @@ func (gen *Gen2) WriteToDir(outdir string) error {
 			code, filepathName = cppRunLocalLinter(code, filepathName)
 		}
 		d := filepath.Join(outdir, filepath.Dir(filepathName))
-		if err := os.MkdirAll(d, 0755); err != nil && !os.IsExist(err) {
-			return fmt.Errorf("error creating dir %q: %w", d, err)
-		}
 		f := filepath.Join(outdir, filepathName)
+		if !strings.HasPrefix(filepathName, "..") {
+			// we allow relative paths outside gen folder for basictl*
+			if err := os.MkdirAll(d, 0755); err != nil && !os.IsExist(err) {
+				return fmt.Errorf("error creating dir %q: %w", d, err)
+			}
+		}
 		if relativeFiles[filepathName] {
 			delete(relativeFiles, filepathName)
 			was, err := os.ReadFile(f)
@@ -2062,21 +2065,41 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			return nil, fmt.Errorf("full go package name must have 2 non-empty rightmost path elements, for example '.../output/tl")
 		}
 		options.TLPackageNameFull = strings.Join(elements[:len(elements)-1], "/")
+		outdirElements := slices.Clone(elements[:len(elements)-1])
 		gen.GlobalPackageName = elements[len(elements)-1]
 		gen.RootPackageName = elements[len(elements)-2]
-		gen.FactoryPackageName = strings.Join(append(elements[:len(elements)-1], FactoryGoPackageName), "/")
-		gen.MetaPackageName = strings.Join(append(elements[:len(elements)-1], MetaGoPackageName), "/")
+		gen.FactoryPackageName = strings.Join(append(outdirElements, FactoryGoPackageName), "/")
+		gen.MetaPackageName = strings.Join(append(outdirElements, MetaGoPackageName), "/")
 		if gen.GlobalPackageName == "" || elements[len(elements)-2] == "" {
 			return nil, fmt.Errorf("full go package name must have 2 non-empty rightmost path elements, for example '.../output/tl")
 		}
 		if gen.options.BasicPackageNameFull == "" {
-			gen.BasicPackageNameFull = strings.Join(append(elements[:len(elements)-1], BasicTLGoPackageName), "/")
+			gen.BasicPackageRelativePath = BasicTLGoPackageName
+			gen.BasicPackageNameFull = strings.Join(append(outdirElements, BasicTLGoPackageName), "/")
 		} else {
-			elements = strings.Split(gen.options.BasicPackageNameFull, "/")
-			if len(elements) < 2 || elements[len(elements)-1] != BasicTLGoPackageName {
+			basicElements := strings.Split(gen.options.BasicPackageNameFull, "/")
+			if len(basicElements) < 2 || basicElements[len(basicElements)-1] != BasicTLGoPackageName {
 				return nil, fmt.Errorf("basictl go package name must end with '/%s'", BasicTLGoPackageName)
 			}
 			gen.BasicPackageNameFull = gen.options.BasicPackageNameFull
+			neqInd := 0
+			for ; neqInd < len(outdirElements) && neqInd < len(basicElements); neqInd++ {
+				if outdirElements[neqInd] != basicElements[neqInd] {
+					break
+				}
+			}
+			if neqInd >= 3 {
+				// github.com / user / repo
+				for i := neqInd; i != len(outdirElements); i++ {
+					gen.BasicPackageRelativePath += "../"
+				}
+				for i := neqInd; i != len(basicElements); i++ {
+					gen.BasicPackageRelativePath += basicElements[i] + "/"
+				}
+				log.Printf("basictl code will be updated in %q", gen.BasicPackageRelativePath)
+			} else {
+				log.Printf("basictl code will not be updated - in different repository")
+			}
 		}
 	case "cpp":
 		if options.RootCPPNamespace == "" {
