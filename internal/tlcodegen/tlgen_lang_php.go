@@ -120,16 +120,18 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 		wrappers = append(wrappers, wrapper)
 	}
 
-	duplicatedNames := utils.Keys(duplicates)
-	sort.Strings(duplicatedNames)
+	if false {
+		duplicatedNames := utils.Keys(duplicates)
+		sort.Strings(duplicatedNames)
 
-	for _, name := range duplicatedNames {
-		fmt.Printf("Duplicates for php type %q:\n", name)
-		for i, wrapper := range duplicates[name] {
-			if i != 0 {
-				wrapper.phpInfo.IsDuplicate = true
+		for _, name := range duplicatedNames {
+			fmt.Printf("Duplicates for php type %q:\n", name)
+			for i, wrapper := range duplicates[name] {
+				if i != 0 {
+					wrapper.phpInfo.IsDuplicate = true
+				}
+				fmt.Printf("\t%s\n", wrapper.goGlobalName)
 			}
-			fmt.Printf("\t%s\n", wrapper.goGlobalName)
 		}
 	}
 
@@ -369,6 +371,9 @@ class tl_factory {
   /** @var (callable(): RpcFunction)[] */ // TODO
   private $tl_factory_by_name = [];
 
+  /** @var (callable(RpcFunctionReturnResult): string|null)[] */
+  private $tl_json_printer_for_response_by_name = [];
+
   /**
    * @param string $tl_name
    * @return RpcFunction|null
@@ -391,6 +396,18 @@ class tl_factory {
     return null;
   }
 
+  /**
+   * @param string $tl_name
+   * @param RpcFunctionReturnResult $result
+   * @return string|null
+   */
+  function tl_json_print_response_by_name($tl_name, $result) {
+    if (array_key_exists($tl_name, $this->tl_json_printer_for_response_by_name)) {
+        return $this->tl_json_printer_for_response_by_name[$tl_name]($result);
+    }
+    return null;
+  }
+
   function __construct() {`, gen.copyrightText, includes, includesOfRPC))
 
 	for _, wr := range gen.PhpSelectTypesForGeneration() {
@@ -398,8 +415,16 @@ class tl_factory {
 			code.WriteString(fmt.Sprintf(`
     /** @var $item%08[1]x (callable(): RpcFunction) */
     $item%08[1]x = function () { return new %[4]s(); };
+    /** @var $item_json_print%08[1]x (callable(RpcFunctionReturnResult): string|null) */
+    $item_json_print%08[1]x = function($result) {
+       if ($result instanceof %[4]s_result) {
+         return \JsonEncoder::encode($result);
+       }
+       return null;
+    };
     $this->tl_factory_by_name["%[3]s"] = $item%08[1]x;
-    $this->tl_factory_by_tag[0x%08[1]x] = $item%08[1]x;`,
+    $this->tl_factory_by_tag[0x%08[1]x] = $item%08[1]x;
+    $this->tl_json_printer_for_response_by_name["%[3]s"] = $item_json_print%08[1]x;`,
 				wr.tlTag,
 				wr.AnnotationsMask(),
 				wr.tlName.String(),
@@ -461,7 +486,7 @@ func phpFunctionCommentFormat(argNames []string, argTypes []string, returnType s
 		result = append(result, shift+" * @kphp-inline")
 	} else {
 		for i := range argNames {
-			result = append(result, shift+fmt.Sprintf(" * @param $%[1]s %[2]s", argNames[i], argTypes[i]))
+			result = append(result, shift+fmt.Sprintf(" * @param %[2]s $%[1]s", argNames[i], argTypes[i]))
 		}
 	}
 	if returnType != "" {

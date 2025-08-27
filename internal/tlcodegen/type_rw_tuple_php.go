@@ -231,7 +231,7 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
 		result = append(result,
-			fmt.Sprintf("ksort(%[1]s);", targetName),
+			fmt.Sprintf("ksort(%[1]s, SORT_STRING);", targetName),
 			fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
 		)
 		{

@@ -133,11 +133,11 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to avoid generation of structs with no arguments and only 1 field (default:true)`)
 	flag.BoolVar(&opt.UseBuiltinDataProviders, "php-use-builtin-data-providers", false,
 		`whether to use builtin functions to store / fetch data instead of stream api`)
+	flag.BoolVar(&opt.AddFetchersEchoComments, "php-generate-fetchers-echo-comment", true,
+		`whether to generate echo of usage for custom store/fetch`)
 
-	if opt.AddFactoryData {
-		opt.AddMetaData = true
-		opt.AddFunctionBodies = true
-	}
+	flag.BoolVar(&opt.CreateTLFilesWithAllTypesInReturn, "php-create-tl-files-with-all-types-in-return", false,
+		`whether to create duplicates of passed tl files with all top level types in function return (option for testing)`)
 
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
@@ -146,6 +146,12 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"generate file with combinators in canonical form")
 
 	flag.Parse()
+
+	// post validation
+	if opt.AddFactoryData {
+		opt.AddMetaData = true
+		opt.AddFunctionBodies = true
+	}
 }
 
 func run(opt tlcodegen.Gen2Options) {
@@ -201,6 +207,11 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 		ast = append(ast, tl...)
 		fullAst = append(fullAst, fullTl...)
+
+		// modifications for testing
+		if opt.Language == "php" && opt.CreateTLFilesWithAllTypesInReturn {
+			runCreateModifiedTLFile(path, fullTl)
+		}
 	}
 	for i := range fullAst { // we do not use it in fullAst, but might in the future
 		fullAst[i].OriginalOrderIndex = i
@@ -406,4 +417,47 @@ func parseTL2File(file string, opt *tlcodegen.Gen2Options) (tlast.TL2File, error
 	}
 	dataStr := string(data)
 	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, opt.ErrorWriter)
+}
+
+func runCreateModifiedTLFile(path string, tl tlast.TL) error {
+	newPath := strings.Replace(path, tlExt, "_with_functions"+tlExt, 1)
+	newTL := tlast.TL{}
+
+	typesVisited := make(map[tlast.Name]bool)
+	typesToCreateFunction := make([]tlast.Name, 0)
+	for _, combinator := range tl {
+		newTL = append(newTL, combinator)
+		if combinator.IsFunction {
+			continue
+		}
+		if combinator.Builtin {
+			continue
+		}
+		if len(combinator.TemplateArguments) != 0 {
+			continue
+		}
+		if typesVisited[combinator.TypeDecl.Name] {
+			continue
+		}
+		typesVisited[combinator.TypeDecl.Name] = true
+		typesToCreateFunction = append(typesToCreateFunction, combinator.TypeDecl.Name)
+	}
+
+	for _, name := range typesToCreateFunction {
+		newTL = append(newTL, &tlast.Combinator{
+			IsFunction: true,
+			Modifiers:  []tlast.Modifier{{Name: "read"}},
+			Construct: tlast.Constructor{Name: tlast.Name{
+				Namespace: name.Namespace,
+				Name:      "function" + name.Name,
+			}},
+			FuncDecl: tlast.TypeRef{Type: name},
+		})
+	}
+
+	if err := os.WriteFile(newPath, []byte(newTL.String()), 0644); err != nil {
+		return err
+	}
+
+	return nil
 }

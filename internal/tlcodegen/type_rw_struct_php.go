@@ -339,7 +339,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 				for i, arg := range argsAsArray {
 					suffix, _ := strings.CutPrefix(arg, "$")
 
-					constructorComment += fmt.Sprintf("   * @param $%s int\n", suffix)
+					constructorComment += fmt.Sprintf("   * @param int $%s\n", suffix)
 
 					if i != 0 {
 						constructorArgs += ", "
@@ -553,15 +553,15 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 				fmt.Sprintf(`
 %[5]s
   public function customFetch(%[7]s) {
-    print('%[1]s::customFetch()<br/>');
+    %[9]sprint('%[1]s::customFetch()<br/>');
     set_current_tl_function('%[2]s');
-    $this->read(%[7]s);
+    $this->read_boxed(%[7]s);
     return new %[1]s_fetcher(%[4]s);
   }
 
 %[6]s
   public function customStore(%[8]s) {
-    print('%[1]s::customStore()<br/>');
+    %[9]sprint('%[1]s::customStore()<br/>');
     set_last_stored_tl_function_magic(%[3]s);
     $this->write_boxed(%[8]s);
     return new %[1]s_fetcher(%[4]s);
@@ -585,6 +585,7 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					),
 					phpFunctionArgumentsFormat(fetchArgNames),
 					phpFunctionArgumentsFormat(storeArgNames),
+					ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
 				),
 			)
 		} else {
