@@ -377,8 +377,12 @@ type Gen2Options struct {
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
 	AddFetchers                  bool
+	AddFetchersEchoComments      bool
 	InplaceSimpleStructs         bool
 	UseBuiltinDataProviders      bool
+
+	// PHP Unique actions
+	CreateTLFilesWithAllTypesInReturn bool
 
 	// .tlo
 	TLOPath           string

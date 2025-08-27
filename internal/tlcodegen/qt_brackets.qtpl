@@ -21,7 +21,7 @@
                 {%- if tuple.wr.gen.options.GenerateRandomCode -%}
 func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %} {%s= natDecl %}) {
     rg.IncreaseDepth()
-    l := rg.LimitValue(basictl.RandomUint(rg))
+    l := basictl.RandomSize(rg)
     *vec = make([]{%s= elementTypeString %}, l)
     for i := range *vec {
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
@@ -330,7 +330,7 @@ func {%s= goName %}Reset(m map[{%s= keyTypeString %}]{%s= valueTypeString %}) {
             {%- if tuple.wr.gen.options.GenerateRandomCode -%}
 func {%s= goName %}FillRandom(rg *basictl.RandGenerator, m *map[{%s= keyTypeString %}]{%s= valueTypeString %} {%s= natDecl %}) {
     rg.IncreaseDepth()
-    l := rg.LimitValue(basictl.RandomUint(rg))
+    l := basictl.RandomSize(rg)
     *m = make(map[{%s= keyTypeString %}]{%s= valueTypeString %}, l)
     for i := 0; i < int(l); i++ {
         var elem {%s= elementTypeString %}
@@ -686,7 +686,7 @@ func {%s= goName %}WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, m {%s=
             {%- if tuple.wr.gen.options.GenerateRandomCode -%}
 func {%s= goName %}FillRandom(rg *basictl.RandGenerator, vec *{%s= typeString %} {%s= natDecl %}) {
     rg.IncreaseDepth()
-    l := rg.LimitValue(basictl.RandomUint(rg))
+    l := basictl.RandomSize(rg)
     *vec = make([]{%s= elementTypeString %}, l)
     for i := range *vec {
         {%s= tuple.element.t.TypeRandomCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", formatNatArgs(nil, tuple.element.natArgs), false) %}
