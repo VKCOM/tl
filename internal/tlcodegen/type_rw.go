@@ -636,6 +636,14 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
+func (w *TypeRWWrapper) IsFunction() bool {
+	structElement, ok := w.trw.(*TypeRWStruct)
+	if !ok {
+		return false
+	}
+	return structElement.ResultType != nil
+}
+
 func (w *TypeRWWrapper) PHPIsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if ok {

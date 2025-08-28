@@ -382,7 +382,9 @@ type Gen2Options struct {
 	UseBuiltinDataProviders      bool
 
 	// PHP Unique actions
-	CreateTLFilesWithAllTypesInReturn bool
+	CreateTLFilesWithAllTypesInReturn          bool
+	CreateTLSplitedFilesForEachNamespace       bool
+	CreateTLSplitedFilesForEachNamespaceFolder string
 
 	// .tlo
 	TLOPath           string
@@ -2328,6 +2330,10 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			for _, typ := range tl {
 				if typ.IsFunction && len(typ.TemplateArguments) == 1 {
 					copyOriginal := *typ
+					copyOriginal.Fields = make([]tlast.Field, len(copyOriginal.Fields))
+					for i := range typ.Fields {
+						copyOriginal.Fields[i] = typ.Fields[i]
+					}
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
 					typ.OriginalDescriptor = &copyOriginal
 				} else if !typ.IsFunction &&
