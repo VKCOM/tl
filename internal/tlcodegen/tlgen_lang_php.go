@@ -8,6 +8,7 @@ package tlcodegen
 
 import (
 	"fmt"
+	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/utils"
 	"path/filepath"
 	"sort"
@@ -40,6 +41,79 @@ type PhpClassMeta struct {
 	UsedInFunctions    bool
 
 	IsDuplicate bool
+}
+
+func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL {
+	typesToIgnore := PHPMockTypesToIgnore()
+
+	result := make(map[string]tlast.TL)
+	commonPart := tlast.TL{}
+	commonPartNsDependencies := map[string]bool{
+		"": true,
+	}
+
+	if ns, ok := gen.Namespaces[""]; ok && ns != nil {
+		reachableTypes := make(map[*TypeRWWrapper]bool)
+		for _, wrapper := range ns.types {
+			reachableTypes[wrapper] = true
+			wrapper.trw.PhpIterateReachableTypes(&reachableTypes)
+		}
+		for wrapper := range reachableTypes {
+			commonPartNsDependencies[wrapper.tlName.Namespace] = true
+		}
+	}
+
+	for _, combinator := range originalTL {
+		if commonPartNsDependencies[combinator.Construct.Name.Namespace] &&
+			!typesToIgnore[combinator.Construct.Name.Name] {
+			commonPart = append(commonPart, combinator.MostOriginalVersion())
+		}
+	}
+
+	for s, namespace := range gen.Namespaces {
+		if commonPartNsDependencies[s] {
+			continue
+		}
+		nsResult := tlast.TL{}
+		reachableTypes := make(map[*TypeRWWrapper]bool)
+		for _, wrapper := range namespace.types {
+			if wrapper.IsFunction() {
+				reachableTypes[wrapper] = true
+				wrapper.trw.PhpIterateReachableTypes(&reachableTypes)
+			}
+		}
+		typs := utils.SetToSlice(reachableTypes)
+		sort.Slice(typs, func(i, j int) bool {
+			return TypeComparator(typs[i], typs[j]) > 0
+		})
+		visitedCombinators := make(map[tlast.Name]bool)
+		for _, typ := range typs {
+			for _, combinator := range typ.origTL {
+				mostOriginal := combinator.MostOriginalVersion()
+				if commonPartNsDependencies[mostOriginal.Construct.Name.Namespace] {
+					continue
+				}
+				if visitedCombinators[mostOriginal.Construct.Name] {
+					continue
+				}
+				visitedCombinators[mostOriginal.Construct.Name] = true
+				nsResult = append(nsResult, mostOriginal)
+			}
+		}
+
+		sort.Slice(nsResult, func(i, j int) bool {
+			return nsResult[i].OriginalOrderIndex > nsResult[j].OriginalOrderIndex
+		})
+
+		result[s] = append(result[s], commonPart...)
+		result[s] = append(result[s], nsResult...)
+	}
+
+	for ns := range commonPartNsDependencies {
+		result[ns] = commonPart
+	}
+
+	return result
 }
 
 func (gen *Gen2) generateCodePHP(bytesWhiteList []string) error {
@@ -462,6 +536,14 @@ func PHPSpecialMembersTypes(wrapper *TypeRWWrapper) string {
 		return "TL\\RpcResponse"
 	}
 	return ""
+}
+
+func PHPMockTypesToIgnore() map[string]bool {
+	return map[string]bool{
+		PHPRPCFunctionMock:       true,
+		PHPRPCFunctionResultMock: true,
+		PHPRPCResponseMock:       true,
+	}
 }
 
 func phpFormatArgs(args []string, isFirst bool) string {

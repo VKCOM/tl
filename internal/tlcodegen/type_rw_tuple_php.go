@@ -64,15 +64,16 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	// actual vector
 	case trw.vectorLike && !trw.dictLike:
 		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
+		vectorSizeName := fmt.Sprintf("$vector_size_%d", len(trw.PhpClassName(false, true)))
 		elementRead := trw.element.t.trw.PhpReadMethodCall(elementName, trw.element.bare, false, args.children[0], supportSuffix)
 		for i := range elementRead {
 			elementRead[i] = "  " + elementRead[i]
 		}
 		if useBuiltIn {
-			result = append(result, "$vector_size = fetch_int() & 0xFFFFFFFF;")
+			result = append(result, fmt.Sprintf("%s = fetch_int() & 0xFFFFFFFF;", vectorSizeName))
 		} else {
 			result = append(result,
-				"[$vector_size, $success] = $stream->read_uint32();",
+				fmt.Sprintf("[%s, $success] = $stream->read_uint32();", vectorSizeName),
 				"if (!$success) {",
 				"  return false;",
 				"}",
@@ -85,7 +86,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 			)
 		}
 		result = append(result,
-			fmt.Sprintf("for(%[1]s = 0; %[1]s < $vector_size; %[1]s++) {", index),
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, vectorSizeName),
 			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
 			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
 		)
@@ -125,6 +126,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 	case trw.dictLike:
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
+		dictSizeName := fmt.Sprintf("$dict_size_%d", len(trw.PhpClassName(false, true)))
 		keyRead := trw.dictKeyField.t.trw.PhpReadMethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix)
 		for i := range keyRead {
 			keyRead[i] = "  " + keyRead[i]
@@ -134,10 +136,10 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 			valueRead[i] = "  " + valueRead[i]
 		}
 		if useBuiltIn {
-			result = append(result, "$dict_size = fetch_int() & 0xFFFFFFFF;")
+			result = append(result, fmt.Sprintf("%[1]s = fetch_int() & 0xFFFFFFFF;", dictSizeName))
 		} else {
 			result = append(result,
-				"[$dict_size, $success] = $stream->read_uint32();",
+				fmt.Sprintf("[%[1]s, $success] = $stream->read_uint32();", dictSizeName),
 				"if (!$success) {",
 				"  return false;",
 				"}",
@@ -146,7 +148,7 @@ func (trw *TypeRWBrackets) PhpReadMethodCall(targetName string, bare bool, initI
 		result = append(result,
 			// TODO MAKE MORE EFFICIENT
 			fmt.Sprintf("%[1]s = [];", targetName),
-			fmt.Sprintf("for(%[1]s = 0; %[1]s < $dict_size; %[1]s++) {", index),
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, dictSizeName),
 		)
 		result = append(result, fmt.Sprintf("  /** @var %[1]s */", trw.dictKeyField.t.trw.PhpTypeName(true, true)))
 		result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", keyElement, trw.dictKeyField.t.trw.PhpDefaultInit()))
@@ -230,8 +232,12 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 		}
 		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
 		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
+		flags := ""
+		if trw.dictKeyString {
+			flags = ", SORT_STRING"
+		}
 		result = append(result,
-			fmt.Sprintf("ksort(%[1]s, SORT_STRING);", targetName),
+			fmt.Sprintf("ksort(%[1]s%[2]s);", targetName, flags),
 			fmt.Sprintf("foreach(%[1]s as %[2]s => %[3]s) {", targetName, keyElement, valueElement),
 		)
 		{
