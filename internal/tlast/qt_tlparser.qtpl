@@ -40,6 +40,20 @@
   {%= t.Type.String() %}
 {%- endfunc -%}
 
+{%- func (t TypeRef) TopLevelString() -%}
+  {%- if t.Bare -%}
+    %
+  {%- endif -%}
+  {%- if len(t.Args) != 0 -%}
+    {%= t.Type.String() %}
+    {%- for _, x := range t.Args -%}
+      {% space %}{%= x.String() %}
+    {%- endfor -%}
+    {% return %}
+  {%- endif -%}
+  {%= t.Type.String() %}
+{%- endfunc -%}
+
 {%- func (t TypeRef) toCrc32() -%}
   {%- if t.Bare && (len(t.Type.Name) == 0 || !unicode.IsLower(rune(t.Type.Name[0]))) -%}
     %
@@ -166,7 +180,7 @@
   {%- endif -%}
   {%s= "= " %}
   {%- if descriptor.IsFunction -%}
-    {%= descriptor.FuncDecl.String() %}
+    {%= descriptor.FuncDecl.TopLevelString() %}
   {%- else -%}
     {%= descriptor.TypeDecl.String() %}
   {%- endif -%}

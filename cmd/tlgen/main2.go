@@ -138,6 +138,10 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 
 	flag.BoolVar(&opt.CreateTLFilesWithAllTypesInReturn, "php-create-tl-files-with-all-types-in-return", false,
 		`whether to create duplicates of passed tl files with all top level types in function return (option for testing)`)
+	flag.BoolVar(&opt.CreateTLSplitedFilesForEachNamespace, "php-create-tl-splited-files-for-namespaces", false,
+		`whether to create for each mentioned namespace separate file with all required dependencies (requires --php-create-tl-splited-files-for-namespaces-support-folder!="")`)
+	flag.StringVar(&opt.CreateTLSplitedFilesForEachNamespaceFolder, "php-create-tl-splited-files-for-namespaces-folder", "",
+		`folder to create splited files for such option (requires --php-create-tl-splited-files-for-namespaces-support=true)`)
 
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
@@ -210,7 +214,10 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 
 		// modifications for testing
 		if opt.Language == "php" && opt.CreateTLFilesWithAllTypesInReturn {
-			runCreateModifiedTLFile(path, fullTl)
+			err = runCreateModifiedTLFile(path, fullTl)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	for i := range fullAst { // we do not use it in fullAst, but might in the future
@@ -262,6 +269,43 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		migrationErr := runTL2Migration(opt, gen)
 		if migrationErr != nil {
 			return migrationErr
+		}
+	}
+
+	if opt.Language == "php" &&
+		opt.CreateTLSplitedFilesForEachNamespace &&
+		opt.CreateTLSplitedFilesForEachNamespaceFolder != "" {
+		namespaces := gen.PHPSplitTLByNamespaces(fullAst)
+
+		outdir := opt.CreateTLSplitedFilesForEachNamespaceFolder
+		if err := os.Mkdir(outdir, 0755); err != nil && !os.IsExist(err) { // we thus require parent directory to exist
+			return fmt.Errorf("error creating outdir %q: %w", outdir, err)
+		}
+
+		innerFiles, err := os.ReadDir(outdir)
+		if err != nil {
+			return fmt.Errorf("error deleting files in folder with splited: %s", err)
+		}
+
+		for _, entry := range innerFiles {
+			if !entry.IsDir() {
+				filePath := filepath.Join(outdir, entry.Name())
+				err := os.Remove(filePath)
+				if err != nil {
+					return fmt.Errorf("failed to delete file %s: %w", filePath, err)
+				}
+			}
+		}
+
+		for ns, tl := range namespaces {
+			if ns == "" {
+				ns = "__common"
+			}
+			f := filepath.Join(outdir, ns+tlExt)
+			code := tl.String()
+			if err := os.WriteFile(f, []byte(code), 0644); err != nil {
+				return fmt.Errorf("error writing file %q: %w", f, err)
+			}
 		}
 	}
 	if opt.TLOPath != "" {
