@@ -40,7 +40,8 @@ type PhpClassMeta struct {
 	UsedOnlyInInternal bool
 	UsedInFunctions    bool
 
-	IsDuplicate bool
+	IsDuplicate   bool
+	MappingOrigin *TypeRWWrapper // not nil if IsDuplicate = true
 }
 
 func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL {
@@ -199,9 +200,13 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 
 	for _, name := range duplicatedNames {
 		//fmt.Printf("Duplicates for php type %q:\n", name)
+		var original *TypeRWWrapper
 		for i, wrapper := range duplicates[name] {
 			if i != 0 {
 				wrapper.phpInfo.IsDuplicate = true
+				wrapper.phpInfo.MappingOrigin = original
+			} else {
+				original = wrapper
 			}
 			//fmt.Printf("\t%s\n", wrapper.goGlobalName)
 		}
