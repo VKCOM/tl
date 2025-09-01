@@ -194,18 +194,16 @@ func (gen *Gen2) PhpSelectTypesForGeneration() []*TypeRWWrapper {
 		wrappers = append(wrappers, wrapper)
 	}
 
-	if false {
-		duplicatedNames := utils.Keys(duplicates)
-		sort.Strings(duplicatedNames)
+	duplicatedNames := utils.Keys(duplicates)
+	sort.Strings(duplicatedNames)
 
-		for _, name := range duplicatedNames {
-			fmt.Printf("Duplicates for php type %q:\n", name)
-			for i, wrapper := range duplicates[name] {
-				if i != 0 {
-					wrapper.phpInfo.IsDuplicate = true
-				}
-				fmt.Printf("\t%s\n", wrapper.goGlobalName)
+	for _, name := range duplicatedNames {
+		//fmt.Printf("Duplicates for php type %q:\n", name)
+		for i, wrapper := range duplicates[name] {
+			if i != 0 {
+				wrapper.phpInfo.IsDuplicate = true
 			}
+			//fmt.Printf("\t%s\n", wrapper.goGlobalName)
 		}
 	}
 
