@@ -377,6 +377,7 @@ type Gen2Options struct {
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
 	AddFetchers                  bool
+	AddSwitcher                  bool
 	AddFetchersEchoComments      bool
 	InplaceSimpleStructs         bool
 	UseBuiltinDataProviders      bool
@@ -2333,7 +2334,9 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 					copyOriginal.Fields = make([]tlast.Field, len(copyOriginal.Fields))
 					for i := range typ.Fields {
 						copyOriginal.Fields[i] = typ.Fields[i]
+						copyOriginal.Fields[i].FieldType = typ.Fields[i].FieldType.DeepCopy()
 					}
+					copyOriginal.FuncDecl = typ.FuncDecl.DeepCopy()
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
 					typ.OriginalDescriptor = &copyOriginal
 				} else if !typ.IsFunction &&

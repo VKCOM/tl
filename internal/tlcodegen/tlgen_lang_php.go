@@ -114,6 +114,20 @@ func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL
 		result[ns] = commonPart
 	}
 
+	// replace to kphp for tests
+	for ns := range result {
+		for i, combinator := range result[ns] {
+			if combinator.IsFunction && len(combinator.TemplateArguments) > 0 {
+				continue
+			}
+			finalCombinator := *combinator
+			if finalCombinator.IsFunction {
+				finalCombinator.Modifiers = []tlast.Modifier{{Name: "kphp"}}
+			}
+			result[ns][i] = &finalCombinator
+		}
+	}
+
 	return result
 }
 
@@ -248,6 +262,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 				return err
 			}
 		}
+		if gen.options.AddSwitcher {
+			if err := gen.phpCreateSwitcher(); err != nil {
+				return err
+			}
+		}
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
@@ -308,6 +327,38 @@ func phpAddMetaAndFactory(wr *TypeRWWrapper) bool {
 		return true
 	}
 	return false
+}
+
+func (gen *Gen2) phpCreateSwitcher() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+use VK\TL;
+
+class tl_switcher {
+  /** @var int[] */
+  public static $tl_namespaces_info = [];
+
+  /**
+   * @param string $tl_namespace
+   * @return int
+   */
+  public static function tl_get_namespace_methods_mode($tl_namespace) {
+    if (array_key_exists($tl_namespace, self::$tl_namespaces_info)) {
+      return self::$tl_namespaces_info[$tl_namespace];
+    }
+    return 0;
+  }
+}
+`, gen.copyrightText))
+
+	if err := gen.addCodeFile(filepath.Join("VK", "TL", "tl_switcher.php"), code.String()); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (gen *Gen2) phpCreateMeta() error {
