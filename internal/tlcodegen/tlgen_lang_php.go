@@ -257,11 +257,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcResponse.php"), fmt.Sprintf(RpcResponsePHP, gen.copyrightText)); err != nil {
 			return err
 		}
-		if gen.options.AddFetchers {
-			if err := gen.addCodeFile(filepath.Join("RPCFunctionFetcher.php"), fmt.Sprintf(RpcFunctionFetchersPHP, gen.copyrightText)); err != nil {
-				return err
-			}
+		//if gen.options.AddFetchers {
+		if err := gen.addCodeFile(filepath.Join("VK", "TL", "RpcFunctionFetcher.php"), fmt.Sprintf(RpcFunctionFetchersPHP, gen.copyrightText)); err != nil {
+			return err
 		}
+		//}
 		if gen.options.AddSwitcher {
 			if err := gen.phpCreateSwitcher(); err != nil {
 				return err
