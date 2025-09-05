@@ -417,7 +417,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			code.WriteString(
 				fmt.Sprintf(
 					`
-class %[1]s_fetcher implements \RpcFunctionFetcher {
+class %[1]s_fetcher implements TL\RpcFunctionFetcher {
 %[4]s%[6]s
   public function __construct(%[7]s) {
 %[8]s  }
@@ -522,6 +522,29 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			),
 		)
 
+		code.WriteString(fmt.Sprintf(`
+  /**
+   * @kphp-inline
+   *
+   * @return int
+   */
+  public function getTLFunctionMagic() {
+    return 0x%08[2]x;
+  }
+
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName() {
+    return '%[1]s';
+  }
+`,
+			trw.wr.tlName.String(),
+			trw.wr.tlTag,
+		))
+
 		args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
 		argsArray := strings.Join(args.ListAllValues(), ", ")
 
@@ -543,16 +566,16 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
-  public function customStore(%[8]s){
-%[10]s    %[9]sprint('%[1]s::customStore()<br/>');
+  public function typedStore(%[8]s){
+%[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
     set_last_stored_tl_function_magic(%[3]s);
     $this->write_boxed(%[8]s);
     return new %[1]s_fetcher(%[4]s);
   }
 
 %[5]s
-  public function customFetch(%[7]s){
-%[10]s    %[9]sprint('%[1]s::customFetch()<br/>');
+  public function typedFetch(%[7]s){
+%[10]s    %[9]sprint('%[1]s::typedFetch()<br/>');
     set_current_tl_function('%[2]s');
     $this->read(%[7]s);
     return new %[1]s_fetcher(%[4]s);
@@ -565,13 +588,13 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					phpFunctionCommentFormat(
 						fetchArgNames,
 						fetchArgTypes,
-						`\RpcFunctionFetcher`,
+						`TL\RpcFunctionFetcher`,
 						"  ",
 					),
 					phpFunctionCommentFormat(
 						storeArgNames,
 						storeArgTypes,
-						`\RpcFunctionFetcher`,
+						`TL\RpcFunctionFetcher`,
 						"  ",
 					),
 					phpFunctionArgumentsFormat(fetchArgNames),
@@ -592,12 +615,12 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
-  public function customStore(%[8]s){
+  public function typedStore(%[8]s){
     return null;
   }
 
 %[5]s
-  public function customFetch(%[7]s){
+  public function typedFetch(%[7]s){
     return null;
   }
 `,
@@ -608,13 +631,13 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					phpFunctionCommentFormat(
 						fetchArgNames,
 						fetchArgTypes,
-						`\RpcFunctionFetcher`,
+						`TL\RpcFunctionFetcher`,
 						"  ",
 					),
 					phpFunctionCommentFormat(
 						storeArgNames,
 						storeArgTypes,
-						`\RpcFunctionFetcher`,
+						`TL\RpcFunctionFetcher`,
 						"  ",
 					),
 					phpFunctionArgumentsFormat(fetchArgNames),
@@ -622,20 +645,6 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 				),
 			)
 		}
-		//if trw.wr.HasAnnotation("kphp") {
-		code.WriteString(fmt.Sprintf(`
-  /**
-   * @kphp-inline
-   *
-   * @return string
-   */
-  public function getTLFunctionName() {
-    return '%[1]s';
-  }
-`,
-			trw.wr.tlName.String(),
-		))
-		//}
 	}
 }
 

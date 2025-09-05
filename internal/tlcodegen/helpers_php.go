@@ -324,21 +324,27 @@ interface RpcFunction {
   /**
    * @kphp-inline
    *
-   * @return \RpcFunctionFetcher
+   * @return int
    */
-  public function customStore();
-  /**
-   * @kphp-inline
-   *
-   * @return \RpcFunctionFetcher
-   */
-  public function customFetch();
+  public function getTLFunctionMagic();
   /**
    * @kphp-inline
    *
    * @return string
    */
   public function getTLFunctionName();
+  /**
+   * @kphp-inline
+   *
+   * @return TL\RpcFunctionFetcher
+   */
+  public function typedStore();
+  /**
+   * @kphp-inline
+   *
+   * @return TL\RpcFunctionFetcher
+   */
+  public function typedFetch();
 }
 
 /**
@@ -399,23 +405,22 @@ const RpcFunctionFetchersPHP = `<?php
 
 %s#ifndef KPHP
 
-use VK\TL;
-
+namespace VK\TL;
 
 interface RpcFunctionFetcher {
 
   /**
-   * @return \VK\TL\RpcFunctionReturnResult
-   */
-   public function typedFetch();
-
-  /**
    * @param \VK\TL\RpcFunctionReturnResult $result
    */
-   public function typedStore($result);
+  public function typedStore($result);
+  /**
+   * @return \VK\TL\RpcFunctionReturnResult
+   */
+  public function typedFetch();
 }
 
-#endif`
+#endif
+`
 
 const TLInterfacesPathPHP = "tl_interfaces.php"
 const TLInterfacesCodePHP = `<?php
