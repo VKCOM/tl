@@ -513,15 +513,6 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
   public static function result(TL\RpcResponse $response) {
     return self::functionReturnValue($response->getResult());
   }%[5]s
-
-  /**
-   * @kphp-inline
-   *
-   * @return string
-   */
-  public function getTLFunctionName() {
-    return '%[3]s';
-  }
 `,
 				trw.PhpClassName(false, true),
 				trw.PhpClassName(true, true),
@@ -551,19 +542,19 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 		if trw.wr.gen.options.AddFetchers {
 			code.WriteString(
 				fmt.Sprintf(`
-%[5]s
-  public function customFetch(%[7]s) {
-    %[9]sprint('%[1]s::customFetch()<br/>');
-    set_current_tl_function('%[2]s');
-    $this->read_boxed(%[7]s);
+%[6]s
+  public function customStore(%[8]s){
+%[10]s    %[9]sprint('%[1]s::customStore()<br/>');
+    set_last_stored_tl_function_magic(%[3]s);
+    $this->write_boxed(%[8]s);
     return new %[1]s_fetcher(%[4]s);
   }
 
-%[6]s
-  public function customStore(%[8]s) {
-    %[9]sprint('%[1]s::customStore()<br/>');
-    set_last_stored_tl_function_magic(%[3]s);
-    $this->write_boxed(%[8]s);
+%[5]s
+  public function customFetch(%[7]s){
+%[10]s    %[9]sprint('%[1]s::customFetch()<br/>');
+    set_current_tl_function('%[2]s');
+    $this->read(%[7]s);
     return new %[1]s_fetcher(%[4]s);
   }
 `,
@@ -586,18 +577,27 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 					phpFunctionArgumentsFormat(fetchArgNames),
 					phpFunctionArgumentsFormat(storeArgNames),
 					ifString(trw.wr.gen.options.AddFetchersEchoComments, "", "//"),
+					ifString(trw.wr.gen.options.AddSwitcher,
+						fmt.Sprintf(`    if (TL\tl_switcher::tl_get_namespace_methods_mode("%[1]s") != 1) {
+      return null;
+    }
+`,
+							trw.wr.tlName.Namespace,
+						),
+						"",
+					),
 				),
 			)
 		} else {
 			code.WriteString(
 				fmt.Sprintf(`
-%[5]s
-  public function customFetch(%[7]s) {
+%[6]s
+  public function customStore(%[8]s){
     return null;
   }
 
-%[6]s
-  public function customStore(%[8]s) {
+%[5]s
+  public function customFetch(%[7]s){
     return null;
   }
 `,
@@ -622,6 +622,20 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 				),
 			)
 		}
+		//if trw.wr.HasAnnotation("kphp") {
+		code.WriteString(fmt.Sprintf(`
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName() {
+    return '%[1]s';
+  }
+`,
+			trw.wr.tlName.String(),
+		))
+		//}
 	}
 }
 

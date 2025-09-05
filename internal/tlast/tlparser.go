@@ -156,3 +156,13 @@ func (c Combinator) MostOriginalVersion() *Combinator {
 		return &c
 	}
 }
+
+func (t TypeRef) DeepCopy() TypeRef {
+	ct := t
+	ct.Args = make([]ArithmeticOrType, len(t.Args))
+	for i, arg := range t.Args {
+		ct.Args[i] = arg
+		ct.Args[i].T = ct.Args[i].T.DeepCopy()
+	}
+	return ct
+}

@@ -129,6 +129,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate special rpc types (default:true)`)
 	flag.BoolVar(&opt.AddFetchers, "php-generate-fetchers", false,
 		`whether to generate new fetchers for kphp compiler integration (requires --php-rpc-support=true)`)
+	flag.BoolVar(&opt.AddSwitcher, "php-generate-switcher", false,
+		`whether to generate switcher for new functions for kphp compiler integration (requires --php-rpc-support=true)`)
 	flag.BoolVar(&opt.InplaceSimpleStructs, "php-inplace-simple-structs", true,
 		`whether to avoid generation of structs with no arguments and only 1 field (default:true)`)
 	flag.BoolVar(&opt.UseBuiltinDataProviders, "php-use-builtin-data-providers", false,

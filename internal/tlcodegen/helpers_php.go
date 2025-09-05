@@ -324,23 +324,21 @@ interface RpcFunction {
   /**
    * @kphp-inline
    *
-   * @return string
-   */
-  public function getTLFunctionName();
-
-  /**
-   * @kphp-inline
-   *
    * @return \RpcFunctionFetcher
    */
   public function customStore();
-
   /**
    * @kphp-inline
    *
    * @return \RpcFunctionFetcher
    */
   public function customFetch();
+  /**
+   * @kphp-inline
+   *
+   * @return string
+   */
+  public function getTLFunctionName();
 }
 
 /**
