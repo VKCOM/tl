@@ -404,7 +404,7 @@ type Gen2 struct {
 	DetailsCPPNamespace         string // basictl::details
 
 	// parsed TL
-	supportedAnnotations map[string]int
+	supportedAnnotations map[string]struct{}
 	typeDescriptors      map[string][]*tlast.Combinator
 	singleConstructors   map[string]*tlast.Combinator // only types with 1 constructor, no functions
 	allConstructors      map[string]*tlast.Combinator // for printing beautiful errors
@@ -2115,7 +2115,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	typesWhiteList := prepareNameFilter(options.TypesWhiteList)
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
-	gen.supportedAnnotations = map[string]int{"read": 0, "any": 1, "internal": 2, "write": 3, "readwrite": 4, "kphp": 5}
+	gen.supportedAnnotations = map[string]struct{}{"read": struct{}{}, "any": struct{}{}, "internal": struct{}{}, "write": struct{}{}, "readwrite": struct{}{}, "kphp": struct{}{}}
 	gen.rawHandlerWhileList = prepareNameFilter(options.RawHandlerWhileList)
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
@@ -2462,6 +2462,13 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 
 	{
 		allAnnotations := map[string]struct{}{}
+		// generated RPC code can depend on those annotations, even
+		// if none present in current tl file.
+		// so we add all supported annotations always.
+		for m := range gen.supportedAnnotations {
+			allAnnotations[m] = struct{}{}
+			gen.allAnnotations = append(gen.allAnnotations, m)
+		}
 		for _, typ := range tl {
 			for _, m := range typ.Modifiers {
 				if strings.ToLower(m.Name) != m.Name { // TODO - move into lexer

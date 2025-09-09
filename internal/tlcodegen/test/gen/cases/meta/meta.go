@@ -162,7 +162,12 @@ func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLon
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
 
 // Annotations
-func (item TLItem) AnnotationRead() bool { return item.annotations&0x1 != 0 }
+func (item TLItem) AnnotationAny() bool       { return item.annotations&0x1 != 0 }
+func (item TLItem) AnnotationInternal() bool  { return item.annotations&0x2 != 0 }
+func (item TLItem) AnnotationKphp() bool      { return item.annotations&0x4 != 0 }
+func (item TLItem) AnnotationRead() bool      { return item.annotations&0x8 != 0 }
+func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x10 != 0 }
+func (item TLItem) AnnotationWrite() bool     { return item.annotations&0x20 != 0 }
 
 // TLItem serves as a single type for all enum values
 func (item *TLItem) Reset()                                {}
@@ -366,13 +371,13 @@ func init() {
 	fillObject("casesTL2.testArrayFixedBool#f704cf4e", "#f704cf4e", &TLItem{tag: 0xf704cf4e, annotations: 0x0, tlName: "casesTL2.testArrayFixedBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("casesTL2.testArrayFlexibleBool#974a9b29", "#974a9b29", &TLItem{tag: 0x974a9b29, annotations: 0x0, tlName: "casesTL2.testArrayFlexibleBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("casesTL2.testFixedParam#22c48297", "#22c48297", &TLItem{tag: 0x22c48297, annotations: 0x0, tlName: "casesTL2.testFixedParam", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep1#1b8b9feb", "#1b8b9feb", &TLItem{tag: 0x1b8b9feb, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep2#0a2c0bf9", "#0a2c0bf9", &TLItem{tag: 0x0a2c0bf9, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep3#f020849b", "#f020849b", &TLItem{tag: 0xf020849b, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep4#5a933a50", "#5a933a50", &TLItem{tag: 0x5a933a50, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionNoDep5#2b47b925", "#2b47b925", &TLItem{tag: 0x2b47b925, annotations: 0x1, tlName: "casesTL2.testFunctionNoDep5", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionWithDep1#b6c63b07", "#b6c63b07", &TLItem{tag: 0xb6c63b07, annotations: 0x1, tlName: "casesTL2.testFunctionWithDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("casesTL2.testFunctionWithDep2#9d44a2fd", "#9d44a2fd", &TLItem{tag: 0x9d44a2fd, annotations: 0x1, tlName: "casesTL2.testFunctionWithDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep1#1b8b9feb", "#1b8b9feb", &TLItem{tag: 0x1b8b9feb, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep2#0a2c0bf9", "#0a2c0bf9", &TLItem{tag: 0x0a2c0bf9, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep3#f020849b", "#f020849b", &TLItem{tag: 0xf020849b, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep4#5a933a50", "#5a933a50", &TLItem{tag: 0x5a933a50, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionNoDep5#2b47b925", "#2b47b925", &TLItem{tag: 0x2b47b925, annotations: 0x8, tlName: "casesTL2.testFunctionNoDep5", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionWithDep1#b6c63b07", "#b6c63b07", &TLItem{tag: 0xb6c63b07, annotations: 0x8, tlName: "casesTL2.testFunctionWithDep1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("casesTL2.testFunctionWithDep2#9d44a2fd", "#9d44a2fd", &TLItem{tag: 0x9d44a2fd, annotations: 0x8, tlName: "casesTL2.testFunctionWithDep2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("casesTL2.testObject#4f96dd95", "#4f96dd95", &TLItem{tag: 0x4f96dd95, annotations: 0x0, tlName: "casesTL2.testObject", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("casesTL2.testParamsGeneration#aac2f033", "#aac2f033", &TLItem{tag: 0xaac2f033, annotations: 0x0, tlName: "casesTL2.testParamsGeneration", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("casesTL2.testVectorBool#644bb447", "#644bb447", &TLItem{tag: 0x644bb447, annotations: 0x0, tlName: "casesTL2.testVectorBool", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

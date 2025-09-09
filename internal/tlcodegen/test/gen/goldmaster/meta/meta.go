@@ -164,8 +164,12 @@ func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLon
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
 
 // Annotations
-func (item TLItem) AnnotationRead() bool      { return item.annotations&0x1 != 0 }
-func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x2 != 0 }
+func (item TLItem) AnnotationAny() bool       { return item.annotations&0x1 != 0 }
+func (item TLItem) AnnotationInternal() bool  { return item.annotations&0x2 != 0 }
+func (item TLItem) AnnotationKphp() bool      { return item.annotations&0x4 != 0 }
+func (item TLItem) AnnotationRead() bool      { return item.annotations&0x8 != 0 }
+func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x10 != 0 }
+func (item TLItem) AnnotationWrite() bool     { return item.annotations&0x20 != 0 }
 
 // TLItem serves as a single type for all enum values
 func (item *TLItem) Reset()                                {}
@@ -352,17 +356,17 @@ func init() {
 	fillObject("a.top2#7082d18f", "#7082d18f", &TLItem{tag: 0x7082d18f, annotations: 0x0, tlName: "a.top2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("a.uNionA#a7662843", "#a7662843", &TLItem{tag: 0xa7662843, annotations: 0x0, tlName: "a.uNionA", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("ab.alias#944aaa97", "#944aaa97", &TLItem{tag: 0x944aaa97, annotations: 0x0, tlName: "ab.alias", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call1#20c5fb2d", "#20c5fb2d", &TLItem{tag: 0x20c5fb2d, annotations: 0x1, tlName: "ab.call1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call10#8db2a4f8", "#8db2a4f8", &TLItem{tag: 0x8db2a4f8, annotations: 0x1, tlName: "ab.call10", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call11#ecb2a36c", "#ecb2a36c", &TLItem{tag: 0xecb2a36c, annotations: 0x1, tlName: "ab.call11", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: true})
-	fillFunction("ab.call2#77d5f057", "#77d5f057", &TLItem{tag: 0x77d5f057, annotations: 0x1, tlName: "ab.call2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call3#0a083445", "#0a083445", &TLItem{tag: 0x0a083445, annotations: 0x1, tlName: "ab.call3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call4#c1220a1e", "#c1220a1e", &TLItem{tag: 0xc1220a1e, annotations: 0x1, tlName: "ab.call4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call5#7ba4d28d", "#7ba4d28d", &TLItem{tag: 0x7ba4d28d, annotations: 0x1, tlName: "ab.call5", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call6#84d815cb", "#84d815cb", &TLItem{tag: 0x84d815cb, annotations: 0x1, tlName: "ab.call6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call7#46ec10bf", "#46ec10bf", &TLItem{tag: 0x46ec10bf, annotations: 0x1, tlName: "ab.call7", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call8#1b8652d9", "#1b8652d9", &TLItem{tag: 0x1b8652d9, annotations: 0x1, tlName: "ab.call8", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("ab.call9#75de906c", "#75de906c", &TLItem{tag: 0x75de906c, annotations: 0x1, tlName: "ab.call9", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call1#20c5fb2d", "#20c5fb2d", &TLItem{tag: 0x20c5fb2d, annotations: 0x8, tlName: "ab.call1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call10#8db2a4f8", "#8db2a4f8", &TLItem{tag: 0x8db2a4f8, annotations: 0x8, tlName: "ab.call10", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call11#ecb2a36c", "#ecb2a36c", &TLItem{tag: 0xecb2a36c, annotations: 0x8, tlName: "ab.call11", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: true})
+	fillFunction("ab.call2#77d5f057", "#77d5f057", &TLItem{tag: 0x77d5f057, annotations: 0x8, tlName: "ab.call2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call3#0a083445", "#0a083445", &TLItem{tag: 0x0a083445, annotations: 0x8, tlName: "ab.call3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call4#c1220a1e", "#c1220a1e", &TLItem{tag: 0xc1220a1e, annotations: 0x8, tlName: "ab.call4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call5#7ba4d28d", "#7ba4d28d", &TLItem{tag: 0x7ba4d28d, annotations: 0x8, tlName: "ab.call5", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call6#84d815cb", "#84d815cb", &TLItem{tag: 0x84d815cb, annotations: 0x8, tlName: "ab.call6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call7#46ec10bf", "#46ec10bf", &TLItem{tag: 0x46ec10bf, annotations: 0x8, tlName: "ab.call7", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call8#1b8652d9", "#1b8652d9", &TLItem{tag: 0x1b8652d9, annotations: 0x8, tlName: "ab.call8", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("ab.call9#75de906c", "#75de906c", &TLItem{tag: 0x75de906c, annotations: 0x8, tlName: "ab.call9", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("ab.code#7651b1ac", "#7651b1ac", &TLItem{tag: 0x7651b1ac, annotations: 0x0, tlName: "ab.code", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("ab.counterChangeRequestPeriodsMany#14a35d80", "#14a35d80", &TLItem{tag: 0x14a35d80, annotations: 0x0, tlName: "ab.counterChangeRequestPeriodsMany", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("ab.counterChangeRequestPeriodsOne#d9c36de5", "#d9c36de5", &TLItem{tag: 0xd9c36de5, annotations: 0x0, tlName: "ab.counterChangeRequestPeriodsOne", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
@@ -379,15 +383,15 @@ func init() {
 	fillObject("ab.useDictString#3325d884", "#3325d884", &TLItem{tag: 0x3325d884, annotations: 0x0, tlName: "ab.useDictString", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("au.nionA#df61f632", "#df61f632", &TLItem{tag: 0xdf61f632, annotations: 0x0, tlName: "au.nionA", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("b.red#a9471844", "#a9471844", &TLItem{tag: 0xa9471844, annotations: 0x0, tlName: "b.red", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call1#a7302fbc", "#a7302fbc", &TLItem{tag: 0xa7302fbc, annotations: 0x1, tlName: "call1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call2#f02024c6", "#f02024c6", &TLItem{tag: 0xf02024c6, annotations: 0x1, tlName: "call2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call3#6ace6718", "#6ace6718", &TLItem{tag: 0x6ace6718, annotations: 0x1, tlName: "call3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call4#46d7de8f", "#46d7de8f", &TLItem{tag: 0x46d7de8f, annotations: 0x1, tlName: "call4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call5#fc51061c", "#fc51061c", &TLItem{tag: 0xfc51061c, annotations: 0x1, tlName: "call5", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call6#e41e4696", "#e41e4696", &TLItem{tag: 0xe41e4696, annotations: 0x1, tlName: "call6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call7#262a43e2", "#262a43e2", &TLItem{tag: 0x262a43e2, annotations: 0x1, tlName: "call7", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call8#7b400184", "#7b400184", &TLItem{tag: 0x7b400184, annotations: 0x1, tlName: "call8", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("call9#67a0d62d", "#67a0d62d", &TLItem{tag: 0x67a0d62d, annotations: 0x1, tlName: "call9", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call1#a7302fbc", "#a7302fbc", &TLItem{tag: 0xa7302fbc, annotations: 0x8, tlName: "call1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call2#f02024c6", "#f02024c6", &TLItem{tag: 0xf02024c6, annotations: 0x8, tlName: "call2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call3#6ace6718", "#6ace6718", &TLItem{tag: 0x6ace6718, annotations: 0x8, tlName: "call3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call4#46d7de8f", "#46d7de8f", &TLItem{tag: 0x46d7de8f, annotations: 0x8, tlName: "call4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call5#fc51061c", "#fc51061c", &TLItem{tag: 0xfc51061c, annotations: 0x8, tlName: "call5", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call6#e41e4696", "#e41e4696", &TLItem{tag: 0xe41e4696, annotations: 0x8, tlName: "call6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call7#262a43e2", "#262a43e2", &TLItem{tag: 0x262a43e2, annotations: 0x8, tlName: "call7", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call8#7b400184", "#7b400184", &TLItem{tag: 0x7b400184, annotations: 0x8, tlName: "call8", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("call9#67a0d62d", "#67a0d62d", &TLItem{tag: 0x67a0d62d, annotations: 0x8, tlName: "call9", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cd.myType#eab6a6b4", "#eab6a6b4", &TLItem{tag: 0xeab6a6b4, annotations: 0x0, tlName: "cd.myType", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cd.response#8c202f64", "#8c202f64", &TLItem{tag: 0x8c202f64, annotations: 0x0, tlName: "cd.response", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cd.topLevel3#5cd1ca89", "#5cd1ca89", &TLItem{tag: 0x5cd1ca89, annotations: 0x0, tlName: "cd.topLevel3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
@@ -424,10 +428,10 @@ func init() {
 	fillObject("replace5#8b5bc78a", "#8b5bc78a", &TLItem{tag: 0x8b5bc78a, annotations: 0x0, tlName: "replace5", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("replace6#abd49d06", "#abd49d06", &TLItem{tag: 0xabd49d06, annotations: 0x0, tlName: "replace6", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("service5.emptyOutput#ff8f7db8", "#ff8f7db8", &TLItem{tag: 0xff8f7db8, annotations: 0x0, tlName: "service5.emptyOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service5.insert#7cf362ba", "#7cf362ba", &TLItem{tag: 0x7cf362ba, annotations: 0x2, tlName: "service5.insert", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillFunction("service5.insertList#7cf362bc", "#7cf362bc", &TLItem{tag: 0x7cf362bc, annotations: 0x2, tlName: "service5.insertList", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction("service5.insert#7cf362ba", "#7cf362ba", &TLItem{tag: 0x7cf362ba, annotations: 0x10, tlName: "service5.insert", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction("service5.insertList#7cf362bc", "#7cf362bc", &TLItem{tag: 0x7cf362bc, annotations: 0x10, tlName: "service5.insertList", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
 	fillObject("service5Long.emptyOutput#ff8f7db9", "#ff8f7db9", &TLItem{tag: 0xff8f7db9, annotations: 0x0, tlName: "service5Long.emptyOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("service5Long.insert#7cf362bb", "#7cf362bb", &TLItem{tag: 0x7cf362bb, annotations: 0x2, tlName: "service5Long.insert", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
+	fillFunction("service5Long.insert#7cf362bb", "#7cf362bb", &TLItem{tag: 0x7cf362bb, annotations: 0x10, tlName: "service5Long.insert", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
 	fillObject("service5Long.stringOutput#dc170ff5", "#dc170ff5", &TLItem{tag: 0xdc170ff5, annotations: 0x0, tlName: "service5Long.stringOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("service5.stringOutput#dc170ff4", "#dc170ff4", &TLItem{tag: 0xdc170ff4, annotations: 0x0, tlName: "service5.stringOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("string#b5286e24", "#b5286e24", &TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
@@ -443,5 +447,5 @@ func init() {
 	fillObject("useResponse#0a63ec5f", "#0a63ec5f", &TLItem{tag: 0x0a63ec5f, annotations: 0x0, tlName: "useResponse", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("useStr#9aa3dee5", "#9aa3dee5", &TLItem{tag: 0x9aa3dee5, annotations: 0x0, tlName: "useStr", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("useTrue#dfdd4180", "#dfdd4180", &TLItem{tag: 0xdfdd4180, annotations: 0x0, tlName: "useTrue", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillFunction("usefulService.getUserEntity#3c857e52", "#3c857e52", &TLItem{tag: 0x3c857e52, annotations: 0x2, tlName: "usefulService.getUserEntity", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillFunction("usefulService.getUserEntity#3c857e52", "#3c857e52", &TLItem{tag: 0x3c857e52, annotations: 0x10, tlName: "usefulService.getUserEntity", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 }
