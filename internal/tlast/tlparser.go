@@ -148,3 +148,21 @@ func SplitMultilineComment(comment string) []string {
 	rep := strings.ReplaceAll(comment, "\r\n", "\n")
 	return strings.Split(rep, "\n")
 }
+
+func (c Combinator) MostOriginalVersion() *Combinator {
+	if c.OriginalDescriptor != nil {
+		return c.OriginalDescriptor.MostOriginalVersion()
+	} else {
+		return &c
+	}
+}
+
+func (t TypeRef) DeepCopy() TypeRef {
+	ct := t
+	ct.Args = make([]ArithmeticOrType, len(t.Args))
+	for i, arg := range t.Args {
+		ct.Args[i] = arg
+		ct.Args[i].T = ct.Args[i].T.DeepCopy()
+	}
+	return ct
+}

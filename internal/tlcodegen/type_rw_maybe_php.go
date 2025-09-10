@@ -45,19 +45,38 @@ func (trw *TypeRWMaybe) PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrap
 	trw.element.t.PhpIterateReachableTypes(reachableTypes)
 }
 
-func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
-		result := []string{
-			fmt.Sprintf(
-				"[$maybeContainsValue, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x);",
-				trw.emptyTag,
-				trw.okTag,
-			),
-			"if (!$success) {",
-			"  return false;",
-			"}",
-			"if ($maybeContainsValue) {",
+		maybeContainsValueName := fmt.Sprintf("$maybeContainsValue_%[1]s", supportSuffix)
+		var result []string
+		if trw.wr.gen.options.UseBuiltinDataProviders {
+			result = append(result,
+				"/** @var bool */",
+				fmt.Sprintf("%[1]s = false;", maybeContainsValueName),
+				"$magic = fetch_int() & 0xFFFFFFFF;",
+				fmt.Sprintf("if ($magic == 0x%08[1]x) {", trw.emptyTag),
+				fmt.Sprintf("  %[1]s = false;", maybeContainsValueName),
+				fmt.Sprintf("} elseif ($magic == 0x%08[1]x) {", trw.okTag),
+				fmt.Sprintf("  %[1]s = true;", maybeContainsValueName),
+				"} else {",
+				"  return false;",
+				"}",
+			)
+		} else {
+			result = append(result,
+				fmt.Sprintf(
+					"[%[3]s, $success] = $stream->read_bool(0x%08[1]x, 0x%08[2]x);",
+					trw.emptyTag,
+					trw.okTag,
+					maybeContainsValueName,
+				),
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			)
 		}
+		result = append(result, fmt.Sprintf("if (%[1]s) {", maybeContainsValueName))
+
 		if trw.element.t == trw.getInnerTarget().t && initIfDefault {
 			result = append(result,
 				fmt.Sprintf("  if (is_null(%[1]s)) {", targetName),
@@ -70,7 +89,7 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 		if args != nil {
 			newArgs = args.children[0]
 		}
-		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, newArgs)
+		bodyReader := trw.element.t.trw.PhpReadMethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix)
 		for i := range bodyReader {
 			bodyReader[i] = "  " + bodyReader[i]
 		}
@@ -85,26 +104,39 @@ func (trw *TypeRWMaybe) PhpReadMethodCall(targetName string, bare bool, initIfDe
 	return nil
 }
 
-func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree) []string {
+func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string {
 	if !bare {
-		result := []string{
-			fmt.Sprintf(
-				"$success = $stream->write_bool(!is_null(%[1]s), 0x%08[2]x, 0x%08[3]x);",
-				targetName,
-				trw.emptyTag,
-				trw.okTag,
-			),
-			"if (!$success) {",
-			"  return false;",
-			"}",
-			fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
+		var result []string
+		if trw.wr.gen.options.UseBuiltinDataProviders {
+			result = append(result,
+				fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+				fmt.Sprintf("  store_int(0x%08[1]x);", trw.emptyTag),
+				"} else {",
+				fmt.Sprintf("  store_int(0x%08[1]x);", trw.okTag),
+				"}",
+			)
+		} else {
+			result = append(result,
+				fmt.Sprintf(
+					"$success = $stream->write_bool(!is_null(%[1]s), 0x%08[2]x, 0x%08[3]x);",
+					targetName,
+					trw.emptyTag,
+					trw.okTag,
+				),
+				"if (!$success) {",
+				"  return false;",
+				"}",
+			)
 		}
+		result = append(result,
+			fmt.Sprintf("if (!is_null(%[1]s)) {", targetName),
+		)
 		{
 			var newArgs *TypeArgumentsTree
 			if args != nil {
 				newArgs = args.children[0]
 			}
-			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, newArgs)
+			bodyWriter := trw.element.t.trw.PhpWriteMethodCall(targetName, trw.element.bare, newArgs, supportSuffix)
 			for i := range bodyWriter {
 				bodyWriter[i] = "  " + bodyWriter[i]
 			}

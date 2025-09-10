@@ -376,7 +376,16 @@ type Gen2Options struct {
 	AddFunctionBodies            bool
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
+	AddFetchers                  bool
+	AddSwitcher                  bool
+	AddFetchersEchoComments      bool
 	InplaceSimpleStructs         bool
+	UseBuiltinDataProviders      bool
+
+	// PHP Unique actions
+	CreateTLFilesWithAllTypesInReturn          bool
+	CreateTLSplitedFilesForEachNamespace       bool
+	CreateTLSplitedFilesForEachNamespaceFolder string
 
 	// .tlo
 	TLOPath           string
@@ -2120,6 +2129,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	rootNamespace := gen.getNamespace("")
 	primitiveTypesList := []*TypeRWPrimitive{
 		{
+			gen:               gen,
 			tlType:            "#",
 			goType:            "uint32",
 			cppPrimitiveType:  "uint32_t",
@@ -2134,6 +2144,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.NatWrite",
 			readValue:         "basictl.NatRead",
 		}, {
+			gen:               gen,
 			tlType:            "int",
 			goType:            "int32",
 			cppPrimitiveType:  "int32_t",
@@ -2148,6 +2159,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.IntWrite",
 			readValue:         "basictl.IntRead",
 		}, {
+			gen:               gen,
 			tlType:            "long",
 			goType:            "int64",
 			cppPrimitiveType:  "int64_t",
@@ -2162,6 +2174,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.LongWrite",
 			readValue:         "basictl.LongRead",
 		}, {
+			gen:               gen,
 			tlType:            "float",
 			goType:            "float32",
 			cppPrimitiveType:  "float",
@@ -2176,6 +2189,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.FloatWrite",
 			readValue:         "basictl.FloatRead",
 		}, {
+			gen:               gen,
 			tlType:            "double",
 			goType:            "float64",
 			cppPrimitiveType:  "double",
@@ -2190,6 +2204,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			writeValue:        "basictl.DoubleWrite",
 			readValue:         "basictl.DoubleRead",
 		}, {
+			gen:               gen,
 			tlType:            "string",
 			goType:            "string",
 			cppPrimitiveType:  "std::string",
@@ -2207,6 +2222,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	}
 	if gen.options.GenerateTL2 {
 		primitiveTypesList = append(primitiveTypesList, &TypeRWPrimitive{
+			gen:               gen,
 			tlType:            "uint32",
 			goType:            "uint32",
 			cppPrimitiveType:  "uint32_t",
@@ -2314,7 +2330,15 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			})
 			for _, typ := range tl {
 				if typ.IsFunction && len(typ.TemplateArguments) == 1 {
+					copyOriginal := *typ
+					copyOriginal.Fields = make([]tlast.Field, len(copyOriginal.Fields))
+					for i := range typ.Fields {
+						copyOriginal.Fields[i] = typ.Fields[i]
+						copyOriginal.Fields[i].FieldType = typ.Fields[i].FieldType.DeepCopy()
+					}
+					copyOriginal.FuncDecl = typ.FuncDecl.DeepCopy()
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
+					typ.OriginalDescriptor = &copyOriginal
 				} else if !typ.IsFunction &&
 					rpcResultsMapping[typ.Construct.Name.String()] != "" &&
 					typ.TypeDecl.Name.String() == rpcRequestResultName {

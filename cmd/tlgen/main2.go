@@ -127,13 +127,23 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to not generate types without usages in functions (default:true)`)
 	flag.BoolVar(&opt.AddRPCTypes, "php-rpc-support", true,
 		`whether to generate special rpc types (default:true)`)
+	flag.BoolVar(&opt.AddFetchers, "php-generate-fetchers", false,
+		`whether to generate new fetchers for kphp compiler integration (requires --php-rpc-support=true)`)
+	flag.BoolVar(&opt.AddSwitcher, "php-generate-switcher", false,
+		`whether to generate switcher for new functions for kphp compiler integration (requires --php-rpc-support=true)`)
 	flag.BoolVar(&opt.InplaceSimpleStructs, "php-inplace-simple-structs", true,
 		`whether to avoid generation of structs with no arguments and only 1 field (default:true)`)
+	flag.BoolVar(&opt.UseBuiltinDataProviders, "php-use-builtin-data-providers", false,
+		`whether to use builtin functions to store / fetch data instead of stream api`)
+	flag.BoolVar(&opt.AddFetchersEchoComments, "php-generate-fetchers-echo-comment", true,
+		`whether to generate echo of usage for custom store/fetch`)
 
-	if opt.AddFactoryData {
-		opt.AddMetaData = true
-		opt.AddFunctionBodies = true
-	}
+	flag.BoolVar(&opt.CreateTLFilesWithAllTypesInReturn, "php-create-tl-files-with-all-types-in-return", false,
+		`whether to create duplicates of passed tl files with all top level types in function return (option for testing)`)
+	flag.BoolVar(&opt.CreateTLSplitedFilesForEachNamespace, "php-create-tl-splited-files-for-namespaces", false,
+		`whether to create for each mentioned namespace separate file with all required dependencies (requires --php-create-tl-splited-files-for-namespaces-support-folder!="")`)
+	flag.StringVar(&opt.CreateTLSplitedFilesForEachNamespaceFolder, "php-create-tl-splited-files-for-namespaces-folder", "",
+		`folder to create splited files for such option (requires --php-create-tl-splited-files-for-namespaces-support=true)`)
 
 	// .tlo
 	flag.StringVar(&opt.TLOPath, "tloPath", "",
@@ -142,6 +152,12 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		"generate file with combinators in canonical form")
 
 	flag.Parse()
+
+	// post validation
+	if opt.AddFactoryData {
+		opt.AddMetaData = true
+		opt.AddFunctionBodies = true
+	}
 }
 
 func run(opt tlcodegen.Gen2Options) {
@@ -197,6 +213,14 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		}
 		ast = append(ast, tl...)
 		fullAst = append(fullAst, fullTl...)
+
+		// modifications for testing
+		if opt.Language == "php" && opt.CreateTLFilesWithAllTypesInReturn {
+			err = runCreateModifiedTLFile(path, fullTl)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	for i := range fullAst { // we do not use it in fullAst, but might in the future
 		fullAst[i].OriginalOrderIndex = i
@@ -247,6 +271,43 @@ func runMain(opt *tlcodegen.Gen2Options) error {
 		migrationErr := runTL2Migration(opt, gen)
 		if migrationErr != nil {
 			return migrationErr
+		}
+	}
+
+	if opt.Language == "php" &&
+		opt.CreateTLSplitedFilesForEachNamespace &&
+		opt.CreateTLSplitedFilesForEachNamespaceFolder != "" {
+		namespaces := gen.PHPSplitTLByNamespaces(fullAst)
+
+		outdir := opt.CreateTLSplitedFilesForEachNamespaceFolder
+		if err := os.Mkdir(outdir, 0755); err != nil && !os.IsExist(err) { // we thus require parent directory to exist
+			return fmt.Errorf("error creating outdir %q: %w", outdir, err)
+		}
+
+		innerFiles, err := os.ReadDir(outdir)
+		if err != nil {
+			return fmt.Errorf("error deleting files in folder with splited: %s", err)
+		}
+
+		for _, entry := range innerFiles {
+			if !entry.IsDir() {
+				filePath := filepath.Join(outdir, entry.Name())
+				err := os.Remove(filePath)
+				if err != nil {
+					return fmt.Errorf("failed to delete file %s: %w", filePath, err)
+				}
+			}
+		}
+
+		for ns, tl := range namespaces {
+			if ns == "" {
+				ns = "__common"
+			}
+			f := filepath.Join(outdir, ns+tlExt)
+			code := tl.String()
+			if err := os.WriteFile(f, []byte(code), 0644); err != nil {
+				return fmt.Errorf("error writing file %q: %w", f, err)
+			}
 		}
 	}
 	if opt.TLOPath != "" {
@@ -402,4 +463,47 @@ func parseTL2File(file string, opt *tlcodegen.Gen2Options) (tlast.TL2File, error
 	}
 	dataStr := string(data)
 	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, opt.ErrorWriter)
+}
+
+func runCreateModifiedTLFile(path string, tl tlast.TL) error {
+	newPath := strings.Replace(path, tlExt, "_with_functions"+tlExt, 1)
+	newTL := tlast.TL{}
+
+	typesVisited := make(map[tlast.Name]bool)
+	typesToCreateFunction := make([]tlast.Name, 0)
+	for _, combinator := range tl {
+		newTL = append(newTL, combinator)
+		if combinator.IsFunction {
+			continue
+		}
+		if combinator.Builtin {
+			continue
+		}
+		if len(combinator.TemplateArguments) != 0 {
+			continue
+		}
+		if typesVisited[combinator.TypeDecl.Name] {
+			continue
+		}
+		typesVisited[combinator.TypeDecl.Name] = true
+		typesToCreateFunction = append(typesToCreateFunction, combinator.TypeDecl.Name)
+	}
+
+	for _, name := range typesToCreateFunction {
+		newTL = append(newTL, &tlast.Combinator{
+			IsFunction: true,
+			Modifiers:  []tlast.Modifier{{Name: "read"}},
+			Construct: tlast.Constructor{Name: tlast.Name{
+				Namespace: name.Namespace,
+				Name:      "function" + name.Name,
+			}},
+			FuncDecl: tlast.TypeRef{Type: name},
+		})
+	}
+
+	if err := os.WriteFile(newPath, []byte(newTL.String()), 0644); err != nil {
+		return err
+	}
+
+	return nil
 }

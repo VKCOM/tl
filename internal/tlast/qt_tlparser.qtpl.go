@@ -119,6 +119,35 @@ func (t TypeRef) String() string {
 	return qs422016
 }
 
+func (t TypeRef) StreamTopLevelString(qw422016 *qt422016.Writer) {
+	if t.Bare {
+		qw422016.N().S(`%`)
+	}
+	if len(t.Args) != 0 {
+		t.Type.StreamString(qw422016)
+		for _, x := range t.Args {
+			qw422016.N().S(` `)
+			x.StreamString(qw422016)
+		}
+		return
+	}
+	t.Type.StreamString(qw422016)
+}
+
+func (t TypeRef) WriteTopLevelString(qq422016 qtio422016.Writer) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	t.StreamTopLevelString(qw422016)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (t TypeRef) TopLevelString() string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	t.WriteTopLevelString(qb422016)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
+
 func (t TypeRef) streamtoCrc32(qw422016 *qt422016.Writer) {
 	if t.Bare && (len(t.Type.Name) == 0 || !unicode.IsLower(rune(t.Type.Name[0]))) {
 		qw422016.N().S(`%`)
@@ -400,7 +429,7 @@ func (descriptor Combinator) StreamString(qw422016 *qt422016.Writer) {
 	}
 	qw422016.N().S("= ")
 	if descriptor.IsFunction {
-		descriptor.FuncDecl.StreamString(qw422016)
+		descriptor.FuncDecl.StreamTopLevelString(qw422016)
 	} else {
 		descriptor.TypeDecl.StreamString(qw422016)
 	}

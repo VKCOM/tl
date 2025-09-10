@@ -636,6 +636,14 @@ func (w *TypeRWWrapper) IsTrueType() bool {
 	return len(structElement.Fields) == 0
 }
 
+func (w *TypeRWWrapper) IsFunction() bool {
+	structElement, ok := w.trw.(*TypeRWStruct)
+	if !ok {
+		return false
+	}
+	return structElement.ResultType != nil
+}
+
 func (w *TypeRWWrapper) PHPIsTrueType() bool {
 	structElement, ok := w.trw.(*TypeRWStruct)
 	if ok {
@@ -882,12 +890,19 @@ func (t *TypeArgumentsTree) FillAllLeafs() {
 	fillAllLeafsRecursive(t, &curIndex, &values)
 }
 
+func (t *TypeArgumentsTree) FillAllLeafsWithValues(values []string) {
+	curIndex := 0
+	fillAllLeafsRecursive(t, &curIndex, &values)
+}
+
 func (t *TypeArgumentsTree) CloneValuesFrom(src *TypeArgumentsTree) {
 	if t == nil {
 		return
 	}
 	if t.leaf {
+		t.leaf = src.leaf
 		t.value = src.value
+		t.children = src.children
 		return
 	}
 	for i, child := range t.children {

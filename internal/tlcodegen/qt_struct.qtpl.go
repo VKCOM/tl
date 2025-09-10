@@ -1910,6 +1910,18 @@ func (item *`)
 
 func (item *`)
 	qw422016.N().S(goName)
+	qw422016.N().S(`) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+    var ret `)
+	qw422016.N().S(retArg)
+	qw422016.N().S(`
+    `)
+	qw422016.N().S(struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false))
+	qw422016.N().S(`
+    return item.WriteResult(w, ret)
+}
+
+func (item *`)
+	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret `)
 	qw422016.N().S(retArg)
@@ -2135,47 +2147,29 @@ if item.`)
 		}
 		if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); (fieldProps & (FieldIsNat | FieldUsedAsFieldMask | FieldUsedAsSize)) != 0 {
 			if (fieldProps & FieldUsedAsFieldMask) != 0 {
-				qw422016.N().S(`var mask`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(` uint32
-`)
-				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "mask"+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
-				qw422016.N().S(`
-`)
-				if (fieldProps & FieldUsedAsSize) != 0 {
-					qw422016.N().S(`mask`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` = rg.LimitValue(mask`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(`)
-`)
+				bitMask := uint32(0)
+				for _, indexPosition := range indexes {
+					bitMask |= 1 << indexPosition
 				}
+
 				qw422016.N().S(`item.`)
 				qw422016.N().S(field.goName)
-				qw422016.N().S(` = 0
+				qw422016.N().S(`= basictl.RandomFieldMask(rg, `)
+				qw422016.E().S(fmt.Sprintf("0b%b", bitMask))
+				qw422016.N().S(`)
 `)
-				for index, indexPosition := range indexes {
-					qw422016.N().S(`if mask`)
+				if (fieldProps & FieldUsedAsSize) != 0 {
+					qw422016.N().S(`item.`)
 					qw422016.N().S(field.goName)
-					qw422016.N().S(` & (1<<`)
-					qw422016.N().V(index)
-					qw422016.N().S(`) != 0 {
-    item.`)
+					qw422016.N().S(` = rg.LimitValue(item.`)
 					qw422016.N().S(field.goName)
-					qw422016.N().S(` |= (1<<`)
-					qw422016.N().V(indexPosition)
 					qw422016.N().S(`)
-}
 `)
 				}
 			} else if (fieldProps & FieldUsedAsSize) != 0 {
-				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
-				qw422016.N().S(`
-item.`)
+				qw422016.N().S(`item.`)
 				qw422016.N().S(field.goName)
-				qw422016.N().S(` = rg.LimitValue(item.`)
-				qw422016.N().S(field.goName)
-				qw422016.N().S(`)
+				qw422016.N().S(` = basictl.RandomSize(rg)
 `)
 			} else if fieldProps == FieldIsNat {
 				qw422016.N().S(field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
