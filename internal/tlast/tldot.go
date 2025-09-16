@@ -14,9 +14,13 @@ import (
 )
 
 func hash(s string) string {
+	return fmt.Sprintf("\"%x\"", hashUint32(s))
+}
+
+func hashUint32(s string) uint32 {
 	h := fnv.New32a()
 	_, _ = h.Write([]byte(s))
-	return fmt.Sprintf("\"%x\"", h.Sum32())
+	return h.Sum32()
 }
 
 func createNode(s *strings.Builder, parent, child, nodeName string, color string) {
