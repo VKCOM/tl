@@ -294,6 +294,20 @@ func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 	if version == 0 {
 		date = uint32(time.Now().Unix())
 	}
+
+	// prevent id collision
+	nameMap := map[int32]string{}
+	for _, typ := range types {
+		if prevTyp, ok := nameMap[typ.Name]; ok {
+			return tls.SchemaV4{}, fmt.Errorf("collision in \"name\" for types with id=\"%[1]s\" and \"%[2]s\"",
+				prevTyp,
+				typ.Id,
+			)
+		} else {
+			nameMap[typ.Name] = typ.Id
+		}
+	}
+
 	return tls.SchemaV4{
 		Version:        int32(version), // TODO - must be changed to # in tl definition
 		Date:           int32(date),    // TODO - must be changed to # in tl definition
