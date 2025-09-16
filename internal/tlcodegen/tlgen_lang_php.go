@@ -8,11 +8,12 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 const (
@@ -42,6 +43,8 @@ type PhpClassMeta struct {
 
 	IsDuplicate   bool
 	MappingOrigin *TypeRWWrapper // not nil if IsDuplicate = true
+
+	RequireFunctionBodies bool
 }
 
 func (gen *Gen2) PHPSplitTLByNamespaces(originalTL tlast.TL) map[string]tlast.TL {
@@ -287,6 +290,10 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 		"rpcResponseHeader": true,
 		"rpcResponseOk":     true,
 	}
+
+	bodiesGenerationFilter := prepareNameFilter(gen.options.FunctionsBodiesWhiteList)
+	bodiesGenerationFunctions := make([]*TypeRWWrapper, 0)
+
 	internalFunctions := make([]*TypeRWWrapper, 0)
 	nonInternalFunctions := make([]*TypeRWWrapper, 0)
 	for _, wrapper := range gen.generatedTypesList {
@@ -296,6 +303,9 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 			} else {
 				nonInternalFunctions = append(nonInternalFunctions, wrapper)
 			}
+			if inNameFilter(wrapper.tlName, bodiesGenerationFilter) {
+				bodiesGenerationFunctions = append(bodiesGenerationFunctions, wrapper)
+			}
 		}
 		// TODO: CHANGE SOMEHOW
 		if gen.options.AddRPCTypes && rpcResults[wrapper.tlName.String()] {
@@ -304,16 +314,25 @@ func (gen *Gen2) PhpMarkAllInternalTypes() {
 	}
 	internalReachable := PHPGetAllReachableTypes(internalFunctions)
 	nonInternalReachable := PHPGetAllReachableTypes(nonInternalFunctions)
+	bodiesGenerationReachable := PHPGetAllReachableTypes(bodiesGenerationFunctions)
+
+	checkWrapperRequireBody := func(wrapper *TypeRWWrapper) {
+		if bodiesGenerationReachable[wrapper] {
+			wrapper.phpInfo.RequireFunctionBodies = true
+		}
+	}
 
 	for wrapper := range internalReachable {
 		if !nonInternalReachable[wrapper] {
 			wrapper.phpInfo.UsedOnlyInInternal = true
 		}
 		wrapper.phpInfo.UsedInFunctions = true
+		checkWrapperRequireBody(wrapper)
 	}
 
 	for wrapper := range nonInternalReachable {
 		wrapper.phpInfo.UsedInFunctions = true
+		checkWrapperRequireBody(wrapper)
 	}
 }
 

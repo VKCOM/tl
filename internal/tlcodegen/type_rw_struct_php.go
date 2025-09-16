@@ -8,11 +8,12 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWStruct) PHPFindNatByName(name string) (localNat bool, indexInDeps int) {
@@ -305,7 +306,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 			),
 		)
 
-		if trw.wr.gen.options.AddFetchers {
+		if trw.wr.gen.options.AddFetchers && trw.wr.phpInfo.RequireFunctionBodies {
 			args, _ := trw.PHPGetResultNatDependenciesValuesAsTypeTree()
 			argsAsArray := args.EnumerateWithPrefixes()
 
@@ -371,7 +372,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					targetLines := []string{line}
 					if strings.Contains(line, "return false;") {
 						prefix, _, _ := strings.Cut(line, "return false;")
-						targetLines[0] = prefix + fmt.Sprintf("raise_fetching_error(\"can't fetch %s_result\");", trw.PhpClassName(false, true))
+						targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t fetch %s_result');", trw.PhpClassName(false, true))
 						targetLines = append(targetLines, prefix+"return null;")
 					}
 					for _, targetLine := range targetLines {
@@ -386,7 +387,7 @@ class %[1]s_result implements TL\RpcFunctionReturnResult {
 					targetLines := []string{line}
 					if strings.Contains(line, "return false;") {
 						prefix, _, _ := strings.Cut(line, "return false;")
-						targetLines[0] = prefix + fmt.Sprintf("raise_storing_error(\"can't store %s_result\");", trw.PhpClassName(false, true))
+						targetLines[0] = prefix + fmt.Sprintf("throw new \\Exception('can\\'t store %s_result');", trw.PhpClassName(false, true))
 						targetLines = append(targetLines, prefix+"return;")
 					}
 					for _, targetLine := range targetLines {
@@ -434,7 +435,7 @@ class %[1]s_fetcher implements TL\RpcFunctionFetcher {
     if ($result instanceof %[1]s_result) {
 %[5]s
     } else {
-      raise_storing_error("%[1]s_result expected");
+      throw new \Exception("can\'t store: %[1]s_result expected");
     }
   }
 }
@@ -562,13 +563,16 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			storeArgTypes = append(storeArgTypes, `TL\tl_output_stream`)
 		}
 
-		if trw.wr.gen.options.AddFetchers {
+		if trw.wr.gen.options.AddFetchers &&
+			// diagonal
+			len(trw.wr.origTL[0].MostOriginalVersion().TemplateArguments) == 0 &&
+			// don't have write / read
+			trw.wr.phpInfo.RequireFunctionBodies {
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
   public function typedStore(%[8]s){
 %[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
-    set_last_stored_tl_function_magic(%[3]s);
     $this->write_boxed(%[8]s);
     return new %[1]s_fetcher(%[4]s);
   }
@@ -576,7 +580,6 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 %[5]s
   public function typedFetch(%[7]s){
 %[10]s    %[9]sprint('%[1]s::typedFetch()<br/>');
-    set_current_tl_function('%[2]s');
     $this->read(%[7]s);
     return new %[1]s_fetcher(%[4]s);
   }
@@ -650,7 +653,8 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 
 func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 	useBuiltin := trw.wr.gen.options.UseBuiltinDataProviders
-	if trw.wr.gen.options.AddFunctionBodies {
+	if trw.wr.gen.options.AddFunctionBodies &&
+		trw.wr.phpInfo.RequireFunctionBodies {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
 		natParams = utils.MapSlice(natParams, func(a string) string {
 			s, _ := strings.CutPrefix(a, "$")
@@ -756,7 +760,8 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *Ty
 
 func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 	useBuiltin := trw.wr.gen.options.UseBuiltinDataProviders
-	if trw.wr.gen.options.AddFunctionBodies {
+	if trw.wr.gen.options.AddFunctionBodies &&
+		trw.wr.phpInfo.RequireFunctionBodies {
 		natParams := trw.wr.PHPGetNatTypeDependenciesDeclAsArray()
 		natParams = utils.MapSlice(natParams, func(a string) string {
 			s, _ := strings.CutPrefix(a, "$")
@@ -1162,7 +1167,7 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 	if isUsingTLImport(trw) ||
 		trw.ResultType != nil ||
 		unionParent != nil ||
-		trw.wr.gen.options.AddFunctionBodies {
+		(trw.wr.gen.options.AddFunctionBodies && trw.wr.phpInfo.RequireFunctionBodies) {
 		code.WriteString("\nuse VK\\TL;\n")
 	}
 	code.WriteString(`
@@ -1182,6 +1187,7 @@ func (trw *TypeRWStruct) PHPStructHeader(code *strings.Builder) {
 	}
 
 	if trw.wr.gen.options.AddFunctionBodies &&
+		trw.wr.phpInfo.RequireFunctionBodies &&
 		len(trw.wr.origTL[0].TemplateArguments) == 0 &&
 		!trw.wr.gen.options.UseBuiltinDataProviders {
 		implementingInterfaces = append(implementingInterfaces, "TL\\Readable")
