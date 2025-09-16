@@ -374,6 +374,7 @@ type Gen2Options struct {
 
 	// PHP
 	AddFunctionBodies            bool
+	FunctionsBodiesWhiteList     string
 	IgnoreUnusedInFunctionsTypes bool
 	AddRPCTypes                  bool
 	AddFetchers                  bool

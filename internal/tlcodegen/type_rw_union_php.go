@@ -83,7 +83,7 @@ use VK\TL;
 
 func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper) string {
 	useBuiltin := targetType.gen.options.UseBuiltinDataProviders
-	if !targetType.gen.options.AddFunctionBodies {
+	if !(targetType.gen.options.AddFunctionBodies && targetType.phpInfo.RequireFunctionBodies) {
 		return ""
 	}
 
