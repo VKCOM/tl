@@ -160,7 +160,9 @@ func (tl TL) GenerateTLO(version uint32) (tls.SchemaV4, error) {
 			(*typ).Flags |= 1 << 25
 		}
 
-		(*typ).Name = int32(hashUint32(fmt.Sprintf("%d%d", (*typ).Name, combinator.Crc32())))
+		// add in future
+		//(*typ).Name = int32(hashUint32(fmt.Sprintf("%d%d", (*typ).Name, combinator.Crc32())))
+		(*typ).Name ^= int32(combinator.Crc32())
 		(*typ).ConstructorsNum += 1
 		if (*typ).ConstructorsNum > 1 {
 			(*typ).Flags |= 1 << 4
