@@ -189,8 +189,8 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     if len(saveR) < len(r) + shift {
         r = saveR[shift:]
     }
-{%- endif -%}
     return r, nil
+{%- endif -%}
 }
 
 {%- endif -%}
