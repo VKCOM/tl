@@ -571,14 +571,14 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
-  public function typedStore(%[8]s){
+  public function typedStore(%[8]s) {
 %[10]s    %[9]sprint('%[1]s::typedStore()<br/>');
     $this->write_boxed(%[8]s);
     return new %[1]s_fetcher(%[4]s);
   }
 
 %[5]s
-  public function typedFetch(%[7]s){
+  public function typedFetch(%[7]s) {
 %[10]s    %[9]sprint('%[1]s::typedFetch()<br/>');
     $this->read(%[7]s);
     return new %[1]s_fetcher(%[4]s);
@@ -618,12 +618,12 @@ func (trw *TypeRWStruct) PHPStructFunctionSpecificMethods(code *strings.Builder)
 			code.WriteString(
 				fmt.Sprintf(`
 %[6]s
-  public function typedStore(%[8]s){
+  public function typedStore(%[8]s) {
     return null;
   }
 
 %[5]s
-  public function typedFetch(%[7]s){
+  public function typedFetch(%[7]s) {
     return null;
   }
 `,
