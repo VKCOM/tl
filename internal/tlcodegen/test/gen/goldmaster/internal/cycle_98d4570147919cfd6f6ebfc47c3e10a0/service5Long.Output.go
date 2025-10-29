@@ -194,7 +194,7 @@ func (item *Service5LongEmptyOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadConte
 
 var _Service5LongOutput = [2]internal.UnionElement{
 	{TLTag: 0xff8f7db9, TLName: "service5Long.emptyOutput", TLString: "service5Long.emptyOutput#ff8f7db9"},
-	{TLTag: 0xdc170ff5, TLName: "service5Long.stringOutput", TLString: "service5Long.stringOutput#dc170ff5"},
+	{TLTag: 0xdc170ff7, TLName: "service5Long.stringOutput", TLString: "service5Long.stringOutput#dc170ff7"},
 }
 
 type Service5LongOutput struct {
@@ -254,7 +254,7 @@ func (item *Service5LongOutput) ReadBoxed(w []byte) (_ []byte, err error) {
 	case 0xff8f7db9:
 		item.index = 0
 		return w, nil
-	case 0xdc170ff5:
+	case 0xdc170ff7:
 		item.index = 1
 		return item.valueString.Read(w)
 	default:
@@ -372,7 +372,7 @@ func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 			return internal.ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.emptyOutput#ff8f7db9")
 		}
 		item.index = 0
-	case "service5Long.stringOutput#dc170ff5", "service5Long.stringOutput", "#dc170ff5",
+	case "service5Long.stringOutput#dc170ff7", "service5Long.stringOutput", "#dc170ff7",
 		"service5.stringOutput#dc170ff4", "service5.stringOutput", "#dc170ff4":
 		if !tctx.LegacyTypeNames && _tag == "service5.stringOutput#dc170ff4" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5.stringOutput#dc170ff4")
@@ -380,8 +380,8 @@ func (item *Service5LongOutput) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 		if tctx.IsTL2 && _tag != "service5Long.stringOutput" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("service5Long.Output", _tag)
 		}
-		if !tctx.LegacyTypeNames && _tag == "service5Long.stringOutput#dc170ff5" {
-			return internal.ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.stringOutput#dc170ff5")
+		if !tctx.LegacyTypeNames && _tag == "service5Long.stringOutput#dc170ff7" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("service5Long.Output", "service5Long.stringOutput#dc170ff7")
 		}
 		item.index = 1
 		var in2Pointer *basictl.JsonLexer
@@ -440,7 +440,7 @@ func (item *Service5LongOutput) WriteJSONOpt(tctx *basictl.JSONWriteContext, w [
 				}
 			} else {
 				if tctx.LegacyTypeNames {
-					w = append(w, `{"type":"service5Long.stringOutput#dc170ff5"`...)
+					w = append(w, `{"type":"service5Long.stringOutput#dc170ff7"`...)
 				} else {
 					w = append(w, `{"type":"service5Long.stringOutput"`...)
 				}
@@ -481,7 +481,7 @@ type Service5LongStringOutput struct {
 }
 
 func (Service5LongStringOutput) TLName() string { return "service5Long.stringOutput" }
-func (Service5LongStringOutput) TLTag() uint32  { return 0xdc170ff5 }
+func (Service5LongStringOutput) TLTag() uint32  { return 0xdc170ff7 }
 
 func (item *Service5LongStringOutput) Reset() {
 	item.HttpCode = 0
@@ -511,7 +511,7 @@ func (item *Service5LongStringOutput) Write(w []byte) []byte {
 }
 
 func (item *Service5LongStringOutput) ReadBoxed(w []byte) (_ []byte, err error) {
-	if w, err = basictl.NatReadExactTag(w, 0xdc170ff5); err != nil {
+	if w, err = basictl.NatReadExactTag(w, 0xdc170ff7); err != nil {
 		return w, err
 	}
 	return item.Read(w)
@@ -522,7 +522,7 @@ func (item *Service5LongStringOutput) WriteBoxedGeneral(w []byte) (_ []byte, err
 }
 
 func (item *Service5LongStringOutput) WriteBoxed(w []byte) []byte {
-	w = basictl.NatWrite(w, 0xdc170ff5)
+	w = basictl.NatWrite(w, 0xdc170ff7)
 	return item.Write(w)
 }
 

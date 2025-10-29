@@ -27,8 +27,7 @@ func (item *Replace2) Reset() {
 }
 
 func (item *Replace2) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	item.N = basictl.RandomSize(rg)
 	BuiltinTupleIntFillRandom(rg, &item.A, item.N)
 }
 

@@ -30,8 +30,7 @@ func (item *CasesTestArray) Reset() {
 }
 
 func (item *CasesTestArray) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	item.N = basictl.RandomSize(rg)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.Arr, item.N)
 }
 

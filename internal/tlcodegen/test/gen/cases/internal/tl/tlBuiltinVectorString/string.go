@@ -17,7 +17,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorStringFillRandom(rg *basictl.RandGenerator, vec *[]string) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]string, l)
 	for i := range *vec {
 		(*vec)[i] = basictl.RandomString(rg)
@@ -157,7 +157,7 @@ func BuiltinVectorStringWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, v
 
 func BuiltinVectorStringBytesFillRandom(rg *basictl.RandGenerator, vec *[][]byte) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([][]byte, l)
 	for i := range *vec {
 		(*vec)[i] = basictl.RandomStringBytes(rg)

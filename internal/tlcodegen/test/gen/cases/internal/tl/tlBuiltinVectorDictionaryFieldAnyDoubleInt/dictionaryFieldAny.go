@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryFieldAnyDoubleIntFillRandom(rg *basictl.RandGenerator, vec *[]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlDictionaryFieldAnyDoubleInt.DictionaryFieldAnyDoubleInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

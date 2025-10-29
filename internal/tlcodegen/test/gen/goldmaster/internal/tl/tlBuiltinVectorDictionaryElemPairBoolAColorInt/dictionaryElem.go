@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntFillRandom(rg *basictl.RandGenerator, vec *[]tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlDictionaryElemPairBoolAColorInt.DictionaryElemPairBoolAColorInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

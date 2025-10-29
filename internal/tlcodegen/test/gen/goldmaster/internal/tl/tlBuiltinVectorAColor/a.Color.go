@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorAColorFillRandom(rg *basictl.RandGenerator, vec *[]tlAColor.AColor) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlAColor.AColor, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

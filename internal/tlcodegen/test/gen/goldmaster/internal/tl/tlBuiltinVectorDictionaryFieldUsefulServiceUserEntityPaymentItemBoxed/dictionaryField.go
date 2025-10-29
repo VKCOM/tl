@@ -27,7 +27,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(m 
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basictl.RandGenerator, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, l)
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed

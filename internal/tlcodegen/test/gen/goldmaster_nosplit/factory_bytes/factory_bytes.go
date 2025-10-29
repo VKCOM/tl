@@ -115,7 +115,7 @@ func init() {
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x7cf362bc, func() meta.Object { var ret internal.Service5InsertList; return &ret }, func() meta.Function { var ret internal.Service5InsertList; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForObjectBytes(0xff8f7db9, func() meta.Object { var ret internal.Service5LongEmptyOutput; return &ret })
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x7cf362bb, func() meta.Object { var ret internal.Service5LongInsert; return &ret }, func() meta.Function { var ret internal.Service5LongInsert; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObjectBytes(0xdc170ff5, func() meta.Object { var ret internal.Service5LongStringOutput; return &ret })
+	meta.SetGlobalFactoryCreateForObjectBytes(0xdc170ff7, func() meta.Object { var ret internal.Service5LongStringOutput; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xdc170ff4, func() meta.Object { var ret internal.Service5StringOutput; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xb5286e24, func() meta.Object { var ret internal.String; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x88920e90, func() meta.Object { var ret internal.TestMaybe; return &ret })

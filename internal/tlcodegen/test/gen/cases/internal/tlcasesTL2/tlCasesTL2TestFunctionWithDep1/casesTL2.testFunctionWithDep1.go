@@ -28,8 +28,7 @@ func (item *CasesTL2TestFunctionWithDep1) Reset() {
 }
 
 func (item *CasesTL2TestFunctionWithDep1) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	item.N = basictl.RandomSize(rg)
 }
 
 func (item *CasesTL2TestFunctionWithDep1) Read(w []byte) (_ []byte, err error) {
@@ -151,6 +150,12 @@ func (item *CasesTL2TestFunctionWithDep1) writeResultJSON(tctx *basictl.JSONWrit
 		return w, err
 	}
 	return w, nil
+}
+
+func (item *CasesTL2TestFunctionWithDep1) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+	var ret []int32
+	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &ret, item.N)
+	return item.WriteResult(w, ret)
 }
 
 func (item *CasesTL2TestFunctionWithDep1) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {

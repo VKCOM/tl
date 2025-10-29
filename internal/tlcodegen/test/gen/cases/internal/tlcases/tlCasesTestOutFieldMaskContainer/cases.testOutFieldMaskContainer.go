@@ -30,16 +30,8 @@ func (item *CasesTestOutFieldMaskContainer) Reset() {
 }
 
 func (item *CasesTestOutFieldMaskContainer) FillRandom(rg *basictl.RandGenerator) {
-	var maskF uint32
-	maskF = basictl.RandomUint(rg)
-	maskF = rg.LimitValue(maskF)
-	item.F = 0
-	if maskF&(1<<0) != 0 {
-		item.F |= (1 << 0)
-	}
-	if maskF&(1<<1) != 0 {
-		item.F |= (1 << 3)
-	}
+	item.F = basictl.RandomFieldMask(rg, 0b1001)
+	item.F = rg.LimitValue(item.F)
 	item.Inner.FillRandom(rg, item.F)
 }
 

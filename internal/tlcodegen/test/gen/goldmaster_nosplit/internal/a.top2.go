@@ -29,10 +29,8 @@ func (item *ATop2) Reset() {
 }
 
 func (item *ATop2) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
-	item.M = basictl.RandomUint(rg)
-	item.M = rg.LimitValue(item.M)
+	item.N = basictl.RandomSize(rg)
+	item.M = basictl.RandomSize(rg)
 	item.C.FillRandom(rg, item.M, item.N, item.N)
 }
 

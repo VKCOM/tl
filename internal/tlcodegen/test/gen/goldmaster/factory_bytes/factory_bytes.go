@@ -206,7 +206,7 @@ func init() {
 		return &ret
 	})
 	meta.SetGlobalFactoryCreateForFunctionBytes(0x7cf362bb, func() meta.Object { var ret tlService5LongInsert.Service5LongInsert; return &ret }, func() meta.Function { var ret tlService5LongInsert.Service5LongInsert; return &ret }, nil)
-	meta.SetGlobalFactoryCreateForObjectBytes(0xdc170ff5, func() meta.Object {
+	meta.SetGlobalFactoryCreateForObjectBytes(0xdc170ff7, func() meta.Object {
 		var ret cycle_98d4570147919cfd6f6ebfc47c3e10a0.Service5LongStringOutput
 		return &ret
 	})

@@ -17,7 +17,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorCyc1MyCycleFillRandom(rg *basictl.RandGenerator, vec *[]Cyc1MyCycle) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]Cyc1MyCycle, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -180,12 +180,7 @@ func (item *Cyc1MyCycle) Reset() {
 }
 
 func (item *Cyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {
-	var maskFieldsMask uint32
-	maskFieldsMask = basictl.RandomUint(rg)
-	item.FieldsMask = 0
-	if maskFieldsMask&(1<<0) != 0 {
-		item.FieldsMask |= (1 << 0)
-	}
+	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1)
 	if item.FieldsMask&(1<<0) != 0 {
 		item.A.FillRandom(rg)
 	} else {

@@ -478,7 +478,7 @@
       "flags": 16
     },
     {
-      "name": 597193292,
+      "name": 597193294,
       "id": "service5Long.Output",
       "constructors_num": 2,
       "flags": 16
@@ -7733,7 +7733,7 @@
       "value": {
         "name": -7373383,
         "id": "service5Long.emptyOutput",
-        "type_name": 597193292,
+        "type_name": 597193294,
         "left": {
           "type": "tls.combinatorLeft",
           "value": {}
@@ -7742,7 +7742,7 @@
           "value": {
             "type": "tls.typeExpr",
             "value": {
-              "name": 597193292
+              "name": 597193294
             }
           }
         }
@@ -7751,9 +7751,9 @@
     {
       "type": "tls.combinator_v4",
       "value": {
-        "name": -602468363,
+        "name": -602468361,
         "id": "service5Long.stringOutput",
-        "type_name": 597193292,
+        "type_name": 597193294,
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
@@ -7786,7 +7786,7 @@
           "value": {
             "type": "tls.typeExpr",
             "value": {
-              "name": 597193292
+              "name": 597193294
             }
           }
         }
@@ -8787,7 +8787,7 @@
       "value": {
         "name": 2096325307,
         "id": "service5Long.insert",
-        "type_name": 597193292,
+        "type_name": 597193294,
         "left": {
           "type": "tls.combinatorLeft",
           "value": {
@@ -8824,7 +8824,7 @@
           "value": {
             "type": "tls.typeExpr",
             "value": {
-              "name": 597193292
+              "name": 597193294
             }
           }
         },

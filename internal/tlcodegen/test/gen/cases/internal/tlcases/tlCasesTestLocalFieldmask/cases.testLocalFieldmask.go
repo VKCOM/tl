@@ -59,19 +59,9 @@ func (item *CasesTestLocalFieldmask) Reset() {
 }
 
 func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {
-	var maskF1 uint32
-	maskF1 = basictl.RandomUint(rg)
-	item.F1 = 0
-	if maskF1&(1<<0) != 0 {
-		item.F1 |= (1 << 0)
-	}
+	item.F1 = basictl.RandomFieldMask(rg, 0b1)
 	if item.F1&(1<<0) != 0 {
-		var maskF2 uint32
-		maskF2 = basictl.RandomUint(rg)
-		item.F2 = 0
-		if maskF2&(1<<0) != 0 {
-			item.F2 |= (1 << 1)
-		}
+		item.F2 = basictl.RandomFieldMask(rg, 0b10)
 	} else {
 		item.F2 = 0
 	}

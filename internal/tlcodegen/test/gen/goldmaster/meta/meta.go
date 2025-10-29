@@ -48,6 +48,8 @@ type Object interface {
 type Function interface {
 	Object
 
+	FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error)
+
 	// tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
 	// pass empty basictl.JSONWriteContext{} if you do not know which options you need
 	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
@@ -432,7 +434,7 @@ func init() {
 	fillFunction("service5.insertList#7cf362bc", "#7cf362bc", &TLItem{tag: 0x7cf362bc, annotations: 0x10, tlName: "service5.insertList", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
 	fillObject("service5Long.emptyOutput#ff8f7db9", "#ff8f7db9", &TLItem{tag: 0xff8f7db9, annotations: 0x0, tlName: "service5Long.emptyOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillFunction("service5Long.insert#7cf362bb", "#7cf362bb", &TLItem{tag: 0x7cf362bb, annotations: 0x10, tlName: "service5Long.insert", isTL2: false, resultTypeContainsUnionTypes: true, argumentsTypesContainUnionTypes: false})
-	fillObject("service5Long.stringOutput#dc170ff5", "#dc170ff5", &TLItem{tag: 0xdc170ff5, annotations: 0x0, tlName: "service5Long.stringOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("service5Long.stringOutput#dc170ff7", "#dc170ff7", &TLItem{tag: 0xdc170ff7, annotations: 0x0, tlName: "service5Long.stringOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("service5.stringOutput#dc170ff4", "#dc170ff4", &TLItem{tag: 0xdc170ff4, annotations: 0x0, tlName: "service5.stringOutput", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("string#b5286e24", "#b5286e24", &TLItem{tag: 0xb5286e24, annotations: 0x0, tlName: "string", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("testMaybe#88920e90", "#88920e90", &TLItem{tag: 0x88920e90, annotations: 0x0, tlName: "testMaybe", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})

@@ -38,12 +38,7 @@ func (item *Service5InsertList) Reset() {
 }
 
 func (item *Service5InsertList) FillRandom(rg *basictl.RandGenerator) {
-	var maskFlags uint32
-	maskFlags = basictl.RandomUint(rg)
-	item.Flags = 0
-	if maskFlags&(1<<0) != 0 {
-		item.Flags |= (1 << 0)
-	}
+	item.Flags = basictl.RandomFieldMask(rg, 0b1)
 }
 
 func (item *Service5InsertList) Read(w []byte) (_ []byte, err error) {
@@ -158,6 +153,12 @@ func (item *Service5InsertList) WriteResultJSON(w []byte, ret tlListService5Outp
 func (item *Service5InsertList) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret tlListService5Output.ListService5Output) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w)
 	return w, nil
+}
+
+func (item *Service5InsertList) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+	var ret tlListService5Output.ListService5Output
+	ret.FillRandom(rg)
+	return item.WriteResult(w, ret)
 }
 
 func (item *Service5InsertList) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {

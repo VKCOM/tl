@@ -76,19 +76,8 @@ func (item *CasesTL2TestObject) Reset() {
 }
 
 func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
-	var maskN uint32
-	maskN = basictl.RandomUint(rg)
-	maskN = rg.LimitValue(maskN)
-	item.N = 0
-	if maskN&(1<<0) != 0 {
-		item.N |= (1 << 0)
-	}
-	if maskN&(1<<1) != 0 {
-		item.N |= (1 << 1)
-	}
-	if maskN&(1<<2) != 0 {
-		item.N |= (1 << 14)
-	}
+	item.N = basictl.RandomFieldMask(rg, 0b100000000000011)
+	item.N = rg.LimitValue(item.N)
 	item.F2 = basictl.RandomUint(rg)&1 == 1
 	tlBuiltinVectorBool.BuiltinVectorBoolFillRandom(rg, &item.F3)
 	item.F4.FillRandom(rg, item.N)
