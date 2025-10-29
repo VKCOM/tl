@@ -942,12 +942,14 @@ func (item *{%s= goName %}) writeResultJSON(tctx *basictl.JSONWriteContext, w []
     {%s= struct_.ResultType.TypeJSONWritingCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false, struct_.ResultType.hasErrorInWriteMethods) %}
     return w, nil
 }
+{%- if struct_.wr.gen.options.GenerateRandomCode -%}
 
 func (item *{%s= goName %}) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
     var ret {%s= retArg %}
     {%s= struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false) %}
     return item.WriteResult(w, ret)
 }
+{%- endif -%}
 
 func (item *{%s= goName %}) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
   var ret {%s= retArg %}

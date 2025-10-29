@@ -1907,19 +1907,23 @@ func (item *`)
 	qw422016.N().S(`
     return w, nil
 }
-
+`)
+	if struct_.wr.gen.options.GenerateRandomCode {
+		qw422016.N().S(`
 func (item *`)
-	qw422016.N().S(goName)
-	qw422016.N().S(`) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+		qw422016.N().S(goName)
+		qw422016.N().S(`) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
     var ret `)
-	qw422016.N().S(retArg)
-	qw422016.N().S(`
+		qw422016.N().S(retArg)
+		qw422016.N().S(`
     `)
-	qw422016.N().S(struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false))
-	qw422016.N().S(`
+		qw422016.N().S(struct_.ResultType.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ret", formatNatArgs(struct_.Fields, struct_.ResultNatArgs), false))
+		qw422016.N().S(`
     return item.WriteResult(w, ret)
 }
-
+`)
+	}
+	qw422016.N().S(`
 func (item *`)
 	qw422016.N().S(goName)
 	qw422016.N().S(`) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
