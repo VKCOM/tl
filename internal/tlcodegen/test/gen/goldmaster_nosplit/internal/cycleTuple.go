@@ -374,16 +374,8 @@ func (item *CycleTuple) Reset() {
 }
 
 func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
-	var maskN uint32
-	maskN = basictl.RandomUint(rg)
-	maskN = rg.LimitValue(maskN)
-	item.N = 0
-	if maskN&(1<<0) != 0 {
-		item.N |= (1 << 0)
-	}
-	if maskN&(1<<1) != 0 {
-		item.N |= (1 << 2)
-	}
+	item.N = basictl.RandomFieldMask(rg, 0b101)
+	item.N = rg.LimitValue(item.N)
 	if item.N&(1<<0) != 0 {
 		rg.IncreaseDepth()
 		if item.A == nil {

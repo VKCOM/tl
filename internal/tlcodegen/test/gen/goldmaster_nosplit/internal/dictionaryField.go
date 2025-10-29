@@ -23,7 +23,7 @@ func BuiltinVectorDictionaryFieldStringReset(m map[string]string) {
 
 func BuiltinVectorDictionaryFieldStringFillRandom(rg *basictl.RandGenerator, m *map[string]string) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[string]string, l)
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryFieldString
@@ -222,7 +222,7 @@ func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteConte
 
 func BuiltinVectorDictionaryFieldStringBytesFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryFieldStringBytes) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryFieldStringBytes, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -376,7 +376,7 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(m 
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basictl.RandGenerator, m *map[string]UsefulServiceUserEntityPaymentItem, nat_t uint32) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[string]UsefulServiceUserEntityPaymentItem, l)
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed

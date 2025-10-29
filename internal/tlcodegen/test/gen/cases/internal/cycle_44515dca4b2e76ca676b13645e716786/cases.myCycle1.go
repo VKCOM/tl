@@ -47,12 +47,7 @@ func (item *CasesMyCycle1) Reset() {
 }
 
 func (item *CasesMyCycle1) FillRandom(rg *basictl.RandGenerator) {
-	var maskFieldsMask uint32
-	maskFieldsMask = basictl.RandomUint(rg)
-	item.FieldsMask = 0
-	if maskFieldsMask&(1<<0) != 0 {
-		item.FieldsMask |= (1 << 0)
-	}
+	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1)
 	if item.FieldsMask&(1<<0) != 0 {
 		rg.IncreaseDepth()
 		if item.A == nil {

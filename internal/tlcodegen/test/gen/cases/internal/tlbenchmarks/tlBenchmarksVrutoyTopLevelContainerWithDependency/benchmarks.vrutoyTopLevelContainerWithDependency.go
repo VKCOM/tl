@@ -32,8 +32,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) Reset() {
 }
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	item.N = basictl.RandomSize(rg)
 	item.Value.FillRandom(rg, item.N)
 }
 

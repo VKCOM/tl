@@ -150,22 +150,8 @@ func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerator, nat_outer uint32) {
-	var maskLocal uint32
-	maskLocal = basictl.RandomUint(rg)
-	maskLocal = rg.LimitValue(maskLocal)
-	item.Local = 0
-	if maskLocal&(1<<0) != 0 {
-		item.Local |= (1 << 0)
-	}
-	if maskLocal&(1<<1) != 0 {
-		item.Local |= (1 << 1)
-	}
-	if maskLocal&(1<<2) != 0 {
-		item.Local |= (1 << 2)
-	}
-	if maskLocal&(1<<3) != 0 {
-		item.Local |= (1 << 3)
-	}
+	item.Local = basictl.RandomFieldMask(rg, 0b1111)
+	item.Local = rg.LimitValue(item.Local)
 	item.F00 = basictl.RandomInt(rg)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F02, item.Local)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F03, nat_outer)

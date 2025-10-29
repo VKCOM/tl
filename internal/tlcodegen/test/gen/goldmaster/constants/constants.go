@@ -115,7 +115,7 @@ const (
 	Service5StringOutput                    = 0xdc170ff4 // service5.stringOutput
 	Service5LongEmptyOutput                 = 0xff8f7db9 // service5Long.emptyOutput
 	Service5LongInsert                      = 0x7cf362bb // service5Long.insert
-	Service5LongStringOutput                = 0xdc170ff5 // service5Long.stringOutput
+	Service5LongStringOutput                = 0xdc170ff7 // service5Long.stringOutput
 	String                                  = 0xb5286e24 // string
 	TestMaybe                               = 0x88920e90 // testMaybe
 	TestMaybe2                              = 0x0aa03cf2 // testMaybe2

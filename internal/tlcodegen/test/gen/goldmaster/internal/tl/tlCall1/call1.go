@@ -143,6 +143,12 @@ func (item *Call1) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret
 	return w, nil
 }
 
+func (item *Call1) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+	var ret tlAbTypeB.AbTypeB
+	ret.FillRandom(rg)
+	return item.WriteResult(w, ret)
+}
+
 func (item *Call1) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlAbTypeB.AbTypeB
 	if r, err = item.ReadResult(r, &ret); err != nil {

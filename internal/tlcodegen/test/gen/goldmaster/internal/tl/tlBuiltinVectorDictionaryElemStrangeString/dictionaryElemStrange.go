@@ -26,7 +26,7 @@ func BuiltinVectorDictionaryElemStrangeStringReset(m map[uint32]string) {
 
 func BuiltinVectorDictionaryElemStrangeStringFillRandom(rg *basictl.RandGenerator, m *map[uint32]string) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[uint32]string, l)
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryElemStrangeString.DictionaryElemStrangeString

@@ -433,7 +433,7 @@ func BRed() AColor { return AColor__MakeEnum(3) }
 
 func BuiltinVectorAColorFillRandom(rg *basictl.RandGenerator, vec *[]AColor) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]AColor, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

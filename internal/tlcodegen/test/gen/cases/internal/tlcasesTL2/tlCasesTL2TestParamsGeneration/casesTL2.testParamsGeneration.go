@@ -41,20 +41,10 @@ func (item *CasesTL2TestParamsGeneration) Reset() {
 }
 
 func (item *CasesTL2TestParamsGeneration) FillRandom(rg *basictl.RandGenerator) {
-	var maskN1 uint32
-	maskN1 = basictl.RandomUint(rg)
-	maskN1 = rg.LimitValue(maskN1)
-	item.N1 = 0
-	if maskN1&(1<<0) != 0 {
-		item.N1 |= (1 << 0)
-	}
-	var maskN2 uint32
-	maskN2 = basictl.RandomUint(rg)
-	maskN2 = rg.LimitValue(maskN2)
-	item.N2 = 0
-	if maskN2&(1<<0) != 0 {
-		item.N2 |= (1 << 0)
-	}
+	item.N1 = basictl.RandomFieldMask(rg, 0b1)
+	item.N1 = rg.LimitValue(item.N1)
+	item.N2 = basictl.RandomFieldMask(rg, 0b1)
+	item.N2 = rg.LimitValue(item.N2)
 	item.X1.FillRandom(rg)
 	item.X2.FillRandom(rg, item.N1)
 	item.X3.FillRandom(rg, item.N2)

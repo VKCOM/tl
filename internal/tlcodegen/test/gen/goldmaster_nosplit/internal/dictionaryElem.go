@@ -23,7 +23,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntReset(m map[int32]PairIntInt) {
 
 func BuiltinVectorDictionaryElemIntPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]PairIntInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[int32]PairIntInt, l)
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryElemIntPairIntInt
@@ -245,7 +245,7 @@ func BuiltinVectorDictionaryElemLongPairIntIntReset(m map[int64]PairIntInt) {
 
 func BuiltinVectorDictionaryElemLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64]PairIntInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[int64]PairIntInt, l)
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryElemLongPairIntInt
@@ -461,7 +461,7 @@ func BuiltinVectorDictionaryElemLongPairIntIntWriteJSONOpt(tctx *basictl.JSONWri
 
 func BuiltinVectorDictionaryElemPairBoolAColorIntFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryElemPairBoolAColorInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryElemPairBoolAColorInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -605,7 +605,7 @@ func BuiltinVectorDictionaryElemPairBoolAColorIntWriteJSONOpt(tctx *basictl.JSON
 
 func BuiltinVectorDictionaryElemPairFloatDoubleIntFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryElemPairFloatDoubleInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryElemPairFloatDoubleInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -749,7 +749,7 @@ func BuiltinVectorDictionaryElemPairFloatDoubleIntWriteJSONOpt(tctx *basictl.JSO
 
 func BuiltinVectorDictionaryElemPairIntIntIntFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryElemPairIntIntInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryElemPairIntIntInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -893,7 +893,7 @@ func BuiltinVectorDictionaryElemPairIntIntIntWriteJSONOpt(tctx *basictl.JSONWrit
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryElemPairIntPairMultiPointStringInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryElemPairIntPairMultiPointStringInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)
@@ -1043,7 +1043,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntReset(m map[string]PairIntInt) {
 
 func BuiltinVectorDictionaryElemStringPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[string]PairIntInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[string]PairIntInt, l)
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryElemStringPairIntInt
@@ -1242,7 +1242,7 @@ func BuiltinVectorDictionaryElemStringPairIntIntWriteJSONOpt(tctx *basictl.JSONW
 
 func BuiltinVectorDictionaryElemTupleStringIntFillRandom(rg *basictl.RandGenerator, vec *[]DictionaryElemTupleStringInt, nat_t uint32) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]DictionaryElemTupleStringInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg, nat_t)

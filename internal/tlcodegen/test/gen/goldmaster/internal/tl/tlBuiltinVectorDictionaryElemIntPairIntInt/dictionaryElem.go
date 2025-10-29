@@ -27,7 +27,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntReset(m map[int32]tlPairIntInt.Pair
 
 func BuiltinVectorDictionaryElemIntPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]tlPairIntInt.PairIntInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[int32]tlPairIntInt.PairIntInt, l)
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryElemIntPairIntInt.DictionaryElemIntPairIntInt

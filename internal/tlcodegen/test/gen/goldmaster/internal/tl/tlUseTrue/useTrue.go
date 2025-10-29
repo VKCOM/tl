@@ -63,18 +63,7 @@ func (item *UseTrue) Reset() {
 }
 
 func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
-	var maskFm uint32
-	maskFm = basictl.RandomUint(rg)
-	item.Fm = 0
-	if maskFm&(1<<0) != 0 {
-		item.Fm |= (1 << 0)
-	}
-	if maskFm&(1<<1) != 0 {
-		item.Fm |= (1 << 1)
-	}
-	if maskFm&(1<<2) != 0 {
-		item.Fm |= (1 << 2)
-	}
+	item.Fm = basictl.RandomFieldMask(rg, 0b111)
 	if item.Fm&(1<<2) != 0 {
 		item.E = basictl.RandomUint(rg)&1 == 1
 	} else {

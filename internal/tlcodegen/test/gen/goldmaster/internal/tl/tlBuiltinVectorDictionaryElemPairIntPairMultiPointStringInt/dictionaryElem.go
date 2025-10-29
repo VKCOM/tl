@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntFillRandom(rg *basictl.RandGenerator, vec *[]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlDictionaryElemPairIntPairMultiPointStringInt.DictionaryElemPairIntPairMultiPointStringInt, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

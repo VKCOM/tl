@@ -39,12 +39,7 @@ func (item *DictionaryElemStrangeString) Reset() {
 }
 
 func (item *DictionaryElemStrangeString) FillRandom(rg *basictl.RandGenerator) {
-	var maskKey uint32
-	maskKey = basictl.RandomUint(rg)
-	item.Key = 0
-	if maskKey&(1<<0) != 0 {
-		item.Key |= (1 << 31)
-	}
+	item.Key = basictl.RandomFieldMask(rg, 0b10000000000000000000000000000000)
 	if item.Key&(1<<31) != 0 {
 		item.Value = basictl.RandomString(rg)
 	} else {

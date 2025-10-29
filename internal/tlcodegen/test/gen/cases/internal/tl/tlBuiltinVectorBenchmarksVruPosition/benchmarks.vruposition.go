@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorBenchmarksVruPositionFillRandom(rg *basictl.RandGenerator, vec *[]tlBenchmarksVruPosition.BenchmarksVruPosition) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlBenchmarksVruPosition.BenchmarksVruPosition, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

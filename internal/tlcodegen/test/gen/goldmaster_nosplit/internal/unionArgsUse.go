@@ -31,10 +31,8 @@ func (item *UnionArgsUse) Reset() {
 }
 
 func (item *UnionArgsUse) FillRandom(rg *basictl.RandGenerator) {
-	item.K = basictl.RandomUint(rg)
-	item.K = rg.LimitValue(item.K)
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	item.K = basictl.RandomSize(rg)
+	item.N = basictl.RandomSize(rg)
 	item.A.FillRandom(rg, item.K)
 	item.B.FillRandom(rg, item.N)
 }

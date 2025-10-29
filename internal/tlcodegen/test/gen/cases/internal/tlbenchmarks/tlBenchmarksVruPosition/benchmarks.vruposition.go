@@ -98,27 +98,7 @@ func (item *BenchmarksVruPosition) Reset() {
 }
 
 func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
-	var maskFieldsMask uint32
-	maskFieldsMask = basictl.RandomUint(rg)
-	item.FieldsMask = 0
-	if maskFieldsMask&(1<<0) != 0 {
-		item.FieldsMask |= (1 << 0)
-	}
-	if maskFieldsMask&(1<<1) != 0 {
-		item.FieldsMask |= (1 << 1)
-	}
-	if maskFieldsMask&(1<<2) != 0 {
-		item.FieldsMask |= (1 << 3)
-	}
-	if maskFieldsMask&(1<<3) != 0 {
-		item.FieldsMask |= (1 << 5)
-	}
-	if maskFieldsMask&(1<<4) != 0 {
-		item.FieldsMask |= (1 << 14)
-	}
-	if maskFieldsMask&(1<<5) != 0 {
-		item.FieldsMask |= (1 << 15)
-	}
+	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1100000000101011)
 	item.PayloadOffset = basictl.RandomLong(rg)
 	item.BlockTimeNano = basictl.RandomLong(rg)
 	item.Hash.FillRandom(rg)

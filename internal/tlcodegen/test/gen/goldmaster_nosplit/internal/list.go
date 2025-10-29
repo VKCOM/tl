@@ -57,12 +57,7 @@ func (item *ListService5Output) Reset() {
 }
 
 func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
-	var maskFlag uint32
-	maskFlag = basictl.RandomUint(rg)
-	item.Flag = 0
-	if maskFlag&(1<<0) != 0 {
-		item.Flag |= (1 << 0)
-	}
+	item.Flag = basictl.RandomFieldMask(rg, 0b1)
 	if item.Flag&(1<<0) != 0 {
 		item.Head.FillRandom(rg)
 	} else {

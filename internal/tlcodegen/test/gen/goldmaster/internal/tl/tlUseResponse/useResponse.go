@@ -31,8 +31,7 @@ func (item *UseResponse) Reset() {
 }
 
 func (item *UseResponse) FillRandom(rg *basictl.RandGenerator) {
-	item.N = basictl.RandomUint(rg)
-	item.N = rg.LimitValue(item.N)
+	item.N = basictl.RandomSize(rg)
 	tlBuiltinTupleAbResponse.BuiltinTupleAbResponseFillRandom(rg, &item.X, item.N)
 }
 

@@ -37,12 +37,7 @@ func (item *UsefulServiceGetUserEntity) Reset() {
 }
 
 func (item *UsefulServiceGetUserEntity) FillRandom(rg *basictl.RandGenerator) {
-	var maskFieldsMask uint32
-	maskFieldsMask = basictl.RandomUint(rg)
-	item.FieldsMask = 0
-	if maskFieldsMask&(1<<0) != 0 {
-		item.FieldsMask |= (1 << 0)
-	}
+	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1)
 	if item.FieldsMask&(1<<0) != 0 {
 		item.StageId = basictl.RandomString(rg)
 	} else {
@@ -174,6 +169,12 @@ func (item *UsefulServiceGetUserEntity) WriteResultJSON(w []byte, ret UsefulServ
 func (item *UsefulServiceGetUserEntity) writeResultJSON(tctx *basictl.JSONWriteContext, w []byte, ret UsefulServiceGetUserEntityResultBoxedMaybe) (_ []byte, err error) {
 	w = ret.WriteJSONOpt(tctx, w, item.FieldsMask)
 	return w, nil
+}
+
+func (item *UsefulServiceGetUserEntity) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+	var ret UsefulServiceGetUserEntityResultBoxedMaybe
+	ret.FillRandom(rg, item.FieldsMask)
+	return item.WriteResult(w, ret)
 }
 
 func (item *UsefulServiceGetUserEntity) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
