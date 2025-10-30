@@ -314,10 +314,10 @@ func (item *`)
     if len(saveR) < len(r) + shift {
         r = saveR[shift:]
     }
+    return r, nil
 `)
 		}
-		qw422016.N().S(`    return r, nil
-}
+		qw422016.N().S(`}
 
 `)
 	}
