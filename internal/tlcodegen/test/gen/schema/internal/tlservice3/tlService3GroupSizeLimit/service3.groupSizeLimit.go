@@ -66,6 +66,11 @@ func (item Service3GroupSizeLimit) String() string {
 }
 
 func (item *Service3GroupSizeLimit) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3GroupSizeLimit) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypePresented bool
 	var propLimitPresented bool
 

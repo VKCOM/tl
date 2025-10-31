@@ -136,6 +136,12 @@ func (item *CasesTL2TestFunctionWithDep2) writeResultJSON(tctx *basictl.JSONWrit
 	return w, nil
 }
 
+func (item *CasesTL2TestFunctionWithDep2) FillRandomResult(rg *basictl.RandGenerator, w []byte) ([]byte, error) {
+	var ret tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions
+	ret.FillRandom(rg)
+	return item.WriteResult(w, ret)
+}
+
 func (item *CasesTL2TestFunctionWithDep2) ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
 	var ret tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions
 	if r, err = item.ReadResult(r, &ret); err != nil {

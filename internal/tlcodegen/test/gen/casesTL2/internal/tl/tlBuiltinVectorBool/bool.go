@@ -17,7 +17,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorBoolFillRandom(rg *basictl.RandGenerator, vec *[]bool) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]bool, l)
 	for i := range *vec {
 		(*vec)[i] = basictl.RandomUint(rg)&1 == 1

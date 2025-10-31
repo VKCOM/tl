@@ -60,6 +60,11 @@ func (item Service6Error) String() string {
 }
 
 func (item *Service6Error) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service6Error) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propCodePresented bool
 
 	if in != nil {

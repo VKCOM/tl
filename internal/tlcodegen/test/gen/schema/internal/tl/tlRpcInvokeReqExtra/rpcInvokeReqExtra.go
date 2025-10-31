@@ -138,6 +138,11 @@ func (item RpcInvokeReqExtra) String() string {
 }
 
 func (item *RpcInvokeReqExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *RpcInvokeReqExtra) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var trueTypeQueryPresented bool
 	var trueTypeQueryValue bool
@@ -201,7 +206,7 @@ func (item *RpcInvokeReqExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 				if propStringForwardKeysPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("rpcInvokeReqExtra", "string_forward_keys")
 				}
-				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSON(legacyTypeNames, in, &item.StringForwardKeys); err != nil {
+				if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, &item.StringForwardKeys); err != nil {
 					return err
 				}
 				propStringForwardKeysPresented = true
@@ -247,15 +252,15 @@ func (item *RpcInvokeReqExtra) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeQueryPresented && !trueTypeQueryValue && (item.FieldsMask&(1<<0) != 0) {
-		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit item.FieldsMask.0 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeSortPresented && !trueTypeSortValue && (item.FieldsMask&(1<<1) != 0) {
-		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit item.FieldsMask.1 is indefinite because of the contradictions in values")
 	}
 	// tries to set bit to zero if it is 1
 	if trueTypeSortReversePresented && !trueTypeSortReverseValue && (item.FieldsMask&(1<<2) != 0) {
-		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit fields_mask.0 is indefinite because of the contradictions in values")
+		return internal.ErrorInvalidJSON("rpcInvokeReqExtra", "fieldmask bit item.FieldsMask.2 is indefinite because of the contradictions in values")
 	}
 	return nil
 }

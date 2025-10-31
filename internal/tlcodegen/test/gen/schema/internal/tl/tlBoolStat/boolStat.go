@@ -72,6 +72,11 @@ func (item BoolStat) String() string {
 }
 
 func (item *BoolStat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BoolStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propStatTruePresented bool
 	var propStatFalsePresented bool
 	var propStatUnknownPresented bool

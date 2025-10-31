@@ -67,7 +67,7 @@ func (item *Service2CounterSet) WriteBoxed(w []byte, nat_intCountersNum uint32, 
 	return item.Write(w, nat_intCountersNum, nat_floatCountersNum)
 }
 
-func (item *Service2CounterSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
+func (item *Service2CounterSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
 	var rawIntCounters []byte
 	var rawFloatCounters []byte
 
@@ -111,7 +111,7 @@ func (item *Service2CounterSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 	if rawIntCounters != nil {
 		inIntCountersPointer = &inIntCounters
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inIntCountersPointer, &item.IntCounters, nat_intCountersNum); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIntCountersPointer, &item.IntCounters, nat_intCountersNum); err != nil {
 		return err
 	}
 
@@ -120,7 +120,7 @@ func (item *Service2CounterSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 	if rawFloatCounters != nil {
 		inFloatCountersPointer = &inFloatCounters
 	}
-	if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSON(legacyTypeNames, inFloatCountersPointer, &item.FloatCounters, nat_floatCountersNum); err != nil {
+	if err := tlBuiltinTupleDouble.BuiltinTupleDoubleReadJSONGeneral(tctx, inFloatCountersPointer, &item.FloatCounters, nat_floatCountersNum); err != nil {
 		return err
 	}
 

@@ -60,8 +60,13 @@ func (item Pkg2T2) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *Pkg2T2) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Pkg2T2) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*tlPkg2Foo.Pkg2Foo)(item)
-	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
+	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil

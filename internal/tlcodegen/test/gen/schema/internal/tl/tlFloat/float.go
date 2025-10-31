@@ -59,6 +59,11 @@ func (item Float) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *Float) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Float) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*float32)(item)
 	if err := internal.Json2ReadFloat32(in, ptr); err != nil {
 		return err

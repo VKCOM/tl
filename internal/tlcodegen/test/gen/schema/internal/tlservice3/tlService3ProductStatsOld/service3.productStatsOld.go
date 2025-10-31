@@ -84,6 +84,11 @@ func (item Service3ProductStatsOld) String() string {
 }
 
 func (item *Service3ProductStatsOld) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3ProductStatsOld) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypePresented bool
 	var propCountNewPresented bool
 	var propCountTotalPresented bool

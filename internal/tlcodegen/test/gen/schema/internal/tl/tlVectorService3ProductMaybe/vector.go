@@ -48,7 +48,7 @@ func (item *VectorService3ProductMaybe) WriteBoxed(w []byte, nat_t uint32) []byt
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *VectorService3ProductMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_t uint32) error {
+func (item *VectorService3ProductMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_t uint32) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -60,7 +60,7 @@ func (item *VectorService3ProductMaybe) ReadJSON(legacyTypeNames bool, in *basic
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadJSON(legacyTypeNames, in2Pointer, &item.Value, nat_t); err != nil {
+		if err := tlBuiltinVectorService3Product.BuiltinVectorService3ProductReadJSONGeneral(tctx, in2Pointer, &item.Value, nat_t); err != nil {
 			return err
 		}
 	}

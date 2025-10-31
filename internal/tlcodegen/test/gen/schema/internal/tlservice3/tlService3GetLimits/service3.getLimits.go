@@ -60,7 +60,8 @@ func (item *Service3GetLimits) WriteResult(w []byte, ret tlService3Limits.Servic
 }
 
 func (item *Service3GetLimits) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService3Limits.Service3Limits) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -100,6 +101,11 @@ func (item Service3GetLimits) String() string {
 }
 
 func (item *Service3GetLimits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3GetLimits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

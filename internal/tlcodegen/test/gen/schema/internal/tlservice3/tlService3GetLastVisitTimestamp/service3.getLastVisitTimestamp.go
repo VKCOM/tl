@@ -66,7 +66,8 @@ func (item *Service3GetLastVisitTimestamp) WriteResult(w []byte, ret tlIntMaybe.
 }
 
 func (item *Service3GetLastVisitTimestamp) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlIntMaybe.IntMaybe) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item Service3GetLastVisitTimestamp) String() string {
 }
 
 func (item *Service3GetLastVisitTimestamp) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3GetLastVisitTimestamp) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propUserIdPresented bool
 
 	if in != nil {

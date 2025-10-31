@@ -45,7 +45,7 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowWrite(w []byte, 
 	return w
 }
 
-func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) error {
+func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_e0e20d17984738a60e3bf741bd7db2e9.EitherService6ErrorVectorService6FindResultRow) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorEitherService6ErrorVectorService6FindResultRowReadJSON(legacyT
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

@@ -70,6 +70,11 @@ func (item MyInt) String() string {
 }
 
 func (item *MyInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propVal1Presented bool
 
 	if in != nil {
@@ -192,6 +197,11 @@ func (item MyString) String() string {
 }
 
 func (item *MyString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propVal2Presented bool
 
 	if in != nil {
@@ -344,13 +354,21 @@ func (item *MyValue) WriteBoxed(w []byte) []byte {
 }
 
 func (item *MyValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("MyValue", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "myInt#c12375b7", "myInt", "#c12375b7":
-		if !legacyTypeNames && _tag == "myInt#c12375b7" {
+		if tctx.IsTL2 && _tag != "myInt" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyValue", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "myInt#c12375b7" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyValue", "myInt#c12375b7")
 		}
 		item.index = 0
@@ -359,11 +377,14 @@ func (item *MyValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueMyInt.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueMyInt.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "myString#c8bfa969", "myString", "#c8bfa969":
-		if !legacyTypeNames && _tag == "myString#c8bfa969" {
+		if tctx.IsTL2 && _tag != "myString" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("MyValue", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "myString#c8bfa969" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("MyValue", "myString#c8bfa969")
 		}
 		item.index = 1
@@ -372,7 +393,7 @@ func (item *MyValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueMyString.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueMyString.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -393,19 +414,27 @@ func (item *MyValue) WriteJSON(w []byte) []byte {
 func (item *MyValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"myInt#c12375b7"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"myInt"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"myInt#c12375b7"`...)
+			} else {
+				w = append(w, `{"type":"myInt"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueMyInt.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"myString#c8bfa969"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"myString"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"myString#c8bfa969"`...)
+			} else {
+				w = append(w, `{"type":"myString"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueMyString.WriteJSONOpt(tctx, w)

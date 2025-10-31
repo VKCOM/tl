@@ -118,7 +118,8 @@ func (item *Service2AddOrIncrMany) WriteResult(w []byte, ret []tlService2Counter
 }
 
 func (item *Service2AddOrIncrMany) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]tlService2CounterSet.Service2CounterSet) error {
-	if err := tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadJSON(legacyTypeNames, in, ret, item.ObjectsNum, item.IntCountersNum, item.FloatCountersNum); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinTupleService2CounterSet.BuiltinTupleService2CounterSetReadJSONGeneral(tctx, in, ret, item.ObjectsNum, item.IntCountersNum, item.FloatCountersNum); err != nil {
 		return err
 	}
 	return nil
@@ -164,6 +165,11 @@ func (item Service2AddOrIncrMany) String() string {
 }
 
 func (item *Service2AddOrIncrMany) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service2AddOrIncrMany) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectIdLengthPresented bool
 	var propIntCountersNumPresented bool
 	var propFloatCountersNumPresented bool
@@ -264,7 +270,7 @@ func (item *Service2AddOrIncrMany) ReadJSON(legacyTypeNames bool, in *basictl.Js
 	if rawIntCounters != nil {
 		inIntCountersPointer = &inIntCounters
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inIntCountersPointer, &item.IntCounters, item.IntCountersNum); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIntCountersPointer, &item.IntCounters, item.IntCountersNum); err != nil {
 		return err
 	}
 
@@ -273,7 +279,7 @@ func (item *Service2AddOrIncrMany) ReadJSON(legacyTypeNames bool, in *basictl.Js
 	if rawFloatCounters != nil {
 		inFloatCountersPointer = &inFloatCounters
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inFloatCountersPointer, &item.FloatCounters, item.FloatCountersNum); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inFloatCountersPointer, &item.FloatCounters, item.FloatCountersNum); err != nil {
 		return err
 	}
 
@@ -282,7 +288,7 @@ func (item *Service2AddOrIncrMany) ReadJSON(legacyTypeNames bool, in *basictl.Js
 	if rawDeltas != nil {
 		inDeltasPointer = &inDeltas
 	}
-	if err := tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetReadJSON(legacyTypeNames, inDeltasPointer, &item.Deltas, item.ObjectsNum, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
+	if err := tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetReadJSONGeneral(tctx, inDeltasPointer, &item.Deltas, item.ObjectsNum, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
 		return err
 	}
 

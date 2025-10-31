@@ -45,7 +45,7 @@ func BuiltinVectorService1ValueWrite(w []byte, vec []cycle_6ca945392bbf8b14f24e5
 	return w
 }
 
-func BuiltinVectorService1ValueReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
+func BuiltinVectorService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorService1ValueReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

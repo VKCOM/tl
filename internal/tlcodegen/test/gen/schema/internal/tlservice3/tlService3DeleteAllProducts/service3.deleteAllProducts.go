@@ -124,6 +124,11 @@ func (item Service3DeleteAllProducts) String() string {
 }
 
 func (item *Service3DeleteAllProducts) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3DeleteAllProducts) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propUserIdPresented bool
 	var propTypePresented bool
 	var propStartDatePresented bool

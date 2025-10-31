@@ -48,7 +48,7 @@ func BuiltinVectorLongBoxedWrite(w []byte, vec []int64) []byte {
 	return w
 }
 
-func BuiltinVectorLongBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int64) error {
+func BuiltinVectorLongBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int64) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {

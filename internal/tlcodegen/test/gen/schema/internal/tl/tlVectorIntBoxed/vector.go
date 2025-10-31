@@ -60,8 +60,13 @@ func (item VectorIntBoxed) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorIntBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorIntBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]int32)(item)
-	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

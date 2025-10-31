@@ -107,6 +107,11 @@ func (item Service5Params) String() string {
 }
 
 func (item *Service5Params) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5Params) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propMaxExecutionSpeedPresented bool
 	var propMaxExecutionSpeedBytesPresented bool

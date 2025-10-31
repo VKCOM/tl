@@ -60,7 +60,8 @@ func (item *TasksGetAnyTask) WriteResult(w []byte, ret tlTasksTaskInfoMaybe.Task
 }
 
 func (item *TasksGetAnyTask) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlTasksTaskInfoMaybe.TasksTaskInfoMaybe) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -100,6 +101,11 @@ func (item TasksGetAnyTask) String() string {
 }
 
 func (item *TasksGetAnyTask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksGetAnyTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

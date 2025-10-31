@@ -60,8 +60,13 @@ func (item MyAnonMcValue) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *MyAnonMcValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyAnonMcValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	if err := ptr.ReadJSON(legacyTypeNames, in); err != nil {
+	if err := ptr.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil

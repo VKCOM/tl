@@ -196,6 +196,11 @@ func (item TasksCronTime) String() string {
 }
 
 func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksCronTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propSecondsPresented bool
 	var propMinutesPresented bool
@@ -225,7 +230,7 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propSecondsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "seconds")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Seconds); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Seconds); err != nil {
 					return err
 				}
 				propSecondsPresented = true
@@ -233,7 +238,7 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propMinutesPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "minutes")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Minutes); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Minutes); err != nil {
 					return err
 				}
 				propMinutesPresented = true
@@ -241,7 +246,7 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propHoursPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "hours")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Hours); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Hours); err != nil {
 					return err
 				}
 				propHoursPresented = true
@@ -249,7 +254,7 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propDaysOfWeekPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "days_of_week")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.DaysOfWeek); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.DaysOfWeek); err != nil {
 					return err
 				}
 				propDaysOfWeekPresented = true
@@ -257,7 +262,7 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propDaysPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "days")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Days); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Days); err != nil {
 					return err
 				}
 				propDaysPresented = true
@@ -265,7 +270,7 @@ func (item *TasksCronTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propMonthsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.cronTime", "months")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Months); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Months); err != nil {
 					return err
 				}
 				propMonthsPresented = true

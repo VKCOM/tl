@@ -66,7 +66,8 @@ func (item *GetMyDouble) WriteResult(w []byte, ret tlMyDouble.MyDouble) (_ []byt
 }
 
 func (item *GetMyDouble) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlMyDouble.MyDouble) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item GetMyDouble) String() string {
 }
 
 func (item *GetMyDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *GetMyDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -121,7 +127,7 @@ func (item *GetMyDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("getMyDouble", "x")
 				}
-				if err := item.X.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propXPresented = true

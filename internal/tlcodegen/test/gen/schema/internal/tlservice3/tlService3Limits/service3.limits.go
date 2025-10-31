@@ -82,6 +82,11 @@ func (item Service3Limits) String() string {
 }
 
 func (item *Service3Limits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3Limits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDefaultGroupSizeLimitPresented bool
 	var propCustomGroupSizeLimitsPresented bool
 	var propDefaultGroupCountLimitPresented bool
@@ -108,7 +113,7 @@ func (item *Service3Limits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propCustomGroupSizeLimitsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "custom_group_size_limits")
 				}
-				if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSON(legacyTypeNames, in, &item.CustomGroupSizeLimits); err != nil {
+				if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, &item.CustomGroupSizeLimits); err != nil {
 					return err
 				}
 				propCustomGroupSizeLimitsPresented = true
@@ -124,7 +129,7 @@ func (item *Service3Limits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propCustomGroupCountLimitsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.limits", "custom_group_count_limits")
 				}
-				if err := tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadJSON(legacyTypeNames, in, &item.CustomGroupCountLimits); err != nil {
+				if err := tlBuiltinVectorService3GroupCountLimit.BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx, in, &item.CustomGroupCountLimits); err != nil {
 					return err
 				}
 				propCustomGroupCountLimitsPresented = true

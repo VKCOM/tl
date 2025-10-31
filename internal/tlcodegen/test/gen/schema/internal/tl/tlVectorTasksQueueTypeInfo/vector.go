@@ -61,8 +61,13 @@ func (item VectorTasksQueueTypeInfo) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorTasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorTasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlTasksQueueTypeInfo.TasksQueueTypeInfo)(item)
-	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

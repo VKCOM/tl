@@ -45,7 +45,7 @@ func BuiltinVectorService3ProductWrite(w []byte, vec []tlService3Product.Service
 	return w
 }
 
-func BuiltinVectorService3ProductReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlService3Product.Service3Product, nat_t uint32) error {
+func BuiltinVectorService3ProductReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService3Product.Service3Product, nat_t uint32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorService3ProductReadJSON(legacyTypeNames bool, in *basictl.Json
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in, nat_t); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_t); err != nil {
 				return err
 			}
 			in.WantComma()

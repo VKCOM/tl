@@ -163,6 +163,7 @@ func CreateObjectFromName(name string) meta.Object {
 }
 
 func init() {
+	// TL
 	meta.SetGlobalFactoryCreateForFunction(0x3de14136, func() meta.Object { var ret tlAntispamGetPattern.AntispamGetPattern; return &ret }, func() meta.Function { var ret tlAntispamGetPattern.AntispamGetPattern; return &ret }, nil)
 	meta.SetGlobalFactoryCreateForObject(0xa7688492, func() meta.Object { var ret cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFound; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x2c22e225, func() meta.Object {

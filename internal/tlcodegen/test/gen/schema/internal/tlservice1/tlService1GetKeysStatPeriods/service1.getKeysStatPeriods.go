@@ -64,7 +64,8 @@ func (item *Service1GetKeysStatPeriods) WriteResult(w []byte, ret []int32) (_ []
 }
 
 func (item *Service1GetKeysStatPeriods) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int32) error {
-	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -104,6 +105,11 @@ func (item Service1GetKeysStatPeriods) String() string {
 }
 
 func (item *Service1GetKeysStatPeriods) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1GetKeysStatPeriods) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

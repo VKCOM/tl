@@ -37,7 +37,7 @@ func BuiltinTuple3IntWrite(w []byte, vec *[3]int32) []byte {
 	return w
 }
 
-func BuiltinTuple3IntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]int32) error {
+func BuiltinTuple3IntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')

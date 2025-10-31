@@ -67,7 +67,8 @@ func (item *Service3SetLimits) WriteResult(w []byte, ret tlBoolStat.BoolStat) (_
 }
 
 func (item *Service3SetLimits) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlBoolStat.BoolStat) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -107,6 +108,11 @@ func (item Service3SetLimits) String() string {
 }
 
 func (item *Service3SetLimits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3SetLimits) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propLimitsPresented bool
 
 	if in != nil {
@@ -122,7 +128,7 @@ func (item *Service3SetLimits) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 				if propLimitsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.setLimits", "limits")
 				}
-				if err := item.Limits.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Limits.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propLimitsPresented = true

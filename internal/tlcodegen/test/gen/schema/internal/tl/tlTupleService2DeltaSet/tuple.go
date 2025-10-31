@@ -57,9 +57,9 @@ func (item *TupleService2DeltaSet) WriteBoxed(w []byte, nat_tobjectIdLength uint
 	return item.Write(w, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum, nat_n)
 }
 
-func (item *TupleService2DeltaSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) error {
+func (item *TupleService2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_tobjectIdLength uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32, nat_n uint32) error {
 	ptr := (*[]tlService2DeltaSet.Service2DeltaSet)(item)
-	if err := tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetReadJSON(legacyTypeNames, in, ptr, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+	if err := tlBuiltinTupleService2DeltaSet.BuiltinTupleService2DeltaSetReadJSONGeneral(tctx, in, ptr, nat_n, nat_tobjectIdLength, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 		return err
 	}
 	return nil

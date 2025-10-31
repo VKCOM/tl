@@ -136,7 +136,7 @@ func (item *TasksQueueStats) WriteBoxed(w []byte, nat_fields_mask uint32) []byte
 	return item.Write(w, nat_fields_mask)
 }
 
-func (item *TasksQueueStats) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_fields_mask uint32) error {
+func (item *TasksQueueStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_fields_mask uint32) error {
 	var propWaitingSizePresented bool
 	var propScheduledSizePresented bool
 	var propInProgressSizePresented bool

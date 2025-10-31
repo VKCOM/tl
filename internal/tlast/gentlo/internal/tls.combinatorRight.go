@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite
@@ -28,7 +28,6 @@ func (item *TlsCombinatorRight) Read(w []byte) (_ []byte, err error) {
 	return item.Value.ReadBoxed(w)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TlsCombinatorRight) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -47,7 +46,6 @@ func (item *TlsCombinatorRight) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TlsCombinatorRight) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -66,6 +64,11 @@ func (item TlsCombinatorRight) String() string {
 }
 
 func (item *TlsCombinatorRight) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TlsCombinatorRight) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
 	if in != nil {
@@ -81,7 +84,7 @@ func (item *TlsCombinatorRight) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 				if propValuePresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.combinatorRight", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true
@@ -102,18 +105,19 @@ func (item *TlsCombinatorRight) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TlsCombinatorRight) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *TlsCombinatorRight) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *TlsCombinatorRight) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TlsCombinatorRight) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *TlsCombinatorRight) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"value":`...)
-	if w, err = item.Value.WriteJSONOpt(newTypeNames, short, w); err != nil {
+	if w, err = item.Value.WriteJSONOpt(tctx, w); err != nil {
 		return w, err
 	}
 	return append(w, '}'), nil

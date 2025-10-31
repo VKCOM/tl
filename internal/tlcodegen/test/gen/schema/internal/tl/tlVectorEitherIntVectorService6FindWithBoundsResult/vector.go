@@ -61,8 +61,13 @@ func (item VectorEitherIntVectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorEitherIntVectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorEitherIntVectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult)(item)
-	if err := tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

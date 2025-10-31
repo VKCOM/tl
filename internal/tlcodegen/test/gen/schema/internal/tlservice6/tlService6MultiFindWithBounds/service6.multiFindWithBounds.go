@@ -72,7 +72,8 @@ func (item *Service6MultiFindWithBounds) WriteResult(w []byte, ret []cycle_ea833
 }
 
 func (item *Service6MultiFindWithBounds) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]cycle_ea8339e8d6257cc96a27be3f42a07a87.EitherIntVectorService6FindWithBoundsResult) error {
-	if err := tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinVectorEitherIntVectorService6FindWithBoundsResult.BuiltinVectorEitherIntVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -112,6 +113,11 @@ func (item Service6MultiFindWithBounds) String() string {
 }
 
 func (item *Service6MultiFindWithBounds) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service6MultiFindWithBounds) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propClustersPresented bool
 
 	if in != nil {
@@ -127,7 +133,7 @@ func (item *Service6MultiFindWithBounds) ReadJSON(legacyTypeNames bool, in *basi
 				if propClustersPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service6.multiFindWithBounds", "clusters")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Clusters); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Clusters); err != nil {
 					return err
 				}
 				propClustersPresented = true

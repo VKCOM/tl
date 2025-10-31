@@ -151,6 +151,11 @@ func (item TasksQueueTypeStats) String() string {
 }
 
 func (item *TasksQueueTypeStats) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksQueueTypeStats) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propWaitingSizePresented bool
 	var propScheduledSizePresented bool

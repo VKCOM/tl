@@ -106,6 +106,11 @@ func (item Service1DisableExpiration) String() string {
 }
 
 func (item *Service1DisableExpiration) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1DisableExpiration) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPrefixPresented bool
 
 	if in != nil {

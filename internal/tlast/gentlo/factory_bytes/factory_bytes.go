@@ -31,6 +31,7 @@ func CreateObjectFromNameBytes(name string) meta.Object {
 }
 
 func init() {
+	// TL
 	meta.SetGlobalFactoryCreateForObjectBytes(0x29dfe61b, func() meta.Object { var ret internal.TlsArg; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0xd9fb20de, func() meta.Object { var ret internal.TlsArray; return &ret })
 	meta.SetGlobalFactoryCreateForObjectBytes(0x5c0a1ed5, func() meta.Object { var ret internal.TlsCombinator0; return &ret })

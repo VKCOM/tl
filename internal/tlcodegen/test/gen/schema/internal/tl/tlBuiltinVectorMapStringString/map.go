@@ -45,7 +45,7 @@ func BuiltinVectorMapStringStringWrite(w []byte, vec []tlMapStringString.MapStri
 	return w
 }
 
-func BuiltinVectorMapStringStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlMapStringString.MapStringString) error {
+func BuiltinVectorMapStringStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlMapStringString.MapStringString) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorMapStringStringReadJSON(legacyTypeNames bool, in *basictl.Json
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

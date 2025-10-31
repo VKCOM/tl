@@ -147,6 +147,11 @@ func (item Service4ModifiedNewsEntry) String() string {
 }
 
 func (item *Service4ModifiedNewsEntry) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service4ModifiedNewsEntry) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectPresented bool
 	var propCreationDatePresented bool
 	var propFieldsMaskPresented bool
@@ -167,7 +172,7 @@ func (item *Service4ModifiedNewsEntry) ReadJSON(legacyTypeNames bool, in *basict
 				if propObjectPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service4.modifiedNewsEntry", "object")
 				}
-				if err := item.Object.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Object.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propObjectPresented = true

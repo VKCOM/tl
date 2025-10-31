@@ -10,9 +10,14 @@ package meta
 import (
 	"fmt"
 
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 	"github.com/vkcom/tl/internal/tlast/gentlo/internal"
-	"github.com/vkcom/tl/pkg/basictl"
 )
+
+func SchemaGenerator() string { return "(devel)" }
+func SchemaURL() string       { return "" }
+func SchemaCommit() string    { return "" }
+func SchemaTimestamp() uint32 { return 0 }
 
 // We can create only types which have zero type arguments and zero nat arguments
 type Object interface {
@@ -22,24 +27,25 @@ type Object interface {
 
 	Read(w []byte) ([]byte, error)              // reads type's bare TL representation by consuming bytes from the start of w and returns remaining bytes, plus error
 	ReadBoxed(w []byte) ([]byte, error)         // same as Read, but reads/checks TLTag first (this method is general version of Write, use it only when you are working with interface)
-	WriteGeneral(w []byte) ([]byte, error)      // appends bytes of type's bare TL representation to the end of w and returns it, plus error
-	WriteBoxedGeneral(w []byte) ([]byte, error) // same as Write, but writes TLTag first (this method is general version of WriteBoxed, use it only when you are working with interface)
+	WriteGeneral(w []byte) ([]byte, error)      // same as Write, but has common signature (with error) for all objects, so can be called through interface
+	WriteBoxedGeneral(w []byte) ([]byte, error) // same as WriteBoxed, but has common signature (with error) for all objects, so can be called through interface
 
 	MarshalJSON() ([]byte, error) // returns type's JSON representation, plus error
 	UnmarshalJSON([]byte) error   // reads type's JSON representation
 
 	ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error
-	WriteJSONGeneral(w []byte) ([]byte, error) // like MarshalJSON, but appends to w and returns it (this method is general version of WriteBoxed, use it only when you are working with interface)
+	// like MarshalJSON, but appends to w and returns it
+	// pass empty basictl.JSONWriteContext{} if you do not know which options you need
+	WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error)
 }
 
 type Function interface {
 	Object
 
-	ReadResultWriteResultJSON(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
-	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
-
-	// For transcoding short-long version during Long ID and newTypeNames transition
-	ReadResultWriteResultJSONOpt(newTypeNames bool, short bool, r []byte, w []byte) ([]byte, []byte, error)
+	// tctx is for options controlling transcoding short-long version during Long ID and legacyTypeNames->newTypeNames transition
+	// pass empty basictl.JSONWriteContext{} if you do not know which options you need
+	ReadResultWriteResultJSON(tctx *basictl.JSONWriteContext, r []byte, w []byte) ([]byte, []byte, error) // combination of ReadResult(r) + WriteResultJSON(w). Returns new r, new w, plus error
+	ReadResultJSONWriteResult(r []byte, w []byte) ([]byte, []byte, error)                                 // combination of ReadResultJSON(r) + WriteResult(w). Returns new r, new w, plus error
 }
 
 func GetAllTLItems() []TLItem {
@@ -124,6 +130,7 @@ type TLItem struct {
 	tag         uint32
 	annotations uint32
 	tlName      string
+	isTL2       bool
 
 	resultTypeContainsUnionTypes    bool
 	argumentsTypesContainUnionTypes bool
@@ -138,6 +145,7 @@ type TLItem struct {
 
 func (item TLItem) TLTag() uint32            { return item.tag }
 func (item TLItem) TLName() string           { return item.tlName }
+func (item TLItem) IsTL2() bool              { return item.isTL2 }
 func (item TLItem) CreateObject() Object     { return item.createObject() }
 func (item TLItem) IsFunction() bool         { return item.createFunction != nil }
 func (item TLItem) CreateFunction() Function { return item.createFunction() }
@@ -150,6 +158,12 @@ func (item TLItem) HasFunctionLong() bool        { return item.createFunctionLon
 func (item TLItem) CreateFunctionLong() Function { return item.createFunctionLong() }
 
 // Annotations
+func (item TLItem) AnnotationAny() bool       { return item.annotations&0x1 != 0 }
+func (item TLItem) AnnotationInternal() bool  { return item.annotations&0x2 != 0 }
+func (item TLItem) AnnotationKphp() bool      { return item.annotations&0x4 != 0 }
+func (item TLItem) AnnotationRead() bool      { return item.annotations&0x8 != 0 }
+func (item TLItem) AnnotationReadwrite() bool { return item.annotations&0x10 != 0 }
+func (item TLItem) AnnotationWrite() bool     { return item.annotations&0x20 != 0 }
 
 // TLItem serves as a single type for all enum values
 func (item *TLItem) Reset()                                {}
@@ -178,7 +192,8 @@ func (item *TLItem) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error 
 	}
 	return nil
 }
-func (item *TLItem) WriteJSONGeneral(w []byte) (_ []byte, err error) {
+
+func (item *TLItem) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	return item.WriteJSON(w), nil
 }
 func (item *TLItem) WriteJSON(w []byte) []byte {
@@ -194,7 +209,6 @@ func (item *TLItem) UnmarshalJSON(b []byte) error {
 	}
 	return nil
 }
-
 func FactoryItemByTLTag(tag uint32) *TLItem {
 	return itemsByTag[tag]
 }
@@ -225,6 +239,14 @@ func SetGlobalFactoryCreateForObject(itemTag uint32, createObject func() Object)
 	item.createObject = createObject
 }
 
+func SetGlobalFactoryCreateForObjectTL2(itemName string, createObject func() Object) {
+	item := itemsByName[itemName]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
+	}
+	item.createObject = createObject
+}
+
 func SetGlobalFactoryCreateForEnumElement(itemTag uint32) {
 	item := itemsByTag[itemTag]
 	if item == nil {
@@ -247,6 +269,14 @@ func SetGlobalFactoryCreateForObjectBytes(itemTag uint32, createObject func() Ob
 	item := itemsByTag[itemTag]
 	if item == nil {
 		panic(fmt.Sprintf("factory cannot find item tag #%08x to set", itemTag))
+	}
+	item.createObjectBytes = createObject
+}
+
+func SetGlobalFactoryCreateForObjectBytesTL2(itemName string, createObject func() Object) {
+	item := itemsByName[itemName]
+	if item == nil {
+		panic(fmt.Sprintf("factory cannot find item name %q to set", itemName))
 	}
 	item.createObjectBytes = createObject
 }
@@ -287,6 +317,15 @@ func fillObject(n1 string, n2 string, item *TLItem) {
 	// itemsByName[fmt.Sprintf("#%08x", item.tag)] = item
 }
 
+func fillObjectTL2(item *TLItem) {
+	itemsByName[item.tlName] = item
+	if item.tag != 0 {
+		itemsByTag[item.tag] = item
+	}
+	item.createObject = pleaseImportFactoryObject
+	item.createObjectBytes = pleaseImportFactoryBytesObject
+}
+
 func fillFunction(n1 string, n2 string, item *TLItem) {
 	fillObject(n1, n2, item)
 	item.createFunction = pleaseImportFactoryFunction
@@ -294,21 +333,22 @@ func fillFunction(n1 string, n2 string, item *TLItem) {
 }
 
 func init() {
-	fillObject("tls.arg#29dfe61b", "#29dfe61b", &TLItem{tag: 0x29dfe61b, annotations: 0x0, tlName: "tls.arg", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.array#d9fb20de", "#d9fb20de", &TLItem{tag: 0xd9fb20de, annotations: 0x0, tlName: "tls.array", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.combinator#5c0a1ed5", "#5c0a1ed5", &TLItem{tag: 0x5c0a1ed5, annotations: 0x0, tlName: "tls.combinator", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.combinatorLeft#4c12c6d9", "#4c12c6d9", &TLItem{tag: 0x4c12c6d9, annotations: 0x0, tlName: "tls.combinatorLeft", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.combinatorLeftBuiltin#cd211f63", "#cd211f63", &TLItem{tag: 0xcd211f63, annotations: 0x0, tlName: "tls.combinatorLeftBuiltin", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.combinatorRight#2c064372", "#2c064372", &TLItem{tag: 0x2c064372, annotations: 0x0, tlName: "tls.combinatorRight", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.combinator_v4#e91692d5", "#e91692d5", &TLItem{tag: 0xe91692d5, annotations: 0x0, tlName: "tls.combinator_v4", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.exprNat#dcb49bd8", "#dcb49bd8", &TLItem{tag: 0xdcb49bd8, annotations: 0x0, tlName: "tls.exprNat", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.exprType#ecc9da78", "#ecc9da78", &TLItem{tag: 0xecc9da78, annotations: 0x0, tlName: "tls.exprType", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.natConst#8ce940b1", "#8ce940b1", &TLItem{tag: 0x8ce940b1, annotations: 0x0, tlName: "tls.natConst", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.natVar#4e8a14f0", "#4e8a14f0", &TLItem{tag: 0x4e8a14f0, annotations: 0x0, tlName: "tls.natVar", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.schema_v2#3a2f9be2", "#3a2f9be2", &TLItem{tag: 0x3a2f9be2, annotations: 0x0, tlName: "tls.schema_v2", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.schema_v3#e4a8604b", "#e4a8604b", &TLItem{tag: 0xe4a8604b, annotations: 0x0, tlName: "tls.schema_v3", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.schema_v4#90ac88d7", "#90ac88d7", &TLItem{tag: 0x90ac88d7, annotations: 0x0, tlName: "tls.schema_v4", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.type#12eb4386", "#12eb4386", &TLItem{tag: 0x12eb4386, annotations: 0x0, tlName: "tls.type", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.typeExpr#c1863d08", "#c1863d08", &TLItem{tag: 0xc1863d08, annotations: 0x0, tlName: "tls.typeExpr", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
-	fillObject("tls.typeVar#0142ceae", "#0142ceae", &TLItem{tag: 0x0142ceae, annotations: 0x0, tlName: "tls.typeVar", resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	// TL
+	fillObject("tls.arg#29dfe61b", "#29dfe61b", &TLItem{tag: 0x29dfe61b, annotations: 0x0, tlName: "tls.arg", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.array#d9fb20de", "#d9fb20de", &TLItem{tag: 0xd9fb20de, annotations: 0x0, tlName: "tls.array", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinator#5c0a1ed5", "#5c0a1ed5", &TLItem{tag: 0x5c0a1ed5, annotations: 0x0, tlName: "tls.combinator", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinatorLeft#4c12c6d9", "#4c12c6d9", &TLItem{tag: 0x4c12c6d9, annotations: 0x0, tlName: "tls.combinatorLeft", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinatorLeftBuiltin#cd211f63", "#cd211f63", &TLItem{tag: 0xcd211f63, annotations: 0x0, tlName: "tls.combinatorLeftBuiltin", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinatorRight#2c064372", "#2c064372", &TLItem{tag: 0x2c064372, annotations: 0x0, tlName: "tls.combinatorRight", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.combinator_v4#e91692d5", "#e91692d5", &TLItem{tag: 0xe91692d5, annotations: 0x0, tlName: "tls.combinator_v4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.exprNat#dcb49bd8", "#dcb49bd8", &TLItem{tag: 0xdcb49bd8, annotations: 0x0, tlName: "tls.exprNat", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.exprType#ecc9da78", "#ecc9da78", &TLItem{tag: 0xecc9da78, annotations: 0x0, tlName: "tls.exprType", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.natConst#8ce940b1", "#8ce940b1", &TLItem{tag: 0x8ce940b1, annotations: 0x0, tlName: "tls.natConst", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.natVar#4e8a14f0", "#4e8a14f0", &TLItem{tag: 0x4e8a14f0, annotations: 0x0, tlName: "tls.natVar", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.schema_v2#3a2f9be2", "#3a2f9be2", &TLItem{tag: 0x3a2f9be2, annotations: 0x0, tlName: "tls.schema_v2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.schema_v3#e4a8604b", "#e4a8604b", &TLItem{tag: 0xe4a8604b, annotations: 0x0, tlName: "tls.schema_v3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.schema_v4#90ac88d7", "#90ac88d7", &TLItem{tag: 0x90ac88d7, annotations: 0x0, tlName: "tls.schema_v4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.type#12eb4386", "#12eb4386", &TLItem{tag: 0x12eb4386, annotations: 0x0, tlName: "tls.type", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.typeExpr#c1863d08", "#c1863d08", &TLItem{tag: 0xc1863d08, annotations: 0x0, tlName: "tls.typeExpr", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("tls.typeVar#0142ceae", "#0142ceae", &TLItem{tag: 0x0142ceae, annotations: 0x0, tlName: "tls.typeVar", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 }

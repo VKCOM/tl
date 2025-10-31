@@ -66,7 +66,8 @@ func (item *UniqueGet) WriteResult(w []byte, ret tlIntMaybe.IntMaybe) (_ []byte,
 }
 
 func (item *UniqueGet) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlIntMaybe.IntMaybe) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item UniqueGet) String() string {
 }
 
 func (item *UniqueGet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *UniqueGet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 
 	if in != nil {

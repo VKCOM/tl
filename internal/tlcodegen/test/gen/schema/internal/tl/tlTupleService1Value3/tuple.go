@@ -61,8 +61,13 @@ func (item TupleService1Value3) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleService1Value3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleService1Value3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value)(item)
-	if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

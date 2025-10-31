@@ -107,13 +107,21 @@ func (item *EitherService6ErrorVectorService6FindResultRow) WriteBoxed(w []byte)
 }
 
 func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("Either", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "left#0a29cd5d", "left", "#0a29cd5d":
-		if !legacyTypeNames && _tag == "left#0a29cd5d" {
+		if tctx.IsTL2 && _tag != "left" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("Either", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "left#0a29cd5d" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("Either", "left#0a29cd5d")
 		}
 		item.index = 0
@@ -122,11 +130,14 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeN
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueLeft.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueLeft.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "right#df3ecb3b", "right", "#df3ecb3b":
-		if !legacyTypeNames && _tag == "right#df3ecb3b" {
+		if tctx.IsTL2 && _tag != "right" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("Either", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "right#df3ecb3b" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("Either", "right#df3ecb3b")
 		}
 		item.index = 1
@@ -135,7 +146,7 @@ func (item *EitherService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeN
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueRight.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueRight.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -156,19 +167,27 @@ func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSON(w []byte) 
 func (item *EitherService6ErrorVectorService6FindResultRow) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"left#0a29cd5d"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"left"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"left#0a29cd5d"`...)
+			} else {
+				w = append(w, `{"type":"left"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueLeft.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"right#df3ecb3b"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"right"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"right#df3ecb3b"`...)
+			} else {
+				w = append(w, `{"type":"right"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valueRight.WriteJSONOpt(tctx, w)
@@ -244,6 +263,11 @@ func (item LeftService6ErrorVectorService6FindResultRow) String() string {
 }
 
 func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
 	if in != nil {
@@ -259,7 +283,7 @@ func (item *LeftService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNam
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("left", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true
@@ -358,6 +382,11 @@ func (item RightService6ErrorVectorService6FindResultRow) String() string {
 }
 
 func (item *RightService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *RightService6ErrorVectorService6FindResultRow) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propValuePresented bool
 
 	if in != nil {
@@ -373,7 +402,7 @@ func (item *RightService6ErrorVectorService6FindResultRow) ReadJSON(legacyTypeNa
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("right", "value")
 				}
-				if err := tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowReadJSON(legacyTypeNames, in, &item.Value); err != nil {
+				if err := tlBuiltinVectorService6FindResultRow.BuiltinVectorService6FindResultRowReadJSONGeneral(tctx, in, &item.Value); err != nil {
 					return err
 				}
 				propValuePresented = true

@@ -170,6 +170,11 @@ func (item TasksTask) String() string {
 }
 
 func (item *TasksTask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksTask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propFlagsPresented bool
 	var propTagPresented bool
@@ -208,7 +213,7 @@ func (item *TasksTask) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propTagPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.task", "tag")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Tag); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Tag); err != nil {
 					return err
 				}
 				propTagPresented = true

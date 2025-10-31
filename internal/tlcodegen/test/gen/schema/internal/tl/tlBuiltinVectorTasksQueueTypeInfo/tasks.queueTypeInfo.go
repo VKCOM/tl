@@ -45,7 +45,7 @@ func BuiltinVectorTasksQueueTypeInfoWrite(w []byte, vec []tlTasksQueueTypeInfo.T
 	return w
 }
 
-func BuiltinVectorTasksQueueTypeInfoReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) error {
+func BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorTasksQueueTypeInfoReadJSON(legacyTypeNames bool, in *basictl.J
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

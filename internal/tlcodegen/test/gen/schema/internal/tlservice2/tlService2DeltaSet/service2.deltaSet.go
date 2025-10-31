@@ -67,7 +67,7 @@ func (item *Service2DeltaSet) WriteBoxed(w []byte, nat_objectIdLength uint32, na
 	return item.Write(w, nat_objectIdLength, nat_intCountersNum, nat_floatCountersNum)
 }
 
-func (item *Service2DeltaSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
+func (item *Service2DeltaSet) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32, nat_intCountersNum uint32, nat_floatCountersNum uint32) error {
 	var rawId []byte
 	var rawCounters []byte
 
@@ -111,7 +111,7 @@ func (item *Service2DeltaSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 	if rawId != nil {
 		inIdPointer = &inId
 	}
-	if err := item.Id.ReadJSON(legacyTypeNames, inIdPointer, nat_objectIdLength); err != nil {
+	if err := item.Id.ReadJSONGeneral(tctx, inIdPointer, nat_objectIdLength); err != nil {
 		return err
 	}
 
@@ -120,7 +120,7 @@ func (item *Service2DeltaSet) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 	if rawCounters != nil {
 		inCountersPointer = &inCounters
 	}
-	if err := item.Counters.ReadJSON(legacyTypeNames, inCountersPointer, nat_intCountersNum, nat_floatCountersNum); err != nil {
+	if err := item.Counters.ReadJSONGeneral(tctx, inCountersPointer, nat_intCountersNum, nat_floatCountersNum); err != nil {
 		return err
 	}
 

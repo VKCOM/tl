@@ -767,6 +767,11 @@ func (item TasksFullFilledCron) String() string {
 }
 
 func (item *TasksFullFilledCron) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksFullFilledCron) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
 	var propA0Presented bool
 	var propA1Presented bool

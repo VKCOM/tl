@@ -70,7 +70,8 @@ func (item *Service1GetWildcardList) WriteResult(w []byte, ret []string) (_ []by
 }
 
 func (item *Service1GetWildcardList) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]string) error {
-	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinVectorString.BuiltinVectorStringReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -110,6 +111,11 @@ func (item Service1GetWildcardList) String() string {
 }
 
 func (item *Service1GetWildcardList) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1GetWildcardList) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPrefixPresented bool
 
 	if in != nil {

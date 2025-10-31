@@ -38,7 +38,7 @@ func BuiltinTuple3Service1ValueWrite(w []byte, vec *[3]cycle_6ca945392bbf8b14f24
 	return w
 }
 
-func BuiltinTuple3Service1ValueReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
+func BuiltinTuple3Service1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')
@@ -49,7 +49,7 @@ func BuiltinTuple3Service1ValueReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 			if index == 3 {
 				return internal.ErrorWrongSequenceLength("[3]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value", index+1, 3)
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

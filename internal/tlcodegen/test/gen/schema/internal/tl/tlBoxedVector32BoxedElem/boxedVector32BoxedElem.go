@@ -74,7 +74,8 @@ func (item *BoxedVector32BoxedElem) WriteResult(w []byte, ret []int32) (_ []byte
 }
 
 func (item *BoxedVector32BoxedElem) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]int32) error {
-	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -114,6 +115,11 @@ func (item BoxedVector32BoxedElem) String() string {
 }
 
 func (item *BoxedVector32BoxedElem) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BoxedVector32BoxedElem) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -129,7 +135,7 @@ func (item *BoxedVector32BoxedElem) ReadJSON(legacyTypeNames bool, in *basictl.J
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedVector32BoxedElem", "x")
 				}
-				if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSON(legacyTypeNames, in, &item.X); err != nil {
+				if err := tlBuiltinVectorIntBoxed.BuiltinVectorIntBoxedReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true

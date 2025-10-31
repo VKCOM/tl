@@ -61,8 +61,13 @@ func (item VectorMapStringString) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorMapStringString) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorMapStringString) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlMapStringString.MapStringString)(item)
-	if err := tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

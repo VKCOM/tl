@@ -66,7 +66,8 @@ func (item *Service1GetExpireTime) WriteResult(w []byte, ret tlIntMaybe.IntMaybe
 }
 
 func (item *Service1GetExpireTime) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlIntMaybe.IntMaybe) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item Service1GetExpireTime) String() string {
 }
 
 func (item *Service1GetExpireTime) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1GetExpireTime) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 
 	if in != nil {

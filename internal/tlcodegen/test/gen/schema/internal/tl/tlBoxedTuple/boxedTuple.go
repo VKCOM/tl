@@ -74,7 +74,8 @@ func (item *BoxedTuple) WriteResult(w []byte, ret [3]int32) (_ []byte, err error
 }
 
 func (item *BoxedTuple) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[3]int32) error {
-	if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -114,6 +115,11 @@ func (item BoxedTuple) String() string {
 }
 
 func (item *BoxedTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BoxedTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -129,7 +135,7 @@ func (item *BoxedTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedTuple", "x")
 				}
-				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSON(legacyTypeNames, in, &item.X); err != nil {
+				if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, &item.X); err != nil {
 					return err
 				}
 				propXPresented = true
