@@ -61,8 +61,13 @@ func (item VectorService6FindWithBoundsResult) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorService6FindWithBoundsResult) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorService6FindWithBoundsResult) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlService6FindWithBoundsResult.Service6FindWithBoundsResult)(item)
-	if err := tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorService6FindWithBoundsResult.BuiltinVectorService6FindWithBoundsResultReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

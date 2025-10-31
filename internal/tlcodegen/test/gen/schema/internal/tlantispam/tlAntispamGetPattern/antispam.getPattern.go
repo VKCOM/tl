@@ -66,7 +66,8 @@ func (item *AntispamGetPattern) WriteResult(w []byte, ret cycle_4174bfee82ee7ea4
 }
 
 func (item *AntispamGetPattern) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_4174bfee82ee7ea4902a121c2642c5ff.AntispamPatternFull) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item AntispamGetPattern) String() string {
 }
 
 func (item *AntispamGetPattern) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AntispamGetPattern) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propIdPresented bool
 
 	if in != nil {

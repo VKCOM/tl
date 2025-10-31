@@ -112,6 +112,11 @@ func (item Service3SetLastVisitTimestamp) String() string {
 }
 
 func (item *Service3SetLastVisitTimestamp) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3SetLastVisitTimestamp) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propUserIdPresented bool
 	var propTimestampPresented bool
 

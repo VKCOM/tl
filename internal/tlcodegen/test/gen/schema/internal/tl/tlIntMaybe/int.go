@@ -46,7 +46,7 @@ func (item *IntMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *IntMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *IntMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err

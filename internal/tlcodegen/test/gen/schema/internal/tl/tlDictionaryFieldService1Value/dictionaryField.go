@@ -67,6 +67,11 @@ func (item DictionaryFieldService1Value) String() string {
 }
 
 func (item *DictionaryFieldService1Value) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *DictionaryFieldService1Value) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propKeyPresented bool
 	var propValuePresented bool
 
@@ -91,7 +96,7 @@ func (item *DictionaryFieldService1Value) ReadJSON(legacyTypeNames bool, in *bas
 				if propValuePresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("dictionaryField", "value")
 				}
-				if err := item.Value.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Value.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propValuePresented = true

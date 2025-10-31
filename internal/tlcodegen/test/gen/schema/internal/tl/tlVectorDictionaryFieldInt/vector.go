@@ -60,8 +60,13 @@ func (item VectorDictionaryFieldInt) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorDictionaryFieldInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorDictionaryFieldInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*map[string]int32)(item)
-	if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

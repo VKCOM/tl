@@ -61,8 +61,13 @@ func (item VectorService3GroupSizeLimit) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorService3GroupSizeLimit) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorService3GroupSizeLimit) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlService3GroupSizeLimit.Service3GroupSizeLimit)(item)
-	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorService3GroupSizeLimit.BuiltinVectorService3GroupSizeLimitReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

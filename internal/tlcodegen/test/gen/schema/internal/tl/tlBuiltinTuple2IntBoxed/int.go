@@ -41,7 +41,7 @@ func BuiltinTuple2IntBoxedWrite(w []byte, vec *[2]int32) []byte {
 	return w
 }
 
-func BuiltinTuple2IntBoxedReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[2]int32) error {
+func BuiltinTuple2IntBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[2]int32) error {
 	index := 0
 	if in != nil {
 		in.Delim('[')

@@ -66,7 +66,8 @@ func (item *Service5PerformQuery) WriteResult(w []byte, ret cycle_16847572a0831d
 }
 
 func (item *Service5PerformQuery) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item Service5PerformQuery) String() string {
 }
 
 func (item *Service5PerformQuery) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service5PerformQuery) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propQueryPresented bool
 
 	if in != nil {

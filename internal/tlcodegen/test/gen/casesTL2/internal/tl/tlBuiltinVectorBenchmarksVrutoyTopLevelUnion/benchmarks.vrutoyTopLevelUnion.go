@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg *basictl.RandGenerator, vec *[]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

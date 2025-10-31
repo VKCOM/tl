@@ -74,7 +74,7 @@ func BuiltinVectorDictionaryFieldDictionaryIntWrite(w []byte, m map[string]map[s
 	return w
 }
 
-func BuiltinVectorDictionaryFieldDictionaryIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]map[string]int32) error {
+func BuiltinVectorDictionaryFieldDictionaryIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]map[string]int32) error {
 	var data map[string]map[string]int32
 	if *m == nil {
 		*m = make(map[string]map[string]int32, 0)
@@ -94,7 +94,7 @@ func BuiltinVectorDictionaryFieldDictionaryIntReadJSON(legacyTypeNames bool, in 
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value map[string]int32
-			if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSON(legacyTypeNames, in, &value); err != nil {
+			if err := tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntReadJSONGeneral(tctx, in, &value); err != nil {
 				return err
 			}
 			data[key] = value

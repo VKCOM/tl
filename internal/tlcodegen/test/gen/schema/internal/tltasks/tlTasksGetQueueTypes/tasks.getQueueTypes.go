@@ -77,7 +77,8 @@ func (item *TasksGetQueueTypes) WriteResult(w []byte, ret []tlTasksQueueTypeInfo
 }
 
 func (item *TasksGetQueueTypes) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]tlTasksQueueTypeInfo.TasksQueueTypeInfo) error {
-	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinVectorTasksQueueTypeInfo.BuiltinVectorTasksQueueTypeInfoReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -117,6 +118,11 @@ func (item TasksGetQueueTypes) String() string {
 }
 
 func (item *TasksGetQueueTypes) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksGetQueueTypes) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propSettingsMaskPresented bool
 	var propStatsMaskPresented bool
 

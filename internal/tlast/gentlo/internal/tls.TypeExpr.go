@@ -8,7 +8,7 @@
 package internal
 
 import (
-	"github.com/vkcom/tl/pkg/basictl"
+	"github.com/vkcom/tl/internal/tlast/gentlo/basictl"
 )
 
 var _ = basictl.NatWrite
@@ -44,7 +44,6 @@ func (item *TlsArray) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTupleTlsArgBoxedRead(w, &item.Args, item.ArgsNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TlsArray) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -65,7 +64,6 @@ func (item *TlsArray) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TlsArray) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -84,6 +82,11 @@ func (item TlsArray) String() string {
 }
 
 func (item *TlsArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TlsArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propMultiplicityPresented bool
 	var propArgsNumPresented bool
 	var rawArgs []byte
@@ -101,7 +104,7 @@ func (item *TlsArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 				if propMultiplicityPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("tls.array", "multiplicity")
 				}
-				if err := item.Multiplicity.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Multiplicity.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propMultiplicityPresented = true
@@ -142,7 +145,7 @@ func (item *TlsArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 	if rawArgs != nil {
 		inArgsPointer = &inArgs
 	}
-	if err := BuiltinTupleTlsArgBoxedReadJSON(legacyTypeNames, inArgsPointer, &item.Args, item.ArgsNum); err != nil {
+	if err := BuiltinTupleTlsArgBoxedReadJSONGeneral(tctx, inArgsPointer, &item.Args, item.ArgsNum); err != nil {
 		return err
 	}
 
@@ -150,18 +153,19 @@ func (item *TlsArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) erro
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TlsArray) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *TlsArray) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *TlsArray) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TlsArray) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *TlsArray) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"multiplicity":`...)
-	w = item.Multiplicity.WriteJSONOpt(newTypeNames, short, w)
+	w = item.Multiplicity.WriteJSONOpt(tctx, w)
 	backupIndexArgsNum := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"args_num":`...)
@@ -172,7 +176,7 @@ func (item *TlsArray) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ [
 	backupIndexArgs := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"args":`...)
-	if w, err = BuiltinTupleTlsArgBoxedWriteJSONOpt(newTypeNames, short, w, item.Args, item.ArgsNum); err != nil {
+	if w, err = BuiltinTupleTlsArgBoxedWriteJSONOpt(tctx, w, item.Args, item.ArgsNum); err != nil {
 		return w, err
 	}
 	if (len(item.Args) != 0) == false {
@@ -284,7 +288,6 @@ func (item *TlsTypeExpr) ReadBoxed(w []byte) (_ []byte, err error) {
 	}
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TlsTypeExpr) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -307,13 +310,21 @@ func (item *TlsTypeExpr) WriteBoxed(w []byte) (_ []byte, err error) {
 }
 
 func (item *TlsTypeExpr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TlsTypeExpr) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := Json2ReadUnion("tls.TypeExpr", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "tls.typeVar#0142ceae", "tls.typeVar", "#0142ceae":
-		if !legacyTypeNames && _tag == "tls.typeVar#0142ceae" {
+		if tctx.IsTL2 && _tag != "tls.typeVar" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "tls.typeVar#0142ceae" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "tls.typeVar#0142ceae")
 		}
 		item.index = 0
@@ -322,11 +333,14 @@ func (item *TlsTypeExpr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueTypeVar.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueTypeVar.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.array#d9fb20de", "tls.array", "#d9fb20de":
-		if !legacyTypeNames && _tag == "tls.array#d9fb20de" {
+		if tctx.IsTL2 && _tag != "tls.array" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "tls.array#d9fb20de" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "tls.array#d9fb20de")
 		}
 		item.index = 1
@@ -335,11 +349,14 @@ func (item *TlsTypeExpr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueArray.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueArray.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "tls.typeExpr#c1863d08", "tls.typeExpr", "#c1863d08":
-		if !legacyTypeNames && _tag == "tls.typeExpr#c1863d08" {
+		if tctx.IsTL2 && _tag != "tls.typeExpr" {
+			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "tls.typeExpr#c1863d08" {
 			return ErrorInvalidUnionLegacyTagJSON("tls.TypeExpr", "tls.typeExpr#c1863d08")
 		}
 		item.index = 2
@@ -348,7 +365,7 @@ func (item *TlsTypeExpr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueTypeExpr.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueTypeExpr.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -358,43 +375,56 @@ func (item *TlsTypeExpr) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TlsTypeExpr) WriteJSONGeneral(w []byte) ([]byte, error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *TlsTypeExpr) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) ([]byte, error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *TlsTypeExpr) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TlsTypeExpr) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	switch item.index {
 	case 0:
-		if newTypeNames {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"tls.typeVar"`...)
 		} else {
-			w = append(w, `{"type":"tls.typeVar#0142ceae"`...)
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"tls.typeVar#0142ceae"`...)
+			} else {
+				w = append(w, `{"type":"tls.typeVar"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
-		w = item.valueTypeVar.WriteJSONOpt(newTypeNames, short, w)
+		w = item.valueTypeVar.WriteJSONOpt(tctx, w)
 		return append(w, '}'), nil
 	case 1:
-		if newTypeNames {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"tls.array"`...)
 		} else {
-			w = append(w, `{"type":"tls.array#d9fb20de"`...)
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"tls.array#d9fb20de"`...)
+			} else {
+				w = append(w, `{"type":"tls.array"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
-		if w, err = item.valueArray.WriteJSONOpt(newTypeNames, short, w); err != nil {
+		if w, err = item.valueArray.WriteJSONOpt(tctx, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
 	case 2:
-		if newTypeNames {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"tls.typeExpr"`...)
 		} else {
-			w = append(w, `{"type":"tls.typeExpr#c1863d08"`...)
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"tls.typeExpr#c1863d08"`...)
+			} else {
+				w = append(w, `{"type":"tls.typeExpr"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
-		if w, err = item.valueTypeExpr.WriteJSONOpt(newTypeNames, short, w); err != nil {
+		if w, err = item.valueTypeExpr.WriteJSONOpt(tctx, w); err != nil {
 			return w, err
 		}
 		return append(w, '}'), nil
@@ -458,7 +488,6 @@ func (item *TlsTypeExpr0) Read(w []byte) (_ []byte, err error) {
 	return BuiltinTupleTlsExprRead(w, &item.Children, item.ChildrenNum)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TlsTypeExpr0) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w)
 }
@@ -480,7 +509,6 @@ func (item *TlsTypeExpr0) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TlsTypeExpr0) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w)
 }
@@ -499,6 +527,11 @@ func (item TlsTypeExpr0) String() string {
 }
 
 func (item *TlsTypeExpr0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TlsTypeExpr0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNamePresented bool
 	var propFlagsPresented bool
 	var propChildrenNumPresented bool
@@ -569,7 +602,7 @@ func (item *TlsTypeExpr0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 	if rawChildren != nil {
 		inChildrenPointer = &inChildren
 	}
-	if err := BuiltinTupleTlsExprReadJSON(legacyTypeNames, inChildrenPointer, &item.Children, item.ChildrenNum); err != nil {
+	if err := BuiltinTupleTlsExprReadJSONGeneral(tctx, inChildrenPointer, &item.Children, item.ChildrenNum); err != nil {
 		return err
 	}
 
@@ -577,14 +610,15 @@ func (item *TlsTypeExpr0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TlsTypeExpr0) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+func (item *TlsTypeExpr0) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w)
 }
 
 func (item *TlsTypeExpr0) WriteJSON(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TlsTypeExpr0) WriteJSONOpt(newTypeNames bool, short bool, w []byte) (_ []byte, err error) {
+func (item *TlsTypeExpr0) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
 	w = append(w, '{')
 	backupIndexName := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -610,7 +644,7 @@ func (item *TlsTypeExpr0) WriteJSONOpt(newTypeNames bool, short bool, w []byte) 
 	backupIndexChildren := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"children":`...)
-	if w, err = BuiltinTupleTlsExprWriteJSONOpt(newTypeNames, short, w, item.Children, item.ChildrenNum); err != nil {
+	if w, err = BuiltinTupleTlsExprWriteJSONOpt(tctx, w, item.Children, item.ChildrenNum); err != nil {
 		return w, err
 	}
 	if (len(item.Children) != 0) == false {
@@ -656,7 +690,6 @@ func (item *TlsTypeVar) Read(w []byte) (_ []byte, err error) {
 	return basictl.IntRead(w, &item.Flags)
 }
 
-// This method is general version of Write, use it instead!
 func (item *TlsTypeVar) WriteGeneral(w []byte) (_ []byte, err error) {
 	return item.Write(w), nil
 }
@@ -674,7 +707,6 @@ func (item *TlsTypeVar) ReadBoxed(w []byte) (_ []byte, err error) {
 	return item.Read(w)
 }
 
-// This method is general version of WriteBoxed, use it instead!
 func (item *TlsTypeVar) WriteBoxedGeneral(w []byte) (_ []byte, err error) {
 	return item.WriteBoxed(w), nil
 }
@@ -689,6 +721,11 @@ func (item TlsTypeVar) String() string {
 }
 
 func (item *TlsTypeVar) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TlsTypeVar) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propVarNumPresented bool
 	var propFlagsPresented bool
 
@@ -737,14 +774,15 @@ func (item *TlsTypeVar) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 }
 
 // This method is general version of WriteJSON, use it instead!
-func (item *TlsTypeVar) WriteJSONGeneral(w []byte) (_ []byte, err error) {
-	return item.WriteJSONOpt(true, false, w), nil
+func (item *TlsTypeVar) WriteJSONGeneral(tctx *basictl.JSONWriteContext, w []byte) (_ []byte, err error) {
+	return item.WriteJSONOpt(tctx, w), nil
 }
 
 func (item *TlsTypeVar) WriteJSON(w []byte) []byte {
-	return item.WriteJSONOpt(true, false, w)
+	tctx := basictl.JSONWriteContext{}
+	return item.WriteJSONOpt(&tctx, w)
 }
-func (item *TlsTypeVar) WriteJSONOpt(newTypeNames bool, short bool, w []byte) []byte {
+func (item *TlsTypeVar) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
 	backupIndexVarNum := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)

@@ -47,7 +47,7 @@ func (item *Service1KeysStatMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *Service1KeysStatMaybe) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+func (item *Service1KeysStatMaybe) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_ok, _jvalue, err := internal.Json2ReadMaybe("Maybe", in)
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func (item *Service1KeysStatMaybe) ReadJSON(legacyTypeNames bool, in *basictl.Js
 			in2 := basictl.JsonLexer{Data: _jvalue}
 			in2Pointer = &in2
 		}
-		if err := item.Value.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.Value.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	}

@@ -74,7 +74,7 @@ func BuiltinVectorDictionaryFieldService1ValueWrite(w []byte, m map[string]cycle
 	return w
 }
 
-func BuiltinVectorDictionaryFieldService1ValueReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
+func BuiltinVectorDictionaryFieldService1ValueReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value) error {
 	var data map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
 	if *m == nil {
 		*m = make(map[string]cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value, 0)
@@ -94,7 +94,7 @@ func BuiltinVectorDictionaryFieldService1ValueReadJSON(legacyTypeNames bool, in 
 			key := in.UnsafeFieldName(true)
 			in.WantColon()
 			var value cycle_6ca945392bbf8b14f24e5653edc8b214.Service1Value
-			if err := value.ReadJSON(legacyTypeNames, in); err != nil {
+			if err := value.ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			data[key] = value

@@ -104,7 +104,8 @@ func (item *TasksGetQueueSize) WriteResult(w []byte, ret tlTasksQueueStats.Tasks
 }
 
 func (item *TasksGetQueueSize) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlTasksQueueStats.TasksQueueStats) error {
-	if err := ret.ReadJSON(legacyTypeNames, in, item.FieldsMask); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in, item.FieldsMask); err != nil {
 		return err
 	}
 	return nil
@@ -171,6 +172,11 @@ func (item TasksGetQueueSize) String() string {
 }
 
 func (item *TasksGetQueueSize) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksGetQueueSize) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypeNamePresented bool
 	var propQueueIdPresented bool
 	var propFieldsMaskPresented bool
@@ -197,7 +203,7 @@ func (item *TasksGetQueueSize) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 				if propQueueIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.getQueueSize", "queue_id")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.QueueId); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.QueueId); err != nil {
 					return err
 				}
 				propQueueIdPresented = true

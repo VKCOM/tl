@@ -45,7 +45,7 @@ func BuiltinVectorService3GroupCountLimitWrite(w []byte, vec []tlService3GroupCo
 	return w
 }
 
-func BuiltinVectorService3GroupCountLimitReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlService3GroupCountLimit.Service3GroupCountLimit) error {
+func BuiltinVectorService3GroupCountLimitReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService3GroupCountLimit.Service3GroupCountLimit) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorService3GroupCountLimitReadJSON(legacyTypeNames bool, in *basi
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

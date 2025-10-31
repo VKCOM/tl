@@ -67,6 +67,11 @@ func (item Service1KeysStat) String() string {
 }
 
 func (item *Service1KeysStat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1KeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propStartTimePresented bool
 	var propKeysTopsPresented bool
 
@@ -91,7 +96,7 @@ func (item *Service1KeysStat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 				if propKeysTopsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service1.keysStat", "keys_tops")
 				}
-				if err := tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReadJSON(legacyTypeNames, in, &item.KeysTops); err != nil {
+				if err := tlBuiltinVectorDictionaryFieldDictionaryInt.BuiltinVectorDictionaryFieldDictionaryIntReadJSONGeneral(tctx, in, &item.KeysTops); err != nil {
 					return err
 				}
 				propKeysTopsPresented = true

@@ -62,6 +62,11 @@ func (item MyMcValueTuple) String() string {
 }
 
 func (item *MyMcValueTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyMcValueTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXsPresented bool
 
 	if in != nil {
@@ -77,7 +82,7 @@ func (item *MyMcValueTuple) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer
 				if propXsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myMcValueTuple", "xs")
 				}
-				if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSON(legacyTypeNames, in, &item.Xs); err != nil {
+				if err := tlBuiltinTuple3Service1Value.BuiltinTuple3Service1ValueReadJSONGeneral(tctx, in, &item.Xs); err != nil {
 					return err
 				}
 				propXsPresented = true

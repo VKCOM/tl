@@ -77,6 +77,11 @@ func (item NonOptNat) String() string {
 }
 
 func (item *NonOptNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *NonOptNat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawXs []byte
 
@@ -123,7 +128,7 @@ func (item *NonOptNat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 	if rawXs != nil {
 		inXsPointer = &inXs
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inXsPointer, &item.Xs, item.N); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inXsPointer, &item.Xs, item.N); err != nil {
 		return err
 	}
 

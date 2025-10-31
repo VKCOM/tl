@@ -73,7 +73,7 @@ func BuiltinVectorDictionaryFieldStringWrite(w []byte, m map[string]string) []by
 	return w
 }
 
-func BuiltinVectorDictionaryFieldStringReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, m *map[string]string) error {
+func BuiltinVectorDictionaryFieldStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]string) error {
 	var data map[string]string
 	if *m == nil {
 		*m = make(map[string]string, 0)

@@ -77,6 +77,11 @@ func (item MyBoxedTupleSlice) String() string {
 }
 
 func (item *MyBoxedTupleSlice) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyBoxedTupleSlice) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawData []byte
 
@@ -123,7 +128,7 @@ func (item *MyBoxedTupleSlice) ReadJSON(legacyTypeNames bool, in *basictl.JsonLe
 	if rawData != nil {
 		inDataPointer = &inData
 	}
-	if err := tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadJSON(legacyTypeNames, inDataPointer, &item.Data, item.N); err != nil {
+	if err := tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadJSONGeneral(tctx, inDataPointer, &item.Data, item.N); err != nil {
 		return err
 	}
 

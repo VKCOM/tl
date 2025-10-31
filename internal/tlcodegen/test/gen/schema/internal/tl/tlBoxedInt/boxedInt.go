@@ -113,6 +113,11 @@ func (item BoxedInt) String() string {
 }
 
 func (item *BoxedInt) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BoxedInt) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {

@@ -45,7 +45,7 @@ func BuiltinVectorIntegerWrite(w []byte, vec []tlInteger.Integer) []byte {
 	return w
 }
 
-func BuiltinVectorIntegerReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlInteger.Integer) error {
+func BuiltinVectorIntegerReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlInteger.Integer) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {
@@ -59,7 +59,7 @@ func BuiltinVectorIntegerReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, v
 				*vec = append(*vec, newValue)
 				*vec = (*vec)[:cap(*vec)]
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in); err != nil {
 				return err
 			}
 			in.WantComma()

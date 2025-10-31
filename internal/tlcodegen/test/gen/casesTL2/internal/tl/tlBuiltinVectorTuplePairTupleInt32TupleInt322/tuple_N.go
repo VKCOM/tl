@@ -18,7 +18,7 @@ var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorTuplePairTupleInt32TupleInt322FillRandom(rg *basictl.RandGenerator, vec *[]tlTuplePairTupleInt32TupleInt322.TuplePairTupleInt32TupleInt322) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlTuplePairTupleInt32TupleInt322.TuplePairTupleInt32TupleInt322, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

@@ -66,6 +66,11 @@ func (item FieldConflict3) String() string {
 }
 
 func (item *FieldConflict3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *FieldConflict3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 	var propSetXPresented bool
 

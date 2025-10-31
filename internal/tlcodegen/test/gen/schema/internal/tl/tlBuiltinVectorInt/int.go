@@ -44,7 +44,7 @@ func BuiltinVectorIntWrite(w []byte, vec []int32) []byte {
 	return w
 }
 
-func BuiltinVectorIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int32) error {
+func BuiltinVectorIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int32) error {
 	*vec = (*vec)[:cap(*vec)]
 	index := 0
 	if in != nil {

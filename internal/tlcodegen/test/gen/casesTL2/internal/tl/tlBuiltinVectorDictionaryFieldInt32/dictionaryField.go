@@ -26,7 +26,7 @@ func BuiltinVectorDictionaryFieldInt32Reset(m map[string]int32) {
 
 func BuiltinVectorDictionaryFieldInt32FillRandom(rg *basictl.RandGenerator, m *map[string]int32) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*m = make(map[string]int32, l)
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryFieldInt32.DictionaryFieldInt32
@@ -184,7 +184,7 @@ func BuiltinVectorDictionaryFieldInt32WriteJSONOpt(tctx *basictl.JSONWriteContex
 
 func BuiltinVectorDictionaryFieldInt32BytesFillRandom(rg *basictl.RandGenerator, vec *[]tlDictionaryFieldInt32.DictionaryFieldInt32Bytes) {
 	rg.IncreaseDepth()
-	l := rg.LimitValue(basictl.RandomUint(rg))
+	l := basictl.RandomSize(rg)
 	*vec = make([]tlDictionaryFieldInt32.DictionaryFieldInt32Bytes, l)
 	for i := range *vec {
 		(*vec)[i].FillRandom(rg)

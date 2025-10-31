@@ -69,6 +69,11 @@ func (item BenchObject) String() string {
 }
 
 func (item *BenchObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BenchObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXsPresented bool
 	var propYsPresented bool
 
@@ -85,7 +90,7 @@ func (item *BenchObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propXsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchObject", "xs")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Xs); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Xs); err != nil {
 					return err
 				}
 				propXsPresented = true
@@ -93,7 +98,7 @@ func (item *BenchObject) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 				if propYsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchObject", "ys")
 				}
-				if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSON(legacyTypeNames, in, &item.Ys); err != nil {
+				if err := tlBuiltinVectorInteger.BuiltinVectorIntegerReadJSONGeneral(tctx, in, &item.Ys); err != nil {
 					return err
 				}
 				propYsPresented = true

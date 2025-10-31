@@ -66,7 +66,8 @@ func (item *BoxedArray) WriteResult(w []byte, ret tlMyBoxedArray.MyBoxedArray) (
 }
 
 func (item *BoxedArray) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlMyBoxedArray.MyBoxedArray) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item BoxedArray) String() string {
 }
 
 func (item *BoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *BoxedArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -121,7 +127,7 @@ func (item *BoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("boxedArray", "x")
 				}
-				if err := item.X.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propXPresented = true

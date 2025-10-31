@@ -74,6 +74,11 @@ func (item TasksTaskInfo) String() string {
 }
 
 func (item *TasksTaskInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksTaskInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypeNamePresented bool
 	var propQueueIdPresented bool
 	var propTaskPresented bool
@@ -99,7 +104,7 @@ func (item *TasksTaskInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propQueueIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.taskInfo", "queue_id")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.QueueId); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.QueueId); err != nil {
 					return err
 				}
 				propQueueIdPresented = true
@@ -107,7 +112,7 @@ func (item *TasksTaskInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propTaskPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.taskInfo", "task")
 				}
-				if err := item.Task.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Task.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propTaskPresented = true

@@ -90,6 +90,11 @@ func (item AntispamPatternFound) String() string {
 }
 
 func (item *AntispamPatternFound) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AntispamPatternFound) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propIpPresented bool
 	var propUahashPresented bool
 	var propFlagsPresented bool
@@ -308,13 +313,21 @@ func (item *AntispamPatternFull) WriteBoxed(w []byte) []byte {
 }
 
 func (item *AntispamPatternFull) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AntispamPatternFull) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("antispam.PatternFull", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "antispam.patternFound#a7688492", "antispam.patternFound", "#a7688492":
-		if !legacyTypeNames && _tag == "antispam.patternFound#a7688492" {
+		if tctx.IsTL2 && _tag != "antispam.patternFound" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "antispam.patternFound#a7688492" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", "antispam.patternFound#a7688492")
 		}
 		item.index = 0
@@ -323,11 +336,14 @@ func (item *AntispamPatternFull) ReadJSON(legacyTypeNames bool, in *basictl.Json
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valuePatternFound.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valuePatternFound.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	case "antispam.patternNotFound#2c22e225", "antispam.patternNotFound", "#2c22e225":
-		if !legacyTypeNames && _tag == "antispam.patternNotFound#2c22e225" {
+		if tctx.IsTL2 && _tag != "antispam.patternNotFound" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "antispam.patternNotFound#2c22e225" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("antispam.PatternFull", "antispam.patternNotFound#2c22e225")
 		}
 		item.index = 1
@@ -349,19 +365,27 @@ func (item *AntispamPatternFull) WriteJSON(w []byte) []byte {
 func (item *AntispamPatternFull) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"antispam.patternFound#a7688492"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"antispam.patternFound"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"antispam.patternFound#a7688492"`...)
+			} else {
+				w = append(w, `{"type":"antispam.patternFound"`...)
+			}
 		}
 		w = append(w, `,"value":`...)
 		w = item.valuePatternFound.WriteJSONOpt(tctx, w)
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"antispam.patternNotFound#2c22e225"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"antispam.patternNotFound"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"antispam.patternNotFound#2c22e225"`...)
+			} else {
+				w = append(w, `{"type":"antispam.patternNotFound"`...)
+			}
 		}
 		return append(w, '}')
 	default: // Impossible due to panic above
@@ -429,6 +453,11 @@ func (item AntispamPatternNotFound) String() string {
 }
 
 func (item *AntispamPatternNotFound) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *AntispamPatternNotFound) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

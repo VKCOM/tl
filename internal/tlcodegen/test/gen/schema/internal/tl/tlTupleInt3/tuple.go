@@ -60,8 +60,13 @@ func (item TupleInt3) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TupleInt3) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TupleInt3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[3]int32)(item)
-	if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinTuple3Int.BuiltinTuple3IntReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

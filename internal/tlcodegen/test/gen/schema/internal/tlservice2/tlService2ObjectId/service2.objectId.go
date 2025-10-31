@@ -58,7 +58,7 @@ func (item *Service2ObjectId) WriteBoxed(w []byte, nat_objectIdLength uint32) (_
 	return item.Write(w, nat_objectIdLength)
 }
 
-func (item *Service2ObjectId) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_objectIdLength uint32) error {
+func (item *Service2ObjectId) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_objectIdLength uint32) error {
 	var rawId []byte
 
 	if in != nil {
@@ -93,7 +93,7 @@ func (item *Service2ObjectId) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 	if rawId != nil {
 		inIdPointer = &inId
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inIdPointer, &item.Id, nat_objectIdLength); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIdPointer, &item.Id, nat_objectIdLength); err != nil {
 		return err
 	}
 

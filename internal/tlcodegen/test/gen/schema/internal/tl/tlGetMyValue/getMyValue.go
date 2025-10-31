@@ -66,7 +66,8 @@ func (item *GetMyValue) WriteResult(w []byte, ret cycle_2383fe3e154dfb1e44c2ac77
 }
 
 func (item *GetMyValue) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *cycle_2383fe3e154dfb1e44c2ac7759547e8a.MyValue) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -106,6 +107,11 @@ func (item GetMyValue) String() string {
 }
 
 func (item *GetMyValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *GetMyValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -121,7 +127,7 @@ func (item *GetMyValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) er
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("getMyValue", "x")
 				}
-				if err := item.X.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propXPresented = true

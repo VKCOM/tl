@@ -56,9 +56,9 @@ func (item *TupleIntBoxed) WriteBoxed(w []byte, nat_n uint32) (_ []byte, err err
 	return item.Write(w, nat_n)
 }
 
-func (item *TupleIntBoxed) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, nat_n uint32) error {
+func (item *TupleIntBoxed) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_n uint32) error {
 	ptr := (*[]int32)(item)
-	if err := tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadJSON(legacyTypeNames, in, ptr, nat_n); err != nil {
+	if err := tlBuiltinTupleIntBoxed.BuiltinTupleIntBoxedReadJSONGeneral(tctx, in, ptr, nat_n); err != nil {
 		return err
 	}
 	return nil

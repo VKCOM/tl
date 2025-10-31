@@ -106,6 +106,11 @@ func (item Service1EnableKeysStat) String() string {
 }
 
 func (item *Service1EnableKeysStat) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1EnableKeysStat) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPeriodPresented bool
 
 	if in != nil {

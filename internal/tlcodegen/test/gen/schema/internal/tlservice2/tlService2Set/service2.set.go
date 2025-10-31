@@ -104,7 +104,8 @@ func (item *Service2Set) WriteResult(w []byte, ret tlTrue.True) (_ []byte, err e
 }
 
 func (item *Service2Set) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlTrue.True) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -148,6 +149,11 @@ func (item Service2Set) String() string {
 }
 
 func (item *Service2Set) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service2Set) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propObjectIdLengthPresented bool
 	var propIntCountersNumPresented bool
 	var propFloatCountersNumPresented bool
@@ -236,7 +242,7 @@ func (item *Service2Set) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 	if rawIntCounters != nil {
 		inIntCountersPointer = &inIntCounters
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inIntCountersPointer, &item.IntCounters, item.IntCountersNum); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inIntCountersPointer, &item.IntCounters, item.IntCountersNum); err != nil {
 		return err
 	}
 
@@ -245,7 +251,7 @@ func (item *Service2Set) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 	if rawFloatCounters != nil {
 		inFloatCountersPointer = &inFloatCounters
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inFloatCountersPointer, &item.FloatCounters, item.FloatCountersNum); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inFloatCountersPointer, &item.FloatCounters, item.FloatCountersNum); err != nil {
 		return err
 	}
 
@@ -254,7 +260,7 @@ func (item *Service2Set) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) e
 	if rawNewValues != nil {
 		inNewValuesPointer = &inNewValues
 	}
-	if err := item.NewValues.ReadJSON(legacyTypeNames, inNewValuesPointer, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
+	if err := item.NewValues.ReadJSONGeneral(tctx, inNewValuesPointer, item.ObjectIdLength, item.IntCountersNum, item.FloatCountersNum); err != nil {
 		return err
 	}
 

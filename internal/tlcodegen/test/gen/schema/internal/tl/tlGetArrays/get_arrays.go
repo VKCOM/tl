@@ -85,7 +85,8 @@ func (item *GetArrays) WriteResult(w []byte, ret [5]int32) (_ []byte, err error)
 }
 
 func (item *GetArrays) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[5]int32) error {
-	if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -129,6 +130,11 @@ func (item GetArrays) String() string {
 }
 
 func (item *GetArrays) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *GetArrays) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propNPresented bool
 	var rawA []byte
 	var propBPresented bool
@@ -162,7 +168,7 @@ func (item *GetArrays) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 				if propBPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("get_arrays", "b")
 				}
-				if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSON(legacyTypeNames, in, &item.B); err != nil {
+				if err := tlBuiltinTuple5Int.BuiltinTuple5IntReadJSONGeneral(tctx, in, &item.B); err != nil {
 					return err
 				}
 				propBPresented = true
@@ -187,7 +193,7 @@ func (item *GetArrays) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) err
 	if rawA != nil {
 		inAPointer = &inA
 	}
-	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSON(legacyTypeNames, inAPointer, &item.A, item.N); err != nil {
+	if err := tlBuiltinTupleInt.BuiltinTupleIntReadJSONGeneral(tctx, inAPointer, &item.A, item.N); err != nil {
 		return err
 	}
 

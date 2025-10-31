@@ -74,6 +74,11 @@ func (item TasksQueueTypeInfo) String() string {
 }
 
 func (item *TasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksQueueTypeInfo) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypeNamePresented bool
 	var propSettingsPresented bool
 	var propStatsPresented bool
@@ -99,7 +104,7 @@ func (item *TasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 				if propSettingsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeInfo", "settings")
 				}
-				if err := item.Settings.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Settings.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propSettingsPresented = true
@@ -107,7 +112,7 @@ func (item *TasksQueueTypeInfo) ReadJSON(legacyTypeNames bool, in *basictl.JsonL
 				if propStatsPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("tasks.queueTypeInfo", "stats")
 				}
-				if err := item.Stats.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.Stats.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propStatsPresented = true

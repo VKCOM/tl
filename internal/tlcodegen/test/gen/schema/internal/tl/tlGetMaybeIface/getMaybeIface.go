@@ -67,7 +67,8 @@ func (item *GetMaybeIface) WriteResult(w []byte, ret tlService1ValueBoxedMaybe.S
 }
 
 func (item *GetMaybeIface) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlService1ValueBoxedMaybe.Service1ValueBoxedMaybe) error {
-	if err := ret.ReadJSON(legacyTypeNames, in); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
 		return err
 	}
 	return nil
@@ -107,6 +108,11 @@ func (item GetMaybeIface) String() string {
 }
 
 func (item *GetMaybeIface) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *GetMaybeIface) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propXPresented bool
 
 	if in != nil {
@@ -122,7 +128,7 @@ func (item *GetMaybeIface) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer)
 				if propXPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("getMaybeIface", "x")
 				}
-				if err := item.X.ReadJSON(legacyTypeNames, in); err != nil {
+				if err := item.X.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
 				propXPresented = true

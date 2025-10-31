@@ -41,7 +41,11 @@ func BuiltinTupleIntWrite(w []byte, vec []int32, nat_n uint32) (_ []byte, err er
 	}
 	return w, nil
 }
-func BuiltinTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]int32, nat_n uint32) error {
+func BuiltinTupleIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]int32, nat_n uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]int32, nat_n)
 	} else {
@@ -55,7 +59,14 @@ func BuiltinTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return internal.ErrorInvalidJSON("[]int32", "array is longer than expected")
+				if isTL2 {
+					var newValue int32
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return internal.ErrorInvalidJSON("[]int32", "array is longer than expected")
+				}
 			}
 			if err := internal.Json2ReadInt32(in, &(*vec)[index]); err != nil {
 				return err
@@ -67,8 +78,12 @@ func BuiltinTupleIntReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[
 			return internal.ErrorInvalidJSON("[]int32", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return internal.ErrorWrongSequenceLength("[]int32", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return internal.ErrorWrongSequenceLength("[]int32", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -78,6 +93,9 @@ func BuiltinTupleIntWriteJSON(w []byte, vec []int32, nat_n uint32) (_ []byte, er
 	return BuiltinTupleIntWriteJSONOpt(&tctx, w, vec, nat_n)
 }
 func BuiltinTupleIntWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []int32, nat_n uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]int32", len(vec), nat_n)
 	}

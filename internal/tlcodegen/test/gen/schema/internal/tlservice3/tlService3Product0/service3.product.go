@@ -103,6 +103,11 @@ func (item Service3Product0) String() string {
 }
 
 func (item *Service3Product0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service3Product0) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propTypePresented bool
 	var propIdPresented bool
 	var propInfoPresented bool
@@ -131,7 +136,7 @@ func (item *Service3Product0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 				if propIdPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "id")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Id); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Id); err != nil {
 					return err
 				}
 				propIdPresented = true
@@ -139,7 +144,7 @@ func (item *Service3Product0) ReadJSON(legacyTypeNames bool, in *basictl.JsonLex
 				if propInfoPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("service3.product", "info")
 				}
-				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSON(legacyTypeNames, in, &item.Info); err != nil {
+				if err := tlBuiltinVectorInt.BuiltinVectorIntReadJSONGeneral(tctx, in, &item.Info); err != nil {
 					return err
 				}
 				propInfoPresented = true

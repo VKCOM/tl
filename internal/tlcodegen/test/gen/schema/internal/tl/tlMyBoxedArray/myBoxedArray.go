@@ -65,6 +65,11 @@ func (item MyBoxedArray) String() string {
 }
 
 func (item *MyBoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *MyBoxedArray) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propDataPresented bool
 
 	if in != nil {
@@ -80,7 +85,7 @@ func (item *MyBoxedArray) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) 
 				if propDataPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("myBoxedArray", "data")
 				}
-				if err := tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedReadJSON(legacyTypeNames, in, &item.Data); err != nil {
+				if err := tlBuiltinTuple2IntBoxed.BuiltinTuple2IntBoxedReadJSONGeneral(tctx, in, &item.Data); err != nil {
 					return err
 				}
 				propDataPresented = true

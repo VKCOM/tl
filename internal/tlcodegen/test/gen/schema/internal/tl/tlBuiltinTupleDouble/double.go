@@ -41,7 +41,11 @@ func BuiltinTupleDoubleWrite(w []byte, vec []float64, nat_n uint32) (_ []byte, e
 	}
 	return w, nil
 }
-func BuiltinTupleDoubleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]float64, nat_n uint32) error {
+func BuiltinTupleDoubleReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]float64, nat_n uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]float64, nat_n)
 	} else {
@@ -55,7 +59,14 @@ func BuiltinTupleDoubleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return internal.ErrorInvalidJSON("[]float64", "array is longer than expected")
+				if isTL2 {
+					var newValue float64
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return internal.ErrorInvalidJSON("[]float64", "array is longer than expected")
+				}
 			}
 			if err := internal.Json2ReadFloat64(in, &(*vec)[index]); err != nil {
 				return err
@@ -67,8 +78,12 @@ func BuiltinTupleDoubleReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec
 			return internal.ErrorInvalidJSON("[]float64", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return internal.ErrorWrongSequenceLength("[]float64", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return internal.ErrorWrongSequenceLength("[]float64", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -78,6 +93,9 @@ func BuiltinTupleDoubleWriteJSON(w []byte, vec []float64, nat_n uint32) (_ []byt
 	return BuiltinTupleDoubleWriteJSONOpt(&tctx, w, vec, nat_n)
 }
 func BuiltinTupleDoubleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []float64, nat_n uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]float64", len(vec), nat_n)
 	}

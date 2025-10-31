@@ -71,7 +71,8 @@ func (item *Service1GetWildcard) WriteResult(w []byte, ret []tlMapStringString.M
 }
 
 func (item *Service1GetWildcard) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *[]tlMapStringString.MapStringString) error {
-	if err := tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadJSON(legacyTypeNames, in, ret); err != nil {
+	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	if err := tlBuiltinVectorMapStringString.BuiltinVectorMapStringStringReadJSONGeneral(tctx, in, ret); err != nil {
 		return err
 	}
 	return nil
@@ -111,6 +112,11 @@ func (item Service1GetWildcard) String() string {
 }
 
 func (item *Service1GetWildcard) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *Service1GetWildcard) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propPrefixPresented bool
 
 	if in != nil {

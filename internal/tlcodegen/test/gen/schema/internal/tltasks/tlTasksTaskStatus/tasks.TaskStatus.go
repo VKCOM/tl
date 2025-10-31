@@ -78,31 +78,48 @@ func (item *TasksTaskStatus) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TasksTaskStatus) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TasksTaskStatus) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_jtype := in.UnsafeString()
 	if !in.Ok() {
 		return internal.ErrorInvalidJSON("tasks.TaskStatus", "expected string")
 	}
 	switch _jtype {
 	case "tasks.taskStatusNotCurrentlyInEngine#b207caaa", "tasks.taskStatusNotCurrentlyInEngine", "#b207caaa":
-		if !legacyTypeNames && _jtype == "tasks.taskStatusNotCurrentlyInEngine#b207caaa" {
+		if tctx.IsTL2 && _jtype != "tasks.taskStatusNotCurrentlyInEngine" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "tasks.taskStatusNotCurrentlyInEngine#b207caaa" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusNotCurrentlyInEngine#b207caaa")
 		}
 		item.index = 0
 		return nil
 	case "tasks.taskStatusScheduled#0aca80a9", "tasks.taskStatusScheduled", "#0aca80a9":
-		if !legacyTypeNames && _jtype == "tasks.taskStatusScheduled#0aca80a9" {
+		if tctx.IsTL2 && _jtype != "tasks.taskStatusScheduled" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "tasks.taskStatusScheduled#0aca80a9" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusScheduled#0aca80a9")
 		}
 		item.index = 1
 		return nil
 	case "tasks.taskStatusWaiting#16739c2c", "tasks.taskStatusWaiting", "#16739c2c":
-		if !legacyTypeNames && _jtype == "tasks.taskStatusWaiting#16739c2c" {
+		if tctx.IsTL2 && _jtype != "tasks.taskStatusWaiting" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "tasks.taskStatusWaiting#16739c2c" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusWaiting#16739c2c")
 		}
 		item.index = 2
 		return nil
 	case "tasks.taskStatusInProgress#06ef70e7", "tasks.taskStatusInProgress", "#06ef70e7":
-		if !legacyTypeNames && _jtype == "tasks.taskStatusInProgress#06ef70e7" {
+		if tctx.IsTL2 && _jtype != "tasks.taskStatusInProgress" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", _jtype)
+		}
+		if !tctx.LegacyTypeNames && _jtype == "tasks.taskStatusInProgress#06ef70e7" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tasks.TaskStatus", "tasks.taskStatusInProgress#06ef70e7")
 		}
 		item.index = 3

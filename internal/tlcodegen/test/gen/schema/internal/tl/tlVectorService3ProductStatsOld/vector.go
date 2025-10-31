@@ -61,8 +61,13 @@ func (item VectorService3ProductStatsOld) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *VectorService3ProductStatsOld) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *VectorService3ProductStatsOld) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*[]tlService3ProductStatsOld.Service3ProductStatsOld)(item)
-	if err := tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldReadJSON(legacyTypeNames, in, ptr); err != nil {
+	if err := tlBuiltinVectorService3ProductStatsOld.BuiltinVectorService3ProductStatsOldReadJSONGeneral(tctx, in, ptr); err != nil {
 		return err
 	}
 	return nil

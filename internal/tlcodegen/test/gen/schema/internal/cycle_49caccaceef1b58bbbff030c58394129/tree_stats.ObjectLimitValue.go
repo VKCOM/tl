@@ -94,18 +94,29 @@ func (item *TreeStatsObjectLimitValue) WriteBoxed(w []byte) []byte {
 }
 
 func (item *TreeStatsObjectLimitValue) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TreeStatsObjectLimitValue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	_tag, _value, err := internal.Json2ReadUnion("tree_stats.ObjectLimitValue", in)
 	if err != nil {
 		return err
 	}
 	switch _tag {
 	case "tree_stats.objectLimitValueLong#73111993", "tree_stats.objectLimitValueLong", "#73111993":
-		if !legacyTypeNames && _tag == "tree_stats.objectLimitValueLong#73111993" {
+		if tctx.IsTL2 && _tag != "tree_stats.objectLimitValueLong" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "tree_stats.objectLimitValueLong#73111993" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", "tree_stats.objectLimitValueLong#73111993")
 		}
 		item.index = 0
 	case "tree_stats.objectLimitValueDouble#5dfb8816", "tree_stats.objectLimitValueDouble", "#5dfb8816":
-		if !legacyTypeNames && _tag == "tree_stats.objectLimitValueDouble#5dfb8816" {
+		if tctx.IsTL2 && _tag != "tree_stats.objectLimitValueDouble" {
+			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", _tag)
+		}
+		if !tctx.LegacyTypeNames && _tag == "tree_stats.objectLimitValueDouble#5dfb8816" {
 			return internal.ErrorInvalidUnionLegacyTagJSON("tree_stats.ObjectLimitValue", "tree_stats.objectLimitValueDouble#5dfb8816")
 		}
 		item.index = 1
@@ -114,7 +125,7 @@ func (item *TreeStatsObjectLimitValue) ReadJSON(legacyTypeNames bool, in *basict
 			in2 := basictl.JsonLexer{Data: _value}
 			in2Pointer = &in2
 		}
-		if err := item.valueDouble.ReadJSON(legacyTypeNames, in2Pointer); err != nil {
+		if err := item.valueDouble.ReadJSONGeneral(tctx, in2Pointer); err != nil {
 			return err
 		}
 	default:
@@ -135,17 +146,25 @@ func (item *TreeStatsObjectLimitValue) WriteJSON(w []byte) []byte {
 func (item *TreeStatsObjectLimitValue) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	switch item.index {
 	case 0:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"tree_stats.objectLimitValueLong#73111993"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"tree_stats.objectLimitValueLong"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"tree_stats.objectLimitValueLong#73111993"`...)
+			} else {
+				w = append(w, `{"type":"tree_stats.objectLimitValueLong"`...)
+			}
 		}
 		return append(w, '}')
 	case 1:
-		if tctx.LegacyTypeNames {
-			w = append(w, `{"type":"tree_stats.objectLimitValueDouble#5dfb8816"`...)
-		} else {
+		if tctx.IsTL2 {
 			w = append(w, `{"type":"tree_stats.objectLimitValueDouble"`...)
+		} else {
+			if tctx.LegacyTypeNames {
+				w = append(w, `{"type":"tree_stats.objectLimitValueDouble#5dfb8816"`...)
+			} else {
+				w = append(w, `{"type":"tree_stats.objectLimitValueDouble"`...)
+			}
 		}
 		if item.valueDouble != 0 {
 			w = append(w, `,"value":`...)
@@ -222,6 +241,11 @@ func (item TreeStatsObjectLimitValueDouble) String() string {
 	return string(item.WriteJSON(nil))
 }
 func (item *TreeStatsObjectLimitValueDouble) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TreeStatsObjectLimitValueDouble) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	ptr := (*float64)(item)
 	if err := internal.Json2ReadFloat64(in, ptr); err != nil {
 		return err
@@ -300,6 +324,11 @@ func (item TreeStatsObjectLimitValueLong) String() string {
 }
 
 func (item *TreeStatsObjectLimitValueLong) ReadJSON(legacyTypeNames bool, in *basictl.JsonLexer) error {
+	tctx := basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
+	return item.ReadJSONGeneral(&tctx, in)
+}
+
+func (item *TreeStatsObjectLimitValueLong) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

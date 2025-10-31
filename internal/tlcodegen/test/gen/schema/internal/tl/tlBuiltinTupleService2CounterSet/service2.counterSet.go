@@ -44,7 +44,11 @@ func BuiltinTupleService2CounterSetWrite(w []byte, vec []tlService2CounterSet.Se
 	}
 	return w, nil
 }
-func BuiltinTupleService2CounterSetReadJSON(legacyTypeNames bool, in *basictl.JsonLexer, vec *[]tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) error {
+func BuiltinTupleService2CounterSetReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) error {
+	isTL2 := tctx != nil && tctx.IsTL2
+	if isTL2 {
+		nat_n = uint32(len(*vec))
+	}
 	if uint32(cap(*vec)) < nat_n {
 		*vec = make([]tlService2CounterSet.Service2CounterSet, nat_n)
 	} else {
@@ -58,9 +62,16 @@ func BuiltinTupleService2CounterSetReadJSON(legacyTypeNames bool, in *basictl.Js
 		}
 		for ; !in.IsDelim(']'); index++ {
 			if nat_n <= uint32(index) {
-				return internal.ErrorInvalidJSON("[]tlService2CounterSet.Service2CounterSet", "array is longer than expected")
+				if isTL2 {
+					var newValue tlService2CounterSet.Service2CounterSet
+					*vec = append(*vec, newValue)
+					*vec = (*vec)[:cap(*vec)]
+					nat_n = uint32(len(*vec))
+				} else {
+					return internal.ErrorInvalidJSON("[]tlService2CounterSet.Service2CounterSet", "array is longer than expected")
+				}
 			}
-			if err := (*vec)[index].ReadJSON(legacyTypeNames, in, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
+			if err := (*vec)[index].ReadJSONGeneral(tctx, in, nat_tintCountersNum, nat_tfloatCountersNum); err != nil {
 				return err
 			}
 			in.WantComma()
@@ -70,8 +81,12 @@ func BuiltinTupleService2CounterSetReadJSON(legacyTypeNames bool, in *basictl.Js
 			return internal.ErrorInvalidJSON("[]tlService2CounterSet.Service2CounterSet", "expected json array's end")
 		}
 	}
-	if uint32(index) != nat_n {
-		return internal.ErrorWrongSequenceLength("[]tlService2CounterSet.Service2CounterSet", index, nat_n)
+	if isTL2 {
+		*vec = (*vec)[:index]
+	} else {
+		if uint32(index) != nat_n {
+			return internal.ErrorWrongSequenceLength("[]tlService2CounterSet.Service2CounterSet", index, nat_n)
+		}
 	}
 	return nil
 }
@@ -81,6 +96,9 @@ func BuiltinTupleService2CounterSetWriteJSON(w []byte, vec []tlService2CounterSe
 	return BuiltinTupleService2CounterSetWriteJSONOpt(&tctx, w, vec, nat_n, nat_tintCountersNum, nat_tfloatCountersNum)
 }
 func BuiltinTupleService2CounterSetWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlService2CounterSet.Service2CounterSet, nat_n uint32, nat_tintCountersNum uint32, nat_tfloatCountersNum uint32) (_ []byte, err error) {
+	if tctx != nil && tctx.IsTL2 {
+		nat_n = uint32(len(vec))
+	}
 	if uint32(len(vec)) != nat_n {
 		return w, internal.ErrorWrongSequenceLength("[]tlService2CounterSet.Service2CounterSet", len(vec), nat_n)
 	}
