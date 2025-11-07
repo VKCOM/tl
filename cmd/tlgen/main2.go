@@ -139,6 +139,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate echo of usage for custom store/fetch`)
 	flag.StringVar(&opt.FunctionsBodiesWhiteList, "php-serialization-bodies-whitelist", "*",
 		`comma-separated list of fully-qualified top-level namespaces (if have trailing '.'), to generate code for serialization function bodies. Empty means none, '*' means all (require --php-serialization-bodies=true)`)
+	flag.BoolVar(&opt.AddTypeComments, "php-add-type-comments", false,
+		`whether to generate comment with type combinator for each type`)
 
 	flag.BoolVar(&opt.CreateTLFilesWithAllTypesInReturn, "php-create-tl-files-with-all-types-in-return", false,
 		`whether to create duplicates of passed tl files with all top level types in function return (option for testing)`)
