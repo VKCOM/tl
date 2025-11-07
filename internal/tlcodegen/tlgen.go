@@ -382,6 +382,7 @@ type Gen2Options struct {
 	AddFetchersEchoComments      bool
 	InplaceSimpleStructs         bool
 	UseBuiltinDataProviders      bool
+	AddTypeComments              bool
 
 	// PHP Unique actions
 	CreateTLFilesWithAllTypesInReturn          bool
