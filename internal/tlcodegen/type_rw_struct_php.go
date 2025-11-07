@@ -929,7 +929,7 @@ func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, us
 			})
 			for _, dependentField := range dependentFields {
 				condition := ""
-				if dependentField.t.PHPIsTrueType() || dependentField.t.PHPNeedsCode() {
+				if dependentField.t.PHPIsTrueType() || dependentField.t.PHPGenCoreType().PHPNeedsCode() {
 					condition = fmt.Sprintf(
 						"$this->%[1]s",
 						dependentField.originalName,

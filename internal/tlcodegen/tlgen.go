@@ -2332,6 +2332,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			})
 			for _, typ := range tl {
 				if typ.IsFunction && len(typ.TemplateArguments) == 1 {
+					// copy original
 					copyOriginal := *typ
 					copyOriginal.Fields = make([]tlast.Field, len(copyOriginal.Fields))
 					for i := range typ.Fields {
@@ -2339,14 +2340,30 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 						copyOriginal.Fields[i].FieldType = typ.Fields[i].FieldType.DeepCopy()
 					}
 					copyOriginal.FuncDecl = typ.FuncDecl.DeepCopy()
+					// modify for generation
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionTypeRef, &rpcFunctionResultTypeRef)
 					typ.OriginalDescriptor = &copyOriginal
 				} else if !typ.IsFunction &&
 					rpcResultsMapping[typ.Construct.Name.String()] != "" &&
 					typ.TypeDecl.Name.String() == rpcRequestResultName {
+					typ.Crc32()
 					typ.Construct.Name.Name = rpcResultsMapping[typ.Construct.Name.String()]
+					// copy original
+					copyOriginal := *typ
+					copyOriginal.Fields = make([]tlast.Field, len(copyOriginal.Fields))
+					for i := range typ.Fields {
+						copyOriginal.Fields[i] = typ.Fields[i]
+						copyOriginal.Fields[i].FieldType = typ.Fields[i].FieldType.DeepCopy()
+					}
+					copyOriginal.TypeDecl = typ.TypeDecl
+					for i := range typ.TypeDecl.Arguments {
+						copyOriginal.TypeDecl.Arguments[i] = typ.TypeDecl.Arguments[i]
+					}
+					// modify for generation
 					typ.TypeDecl = tlast.TypeDeclaration{Name: rpcResponseTypeRef.Type}
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionResultTypeRef, &rpcFunctionResultTypeRef)
+
+					typ.OriginalDescriptor = &copyOriginal
 				}
 			}
 			// TODO DELETE AS NORMAL PEOPLE
