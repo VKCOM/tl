@@ -60,18 +60,7 @@ func (descriptor Combinator) streamcanonicalFormWithTag(qw422016 *qt422016.Write
 		qw422016.N().S("? ")
 	}
 	for _, x := range descriptor.Fields {
-		if x.FieldName != "" {
-			qw422016.N().S(x.FieldName)
-			qw422016.N().S(`:`)
-		}
-		if x.Mask != nil {
-			x.Mask.StreamString(qw422016)
-		}
-		if x.IsRepeated {
-			x.ScaleRepeat.streamtoCrc32(qw422016)
-		} else {
-			x.FieldType.streamtoCrc32(qw422016)
-		}
+		x.StreamToCrc32(qw422016)
 		qw422016.N().S(` `)
 	}
 	qw422016.N().S("= ")

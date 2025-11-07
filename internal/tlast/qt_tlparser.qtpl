@@ -54,6 +54,24 @@
   {%= t.Type.String() %}
 {%- endfunc -%}
 
+{%- func (f Field) ToCrc32() -%}
+  {%- if f.FieldName != "" -%}
+    {%s= f.FieldName %}:
+  {%- endif -%}
+  {%- if f.Mask != nil -%}
+    {%= f.Mask.String() %}
+  {%- endif -%}
+  {%- if f.IsRepeated -%}
+    {%= f.ScaleRepeat.toCrc32() %}
+  {%- else -%}
+    {%= f.FieldType.toCrc32() %}
+  {%- endif -%}
+{%- endfunc -%}
+
+{%- func (t TypeRef) ToCrc32() -%}
+    {%= t.toCrc32() %}
+{%- endfunc -%}
+
 {%- func (t TypeRef) toCrc32() -%}
   {%- if t.Bare && (len(t.Type.Name) == 0 || !unicode.IsLower(rune(t.Type.Name[0]))) -%}
     %
