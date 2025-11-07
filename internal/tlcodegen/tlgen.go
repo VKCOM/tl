@@ -2356,9 +2356,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 						copyOriginal.Fields[i].FieldType = typ.Fields[i].FieldType.DeepCopy()
 					}
 					copyOriginal.TypeDecl = typ.TypeDecl
-					for i := range typ.TypeDecl.Arguments {
-						copyOriginal.TypeDecl.Arguments[i] = typ.TypeDecl.Arguments[i]
-					}
+					copy(copyOriginal.TypeDecl.Arguments, typ.TypeDecl.Arguments)
 					// modify for generation
 					typ.TypeDecl = tlast.TypeDeclaration{Name: rpcResponseTypeRef.Type}
 					phpRemoveTemplateFromGeneric(typ, &rpcFunctionResultTypeRef, &rpcFunctionResultTypeRef)
