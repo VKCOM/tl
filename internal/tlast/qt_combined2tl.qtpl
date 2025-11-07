@@ -43,17 +43,7 @@ func compareModifiers(a, b Modifier) bool {
       {%s= "? " %}
     {%- endif -%}
     {%- for _, x := range descriptor.Fields -%}
-      {%- if x.FieldName != "" -%}
-        {%s= x.FieldName %}:
-      {%- endif -%}
-      {%- if x.Mask != nil -%}
-        {%= x.Mask.String() %}
-      {%- endif -%}
-      {%- if x.IsRepeated -%}
-        {%= x.ScaleRepeat.toCrc32() %}
-      {%- else -%}
-        {%= x.FieldType.toCrc32() %}
-      {%- endif -%}
+      {%= x.ToCrc32() %}
       {% space %}
     {%- endfor -%}
     {%s= "= " %}

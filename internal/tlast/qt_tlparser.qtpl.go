@@ -148,6 +148,53 @@ func (t TypeRef) TopLevelString() string {
 	return qs422016
 }
 
+func (f Field) StreamToCrc32(qw422016 *qt422016.Writer) {
+	if f.FieldName != "" {
+		qw422016.N().S(f.FieldName)
+		qw422016.N().S(`:`)
+	}
+	if f.Mask != nil {
+		f.Mask.StreamString(qw422016)
+	}
+	if f.IsRepeated {
+		f.ScaleRepeat.streamtoCrc32(qw422016)
+	} else {
+		f.FieldType.streamtoCrc32(qw422016)
+	}
+}
+
+func (f Field) WriteToCrc32(qq422016 qtio422016.Writer) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	f.StreamToCrc32(qw422016)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (f Field) ToCrc32() string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	f.WriteToCrc32(qb422016)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
+
+func (t TypeRef) StreamToCrc32(qw422016 *qt422016.Writer) {
+	t.streamtoCrc32(qw422016)
+}
+
+func (t TypeRef) WriteToCrc32(qq422016 qtio422016.Writer) {
+	qw422016 := qt422016.AcquireWriter(qq422016)
+	t.StreamToCrc32(qw422016)
+	qt422016.ReleaseWriter(qw422016)
+}
+
+func (t TypeRef) ToCrc32() string {
+	qb422016 := qt422016.AcquireByteBuffer()
+	t.WriteToCrc32(qb422016)
+	qs422016 := string(qb422016.B)
+	qt422016.ReleaseByteBuffer(qb422016)
+	return qs422016
+}
+
 func (t TypeRef) streamtoCrc32(qw422016 *qt422016.Writer) {
 	if t.Bare && (len(t.Type.Name) == 0 || !unicode.IsLower(rune(t.Type.Name[0]))) {
 		qw422016.N().S(`%`)
