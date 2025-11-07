@@ -30,12 +30,14 @@ func compareModifiers(a, b Modifier) bool {
   #{%s= fmt.Sprintf("%08x", descriptor.Crc32()) %}
   {% space %}
     {%- for _, x := range descriptor.TemplateArguments -%}
+      {%s= "{" %}
       {%s= x.FieldName %}
       {%- if x.IsNat -%}
-        {%s= ":# " %}
+        {%s= ":#" %}
       {%- else -%}
-        {%s= ":Type " %}
+        {%s= ":Type" %}
       {%- endif -%}
+      {%s= "} " %}
     {%- endfor -%}
     {%- if descriptor.Builtin -%}
       {%s= "? " %}
