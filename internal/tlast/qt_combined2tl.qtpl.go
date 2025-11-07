@@ -47,12 +47,14 @@ func (descriptor Combinator) streamcanonicalFormWithTag(qw422016 *qt422016.Write
 	qw422016.N().S(fmt.Sprintf("%08x", descriptor.Crc32()))
 	qw422016.N().S(` `)
 	for _, x := range descriptor.TemplateArguments {
+		qw422016.N().S("{")
 		qw422016.N().S(x.FieldName)
 		if x.IsNat {
-			qw422016.N().S(":# ")
+			qw422016.N().S(":#")
 		} else {
-			qw422016.N().S(":Type ")
+			qw422016.N().S(":Type")
 		}
+		qw422016.N().S("} ")
 	}
 	if descriptor.Builtin {
 		qw422016.N().S("? ")
