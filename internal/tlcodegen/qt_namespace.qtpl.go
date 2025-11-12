@@ -462,7 +462,7 @@ switch tag {
         err = h.Raw`)
 				qw422016.N().S(funcTypeString)
 				qw422016.N().S(`(ctx, hctx)
-        if rpc.IsHijackedResponse(err) {
+        if hctx.LongpollStarted() || rpc.IsLongpollResponse(err) {
             return err
         }
         if err != nil {
@@ -503,7 +503,7 @@ switch tag {
         ret, err := h.`)
 			qw422016.N().S(funcTypeString)
 			qw422016.N().S(`(ctx, args)
-        if rpc.IsHijackedResponse(err)  {
+        if hctx.LongpollStarted() || rpc.IsLongpollResponse(err)  {
             return err
         }
         if err != nil {
