@@ -3489,13 +3489,13 @@ func (ti *TypesInfo) FieldTypeReduction(tr *TypeReduction, fieldId int) Evaluate
 }
 
 func (ti *TypesInfo) ResultTypeReduction(tr *TypeReduction) EvaluatedType {
-	resultRef := tr.Constructor.Result
-	if resultRef == nil {
-		panic("not a function")
-	}
 	constructor := tr.Constructor
 	if tr.IsType {
 		constructor = tr.ReferenceType().Constructors[0]
+	}
+	resultRef := constructor.Result
+	if resultRef == nil {
+		panic("not a function")
 	}
 
 	resultType := toTypeReduction(*resultRef, &ti.Types, &ti.Constructors)
