@@ -8,9 +8,10 @@ package tlcodegen
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/vkcom/tl/internal/utils"
 	"golang.org/x/exp/slices"
-	"strings"
 )
 
 func (trw *TypeRWStruct) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
