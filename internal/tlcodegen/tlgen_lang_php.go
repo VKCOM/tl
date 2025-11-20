@@ -476,7 +476,7 @@ class tl2_support {
       
       $l = ($b7 << 48) + ($b6 << 40) + ($b5 << 32) + ($b4 << 24) + ($b3 << 16) + ($b2 << 8) + $b1;
       if ($l <= self::BigStringLen) {
-        throw new \Exception("non-canonical length (7 instead of 3 o)");
+        throw new \Exception("non-canonical length (7 instead of 3)");
       }
       return $l;
     }
