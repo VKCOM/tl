@@ -314,6 +314,13 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 				return err
 			}
 		}
+		if gen.options.GenerateTL2 {
+			if gen.options.UseBuiltinDataProviders {
+				if err := gen.phpCreateTL2Support(); err != nil {
+					return err
+				}
+			}
+		}
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
@@ -422,6 +429,93 @@ class tl_switcher {
 		return err
 	}
 	return nil
+}
+
+func (gen *Gen2) phpCreateTL2Support() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+use VK\TL;
+
+class tl2_support {
+  const TinyStringLen = 253;
+  const BigStringMarker = 254;
+  const HugeStringMarker = 255;
+  const BigStringLen = (1 << 24) - 1;
+  const HugeStringLen = (1 << 56) - 1;
+  
+  /**
+   * @return int
+   */
+  public static function fetch_size() {
+    $b0 = fetch_byte();
+    if ($b0 <= self::TinyStringLen) {
+      return $b0;
+    }
+    if ($b0 == self::BigStringMarker) {
+      $b1 = fetch_byte();
+      $b2 = fetch_byte();
+      $b3 = fetch_byte();
+      
+      $l = ($b3 << 16) + ($b2 << 8) + $b1;
+      if ($l <= self::TinyStringLen) {
+        throw new \Exception("non-canonical length (3 instead of 1)");
+      }
+      return $l;
+    } else {
+      $b1 = fetch_byte();
+      $b2 = fetch_byte();
+      $b3 = fetch_byte();
+      $b4 = fetch_byte();
+      $b5 = fetch_byte();
+      $b6 = fetch_byte();
+      $b7 = fetch_byte();
+      
+      $l = ($b7 << 48) + ($b6 << 40) + ($b5 << 32) + ($b4 << 24) + ($b3 << 16) + ($b2 << 8) + $b1;
+      if ($l <= self::BigStringLen) {
+        throw new \Exception("non-canonical length (7 instead of 3 o)");
+      }
+      return $l;
+    }
+    return 0;
+  }
+
+  /**
+   * @param int $size
+   */
+  public static function store_size($size) {
+    if ($size <= self::TinyStringLen) {
+      store_byte($size & 0xFF);
+    } else if ($size <= self::BigStringLen) {
+      store_byte($size & 0xFF);
+      store_byte(($size >> 8) & 0xFF);
+      store_byte(($size >> 16) & 0xFF);
+    } else {
+      store_byte($size & 0xFF);
+      store_byte(($size >> 8) & 0xFF);
+      store_byte(($size >> 16) & 0xFF);
+      store_byte(($size >> 24) & 0xFF);
+      store_byte(($size >> 32) & 0xFF);
+      store_byte(($size >> 40) & 0xFF);
+      store_byte(($size >> 48) & 0xFF);
+    }
+  }
+
+  /**
+   * @param int $count
+   */
+  public static function skip_bytes($count) {
+    for ($i = 0; $i < $count; $i++) {
+      fetch_byte();
+    }
+  }
+}
+`, gen.copyrightText))
+
+	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_support.php"), code.String())
 }
 
 func (gen *Gen2) phpCreateMeta() error {
