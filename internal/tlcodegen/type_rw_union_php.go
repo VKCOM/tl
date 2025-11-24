@@ -8,8 +8,9 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWUnion) PhpClassNameReplaced() bool {
@@ -235,6 +236,57 @@ func (trw *TypeRWUnion) PhpWriteMethodCall(targetName string, bare bool, args *T
 		)
 	}
 
+	return result
+}
+
+func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+	localConstructor := fmt.Sprintf("$index_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	variantName := func(index int) string {
+		return fmt.Sprintf("$variant_%[1]s_%[2]d_%[3]d", supportSuffix, callLevel, index)
+	}
+	var result []string
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		result = append(result,
+			fmt.Sprintf("%[1]s = 0;", localConstructor),
+			fmt.Sprintf("%[1]s = tl2_support::fetch_size();", localCurrentSize),
+			fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
+			// add to global pointer
+			fmt.Sprintf("%[1]s += %[2]s + tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
+			// decide should we read body
+			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
+			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
+			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
+			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
+			fmt.Sprintf("    %[1]s = fetch_size();", localConstructor),
+			fmt.Sprintf("    %[1]s += tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
+			"  }",
+			"}",
+			"// check variants",
+			fmt.Sprintf("switch (%[1]s) {", localConstructor),
+		)
+		// iterate variants
+		for i, field := range trw.Fields {
+			curType := field.t
+			name := variantName(i)
+			result = append(result,
+				fmt.Sprintf("  case %[1]d:", i),
+				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
+				fmt.Sprintf("    %[2]s->read_tl2(%[1]s, %[3]s, %[4]s - %[5]s);", phpFormatArgs(args.ListAllValues(), true), name, localBlock, localCurrentSize, localUsedBytesPointer),
+				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
+				"    break;",
+			)
+		}
+		// end
+		result = append(result,
+			"}",
+		)
+	} else {
+		panic("unsupported generation for union in php")
+	}
 	return result
 }
 

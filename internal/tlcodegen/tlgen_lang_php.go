@@ -35,6 +35,8 @@ type TypeRWPHPData interface {
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
 	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
 	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
+	//PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
 }
 
 type PhpClassMeta struct {
@@ -490,10 +492,12 @@ class tl2_support {
     if ($size <= self::TinyStringLen) {
       store_byte($size & 0xFF);
     } else if ($size <= self::BigStringLen) {
+      store_byte(self::BigStringMarker);
       store_byte($size & 0xFF);
       store_byte(($size >> 8) & 0xFF);
       store_byte(($size >> 16) & 0xFF);
     } else {
+      store_byte(self::HugeStringMarker);
       store_byte($size & 0xFF);
       store_byte(($size >> 8) & 0xFF);
       store_byte(($size >> 16) & 0xFF);
@@ -505,11 +509,49 @@ class tl2_support {
   }
 
   /**
+   * @param int $size
+   * @return int
+   */
+  public static function count_used_bytes($size) {
+    if ($size <= self::TinyStringLen) {
+      return 1;
+    } else if ($size <= self::BigStringLen) {
+      return 4;
+    } else {
+      return 8;
+    }
+  }
+
+  /**
    * @param int $count
+   * @return int
    */
   public static function skip_bytes($count) {
+    if ($count < 0) {
+      throw new \Exception("can't skip negative number of bytes");
+    }
     for ($i = 0; $i < $count; $i++) {
       fetch_byte();
+    }
+    return $count;
+  }
+
+  /**
+   * @return boolean
+   */
+  public static function fetch_legacy_bool_tl2() {
+    $b = fetch_byte();
+    return $b != 0;
+  }
+
+  /**
+   * @param boolean $value
+   */
+  public static function store_legacy_bool_tl2($value) {
+    if ($value == 0) {
+      store_byte(0);
+    } else {
+      store_byte(1);
     }
   }
 }

@@ -91,6 +91,25 @@ func (trw *TypeRWBool) PhpWriteMethodCall(targetName string, bare bool, args *Ty
 	return nil
 }
 
+func (trw *TypeRWBool) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		if !trw.isTL2Legacy && canDependOnLocalBit {
+			return []string{
+				fmt.Sprintf("%[1]s = true;", targetName),
+			}
+		} else {
+			return []string{
+				fmt.Sprintf("%[1]s = tl2_support::fetch_legacy_bool_tl2();", targetName),
+				fmt.Sprintf("%[1]s += 1;", usedBytesPointer),
+			}
+		}
+	} else {
+		panic("unsupported generation for bool in php")
+	}
+
+	return nil
+}
+
 func (trw *TypeRWBool) PhpDefaultInit() string {
 	return "false"
 }
