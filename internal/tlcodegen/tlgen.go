@@ -2276,35 +2276,45 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 					Name: PHPRPCResponseMock,
 				},
 			}
+			hasRPCCombinators := false
+			for _, typ := range tl {
+				if !typ.IsFunction &&
+					rpcResultsMapping[typ.Construct.Name.String()] != "" &&
+					typ.TypeDecl.Name.String() == rpcRequestResultName {
+					hasRPCCombinators = true
+				}
+			}
 			// TODO: RETURN ORIGINAL COMBINATOR
-			tl = append(tl, &tlast.Combinator{
-				CommentRight: "// tlgen:nolint",
-				TypeDecl: tlast.TypeDeclaration{
-					Name: tlast.Name{
-						Name: "ReqResult",
+			if hasRPCCombinators {
+				tl = append(tl, &tlast.Combinator{
+					CommentRight: "// tlgen:nolint",
+					TypeDecl: tlast.TypeDeclaration{
+						Name: tlast.Name{
+							Name: "ReqResult",
+						},
+						Arguments: []string{"X"},
 					},
-					Arguments: []string{"X"},
-				},
-				Construct: tlast.Constructor{
-					Name: tlast.Name{Name: "_"},
-				},
-				TemplateArguments: []tlast.TemplateArgument{
-					{
-						FieldName: "X",
-						IsNat:     false,
+					Construct: tlast.Constructor{
+						Name: tlast.Name{Name: "_"},
 					},
-				},
-				Fields: []tlast.Field{
-					{
-						FieldName: "result",
-						FieldType: tlast.TypeRef{
-							Type: tlast.Name{
-								Name: "X",
+					TemplateArguments: []tlast.TemplateArgument{
+						{
+							FieldName: "X",
+							IsNat:     false,
+						},
+					},
+					Fields: []tlast.Field{
+						{
+							FieldName: "result",
+							FieldType: tlast.TypeRef{
+								Type: tlast.Name{
+									Name: "X",
+								},
 							},
 						},
 					},
-				},
-			})
+				})
+			}
 			tl = append(tl, &tlast.Combinator{
 				CommentRight: "// tlgen:nolint",
 				TypeDecl: tlast.TypeDeclaration{
