@@ -150,6 +150,71 @@ func (trw *TypeRWMaybe) PhpWriteMethodCall(targetName string, bare bool, args *T
 	return nil
 }
 
+func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	maybeContainsValueName := fmt.Sprintf("$maybe_contains_value_%[1]s_%[2]d", supportSuffix, callLevel)
+	localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	var result []string
+	// investigate read necessity
+	if trw.wr.gen.options.UseBuiltinDataProviders {
+		result = append(result,
+			"/** @var bool */",
+			fmt.Sprintf("%[1]s = false;", maybeContainsValueName),
+			fmt.Sprintf("%[1]s = tl2_support::fetch_size();", localCurrentSize),
+			fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
+			// add to global pointer
+			fmt.Sprintf("%[1]s += %[2]s + tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
+			// decide should we read body
+			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
+			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
+			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
+			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
+			fmt.Sprintf("    %[1]s = (fetch_byte() == 1);", maybeContainsValueName),
+			fmt.Sprintf("    %[1]s += 1;", localUsedBytesPointer),
+			"  }",
+			fmt.Sprintf("  if (%[1]s) {", maybeContainsValueName),
+			fmt.Sprintf("    %[1]s = (%[2]s & (1 << 1) != 0);", maybeContainsValueName, localBlock),
+			"  }",
+			"}",
+		)
+	} else {
+		panic("unsupported generation for maybe in php")
+	}
+	// read inner
+	result = append(result, fmt.Sprintf("if (%[1]s) {", maybeContainsValueName))
+	if trw.element.t == trw.getInnerTarget().t && initIfDefault {
+		result = append(result,
+			fmt.Sprintf("  if (is_null(%[1]s)) {", targetName),
+			fmt.Sprintf("    %[1]s = %[2]s;", targetName, trw.element.t.trw.PhpDefaultInit()),
+			"  }",
+		)
+		initIfDefault = false
+	}
+	var newArgs *TypeArgumentsTree
+	if args != nil {
+		newArgs = args.children[0]
+	}
+	bodyReader := trw.element.t.trw.PhpReadTL2MethodCall(targetName, trw.element.bare, initIfDefault, newArgs, supportSuffix, callLevel+1, localUsedBytesPointer, false)
+	for i := range bodyReader {
+		bodyReader[i] = "  " + bodyReader[i]
+	}
+	result = append(result, bodyReader...)
+	result = append(result,
+		"} else {",
+		fmt.Sprintf("  %[1]s = null;", targetName),
+		"}",
+	)
+	// skip rest
+	result = append(result,
+		fmt.Sprintf("%[1]s += tl2_support::skip_bytes(%[2]s - %[1]s);", localUsedBytesPointer, localCurrentSize),
+	)
+	return result
+
+	return nil
+}
+
 func (trw *TypeRWMaybe) PhpDefaultInit() string {
 	return trw.element.t.trw.PhpDefaultInit()
 }
