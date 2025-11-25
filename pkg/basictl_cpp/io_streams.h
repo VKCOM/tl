@@ -163,7 +163,7 @@ namespace basictl {
 
         tl_ostream &operator=(tl_ostream &&) = delete;
 
-        ~tl_ostream() { sync(); };
+        ~tl_ostream() { if (this->sync_in_destructor) sync(); };
 
         friend class tl_throwable_ostream;
 
@@ -245,6 +245,8 @@ namespace basictl {
         std::byte *start_block{};
         std::byte *ptr{};
         std::byte *end_block{};
+
+        bool sync_in_destructor = true;
 
         void grow_buffer();
 
