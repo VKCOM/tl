@@ -99,7 +99,7 @@ func (trw *TypeRWBool) PhpReadTL2MethodCall(targetName string, bare bool, initIf
 			}
 		} else {
 			return []string{
-				fmt.Sprintf("%[1]s = tl2_support::fetch_legacy_bool_tl2();", targetName),
+				fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_legacy_bool_tl2();", targetName),
 				fmt.Sprintf("%[1]s += 1;", usedBytesPointer),
 			}
 		}

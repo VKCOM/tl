@@ -258,6 +258,11 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 	return []string{fmt.Sprintf("<??? %s write>", trw.wr.goGlobalName)}
 }
 
+func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	//panic("not implemented")
+	return []string{"// TODO FOR BRACKETS"}
+}
+
 func (trw *TypeRWBrackets) PhpDefaultInit() string {
 	return "[]"
 }
