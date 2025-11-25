@@ -252,17 +252,17 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	if trw.wr.gen.options.UseBuiltinDataProviders {
 		result = append(result,
 			fmt.Sprintf("%[1]s = 0;", localConstructor),
-			fmt.Sprintf("%[1]s = tl2_support::fetch_size();", localCurrentSize),
+			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize),
 			fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
 			// add to global pointer
-			fmt.Sprintf("%[1]s += %[2]s + tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
+			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
 			// decide should we read body
 			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
 			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
 			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
 			fmt.Sprintf("    %[1]s = fetch_size();", localConstructor),
-			fmt.Sprintf("    %[1]s += tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
+			fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
 			"  }",
 			"}",
 			"// check variants",

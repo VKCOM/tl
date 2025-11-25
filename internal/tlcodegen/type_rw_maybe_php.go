@@ -162,10 +162,10 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 		result = append(result,
 			"/** @var bool */",
 			fmt.Sprintf("%[1]s = false;", maybeContainsValueName),
-			fmt.Sprintf("%[1]s = tl2_support::fetch_size();", localCurrentSize),
+			fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize),
 			fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
 			// add to global pointer
-			fmt.Sprintf("%[1]s += %[2]s + tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
+			fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
 			// decide should we read body
 			fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
 			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
@@ -208,7 +208,7 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	)
 	// skip rest
 	result = append(result,
-		fmt.Sprintf("%[1]s += tl2_support::skip_bytes(%[2]s - %[1]s);", localUsedBytesPointer, localCurrentSize),
+		fmt.Sprintf("%[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", localUsedBytesPointer, localCurrentSize),
 	)
 	return result
 
