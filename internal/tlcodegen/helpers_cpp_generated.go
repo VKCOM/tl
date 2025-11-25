@@ -173,6 +173,7 @@ namespace basictl {
 
     tl_istream::tl_istream(tl_throwable_istream &from) : provider(nullptr) {
         from.pass_data(*this);
+        this->sync_in_destructor = true;
     }
 
     bool tl_istream::string_read(std::string &value) noexcept {
@@ -544,7 +545,7 @@ namespace basictl {
 
         tl_istream &operator=(tl_istream &&) = delete;
 
-        ~tl_istream() { sync(); };
+        ~tl_istream() { if (sync_in_destructor) sync(); };
 
         friend class tl_throwable_istream;
 
@@ -651,6 +652,8 @@ namespace basictl {
         const std::byte *start_block{};
         const std::byte *ptr{};
         const std::byte *end_block{};
+
+        bool sync_in_destructor = false;
 
         void grow_buffer() noexcept;
 
