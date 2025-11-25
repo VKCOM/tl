@@ -132,7 +132,7 @@ namespace basictl {
         const std::byte *ptr{};
         const std::byte *end_block{};
 
-        bool sync_in_destructor = false;
+        bool sync_in_destructor = true;
 
         void grow_buffer() noexcept;
 
