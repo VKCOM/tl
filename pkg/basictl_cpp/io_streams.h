@@ -24,7 +24,7 @@ namespace basictl {
 
         tl_istream &operator=(tl_istream &&) = delete;
 
-        ~tl_istream() { sync(); };
+        ~tl_istream() { if (sync_in_destructor) sync(); };
 
         friend class tl_throwable_istream;
 
@@ -131,6 +131,8 @@ namespace basictl {
         const std::byte *start_block{};
         const std::byte *ptr{};
         const std::byte *end_block{};
+
+        bool sync_in_destructor = false;
 
         void grow_buffer() noexcept;
 
