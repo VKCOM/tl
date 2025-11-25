@@ -8,6 +8,7 @@ namespace basictl {
 
     tl_istream::tl_istream(tl_throwable_istream &from) : provider(nullptr) {
         from.pass_data(*this);
+        this->sync_in_destructor = true;
     }
 
     bool tl_istream::string_read(std::string &value) noexcept {
