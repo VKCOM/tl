@@ -16,6 +16,8 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep3"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep4"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep5"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep6"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionNoDep7"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep1"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestFunctionWithDep2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcasesTL2/tlCasesTL2TestObject"
@@ -37,6 +39,8 @@ type (
 	TestFunctionNoDep3           = tlCasesTL2TestFunctionNoDep3.CasesTL2TestFunctionNoDep3
 	TestFunctionNoDep4           = tlCasesTL2TestFunctionNoDep4.CasesTL2TestFunctionNoDep4
 	TestFunctionNoDep5           = tlCasesTL2TestFunctionNoDep5.CasesTL2TestFunctionNoDep5
+	TestFunctionNoDep6           = tlCasesTL2TestFunctionNoDep6.CasesTL2TestFunctionNoDep6
+	TestFunctionNoDep7           = tlCasesTL2TestFunctionNoDep7.CasesTL2TestFunctionNoDep7
 	TestFunctionWithDep1         = tlCasesTL2TestFunctionWithDep1.CasesTL2TestFunctionWithDep1
 	TestFunctionWithDep2         = tlCasesTL2TestFunctionWithDep2.CasesTL2TestFunctionWithDep2
 	TestObject                   = tlCasesTL2TestObject.CasesTL2TestObject

@@ -16,6 +16,7 @@ import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace2PairTupleIntTupleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace3TupleInt2"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesInplace3TuplePairTupleIntTupleInt2"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestAllDicts"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestAllPossibleFieldConfigs"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestAllPossibleFieldConfigsContainer"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tlcases/tlCasesTestArray"
@@ -50,6 +51,7 @@ type (
 	MyCycle1                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle1
 	MyCycle2                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle2
 	MyCycle3                             = cycle_44515dca4b2e76ca676b13645e716786.CasesMyCycle3
+	TestAllDicts                         = tlCasesTestAllDicts.CasesTestAllDicts
 	TestAllPossibleFieldConfigs          = tlCasesTestAllPossibleFieldConfigs.CasesTestAllPossibleFieldConfigs
 	TestAllPossibleFieldConfigsContainer = tlCasesTestAllPossibleFieldConfigsContainer.CasesTestAllPossibleFieldConfigsContainer
 	TestArray                            = tlCasesTestArray.CasesTestArray

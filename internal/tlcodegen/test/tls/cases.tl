@@ -38,6 +38,12 @@ cases.testDictInt dict:(dictionaryAny int int) = cases.TestDictInt;
 // will be array of tuples
 cases.testDictAny dict:(dictionaryAny double int) = cases.TestDictAny;
 
+cases.testAllDicts
+    f1:cases.testDictString
+    f2:cases.testDictInt
+    f3:cases.testDictAny
+    = cases.TestAllDicts;
+
 // BLOCK: TEST UNIONS
 cases.testMaybe value:(Maybe int) = cases.TestMaybe;
 
@@ -200,6 +206,8 @@ casesTL2.testObjectWithMuiltiParams {n:#} {m:#}
 @read casesTL2.testFunctionNoDep3 x:int => Vector<int>;
 @read casesTL2.testFunctionNoDep4 x:int => Bool;
 @read casesTL2.testFunctionNoDep5 x:int => casesTL2.TestObject;
+@read casesTL2.testFunctionNoDep6 x:int => casesTL2.TestArrayFixedBool;
+@read casesTL2.testFunctionNoDep7 x:int => cases.TestAllDicts;
 
 @read casesTL2.testFunctionWithDep1 n:# => Tuple<int, n>;
 @read casesTL2.testFunctionWithDep2 n:# => benchmarks.VrutoyPositions n;

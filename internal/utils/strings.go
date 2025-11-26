@@ -40,3 +40,11 @@ func ToLowerFirst(str string) string {
 	}
 	return strings.ToLower(str) // zero or single rune
 }
+
+func ShiftAll(s []string, shift string) []string {
+	r := make([]string, len(s))
+	for i, e := range s {
+		r[i] = shift + e
+	}
+	return r
+}
