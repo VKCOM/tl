@@ -164,7 +164,7 @@ func (trw *TypeRWPrimitive) PhpReadTL2MethodCall(targetName string, bare bool, i
 		case "string":
 			return []string{
 				fmt.Sprintf("%s = fetch_string2();", targetName),
-				fmt.Sprintf("%[1]s += strlen(%[2]s) + TL\\tl2_support::count_used_bytes(strlen(%[2]s));", usedBytesPointer),
+				fmt.Sprintf("%[1]s += strlen(%[2]s) + TL\\tl2_support::count_used_bytes(strlen(%[2]s));", usedBytesPointer, targetName),
 			}
 		default:
 			panic(fmt.Sprintf("unsupported primitive generation for %[1]s in php", trw.goType))
