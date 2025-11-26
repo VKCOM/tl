@@ -261,7 +261,7 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 			fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
 			fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
-			fmt.Sprintf("    %[1]s = fetch_size();", localConstructor),
+			fmt.Sprintf("    %[1]s = TL\\tl2_support::fetch_size();", localConstructor),
 			fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
 			"  }",
 			"}",
@@ -275,7 +275,7 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 			result = append(result,
 				fmt.Sprintf("  case %[1]d:", i),
 				fmt.Sprintf("    %[2]s = new %[1]s();", curType.trw.PhpTypeName(true, true), name),
-				fmt.Sprintf("    %[2]s->read_tl2(%[1]s, %[3]s, %[4]s - %[5]s);", phpFormatArgs(args.ListAllValues(), true), name, localBlock, localCurrentSize, localUsedBytesPointer),
+				fmt.Sprintf("    %[2]s->read_tl2(%[1]s);", phpFormatArgs(append(args.ListAllValues(), localBlock, fmt.Sprintf("%[1]s - %[2]s", localCurrentSize, localUsedBytesPointer)), true), name),
 				fmt.Sprintf("    %[1]s = %[2]s;", targetName, name),
 				"    break;",
 			)

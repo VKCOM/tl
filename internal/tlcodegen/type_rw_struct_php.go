@@ -773,6 +773,10 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 
 		if trw.wr.wantsTL2 {
 			// TODO: add block calculated currentSize and block if union
+			if trw.wr.unionParent != nil {
+				argNames = append(argNames, "block", "current_size")
+				argTypes = append(argTypes, "int", "int")
+			}
 			code.WriteString(fmt.Sprintf(`
 %[1]s
   public function read_tl2(%[2]s) {
@@ -785,7 +789,7 @@ func (trw *TypeRWStruct) PHPStructReadMethods(code *strings.Builder) {
 			usedBytes := "$used_bytes"
 			code.WriteString(fmt.Sprintf("%[1]s%[2]s = 0;\n", tab, usedBytes))
 
-			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, nil) {
+			for _, line := range trw.phpStructReadTL2Code("$this", usedBytes, nil, true) {
 				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
 			}
 
@@ -837,7 +841,7 @@ func (trw *TypeRWStruct) phpStructReadCode(targetName string, calculatedArgs *Ty
 	return result
 }
 
-func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs *TypeArgumentsTree) []string {
+func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointer string, calculatedArgs *TypeArgumentsTree, topLevel bool) []string {
 	result := make([]string, 0)
 	currentSize := "$current_size"
 	block := "$block"
@@ -854,8 +858,8 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		result = append(result, fmt.Sprintf("%[1]s = fetch_byte();", block))
 		result = append(result,
 			fmt.Sprintf("if ((%[1]s & 1) != 0) {", block),
-			"  $index = fetch_byte();",
-			fmt.Sprintf("  %[1]s += 1;", usedBytesPointer),
+			"  $index = TL\\tl2_support::fetch_size();",
+			fmt.Sprintf("  %[1]s += TL\\tl2_support::count_used_bytes($index);", usedBytesPointer),
 			"  if ($index != 0) {",
 			fmt.Sprintf("    %[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", usedBytesPointer, currentSize),
 			fmt.Sprintf("    return %[1]s;", usedBytesPointer),
@@ -898,6 +902,10 @@ func (trw *TypeRWStruct) phpStructReadTL2Code(targetName string, usedBytesPointe
 		tab := "  "
 		textTab := func() string { return strings.Repeat(tab, shift) }
 		tree := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(fieldIndex, calculatedArgs)
+
+		if trw.PhpClassName(false, true) == "casesTL2_testObject" && fieldName == "$this->f4" {
+			debugf("")
+		}
 
 		fieldRead := field.t.trw.PhpReadTL2MethodCall(fieldName, field.bare, true, &tree, strconv.Itoa(fieldIndex), 0, usedBytesPointer, field.fieldMask == nil)
 		for _, line := range fieldRead {
@@ -1643,19 +1651,20 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 					fmt.Sprintf("  %[1]s = fetch_byte();", localBlock),
 					fmt.Sprintf("  %[1]s += 1;", localUsedBytesPointer),
 					fmt.Sprintf("  if (%[1]s & 1 != 0) {", localBlock),
-					fmt.Sprintf("    %[1]s = fetch_size();", localConstructor),
+					fmt.Sprintf("    %[1]s = TL\\tl2_support::fetch_size();", localConstructor),
 					fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localConstructor),
 					"  }",
 					fmt.Sprintf("  if (%[1]s & (1 << 1) != 0) {", localBlock),
 				)
 				for _, line := range readText {
-					result = append(result, "  "+line)
+					result = append(result, "    "+line)
 				}
 				result = append(result,
 					"  }",
 					"}",
 				)
-				result = append(result, fmt.Sprintf("%[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s)", localUsedBytesPointer, localCurrentSize))
+				result = append(result, fmt.Sprintf("%[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", localUsedBytesPointer, localCurrentSize))
+				return result
 			}
 		}
 		if trw.ResultType == nil && trw.wr.PHPIsTrueType() {
@@ -1680,7 +1689,7 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		)
 	}
 	if trw.wr.phpInfo.IsDuplicate {
-		result = append(result, trw.phpStructReadTL2Code(targetName, usedBytesPointer, args)...)
+		result = append(result, trw.phpStructReadTL2Code(targetName, usedBytesPointer, args, false)...)
 	} else {
 		result = append(result,
 			fmt.Sprintf("%[3]s += %[1]s->read_tl2(%[2]s);",
