@@ -9,6 +9,8 @@ package tlcodegen
 import (
 	"fmt"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWBrackets) PhpClassName(withPath bool, bare bool) string {
@@ -259,8 +261,144 @@ func (trw *TypeRWBrackets) PhpWriteMethodCall(targetName string, bare bool, args
 }
 
 func (trw *TypeRWBrackets) PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	result := make([]string, 0)
+
 	//panic("not implemented")
-	return []string{"// TODO FOR BRACKETS"}
+	//useBuiltIn := trw.wr.gen.options.UseBuiltinDataProviders
+
+	index := fmt.Sprintf("$i_%s_%d", supportSuffix, callLevel)
+	localUsedBytesPointer := fmt.Sprintf("$used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localElementCount := fmt.Sprintf("$element_count_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	switch {
+	// actual vector
+	case trw.vectorLike && !trw.dictLike:
+		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
+		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.bare, false, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		for i := range elementRead {
+			elementRead[i] = "  " + elementRead[i]
+		}
+		if initIfDefault {
+			result = append(result,
+				// TODO MAKE MORE EFFICIENT
+				fmt.Sprintf("%[1]s = [];", targetName),
+			)
+		}
+		result = append(result,
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, localElementCount),
+			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
+			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
+		)
+		result = append(result, elementRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
+			"}",
+		)
+		break
+	// tuple with size as last argument
+	case !trw.vectorLike && !trw.dictLike:
+		elementName := fmt.Sprintf("$obj%s_%d", supportSuffix, len(trw.PhpClassName(false, true)))
+		tupleSize := *args.children[0].value
+		//elementArgs := args[1:]
+		elementRead := trw.element.t.trw.PhpReadTL2MethodCall(elementName, trw.element.bare, false, args.children[1], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		for i := range elementRead {
+			elementRead[i] = "  " + elementRead[i]
+		}
+		if initIfDefault {
+			result = append(result,
+				// TODO MAKE MORE EFFICIENT
+				fmt.Sprintf("%[1]s = [];", targetName),
+			)
+		}
+		result = append(result,
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, tupleSize),
+			fmt.Sprintf("  /** @var %[1]s */", trw.element.t.trw.PhpTypeName(true, true)),
+			fmt.Sprintf("  %[2]s = %[1]s;", trw.element.t.trw.PhpDefaultInit(), elementName),
+		)
+		result = append(result, elementRead...)
+		result = append(result,
+			fmt.Sprintf("  %[1]s[] = %[2]s;", targetName, elementName),
+			"}",
+		)
+		break
+	// actual map / dictionary
+	case trw.dictLike:
+		keyElement := fmt.Sprintf("$%s___key", trw.PhpClassName(false, true))
+		valueElement := fmt.Sprintf("$%s___value", trw.PhpClassName(false, true))
+
+		keyRead := trw.dictKeyField.t.trw.PhpReadTL2MethodCall(keyElement, trw.dictKeyField.bare, true, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+		valueRead := trw.dictValueField.t.trw.PhpReadTL2MethodCall(valueElement, trw.dictValueField.bare, true, args.children[0], supportSuffix, callLevel+1, localUsedBytesPointer, false)
+
+		result = append(result,
+			// TODO MAKE MORE EFFICIENT
+			fmt.Sprintf("%[1]s = [];", targetName),
+			fmt.Sprintf("for(%[1]s = 0; %[1]s < %[2]s; %[1]s++) {", index, localElementCount),
+		)
+		// read pair prefix
+		pairCurrentSize := fmt.Sprintf("$pair_current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+		pairUsedBytes := fmt.Sprintf("$pair_used_bytes_%[1]s_%[2]d", supportSuffix, callLevel)
+		pairBlock := fmt.Sprintf("$pair_block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+		result = append(result, fmt.Sprintf("  %[1]s = TL\\tl2_support::fetch_size();", pairCurrentSize))
+		result = append(result, fmt.Sprintf("  %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", pairUsedBytes, pairCurrentSize))
+		result = append(result,
+			fmt.Sprintf("  if (%[1]s == 0) {", pairCurrentSize),
+			"    continue;",
+			"  }",
+		)
+
+		result = append(result, fmt.Sprintf("  %[1]s += %[2]s;", pairCurrentSize, pairUsedBytes))
+		result = append(result, fmt.Sprintf("  %[1]s = fetch_byte();", pairBlock))
+		result = append(result,
+			fmt.Sprintf("  if ((%[1]s & 1) != 0) {", pairBlock),
+			"    $index = TL\\tl2_support::fetch_size();",
+			fmt.Sprintf("    %[1]s += TL\\tl2_support::count_used_bytes($index);", pairUsedBytes),
+			"    if ($index != 0) {",
+			fmt.Sprintf("      %[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", pairUsedBytes, pairCurrentSize),
+			"      continue;",
+			"    }",
+			"  }",
+		)
+		// init key and value
+		result = append(result, fmt.Sprintf("  /** @var %[1]s */", trw.dictKeyField.t.trw.PhpTypeName(true, true)))
+		result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", keyElement, trw.dictKeyField.t.trw.PhpDefaultInit()))
+		result = append(result, fmt.Sprintf("  /** @var %[1]s */", trw.dictValueField.t.trw.PhpTypeName(true, true)))
+		result = append(result, fmt.Sprintf("  %[1]s = %[2]s;", valueElement, trw.dictValueField.t.trw.PhpDefaultInit()))
+		// read key and value
+		result = append(result, fmt.Sprintf("  if ((%[1]s & (1 << 1)) != 0) {", pairBlock))
+		result = append(result, utils.ShiftAll(keyRead, "    ")...)
+		result = append(result, "  }")
+		result = append(result, fmt.Sprintf("  if ((%[1]s & (1 << 2)) != 0) {", pairBlock))
+		result = append(result, utils.ShiftAll(valueRead, "    ")...)
+		result = append(result, "  }")
+		result = append(result,
+			fmt.Sprintf("  %[1]s[%[2]s] = %[3]s;", targetName, keyElement, valueElement),
+			"}",
+		)
+		break
+	}
+
+	totalRead := make([]string, 0)
+	totalRead = append(totalRead,
+		// read byte size
+		fmt.Sprintf("%[1]s = TL\\tl2_support::fetch_size();", localCurrentSize),
+		fmt.Sprintf("%[1]s = 0;", localUsedBytesPointer),
+		// add to global pointer
+		fmt.Sprintf("%[1]s += %[2]s + TL\\tl2_support::count_used_bytes(%[2]s);", usedBytesPointer, localCurrentSize),
+		fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
+		fmt.Sprintf("  %[1]s = TL\\tl2_support::fetch_size();", localElementCount),
+		fmt.Sprintf("  %[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localUsedBytesPointer, localElementCount),
+		// after actual read
+	)
+	for _, line := range result {
+		totalRead = append(totalRead, "  "+line)
+	}
+	totalRead = append(totalRead,
+		fmt.Sprintf("  %[1]s += TL\\tl2_support::skip_bytes(%[2]s - %[1]s);", localUsedBytesPointer, localCurrentSize),
+		"}",
+	)
+	return totalRead
 }
 
 func (trw *TypeRWBrackets) PhpDefaultInit() string {

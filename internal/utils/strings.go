@@ -15,3 +15,11 @@ func LowerFirst(s string) string {
 	}
 	return strings.ToLower(s[:1]) + s[1:]
 }
+
+func ShiftAll(s []string, shift string) []string {
+	r := make([]string, len(s))
+	for i, e := range s {
+		r[i] = shift + e
+	}
+	return r
+}
