@@ -30,6 +30,9 @@ func BuiltinVectorBenchmarksVrutoyTopLevelUnionRead(w []byte, vec *[]cycle_4a156
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
+	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+		return w, err
+	}
 	if uint32(cap(*vec)) < l {
 		*vec = make([]cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion, l)
 	} else {

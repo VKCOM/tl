@@ -23,6 +23,7 @@ const (
 	CasesMyCycle1                                   = 0xd3ca919d // cases.myCycle1
 	CasesMyCycle2                                   = 0x5444c9a2 // cases.myCycle2
 	CasesMyCycle3                                   = 0x7624f86b // cases.myCycle3
+	CasesTestAllDicts                               = 0xec4b79a6 // cases.testAllDicts
 	CasesTestAllPossibleFieldConfigs                = 0xfb6836d3 // cases.testAllPossibleFieldConfigs
 	CasesTestAllPossibleFieldConfigsContainer       = 0xe3fae936 // cases.testAllPossibleFieldConfigsContainer
 	CasesTestArray                                  = 0xa888030d // cases.testArray
@@ -57,6 +58,8 @@ const (
 	CasesTL2TestFunctionNoDep3                      = 0xf020849b // casesTL2.testFunctionNoDep3
 	CasesTL2TestFunctionNoDep4                      = 0x5a933a50 // casesTL2.testFunctionNoDep4
 	CasesTL2TestFunctionNoDep5                      = 0x2b47b925 // casesTL2.testFunctionNoDep5
+	CasesTL2TestFunctionNoDep6                      = 0x9a316c2e // casesTL2.testFunctionNoDep6
+	CasesTL2TestFunctionNoDep7                      = 0x08824518 // casesTL2.testFunctionNoDep7
 	CasesTL2TestFunctionWithDep1                    = 0xb6c63b07 // casesTL2.testFunctionWithDep1
 	CasesTL2TestFunctionWithDep2                    = 0x9d44a2fd // casesTL2.testFunctionWithDep2
 	CasesTL2TestObject                              = 0x4f96dd95 // casesTL2.testObject
