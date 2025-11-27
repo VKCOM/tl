@@ -321,6 +321,11 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 				if err := gen.phpCreateTL2Support(); err != nil {
 					return err
 				}
+				if err := gen.phpCreateTL2Context(); err != nil {
+					return err
+				}
+			} else {
+				panic("can't generate tl2 for php without kphp support")
 			}
 		}
 	}
@@ -558,6 +563,60 @@ class tl2_support {
 `, gen.copyrightText))
 
 	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_support.php"), code.String())
+}
+
+func (gen *Gen2) phpCreateTL2Context() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+class tl2_context {
+  /** @var int[] */
+  private $sizes = [];
+
+  /** @var int */
+  private $current_index = 0;
+
+  /**
+   * @param int $value
+   * 
+   * @return int
+   */
+  public function push_back($value) {
+    $index = count($this->sizes);
+    $this->sizes[] = $value;
+    return $index;
+  }
+
+  /**
+   * @return int
+   */
+  public function pop_front() {
+    if ($this->current_index >= count($this->sizes)) {
+      throw new \Exception("context can't pop front value");
+    }
+    $value = $this->sizes[$this->current_index];
+    $this->current_index += 1;
+    return $value;
+  }
+
+  /**
+   * @param int $index
+   * @param int $value
+   * 
+   * @return int
+   */
+  public function set_value($index, $value) {
+    if ($index >= count($this->sizes) || $index < 0) {
+      throw new \Exception("invalid index for context");
+    }
+    $this->sizes[$index] = $value;
+  }
+}`, gen.copyrightText))
+
+	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_context.php"), code.String())
 }
 
 func (gen *Gen2) phpCreateMeta() error {
