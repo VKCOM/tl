@@ -986,6 +986,60 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 
 		code.WriteString("    return true;\n")
 		code.WriteString("  }\n")
+
+		if trw.wr.wantsTL2 {
+			// TODO: add block calculated currentSize and block if union
+			if trw.wr.unionParent != nil {
+				argNames = append(argNames, "block", "current_size")
+				argTypes = append(argTypes, "int", "int")
+			}
+
+			argNames = append(argNames, "context")
+			argTypes = append(argTypes, `TL\tl2_context`)
+
+			code.WriteString(fmt.Sprintf(`
+%[1]s
+  public function write_tl2(%[2]s) {
+    $context = new TL\tl2_context();
+    $this->calculate_sizes_tl2(%[3]s);
+    $this->internal_write_tl2(%[3]s);
+  }
+`,
+				phpFunctionCommentFormat(argNames, argTypes, "", "  "),
+				phpFunctionArgumentsFormat(argNames[:len(argNames)-1]),
+				phpFunctionArgumentsFormat(argNames),
+			))
+
+			code.WriteString(fmt.Sprintf(`
+%[1]s
+  public function internal_write_tl2(%[2]s) {
+`,
+				phpFunctionCommentFormat(argNames, argTypes, "", "  "),
+				phpFunctionArgumentsFormat(argNames),
+			))
+
+			tab := strings.Repeat("  ", 2)
+
+			for _, line := range trw.phpStructWriteTL2Code("$this", nil) {
+				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
+			}
+
+			code.WriteString("  }\n")
+
+			code.WriteString(fmt.Sprintf(`
+%[1]s
+  public function calculate_sizes_tl2(%[2]s) {
+`,
+				phpFunctionCommentFormat(argNames, argTypes, "", "  "),
+				phpFunctionArgumentsFormat(argNames),
+			))
+
+			for _, line := range trw.phpStructCalculateSizesTL2Code("$this", nil) {
+				code.WriteString(fmt.Sprintf("%[1]s%[2]s\n", tab, line))
+			}
+
+			code.WriteString("  }\n")
+		}
 	}
 }
 
@@ -1021,6 +1075,14 @@ func (trw *TypeRWStruct) phpStructWriteCode(targetName string, calculatedArgs *T
 		}
 	}
 	return result
+}
+
+func (trw *TypeRWStruct) phpStructWriteTL2Code(targetName string, calculatedArgs *TypeArgumentsTree) []string {
+	return []string{"// TODO"}
+}
+
+func (trw *TypeRWStruct) phpStructCalculateSizesTL2Code(targetName string, calculatedArgs *TypeArgumentsTree) []string {
+	return []string{"// TODO"}
 }
 
 func (trw *TypeRWStruct) PHPStructFieldMaskCalculators(code *strings.Builder, usedFieldMasksIndecies []int, usedFieldMasks map[int][]Field) {

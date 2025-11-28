@@ -580,6 +580,12 @@ class tl2_context {
   private $current_index = 0;
 
   /**
+   * @kphp-inline
+   */
+  public function __construct() {
+  }
+
+  /**
    * @param int $value
    * 
    * @return int
@@ -605,14 +611,24 @@ class tl2_context {
   /**
    * @param int $index
    * @param int $value
-   * 
-   * @return int
    */
   public function set_value($index, $value) {
     if ($index >= count($this->sizes) || $index < 0) {
-      throw new \Exception("invalid index for context");
+      throw new \Exception("invalid index to set for context");
     }
     $this->sizes[$index] = $value;
+  }
+
+  /**
+   * @param int $index
+   * 
+   * @return int
+   */
+  public function get_value($index) {
+    if ($index >= count($this->sizes) || $index < 0) {
+      throw new \Exception("invalid index to get for context");
+    }
+    return $this->sizes[$index];
   }
 }`, gen.copyrightText))
 
