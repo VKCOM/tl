@@ -110,6 +110,16 @@ func (trw *TypeRWBool) PhpReadTL2MethodCall(targetName string, bare bool, initIf
 	return nil
 }
 
+func (trw *TypeRWBool) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	if !trw.isTL2Legacy && canDependOnLocalBit {
+		return []string{""}
+	}
+	return []string{
+		fmt.Sprintf("TL\\tl2_support::store_legacy_bool_tl2(%[1]s);", targetName),
+		fmt.Sprintf("%[1]s += 1;", usedBytesPointer),
+	}
+}
+
 func (trw *TypeRWBool) PhpDefaultInit() string {
 	return "false"
 }

@@ -989,18 +989,14 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
 
 		if trw.wr.wantsTL2 {
 			// TODO: add block calculated currentSize and block if union
-			if trw.wr.unionParent != nil {
-				argNames = append(argNames, "block", "current_size")
-				argTypes = append(argTypes, "int", "int")
-			}
-
-			argNames = append(argNames, "context")
-			argTypes = append(argTypes, `TL\tl2_context`)
+			argNames = append(argNames, "context_sizes", "context_blocks")
+			argTypes = append(argTypes, `TL\tl2_context`, `TL\tl2_context`)
 
 			code.WriteString(fmt.Sprintf(`
 %[1]s
   public function write_tl2(%[2]s) {
-    $context = new TL\tl2_context();
+    $context_sizes = new TL\tl2_context();
+    $context_blocks = new TL\tl2_context();
     $this->calculate_sizes_tl2(%[3]s);
     $this->internal_write_tl2(%[3]s);
   }
@@ -1762,6 +1758,10 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 		)
 	}
 	return result
+}
+
+func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	panic("TODO STRUCT")
 }
 
 func (trw *TypeRWStruct) phpStructWriteMagic(useBuiltIn bool, result []string) []string {

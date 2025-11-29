@@ -36,7 +36,7 @@ type TypeRWPHPData interface {
 	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
 	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
 	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
-	//PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
 }
 
 type PhpClassMeta struct {
@@ -574,7 +574,7 @@ func (gen *Gen2) phpCreateTL2Context() error {
 
 class tl2_context {
   /** @var int[] */
-  private $sizes = [];
+  private $values = [];
 
   /** @var int */
   private $current_index = 0;
@@ -591,8 +591,8 @@ class tl2_context {
    * @return int
    */
   public function push_back($value) {
-    $index = count($this->sizes);
-    $this->sizes[] = $value;
+    $index = count($this->values);
+    $this->values[] = $value;
     return $index;
   }
 
@@ -600,10 +600,10 @@ class tl2_context {
    * @return int
    */
   public function pop_front() {
-    if ($this->current_index >= count($this->sizes)) {
+    if ($this->current_index >= count($this->values)) {
       throw new \Exception("context can't pop front value");
     }
-    $value = $this->sizes[$this->current_index];
+    $value = $this->values[$this->current_index];
     $this->current_index += 1;
     return $value;
   }
@@ -613,10 +613,10 @@ class tl2_context {
    * @param int $value
    */
   public function set_value($index, $value) {
-    if ($index >= count($this->sizes) || $index < 0) {
+    if ($index >= count($this->values) || $index < 0) {
       throw new \Exception("invalid index to set for context");
     }
-    $this->sizes[$index] = $value;
+    $this->values[$index] = $value;
   }
 
   /**
