@@ -9,6 +9,8 @@ package tlcodegen
 import (
 	"fmt"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWMaybe) PhpClassName(withPath bool, bare bool) string {
@@ -213,6 +215,51 @@ func (trw *TypeRWMaybe) PhpReadTL2MethodCall(targetName string, bare bool, initI
 	return result
 
 	return nil
+}
+
+func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	result := make([]string, 0)
+	result = append(result,
+		fmt.Sprintf("%[1]s = $context_sizes->pop_front();", localCurrentSize),
+	)
+	if usedBytesPointer != "" {
+		result = append(result,
+			fmt.Sprintf("%[1]s += %[2]s;", usedBytesPointer, localCurrentSize),
+		)
+	}
+	result = append(result,
+		fmt.Sprintf("TL\\tl2_support::store_size(%[1]s);", localCurrentSize),
+		fmt.Sprintf("if (%[1]s != 0) {", localCurrentSize),
+	)
+
+	// write inner part
+	innerPart := make([]string, 0)
+	innerPart = append(innerPart,
+		fmt.Sprintf("if (is_null(%[1]s)) {", targetName),
+		fmt.Sprintf(`  throw new \Exception("inner element is null but object size != 0");`),
+		"}",
+		fmt.Sprintf("%[1]s = $context_blocks->pop_front();", localBlock),
+		fmt.Sprintf("store_byte(%[1]s);", localBlock),
+		fmt.Sprintf("if ((%[1]s & (1 << 0)) != 0) {", localBlock),
+		"  store_byte(1);",
+		"}",
+		fmt.Sprintf("if ((%[1]s & (1 << 1)) != 0) {", localBlock),
+	)
+
+	var newArgs *TypeArgumentsTree
+	if args != nil {
+		newArgs = args.children[0]
+	}
+	innerPart = append(innerPart, utils.ShiftAll(trw.element.t.trw.PhpWriteTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, "", false), "  ")...)
+	innerPart = append(innerPart, "}")
+
+	// add it with shift
+	result = append(result, utils.ShiftAll(innerPart, "  ")...)
+	result = append(result, "}")
+	return result
 }
 
 func (trw *TypeRWMaybe) PhpDefaultInit() string {

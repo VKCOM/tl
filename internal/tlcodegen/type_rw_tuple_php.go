@@ -502,6 +502,10 @@ func (trw *TypeRWBrackets) readTL2Array(targetName string, supportSuffix string,
 	return result
 }
 
+func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	panic("TODO TUPLES")
+}
+
 func (trw *TypeRWBrackets) PhpDefaultInit() string {
 	return "[]"
 }

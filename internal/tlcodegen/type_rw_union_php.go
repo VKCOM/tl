@@ -133,6 +133,43 @@ func phpGenerateIOBoxedMethodsForInterface(bytes bool, targetType *TypeRWWrapper
 		phpFunctionArgumentsFormat(writeArgNames),
 	)
 
+	if targetType.wantsTL2 {
+		ioCode += fmt.Sprintf(`
+%[5]s
+  public function read_tl2(%[6]s);
+
+%[1]s
+  public function write_tl2(%[2]s);
+
+%[3]s
+  public function internal_write_tl2(%[4]s);
+
+%[3]s
+  public function calculate_sizes_tl2(%[4]s);`,
+			phpFunctionCommentFormat(
+				readArgNames,
+				readArgTypes,
+				"",
+				"  ",
+			),
+			phpFunctionArgumentsFormat(readArgNames),
+			phpFunctionCommentFormat(
+				utils.Append(writeArgNames, "context_sizes", "context_blocks"),
+				utils.Append(writeArgTypes, "TL\\tl2_context", "TL\\tl2_context"),
+				"",
+				"  ",
+			),
+			phpFunctionArgumentsFormat(utils.Append(writeArgNames, "context_sizes", "context_blocks")),
+			phpFunctionCommentFormat(
+				writeArgNames,
+				writeArgTypes,
+				"",
+				"  ",
+			),
+			phpFunctionArgumentsFormat(writeArgNames),
+		)
+	}
+
 	return ioCode
 }
 
@@ -288,6 +325,10 @@ func (trw *TypeRWUnion) PhpReadTL2MethodCall(targetName string, bare bool, initI
 		panic("unsupported generation for union in php")
 	}
 	return result
+}
+
+func (trw *TypeRWUnion) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	panic("TODO UNION")
 }
 
 func (trw *TypeRWUnion) PhpDefaultInit() string {

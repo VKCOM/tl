@@ -48,3 +48,12 @@ func ShiftAll(s []string, shift string) []string {
 	}
 	return r
 }
+
+func Append(res []string, values ...string) []string {
+	resCopy := make([]string, len(res))
+	copy(resCopy, res)
+	for _, value := range values {
+		resCopy = append(resCopy, value)
+	}
+	return resCopy
+}
