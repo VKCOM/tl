@@ -262,6 +262,70 @@ func (trw *TypeRWMaybe) PhpWriteTL2MethodCall(targetName string, bare bool, args
 	return result
 }
 
+func (trw *TypeRWMaybe) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+	localCurrentSize := fmt.Sprintf("$current_size_%[1]s_%[2]d", supportSuffix, callLevel)
+	localBlock := fmt.Sprintf("$block_%[1]s_%[2]d", supportSuffix, callLevel)
+
+	result := make([]string, 0)
+	result = append(result, 
+		fmt.Sprintf("%s = 0;", localCurrentSize),
+		fmt.Sprintf("%s_index = $context_sizes->push_front(0);", localCurrentSize),
+		fmt.Sprintf("if (!is_null(%[1]s) {", targetName),
+	)
+
+	// write inner part
+	innerPart := make([]string, 0)
+	innerPart = append(innerPart,
+		fmt.Sprintf("%[1]s = (1 << 0) + (1 << 1);", localBlock),
+		fmt.Sprintf("%[1]s_index = $context_blocks->push_back(%[1]s);", localBlock),
+		fmt.Sprintf("%[1]s += 1 + 1", localCurrentSize),
+	)
+
+	var newArgs *TypeArgumentsTree
+	if args != nil {
+		newArgs = args.children[0]
+	}
+	innerPart = append(innerPart, trw.element.t.trw.PhpCalculateSizesTL2MethodCall(targetName, bare, newArgs, supportSuffix, callLevel+1, false)...)
+	isSizeConstant, trivialSize := trw.element.t.PhpTL2TrivialSize(targetName, false, trw.element.recursive)
+	sizeValue := fmt.Sprintf("$context_sizes->get_value(%[1]s_index)", localCurrentSize)
+	if len(trivialSize) != 0 {
+		sizeValue = trivialSize
+	}
+
+	innerTab := ""
+	if !isSizeConstant {
+		innerPart = append(innerPart, 
+			fmt.Sprintf("if (%[1]s != 0) {", sizeValue),
+		)
+		innerTab = "  "
+	}
+	innerPart = append(innerPart, 
+		utils.ShiftAll([]string{
+			fmt.Sprintf("%[1]s += %[2]s;", localCurrentSize, sizeValue),
+		}, innerTab)...
+	)
+	if trw.element.t.trw.isSizeWrittenInData() {
+		innerPart = append(innerPart, 
+			utils.ShiftAll([]string{
+				fmt.Sprintf("%[1]s += TL\\tl2_support::count_used_bytes(%[2]s);", localCurrentSize, sizeValue),
+			}, innerTab)...
+		)
+	}
+	if !isSizeConstant {
+		innerPart = append(innerPart, 
+			"}",
+		)
+	}
+	// add it with shift
+	result = append(result, utils.ShiftAll(innerPart, "  ")...)
+
+	result = append(result, "}")
+	// add actual size
+	result = append(result, "$context_sizes->set_value(%[1]s_index, %[1]s);", localCurrentSize)
+
+	return result
+}
+
 func (trw *TypeRWMaybe) PhpDefaultInit() string {
 	return trw.element.t.trw.PhpDefaultInit()
 }

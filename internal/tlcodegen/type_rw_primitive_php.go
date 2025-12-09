@@ -217,6 +217,18 @@ func (trw *TypeRWPrimitive) PhpWriteTL2MethodCall(targetName string, bare bool, 
 	panic("unsupported generation for primitive in php")
 }
 
+func (trw *TypeRWPrimitive) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+	return nil
+}
+
 func (trw *TypeRWPrimitive) PhpDefaultInit() string {
 	return trw.PhpDefaultValue()
 }
+
+func (trw *TypeRWWrapper) PhpTL2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
+	isConstant, size = trw.trw.tl2TrivialSize(targetObject, canDependOnLocalBit, refObject)
+	if pr, isPr := trw.trw.(*TypeRWPrimitive); isPr && pr.goType == "string" {
+		size = fmt.Sprintf("strlen(%[1]s)", targetObject)
+	}
+	return
+} 
