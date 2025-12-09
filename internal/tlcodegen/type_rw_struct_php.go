@@ -1001,8 +1001,8 @@ func (trw *TypeRWStruct) PHPStructWriteMethods(code *strings.Builder) {
     $this->internal_write_tl2(%[3]s);
   }
 `,
-				phpFunctionCommentFormat(argNames, argTypes, "", "  "),
-				phpFunctionArgumentsFormat(argNames[:len(argNames)-1]),
+				phpFunctionCommentFormat(argNames[:len(argNames)-2], argTypes[:len(argNames)-2], "", "  "),
+				phpFunctionArgumentsFormat(argNames[:len(argNames)-2]),
 				phpFunctionArgumentsFormat(argNames),
 			))
 

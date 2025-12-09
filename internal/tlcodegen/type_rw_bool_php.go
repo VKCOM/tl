@@ -110,6 +110,11 @@ func (trw *TypeRWBool) PhpReadTL2MethodCall(targetName string, bare bool, initIf
 	return nil
 }
 
+func (trw *TypeRWBool) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+	return nil
+}
+
+
 func (trw *TypeRWBool) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
 	if !trw.isTL2Legacy && canDependOnLocalBit {
 		return []string{""}
