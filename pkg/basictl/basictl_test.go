@@ -14,7 +14,81 @@ import (
 	"pgregory.net/rapid"
 )
 
-func TestBuf_String(t *testing.T) {
+var sideEffect int
+
+func Benchmark_StringRead(b *testing.B) {
+	b.ReportAllocs()
+	var buf []byte
+	buf = StringWrite(buf, "four")
+
+	for i := 0; i < b.N; i++ {
+		var str string
+		if _, err := StringRead(buf, &str); err != nil {
+			b.Fatal(err)
+		}
+		sideEffect += len(str)
+	}
+}
+
+func Benchmark_StringRead2(b *testing.B) {
+	b.ReportAllocs()
+	var buf []byte
+	buf = StringWrite(buf, "four")
+
+	for i := 0; i < b.N; i++ {
+		var str string
+		if _, err := StringReadTL2(buf, &str); err != nil {
+			b.Fatal(err)
+		}
+		sideEffect += len(str)
+	}
+}
+
+func TestPanic_String(t *testing.T) {
+	t.Parallel()
+
+	rapid.Check(t, func(t *rapid.T) {
+		in := rapid.String().Draw(t, "in")
+
+		var out string
+		_, _ = StringRead([]byte(in), &out)
+	})
+}
+
+func TestPanic_String2(t *testing.T) {
+	t.Parallel()
+
+	rapid.Check(t, func(t *rapid.T) {
+		in := rapid.String().Draw(t, "in")
+
+		var out string
+		_, _ = StringReadTL2([]byte(in), &out)
+	})
+}
+
+func TestPanic_StringBytes(t *testing.T) {
+	t.Parallel()
+
+	rapid.Check(t, func(t *rapid.T) {
+		in := rapid.String().Draw(t, "in")
+
+		var out []byte
+		_, _ = StringReadBytes([]byte(in), &out)
+	})
+}
+
+func TestPanic_String2Bytes(t *testing.T) {
+	t.Parallel()
+
+	rapid.Check(t, func(t *rapid.T) {
+		in := rapid.String().Draw(t, "in")
+
+		var out []byte
+		_, _ = StringReadBytesTL2([]byte(in), &out)
+	})
+}
+
+func TestRevStringRead(t *testing.T) {
 	t.Parallel()
 
 	rapid.Check(t, func(t *rapid.T) {
@@ -48,7 +122,7 @@ func TestBuf_String(t *testing.T) {
 	})
 }
 
-func TestBuf_ByteSlice(t *testing.T) {
+func TestRevStringReadBytes(t *testing.T) {
 	t.Parallel()
 
 	rapid.Check(t, func(t *rapid.T) {
@@ -63,12 +137,65 @@ func TestBuf_ByteSlice(t *testing.T) {
 		if len(rw)%4 != 0 {
 			t.Fatalf("size not divisible by 4: %v", len(rw))
 		}
-		// if n := StringSize(len(in)); n != rw.Len() {
-		//	t.Fatalf("invalid size: %v instead of %v", rw.Len(), n)
-		// }
 
 		out := rapid.SliceOf(rapid.Byte()).Draw(t, "out")
 		rw, errR = StringReadBytes(rw, &out)
+		if errR != nil {
+			t.Fatalf("failed to read: %v", errR)
+		}
+
+		if !bytes.Equal(in, out) {
+			t.Fatalf("got back %#v after writing %#v", out, in)
+		}
+		if len(rw) != 0 {
+			t.Fatalf("%v unread bytes left", len(rw))
+		}
+	})
+}
+
+func TestRevStringRead2(t *testing.T) {
+	t.Parallel()
+
+	rapid.Check(t, func(t *rapid.T) {
+		var rw []byte
+		var errW, errR error
+
+		in := rapid.String().Draw(t, "in")
+		rw, errW = StringWriteTL2(rw, in), nil
+		if errW != nil {
+			t.Fatalf("failed to write %#v: %v", in, errW)
+		}
+
+		var out string
+		rw, errR = StringReadTL2(rw, &out)
+		if errR != nil {
+			t.Fatalf("failed to read: %v", errR)
+		}
+
+		if in != out {
+			t.Fatalf("got back %#v after writing %#v", out, in)
+		}
+		if len(rw) != 0 {
+			t.Fatalf("%v unread bytes left", len(rw))
+		}
+	})
+}
+
+func TestRevStringRead2Bytes(t *testing.T) {
+	t.Parallel()
+
+	rapid.Check(t, func(t *rapid.T) {
+		var rw []byte
+		var errW, errR error
+
+		in := rapid.SliceOf(rapid.Byte()).Draw(t, "in")
+		rw, errW = StringBytesWriteTL2(rw, in), nil
+		if errW != nil {
+			t.Fatalf("failed to write %#v: %v", in, errW)
+		}
+
+		out := rapid.SliceOf(rapid.Byte()).Draw(t, "out")
+		rw, errR = StringReadBytesTL2(rw, &out)
 		if errR != nil {
 			t.Fatalf("failed to read: %v", errR)
 		}
