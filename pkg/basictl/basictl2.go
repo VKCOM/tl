@@ -152,6 +152,9 @@ func StringReadTL2(r []byte, dst *string) (_ []byte, err error) {
 	if r, err = TL2ReadSize(r, &l); err != nil {
 		return r, err
 	}
+	if len(r) < l {
+		return r, io.ErrUnexpectedEOF
+	}
 	*dst = string(r[:l])
 	return r[l:], nil
 }
@@ -161,12 +164,20 @@ func StringReadBytesTL2(r []byte, dst *[]byte) (_ []byte, err error) {
 	if r, err = TL2ReadSize(r, &l); err != nil {
 		return r, err
 	}
-	if cap(*dst) < l {
-		*dst = make([]byte, l)
+	if l > 0 {
+		if len(r) < l {
+			return r, io.ErrUnexpectedEOF
+		}
+		// Allocate only after we know there is enough bytes in reader
+		if cap(*dst) < l {
+			*dst = make([]byte, l)
+		} else {
+			*dst = (*dst)[:l]
+		}
+		copy(*dst, r)
 	} else {
-		*dst = (*dst)[:l]
+		*dst = (*dst)[:0]
 	}
-	copy(*dst, r)
 	return r[l:], nil
 }
 
