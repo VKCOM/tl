@@ -44,6 +44,46 @@ func Benchmark_StringRead2(b *testing.B) {
 	}
 }
 
+func TestCases_String(t *testing.T) {
+	src := []byte{4, 'f', 'o', 'u', 'r', 0, 0, 0}
+	var str string
+	r, err := StringRead(src, &str)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r) != 0 || str != "four" {
+		t.Fatalf("wrong TL string format")
+	}
+	var strBytes []byte
+	r, err = StringReadBytes(src, &strBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r) != 0 || str != "four" {
+		t.Fatalf("wrong TL string format")
+	}
+}
+
+func TestCases_String2(t *testing.T) {
+	src := []byte{4, 'f', 'o', 'u', 'r'}
+	var str string
+	r, err := StringReadTL2(src, &str)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r) != 0 || str != "four" {
+		t.Fatalf("wrong TL2 string format")
+	}
+	var strBytes []byte
+	r, err = StringReadBytesTL2(src, &strBytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(r) != 0 || str != "four" {
+		t.Fatalf("wrong TL2 string format")
+	}
+}
+
 func TestPanic_String(t *testing.T) {
 	t.Parallel()
 
