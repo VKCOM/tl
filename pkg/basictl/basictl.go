@@ -21,8 +21,8 @@ import (
 
 const (
 	tinyStringLen    = 253
-	bigStringMarker  = 0xfe
-	hugeStringMarker = 0xff
+	bigStringMarker  = 254
+	hugeStringMarker = 255
 	bigStringLen     = (1 << 24) - 1
 	hugeStringLen    = (1 << 56) - 1
 )
