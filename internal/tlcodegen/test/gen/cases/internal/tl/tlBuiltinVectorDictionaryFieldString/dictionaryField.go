@@ -40,6 +40,9 @@ func BuiltinVectorDictionaryFieldStringRead(w []byte, m *map[string]string) (_ [
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
+	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
+		return w, err
+	}
 	var data map[string]string
 	if *m == nil {
 		if l == 0 {
@@ -216,151 +219,6 @@ func BuiltinVectorDictionaryFieldStringWriteJSONOpt(tctx *basictl.JSONWriteConte
 		w = basictl.JSONWriteString(w, key)
 		w = append(w, ':')
 		w = basictl.JSONWriteString(w, value)
-	}
-	return append(w, '}')
-}
-
-func BuiltinVectorDictionaryFieldStringBytesFillRandom(rg *basictl.RandGenerator, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) {
-	rg.IncreaseDepth()
-	l := basictl.RandomSize(rg)
-	*vec = make([]tlDictionaryFieldString.DictionaryFieldStringBytes, l)
-	for i := range *vec {
-		(*vec)[i].FillRandom(rg)
-	}
-	rg.DecreaseDepth()
-}
-
-func BuiltinVectorDictionaryFieldStringBytesRead(w []byte, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) (_ []byte, err error) {
-	var l uint32
-	if w, err = basictl.NatRead(w, &l); err != nil {
-		return w, err
-	}
-	if uint32(cap(*vec)) < l {
-		*vec = make([]tlDictionaryFieldString.DictionaryFieldStringBytes, l)
-	} else {
-		*vec = (*vec)[:l]
-	}
-	for i := range *vec {
-		if w, err = (*vec)[i].Read(w); err != nil {
-			return w, err
-		}
-	}
-	return w, nil
-}
-
-func BuiltinVectorDictionaryFieldStringBytesWrite(w []byte, vec []tlDictionaryFieldString.DictionaryFieldStringBytes) []byte {
-	w = basictl.NatWrite(w, uint32(len(vec)))
-	for _, elem := range vec {
-		w = elem.Write(w)
-	}
-	return w
-}
-
-func BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes []int, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) []int {
-	sizePosition := len(sizes)
-	sizes = append(sizes, 0)
-	if len(*vec) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*vec))
-	}
-	for i := 0; i < len(*vec); i++ {
-		currentPosition := len(sizes)
-		elem := (*vec)[i]
-		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-	}
-	return sizes
-}
-
-func BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
-	}
-
-	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes)
-	}
-	return w, sizes
-}
-
-func BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(r []byte, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) (_ []byte, err error) {
-	currentSize := 0
-	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
-		return r, err
-	}
-	if len(r) < currentSize {
-		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
-	}
-
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
-	elementCount := 0
-	if currentSize != 0 {
-		if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil {
-			return r, err
-		}
-	}
-
-	if cap(*vec) < elementCount {
-		*vec = make([]tlDictionaryFieldString.DictionaryFieldStringBytes, elementCount)
-	}
-	*vec = (*vec)[:elementCount]
-	for i := 0; i < elementCount; i++ {
-		elem := (*vec)[i]
-		if currentR, err = elem.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	}
-	return r, nil
-}
-
-func BuiltinVectorDictionaryFieldStringBytesReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, vec *[]tlDictionaryFieldString.DictionaryFieldStringBytes) error {
-	*vec = (*vec)[:cap(*vec)]
-	index := 0
-	if in != nil {
-		in.Delim('{')
-		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]tlDictionaryFieldString.DictionaryFieldStringBytes", "expected json object")
-		}
-		for ; !in.IsDelim('}'); index++ {
-			if len(*vec) <= index {
-				var newValue tlDictionaryFieldString.DictionaryFieldStringBytes
-				*vec = append(*vec, newValue)
-				*vec = (*vec)[:cap(*vec)]
-			}
-			(*vec)[index].Key = append((*vec)[index].Key[:0], in.UnsafeFieldName(true)...)
-			in.WantColon()
-			if err := internal.Json2ReadStringBytes(in, &(*vec)[index].Value); err != nil {
-				return err
-			}
-			in.WantComma()
-		}
-		in.Delim('}')
-		if !in.Ok() {
-			return internal.ErrorInvalidJSON("[]tlDictionaryFieldString.DictionaryFieldStringBytes", "expected json object's end")
-		}
-	}
-	*vec = (*vec)[:index]
-	return nil
-}
-
-func BuiltinVectorDictionaryFieldStringBytesWriteJSON(w []byte, vec []tlDictionaryFieldString.DictionaryFieldStringBytes) []byte {
-	tctx := basictl.JSONWriteContext{}
-	return BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(&tctx, w, vec)
-}
-func BuiltinVectorDictionaryFieldStringBytesWriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, vec []tlDictionaryFieldString.DictionaryFieldStringBytes) []byte {
-	w = append(w, '{')
-	for _, elem := range vec {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = basictl.JSONWriteStringBytes(w, elem.Key)
-		w = append(w, ':')
-		w = basictl.JSONWriteStringBytes(w, elem.Value)
 	}
 	return append(w, '}')
 }

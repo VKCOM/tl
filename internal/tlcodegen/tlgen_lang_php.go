@@ -35,6 +35,9 @@ type TypeRWPHPData interface {
 	PhpIterateReachableTypes(reachableTypes *map[*TypeRWWrapper]bool)
 	PhpReadMethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string) []string
 	PhpWriteMethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string) []string
+	PhpReadTL2MethodCall(targetName string, bare bool, initIfDefault bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
+	PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string
+	PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string
 }
 
 type PhpClassMeta struct {
@@ -314,6 +317,18 @@ func (gen *Gen2) PhpAdditionalFiles() error {
 				return err
 			}
 		}
+		if gen.options.GenerateTL2 {
+			if gen.options.UseBuiltinDataProviders {
+				if err := gen.phpCreateTL2Support(); err != nil {
+					return err
+				}
+				if err := gen.phpCreateTL2Context(); err != nil {
+					return err
+				}
+			} else {
+				panic("can't generate tl2 for php without kphp support")
+			}
+		}
 	}
 	if gen.options.AddMetaData {
 		if err := gen.phpCreateMeta(); err != nil {
@@ -422,6 +437,203 @@ class tl_switcher {
 		return err
 	}
 	return nil
+}
+
+func (gen *Gen2) phpCreateTL2Support() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+use VK\TL;
+
+class tl2_support {
+  const TinyStringLen = 253;
+  const BigStringMarker = 254;
+  const HugeStringMarker = 255;
+  const BigStringLen = (1 << 24) - 1;
+  const HugeStringLen = (1 << 56) - 1;
+  
+  /**
+   * @return int
+   */
+  public static function fetch_size() {
+    $b0 = fetch_byte();
+    if ($b0 <= self::TinyStringLen) {
+      return $b0;
+    }
+    if ($b0 == self::BigStringMarker) {
+      $b1 = fetch_byte();
+      $b2 = fetch_byte();
+      $b3 = fetch_byte();
+      
+      $l = ($b3 << 16) + ($b2 << 8) + $b1;
+      if ($l <= self::TinyStringLen) {
+        throw new \Exception("non-canonical length (3 instead of 1)");
+      }
+      return $l;
+    } else {
+      $b1 = fetch_byte();
+      $b2 = fetch_byte();
+      $b3 = fetch_byte();
+      $b4 = fetch_byte();
+      $b5 = fetch_byte();
+      $b6 = fetch_byte();
+      $b7 = fetch_byte();
+      
+      $l = ($b7 << 48) + ($b6 << 40) + ($b5 << 32) + ($b4 << 24) + ($b3 << 16) + ($b2 << 8) + $b1;
+      if ($l <= self::BigStringLen) {
+        throw new \Exception("non-canonical length (7 instead of 3)");
+      }
+      return $l;
+    }
+    return 0;
+  }
+
+  /**
+   * @param int $size
+   */
+  public static function store_size($size) {
+    if ($size <= self::TinyStringLen) {
+      store_byte($size & 0xFF);
+    } else if ($size <= self::BigStringLen) {
+      store_byte(self::BigStringMarker);
+      store_byte($size & 0xFF);
+      store_byte(($size >> 8) & 0xFF);
+      store_byte(($size >> 16) & 0xFF);
+    } else {
+      store_byte(self::HugeStringMarker);
+      store_byte($size & 0xFF);
+      store_byte(($size >> 8) & 0xFF);
+      store_byte(($size >> 16) & 0xFF);
+      store_byte(($size >> 24) & 0xFF);
+      store_byte(($size >> 32) & 0xFF);
+      store_byte(($size >> 40) & 0xFF);
+      store_byte(($size >> 48) & 0xFF);
+    }
+  }
+
+  /**
+   * @param int $size
+   * @return int
+   */
+  public static function count_used_bytes($size) {
+    if ($size <= self::TinyStringLen) {
+      return 1;
+    } else if ($size <= self::BigStringLen) {
+      return 4;
+    } else {
+      return 8;
+    }
+  }
+
+  /**
+   * @param int $count
+   * @return int
+   */
+  public static function skip_bytes($count) {
+    if ($count < 0) {
+      throw new \Exception("can't skip negative number of bytes");
+    }
+    for ($i = 0; $i < $count; $i++) {
+      fetch_byte();
+    }
+    return $count;
+  }
+
+  /**
+   * @return boolean
+   */
+  public static function fetch_legacy_bool_tl2() {
+    $b = fetch_byte();
+    return $b != 0;
+  }
+
+  /**
+   * @param boolean $value
+   */
+  public static function store_legacy_bool_tl2($value) {
+    if ($value == 0) {
+      store_byte(0);
+    } else {
+      store_byte(1);
+    }
+  }
+}
+`, gen.copyrightText))
+
+	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_support.php"), code.String())
+}
+
+func (gen *Gen2) phpCreateTL2Context() error {
+	var code strings.Builder
+
+	code.WriteString(fmt.Sprintf(`<?php
+
+%[1]snamespace VK\TL;
+
+class tl2_context {
+  /** @var int[] */
+  private $values = [];
+
+  /** @var int */
+  private $current_index = 0;
+
+  /**
+   * @kphp-inline
+   */
+  public function __construct() {
+  }
+
+  /**
+   * @param int $value
+   * 
+   * @return int
+   */
+  public function push_back($value) {
+    $index = count($this->values);
+    $this->values[] = $value;
+    return $index;
+  }
+
+  /**
+   * @return int
+   */
+  public function pop_front() {
+    if ($this->current_index >= count($this->values)) {
+      throw new \Exception("context can't pop front value");
+    }
+    $value = $this->values[$this->current_index];
+    $this->current_index += 1;
+    return $value;
+  }
+
+  /**
+   * @param int $index
+   * @param int $value
+   */
+  public function set_value($index, $value) {
+    if ($index >= count($this->values) || $index < 0) {
+      throw new \Exception("invalid index to set for context");
+    }
+    $this->values[$index] = $value;
+  }
+
+  /**
+   * @param int $index
+   * 
+   * @return int
+   */
+  public function get_value($index) {
+    if ($index >= count($this->sizes) || $index < 0) {
+      throw new \Exception("invalid index to get for context");
+    }
+    return $this->sizes[$index];
+  }
+}`, gen.copyrightText))
+
+	return gen.addCodeFile(filepath.Join("VK", "TL", "tl2_context.php"), code.String())
 }
 
 func (gen *Gen2) phpCreateMeta() error {
