@@ -1761,7 +1761,29 @@ func (trw *TypeRWStruct) PhpReadTL2MethodCall(targetName string, bare bool, init
 }
 
 func (trw *TypeRWStruct) PhpWriteTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, usedBytesPointer string, canDependOnLocalBit bool) []string {
+	if !trw.wr.gen.options.UseBuiltinDataProviders {
+		panic("generation tl2 for non builtin data providers is forbidden")
+	}
+	if specialCase := PHPSpecialMembersTypes(trw.wr); specialCase != "" {
+		panic("generation tl2 for mock types as forbidden")
+	}
+	unionParent := trw.PhpConstructorNeedsUnion()
+	if unionParent == nil {
+		if trw.PhpCanBeSimplify() {
+			newArgs := trw.PHPGetFieldNatDependenciesValuesAsTypeTree(0, args)
+			if trw.isUnwrapType() {
+				calcText := trw.Fields[0].t.trw.PhpWriteTL2MethodCall(targetName, trw.Fields[0].bare, &newArgs, supportSuffix, callLevel+1, usedBytesPointer, canDependOnLocalBit)
+				return calcText
+			} else {
+				
+			}
+		}
+	}
 	panic("TODO STRUCT")
+}
+
+func (trw *TypeRWStruct) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+	panic("TODO TUPLES")
 }
 
 func (trw *TypeRWStruct) phpStructWriteMagic(useBuiltIn bool, result []string) []string {

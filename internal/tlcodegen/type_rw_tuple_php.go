@@ -506,6 +506,10 @@ func (trw *TypeRWBrackets) PhpWriteTL2MethodCall(targetName string, bare bool, a
 	panic("TODO TUPLES")
 }
 
+func (trw *TypeRWBrackets) PhpCalculateSizesTL2MethodCall(targetName string, bare bool, args *TypeArgumentsTree, supportSuffix string, callLevel int, canDependOnLocalBit bool) []string {
+	panic("TODO TUPLES")
+}
+
 func (trw *TypeRWBrackets) PhpDefaultInit() string {
 	return "[]"
 }
