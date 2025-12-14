@@ -323,7 +323,13 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		return gen.generateTypeStruct(lrc, myWrapper, tlType[0])
 	}
 	myWrapper.tlName = tlType[0].TypeDecl.Name
-	myWrapper.fileName = tlType[0].TypeDecl.Name.String()
+	{
+		// during migration to TL2 unions (UpperCase) become normal types (lowerCase)
+		// and we want to make sure diff is trivial
+		fileName := tlType[0].TypeDecl.Name
+		fileName.Name = ToLowerFirst(fileName.Name)
+		myWrapper.fileName = fileName.String()
+	}
 	if isBool, falseDesc, trueDesc := IsUnionBool(tlType); isBool { // TODO - test if parts of Bool are in different namespaces
 		namespace := replaceNamespace(myWrapper.tlName.Namespace)
 		namespace.types = append(namespace.types, myWrapper)

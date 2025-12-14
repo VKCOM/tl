@@ -2,13 +2,14 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
-	"golang.org/x/exp/slices"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
+	"golang.org/x/exp/slices"
 )
 
 type AstInfo struct {

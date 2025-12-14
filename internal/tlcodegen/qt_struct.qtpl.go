@@ -1827,7 +1827,7 @@ func (item *`)
 
 		qw422016.N().S(`	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
 	// write structured result
 	`)
@@ -1865,7 +1865,7 @@ func (item *`)
     }
 
     if ctx != nil {
-        ctx.SizeBuffer = sizes[:0]
+        ctx.SizeBuffer = sizes
     }
     return w, nil
 }
@@ -2488,12 +2488,12 @@ func (item *`)
 		} else {
 			qw422016.N().S(`    var sizes []int
     if ctx != nil {
-        sizes = ctx.SizeBuffer
+        sizes = ctx.SizeBuffer[:0]
     }
-    sizes = item.CalculateLayout(sizes[:0])
+    sizes = item.CalculateLayout(sizes)
     w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
-        ctx.SizeBuffer = sizes[:0]
+        ctx.SizeBuffer = sizes
     }
     return w
 `)
@@ -2923,12 +2923,12 @@ func (item *`)
 		} else {
 			qw422016.N().S(`    var sizes []int
     if ctx != nil {
-        sizes = ctx.SizeBuffer
+        sizes = ctx.SizeBuffer[:0]
     }
-    sizes = item.CalculateLayout(sizes[:0])
+    sizes = item.CalculateLayout(sizes)
     w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
-        ctx.SizeBuffer = sizes[:0]
+        ctx.SizeBuffer = sizes
     }
     return w
 `)
