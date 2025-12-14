@@ -101,7 +101,7 @@ func (item *Call7) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *AbT
 func (item *Call7) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret AbTypeB) (_ []byte, err error) {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
 	// write structured result
 	sizes = ret.CalculateLayout(sizes)
@@ -116,7 +116,7 @@ func (item *Call7) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret Ab
 	}
 
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w, nil
 }
@@ -297,12 +297,12 @@ func (item *Call7) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 func (item *Call7) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }

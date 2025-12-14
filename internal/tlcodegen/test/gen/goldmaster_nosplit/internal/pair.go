@@ -232,12 +232,12 @@ func (item *PairAInnerAInner) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 func (item *PairAInnerAInner) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -516,12 +516,12 @@ func (item *PairBoolAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 func (item *PairBoolAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -799,12 +799,12 @@ func (item *PairFloatDouble) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 func (item *PairFloatDouble) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1084,12 +1084,12 @@ func (item *PairIntInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 func (item *PairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1370,12 +1370,12 @@ func (item *PairIntPairMultiPointString) InternalWriteTL2(w []byte, sizes []int)
 func (item *PairIntPairMultiPointString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1660,12 +1660,12 @@ func (item *PairMultiPointString) InternalWriteTL2(w []byte, sizes []int) ([]byt
 func (item *PairMultiPointString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1937,12 +1937,12 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes [
 func (item *PairPairAInnerAInnerAInnerBoxed3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }

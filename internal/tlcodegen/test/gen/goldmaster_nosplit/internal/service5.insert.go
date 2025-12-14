@@ -114,7 +114,7 @@ func (item *Service5Insert) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
 func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret Service5Output) (_ []byte, err error) {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
 	// write structured result
 	sizes = ret.CalculateLayout(sizes)
@@ -129,7 +129,7 @@ func (item *Service5Insert) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContex
 	}
 
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w, nil
 }
@@ -332,12 +332,12 @@ func (item *Service5Insert) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 func (item *Service5Insert) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
