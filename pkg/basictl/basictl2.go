@@ -78,9 +78,9 @@ func TL2WriteSize(w []byte, l int) []byte {
 	switch {
 	case l < bigStringMarker:
 		w = append(w, byte(l))
-	case l < bigStringMarker+(1 << 16):
+	case l < bigStringMarker+(1<<16):
 		w = append(w, bigStringMarker)
-		w = binary.LittleEndian.AppendUint16(w, uint16(l - bigStringMarker))
+		w = binary.LittleEndian.AppendUint16(w, uint16(l-bigStringMarker))
 	default:
 		w = append(w, hugeStringMarker)
 		w = binary.LittleEndian.AppendUint64(w, uint64(l))
@@ -92,7 +92,7 @@ func TL2CalculateSize(l int) int {
 	switch {
 	case l < bigStringMarker:
 		return 1
-	case l < bigStringMarker+(1 << 16):
+	case l < bigStringMarker+(1<<16):
 		return 3
 	default:
 		return 9

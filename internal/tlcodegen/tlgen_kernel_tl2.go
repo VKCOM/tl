@@ -2,11 +2,12 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/tlast"
-	"github.com/vkcom/tl/internal/utils"
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/vkcom/tl/internal/tlast"
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (gen *Gen2) validateTL2AstAndCollectInfo(tl2 tlast.TL2File) error {
@@ -324,7 +325,10 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	kernelType.ns = replaceNamespace(comb.TypeDecl.Name.Namespace)
 	kernelType.ns.types = append(kernelType.ns.types, &kernelType)
 	kernelType.fileName = comb.TypeDecl.Name.String()
-	kernelType.goLocalName, kernelType.goGlobalName = getCombinatorNames(*comb, argTail)
+	goLocalName, goGlobalName := getCombinatorNames(*comb, argTail)
+
+	kernelType.goLocalName = kernelType.ns.decGo.deconflictName(goLocalName)
+	kernelType.goGlobalName = gen.globalDec.deconflictName(goGlobalName)
 
 	err := gen.genTypeDeclarationTL2(&kernelType, comb.TypeDecl.Type, resolveMapping, resolvedRef)
 
@@ -378,8 +382,14 @@ func (gen *Gen2) genTypeDeclarationTL2(
 				t: &variantWrapper,
 			}
 			var err error
-			var targetNamespace string
-			targetNamespace, variantWrapper.goLocalName, variantWrapper.goGlobalName, variantWrapper.tlName, field.goName, err = getVariantNames(kernelType.tl2Name, typeDecl.UnionType.Variants, i, yetCreatedNames, argTail)
+			var targetNamespace, goLocalName, goGlobalName string
+			targetNamespace, goLocalName, goGlobalName, variantWrapper.tlName, field.goName, err = getVariantNames(kernelType.tl2Name, typeDecl.UnionType.Variants, i, yetCreatedNames, argTail)
+
+			variantWrapper.ns = gen.getNamespace(targetNamespace)
+			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
+
+			variantWrapper.goLocalName = variantWrapper.ns.decGo.deconflictName(goLocalName)
+			variantWrapper.goGlobalName = gen.globalDec.deconflictName(goGlobalName)
 
 			field.originalName = variantWrapper.tlName.String()
 			field.goName = union.fieldsDec.deconflictName(field.goName)
@@ -393,9 +403,6 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			} else {
 				yetParsedNames[variantWrapper.tlName.String()] = i
 			}
-
-			variantWrapper.ns = gen.getNamespace(targetNamespace)
-			variantWrapper.ns.types = append(variantWrapper.ns.types, &variantWrapper)
 
 			currentRef := originalRef
 			currentRef.SomeType = new(tlast.TL2TypeApplication)
