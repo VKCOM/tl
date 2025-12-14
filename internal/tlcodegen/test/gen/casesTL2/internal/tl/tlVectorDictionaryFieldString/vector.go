@@ -115,12 +115,12 @@ func (item *VectorDictionaryFieldString) InternalWriteTL2(w []byte, sizes []int)
 func (item *VectorDictionaryFieldString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -235,12 +235,12 @@ func (item *VectorDictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes [
 func (item *VectorDictionaryFieldStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }

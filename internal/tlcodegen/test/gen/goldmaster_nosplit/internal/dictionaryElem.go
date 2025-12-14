@@ -1606,12 +1606,12 @@ func (item *DictionaryElemIntPairIntInt) InternalWriteTL2(w []byte, sizes []int)
 func (item *DictionaryElemIntPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -1892,12 +1892,12 @@ func (item *DictionaryElemLongPairIntInt) InternalWriteTL2(w []byte, sizes []int
 func (item *DictionaryElemLongPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -2178,12 +2178,12 @@ func (item *DictionaryElemPairBoolAColorInt) InternalWriteTL2(w []byte, sizes []
 func (item *DictionaryElemPairBoolAColorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -2464,12 +2464,12 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalWriteTL2(w []byte, sizes [
 func (item *DictionaryElemPairFloatDoubleInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -2750,12 +2750,12 @@ func (item *DictionaryElemPairIntIntInt) InternalWriteTL2(w []byte, sizes []int)
 func (item *DictionaryElemPairIntIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -3036,12 +3036,12 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalWriteTL2(w []b
 func (item *DictionaryElemPairIntPairMultiPointStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -3326,12 +3326,12 @@ func (item *DictionaryElemStringPairIntInt) InternalWriteTL2(w []byte, sizes []i
 func (item *DictionaryElemStringPairIntInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
@@ -3610,12 +3610,12 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 func (item *DictionaryElemTupleStringInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
-		sizes = ctx.SizeBuffer
+		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes[:0])
+	sizes = item.CalculateLayout(sizes)
 	w, _ = item.InternalWriteTL2(w, sizes)
 	if ctx != nil {
-		ctx.SizeBuffer = sizes[:0]
+		ctx.SizeBuffer = sizes
 	}
 	return w
 }
