@@ -326,6 +326,9 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 `)
 	}
 	if struct_.wr.wantsTL2 {
+		qw422016.N().S(`        `)
+		fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2)
+
 		qw422016.N().S(`
 `)
 		for _, tl2mask := range struct_.AllNewTL2Masks() {
@@ -1794,7 +1797,7 @@ func (item *`)
 	}
 	qw422016.N().S(`}
 `)
-	if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 {
+	if struct_.wr.wantsTL2 {
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
@@ -2710,6 +2713,7 @@ func (item *`)
             if len(w) - oldLen == currentSize {
                 return w, sizes, currentSize
             }
+            // start the next block
             currentBlockPosition = len(w)
             w = append(w, 0)
 `)
@@ -2848,12 +2852,7 @@ func (item *`)
 				}
 
 				if (fieldIndex+1)%8 == 0 {
-					qw422016.N().S(`
-    // read next block for fields `)
-					qw422016.N().V((fieldIndex + 1))
-					qw422016.N().S(`..`)
-					qw422016.N().V((fieldIndex + 8))
-					qw422016.N().S(`
+					qw422016.N().S(`            // start the next block
     if len(currentR) > 0 {
         if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
     } else {
@@ -2861,17 +2860,17 @@ func (item *`)
     }
 `)
 				}
-				if field.MaskTL2Bit != nil {
-					qw422016.N().S(`            if block & `)
-					qw422016.E().V(1 << ((fieldIndex + 1) % 8))
-					qw422016.N().S(` != 0 {
+				if field.IsTL2Bool() {
+					if field.MaskTL2Bit != nil {
+						qw422016.N().S(`            if block & `)
+						qw422016.E().V(1 << ((fieldIndex + 1) % 8))
+						qw422016.N().S(` != 0 {
                 item.`)
-					qw422016.N().S(field.TL2MaskForOP("|="))
-					qw422016.N().S(`
+						qw422016.N().S(field.TL2MaskForOP("|="))
+						qw422016.N().S(`
             }
 `)
-				}
-				if field.IsTL2Bool() {
+					}
 					continue
 				}
 				if field.IsTL2Omitted() || field.t.IsTrueType() {
@@ -2888,6 +2887,12 @@ func (item *`)
 					qw422016.E().V(1 << ((fieldIndex + 1) % 8))
 					qw422016.N().S(` != 0 {
 `)
+					if field.MaskTL2Bit != nil {
+						qw422016.N().S(`            item.`)
+						qw422016.N().S(field.TL2MaskForOP("|="))
+						qw422016.N().S(`
+`)
+					}
 					if fieldRecursive {
 						qw422016.N().S(`        if `)
 						qw422016.N().S(fieldName)

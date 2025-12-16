@@ -379,8 +379,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			}
 			variantType.wr = &variantWrapper
 			field := Field{
-				originateFromTL2: true,
-				t:                &variantWrapper,
+				t: &variantWrapper,
 			}
 			var err error
 			var targetNamespace, goLocalName, goGlobalName string
@@ -490,18 +489,10 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 	for _, refField := range refFields {
 		// init
 		field := Field{
-			originateFromTL2: true,
-			originalName:     refField.Name,
-			goName:           strct.fieldsDec.deconflictName(snakeToCamelCase(refField.Name)),
-			cppName:          strct.fieldsDecCPP.deconflictName(refField.Name),
-		}
-		// add fieldmask
-		if refField.IsOptional && field.originalName != "_" {
-			maskBit := nextTL2MaskBit
-			field.MaskTL2Bit = &maskBit
-			nextTL2MaskBit++
-
-			field.goName = strings.ToLower(field.goName[:1]) + field.goName[1:]
+			isTL2Omitted: refField.Name == "_",
+			originalName: refField.Name,
+			goName:       strct.fieldsDec.deconflictName(snakeToCamelCase(refField.Name)),
+			cppName:      strct.fieldsDecCPP.deconflictName(refField.Name),
 		}
 		// add type
 		resolvedRefType, err := resolveMapping.resolveRef(refField.Type)
@@ -512,9 +503,18 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 		if err != nil {
 			return err
 		}
-		if bl, isBool := field.t.trw.(*TypeRWBool); isBool && refField.IsOptional && !bl.isTL2Legacy {
+		bl, isBool := field.t.trw.(*TypeRWBool)
+		if isBool && refField.IsOptional && !bl.isTL2Legacy {
 			return refField.PRName.BeautifulError(fmt.Errorf("field with type \"bool\" can't be optional (use any maybe-like wrapper)"))
 		}
+		if (refField.IsOptional || (isBool && !bl.isTL2Legacy)) && field.isTL2Omitted {
+			field.goName = strings.ToLower(field.goName[:1]) + field.goName[1:]
+
+			maskBit := nextTL2MaskBit
+			field.MaskTL2Bit = &maskBit
+			nextTL2MaskBit++
+		}
+
 		// tl1 boxed only for union
 		_, isUnion := field.t.trw.(*TypeRWUnion)
 		field.bare = !isUnion
@@ -641,7 +641,7 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 			})
 		} else {
 			bracketType.dictLike = true
-			bracketType.dictKeyField = Field{originateFromTL2: true, goName: "Key"}
+			bracketType.dictKeyField = Field{goName: "Key"}
 			bracketType.dictKeyField.t, err = gen.genTypeTL2(br.IndexType.Type)
 			if err != nil {
 				return nil, err
@@ -691,7 +691,7 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 }
 
 func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isLegacy bool) (*TypeRWWrapper, error) {
-	boolType := TypeRWBool{wr: kernelType}
+	boolType := TypeRWBool{wr: kernelType, isTL2: true}
 	kernelType.trw = &boolType
 
 	if isLegacy {

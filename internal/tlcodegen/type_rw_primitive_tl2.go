@@ -75,7 +75,7 @@ func (trw *TypeRWPrimitive) readTL2Call(
 		method = "basictl.LongRead"
 	case "string":
 		if bytesVersion {
-			method = "basictl.StringReadBytesTL2"
+			method = "basictl.StringReadTL2Bytes"
 		} else {
 			method = "basictl.StringReadTL2"
 		}

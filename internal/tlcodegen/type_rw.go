@@ -1237,7 +1237,7 @@ type TypeRW interface {
 }
 
 type Field struct {
-	originateFromTL2 bool
+	isTL2Omitted bool
 
 	originalName string
 	t            *TypeRWWrapper
@@ -1287,15 +1287,14 @@ func (f *Field) IsLocalIndependent() bool {
 }
 
 func (f *Field) IsTL2Omitted() bool {
-	return f.originateFromTL2 && f.originalName == "_"
+	return f.isTL2Omitted
 }
 
 func (f *Field) IsTL2Bool() bool {
-	if f.originateFromTL2 {
-		b, ok := f.t.trw.(*TypeRWBool)
-		return ok && !b.isTL2Legacy
+	if b, ok := f.t.trw.(*TypeRWBool); ok {
+		return b.isTL2 && !b.isTL2Legacy
 	}
-	return f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True")
+	return f.fieldMask != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
 }
 
 func (f *Field) TL2MaskForOP(op string) string {

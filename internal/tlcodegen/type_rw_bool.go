@@ -17,6 +17,7 @@ type TypeRWBool struct {
 	falseTag    uint32
 	trueTag     uint32
 
+	isTL2       bool
 	isTL2Legacy bool
 }
 
