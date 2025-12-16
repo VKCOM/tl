@@ -1286,11 +1286,18 @@ func (f *Field) IsLocalIndependent() bool {
 	return !f.IsAffectingLocalFieldMasks() && !f.IsTypeDependsFromLocalFields()
 }
 
+// do not generate fields, but affect block position and skip during reading
+// TL1: never
+// TL2: _:X
 func (f *Field) IsTL2Omitted() bool {
 	return f.isTL2Omitted
 }
 
-func (f *Field) IsTL2Bool() bool {
+// generate Set/IsSet with external (TL1) or internal (TL1 & TL2) mask/
+// must exactly correspond to migrator
+// TL1: x:fm.b?true x:fm.b?True
+// TL2: x:bool
+func (f *Field) IsZeroStateBool() bool {
 	if b, ok := f.t.trw.(*TypeRWBool); ok {
 		return b.isTL2 && !b.isTL2Legacy
 	}
@@ -1304,9 +1311,8 @@ func (f *Field) TL2MaskForOP(op string) string {
 func wrapWithError(wrap bool, wrappedType string) string {
 	if !wrap {
 		return wrappedType
-	} else {
-		return "(_ " + wrappedType + ", err error)"
 	}
+	return "(_ " + wrappedType + ", err error)"
 }
 
 func formatNatArg(fields []Field, arg ActualNatArg) string {
