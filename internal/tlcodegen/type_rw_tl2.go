@@ -71,12 +71,12 @@ func (w *TypeRWWrapper) WriteTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
 	bytesVersion = bytesVersion && w.hasBytesVersion
-	return w.trw.writeTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
+	return w.trw.writeTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, zeroIfEmpty, ins, refObject)
 }
 
 func (w *TypeRWWrapper) ReadTL2Call(

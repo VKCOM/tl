@@ -28,13 +28,10 @@ func (trw *TypeRWBool) writeTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if !trw.isTL2Legacy && canDependOnLocalBit {
-		return "" // fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
-	}
 	return fmt.Sprintf(`%[2]s = basictl.ByteBoolWriteTL2(%[2]s, %[1]s)`,
 		targetObject,
 		targetBytes,

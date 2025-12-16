@@ -31,35 +31,29 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	method := ""
-	switch trw.goType {
-	case "int32":
-		method = "basictl.IntWrite"
-	case "uint32":
-		method = "basictl.NatWrite"
-	case "int64":
-		method = "basictl.LongWrite"
-	case "string":
-		if bytesVersion {
-			method = "basictl.StringBytesWriteTL2"
-		} else {
-			method = "basictl.StringWriteTL2"
-		}
-	case "float32":
-		method = "basictl.FloatWrite"
-	case "float64":
-		method = "basictl.DoubleWrite"
+	method := trw.writeValue
+	if trw.tlType == "string" {
+		method = addBytes("basictl.StringWriteTL2", bytesVersion)
 	}
-	return fmt.Sprintf(`%[3]s = %[2]s(%[3]s, %[4]s)`,
-		targetSizes,
+	sz := fmt.Sprintf(`%[2]s = %[1]s(%[2]s, %[3]s)`,
 		method,
 		targetBytes,
 		addAsterisk(refObject, targetObject),
 	)
+	if trw.tlType == "string" {
+		if zeroIfEmpty {
+			return fmt.Sprintf("if len(%s) != 0 {\n", addAsterisk(refObject, targetObject)) + sz
+		}
+		return sz
+	}
+	if zeroIfEmpty {
+		return fmt.Sprintf("if %s != 0 { \n", addAsterisk(refObject, targetObject)) + sz
+	}
+	return sz
 }
 
 func (trw *TypeRWPrimitive) readTL2Call(
@@ -90,8 +84,7 @@ func (trw *TypeRWPrimitive) readTL2Call(
 	case "float64":
 		method = "basictl.DoubleRead"
 	}
-	return fmt.Sprintf(`if %[3]s, err = %[2]s(%[3]s, %[4]s); err != nil { return %[3]s, err }`,
-		"",
+	return fmt.Sprintf(`if %[2]s, err = %[1]s(%[2]s, %[3]s); err != nil { return %[2]s, err }`,
 		method,
 		targetBytes,
 		addAmpersand(refObject, targetObject),
