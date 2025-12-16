@@ -1331,7 +1331,6 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
             currentSize++
         {%- endif -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.IsTL2Bool() -%}{%- continue -%}{%- endif -%}
         {%- code
             fieldName := fmt.Sprintf("item.%s", field.goName)
             fieldRecursive := field.recursive
@@ -1400,7 +1399,6 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
             w = append(w, 0)
         {%- endif -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.IsTL2Bool() -%}{%- continue -%}{%- endif -%}
         {%- code
             fieldName := fmt.Sprintf("item.%s", field.goName)
             fieldRecursive := field.recursive
@@ -1502,7 +1500,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     }
         {%- endif -%}
         {%- if field.MaskTL2Bit != nil -%}
-            if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
+            if block & {%v 1 << ((fieldIndex + 1) % 8) %} != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}
             }
         {%- endif -%}
@@ -1510,11 +1508,11 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
             {%- continue -%}
         {%- endif -%}
         {%- if field.IsTL2Omitted() || field.t.IsTrueType() -%}
-    if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
+    if block & {%v 1 << ((fieldIndex + 1) % 8) %} != 0 {
         {%s= field.t.SkipTL2Call(directImports, bytesVersion, "currentR", field.fieldMask == nil, struct_.wr.ins, fieldAsterisk) %}
     }
         {%- else -%}
-    if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
+    if block & {%v 1 << ((fieldIndex + 1) % 8) %} != 0 {
         {%- if fieldRecursive -%}
         if {%s= fieldName %} == nil {
             var newValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}

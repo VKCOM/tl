@@ -2619,9 +2619,6 @@ func (item *`)
 				if field.IsTL2Omitted() {
 					continue
 				}
-				if field.IsTL2Bool() {
-					continue
-				}
 				fieldName := fmt.Sprintf("item.%s", field.goName)
 				fieldRecursive := field.recursive
 				fieldAsterisk := fieldRecursive
@@ -2718,9 +2715,6 @@ func (item *`)
 `)
 				}
 				if field.IsTL2Omitted() {
-					continue
-				}
-				if field.IsTL2Bool() {
 					continue
 				}
 				fieldName := fmt.Sprintf("item.%s", field.goName)
@@ -2868,9 +2862,9 @@ func (item *`)
 `)
 				}
 				if field.MaskTL2Bit != nil {
-					qw422016.N().S(`            if block & (1 << `)
-					qw422016.N().D((fieldIndex + 1) % 8)
-					qw422016.N().S(`) != 0 {
+					qw422016.N().S(`            if block & `)
+					qw422016.E().V(1 << ((fieldIndex + 1) % 8))
+					qw422016.N().S(` != 0 {
                 item.`)
 					qw422016.N().S(field.TL2MaskForOP("|="))
 					qw422016.N().S(`
@@ -2881,18 +2875,18 @@ func (item *`)
 					continue
 				}
 				if field.IsTL2Omitted() || field.t.IsTrueType() {
-					qw422016.N().S(`    if block & (1 << `)
-					qw422016.N().D((fieldIndex + 1) % 8)
-					qw422016.N().S(`) != 0 {
+					qw422016.N().S(`    if block & `)
+					qw422016.E().V(1 << ((fieldIndex + 1) % 8))
+					qw422016.N().S(` != 0 {
         `)
 					qw422016.N().S(field.t.SkipTL2Call(directImports, bytesVersion, "currentR", field.fieldMask == nil, struct_.wr.ins, fieldAsterisk))
 					qw422016.N().S(`
     }
 `)
 				} else {
-					qw422016.N().S(`    if block & (1 << `)
-					qw422016.N().D((fieldIndex + 1) % 8)
-					qw422016.N().S(`) != 0 {
+					qw422016.N().S(`    if block & `)
+					qw422016.E().V(1 << ((fieldIndex + 1) % 8))
+					qw422016.N().S(` != 0 {
 `)
 					if fieldRecursive {
 						qw422016.N().S(`        if `)

@@ -20,7 +20,7 @@ func (trw *TypeRWPrimitive) calculateLayoutCall(
 	}
 	sz := fmt.Sprintf("currentSize += %d", trw.trivialSize())
 	if zeroIfEmpty {
-		return fmt.Sprintf("if %s != 0 { \n", addAsterisk(refObject, targetObject)) + sz
+		return fmt.Sprintf("if %s != 0 {\n", addAsterisk(refObject, targetObject)) + sz
 	}
 	return sz
 }
@@ -51,7 +51,7 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 		return sz
 	}
 	if zeroIfEmpty {
-		return fmt.Sprintf("if %s != 0 { \n", addAsterisk(refObject, targetObject)) + sz
+		return fmt.Sprintf("if %s != 0 {\n", addAsterisk(refObject, targetObject)) + sz
 	}
 	return sz
 }
