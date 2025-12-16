@@ -12,15 +12,15 @@ func (trw *TypeRWPrimitive) calculateLayoutCall(
 	refObject bool,
 ) string {
 	if trw.tlType == "string" {
-		sz := fmt.Sprintf("sz = 1 + basictl.TL2CalculateSize(%s)", addAsterisk(refObject, targetObject))
+		sz := fmt.Sprintf("currentSize + 1 + basictl.TL2CalculateSize(%s)", addAsterisk(refObject, targetObject))
 		if zeroIfEmpty {
-			sz += fmt.Sprintf("; len(%s) != 0", addAsterisk(refObject, targetObject))
+			return fmt.Sprintf("if len(%s) != 0 {\n", addAsterisk(refObject, targetObject)) + sz
 		}
 		return sz
 	}
-	sz := fmt.Sprintf("sz = %d", trw.trivialSize())
+	sz := fmt.Sprintf("currentSize += %d", trw.trivialSize())
 	if zeroIfEmpty {
-		sz += fmt.Sprintf("; %s != 0", addAsterisk(refObject, targetObject))
+		return fmt.Sprintf("if %s != 0 { \n", addAsterisk(refObject, targetObject)) + sz
 	}
 	return sz
 }

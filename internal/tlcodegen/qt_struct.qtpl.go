@@ -2648,13 +2648,12 @@ func (item *`)
 					qw422016.N().S(`
 `)
 				} else {
-					qw422016.N().S(`            if `)
+					qw422016.N().S(`            `)
 					qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk))
-					qw422016.N().S(` {
+					qw422016.N().S(`
 `)
 				}
-				qw422016.N().S(`            currentSize += sz
-            lastUsedByte = currentSize
+				qw422016.N().S(`            lastUsedByte = currentSize
         }
 `)
 			}

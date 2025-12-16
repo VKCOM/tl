@@ -1349,9 +1349,8 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
                 {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
         {%- else -%}
-            if {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk) %} {
+            {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
-            currentSize += sz
             lastUsedByte = currentSize
         }
     {%- endfor -%}

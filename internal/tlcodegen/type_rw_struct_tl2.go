@@ -24,9 +24,9 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	}
 	sz := fmt.Sprintf("%[1]s, sz = %[2]s.CalculateLayout(%[1]s, %[3]v)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), zeroIfEmpty)
 	if zeroIfEmpty {
-		sz += "; sz != 0"
+		sz = fmt.Sprintf("if %s; sz != 0 {", sz)
 	}
-	return sz
+	return sz + "\ncurrentSize += sz"
 }
 
 func (trw *TypeRWStruct) writeTL2Call(
