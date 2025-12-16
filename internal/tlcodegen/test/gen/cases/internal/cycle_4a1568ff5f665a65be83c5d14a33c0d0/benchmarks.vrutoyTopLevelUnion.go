@@ -136,32 +136,34 @@ func (item *BenchmarksVrutoyTopLevelUnion) InternalReadTL2(r []byte) (_ []byte, 
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 2 {
+		return r, internal.ErrorInvalidUnionIndex("benchmarks.VrutoyTopLevelUnion", item.index)
 	}
 	switch item.index {
 	case 0:
 		if currentR, err = item.valueBig.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
-	case 1:
-		break
 	}
+	internal.Unused(currentR)
 	return r, nil
 }
 func (item *BenchmarksVrutoyTopLevelUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -410,9 +412,10 @@ func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.NextPositions
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.NextPositions) != 0 {
 		sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, &item.NextPositions)
 		if sizes[currentPosition] != 0 {
@@ -431,6 +434,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int) []int
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -439,17 +443,17 @@ func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes [
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.NextPositions
 	if len(item.NextPositions) != 0 {
 		serializedSize += sizes[0]
@@ -480,8 +484,6 @@ func (item *BenchmarksVrutoytopLevelUnionBig) WriteTL2(w []byte, ctx *basictl.TL
 
 func (item *BenchmarksVrutoytopLevelUnionBig) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.NextPositions
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalReadTL2(currentR, &item.NextPositions); err != nil {
 			return currentR, err
@@ -489,7 +491,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) InternalReadTL2(r []byte, block by
 	} else {
 		item.NextPositions = item.NextPositions[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -504,9 +506,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL2(r []byte, ctx *basictl.TL2
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -514,8 +514,6 @@ func (item *BenchmarksVrutoytopLevelUnionBig) ReadTL2(r []byte, ctx *basictl.TL2
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {
@@ -626,10 +624,10 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) CalculateLayout(sizes []int) []i
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
+	currentPosition := 0
 
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
@@ -638,6 +636,7 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) CalculateLayout(sizes []int) []i
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -646,21 +645,18 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
 	w[currentBlockPosition] = currentBlock
@@ -681,7 +677,8 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) WriteTL2(w []byte, ctx *basictl.
 }
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
-
+	currentR := r
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -696,9 +693,7 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL2(r []byte, ctx *basictl.T
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -706,8 +701,6 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) ReadTL2(r []byte, ctx *basictl.T
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {

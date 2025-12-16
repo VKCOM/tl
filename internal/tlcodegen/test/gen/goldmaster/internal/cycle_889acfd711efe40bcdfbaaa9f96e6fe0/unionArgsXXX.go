@@ -139,9 +139,10 @@ func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.X
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.X) != 0 {
 		sizes = tlBuiltinTupleLong.BuiltinTupleLongCalculateLayout(sizes, &item.X)
 		if sizes[currentPosition] != 0 {
@@ -160,6 +161,7 @@ func (item *UnionArgsXXX1Long) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -168,17 +170,17 @@ func (item *UnionArgsXXX1Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.X
 	if len(item.X) != 0 {
 		serializedSize += sizes[0]
@@ -209,8 +211,6 @@ func (item *UnionArgsXXX1Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 
 func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.X
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinTupleLong.BuiltinTupleLongInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
@@ -218,7 +218,7 @@ func (item *UnionArgsXXX1Long) InternalReadTL2(r []byte, block byte) (_ []byte, 
 	} else {
 		item.X = item.X[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -233,9 +233,7 @@ func (item *UnionArgsXXX1Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -243,8 +241,6 @@ func (item *UnionArgsXXX1Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {
@@ -367,10 +363,10 @@ func (item *UnionArgsXXX2Long) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
+	currentPosition := 0
 
 	// calculate layout for item.A
 	if item.A != 0 {
@@ -386,6 +382,7 @@ func (item *UnionArgsXXX2Long) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -394,23 +391,21 @@ func (item *UnionArgsXXX2Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, 
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
+
 	// write item.A
 	if item.A != 0 {
 		serializedSize += 4
@@ -438,8 +433,6 @@ func (item *UnionArgsXXX2Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) 
 
 func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.A
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.A); err != nil {
 			return currentR, err
@@ -447,7 +440,7 @@ func (item *UnionArgsXXX2Long) InternalReadTL2(r []byte, block byte) (_ []byte, 
 	} else {
 		item.A = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -462,9 +455,7 @@ func (item *UnionArgsXXX2Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -472,8 +463,6 @@ func (item *UnionArgsXXX2Long) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {
@@ -607,23 +596,26 @@ func (item *UnionArgsXXXLong) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 2 {
+		return r, internal.ErrorInvalidUnionIndex("UnionArgsXXX", item.index)
 	}
 	switch item.index {
 	case 0:
@@ -635,6 +627,7 @@ func (item *UnionArgsXXXLong) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	internal.Unused(currentR)
 	return r, nil
 }
 func (item *UnionArgsXXXLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {

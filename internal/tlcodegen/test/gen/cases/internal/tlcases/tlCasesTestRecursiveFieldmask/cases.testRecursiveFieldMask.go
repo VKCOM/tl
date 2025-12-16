@@ -22,30 +22,42 @@ type CasesTestRecursiveFieldmask struct {
 	// T1 (TrueType) // Conditional: item.F0.0
 	// T2 (TrueType) // Conditional: item.F1.1
 	// T3 (TrueType) // Conditional: item.F2.2
+
+	tl2mask0 byte
 }
 
 func (CasesTestRecursiveFieldmask) TLName() string { return "cases.testRecursiveFieldMask" }
 func (CasesTestRecursiveFieldmask) TLTag() uint32  { return 0xc58cf85e }
 
+func (item *CasesTestRecursiveFieldmask) GetF1() uint32 {
+	return item.F1
+}
 func (item *CasesTestRecursiveFieldmask) SetF1(v uint32) {
 	item.F1 = v
 	item.F0 |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestRecursiveFieldmask) ClearF1() {
 	item.F1 = 0
 	item.F0 &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
+func (item *CasesTestRecursiveFieldmask) GetF2() uint32 {
+	return item.F2
+}
 func (item *CasesTestRecursiveFieldmask) SetF2(v uint32) {
 	item.F2 = v
 	item.F1 |= 1 << 1
+	item.tl2mask0 |= 2
 }
 func (item *CasesTestRecursiveFieldmask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 1
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
 	if v {
@@ -53,8 +65,13 @@ func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
 	} else {
 		item.F0 &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 4
+	} else {
+		item.tl2mask0 &^= 4
+	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT1() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
 	if v {
@@ -62,8 +79,13 @@ func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
 	} else {
 		item.F1 &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 8
+	} else {
+		item.tl2mask0 &^= 8
+	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT2() bool { return item.tl2mask0&8 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
 	if v {
@@ -71,13 +93,19 @@ func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
 	} else {
 		item.F2 &^= 1 << 2
 	}
+	if v {
+		item.tl2mask0 |= 16
+	} else {
+		item.tl2mask0 &^= 16
+	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT3() bool { return item.F2&(1<<2) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT3() bool { return item.tl2mask0&16 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) Reset() {
 	item.F0 = 0
 	item.F1 = 0
 	item.F2 = 0
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {
@@ -95,10 +123,12 @@ func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTestRecursiveFieldmask) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.F0); err != nil {
 		return w, err
 	}
 	if item.F0&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.NatRead(w, &item.F1); err != nil {
 			return w, err
 		}
@@ -106,11 +136,21 @@ func (item *CasesTestRecursiveFieldmask) Read(w []byte) (_ []byte, err error) {
 		item.F1 = 0
 	}
 	if item.F1&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = basictl.NatRead(w, &item.F2); err != nil {
 			return w, err
 		}
 	} else {
 		item.F2 = 0
+	}
+	if item.F0&(1<<0) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.F1&(1<<1) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.F2&(1<<2) != 0 {
+		item.tl2mask0 |= 16
 	}
 	return w, nil
 }
@@ -342,6 +382,7 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.F0
 	if item.F0 != 0 {
@@ -371,6 +412,7 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -379,17 +421,17 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.F0
 	if item.F0 != 0 {
 		serializedSize += 4
@@ -398,6 +440,7 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.F0)
 		}
 	}
+
 	// write item.F1
 	if item.F1 != 0 {
 		serializedSize += 4
@@ -406,6 +449,7 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.F1)
 		}
 	}
+
 	// write item.F2
 	if item.F2 != 0 {
 		serializedSize += 4
@@ -414,6 +458,7 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.F2)
 		}
 	}
+
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
 }
@@ -440,13 +485,13 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -458,13 +503,10 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testRecursiveFieldMask", index)
 		}
 	}
-
-	// read item.F0
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F0); err != nil {
 			return currentR, err
@@ -472,8 +514,9 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.F0 = 0
 	}
-
-	// read item.F1
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F1); err != nil {
 			return currentR, err
@@ -481,8 +524,9 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.F1 = 0
 	}
-
-	// read item.F2
+	if block&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if block&(1<<3) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F2); err != nil {
 			return currentR, err
@@ -490,7 +534,16 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.F2 = 0
 	}
-
+	if block&(1<<4) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if block&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if block&(1<<6) != 0 {
+		item.tl2mask0 |= 16
+	}
+	internal.Unused(currentR)
 	return r, nil
 }
 

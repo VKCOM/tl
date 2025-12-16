@@ -168,6 +168,7 @@ func (item *CasesGoTestNames) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Write0
 	if item.Write0 != 0 {
@@ -190,6 +191,7 @@ func (item *CasesGoTestNames) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -198,17 +200,17 @@ func (item *CasesGoTestNames) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Write0
 	if item.Write0 != 0 {
 		serializedSize += 4
@@ -217,6 +219,7 @@ func (item *CasesGoTestNames) InternalWriteTL2(w []byte, sizes []int) ([]byte, [
 			w = basictl.IntWrite(w, item.Write0)
 		}
 	}
+
 	// write item.Read0
 	if item.Read0 != 0 {
 		serializedSize += 4
@@ -251,13 +254,13 @@ func (item *CasesGoTestNames) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -269,13 +272,9 @@ func (item *CasesGoTestNames) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesGo.testNames", index)
 		}
 	}
-
-	// read item.Write0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Write0); err != nil {
 			return currentR, err
@@ -283,8 +282,6 @@ func (item *CasesGoTestNames) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.Write0 = 0
 	}
-
-	// read item.Read0
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Read0); err != nil {
 			return currentR, err
@@ -292,7 +289,7 @@ func (item *CasesGoTestNames) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.Read0 = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

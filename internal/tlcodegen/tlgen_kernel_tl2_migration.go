@@ -494,11 +494,11 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 	}
 
 	addFields := func(oldFields []tlast.Field, natIsConstant map[string]bool, natTemplates map[string]bool) (newFields []tlast.TL2Field) {
-		originalNatTemplates := utils.CopyMap(natTemplates)
+		// originalNatTemplates := utils.CopyMap(natTemplates)
 		natTemplates = utils.CopyMap(natTemplates)
 		for _, field := range oldFields {
 			newField := tlast.TL2Field{}
-			appendLegacySetterComment := false
+			//appendLegacySetterComment := false
 			// name
 			newField.Name = lowerFirst(field.FieldName)
 			if newField.Name == "" {
@@ -508,26 +508,8 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 			// if it has field mask
 			isTrue := field.FieldType.Type.String() == "true" || field.FieldType.Type.String() == "True"
 			if field.Mask != nil {
-				// local nat dependencies convert to optional (expect x:n.0?Bool)
-				if !originalNatTemplates[field.Mask.MaskName] {
-					newField.IsOptional = true
-					if !field.IsRepeated {
-						comb := associatedCombinator[field.FieldType.Type]
-						if comb != nil && len(associatedWrappers[comb]) > 0 {
-							wrapper := associatedWrappers[comb][0]
-							if _, ok := wrapper.trw.(*TypeRWBool); ok {
-								newField.IsOptional = true
-								newField.Type.SomeType = &tlast.TL2TypeApplication{
-									Name: tlast.TL2TypeName{Name: "legacy_bool"},
-								}
-								newFields = append(newFields, newField)
-								continue
-							}
-						}
-					}
-				}
 				// convert x:n.0?true -> x:bool
-				if field.FieldType.Bare && isTrue {
+				if isTrue && !field.IsRepeated {
 					newField.IsOptional = false
 					newField.Type.SomeType = &tlast.TL2TypeApplication{
 						Name: tlast.TL2TypeName{Name: "bool"},
@@ -535,10 +517,28 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 					newFields = append(newFields, newField)
 					continue
 				}
-				// outer (non-local) nat dependencies add comment for legacy Set/IsSet
-				if originalNatTemplates[field.Mask.MaskName] && !natIsConstant[field.Mask.MaskName] {
-					appendLegacySetterComment = true
+				// local nat dependencies convert to optional (expect x:n.0?Bool)
+				//if !originalNatTemplates[field.Mask.MaskName] {
+				newField.IsOptional = true
+				if !field.IsRepeated {
+					comb := associatedCombinator[field.FieldType.Type]
+					if comb != nil && len(associatedWrappers[comb]) > 0 {
+						wrapper := associatedWrappers[comb][0]
+						if _, ok := wrapper.trw.(*TypeRWBool); ok {
+							newField.IsOptional = true
+							newField.Type.SomeType = &tlast.TL2TypeApplication{
+								Name: tlast.TL2TypeName{Name: "legacy_bool"},
+							}
+							newFields = append(newFields, newField)
+							continue
+						}
+					}
 				}
+				//}
+				// outer (non-local) nat dependencies add comment for legacy Set/IsSet
+				//if originalNatTemplates[field.Mask.MaskName] && !natIsConstant[field.Mask.MaskName] {
+				//	appendLegacySetterComment = true
+				//}
 			}
 			calculatingType := &newField.Type
 			// if is repeated
@@ -575,16 +575,16 @@ func (gen *Gen2) MigrateToTL2(prevState []FileToWrite) (newState []FileToWrite, 
 				newField.CommentBefore,
 				field.CommentRight,
 			)
-			if appendLegacySetterComment {
-				newField.CommentBefore = appendComment(
-					newField.CommentBefore,
-					fmt.Sprintf("// tlgen:addLegacySetters:name:\"%s\"", field.Mask.MaskName),
-				)
-				newField.CommentBefore = appendComment(
-					newField.CommentBefore,
-					fmt.Sprintf("// tlgen:addLegacySetters:bit:\"%d\"", field.Mask.BitNumber),
-				)
-			}
+			//if appendLegacySetterComment {
+			//	newField.CommentBefore = appendComment(
+			//		newField.CommentBefore,
+			//		fmt.Sprintf("// tlgen:addLegacySetters:name:\"%s\"", field.Mask.MaskName),
+			//	)
+			//	newField.CommentBefore = appendComment(
+			//		newField.CommentBefore,
+			//		fmt.Sprintf("// tlgen:addLegacySetters:bit:\"%d\"", field.Mask.BitNumber),
+			//	)
+			//}
 			newFields = append(newFields, newField)
 		}
 		return

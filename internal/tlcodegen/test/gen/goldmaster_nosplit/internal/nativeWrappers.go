@@ -274,6 +274,7 @@ func (item *NativeWrappers) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.A
 	if item.A != 0 {
@@ -324,6 +325,7 @@ func (item *NativeWrappers) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -332,17 +334,17 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.A
 	if item.A != 0 {
 		serializedSize += 4
@@ -351,6 +353,7 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 			w = basictl.IntWrite(w, item.A)
 		}
 	}
+
 	// write item.B
 	if item.B != 0 {
 		serializedSize += 4
@@ -359,6 +362,7 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 			w = basictl.IntWrite(w, item.B)
 		}
 	}
+
 	// write item.C
 	if item.C != 0 {
 		serializedSize += 4
@@ -367,6 +371,7 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 			w, sizes = item.C.InternalWriteTL2(w, sizes)
 		}
 	}
+
 	// write item.D
 	if item.D != 0 {
 		serializedSize += 4
@@ -375,6 +380,7 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 			w, sizes = item.D.InternalWriteTL2(w, sizes)
 		}
 	}
+
 	// write item.E
 	if item.E != 0 {
 		serializedSize += 4
@@ -383,6 +389,7 @@ func (item *NativeWrappers) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
 			w, sizes = item.E.InternalWriteTL2(w, sizes)
 		}
 	}
+
 	// write item.F
 	if item.F != 0 {
 		serializedSize += 4
@@ -417,13 +424,13 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -435,13 +442,9 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("nativeWrappers", index)
 		}
 	}
-
-	// read item.A
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.A); err != nil {
 			return currentR, err
@@ -449,8 +452,6 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.A = 0
 	}
-
-	// read item.B
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.B); err != nil {
 			return currentR, err
@@ -458,8 +459,6 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.B = 0
 	}
-
-	// read item.C
 	if block&(1<<3) != 0 {
 		if currentR, err = item.C.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -467,8 +466,6 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.C.Reset()
 	}
-
-	// read item.D
 	if block&(1<<4) != 0 {
 		if currentR, err = item.D.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -476,8 +473,6 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.D.Reset()
 	}
-
-	// read item.E
 	if block&(1<<5) != 0 {
 		if currentR, err = item.E.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -485,8 +480,6 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.E.Reset()
 	}
-
-	// read item.F
 	if block&(1<<6) != 0 {
 		if currentR, err = item.F.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -494,7 +487,7 @@ func (item *NativeWrappers) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.F.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

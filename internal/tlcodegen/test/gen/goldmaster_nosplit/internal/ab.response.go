@@ -113,10 +113,10 @@ func (item *AbAlias) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(2)
+	currentPosition := 0
 
 	// calculate layout for ptr
 	if ptr != nil && *ptr != 0 {
@@ -132,6 +132,7 @@ func (item *AbAlias) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -141,23 +142,21 @@ func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 2)
 	serializedSize += basictl.TL2CalculateSize(2)
+
 	// write ptr
 	if ptr != nil && *ptr != 0 {
 		serializedSize += 4
@@ -186,24 +185,14 @@ func (item *AbAlias) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 func (item *AbAlias) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 	ptr := (*int32)(item)
-
-	// read ptr
 	if block&(1<<1) != 0 {
-		if ptr == nil {
-			var newValue int32
-			ptr = &newValue
-		}
 		if currentR, err = basictl.IntRead(currentR, ptr); err != nil {
 			return currentR, err
 		}
 	} else {
-		if ptr == nil {
-			var newValue int32
-			ptr = &newValue
-		}
 		*ptr = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -218,9 +207,7 @@ func (item *AbAlias) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -228,8 +215,6 @@ func (item *AbAlias) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 2 {
@@ -372,10 +357,10 @@ func (item *AbCode) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
+	currentPosition := 0
 
 	// calculate layout for item.X
 	if item.X != 0 {
@@ -391,6 +376,7 @@ func (item *AbCode) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -399,23 +385,21 @@ func (item *AbCode) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
+
 	// write item.X
 	if item.X != 0 {
 		serializedSize += 4
@@ -443,8 +427,6 @@ func (item *AbCode) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 func (item *AbCode) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.X
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
 			return currentR, err
@@ -452,7 +434,7 @@ func (item *AbCode) InternalReadTL2(r []byte, block byte) (_ []byte, err error) 
 	} else {
 		item.X = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -467,9 +449,7 @@ func (item *AbCode) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, er
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -477,8 +457,6 @@ func (item *AbCode) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, er
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {
@@ -587,6 +565,7 @@ func (item *AbEmpty) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
@@ -595,6 +574,7 @@ func (item *AbEmpty) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -603,12 +583,11 @@ func (item *AbEmpty) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	w = append(w, 0)
 	serializedSize += 1
@@ -629,7 +608,8 @@ func (item *AbEmpty) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *AbEmpty) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
-
+	currentR := r
+	Unused(currentR)
 	return r, nil
 }
 
@@ -644,9 +624,7 @@ func (item *AbEmpty) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -654,8 +632,6 @@ func (item *AbEmpty) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {
@@ -841,27 +817,28 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 4 {
+		return r, ErrorInvalidUnionIndex("ab.Response", item.index)
 	}
 	switch item.index {
-	case 0:
-		break
 	case 1:
 		if currentR, err = item.valueCode.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
@@ -875,6 +852,7 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	Unused(currentR)
 	return r, nil
 }
 func (item *AbResponse) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -1219,27 +1197,28 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 4 {
+		return r, ErrorInvalidUnionIndex("ab.Response", item.index)
 	}
 	switch item.index {
-	case 0:
-		break
 	case 1:
 		if currentR, err = item.valueCode.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
@@ -1253,6 +1232,7 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	Unused(currentR)
 	return r, nil
 }
 func (item *AbResponseBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -1753,10 +1733,10 @@ func (item *CdResponse) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(3)
+	currentPosition := 0
 
 	// calculate layout for item.X
 	if item.X != 0 {
@@ -1782,6 +1762,7 @@ func (item *CdResponse) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -1790,23 +1771,21 @@ func (item *CdResponse) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 3)
 	serializedSize += basictl.TL2CalculateSize(3)
+
 	// write item.X
 	if item.X != 0 {
 		serializedSize += 4
@@ -1815,6 +1794,7 @@ func (item *CdResponse) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 			w = basictl.IntWrite(w, item.X)
 		}
 	}
+
 	// write item.Str
 	if len(item.Str) != 0 {
 		serializedSize += len(item.Str)
@@ -1843,8 +1823,6 @@ func (item *CdResponse) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte 
 
 func (item *CdResponse) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.X
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
 			return currentR, err
@@ -1852,8 +1830,6 @@ func (item *CdResponse) InternalReadTL2(r []byte, block byte) (_ []byte, err err
 	} else {
 		item.X = 0
 	}
-
-	// read item.Str
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Str); err != nil {
 			return currentR, err
@@ -1861,7 +1837,7 @@ func (item *CdResponse) InternalReadTL2(r []byte, block byte) (_ []byte, err err
 	} else {
 		item.Str = ""
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -1876,9 +1852,7 @@ func (item *CdResponse) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -1886,8 +1860,6 @@ func (item *CdResponse) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 3 {
@@ -2056,10 +2028,10 @@ func (item *CdResponseBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(3)
+	currentPosition := 0
 
 	// calculate layout for item.X
 	if item.X != 0 {
@@ -2085,6 +2057,7 @@ func (item *CdResponseBytes) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -2093,23 +2066,21 @@ func (item *CdResponseBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 3)
 	serializedSize += basictl.TL2CalculateSize(3)
+
 	// write item.X
 	if item.X != 0 {
 		serializedSize += 4
@@ -2118,6 +2089,7 @@ func (item *CdResponseBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 			w = basictl.IntWrite(w, item.X)
 		}
 	}
+
 	// write item.Str
 	if len(item.Str) != 0 {
 		serializedSize += len(item.Str)
@@ -2146,8 +2118,6 @@ func (item *CdResponseBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []
 
 func (item *CdResponseBytes) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.X
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
 			return currentR, err
@@ -2155,8 +2125,6 @@ func (item *CdResponseBytes) InternalReadTL2(r []byte, block byte) (_ []byte, er
 	} else {
 		item.X = 0
 	}
-
-	// read item.Str
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Str); err != nil {
 			return currentR, err
@@ -2164,7 +2132,7 @@ func (item *CdResponseBytes) InternalReadTL2(r []byte, block byte) (_ []byte, er
 	} else {
 		item.Str = item.Str[:0]
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -2179,9 +2147,7 @@ func (item *CdResponseBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -2189,8 +2155,6 @@ func (item *CdResponseBytes) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ [
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 3 {

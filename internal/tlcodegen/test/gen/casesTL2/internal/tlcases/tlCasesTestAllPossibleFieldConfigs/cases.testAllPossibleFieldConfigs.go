@@ -23,17 +23,16 @@ type CasesTestAllPossibleFieldConfigs struct {
 	// F01 (TrueType)
 	F02 []int32
 	F03 []int32
-	f10 int32 // Conditional: item.mask1.6
+	f10 int32
 	F11 bool
-	f12 []int32 // Conditional: item.mask2.0
-	f13 []int32 // Conditional: item.mask2.1
-	F20 int32
+	f12 []int32
+	f13 []int32
+	f20 int32
 	F21 bool
-	F22 []int32
-	F23 []int32
+	f22 []int32
+	f23 []int32
 
-	mask1 byte // for fields #1 .. #7
-	mask2 byte // for fields #8 .. #15
+	tl2mask0 byte
 }
 
 func (CasesTestAllPossibleFieldConfigs) TLName() string { return "cases.testAllPossibleFieldConfigs" }
@@ -44,87 +43,78 @@ func (item *CasesTestAllPossibleFieldConfigs) GetF10() int32 {
 }
 func (item *CasesTestAllPossibleFieldConfigs) SetF10(v int32) {
 	item.f10 = v
-	item.mask1 |= 1 << 6
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF10() {
 	item.f10 = 0
-	item.mask1 &^= 1 << 6
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF10() bool { return item.mask1&(1<<6) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF10() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) GetF12() []int32 {
 	return item.f12
 }
 func (item *CasesTestAllPossibleFieldConfigs) SetF12(v []int32) {
 	item.f12 = v
-	item.mask2 |= 1 << 0
+	item.tl2mask0 |= 2
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF12() {
 	item.f12 = item.f12[:0]
-	item.mask2 &^= 1 << 0
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF12() bool { return item.mask2&(1<<0) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF12() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) GetF13() []int32 {
 	return item.f13
 }
 func (item *CasesTestAllPossibleFieldConfigs) SetF13(v []int32) {
 	item.f13 = v
-	item.mask2 |= 1 << 1
+	item.tl2mask0 |= 4
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF13() {
 	item.f13 = item.f13[:0]
-	item.mask2 &^= 1 << 1
+	item.tl2mask0 &^= 4
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.mask2&(1<<1) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.tl2mask0&4 != 0 }
 
-func (item *CasesTestAllPossibleFieldConfigs) SetF20(v int32, nat_outer *uint32) {
-	item.F20 = v
-	if nat_outer != nil {
-		*nat_outer |= 1 << 0
-	}
+func (item *CasesTestAllPossibleFieldConfigs) GetF20() int32 {
+	return item.f20
 }
-func (item *CasesTestAllPossibleFieldConfigs) ClearF20(nat_outer *uint32) {
-	item.F20 = 0
-	if nat_outer != nil {
-		*nat_outer &^= 1 << 0
-	}
+func (item *CasesTestAllPossibleFieldConfigs) SetF20(v int32) {
+	item.f20 = v
+	item.tl2mask0 |= 8
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF20(nat_outer uint32) bool {
-	return nat_outer&(1<<0) != 0
+func (item *CasesTestAllPossibleFieldConfigs) ClearF20() {
+	item.f20 = 0
+	item.tl2mask0 &^= 8
 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF20() bool { return item.tl2mask0&8 != 0 }
 
-func (item *CasesTestAllPossibleFieldConfigs) SetF22(v []int32, nat_outer *uint32) {
-	item.F22 = v
-	if nat_outer != nil {
-		*nat_outer |= 1 << 2
-	}
+func (item *CasesTestAllPossibleFieldConfigs) GetF22() []int32 {
+	return item.f22
 }
-func (item *CasesTestAllPossibleFieldConfigs) ClearF22(nat_outer *uint32) {
-	item.F22 = item.F22[:0]
-	if nat_outer != nil {
-		*nat_outer &^= 1 << 2
-	}
+func (item *CasesTestAllPossibleFieldConfigs) SetF22(v []int32) {
+	item.f22 = v
+	item.tl2mask0 |= 16
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF22(nat_outer uint32) bool {
-	return nat_outer&(1<<2) != 0
+func (item *CasesTestAllPossibleFieldConfigs) ClearF22() {
+	item.f22 = item.f22[:0]
+	item.tl2mask0 &^= 16
 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF22() bool { return item.tl2mask0&16 != 0 }
 
-func (item *CasesTestAllPossibleFieldConfigs) SetF23(v []int32, nat_outer *uint32) {
-	item.F23 = v
-	if nat_outer != nil {
-		*nat_outer |= 1 << 3
-	}
+func (item *CasesTestAllPossibleFieldConfigs) GetF23() []int32 {
+	return item.f23
 }
-func (item *CasesTestAllPossibleFieldConfigs) ClearF23(nat_outer *uint32) {
-	item.F23 = item.F23[:0]
-	if nat_outer != nil {
-		*nat_outer &^= 1 << 3
-	}
+func (item *CasesTestAllPossibleFieldConfigs) SetF23(v []int32) {
+	item.f23 = v
+	item.tl2mask0 |= 32
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF23(nat_outer uint32) bool {
-	return nat_outer&(1<<3) != 0
+func (item *CasesTestAllPossibleFieldConfigs) ClearF23() {
+	item.f23 = item.f23[:0]
+	item.tl2mask0 &^= 32
 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF23() bool { return item.tl2mask0&32 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.Local = 0
@@ -135,39 +125,26 @@ func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.F11 = false
 	item.f12 = item.f12[:0]
 	item.f13 = item.f13[:0]
-	item.F20 = 0
+	item.f20 = 0
 	item.F21 = false
-	item.F22 = item.F22[:0]
-	item.F23 = item.F23[:0]
+	item.f22 = item.f22[:0]
+	item.f23 = item.f23[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerator) {
-	item.mask1 = basictl.RandomByte(rg)
-	item.mask2 = basictl.RandomByte(rg)
 	item.Local = basictl.RandomUint(rg)
 	item.F00 = basictl.RandomInt(rg)
 	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F02)
 	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F03)
-	if item.mask1&(1<<6) != 0 {
-		item.f10 = basictl.RandomInt(rg)
-	} else {
-		item.f10 = 0
-	}
+	item.f10 = basictl.RandomInt(rg)
 	item.F11 = basictl.RandomUint(rg)&1 == 1
-	if item.mask2&(1<<0) != 0 {
-		tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f12)
-	} else {
-		item.f12 = item.f12[:0]
-	}
-	if item.mask2&(1<<1) != 0 {
-		tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f13)
-	} else {
-		item.f13 = item.f13[:0]
-	}
-	item.F20 = basictl.RandomInt(rg)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f12)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f13)
+	item.f20 = basictl.RandomInt(rg)
 	item.F21 = basictl.RandomUint(rg)&1 == 1
-	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F22)
-	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F23)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f22)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f23)
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte) (_ []byte, err error) {
@@ -213,10 +190,10 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	var propF11Presented bool
 	var propf12Presented bool
 	var propf13Presented bool
-	var propF20Presented bool
+	var propf20Presented bool
 	var propF21Presented bool
-	var propF22Presented bool
-	var propF23Presented bool
+	var propf22Presented bool
+	var propf23Presented bool
 
 	if in != nil {
 		in.Delim('{')
@@ -297,13 +274,13 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				}
 				propf13Presented = true
 			case "f20":
-				if propF20Presented {
+				if propf20Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f20")
 				}
-				if err := internal.Json2ReadInt32(in, &item.F20); err != nil {
+				if err := internal.Json2ReadInt32(in, &item.f20); err != nil {
 					return err
 				}
-				propF20Presented = true
+				propf20Presented = true
 			case "f21":
 				if propF21Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f21")
@@ -313,21 +290,21 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				}
 				propF21Presented = true
 			case "f22":
-				if propF22Presented {
+				if propf22Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f22")
 				}
-				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.F22); err != nil {
+				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.f22); err != nil {
 					return err
 				}
-				propF22Presented = true
+				propf22Presented = true
 			case "f23":
-				if propF23Presented {
+				if propf23Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f23")
 				}
-				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.F23); err != nil {
+				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.f23); err != nil {
 					return err
 				}
-				propF23Presented = true
+				propf23Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("cases.testAllPossibleFieldConfigs", key)
 			}
@@ -362,26 +339,17 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if !propf13Presented {
 		item.f13 = item.f13[:0]
 	}
-	if !propF20Presented {
-		item.F20 = 0
+	if !propf20Presented {
+		item.f20 = 0
 	}
 	if !propF21Presented {
 		item.F21 = false
 	}
-	if !propF22Presented {
-		item.F22 = item.F22[:0]
+	if !propf22Presented {
+		item.f22 = item.f22[:0]
 	}
-	if !propF23Presented {
-		item.F23 = item.F23[:0]
-	}
-	if propf10Presented {
-		item.mask1 |= 1 << 6
-	}
-	if propf12Presented {
-		item.mask2 |= 1 << 0
-	}
-	if propf13Presented {
-		item.mask2 |= 1 << 1
+	if !propf23Presented {
+		item.f23 = item.f23[:0]
 	}
 	return nil
 }
@@ -426,10 +394,12 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if (len(item.F03) != 0) == false {
 		w = w[:backupIndexF03]
 	}
-	if item.mask1&(1<<6) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"f10":`...)
-		w = basictl.JSONWriteInt32(w, item.f10)
+	backupIndexf10 := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"f10":`...)
+	w = basictl.JSONWriteInt32(w, item.f10)
+	if (item.f10 != 0) == false {
+		w = w[:backupIndexf10]
 	}
 	backupIndexF11 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -438,22 +408,26 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if (item.F11) == false {
 		w = w[:backupIndexF11]
 	}
-	if item.mask2&(1<<0) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"f12":`...)
-		w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f12)
+	backupIndexf12 := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"f12":`...)
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f12)
+	if (len(item.f12) != 0) == false {
+		w = w[:backupIndexf12]
 	}
-	if item.mask2&(1<<1) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"f13":`...)
-		w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f13)
+	backupIndexf13 := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"f13":`...)
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f13)
+	if (len(item.f13) != 0) == false {
+		w = w[:backupIndexf13]
 	}
-	backupIndexF20 := len(w)
+	backupIndexf20 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f20":`...)
-	w = basictl.JSONWriteInt32(w, item.F20)
-	if (item.F20 != 0) == false {
-		w = w[:backupIndexF20]
+	w = basictl.JSONWriteInt32(w, item.f20)
+	if (item.f20 != 0) == false {
+		w = w[:backupIndexf20]
 	}
 	backupIndexF21 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -462,19 +436,19 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	if (item.F21) == false {
 		w = w[:backupIndexF21]
 	}
-	backupIndexF22 := len(w)
+	backupIndexf22 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f22":`...)
-	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.F22)
-	if (len(item.F22) != 0) == false {
-		w = w[:backupIndexF22]
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f22)
+	if (len(item.f22) != 0) == false {
+		w = w[:backupIndexf22]
 	}
-	backupIndexF23 := len(w)
+	backupIndexf23 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f23":`...)
-	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.F23)
-	if (len(item.F23) != 0) == false {
-		w = w[:backupIndexF23]
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f23)
+	if (len(item.f23) != 0) == false {
+		w = w[:backupIndexf23]
 	}
 	return append(w, '}')
 }
@@ -496,6 +470,7 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Local
 	if item.Local != 0 {
@@ -513,7 +488,7 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 
 	var trueF01 tlTrue.True
 	// calculate layout for trueF01
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = trueF01.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -550,12 +525,10 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 	}
 
 	// calculate layout for item.f10
-	if item.mask1&(1<<6) != 0 {
-		if item.f10 != 0 {
+	if item.f10 != 0 {
 
-			lastUsedByte = 1
-			currentSize += 4
-		}
+		lastUsedByte = 1
+		currentSize += 4
 	}
 
 	// calculate layout for item.F11
@@ -567,36 +540,32 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 
 	// calculate layout for item.f12
 	currentPosition = len(sizes)
-	if item.mask2&(1<<0) != 0 {
-		if len(item.f12) != 0 {
-			sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f12)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 2
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	if len(item.f12) != 0 {
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f12)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 2
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
 	// calculate layout for item.f13
 	currentPosition = len(sizes)
-	if item.mask2&(1<<1) != 0 {
-		if len(item.f13) != 0 {
-			sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f13)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 2
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	if len(item.f13) != 0 {
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f13)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 2
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
-	// calculate layout for item.F20
-	if item.F20 != 0 {
+	// calculate layout for item.f20
+	if item.f20 != 0 {
 
 		lastUsedByte = 2
 		currentSize += 4
@@ -609,10 +578,10 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 		currentSize += 0
 	}
 
-	// calculate layout for item.F22
+	// calculate layout for item.f22
 	currentPosition = len(sizes)
-	if len(item.F22) != 0 {
-		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.F22)
+	if len(item.f22) != 0 {
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f22)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 2
 			currentSize += sizes[currentPosition]
@@ -622,10 +591,10 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 		}
 	}
 
-	// calculate layout for item.F23
+	// calculate layout for item.f23
 	currentPosition = len(sizes)
-	if len(item.F23) != 0 {
-		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.F23)
+	if len(item.f23) != 0 {
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f23)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 2
 			currentSize += sizes[currentPosition]
@@ -642,6 +611,7 @@ func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -650,17 +620,17 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Local
 	if item.Local != 0 {
 		serializedSize += 4
@@ -669,6 +639,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			w = basictl.NatWrite(w, item.Local)
 		}
 	}
+
 	// write item.F00
 	if item.F00 != 0 {
 		serializedSize += 4
@@ -677,6 +648,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			w = basictl.IntWrite(w, item.F00)
 		}
 	}
+
 	var trueF01 tlTrue.True
 	// write trueF01
 	serializedSize += sizes[0]
@@ -687,6 +659,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.F02
 	if len(item.F02) != 0 {
 		serializedSize += sizes[0]
@@ -698,6 +671,7 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			sizes = sizes[1:]
 		}
 	}
+
 	// write item.F03
 	if len(item.F03) != 0 {
 		serializedSize += sizes[0]
@@ -709,23 +683,22 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 			sizes = sizes[1:]
 		}
 	}
+
 	// write item.f10
-	if item.mask1&(1<<6) != 0 {
-		if item.f10 != 0 {
-			serializedSize += 4
-			if 4 != 0 {
-				currentBlock |= (1 << 6)
-				w = basictl.IntWrite(w, item.f10)
-			}
+	if item.f10 != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 6)
+			w = basictl.IntWrite(w, item.f10)
 		}
 	}
+
 	// write item.F11
 	if item.F11 {
 		serializedSize += 0
 		currentBlock |= (1 << 7)
 
 	}
-
 	// add byte for fields with index 8..15
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
@@ -736,64 +709,66 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes [
 	} else {
 		return w, sizes
 	}
+
 	// write item.f12
-	if item.mask2&(1<<0) != 0 {
-		if len(item.f12) != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 0)
-				w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f12)
-			} else {
-				sizes = sizes[1:]
-			}
+	if len(item.f12) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 0)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f12)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
+
 	// write item.f13
-	if item.mask2&(1<<1) != 0 {
-		if len(item.f13) != 0 {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 1)
-				w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f13)
-			} else {
-				sizes = sizes[1:]
-			}
+	if len(item.f13) != 0 {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 1)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f13)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
-	// write item.F20
-	if item.F20 != 0 {
+
+	// write item.f20
+	if item.f20 != 0 {
 		serializedSize += 4
 		if 4 != 0 {
 			currentBlock |= (1 << 2)
-			w = basictl.IntWrite(w, item.F20)
+			w = basictl.IntWrite(w, item.f20)
 		}
 	}
+
 	// write item.F21
 	if item.F21 {
 		serializedSize += 0
 		currentBlock |= (1 << 3)
 
 	}
-	// write item.F22
-	if len(item.F22) != 0 {
+
+	// write item.f22
+	if len(item.f22) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 4)
-			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.F22)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f22)
 		} else {
 			sizes = sizes[1:]
 		}
 	}
-	// write item.F23
-	if len(item.F23) != 0 {
+
+	// write item.f23
+	if len(item.f23) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 5)
-			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.F23)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f23)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -824,13 +799,13 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -842,14 +817,10 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testAllPossibleFieldConfigs", index)
 		}
 	}
-	item.mask1 = block
-
-	// read item.Local
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.Local); err != nil {
 			return currentR, err
@@ -857,8 +828,6 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.Local = 0
 	}
-
-	// read item.F00
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.F00); err != nil {
 			return currentR, err
@@ -866,18 +835,11 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F00 = 0
 	}
-
-	var trueF01 tlTrue.True
-	// read trueF01
 	if block&(1<<3) != 0 {
-		if currentR, err = trueF01.InternalReadTL2(currentR); err != nil {
+		if currentR, err = basictl.SkipSizedValue(currentR); err != nil {
 			return currentR, err
 		}
-	} else {
-		trueF01.Reset()
 	}
-
-	// read item.F02
 	if block&(1<<4) != 0 {
 		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F02); err != nil {
 			return currentR, err
@@ -885,8 +847,6 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F02 = item.F02[:0]
 	}
-
-	// read item.F03
 	if block&(1<<5) != 0 {
 		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F03); err != nil {
 			return currentR, err
@@ -894,25 +854,15 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.F03 = item.F03[:0]
 	}
-
-	// read item.f10
 	if block&(1<<6) != 0 {
-		if item.mask1&(1<<6) != 0 {
-			if currentR, err = basictl.IntRead(currentR, &item.f10); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "f10" + "is presented but depending bit is absent")
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<6) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.f10); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.f10 = 0
-	}
-
-	// read item.F11
-	if block&(1<<7) != 0 {
-		item.F11 = true
-	} else {
-		item.F11 = false
 	}
 
 	// read next block for fields 8..15
@@ -923,68 +873,57 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		block = 0
 	}
-	item.mask2 = block
-
-	// read item.f12
 	if block&(1<<0) != 0 {
-		if item.mask2&(1<<0) != 0 {
-			if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f12); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "f12" + "is presented but depending bit is absent")
+		item.tl2mask0 |= 2
+	}
+	if block&(1<<0) != 0 {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f12); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.f12 = item.f12[:0]
 	}
-
-	// read item.f13
 	if block&(1<<1) != 0 {
-		if item.mask2&(1<<1) != 0 {
-			if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f13); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "f13" + "is presented but depending bit is absent")
+		item.tl2mask0 |= 4
+	}
+	if block&(1<<1) != 0 {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f13); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.f13 = item.f13[:0]
 	}
-
-	// read item.F20
 	if block&(1<<2) != 0 {
-		if currentR, err = basictl.IntRead(currentR, &item.F20); err != nil {
+		item.tl2mask0 |= 8
+	}
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.f20); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F20 = 0
+		item.f20 = 0
 	}
-
-	// read item.F21
-	if block&(1<<3) != 0 {
-		item.F21 = true
-	} else {
-		item.F21 = false
-	}
-
-	// read item.F22
 	if block&(1<<4) != 0 {
-		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F22); err != nil {
+		item.tl2mask0 |= 16
+	}
+	if block&(1<<4) != 0 {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f22); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F22 = item.F22[:0]
+		item.f22 = item.f22[:0]
 	}
-
-	// read item.F23
 	if block&(1<<5) != 0 {
-		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F23); err != nil {
+		item.tl2mask0 |= 32
+	}
+	if block&(1<<5) != 0 {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f23); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F23 = item.F23[:0]
+		item.f23 = item.f23[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

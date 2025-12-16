@@ -20,6 +20,8 @@ type UseTrue struct {
 	// C (TrueType)
 	// D (TrueType)
 	E bool // Conditional: item.Fm.2
+
+	tl2mask0 byte
 }
 
 func (UseTrue) TLName() string { return "useTrue" }
@@ -31,8 +33,13 @@ func (item *UseTrue) SetA(v bool) {
 	} else {
 		item.Fm &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 1
+	} else {
+		item.tl2mask0 &^= 1
+	}
 }
-func (item *UseTrue) IsSetA() bool { return item.Fm&(1<<0) != 0 }
+func (item *UseTrue) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *UseTrue) SetB(v bool) {
 	if v {
@@ -40,22 +47,33 @@ func (item *UseTrue) SetB(v bool) {
 	} else {
 		item.Fm &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *UseTrue) IsSetB() bool { return item.Fm&(1<<1) != 0 }
+func (item *UseTrue) IsSetB() bool { return item.tl2mask0&2 != 0 }
 
+func (item *UseTrue) GetE() bool {
+	return item.E
+}
 func (item *UseTrue) SetE(v bool) {
 	item.E = v
 	item.Fm |= 1 << 2
+	item.tl2mask0 |= 4
 }
 func (item *UseTrue) ClearE() {
 	item.E = false
 	item.Fm &^= 1 << 2
+	item.tl2mask0 &^= 4
 }
-func (item *UseTrue) IsSetE() bool { return item.Fm&(1<<2) != 0 }
+func (item *UseTrue) IsSetE() bool { return item.tl2mask0&4 != 0 }
 
 func (item *UseTrue) Reset() {
 	item.Fm = 0
 	item.E = false
+	item.tl2mask0 = 0
 }
 
 func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
@@ -68,10 +86,15 @@ func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Fm); err != nil {
 		return w, err
 	}
+	if item.Fm&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if item.Fm&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = basictl.NatReadExactTag(w, 0x3fedd339); err != nil {
 			return w, err
 		}
@@ -80,6 +103,7 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.Fm&(1<<2) != 0 {
+		item.tl2mask0 |= 4
 		if w, err = BoolReadBoxed(w, &item.E); err != nil {
 			return w, err
 		}
@@ -280,6 +304,7 @@ func (item *UseTrue) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Fm
 	if item.Fm != 0 {
@@ -290,7 +315,7 @@ func (item *UseTrue) CalculateLayout(sizes []int) []int {
 
 	var trueB True
 	// calculate layout for trueB
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = trueB.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -338,6 +363,7 @@ func (item *UseTrue) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -346,17 +372,17 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Fm
 	if item.Fm != 0 {
 		serializedSize += 4
@@ -365,6 +391,7 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 			w = basictl.NatWrite(w, item.Fm)
 		}
 	}
+
 	var trueB True
 	// write trueB
 	serializedSize += sizes[0]
@@ -375,6 +402,7 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	var trueC True
 	// write trueC
 	serializedSize += sizes[0]
@@ -385,6 +413,7 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	var trueD True
 	// write trueD
 	serializedSize += sizes[0]
@@ -395,6 +424,7 @@ func (item *UseTrue) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.E
 	if item.E {
 		serializedSize += 1
@@ -429,13 +459,13 @@ func (item *UseTrue) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -447,13 +477,10 @@ func (item *UseTrue) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("useTrue", index)
 		}
 	}
-
-	// read item.Fm
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.Fm); err != nil {
 			return currentR, err
@@ -461,38 +488,15 @@ func (item *UseTrue) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.Fm = 0
 	}
-
-	var trueB True
-	// read trueB
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<3) != 0 {
-		if currentR, err = trueB.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		trueB.Reset()
+		item.tl2mask0 |= 2
 	}
-
-	var trueC True
-	// read trueC
-	if block&(1<<4) != 0 {
-		if currentR, err = trueC.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		trueC.Reset()
+	if block&(1<<6) != 0 {
+		item.tl2mask0 |= 4
 	}
-
-	var trueD True
-	// read trueD
-	if block&(1<<5) != 0 {
-		if currentR, err = trueD.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		trueD.Reset()
-	}
-
-	// read item.E
 	if block&(1<<6) != 0 {
 		if currentR, err = basictl.ByteBoolReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
@@ -500,7 +504,7 @@ func (item *UseTrue) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.E = false
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

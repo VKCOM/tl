@@ -141,9 +141,10 @@ func (item *CasesBytesTestDictStringString) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Dict
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.Dict) != 0 {
 		sizes = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {
@@ -162,6 +163,7 @@ func (item *CasesBytesTestDictStringString) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -170,17 +172,17 @@ func (item *CasesBytesTestDictStringString) InternalWriteTL2(w []byte, sizes []i
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Dict
 	if len(item.Dict) != 0 {
 		serializedSize += sizes[0]
@@ -218,13 +220,13 @@ func (item *CasesBytesTestDictStringString) InternalReadTL2(r []byte) (_ []byte,
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -236,13 +238,9 @@ func (item *CasesBytesTestDictStringString) InternalReadTL2(r []byte) (_ []byte,
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases_bytes.testDictStringString", index)
 		}
 	}
-
-	// read item.Dict
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
@@ -250,7 +248,7 @@ func (item *CasesBytesTestDictStringString) InternalReadTL2(r []byte) (_ []byte,
 	} else {
 		tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringReset(item.Dict)
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -382,9 +380,10 @@ func (item *CasesBytesTestDictStringStringBytes) CalculateLayout(sizes []int) []
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Dict
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.Dict) != 0 {
 		sizes = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, &item.Dict)
 		if sizes[currentPosition] != 0 {
@@ -403,6 +402,7 @@ func (item *CasesBytesTestDictStringStringBytes) CalculateLayout(sizes []int) []
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -411,17 +411,17 @@ func (item *CasesBytesTestDictStringStringBytes) InternalWriteTL2(w []byte, size
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Dict
 	if len(item.Dict) != 0 {
 		serializedSize += sizes[0]
@@ -459,13 +459,13 @@ func (item *CasesBytesTestDictStringStringBytes) InternalReadTL2(r []byte) (_ []
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -477,13 +477,9 @@ func (item *CasesBytesTestDictStringStringBytes) InternalReadTL2(r []byte) (_ []
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases_bytes.testDictStringString", index)
 		}
 	}
-
-	// read item.Dict
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinVectorDictionaryFieldString.BuiltinVectorDictionaryFieldStringBytesInternalReadTL2(currentR, &item.Dict); err != nil {
 			return currentR, err
@@ -491,7 +487,7 @@ func (item *CasesBytesTestDictStringStringBytes) InternalReadTL2(r []byte) (_ []
 	} else {
 		item.Dict = item.Dict[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

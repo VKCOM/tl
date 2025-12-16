@@ -17,36 +17,38 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesTestOutFieldMask struct {
-	F1 uint32
+	f1 uint32
 	F2 bool
 	F3 []int32
+
+	tl2mask0 byte
 }
 
 func (CasesTestOutFieldMask) TLName() string { return "cases.testOutFieldMask" }
 func (CasesTestOutFieldMask) TLTag() uint32  { return 0x00000000 }
 
-func (item *CasesTestOutFieldMask) SetF1(v uint32, nat_f *uint32) {
-	item.F1 = v
-	if nat_f != nil {
-		*nat_f |= 1 << 0
-	}
+func (item *CasesTestOutFieldMask) GetF1() uint32 {
+	return item.f1
 }
-func (item *CasesTestOutFieldMask) ClearF1(nat_f *uint32) {
-	item.F1 = 0
-	if nat_f != nil {
-		*nat_f &^= 1 << 0
-	}
+func (item *CasesTestOutFieldMask) SetF1(v uint32) {
+	item.f1 = v
+	item.tl2mask0 |= 1
 }
-func (item *CasesTestOutFieldMask) IsSetF1(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
+func (item *CasesTestOutFieldMask) ClearF1() {
+	item.f1 = 0
+	item.tl2mask0 &^= 1
+}
+func (item *CasesTestOutFieldMask) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestOutFieldMask) Reset() {
-	item.F1 = 0
+	item.f1 = 0
 	item.F2 = false
 	item.F3 = item.F3[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator) {
-	item.F1 = basictl.RandomUint(rg)
+	item.f1 = basictl.RandomUint(rg)
 	item.F2 = basictl.RandomUint(rg)&1 == 1
 	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F3)
 }
@@ -86,7 +88,7 @@ func (item *CasesTestOutFieldMask) ReadJSON(legacyTypeNames bool, in *basictl.Js
 }
 
 func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propF1Presented bool
+	var propf1Presented bool
 	var propF2Presented bool
 	var propF3Presented bool
 
@@ -100,13 +102,13 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 			in.WantColon()
 			switch key {
 			case "f1":
-				if propF1Presented {
+				if propf1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f1")
 				}
-				if err := internal.Json2ReadUint32(in, &item.F1); err != nil {
+				if err := internal.Json2ReadUint32(in, &item.f1); err != nil {
 					return err
 				}
-				propF1Presented = true
+				propf1Presented = true
 			case "f2":
 				if propF2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testOutFieldMask", "f2")
@@ -133,8 +135,8 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 			return in.Error()
 		}
 	}
-	if !propF1Presented {
-		item.F1 = 0
+	if !propf1Presented {
+		item.f1 = 0
 	}
 	if !propF2Presented {
 		item.F2 = false
@@ -157,12 +159,12 @@ func (item *CasesTestOutFieldMask) WriteJSON(w []byte) []byte {
 }
 func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
-	backupIndexF1 := len(w)
+	backupIndexf1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f1":`...)
-	w = basictl.JSONWriteUint32(w, item.F1)
-	if (item.F1 != 0) == false {
-		w = w[:backupIndexF1]
+	w = basictl.JSONWriteUint32(w, item.f1)
+	if (item.f1 != 0) == false {
+		w = w[:backupIndexf1]
 	}
 	backupIndexF2 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -198,9 +200,10 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
-	// calculate layout for item.F1
-	if item.F1 != 0 {
+	// calculate layout for item.f1
+	if item.f1 != 0 {
 
 		lastUsedByte = 1
 		currentSize += 4
@@ -214,7 +217,7 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.F3
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.F3) != 0 {
 		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.F3)
 		if sizes[currentPosition] != 0 {
@@ -233,6 +236,7 @@ func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -241,31 +245,33 @@ func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int) ([]by
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-	// write item.F1
-	if item.F1 != 0 {
+
+	// write item.f1
+	if item.f1 != 0 {
 		serializedSize += 4
 		if 4 != 0 {
 			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.F1)
+			w = basictl.NatWrite(w, item.f1)
 		}
 	}
+
 	// write item.F2
 	if item.F2 {
 		serializedSize += 0
 		currentBlock |= (1 << 2)
 
 	}
+
 	// write item.F3
 	if len(item.F3) != 0 {
 		serializedSize += sizes[0]
@@ -303,13 +309,13 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte) (_ []byte, err erro
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -321,29 +327,20 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte) (_ []byte, err erro
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testOutFieldMask", index)
 		}
 	}
-
-	// read item.F1
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
-		if currentR, err = basictl.NatRead(currentR, &item.F1); err != nil {
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.f1); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F1 = 0
+		item.f1 = 0
 	}
-
-	// read item.F2
-	if block&(1<<2) != 0 {
-		item.F2 = true
-	} else {
-		item.F2 = false
-	}
-
-	// read item.F3
 	if block&(1<<3) != 0 {
 		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F3); err != nil {
 			return currentR, err
@@ -351,7 +348,7 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.F3 = item.F3[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

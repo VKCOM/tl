@@ -17,9 +17,9 @@ var _ = internal.ErrorInvalidEnumTag
 
 type CasesMyCycle1 struct {
 	FieldsMask uint32
-	a          *CasesMyCycle2 // Conditional: item.mask1.2
+	a          *CasesMyCycle2
 
-	mask1 byte // for fields #1 .. #7
+	tl2mask0 byte
 }
 
 func (CasesMyCycle1) TLName() string { return "cases.myCycle1" }
@@ -34,39 +34,33 @@ func (item *CasesMyCycle1) SetA(v CasesMyCycle2) {
 		item.a = &value
 	}
 	*item.a = v
-	item.mask1 |= 1 << 2
+	item.tl2mask0 |= 1
 }
 func (item *CasesMyCycle1) ClearA() {
 	if item.a != nil {
 		item.a.Reset()
 	}
-	item.mask1 &^= 1 << 2
+	item.tl2mask0 &^= 1
 }
-func (item *CasesMyCycle1) IsSetA() bool { return item.mask1&(1<<2) != 0 }
+func (item *CasesMyCycle1) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesMyCycle1) Reset() {
 	item.FieldsMask = 0
 	if item.a != nil {
 		item.a.Reset()
 	}
+	item.tl2mask0 = 0
 }
 
 func (item *CasesMyCycle1) FillRandom(rg *basictl.RandGenerator) {
-	item.mask1 = basictl.RandomByte(rg)
 	item.FieldsMask = basictl.RandomUint(rg)
-	if item.mask1&(1<<2) != 0 {
-		rg.IncreaseDepth()
-		if item.a == nil {
-			var value CasesMyCycle2
-			item.a = &value
-		}
-		item.a.FillRandom(rg)
-		rg.DecreaseDepth()
-	} else {
-		if item.a != nil {
-			item.a.Reset()
-		}
+	rg.IncreaseDepth()
+	if item.a == nil {
+		var value CasesMyCycle2
+		item.a = &value
 	}
+	item.a.FillRandom(rg)
+	rg.DecreaseDepth()
 }
 
 func (item *CasesMyCycle1) Read(w []byte) (_ []byte, err error) {
@@ -154,9 +148,6 @@ func (item *CasesMyCycle1) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *ba
 			item.a.Reset()
 		}
 	}
-	if propaPresented {
-		item.mask1 |= 1 << 2
-	}
 	return nil
 }
 
@@ -179,11 +170,9 @@ func (item *CasesMyCycle1) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte
 	if (item.FieldsMask != 0) == false {
 		w = w[:backupIndexFieldsMask]
 	}
-	if item.mask1&(1<<2) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"a":`...)
-		w = item.a.WriteJSONOpt(tctx, w)
-	}
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"a":`...)
+	w = item.a.WriteJSONOpt(tctx, w)
 	return append(w, '}')
 }
 
@@ -204,6 +193,7 @@ func (item *CasesMyCycle1) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -213,17 +203,15 @@ func (item *CasesMyCycle1) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.a
-	currentPosition := len(sizes)
-	if item.mask1&(1<<2) != 0 {
-		if item.a != nil {
-			sizes = (*item.a).CalculateLayout(sizes)
-			if sizes[currentPosition] != 0 {
-				lastUsedByte = 1
-				currentSize += sizes[currentPosition]
-				currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-			} else {
-				sizes = sizes[:currentPosition+1]
-			}
+	currentPosition = len(sizes)
+	if item.a != nil {
+		sizes = (*item.a).CalculateLayout(sizes)
+		if sizes[currentPosition] != 0 {
+			lastUsedByte = 1
+			currentSize += sizes[currentPosition]
+			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		} else {
+			sizes = sizes[:currentPosition+1]
 		}
 	}
 
@@ -234,6 +222,7 @@ func (item *CasesMyCycle1) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -242,17 +231,17 @@ func (item *CasesMyCycle1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.FieldsMask
 	if item.FieldsMask != 0 {
 		serializedSize += 4
@@ -261,17 +250,16 @@ func (item *CasesMyCycle1) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 			w = basictl.NatWrite(w, item.FieldsMask)
 		}
 	}
+
 	// write item.a
-	if item.mask1&(1<<2) != 0 {
-		if item.a != nil {
-			serializedSize += sizes[0]
-			if sizes[0] != 0 {
-				serializedSize += basictl.TL2CalculateSize(sizes[0])
-				currentBlock |= (1 << 2)
-				w, sizes = item.a.InternalWriteTL2(w, sizes)
-			} else {
-				sizes = sizes[1:]
-			}
+	if item.a != nil {
+		serializedSize += sizes[0]
+		if sizes[0] != 0 {
+			serializedSize += basictl.TL2CalculateSize(sizes[0])
+			currentBlock |= (1 << 2)
+			w, sizes = item.a.InternalWriteTL2(w, sizes)
+		} else {
+			sizes = sizes[1:]
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -300,13 +288,13 @@ func (item *CasesMyCycle1) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -318,14 +306,10 @@ func (item *CasesMyCycle1) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.myCycle1", index)
 		}
 	}
-	item.mask1 = block
-
-	// read item.FieldsMask
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.FieldsMask); err != nil {
 			return currentR, err
@@ -333,19 +317,16 @@ func (item *CasesMyCycle1) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.FieldsMask = 0
 	}
-
-	// read item.a
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<2) != 0 {
 		if item.a == nil {
 			var newValue CasesMyCycle2
 			item.a = &newValue
 		}
-		if item.mask1&(1<<2) != 0 {
-			if currentR, err = item.a.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "a" + "is presented but depending bit is absent")
+		if currentR, err = item.a.InternalReadTL2(currentR); err != nil {
+			return currentR, err
 		}
 	} else {
 		if item.a == nil {
@@ -354,7 +335,7 @@ func (item *CasesMyCycle1) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.a.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

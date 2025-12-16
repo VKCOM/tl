@@ -20,21 +20,31 @@ type ListService5Output struct {
 	Flag uint32
 	Head cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output // Conditional: item.Flag.0
 	Tail *ListService5Output                                   // Conditional: item.Flag.0
+
+	tl2mask0 byte
 }
 
 func (ListService5Output) TLName() string { return "list" }
 func (ListService5Output) TLTag() uint32  { return 0x02d80cdd }
 
+func (item *ListService5Output) GetHead() cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output {
+	return item.Head
+}
 func (item *ListService5Output) SetHead(v cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output) {
 	item.Head = v
 	item.Flag |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *ListService5Output) ClearHead() {
 	item.Head.Reset()
 	item.Flag &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *ListService5Output) IsSetHead() bool { return item.Flag&(1<<0) != 0 }
+func (item *ListService5Output) IsSetHead() bool { return item.tl2mask0&1 != 0 }
 
+func (item *ListService5Output) GetTail() *ListService5Output {
+	return item.Tail
+}
 func (item *ListService5Output) SetTail(v ListService5Output) {
 	if item.Tail == nil {
 		var value ListService5Output
@@ -42,14 +52,16 @@ func (item *ListService5Output) SetTail(v ListService5Output) {
 	}
 	*item.Tail = v
 	item.Flag |= 1 << 0
+	item.tl2mask0 |= 2
 }
 func (item *ListService5Output) ClearTail() {
 	if item.Tail != nil {
 		item.Tail.Reset()
 	}
 	item.Flag &^= 1 << 0
+	item.tl2mask0 &^= 2
 }
-func (item *ListService5Output) IsSetTail() bool { return item.Flag&(1<<0) != 0 }
+func (item *ListService5Output) IsSetTail() bool { return item.tl2mask0&2 != 0 }
 
 func (item *ListService5Output) Reset() {
 	item.Flag = 0
@@ -57,6 +69,7 @@ func (item *ListService5Output) Reset() {
 	if item.Tail != nil {
 		item.Tail.Reset()
 	}
+	item.tl2mask0 = 0
 }
 
 func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
@@ -82,10 +95,12 @@ func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flag); err != nil {
 		return w, err
 	}
 	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = item.Head.ReadBoxed(w); err != nil {
 			return w, err
 		}
@@ -93,6 +108,7 @@ func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
 		item.Head.Reset()
 	}
 	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		if item.Tail == nil {
 			var value ListService5Output
 			item.Tail = &value
@@ -273,6 +289,7 @@ func (item *ListService5Output) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Flag
 	if item.Flag != 0 {
@@ -282,7 +299,7 @@ func (item *ListService5Output) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Head
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Head.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -312,6 +329,7 @@ func (item *ListService5Output) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -320,17 +338,17 @@ func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Flag
 	if item.Flag != 0 {
 		serializedSize += 4
@@ -339,6 +357,7 @@ func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 			w = basictl.NatWrite(w, item.Flag)
 		}
 	}
+
 	// write item.Head
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -348,6 +367,7 @@ func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte,
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.Tail
 	if item.Tail != nil {
 		serializedSize += sizes[0]
@@ -385,13 +405,13 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -403,13 +423,10 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("list", index)
 		}
 	}
-
-	// read item.Flag
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.Flag); err != nil {
 			return currentR, err
@@ -417,8 +434,9 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 	} else {
 		item.Flag = 0
 	}
-
-	// read item.Head
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = item.Head.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -426,8 +444,9 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 	} else {
 		item.Head.Reset()
 	}
-
-	// read item.Tail
+	if block&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if block&(1<<3) != 0 {
 		if item.Tail == nil {
 			var newValue ListService5Output
@@ -443,7 +462,7 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 		}
 		item.Tail.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

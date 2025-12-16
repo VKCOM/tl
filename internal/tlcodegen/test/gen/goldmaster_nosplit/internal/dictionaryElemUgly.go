@@ -160,42 +160,55 @@ func BuiltinVectorDictionaryElemUglyIntStringWriteJSONOpt(tctx *basictl.JSONWrit
 type DictionaryElemUglyIntString struct {
 	Key   int32  // Conditional: nat_f.0
 	Value string // Conditional: nat_f.1
+
+	tl2mask0 byte
 }
 
 func (DictionaryElemUglyIntString) TLName() string { return "dictionaryElemUgly" }
 func (DictionaryElemUglyIntString) TLTag() uint32  { return 0xe6790546 }
 
+func (item *DictionaryElemUglyIntString) GetKey() int32 {
+	return item.Key
+}
 func (item *DictionaryElemUglyIntString) SetKey(v int32, nat_f *uint32) {
 	item.Key = v
 	if nat_f != nil {
 		*nat_f |= 1 << 0
 	}
+	item.tl2mask0 |= 1
 }
 func (item *DictionaryElemUglyIntString) ClearKey(nat_f *uint32) {
 	item.Key = 0
 	if nat_f != nil {
 		*nat_f &^= 1 << 0
 	}
+	item.tl2mask0 &^= 1
 }
-func (item *DictionaryElemUglyIntString) IsSetKey(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
+func (item *DictionaryElemUglyIntString) IsSetKey() bool { return item.tl2mask0&1 != 0 }
 
+func (item *DictionaryElemUglyIntString) GetValue() string {
+	return item.Value
+}
 func (item *DictionaryElemUglyIntString) SetValue(v string, nat_f *uint32) {
 	item.Value = v
 	if nat_f != nil {
 		*nat_f |= 1 << 1
 	}
+	item.tl2mask0 |= 2
 }
 func (item *DictionaryElemUglyIntString) ClearValue(nat_f *uint32) {
 	item.Value = ""
 	if nat_f != nil {
 		*nat_f &^= 1 << 1
 	}
+	item.tl2mask0 &^= 2
 }
-func (item *DictionaryElemUglyIntString) IsSetValue(nat_f uint32) bool { return nat_f&(1<<1) != 0 }
+func (item *DictionaryElemUglyIntString) IsSetValue() bool { return item.tl2mask0&2 != 0 }
 
 func (item *DictionaryElemUglyIntString) Reset() {
 	item.Key = 0
 	item.Value = ""
+	item.tl2mask0 = 0
 }
 
 func (item *DictionaryElemUglyIntString) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {
@@ -212,7 +225,9 @@ func (item *DictionaryElemUglyIntString) FillRandom(rg *basictl.RandGenerator, n
 }
 
 func (item *DictionaryElemUglyIntString) Read(w []byte, nat_f uint32) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.IntRead(w, &item.Key); err != nil {
 			return w, err
 		}
@@ -220,6 +235,7 @@ func (item *DictionaryElemUglyIntString) Read(w []byte, nat_f uint32) (_ []byte,
 		item.Key = 0
 	}
 	if nat_f&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = basictl.StringRead(w, &item.Value); err != nil {
 			return w, err
 		}
@@ -343,6 +359,7 @@ func (item *DictionaryElemUglyIntString) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
 	if item.Key != 0 {
@@ -368,6 +385,7 @@ func (item *DictionaryElemUglyIntString) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -376,17 +394,17 @@ func (item *DictionaryElemUglyIntString) InternalWriteTL2(w []byte, sizes []int)
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	if item.Key != 0 {
 		serializedSize += 4
@@ -395,6 +413,7 @@ func (item *DictionaryElemUglyIntString) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.IntWrite(w, item.Key)
 		}
 	}
+
 	// write item.Value
 	if len(item.Value) != 0 {
 		serializedSize += len(item.Value)
@@ -430,13 +449,13 @@ func (item *DictionaryElemUglyIntString) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -448,13 +467,13 @@ func (item *DictionaryElemUglyIntString) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElemUgly", index)
 		}
 	}
-
-	// read item.Key
+	item.tl2mask0 = 0
+	if block&(1<<1) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Key); err != nil {
 			return currentR, err
@@ -462,8 +481,9 @@ func (item *DictionaryElemUglyIntString) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Key = 0
 	}
-
-	// read item.Value
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Value); err != nil {
 			return currentR, err
@@ -471,7 +491,7 @@ func (item *DictionaryElemUglyIntString) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Value = ""
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

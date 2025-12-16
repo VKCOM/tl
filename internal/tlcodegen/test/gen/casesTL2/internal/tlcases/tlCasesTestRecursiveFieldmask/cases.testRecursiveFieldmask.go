@@ -17,13 +17,13 @@ var _ = internal.ErrorInvalidEnumTag
 
 type CasesTestRecursiveFieldmask struct {
 	F0 uint32
-	f1 uint32 // Conditional: item.mask1.2
-	f2 uint32 // Conditional: item.mask1.3
+	f1 uint32
+	f2 uint32
 	T1 bool
 	T2 bool
 	T3 bool
 
-	mask1 byte // for fields #1 .. #7
+	tl2mask0 byte
 }
 
 func (CasesTestRecursiveFieldmask) TLName() string { return "cases.testRecursiveFieldmask" }
@@ -34,26 +34,26 @@ func (item *CasesTestRecursiveFieldmask) GetF1() uint32 {
 }
 func (item *CasesTestRecursiveFieldmask) SetF1(v uint32) {
 	item.f1 = v
-	item.mask1 |= 1 << 2
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestRecursiveFieldmask) ClearF1() {
 	item.f1 = 0
-	item.mask1 &^= 1 << 2
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.mask1&(1<<2) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) GetF2() uint32 {
 	return item.f2
 }
 func (item *CasesTestRecursiveFieldmask) SetF2(v uint32) {
 	item.f2 = v
-	item.mask1 |= 1 << 3
+	item.tl2mask0 |= 2
 }
 func (item *CasesTestRecursiveFieldmask) ClearF2() {
 	item.f2 = 0
-	item.mask1 &^= 1 << 3
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.mask1&(1<<3) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) Reset() {
 	item.F0 = 0
@@ -62,21 +62,13 @@ func (item *CasesTestRecursiveFieldmask) Reset() {
 	item.T1 = false
 	item.T2 = false
 	item.T3 = false
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {
-	item.mask1 = basictl.RandomByte(rg)
 	item.F0 = basictl.RandomUint(rg)
-	if item.mask1&(1<<2) != 0 {
-		item.f1 = basictl.RandomUint(rg)
-	} else {
-		item.f1 = 0
-	}
-	if item.mask1&(1<<3) != 0 {
-		item.f2 = basictl.RandomUint(rg)
-	} else {
-		item.f2 = 0
-	}
+	item.f1 = basictl.RandomUint(rg)
+	item.f2 = basictl.RandomUint(rg)
 	item.T1 = basictl.RandomUint(rg)&1 == 1
 	item.T2 = basictl.RandomUint(rg)&1 == 1
 	item.T3 = basictl.RandomUint(rg)&1 == 1
@@ -209,12 +201,6 @@ func (item *CasesTestRecursiveFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadC
 	if !propT3Presented {
 		item.T3 = false
 	}
-	if propf1Presented {
-		item.mask1 |= 1 << 2
-	}
-	if propf2Presented {
-		item.mask1 |= 1 << 3
-	}
 	return nil
 }
 
@@ -237,15 +223,19 @@ func (item *CasesTestRecursiveFieldmask) WriteJSONOpt(tctx *basictl.JSONWriteCon
 	if (item.F0 != 0) == false {
 		w = w[:backupIndexF0]
 	}
-	if item.mask1&(1<<2) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"f1":`...)
-		w = basictl.JSONWriteUint32(w, item.f1)
+	backupIndexf1 := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"f1":`...)
+	w = basictl.JSONWriteUint32(w, item.f1)
+	if (item.f1 != 0) == false {
+		w = w[:backupIndexf1]
 	}
-	if item.mask1&(1<<3) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"f2":`...)
-		w = basictl.JSONWriteUint32(w, item.f2)
+	backupIndexf2 := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"f2":`...)
+	w = basictl.JSONWriteUint32(w, item.f2)
+	if (item.f2 != 0) == false {
+		w = w[:backupIndexf2]
 	}
 	backupIndexT1 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -288,6 +278,7 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.F0
 	if item.F0 != 0 {
@@ -297,21 +288,17 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.f1
-	if item.mask1&(1<<2) != 0 {
-		if item.f1 != 0 {
+	if item.f1 != 0 {
 
-			lastUsedByte = 1
-			currentSize += 4
-		}
+		lastUsedByte = 1
+		currentSize += 4
 	}
 
 	// calculate layout for item.f2
-	if item.mask1&(1<<3) != 0 {
-		if item.f2 != 0 {
+	if item.f2 != 0 {
 
-			lastUsedByte = 1
-			currentSize += 4
-		}
+		lastUsedByte = 1
+		currentSize += 4
 	}
 
 	// calculate layout for item.T1
@@ -342,6 +329,7 @@ func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -350,17 +338,17 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.F0
 	if item.F0 != 0 {
 		serializedSize += 4
@@ -369,38 +357,39 @@ func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.F0)
 		}
 	}
+
 	// write item.f1
-	if item.mask1&(1<<2) != 0 {
-		if item.f1 != 0 {
-			serializedSize += 4
-			if 4 != 0 {
-				currentBlock |= (1 << 2)
-				w = basictl.NatWrite(w, item.f1)
-			}
+	if item.f1 != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 2)
+			w = basictl.NatWrite(w, item.f1)
 		}
 	}
+
 	// write item.f2
-	if item.mask1&(1<<3) != 0 {
-		if item.f2 != 0 {
-			serializedSize += 4
-			if 4 != 0 {
-				currentBlock |= (1 << 3)
-				w = basictl.NatWrite(w, item.f2)
-			}
+	if item.f2 != 0 {
+		serializedSize += 4
+		if 4 != 0 {
+			currentBlock |= (1 << 3)
+			w = basictl.NatWrite(w, item.f2)
 		}
 	}
+
 	// write item.T1
 	if item.T1 {
 		serializedSize += 0
 		currentBlock |= (1 << 4)
 
 	}
+
 	// write item.T2
 	if item.T2 {
 		serializedSize += 0
 		currentBlock |= (1 << 5)
 
 	}
+
 	// write item.T3
 	if item.T3 {
 		serializedSize += 0
@@ -433,13 +422,13 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -451,14 +440,10 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testRecursiveFieldmask", index)
 		}
 	}
-	item.mask1 = block
-
-	// read item.F0
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F0); err != nil {
 			return currentR, err
@@ -466,54 +451,27 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.F0 = 0
 	}
-
-	// read item.f1
 	if block&(1<<2) != 0 {
-		if item.mask1&(1<<2) != 0 {
-			if currentR, err = basictl.NatRead(currentR, &item.f1); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "f1" + "is presented but depending bit is absent")
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<2) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.f1); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.f1 = 0
 	}
-
-	// read item.f2
 	if block&(1<<3) != 0 {
-		if item.mask1&(1<<3) != 0 {
-			if currentR, err = basictl.NatRead(currentR, &item.f2); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "f2" + "is presented but depending bit is absent")
+		item.tl2mask0 |= 2
+	}
+	if block&(1<<3) != 0 {
+		if currentR, err = basictl.NatRead(currentR, &item.f2); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.f2 = 0
 	}
-
-	// read item.T1
-	if block&(1<<4) != 0 {
-		item.T1 = true
-	} else {
-		item.T1 = false
-	}
-
-	// read item.T2
-	if block&(1<<5) != 0 {
-		item.T2 = true
-	} else {
-		item.T2 = false
-	}
-
-	// read item.T3
-	if block&(1<<6) != 0 {
-		item.T3 = true
-	} else {
-		item.T3 = false
-	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

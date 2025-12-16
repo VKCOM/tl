@@ -17,20 +17,36 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesTL2TestObjectWithParam4 struct {
-	X int32
+	x int32
 	Y [4]int32
+
+	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithParam4) TLName() string { return "casesTL2.testObjectWithParam_N" }
 func (CasesTL2TestObjectWithParam4) TLTag() uint32  { return 0x00000000 }
 
+func (item *CasesTL2TestObjectWithParam4) GetX() int32 {
+	return item.x
+}
+func (item *CasesTL2TestObjectWithParam4) SetX(v int32) {
+	item.x = v
+	item.tl2mask0 |= 1
+}
+func (item *CasesTL2TestObjectWithParam4) ClearX() {
+	item.x = 0
+	item.tl2mask0 &^= 1
+}
+func (item *CasesTL2TestObjectWithParam4) IsSetX() bool { return item.tl2mask0&1 != 0 }
+
 func (item *CasesTL2TestObjectWithParam4) Reset() {
-	item.X = 0
+	item.x = 0
 	tlBuiltinTuple4Int32.BuiltinTuple4Int32Reset(&item.Y)
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTL2TestObjectWithParam4) FillRandom(rg *basictl.RandGenerator) {
-	item.X = basictl.RandomInt(rg)
+	item.x = basictl.RandomInt(rg)
 	tlBuiltinTuple4Int32.BuiltinTuple4Int32FillRandom(rg, &item.Y)
 }
 
@@ -69,7 +85,7 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSON(legacyTypeNames bool, in *bas
 }
 
 func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propXPresented bool
+	var propxPresented bool
 	var propYPresented bool
 
 	if in != nil {
@@ -82,13 +98,13 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 			in.WantColon()
 			switch key {
 			case "x":
-				if propXPresented {
+				if propxPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam_N", "x")
 				}
-				if err := internal.Json2ReadInt32(in, &item.X); err != nil {
+				if err := internal.Json2ReadInt32(in, &item.x); err != nil {
 					return err
 				}
-				propXPresented = true
+				propxPresented = true
 			case "y":
 				if propYPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithParam_N", "y")
@@ -107,8 +123,8 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 			return in.Error()
 		}
 	}
-	if !propXPresented {
-		item.X = 0
+	if !propxPresented {
+		item.x = 0
 	}
 	if !propYPresented {
 		tlBuiltinTuple4Int32.BuiltinTuple4Int32Reset(&item.Y)
@@ -128,12 +144,12 @@ func (item *CasesTL2TestObjectWithParam4) WriteJSON(w []byte) []byte {
 }
 func (item *CasesTL2TestObjectWithParam4) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte) []byte {
 	w = append(w, '{')
-	backupIndexX := len(w)
+	backupIndexx := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"x":`...)
-	w = basictl.JSONWriteInt32(w, item.X)
-	if (item.X != 0) == false {
-		w = w[:backupIndexX]
+	w = basictl.JSONWriteInt32(w, item.x)
+	if (item.x != 0) == false {
+		w = w[:backupIndexx]
 	}
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"y":`...)
@@ -158,16 +174,17 @@ func (item *CasesTL2TestObjectWithParam4) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
-	// calculate layout for item.X
-	if item.X != 0 {
+	// calculate layout for item.x
+	if item.x != 0 {
 
 		lastUsedByte = 1
 		currentSize += 4
 	}
 
 	// calculate layout for item.Y
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = tlBuiltinTuple4Int32.BuiltinTuple4Int32CalculateLayout(sizes, &item.Y)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -184,6 +201,7 @@ func (item *CasesTL2TestObjectWithParam4) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -192,25 +210,26 @@ func (item *CasesTL2TestObjectWithParam4) InternalWriteTL2(w []byte, sizes []int
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-	// write item.X
-	if item.X != 0 {
+
+	// write item.x
+	if item.x != 0 {
 		serializedSize += 4
 		if 4 != 0 {
 			currentBlock |= (1 << 1)
-			w = basictl.IntWrite(w, item.X)
+			w = basictl.IntWrite(w, item.x)
 		}
 	}
+
 	// write item.Y
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -246,13 +265,13 @@ func (item *CasesTL2TestObjectWithParam4) InternalReadTL2(r []byte) (_ []byte, e
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -264,22 +283,20 @@ func (item *CasesTL2TestObjectWithParam4) InternalReadTL2(r []byte) (_ []byte, e
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesTL2.testObjectWithParam_N", index)
 		}
 	}
-
-	// read item.X
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
-		if currentR, err = basictl.IntRead(currentR, &item.X); err != nil {
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<1) != 0 {
+		if currentR, err = basictl.IntRead(currentR, &item.x); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.X = 0
+		item.x = 0
 	}
-
-	// read item.Y
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinTuple4Int32.BuiltinTuple4Int32InternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
@@ -287,7 +304,7 @@ func (item *CasesTL2TestObjectWithParam4) InternalReadTL2(r []byte) (_ []byte, e
 	} else {
 		tlBuiltinTuple4Int32.BuiltinTuple4Int32Reset(&item.Y)
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

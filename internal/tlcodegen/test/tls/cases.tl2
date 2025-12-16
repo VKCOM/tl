@@ -53,12 +53,7 @@ cases.testEnumContainer = value:cases.testEnum;
 // BLOCK: TEST FIELD MASKS
 cases.testRecursiveFieldmask = f0:uint32 f1?:uint32 f2?:uint32 t1:bool t2:bool t3:bool;
 cases.testLocalFieldmask = f1:uint32 f2?:uint32 f3:bool f4:bool;
-cases.testOutFieldMask = 
-	// tlgen:addLegacySetters:name:"f"
-	// tlgen:addLegacySetters:bit:"0"
-	f1:uint32
-	f2:bool
-	f3:[]int;
+cases.testOutFieldMask = f1?:uint32 f2:bool f3:[]int;
 cases.testOutFieldMaskContainer = f:uint32 inner:cases.testOutFieldMask;
 cases.testBeforeReadBitValidation = n:uint32 a?:[]int b?:[]int;
 cases.testAllPossibleFieldConfigs = 
@@ -79,18 +74,12 @@ cases.testAllPossibleFieldConfigs =
 	// local fieldmask, have only external nat dependencies in type
 	f13?:[]int
 	// outer fieldmask, no nat dependencies in type
-	// tlgen:addLegacySetters:name:"outer"
-	// tlgen:addLegacySetters:bit:"0"
-	f20:int
+	f20?:int
 	f21:bool
 	// outer fieldmask, have some local nat dependencies in type
-	// tlgen:addLegacySetters:name:"outer"
-	// tlgen:addLegacySetters:bit:"2"
-	f22:[]int
+	f22?:[]int
 	// outer fieldmask, have only external nat dependencies in type
-	// tlgen:addLegacySetters:name:"outer"
-	// tlgen:addLegacySetters:bit:"3"
-	f23:[]int;
+	f23?:[]int;
 cases.testAllPossibleFieldConfigsContainer = outer:uint32 value:cases.testAllPossibleFieldConfigs;
 // BLOCK: TEST INPLACING ARGUMENTS
 cases.testInplaceStructArgs = a1:uint32 a2:uint32 a3:uint32 arg:cases.inplace1<int>;
@@ -123,16 +112,11 @@ cases_bytes.testEnumContainer = value:cases.testEnum;
 benchmarks.vruHash = low:long high:long;
 benchmarks.vruPosition = 
 	fields_mask:uint32
-	// we set this bit only if block with this bit set is committed, so we have no more than 1 such uncommitted block.
-	commit_bit?:true
-	// this block contains meta data of VR protocol
-	meta_block?:true
-	// this position splits payload. If this set, meta_block and commit_bit are both not set
-	split_payload?:true
-	// If set, binlog should rotate and this block should be in new file
-	rotation_block?:true
-	// If set, hash is stored in canonical byte order.
-	canonical_hash?:true
+	commit_bit:bool
+	meta_block:bool
+	split_payload:bool
+	rotation_block:bool
+	canonical_hash:bool
 	// Motivation for storing it in each block - when random seeking into the middle of file, we must be sure without scanning from beginning
 	payload_offset:long
 	// Only for debug, not used in any logic
@@ -152,7 +136,7 @@ benchmarks.vrutoyPositions = next_positions:[]benchmarks.vruPosition;
 benchmarks.vrutoyTopLevelContainerWithDependency = n:uint32 value:benchmarks.vrutoyPositions;
 casesTL2.testObject = 
 	n:uint32
-	f1?:true
+	f1:bool
 	f2:bool
 	f3:vector<bool>
 	f4:benchmarks.vrutoyPositions
@@ -163,7 +147,7 @@ casesTL2.testVectorBool = x:vector<bool>;
 casesTL2.testArrayFixedBool = a1:[1]bool a2:[0]bool a3:[7]bool a4:[8]bool a5:[11]bool a6:[16]bool;
 casesTL2.testArrayFlexibleBool = n:uint32 arr:[]bool;
 casesTL2.testFixedParam = x:casesTL2.testObjectWithParam_N<4>;
-@tl2ext casesTL2.testObjectWithParam_N<n:uint32> = x:int y:[n]int;
+@tl2ext casesTL2.testObjectWithParam_N<n:uint32> = x?:int y:[n]int;
 casesTL2.testParamsGeneration = 
 	n1:uint32
 	n2:uint32
@@ -171,24 +155,10 @@ casesTL2.testParamsGeneration =
 	x2:casesTL2.testObjectWithMuiltiParams_M<2>
 	x3:casesTL2.testObjectWithMuiltiParams_N<3>
 	x4:casesTL2.testObjectWithMuiltiParams;
-casesTL2.testObjectWithMuiltiParams = 
-	// tlgen:addLegacySetters:name:"n"
-	// tlgen:addLegacySetters:bit:"0"
-	f1:[]int
-	// tlgen:addLegacySetters:name:"m"
-	// tlgen:addLegacySetters:bit:"0"
-	f2:[]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = 
-	f1:[n]int
-	// tlgen:addLegacySetters:name:"m"
-	// tlgen:addLegacySetters:bit:"0"
-	f2:[]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = 
-	// tlgen:addLegacySetters:name:"n"
-	// tlgen:addLegacySetters:bit:"0"
-	f1:[]int
-	f2:[m]int;
-@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1:[n]int f2:[m]int;
+casesTL2.testObjectWithMuiltiParams = f1?:[]int f2?:[]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N<n:uint32> = f1?:[n]int f2?:[]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_M<m:uint32> = f1?:[]int f2?:[m]int;
+@tl2ext casesTL2.testObjectWithMuiltiParams_N_M<n:uint32,m:uint32> = f1?:[n]int f2?:[m]int;
 casesGo.testNames = write:int read:int;
 @read casesTL2.testFunctionNoDep1#1b8b9feb x:int => int;
 @read casesTL2.testFunctionNoDep2#0a2c0bf9 x:int => true;

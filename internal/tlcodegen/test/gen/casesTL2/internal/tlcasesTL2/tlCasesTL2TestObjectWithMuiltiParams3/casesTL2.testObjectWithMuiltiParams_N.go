@@ -18,8 +18,10 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesTL2TestObjectWithMuiltiParams3 struct {
-	F1 [3]int32
-	F2 []int32
+	f1 [3]int32
+	f2 []int32
+
+	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams3) TLName() string {
@@ -27,28 +29,41 @@ func (CasesTL2TestObjectWithMuiltiParams3) TLName() string {
 }
 func (CasesTL2TestObjectWithMuiltiParams3) TLTag() uint32 { return 0x00000000 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) SetF2(v []int32, nat_m *uint32) {
-	item.F2 = v
-	if nat_m != nil {
-		*nat_m |= 1 << 0
-	}
+func (item *CasesTL2TestObjectWithMuiltiParams3) GetF1() [3]int32 {
+	return item.f1
 }
-func (item *CasesTL2TestObjectWithMuiltiParams3) ClearF2(nat_m *uint32) {
-	item.F2 = item.F2[:0]
-	if nat_m != nil {
-		*nat_m &^= 1 << 0
-	}
+func (item *CasesTL2TestObjectWithMuiltiParams3) SetF1(v [3]int32) {
+	item.f1 = v
+	item.tl2mask0 |= 1
 }
-func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF2(nat_m uint32) bool { return nat_m&(1<<0) != 0 }
+func (item *CasesTL2TestObjectWithMuiltiParams3) ClearF1() {
+	tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.f1)
+	item.tl2mask0 &^= 1
+}
+func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF1() bool { return item.tl2mask0&1 != 0 }
+
+func (item *CasesTL2TestObjectWithMuiltiParams3) GetF2() []int32 {
+	return item.f2
+}
+func (item *CasesTL2TestObjectWithMuiltiParams3) SetF2(v []int32) {
+	item.f2 = v
+	item.tl2mask0 |= 2
+}
+func (item *CasesTL2TestObjectWithMuiltiParams3) ClearF2() {
+	item.f2 = item.f2[:0]
+	item.tl2mask0 &^= 2
+}
+func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) Reset() {
-	tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.F1)
-	item.F2 = item.F2[:0]
+	tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.f1)
+	item.f2 = item.f2[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) FillRandom(rg *basictl.RandGenerator) {
-	tlBuiltinTuple3Int32.BuiltinTuple3Int32FillRandom(rg, &item.F1)
-	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.F2)
+	tlBuiltinTuple3Int32.BuiltinTuple3Int32FillRandom(rg, &item.f1)
+	tlBuiltinVectorInt32.BuiltinVectorInt32FillRandom(rg, &item.f2)
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) Read(w []byte) (_ []byte, err error) {
@@ -86,8 +101,8 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSON(legacyTypeNames bool, 
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
-	var propF1Presented bool
-	var propF2Presented bool
+	var propf1Presented bool
+	var propf2Presented bool
 
 	if in != nil {
 		in.Delim('{')
@@ -99,21 +114,21 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 			in.WantColon()
 			switch key {
 			case "f1":
-				if propF1Presented {
+				if propf1Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams_N", "f1")
 				}
-				if err := tlBuiltinTuple3Int32.BuiltinTuple3Int32ReadJSONGeneral(tctx, in, &item.F1); err != nil {
+				if err := tlBuiltinTuple3Int32.BuiltinTuple3Int32ReadJSONGeneral(tctx, in, &item.f1); err != nil {
 					return err
 				}
-				propF1Presented = true
+				propf1Presented = true
 			case "f2":
-				if propF2Presented {
+				if propf2Presented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("casesTL2.testObjectWithMuiltiParams_N", "f2")
 				}
-				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.F2); err != nil {
+				if err := tlBuiltinVectorInt32.BuiltinVectorInt32ReadJSONGeneral(tctx, in, &item.f2); err != nil {
 					return err
 				}
-				propF2Presented = true
+				propf2Presented = true
 			default:
 				return internal.ErrorInvalidJSONExcessElement("casesTL2.testObjectWithMuiltiParams_N", key)
 			}
@@ -124,11 +139,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) ReadJSONGeneral(tctx *basictl.J
 			return in.Error()
 		}
 	}
-	if !propF1Presented {
-		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.F1)
+	if !propf1Presented {
+		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.f1)
 	}
-	if !propF2Presented {
-		item.F2 = item.F2[:0]
+	if !propf2Presented {
+		item.f2 = item.f2[:0]
 	}
 	return nil
 }
@@ -147,13 +162,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) WriteJSONOpt(tctx *basictl.JSON
 	w = append(w, '{')
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f1":`...)
-	w = tlBuiltinTuple3Int32.BuiltinTuple3Int32WriteJSONOpt(tctx, w, &item.F1)
-	backupIndexF2 := len(w)
+	w = tlBuiltinTuple3Int32.BuiltinTuple3Int32WriteJSONOpt(tctx, w, &item.f1)
+	backupIndexf2 := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
 	w = append(w, `"f2":`...)
-	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.F2)
-	if (len(item.F2) != 0) == false {
-		w = w[:backupIndexF2]
+	w = tlBuiltinVectorInt32.BuiltinVectorInt32WriteJSONOpt(tctx, w, item.f2)
+	if (len(item.f2) != 0) == false {
+		w = w[:backupIndexf2]
 	}
 	return append(w, '}')
 }
@@ -175,10 +190,11 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) CalculateLayout(sizes []int) []
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
-	// calculate layout for item.F1
-	currentPosition := len(sizes)
-	sizes = tlBuiltinTuple3Int32.BuiltinTuple3Int32CalculateLayout(sizes, &item.F1)
+	// calculate layout for item.f1
+	currentPosition = len(sizes)
+	sizes = tlBuiltinTuple3Int32.BuiltinTuple3Int32CalculateLayout(sizes, &item.f1)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
 		currentSize += sizes[currentPosition]
@@ -187,10 +203,10 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) CalculateLayout(sizes []int) []
 		sizes = sizes[:currentPosition+1]
 	}
 
-	// calculate layout for item.F2
+	// calculate layout for item.f2
 	currentPosition = len(sizes)
-	if len(item.F2) != 0 {
-		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.F2)
+	if len(item.f2) != 0 {
+		sizes = tlBuiltinVectorInt32.BuiltinVectorInt32CalculateLayout(sizes, &item.f2)
 		if sizes[currentPosition] != 0 {
 			lastUsedByte = 1
 			currentSize += sizes[currentPosition]
@@ -207,6 +223,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) CalculateLayout(sizes []int) []
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -215,33 +232,34 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) InternalWriteTL2(w []byte, size
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-	// write item.F1
+
+	// write item.f1
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
 		serializedSize += basictl.TL2CalculateSize(sizes[0])
 		currentBlock |= (1 << 1)
-		w, sizes = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalWriteTL2(w, sizes, &item.F1)
+		w, sizes = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalWriteTL2(w, sizes, &item.f1)
 	} else {
 		sizes = sizes[1:]
 	}
-	// write item.F2
-	if len(item.F2) != 0 {
+
+	// write item.f2
+	if len(item.f2) != 0 {
 		serializedSize += sizes[0]
 		if sizes[0] != 0 {
 			serializedSize += basictl.TL2CalculateSize(sizes[0])
 			currentBlock |= (1 << 2)
-			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.F2)
+			w, sizes = tlBuiltinVectorInt32.BuiltinVectorInt32InternalWriteTL2(w, sizes, &item.f2)
 		} else {
 			sizes = sizes[1:]
 		}
@@ -272,13 +290,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) InternalReadTL2(r []byte) (_ []
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -290,30 +308,31 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) InternalReadTL2(r []byte) (_ []
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesTL2.testObjectWithMuiltiParams_N", index)
 		}
 	}
-
-	// read item.F1
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
-		if currentR, err = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalReadTL2(currentR, &item.F1); err != nil {
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<1) != 0 {
+		if currentR, err = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalReadTL2(currentR, &item.f1); err != nil {
 			return currentR, err
 		}
 	} else {
-		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.F1)
+		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.f1)
 	}
-
-	// read item.F2
 	if block&(1<<2) != 0 {
-		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.F2); err != nil {
+		item.tl2mask0 |= 2
+	}
+	if block&(1<<2) != 0 {
+		if currentR, err = tlBuiltinVectorInt32.BuiltinVectorInt32InternalReadTL2(currentR, &item.f2); err != nil {
 			return currentR, err
 		}
 	} else {
-		item.F2 = item.F2[:0]
+		item.f2 = item.f2[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

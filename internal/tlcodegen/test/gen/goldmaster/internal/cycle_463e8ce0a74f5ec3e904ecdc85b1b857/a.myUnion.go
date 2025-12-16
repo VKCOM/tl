@@ -137,23 +137,26 @@ func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 2 {
+		return r, internal.ErrorInvalidUnionIndex("a.MyUnion", item.index)
 	}
 	switch item.index {
 	case 0:
@@ -165,6 +168,7 @@ func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	internal.Unused(currentR)
 	return r, nil
 }
 func (item *AMyUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -423,6 +427,7 @@ func (item *AUNionA) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.A
 	if item.A != 0 {
@@ -438,6 +443,7 @@ func (item *AUNionA) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -446,17 +452,17 @@ func (item *AUNionA) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.A
 	if item.A != 0 {
 		serializedSize += 4
@@ -484,8 +490,6 @@ func (item *AUNionA) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 func (item *AUNionA) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.A
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.A); err != nil {
 			return currentR, err
@@ -493,7 +497,7 @@ func (item *AUNionA) InternalReadTL2(r []byte, block byte) (_ []byte, err error)
 	} else {
 		item.A = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -508,9 +512,7 @@ func (item *AUNionA) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -518,8 +520,6 @@ func (item *AUNionA) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {
@@ -662,10 +662,10 @@ func (item *AuNionA) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
+	currentPosition := 0
 
 	// calculate layout for item.B
 	if item.B != 0 {
@@ -681,6 +681,7 @@ func (item *AuNionA) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -689,23 +690,21 @@ func (item *AuNionA) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
+
 	// write item.B
 	if item.B != 0 {
 		serializedSize += 4
@@ -733,8 +732,6 @@ func (item *AuNionA) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 
 func (item *AuNionA) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.B
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.B); err != nil {
 			return currentR, err
@@ -742,7 +739,7 @@ func (item *AuNionA) InternalReadTL2(r []byte, block byte) (_ []byte, err error)
 	} else {
 		item.B = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -757,9 +754,7 @@ func (item *AuNionA) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -767,8 +762,6 @@ func (item *AuNionA) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {

@@ -20,35 +20,48 @@ type CasesTestBeforeReadBitValidation struct {
 	N uint32
 	A []int32 // Conditional: item.N.0
 	B []int32 // Conditional: item.N.1
+
+	tl2mask0 byte
 }
 
 func (CasesTestBeforeReadBitValidation) TLName() string { return "cases.testBeforeReadBitValidation" }
 func (CasesTestBeforeReadBitValidation) TLTag() uint32  { return 0x9b2396db }
 
+func (item *CasesTestBeforeReadBitValidation) GetA() []int32 {
+	return item.A
+}
 func (item *CasesTestBeforeReadBitValidation) SetA(v []int32) {
 	item.A = v
 	item.N |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestBeforeReadBitValidation) ClearA() {
 	item.A = item.A[:0]
 	item.N &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestBeforeReadBitValidation) IsSetA() bool { return item.N&(1<<0) != 0 }
+func (item *CasesTestBeforeReadBitValidation) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
+func (item *CasesTestBeforeReadBitValidation) GetB() []int32 {
+	return item.B
+}
 func (item *CasesTestBeforeReadBitValidation) SetB(v []int32) {
 	item.B = v
 	item.N |= 1 << 1
+	item.tl2mask0 |= 2
 }
 func (item *CasesTestBeforeReadBitValidation) ClearB() {
 	item.B = item.B[:0]
 	item.N &^= 1 << 1
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTestBeforeReadBitValidation) IsSetB() bool { return item.N&(1<<1) != 0 }
+func (item *CasesTestBeforeReadBitValidation) IsSetB() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestBeforeReadBitValidation) Reset() {
 	item.N = 0
 	item.A = item.A[:0]
 	item.B = item.B[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerator) {
@@ -67,10 +80,12 @@ func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerat
 }
 
 func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
 	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.A, item.N); err != nil {
 			return w, err
 		}
@@ -78,6 +93,7 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 		item.A = item.A[:0]
 	}
 	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.B, item.N); err != nil {
 			return w, err
 		}
@@ -273,6 +289,7 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -282,7 +299,7 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int) []int
 	}
 
 	// calculate layout for item.A
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.A) != 0 {
 		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.A)
 		if sizes[currentPosition] != 0 {
@@ -314,6 +331,7 @@ func (item *CasesTestBeforeReadBitValidation) CalculateLayout(sizes []int) []int
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -322,17 +340,17 @@ func (item *CasesTestBeforeReadBitValidation) InternalWriteTL2(w []byte, sizes [
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.N
 	if item.N != 0 {
 		serializedSize += 4
@@ -341,6 +359,7 @@ func (item *CasesTestBeforeReadBitValidation) InternalWriteTL2(w []byte, sizes [
 			w = basictl.NatWrite(w, item.N)
 		}
 	}
+
 	// write item.A
 	if len(item.A) != 0 {
 		serializedSize += sizes[0]
@@ -352,6 +371,7 @@ func (item *CasesTestBeforeReadBitValidation) InternalWriteTL2(w []byte, sizes [
 			sizes = sizes[1:]
 		}
 	}
+
 	// write item.B
 	if len(item.B) != 0 {
 		serializedSize += sizes[0]
@@ -389,13 +409,13 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -407,13 +427,10 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testBeforeReadBitValidation", index)
 		}
 	}
-
-	// read item.N
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
@@ -421,8 +438,9 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.N = 0
 	}
-
-	// read item.A
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
@@ -430,8 +448,9 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.A = item.A[:0]
 	}
-
-	// read item.B
+	if block&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if block&(1<<3) != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.B); err != nil {
 			return currentR, err
@@ -439,7 +458,7 @@ func (item *CasesTestBeforeReadBitValidation) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.B = item.B[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

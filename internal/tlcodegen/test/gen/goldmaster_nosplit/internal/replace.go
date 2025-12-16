@@ -348,6 +348,7 @@ func (item *Replace) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -357,7 +358,7 @@ func (item *Replace) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.A
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.A.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -451,6 +452,7 @@ func (item *Replace) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -459,17 +461,17 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.N
 	if item.N != 0 {
 		serializedSize += 4
@@ -478,6 +480,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 			w = basictl.NatWrite(w, item.N)
 		}
 	}
+
 	// write item.A
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -487,6 +490,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.A1
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -496,6 +500,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.B
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -505,6 +510,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.C
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -514,6 +520,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.D
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -523,6 +530,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.D1
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -532,7 +540,6 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
-
 	// add byte for fields with index 8..15
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
@@ -543,6 +550,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		return w, sizes
 	}
+
 	// write item.E
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -552,6 +560,7 @@ func (item *Replace) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.G
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -587,13 +596,13 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -605,13 +614,9 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("replace", index)
 		}
 	}
-
-	// read item.N
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
@@ -619,8 +624,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.N = 0
 	}
-
-	// read item.A
 	if block&(1<<2) != 0 {
 		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -628,8 +631,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.A.Reset()
 	}
-
-	// read item.A1
 	if block&(1<<3) != 0 {
 		if currentR, err = item.A1.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -637,8 +638,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.A1.Reset()
 	}
-
-	// read item.B
 	if block&(1<<4) != 0 {
 		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -646,8 +645,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.B.Reset()
 	}
-
-	// read item.C
 	if block&(1<<5) != 0 {
 		if currentR, err = item.C.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -655,8 +652,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.C.Reset()
 	}
-
-	// read item.D
 	if block&(1<<6) != 0 {
 		if currentR, err = item.D.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -664,8 +659,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.D.Reset()
 	}
-
-	// read item.D1
 	if block&(1<<7) != 0 {
 		if currentR, err = item.D1.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -682,8 +675,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		block = 0
 	}
-
-	// read item.E
 	if block&(1<<0) != 0 {
 		if currentR, err = item.E.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -691,8 +682,6 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.E.Reset()
 	}
-
-	// read item.G
 	if block&(1<<1) != 0 {
 		if currentR, err = item.G.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -700,7 +689,7 @@ func (item *Replace) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.G.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

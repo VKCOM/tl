@@ -231,9 +231,10 @@ func (item *CasesTL2TestArrayFixedBool) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.A1
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = tlBuiltinTuple1Bool.BuiltinTuple1BoolCalculateLayout(sizes, &item.A1)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -305,6 +306,7 @@ func (item *CasesTL2TestArrayFixedBool) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -313,17 +315,17 @@ func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) 
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.A1
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -333,6 +335,7 @@ func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.A2
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -342,6 +345,7 @@ func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.A3
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -351,6 +355,7 @@ func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.A4
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -360,6 +365,7 @@ func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.A5
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -369,6 +375,7 @@ func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.A6
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -404,13 +411,13 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -422,13 +429,9 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesTL2.testArrayFixedBool", index)
 		}
 	}
-
-	// read item.A1
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinTuple1Bool.BuiltinTuple1BoolInternalReadTL2(currentR, &item.A1); err != nil {
 			return currentR, err
@@ -436,8 +439,6 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 	} else {
 		tlBuiltinTuple1Bool.BuiltinTuple1BoolReset(&item.A1)
 	}
-
-	// read item.A2
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinTuple0Bool.BuiltinTuple0BoolInternalReadTL2(currentR, &item.A2); err != nil {
 			return currentR, err
@@ -445,8 +446,6 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 	} else {
 		tlBuiltinTuple0Bool.BuiltinTuple0BoolReset(&item.A2)
 	}
-
-	// read item.A3
 	if block&(1<<3) != 0 {
 		if currentR, err = tlBuiltinTuple7Bool.BuiltinTuple7BoolInternalReadTL2(currentR, &item.A3); err != nil {
 			return currentR, err
@@ -454,8 +453,6 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 	} else {
 		tlBuiltinTuple7Bool.BuiltinTuple7BoolReset(&item.A3)
 	}
-
-	// read item.A4
 	if block&(1<<4) != 0 {
 		if currentR, err = tlBuiltinTuple8Bool.BuiltinTuple8BoolInternalReadTL2(currentR, &item.A4); err != nil {
 			return currentR, err
@@ -463,8 +460,6 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 	} else {
 		tlBuiltinTuple8Bool.BuiltinTuple8BoolReset(&item.A4)
 	}
-
-	// read item.A5
 	if block&(1<<5) != 0 {
 		if currentR, err = tlBuiltinTuple11Bool.BuiltinTuple11BoolInternalReadTL2(currentR, &item.A5); err != nil {
 			return currentR, err
@@ -472,8 +467,6 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 	} else {
 		tlBuiltinTuple11Bool.BuiltinTuple11BoolReset(&item.A5)
 	}
-
-	// read item.A6
 	if block&(1<<6) != 0 {
 		if currentR, err = tlBuiltinTuple16Bool.BuiltinTuple16BoolInternalReadTL2(currentR, &item.A6); err != nil {
 			return currentR, err
@@ -481,7 +474,7 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 	} else {
 		tlBuiltinTuple16Bool.BuiltinTuple16BoolReset(&item.A6)
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

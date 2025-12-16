@@ -107,6 +107,21 @@ goldmaster_nocompile: build
 		--canonicalFormPath=./$(TLS_PATH)/goldmaster_canonical.tl \
 		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
 
+.PHONY: goldmaster_migrate
+goldmaster_migrate: build
+	@./target/bin/tlgen --language=go -v \
+		--tl2-generate=true \
+		--copyrightPath=./COPYRIGHT \
+		--outdir=./$(GEN_PATH)/goldmaster_nosplit \
+		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/goldmaster_nosplit/tl \
+		--basicPkgPath=$(BASIC_TL_PATH) \
+		--generateByteVersions=$(TL_BYTE_VERSIONS) \
+		--generateRandomCode \
+		--generateLegacyJsonRead=false \
+		--tl2-generate \
+		--tl2-migration-file=./$(TLS_PATH)/goldmaster.tl2 \
+		./$(TLS_PATH)/goldmaster.tl ./$(TLS_PATH)/goldmaster2.tl ./$(TLS_PATH)/goldmaster3.tl
+
 .PHONY: migrate_to_tl2
 migrate_to_tl2: build
 	@./target/bin/tlgen -v \

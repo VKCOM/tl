@@ -163,9 +163,10 @@ func (item *Hren) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Next
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if item.Next != nil && item.Next.Ok {
 		sizes = (*item.Next).CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
@@ -184,6 +185,7 @@ func (item *Hren) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -192,17 +194,17 @@ func (item *Hren) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Next
 	if item.Next != nil && item.Next.Ok {
 		serializedSize += sizes[0]
@@ -240,13 +242,13 @@ func (item *Hren) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -258,13 +260,9 @@ func (item *Hren) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("hren", index)
 		}
 	}
-
-	// read item.Next
 	if block&(1<<1) != 0 {
 		if item.Next == nil {
 			var newValue HrenMaybe
@@ -280,7 +278,7 @@ func (item *Hren) InternalReadTL2(r []byte) (_ []byte, err error) {
 		}
 		item.Next.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

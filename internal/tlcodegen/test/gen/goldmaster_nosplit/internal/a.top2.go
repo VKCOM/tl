@@ -202,6 +202,7 @@ func (item *ATop2) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -218,7 +219,7 @@ func (item *ATop2) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.C
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.C.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -235,6 +236,7 @@ func (item *ATop2) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -243,17 +245,17 @@ func (item *ATop2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.N
 	if item.N != 0 {
 		serializedSize += 4
@@ -262,6 +264,7 @@ func (item *ATop2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 			w = basictl.NatWrite(w, item.N)
 		}
 	}
+
 	// write item.M
 	if item.M != 0 {
 		serializedSize += 4
@@ -270,6 +273,7 @@ func (item *ATop2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
 			w = basictl.NatWrite(w, item.M)
 		}
 	}
+
 	// write item.C
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -305,13 +309,13 @@ func (item *ATop2) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -323,13 +327,9 @@ func (item *ATop2) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("a.top2", index)
 		}
 	}
-
-	// read item.N
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
@@ -337,8 +337,6 @@ func (item *ATop2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.N = 0
 	}
-
-	// read item.M
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.M); err != nil {
 			return currentR, err
@@ -346,8 +344,6 @@ func (item *ATop2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.M = 0
 	}
-
-	// read item.C
 	if block&(1<<3) != 0 {
 		if currentR, err = item.C.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -355,7 +351,7 @@ func (item *ATop2) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.C.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

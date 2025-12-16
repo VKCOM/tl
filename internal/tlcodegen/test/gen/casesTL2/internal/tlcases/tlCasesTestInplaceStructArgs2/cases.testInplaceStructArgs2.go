@@ -202,6 +202,7 @@ func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.A1
 	if item.A1 != 0 {
@@ -225,7 +226,7 @@ func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Arg
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Arg.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -242,6 +243,7 @@ func (item *CasesTestInplaceStructArgs2) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -250,17 +252,17 @@ func (item *CasesTestInplaceStructArgs2) InternalWriteTL2(w []byte, sizes []int)
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.A1
 	if item.A1 != 0 {
 		serializedSize += 4
@@ -269,6 +271,7 @@ func (item *CasesTestInplaceStructArgs2) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.A1)
 		}
 	}
+
 	// write item.A2
 	if item.A2 != 0 {
 		serializedSize += 4
@@ -277,6 +280,7 @@ func (item *CasesTestInplaceStructArgs2) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.A2)
 		}
 	}
+
 	// write item.A3
 	if item.A3 != 0 {
 		serializedSize += 4
@@ -285,6 +289,7 @@ func (item *CasesTestInplaceStructArgs2) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.NatWrite(w, item.A3)
 		}
 	}
+
 	// write item.Arg
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -320,13 +325,13 @@ func (item *CasesTestInplaceStructArgs2) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -338,13 +343,9 @@ func (item *CasesTestInplaceStructArgs2) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testInplaceStructArgs2", index)
 		}
 	}
-
-	// read item.A1
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.A1); err != nil {
 			return currentR, err
@@ -352,8 +353,6 @@ func (item *CasesTestInplaceStructArgs2) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.A1 = 0
 	}
-
-	// read item.A2
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.A2); err != nil {
 			return currentR, err
@@ -361,8 +360,6 @@ func (item *CasesTestInplaceStructArgs2) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.A2 = 0
 	}
-
-	// read item.A3
 	if block&(1<<3) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.A3); err != nil {
 			return currentR, err
@@ -370,8 +367,6 @@ func (item *CasesTestInplaceStructArgs2) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.A3 = 0
 	}
-
-	// read item.Arg
 	if block&(1<<4) != 0 {
 		if currentR, err = item.Arg.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -379,7 +374,7 @@ func (item *CasesTestInplaceStructArgs2) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Arg.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

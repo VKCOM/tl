@@ -112,6 +112,7 @@ func (item *Service5EmptyOutput) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// append byte for each section until last mentioned field
 	if lastUsedByte != 0 {
@@ -120,6 +121,7 @@ func (item *Service5EmptyOutput) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -128,12 +130,11 @@ func (item *Service5EmptyOutput) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	w = append(w, 0)
 	serializedSize += 1
@@ -154,7 +155,8 @@ func (item *Service5EmptyOutput) WriteTL2(w []byte, ctx *basictl.TL2WriteContext
 }
 
 func (item *Service5EmptyOutput) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
-
+	currentR := r
+	Unused(currentR)
 	return r, nil
 }
 
@@ -169,9 +171,7 @@ func (item *Service5EmptyOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -179,8 +179,6 @@ func (item *Service5EmptyOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) 
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {
@@ -302,32 +300,34 @@ func (item *Service5Output) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 2 {
+		return r, ErrorInvalidUnionIndex("service5.Output", item.index)
 	}
 	switch item.index {
-	case 0:
-		break
 	case 1:
 		if currentR, err = item.valueString.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
 		}
 	}
+	Unused(currentR)
 	return r, nil
 }
 func (item *Service5Output) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -602,10 +602,10 @@ func (item *Service5StringOutput) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
-
 	// add constructor No for union type in case of non first option
 	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
+	currentPosition := 0
 
 	// calculate layout for item.HttpCode
 	if item.HttpCode != 0 {
@@ -631,6 +631,7 @@ func (item *Service5StringOutput) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -639,23 +640,21 @@ func (item *Service5StringOutput) InternalWriteTL2(w []byte, sizes []int) ([]byt
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
 	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
 	serializedSize += basictl.TL2CalculateSize(1)
+
 	// write item.HttpCode
 	if item.HttpCode != 0 {
 		serializedSize += 4
@@ -664,6 +663,7 @@ func (item *Service5StringOutput) InternalWriteTL2(w []byte, sizes []int) ([]byt
 			w = basictl.IntWrite(w, item.HttpCode)
 		}
 	}
+
 	// write item.Response
 	if len(item.Response) != 0 {
 		serializedSize += len(item.Response)
@@ -692,8 +692,6 @@ func (item *Service5StringOutput) WriteTL2(w []byte, ctx *basictl.TL2WriteContex
 
 func (item *Service5StringOutput) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.HttpCode
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.HttpCode); err != nil {
 			return currentR, err
@@ -701,8 +699,6 @@ func (item *Service5StringOutput) InternalReadTL2(r []byte, block byte) (_ []byt
 	} else {
 		item.HttpCode = 0
 	}
-
-	// read item.Response
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Response); err != nil {
 			return currentR, err
@@ -710,7 +706,7 @@ func (item *Service5StringOutput) InternalReadTL2(r []byte, block byte) (_ []byt
 	} else {
 		item.Response = ""
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -725,9 +721,7 @@ func (item *Service5StringOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext)
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -735,8 +729,6 @@ func (item *Service5StringOutput) ReadTL2(r []byte, ctx *basictl.TL2ReadContext)
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {

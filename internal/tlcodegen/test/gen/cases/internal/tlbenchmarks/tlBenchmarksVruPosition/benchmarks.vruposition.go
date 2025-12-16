@@ -28,6 +28,8 @@ type BenchmarksVruPosition struct {
 	Hash          tlBenchmarksVruHash.BenchmarksVruHash
 	FileOffset    int64
 	SeqNumber     int64 // Conditional: item.FieldsMask.14
+
+	tl2mask0 byte
 }
 
 func (BenchmarksVruPosition) TLName() string { return "benchmarks.vruposition" }
@@ -39,8 +41,13 @@ func (item *BenchmarksVruPosition) SetCommitBit(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 1
+	} else {
+		item.tl2mask0 &^= 1
+	}
 }
-func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.tl2mask0&1 != 0 }
 
 func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 	if v {
@@ -48,8 +55,13 @@ func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.tl2mask0&2 != 0 }
 
 func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 	if v {
@@ -57,8 +69,13 @@ func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 3
 	}
+	if v {
+		item.tl2mask0 |= 4
+	} else {
+		item.tl2mask0 &^= 4
+	}
 }
-func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.tl2mask0&4 != 0 }
 
 func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 	if v {
@@ -66,8 +83,13 @@ func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 5
 	}
+	if v {
+		item.tl2mask0 |= 8
+	} else {
+		item.tl2mask0 &^= 8
+	}
 }
-func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.FieldsMask&(1<<5) != 0 }
+func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.tl2mask0&8 != 0 }
 
 func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 	if v {
@@ -75,18 +97,28 @@ func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 15
 	}
+	if v {
+		item.tl2mask0 |= 16
+	} else {
+		item.tl2mask0 &^= 16
+	}
 }
-func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.FieldsMask&(1<<15) != 0 }
+func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.tl2mask0&16 != 0 }
 
+func (item *BenchmarksVruPosition) GetSeqNumber() int64 {
+	return item.SeqNumber
+}
 func (item *BenchmarksVruPosition) SetSeqNumber(v int64) {
 	item.SeqNumber = v
 	item.FieldsMask |= 1 << 14
+	item.tl2mask0 |= 32
 }
 func (item *BenchmarksVruPosition) ClearSeqNumber() {
 	item.SeqNumber = 0
 	item.FieldsMask &^= 1 << 14
+	item.tl2mask0 &^= 32
 }
-func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.FieldsMask&(1<<14) != 0 }
+func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.tl2mask0&32 != 0 }
 
 func (item *BenchmarksVruPosition) Reset() {
 	item.FieldsMask = 0
@@ -95,6 +127,7 @@ func (item *BenchmarksVruPosition) Reset() {
 	item.Hash.Reset()
 	item.FileOffset = 0
 	item.SeqNumber = 0
+	item.tl2mask0 = 0
 }
 
 func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
@@ -111,8 +144,24 @@ func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
+	}
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.FieldsMask&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.FieldsMask&(1<<3) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.FieldsMask&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.FieldsMask&(1<<15) != 0 {
+		item.tl2mask0 |= 16
 	}
 	if w, err = basictl.LongRead(w, &item.PayloadOffset); err != nil {
 		return w, err
@@ -127,6 +176,7 @@ func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.FieldsMask&(1<<14) != 0 {
+		item.tl2mask0 |= 32
 		if w, err = basictl.LongRead(w, &item.SeqNumber); err != nil {
 			return w, err
 		}
@@ -458,6 +508,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -481,7 +532,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Hash
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Hash.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 2
@@ -512,6 +563,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -520,17 +572,17 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.FieldsMask
 	if item.FieldsMask != 0 {
 		serializedSize += 4
@@ -539,6 +591,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.NatWrite(w, item.FieldsMask)
 		}
 	}
+
 	// write item.PayloadOffset
 	if item.PayloadOffset != 0 {
 		serializedSize += 8
@@ -547,7 +600,6 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.LongWrite(w, item.PayloadOffset)
 		}
 	}
-
 	// add byte for fields with index 8..15
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
@@ -558,6 +610,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	} else {
 		return w, sizes
 	}
+
 	// write item.BlockTimeNano
 	if item.BlockTimeNano != 0 {
 		serializedSize += 8
@@ -566,6 +619,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.LongWrite(w, item.BlockTimeNano)
 		}
 	}
+
 	// write item.Hash
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -575,6 +629,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.FileOffset
 	if item.FileOffset != 0 {
 		serializedSize += 8
@@ -583,6 +638,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.LongWrite(w, item.FileOffset)
 		}
 	}
+
 	// write item.SeqNumber
 	if item.SeqNumber != 0 {
 		serializedSize += 8
@@ -617,13 +673,13 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -635,13 +691,10 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("benchmarks.vruposition", index)
 		}
 	}
-
-	// read item.FieldsMask
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.FieldsMask); err != nil {
 			return currentR, err
@@ -649,8 +702,21 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.FieldsMask = 0
 	}
-
-	// read item.PayloadOffset
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if block&(1<<4) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if block&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if block&(1<<6) != 0 {
+		item.tl2mask0 |= 16
+	}
 	if block&(1<<7) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.PayloadOffset); err != nil {
 			return currentR, err
@@ -667,8 +733,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		block = 0
 	}
-
-	// read item.BlockTimeNano
 	if block&(1<<0) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.BlockTimeNano); err != nil {
 			return currentR, err
@@ -676,8 +740,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.BlockTimeNano = 0
 	}
-
-	// read item.Hash
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Hash.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -685,8 +747,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.Hash.Reset()
 	}
-
-	// read item.FileOffset
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.FileOffset); err != nil {
 			return currentR, err
@@ -694,8 +754,9 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.FileOffset = 0
 	}
-
-	// read item.SeqNumber
+	if block&(1<<3) != 0 {
+		item.tl2mask0 |= 32
+	}
 	if block&(1<<3) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.SeqNumber); err != nil {
 			return currentR, err
@@ -703,7 +764,7 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.SeqNumber = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

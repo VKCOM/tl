@@ -146,26 +146,14 @@ type {%s= goName %} struct {
                 fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
             }
         -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
-    {%- if struct_.wr.originateFromTL2 -%}
-        {%- code
-            masks := struct_.AllRequiredTL2Masks()
-        -%}
-        {%- if len(masks) > 0 -%}
+    {%- if struct_.wr.wantsTL2 -%}
 
-            {%- for _, mask := range masks -%}
-                {%- code
-                    left := (mask - 1) * 8
-                    right := left + 7
-                    if left == 0 {
-                        left = 1
-                    }
-                -%}
-    mask{%d mask %} byte // for fields #{%d left %} .. #{%d right %}
-            {%- endfor -%}
-        {%- endif -%}
+        {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+             {%s= tl2mask %} byte
+        {%- endfor -%}
     {%- endif -%}
 }
 {%- endfunc -%}
@@ -173,20 +161,21 @@ type {%s= goName %} struct {
 {%- func (struct_ *TypeRWStruct)fieldMaskGettersAndSetters(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%- for i, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.fieldMask == nil && field.MaskTL2Bit == nil -%} {%- continue -%} {%- endif -%}
         {%- code
             fieldTypeString := ""
             isTrueType := "bool"
             asterisk := addAsterisk(field.recursive, "")
             maskFunArg := false
             natArgUse := ""
-            if field.GenerateLegacySettersForTL2Name != "" {
-                maskFunArg = true
-                natArgUse = "nat_" + field.GenerateLegacySettersForTL2Name
-            } else if field.fieldMask != nil {
+            if field.fieldMask != nil {
                 maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
                 natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
+            }
+            tl2ArgUse := ""
+            if field.MaskTL2Bit != nil {
+                tl2ArgUse = fmt.Sprintf("item.tl2mask%d", *field.MaskTL2Bit/8)
             }
         -%}
         {%- if !field.t.IsTrueType() -%}
@@ -195,7 +184,7 @@ type {%s= goName %} struct {
             isTrueType = fieldTypeString
         -%}
         {%- endif -%}
-        {%- if field.GenerateLegacySettersForTL2Name != "" || !field.fieldMask.isArith -%}
+        {%- if field.fieldMask == nil || !field.fieldMask.isArith -%}
             {%- code
                 // Example
                 //     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
@@ -208,7 +197,7 @@ type {%s= goName %} struct {
                 }
                 getName := "G" + setName[1:]
             -%}
-            {%- if !field.t.IsTrueType() && field.fieldMask != nil && field.fieldMask.IsTL2() -%}
+            {%- if !field.t.IsTrueType() && field.MaskTL2Bit != nil -%}
 func (item *{%s= goName %}) {%s= getName %}() {%s= asterisk %}{%s= isTrueType %} {
     return item.{%s= field.goName %}
 }
@@ -227,6 +216,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
                 {%- endif -%}
     {%s= asterisk %}item.{%s= field.goName %} = v
             {%- endif -%}
+            {%- if field.fieldMask != nil -%}
             {%- if maskFunArg -%}
     if {%s= natArgUse %} != nil {
             {%- endif -%}
@@ -241,6 +231,18 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- endif -%}
             {%- if maskFunArg -%}
     }
+            {%- endif -%}
+            {%- endif -%}
+            {%- if field.MaskTL2Bit != nil -%}
+            {%- if field.t.IsTrueType() -%}
+        if v {
+            {%s= tl2ArgUse %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+        } else {
+            {%s= tl2ArgUse %} &^= {%v 1 << (*field.MaskTL2Bit % 8) %}
+        }
+            {%- else -%}
+        {%s= tl2ArgUse %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            {%- endif -%}
             {%- endif -%}
 }
             {%- if !field.t.IsTrueType() -%}
@@ -260,6 +262,7 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 {%- else -%}
     {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
                 {%- endif -%}
+            {%- if field.fieldMask != nil -%}
                 {%- if maskFunArg-%}
     if {%s= natArgUse %} != nil {
                 {%- endif -%}
@@ -267,6 +270,10 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 {%- if maskFunArg-%}
     }
                 {%- endif -%}
+            {%- endif -%}
+            {%- if field.MaskTL2Bit != nil -%}
+    {%s= tl2ArgUse %} &^= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            {%- endif -%}
 }
             {%- endif -%}
         {%- endif -%}
@@ -277,11 +284,15 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 struct_.isSetNames[i] = isSetName
             }
         -%}
+    {%- if field.MaskTL2Bit != nil -%}
+func (item *{%s= goName %}) {%s= isSetName %}() bool { return {%s= tl2ArgUse %} & {%v 1 << (*field.MaskTL2Bit % 8) %} != 0 }
+    {%- else -%}
         {%- if maskFunArg -%}
 func (item *{%s= goName %}) {%s= isSetName %}({%s= natArgUse %} uint32) bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
         {%- else -%}
 func (item *{%s= goName %}) {%s= isSetName %}() bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
         {%- endif -%}
+    {%- endif -%}
 
 
     {%- endfor -%}
@@ -552,7 +563,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     -%}
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- if field.t.IsTrueType() && field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
         {%- if field.t.IsTrueType() && !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
@@ -585,7 +596,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             switch key {
         {%- for _, field := range struct_.Fields -%}
             {%- code /* TODO: skip anonymous names */ -%}
-            {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
             {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
                 case "{%s= field.originalName %}":
             {%- code
@@ -647,7 +658,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: reset independent props with they are absent */ -%}
     {%- for _, field := range struct_.Fields -%}
             {%- code /* TODO: skip anonymous names */ -%}
-            {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}{%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
             {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
             {%- if field.t.IsTrueType() -%} {%- continue -%} {%- endif -%}
             {%- if !field.HasNatArguments() -%}
@@ -665,7 +676,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: bit fix */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- if field.IsAffectingLocalFieldMasks() -%}
             {%- code
@@ -703,7 +714,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: read rest fields */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
         {%- if field.t.IsTrueType() || !field.HasNatArguments() -%} {%- continue -%} {%- endif -%}
         {%- code presentCondition := "raw" + field.goName + " != nil" -%}
@@ -731,7 +742,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- endfor -%}
     {%- code /* BLOCK: trueType with false values validation */ -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
         {%- code
             bit := int(field.BitNumber)
@@ -787,7 +798,7 @@ func (item *{%s= goName %}) WriteJSON(w []byte{%s= natArgsDecl %}) {%s= wrapWith
 func (item *{%s= goName %}) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte{%s= natArgsDecl %}) {%s= wrapWithError(writeNeedsError, "[]byte") %} {
     w = append(w, '{')
     {%- for _, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code // field names will be mandatory soon, except for typedefs which are processed separately
         -%}
         {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
@@ -970,7 +981,7 @@ func (item *{%s= goName %}) ReadResultJSONWriteResult(r []byte, w []byte) ([]byt
   return r, w, err
 }
 {%- for fieldId, field := range struct_.Fields -%}
-    {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+    {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
     {%- if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 -%}
         {%- code
             bits := make([]uint32, 0)
@@ -1038,7 +1049,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- return -%}
     {%- endif -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             if field.t.IsTrueType() {
                 continue
@@ -1050,6 +1061,9 @@ if item.{%s= field.goName %} != nil { {%s= resetCode %} }
         {%- else -%}
 {%s= resetCode %}
         {%- endif -%}
+    {%- endfor -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
     {%- endfor -%}
 {%- endfunc -%}
 
@@ -1066,7 +1080,7 @@ item.mask{%d no %} = basictl.RandomByte(rg)
         {%- endfor -%}
     {%- endif -%}
     {%- for fieldId, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.t.IsTrueType() -%} {%- continue -%} {%- endif -%}
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
@@ -1132,7 +1146,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- return -%}
     {%- endif -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             writingCode := ""
             if field.t.IsTrueType() {
@@ -1179,12 +1193,25 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
 {%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "ptr", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), true, true) %}
         {%- return -%}
     {%- endif -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
+    {%- endfor -%}
     {%- code lastWritten := false -%}
     {%- for i, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.t.IsTrueType() && field.Bare() -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.t.IsTrueType() && field.Bare() -%}
+            {%- if field.fieldMask != nil && field.MaskTL2Bit != nil -%}
+                if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                    item.tl2mask{%d *field.MaskTL2Bit/8 %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+                }
+            {%- endif -%}
+            {%- continue -%}
+        {%- endif -%}
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+        {%- if field.MaskTL2Bit != nil -%}
+            item.tl2mask{%d *field.MaskTL2Bit/8 %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+        {%- endif -%}
         {%- endif -%}
         {%- if field.recursive -%}
 if item.{%s= field.goName %} == nil {
@@ -1225,7 +1252,6 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
     {%- code
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
-        tl2MasksToStore := utils.SliceToSet(struct_.AllRequiredTL2Masks())
 //        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 //        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
     -%}
@@ -1290,7 +1316,7 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
 {%- if struct_.wr.wantsTL2 -%}
 func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     {%- if struct_.isTypeDef() -%}
-    ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
+        ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
@@ -1298,25 +1324,13 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     currentSize := 0
     lastUsedByte := 0
     {%- if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 -%}
-
-    // add constructor No for union type in case of non first option
-    lastUsedByte = 1
-    currentSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
+        // add constructor No for union type in case of non first option
+        lastUsedByte = 1
+        currentSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
     {%- endif -%}
-    {%- code
-         currentPositionFirstUsage := -1
-         for i, field := range struct_.Fields {
-            if field.t.IsTrueType() && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() { continue }
-            if struct_.wr.originateFromTL2 && field.IsTL2Omitted() { continue }
-            _, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
-            if len(trivialSize) == 0 {
-                currentPositionFirstUsage = i
-                break
-            }
-         }
-    -%}
+    currentPosition := 0
     {%- for fieldIndex, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             isTrue := field.t.IsTrueType()
             fieldName := fmt.Sprintf("item.%s", field.goName)
@@ -1328,7 +1342,6 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
                 fieldName = "ptr"
                 fieldRecursive = true
             }
-
             isSizeConstant, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
         -%}
 
@@ -1337,18 +1350,14 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
             {%- continue -%}
         {%- endif -%}
         {%- if isTrue -%}
-    var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
+            var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}
-    // calculate layout for {%s= fieldName %}
+            // calculate layout for {%s= fieldName %}
         {%- if len(trivialSize) == 0 -%}
-            {%- if fieldIndex == currentPositionFirstUsage -%}
-    currentPosition := len(sizes)
-            {%- else -%}
-    currentPosition = len(sizes)
-            {%- endif -%}
+            currentPosition = len(sizes)
         {%- endif -%}
         {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-    if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
+            if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
         {%- code
             nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
@@ -1363,9 +1372,9 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
             }
         -%}
         {%- if nonEmptyCondition != "" -%}
-    if {%s= nonEmptyCondition %} {
+            if {%s= nonEmptyCondition %} {
         {%- endif -%}
-    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
+        {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
         {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
             {%- if !isSizeConstant -%}
                 {%- code
@@ -1374,24 +1383,24 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
                         sizeValue = trivialSize
                     }
                 -%}
-    if {%s= sizeValue %} != 0 {
-        lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
-        currentSize += {%s= sizeValue %}
-                {%- if field.t.trw.isSizeWrittenInData() -%}
-        currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
-                {%- endif -%}
-                {%- if len(trivialSize) == 0 -%}
-    } else {
-        sizes = sizes[:currentPosition + 1]
-    }
+                if {%s= sizeValue %} != 0 {
+                    lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
+                    currentSize += {%s= sizeValue %}
+                    {%- if field.t.trw.isSizeWrittenInData() -%}
+                        currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
+                    {%- endif -%}
+                    {%- if len(trivialSize) == 0 -%}
+                        } else {
+                            sizes = sizes[:currentPosition + 1]
+                        }
+                    {%- else -%}
+                        }
+                    {%- endif -%}
                 {%- else -%}
-    }
-                {%- endif -%}
-            {%- else -%}
-        lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
-        currentSize += {%s= trivialSize %}
+                    lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
+                    currentSize += {%s= trivialSize %}
                 {%- if field.t.trw.isSizeWrittenInData() -%}
-        currentSize += basictl.TL2CalculateSize({%s= trivialSize %})
+                    currentSize += basictl.TL2CalculateSize({%s= trivialSize %})
                 {%- endif -%}
             {%- endif -%}
         {%- else -%}
@@ -1401,17 +1410,17 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
                     sizeValue = trivialSize
                 }
             -%}
-        lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
-        currentSize += {%s= sizeValue %}
+            lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
+            currentSize += {%s= sizeValue %}
             {%- if field.t.trw.isSizeWrittenInData() -%}
-        currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
+                currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
             {%- endif -%}
         {%- endif -%}
         {%- if nonEmptyCondition != "" -%}
-    }
+            }
         {%- endif -%}
         {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-    }
+            }
         {%- endif -%}
     {%- endfor -%}
 
@@ -1422,52 +1431,49 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
         // remove unused values
         sizes = sizes[:sizePosition + 1]
     }
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(currentPosition)
     sizes[sizePosition] = currentSize
     return sizes
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
     {%- if struct_.isTypeDef() -%}
-    ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
+        ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
-
-    serializedSize := 0
 
     w = basictl.TL2WriteSize(w, currentSize)
     if currentSize == 0 {
         return w, sizes
     }
+    serializedSize := 0
 
     {%- if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) -%}
-    var currentBlock byte
-    currentBlockPosition := len(w)
+        var currentBlock byte
+        currentBlockPosition := len(w)
     {%- endif -%}
     w = append(w, 0)
     serializedSize += 1
     {%- if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 -%}
-
-    // add constructor No for union type in case of non first option
-    currentBlock |= (1 << 0)
-
-    w = basictl.TL2WriteSize(w, {%d= struct_.wr.unionIndex %})
-    serializedSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
+        // add constructor No for union type in case of non first option
+        currentBlock |= (1 << 0)
+        w = basictl.TL2WriteSize(w, {%d= struct_.wr.unionIndex %})
+        serializedSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
     {%- endif -%}
     {%- for fieldIndex, field := range struct_.Fields -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if (fieldIndex + 1) % 8 == 0 -%}
-
-        // add byte for fields with index {%v= (fieldIndex + 1) %}..{%v= (fieldIndex + 8) %}
-        w[currentBlockPosition] = currentBlock
-        currentBlock = 0
-        if serializedSize != currentSize {
-            currentBlockPosition = len(w)
-            w = append(w, 0)
-            serializedSize += 1
-        } else {
-            return w, sizes
-        }
+            // add byte for fields with index {%v= (fieldIndex + 1) %}..{%v= (fieldIndex + 8) %}
+            w[currentBlockPosition] = currentBlock
+            currentBlock = 0
+            if serializedSize != currentSize {
+                currentBlockPosition = len(w)
+                w = append(w, 0)
+                serializedSize += 1
+            } else {
+                return w, sizes
+            }
         {%- endif -%}
         {%- code
             isTrue := field.t.IsTrueType()
@@ -1482,65 +1488,66 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
             }
             _, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
         -%}
+
         {%- code /** ?TRUE -> BOOL CASE **/ -%}
         {%- if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() -%}
             {%- continue -%}
         {%- endif -%}
         {%- if isTrue -%}
-    var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
+            var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}
     // write {%s= fieldName %}
         {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-    if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
+            if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
         {%- endif -%}
-            {%- code
-                nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
-                _, isMaybe := field.t.trw.(*TypeRWMaybe);
-                if fieldRecursive && !isMaybe {
-                    nilCheck := fmt.Sprintf("%s != nil", fieldName)
-                    if nonEmptyCondition == "" {
-                        nonEmptyCondition = nilCheck
-                    } else {
-                        nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
-                    }
+        {%- code
+            nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
+            _, isMaybe := field.t.trw.(*TypeRWMaybe);
+            if fieldRecursive && !isMaybe {
+                nilCheck := fmt.Sprintf("%s != nil", fieldName)
+                if nonEmptyCondition == "" {
+                    nonEmptyCondition = nilCheck
+                } else {
+                    nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
                 }
-            -%}
-            {%- if nonEmptyCondition != "" -%}
-    if {%s= nonEmptyCondition %} {
-            {%- endif -%}
-            {%- code
-                sizeValue := "sizes[0]"
-                if len(trivialSize) != 0 {
-                    sizeValue = trivialSize
+            }
+        -%}
+        {%- if nonEmptyCondition != "" -%}
+            if {%s= nonEmptyCondition %} {
+        {%- endif -%}
+        {%- code
+            sizeValue := "sizes[0]"
+            if len(trivialSize) != 0 {
+                sizeValue = trivialSize
+            }
+        -%}
+        serializedSize += {%s= sizeValue %}
+        {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
+            if {%s= sizeValue %} != 0 {
+        {%- endif -%}
+        {%- if field.t.trw.isSizeWrittenInData() -%}
+            serializedSize += basictl.TL2CalculateSize({%s= sizeValue %})
+        {%- endif -%}
+        currentBlock |= (1 << {%v (fieldIndex + 1) % 8 %})
+        {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
+        {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
+            {%- if len(trivialSize) == 0 -%}
+                } else {
+                    sizes = sizes[1:]
                 }
-            -%}
-    serializedSize += {%s= sizeValue %}
-            {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
-    if {%s= sizeValue %} != 0 {
+            {%- else -%}
+                }
             {%- endif -%}
-            {%- if field.t.trw.isSizeWrittenInData() -%}
-    serializedSize += basictl.TL2CalculateSize({%s= sizeValue %})
-            {%- endif -%}
-    currentBlock |= (1 << {%v (fieldIndex + 1) % 8 %})
-    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
-            {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
-                {%- if len(trivialSize) == 0 -%}
-    } else {
-        sizes = sizes[1:]
-    }
-                {%- else -%}
-    }
-                {%- endif -%}
-            {%- endif -%}
-            {%- if nonEmptyCondition != "" -%}
-    }
-            {%- endif -%}
+        {%- endif -%}
+        {%- if nonEmptyCondition != "" -%}
+            }
+        {%- endif -%}
         {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-    }
+            }
         {%- endif -%}
     {%- endfor -%}
     {%- if len(struct_.Fields) > 0 || (struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0) -%}
-    w[currentBlockPosition] = currentBlock
+        w[currentBlockPosition] = currentBlock
     {%- endif -%}
     return w, sizes
 }
@@ -1572,13 +1579,13 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
         return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
     }
 
-    currentR := r[:currentSize]
-    r = r[currentSize:]
-
     if currentSize == 0 {
         item.Reset()
         return r, nil
     }
+    currentR := r[:currentSize]
+    r = r[currentSize:]
+
     var block byte
     if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
     // read No of constructor
@@ -1586,43 +1593,27 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
         var index int
         if currentR, err = basictl.TL2ReadSize(currentR, &index); err != nil { return currentR, err }
         if index != 0 {
-            // unknown cases for current type
-            item.Reset()
-            return r, nil
+            return r, {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidUnionIndex({%q= tlName %}, index)
         }
     }
     {%- else -%}
 func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
-        {%- code
-            initCurrentR := false
-            for _, field := range struct_.Fields {
-                if field.t.trw.doesReadTL2UseBytes(field.fieldMask == nil) {
-                    initCurrentR = true
-                    break
-                }
-            }
-        -%}
-        {%- if initCurrentR -%}
     currentR := r
-        {%- endif -%}
     {%- endif -%}
-    {%- if tl2MasksToStore[1] -%}
-    item.mask1 = block
-    {%- endif -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
+    {%- endfor -%}
     {%- if struct_.isTypeDef() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
         {%- for fieldIndex, field := range struct_.Fields -%}
         {%- code
-            isTrue := field.t.IsTrueType()
             fieldName := fmt.Sprintf("item.%s", field.goName)
-            if isTrue {
-                fieldName = fmt.Sprintf("true%s", field.goName)
-            }
             fieldRecursive := field.recursive
+            fieldAsterisk := fieldRecursive
             if struct_.isTypeDef() {
                 fieldName = "ptr"
-                fieldRecursive = true
+                fieldAsterisk = true
             }
         -%}
         {%- if (fieldIndex + 1) % 8 == 0 -%}
@@ -1633,25 +1624,20 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     } else {
         block = 0
     }
-            {%- if tl2MasksToStore[(fieldIndex + 1) / 8 + 1] -%}
-    item.mask{%d (fieldIndex + 1) / 8 + 1 %} = block
-            {%- endif -%}
         {%- endif -%}
-
-        {%- code /** ?TRUE -> BOOL CASE **/ -%}
-        {%- if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() -%}
+        {%- if field.MaskTL2Bit != nil -%}
+            if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
+                item.tl2mask{%d *field.MaskTL2Bit/8 %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            }
+        {%- endif -%}
+        {%- if field.IsTL2Bool() -%}
             {%- continue -%}
         {%- endif -%}
-        {%- if isTrue -%}
-    var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
-        {%- endif -%}
-        {%- if struct_.wr.originateFromTL2 && field.IsTL2Omitted() -%}
-    // skip {%d= fieldIndex + 1 -%}-th field
+        {%- if field.IsTL2Omitted() || field.t.IsTrueType() -%}
     if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
-        {%s= field.t.SkipTL2Call(directImports, bytesVersion, "currentR", field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
+        {%s= field.t.SkipTL2Call(directImports, bytesVersion, "currentR", field.fieldMask == nil, struct_.wr.ins, fieldAsterisk) %}
     }
         {%- else -%}
-    // read {%s= fieldName %}
     if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
         {%- if fieldRecursive -%}
         if {%s= fieldName %} == nil {
@@ -1659,15 +1645,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
             {%s= fieldName %} = &newValue
         }
         {%- endif -%}
-        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-        if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
-        {%- endif -%}
-        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
-        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-        } else {
-            return currentR, basictl.TL2Error("field mask contradiction: field item." + "{%s= field.goName %}" + "is presented but depending bit is absent")
-        }
-        {%- endif -%}
+        {%s= field.t.ReadTL2Call(directImports, bytesVersion, "currentR", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldAsterisk) %}
     } else {
         {%- if fieldRecursive -%}
         if {%s= fieldName %} == nil {
@@ -1675,11 +1653,11 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
             {%s= fieldName %} = &newValue
         }
         {%- endif -%}
-        {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldRecursive) %}
+        {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fieldName, fieldAsterisk) %}
     }
         {%- endif -%}
     {%- endfor -%}
-
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(currentR)
     return r, nil
 }
 {%- endif -%}
@@ -1699,14 +1677,10 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
 
     var block byte
     var index int
-    if currentSize == 0 {
-        index = 0
-    } else {
+    if currentSize != 0 {
         if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
         if (block & 1) != 0 {
             if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-        } else {
-            index = 0
         }
     }
     if index != {%d= struct_.wr.unionIndex %} {

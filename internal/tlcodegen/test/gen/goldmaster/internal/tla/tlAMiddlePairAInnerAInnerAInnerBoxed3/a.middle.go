@@ -162,9 +162,10 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int) []
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.A
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.A.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -192,6 +193,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int) []
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -200,17 +202,17 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, size
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.A
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -220,6 +222,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, size
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.B
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -255,13 +258,13 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -273,13 +276,9 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("a.middle", index)
 		}
 	}
-
-	// read item.A
 	if block&(1<<1) != 0 {
 		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -287,8 +286,6 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []
 	} else {
 		item.A.Reset()
 	}
-
-	// read item.B
 	if block&(1<<2) != 0 {
 		if currentR, err = item.B.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -296,7 +293,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalReadTL2(r []byte) (_ []
 	} else {
 		item.B.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

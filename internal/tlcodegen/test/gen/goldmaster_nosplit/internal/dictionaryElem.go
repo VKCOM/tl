@@ -1537,6 +1537,7 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
 	if item.Key != 0 {
@@ -1546,7 +1547,7 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -1563,6 +1564,7 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -1571,17 +1573,17 @@ func (item *DictionaryElemIntPairIntInt) InternalWriteTL2(w []byte, sizes []int)
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	if item.Key != 0 {
 		serializedSize += 4
@@ -1590,6 +1592,7 @@ func (item *DictionaryElemIntPairIntInt) InternalWriteTL2(w []byte, sizes []int)
 			w = basictl.IntWrite(w, item.Key)
 		}
 	}
+
 	// write item.Value
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -1625,13 +1628,13 @@ func (item *DictionaryElemIntPairIntInt) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -1643,13 +1646,9 @@ func (item *DictionaryElemIntPairIntInt) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Key); err != nil {
 			return currentR, err
@@ -1657,8 +1656,6 @@ func (item *DictionaryElemIntPairIntInt) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Key = 0
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -1666,7 +1663,7 @@ func (item *DictionaryElemIntPairIntInt) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Value.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -1823,6 +1820,7 @@ func (item *DictionaryElemLongPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
 	if item.Key != 0 {
@@ -1832,7 +1830,7 @@ func (item *DictionaryElemLongPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -1849,6 +1847,7 @@ func (item *DictionaryElemLongPairIntInt) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -1857,17 +1856,17 @@ func (item *DictionaryElemLongPairIntInt) InternalWriteTL2(w []byte, sizes []int
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	if item.Key != 0 {
 		serializedSize += 8
@@ -1876,6 +1875,7 @@ func (item *DictionaryElemLongPairIntInt) InternalWriteTL2(w []byte, sizes []int
 			w = basictl.LongWrite(w, item.Key)
 		}
 	}
+
 	// write item.Value
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -1911,13 +1911,13 @@ func (item *DictionaryElemLongPairIntInt) InternalReadTL2(r []byte) (_ []byte, e
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -1929,13 +1929,9 @@ func (item *DictionaryElemLongPairIntInt) InternalReadTL2(r []byte) (_ []byte, e
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.Key); err != nil {
 			return currentR, err
@@ -1943,8 +1939,6 @@ func (item *DictionaryElemLongPairIntInt) InternalReadTL2(r []byte) (_ []byte, e
 	} else {
 		item.Key = 0
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -1952,7 +1946,7 @@ func (item *DictionaryElemLongPairIntInt) InternalReadTL2(r []byte) (_ []byte, e
 	} else {
 		item.Value.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -2109,9 +2103,10 @@ func (item *DictionaryElemPairBoolAColorInt) CalculateLayout(sizes []int) []int 
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2135,6 +2130,7 @@ func (item *DictionaryElemPairBoolAColorInt) CalculateLayout(sizes []int) []int 
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -2143,17 +2139,17 @@ func (item *DictionaryElemPairBoolAColorInt) InternalWriteTL2(w []byte, sizes []
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -2163,6 +2159,7 @@ func (item *DictionaryElemPairBoolAColorInt) InternalWriteTL2(w []byte, sizes []
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.Value
 	if item.Value != 0 {
 		serializedSize += 4
@@ -2197,13 +2194,13 @@ func (item *DictionaryElemPairBoolAColorInt) InternalReadTL2(r []byte) (_ []byte
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -2215,13 +2212,9 @@ func (item *DictionaryElemPairBoolAColorInt) InternalReadTL2(r []byte) (_ []byte
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -2229,8 +2222,6 @@ func (item *DictionaryElemPairBoolAColorInt) InternalReadTL2(r []byte) (_ []byte
 	} else {
 		item.Key.Reset()
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Value); err != nil {
 			return currentR, err
@@ -2238,7 +2229,7 @@ func (item *DictionaryElemPairBoolAColorInt) InternalReadTL2(r []byte) (_ []byte
 	} else {
 		item.Value = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -2395,9 +2386,10 @@ func (item *DictionaryElemPairFloatDoubleInt) CalculateLayout(sizes []int) []int
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2421,6 +2413,7 @@ func (item *DictionaryElemPairFloatDoubleInt) CalculateLayout(sizes []int) []int
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -2429,17 +2422,17 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalWriteTL2(w []byte, sizes [
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -2449,6 +2442,7 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalWriteTL2(w []byte, sizes [
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.Value
 	if item.Value != 0 {
 		serializedSize += 4
@@ -2483,13 +2477,13 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalReadTL2(r []byte) (_ []byt
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -2501,13 +2495,9 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalReadTL2(r []byte) (_ []byt
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -2515,8 +2505,6 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.Key.Reset()
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Value); err != nil {
 			return currentR, err
@@ -2524,7 +2512,7 @@ func (item *DictionaryElemPairFloatDoubleInt) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		item.Value = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -2681,9 +2669,10 @@ func (item *DictionaryElemPairIntIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2707,6 +2696,7 @@ func (item *DictionaryElemPairIntIntInt) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -2715,17 +2705,17 @@ func (item *DictionaryElemPairIntIntInt) InternalWriteTL2(w []byte, sizes []int)
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -2735,6 +2725,7 @@ func (item *DictionaryElemPairIntIntInt) InternalWriteTL2(w []byte, sizes []int)
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.Value
 	if item.Value != 0 {
 		serializedSize += 4
@@ -2769,13 +2760,13 @@ func (item *DictionaryElemPairIntIntInt) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -2787,13 +2778,9 @@ func (item *DictionaryElemPairIntIntInt) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -2801,8 +2788,6 @@ func (item *DictionaryElemPairIntIntInt) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Key.Reset()
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Value); err != nil {
 			return currentR, err
@@ -2810,7 +2795,7 @@ func (item *DictionaryElemPairIntIntInt) InternalReadTL2(r []byte) (_ []byte, er
 	} else {
 		item.Value = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -2967,9 +2952,10 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) CalculateLayout(sizes 
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Key.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -2993,6 +2979,7 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) CalculateLayout(sizes 
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -3001,17 +2988,17 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalWriteTL2(w []b
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -3021,6 +3008,7 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalWriteTL2(w []b
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.Value
 	if item.Value != 0 {
 		serializedSize += 4
@@ -3055,13 +3043,13 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalReadTL2(r []by
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -3073,13 +3061,9 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalReadTL2(r []by
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Key.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -3087,8 +3071,6 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalReadTL2(r []by
 	} else {
 		item.Key.Reset()
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Value); err != nil {
 			return currentR, err
@@ -3096,7 +3078,7 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalReadTL2(r []by
 	} else {
 		item.Value = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -3253,6 +3235,7 @@ func (item *DictionaryElemStringPairIntInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
 	if len(item.Key) != 0 {
@@ -3265,7 +3248,7 @@ func (item *DictionaryElemStringPairIntInt) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Value
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Value.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -3282,6 +3265,7 @@ func (item *DictionaryElemStringPairIntInt) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -3290,17 +3274,17 @@ func (item *DictionaryElemStringPairIntInt) InternalWriteTL2(w []byte, sizes []i
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	if len(item.Key) != 0 {
 		serializedSize += len(item.Key)
@@ -3310,6 +3294,7 @@ func (item *DictionaryElemStringPairIntInt) InternalWriteTL2(w []byte, sizes []i
 			w = basictl.StringWriteTL2(w, item.Key)
 		}
 	}
+
 	// write item.Value
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -3345,13 +3330,13 @@ func (item *DictionaryElemStringPairIntInt) InternalReadTL2(r []byte) (_ []byte,
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -3363,13 +3348,9 @@ func (item *DictionaryElemStringPairIntInt) InternalReadTL2(r []byte) (_ []byte,
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Key); err != nil {
 			return currentR, err
@@ -3377,8 +3358,6 @@ func (item *DictionaryElemStringPairIntInt) InternalReadTL2(r []byte) (_ []byte,
 	} else {
 		item.Key = ""
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = item.Value.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -3386,7 +3365,7 @@ func (item *DictionaryElemStringPairIntInt) InternalReadTL2(r []byte) (_ []byte,
 	} else {
 		item.Value.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -3537,9 +3516,10 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Key
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.Key) != 0 {
 		sizes = BuiltinTupleStringCalculateLayout(sizes, &item.Key)
 		if sizes[currentPosition] != 0 {
@@ -3565,6 +3545,7 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -3573,17 +3554,17 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Key
 	if len(item.Key) != 0 {
 		serializedSize += sizes[0]
@@ -3595,6 +3576,7 @@ func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int
 			sizes = sizes[1:]
 		}
 	}
+
 	// write item.Value
 	if item.Value != 0 {
 		serializedSize += 4
@@ -3629,13 +3611,13 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte) (_ []byte, e
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -3647,13 +3629,9 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte) (_ []byte, e
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElem", index)
 		}
 	}
-
-	// read item.Key
 	if block&(1<<1) != 0 {
 		if currentR, err = BuiltinTupleStringInternalReadTL2(currentR, &item.Key); err != nil {
 			return currentR, err
@@ -3661,8 +3639,6 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte) (_ []byte, e
 	} else {
 		item.Key = item.Key[:0]
 	}
-
-	// read item.Value
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.Value); err != nil {
 			return currentR, err
@@ -3670,7 +3646,7 @@ func (item *DictionaryElemTupleStringInt) InternalReadTL2(r []byte) (_ []byte, e
 	} else {
 		item.Value = 0
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

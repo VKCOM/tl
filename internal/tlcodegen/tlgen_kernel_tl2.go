@@ -379,7 +379,8 @@ func (gen *Gen2) genTypeDeclarationTL2(
 			}
 			variantType.wr = &variantWrapper
 			field := Field{
-				t: &variantWrapper,
+				originateFromTL2: true,
+				t:                &variantWrapper,
 			}
 			var err error
 			var targetNamespace, goLocalName, goGlobalName string
@@ -485,19 +486,20 @@ func (gen *Gen2) genTypeDeclarationTL2(
 
 func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeRWStruct, refFields []tlast.TL2Field) error {
 	fields := &strct.Fields
-	for i, refField := range refFields {
+	nextTL2MaskBit := 0
+	for _, refField := range refFields {
 		// init
 		field := Field{
-			originalName: refField.Name,
-			goName:       strct.fieldsDec.deconflictName(snakeToCamelCase(refField.Name)),
-			cppName:      strct.fieldsDecCPP.deconflictName(refField.Name),
+			originateFromTL2: true,
+			originalName:     refField.Name,
+			goName:           strct.fieldsDec.deconflictName(snakeToCamelCase(refField.Name)),
+			cppName:          strct.fieldsDecCPP.deconflictName(refField.Name),
 		}
 		// add fieldmask
-		if refField.IsOptional {
-			field.fieldMask = new(ActualNatArg)
-			field.fieldMask.isField = true
-			field.fieldMask.FieldIndex = -((i+1)/8 + 1)
-			field.BitNumber = uint32((i + 1) % 8)
+		if refField.IsOptional && field.originalName != "_" {
+			maskBit := nextTL2MaskBit
+			field.MaskTL2Bit = &maskBit
+			nextTL2MaskBit++
 
 			field.goName = strings.ToLower(field.goName[:1]) + field.goName[1:]
 		}
@@ -526,19 +528,6 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 					Nums: []uint32{math.MaxUint32},
 				},
 			})
-		}
-		// generate tl2 legacy setters
-		if strings.Contains(refField.CommentBefore, "tlgen:addLegacySetters") {
-			maskNameFound, maskName := extractTLGenTag(refField.CommentBefore, "tlgen:addLegacySetters:name")
-			maskBitFound, maskBit := extractTLGenTag(refField.CommentBefore, "tlgen:addLegacySetters:bit")
-			if maskNameFound && maskBitFound {
-				field.GenerateLegacySettersForTL2Name = maskName
-				bitUint64, err := strconv.ParseUint(maskBit, 10, 32)
-				if err != nil {
-					return err
-				}
-				field.BitNumber = uint32(bitUint64)
-			}
 		}
 		*fields = append(*fields, field)
 	}
@@ -652,7 +641,7 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 			})
 		} else {
 			bracketType.dictLike = true
-			bracketType.dictKeyField = Field{goName: "Key"}
+			bracketType.dictKeyField = Field{originateFromTL2: true, goName: "Key"}
 			bracketType.dictKeyField.t, err = gen.genTypeTL2(br.IndexType.Type)
 			if err != nil {
 				return nil, err

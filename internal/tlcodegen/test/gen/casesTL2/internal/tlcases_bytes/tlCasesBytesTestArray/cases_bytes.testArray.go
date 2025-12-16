@@ -162,6 +162,7 @@ func (item *CasesBytesTestArray) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -171,7 +172,7 @@ func (item *CasesBytesTestArray) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Arr
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.Arr) != 0 {
 		sizes = tlBuiltinVectorString.BuiltinVectorStringCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
@@ -190,6 +191,7 @@ func (item *CasesBytesTestArray) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -198,17 +200,17 @@ func (item *CasesBytesTestArray) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.N
 	if item.N != 0 {
 		serializedSize += 4
@@ -217,6 +219,7 @@ func (item *CasesBytesTestArray) InternalWriteTL2(w []byte, sizes []int) ([]byte
 			w = basictl.NatWrite(w, item.N)
 		}
 	}
+
 	// write item.Arr
 	if len(item.Arr) != 0 {
 		serializedSize += sizes[0]
@@ -254,13 +257,13 @@ func (item *CasesBytesTestArray) InternalReadTL2(r []byte) (_ []byte, err error)
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -272,13 +275,9 @@ func (item *CasesBytesTestArray) InternalReadTL2(r []byte) (_ []byte, err error)
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases_bytes.testArray", index)
 		}
 	}
-
-	// read item.N
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
@@ -286,8 +285,6 @@ func (item *CasesBytesTestArray) InternalReadTL2(r []byte) (_ []byte, err error)
 	} else {
 		item.N = 0
 	}
-
-	// read item.Arr
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinVectorString.BuiltinVectorStringInternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
@@ -295,7 +292,7 @@ func (item *CasesBytesTestArray) InternalReadTL2(r []byte) (_ []byte, err error)
 	} else {
 		item.Arr = item.Arr[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -449,6 +446,7 @@ func (item *CasesBytesTestArrayBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.N
 	if item.N != 0 {
@@ -458,7 +456,7 @@ func (item *CasesBytesTestArrayBytes) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Arr
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.Arr) != 0 {
 		sizes = tlBuiltinVectorString.BuiltinVectorStringBytesCalculateLayout(sizes, &item.Arr)
 		if sizes[currentPosition] != 0 {
@@ -477,6 +475,7 @@ func (item *CasesBytesTestArrayBytes) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -485,17 +484,17 @@ func (item *CasesBytesTestArrayBytes) InternalWriteTL2(w []byte, sizes []int) ([
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.N
 	if item.N != 0 {
 		serializedSize += 4
@@ -504,6 +503,7 @@ func (item *CasesBytesTestArrayBytes) InternalWriteTL2(w []byte, sizes []int) ([
 			w = basictl.NatWrite(w, item.N)
 		}
 	}
+
 	// write item.Arr
 	if len(item.Arr) != 0 {
 		serializedSize += sizes[0]
@@ -541,13 +541,13 @@ func (item *CasesBytesTestArrayBytes) InternalReadTL2(r []byte) (_ []byte, err e
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -559,13 +559,9 @@ func (item *CasesBytesTestArrayBytes) InternalReadTL2(r []byte) (_ []byte, err e
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases_bytes.testArray", index)
 		}
 	}
-
-	// read item.N
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
@@ -573,8 +569,6 @@ func (item *CasesBytesTestArrayBytes) InternalReadTL2(r []byte) (_ []byte, err e
 	} else {
 		item.N = 0
 	}
-
-	// read item.Arr
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinVectorString.BuiltinVectorStringBytesInternalReadTL2(currentR, &item.Arr); err != nil {
 			return currentR, err
@@ -582,7 +576,7 @@ func (item *CasesBytesTestArrayBytes) InternalReadTL2(r []byte) (_ []byte, err e
 	} else {
 		item.Arr = item.Arr[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

@@ -20,6 +20,8 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTL2TestObjectWithMuiltiParams41 struct {
 	F1 [4]int32 // Conditional: 4.0
 	F2 [1]int32 // Conditional: 1.0
+
+	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams41) TLName() string {
@@ -27,13 +29,14 @@ func (CasesTL2TestObjectWithMuiltiParams41) TLName() string {
 }
 func (CasesTL2TestObjectWithMuiltiParams41) TLTag() uint32 { return 0x76444f62 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF1() bool { return 4&(1<<0) != 0 }
+func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF2() bool { return 1&(1<<0) != 0 }
+func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Reset() {
 	tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
 	tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGenerator) {
@@ -50,7 +53,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGen
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = tlBuiltinTuple4Int.BuiltinTuple4IntRead(w, &item.F1); err != nil {
 			return w, err
 		}
@@ -58,6 +63,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err 
 		tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
 	}
 	if 1&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBuiltinTuple1Int.BuiltinTuple1IntRead(w, &item.F2); err != nil {
 			return w, err
 		}
@@ -201,9 +207,10 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int) [
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.F1
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = tlBuiltinTuple4Int.BuiltinTuple4IntCalculateLayout(sizes, &item.F1)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -231,6 +238,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int) [
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -239,17 +247,17 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, siz
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.F1
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -259,6 +267,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, siz
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.F2
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -294,13 +303,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -312,13 +321,13 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesTL2.testObjectWithMuiltiParams", index)
 		}
 	}
-
-	// read item.F1
+	item.tl2mask0 = 0
+	if block&(1<<1) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinTuple4Int.BuiltinTuple4IntInternalReadTL2(currentR, &item.F1); err != nil {
 			return currentR, err
@@ -326,8 +335,9 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 	} else {
 		tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
 	}
-
-	// read item.F2
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinTuple1Int.BuiltinTuple1IntInternalReadTL2(currentR, &item.F2); err != nil {
 			return currentR, err
@@ -335,7 +345,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) InternalReadTL2(r []byte) (_ [
 	} else {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

@@ -136,9 +136,10 @@ func (item *CasesBytesTestTuple) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Tpl
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Tpl.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -155,6 +156,7 @@ func (item *CasesBytesTestTuple) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -163,17 +165,17 @@ func (item *CasesBytesTestTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Tpl
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -209,13 +211,13 @@ func (item *CasesBytesTestTuple) InternalReadTL2(r []byte) (_ []byte, err error)
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -227,13 +229,9 @@ func (item *CasesBytesTestTuple) InternalReadTL2(r []byte) (_ []byte, err error)
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases_bytes.testTuple", index)
 		}
 	}
-
-	// read item.Tpl
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Tpl.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -241,7 +239,7 @@ func (item *CasesBytesTestTuple) InternalReadTL2(r []byte) (_ []byte, err error)
 	} else {
 		item.Tpl.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -369,9 +367,10 @@ func (item *CasesBytesTestTupleBytes) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Tpl
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Tpl.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -388,6 +387,7 @@ func (item *CasesBytesTestTupleBytes) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -396,17 +396,17 @@ func (item *CasesBytesTestTupleBytes) InternalWriteTL2(w []byte, sizes []int) ([
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Tpl
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -442,13 +442,13 @@ func (item *CasesBytesTestTupleBytes) InternalReadTL2(r []byte) (_ []byte, err e
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -460,13 +460,9 @@ func (item *CasesBytesTestTupleBytes) InternalReadTL2(r []byte) (_ []byte, err e
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases_bytes.testTuple", index)
 		}
 	}
-
-	// read item.Tpl
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Tpl.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -474,7 +470,7 @@ func (item *CasesBytesTestTupleBytes) InternalReadTL2(r []byte) (_ []byte, err e
 	} else {
 		item.Tpl.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

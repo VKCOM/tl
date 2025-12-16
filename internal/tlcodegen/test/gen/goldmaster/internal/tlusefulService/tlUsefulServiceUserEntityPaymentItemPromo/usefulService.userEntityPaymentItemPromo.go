@@ -124,6 +124,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Content
 	if len(item.Content) != 0 {
@@ -142,6 +143,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) CalculateLayout(sizes []int
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -150,17 +152,17 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalWriteTL2(w []byte, 
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Content
 	if len(item.Content) != 0 {
 		serializedSize += len(item.Content)
@@ -196,13 +198,13 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte) (
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -214,13 +216,9 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte) (
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("usefulService.userEntityPaymentItemPromo", index)
 		}
 	}
-
-	// read item.Content
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Content); err != nil {
 			return currentR, err
@@ -228,7 +226,7 @@ func (item *UsefulServiceUserEntityPaymentItemPromo) InternalReadTL2(r []byte) (
 	} else {
 		item.Content = ""
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

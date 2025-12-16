@@ -180,6 +180,7 @@ func (item *CasesTestOutFieldMaskContainer) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.F
 	if item.F != 0 {
@@ -189,7 +190,7 @@ func (item *CasesTestOutFieldMaskContainer) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.Inner
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.Inner.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -206,6 +207,7 @@ func (item *CasesTestOutFieldMaskContainer) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -214,17 +216,17 @@ func (item *CasesTestOutFieldMaskContainer) InternalWriteTL2(w []byte, sizes []i
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.F
 	if item.F != 0 {
 		serializedSize += 4
@@ -233,6 +235,7 @@ func (item *CasesTestOutFieldMaskContainer) InternalWriteTL2(w []byte, sizes []i
 			w = basictl.NatWrite(w, item.F)
 		}
 	}
+
 	// write item.Inner
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -268,13 +271,13 @@ func (item *CasesTestOutFieldMaskContainer) InternalReadTL2(r []byte) (_ []byte,
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -286,13 +289,9 @@ func (item *CasesTestOutFieldMaskContainer) InternalReadTL2(r []byte) (_ []byte,
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testOutFieldMaskContainer", index)
 		}
 	}
-
-	// read item.F
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F); err != nil {
 			return currentR, err
@@ -300,8 +299,6 @@ func (item *CasesTestOutFieldMaskContainer) InternalReadTL2(r []byte) (_ []byte,
 	} else {
 		item.F = 0
 	}
-
-	// read item.Inner
 	if block&(1<<2) != 0 {
 		if currentR, err = item.Inner.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -309,7 +306,7 @@ func (item *CasesTestOutFieldMaskContainer) InternalReadTL2(r []byte) (_ []byte,
 	} else {
 		item.Inner.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

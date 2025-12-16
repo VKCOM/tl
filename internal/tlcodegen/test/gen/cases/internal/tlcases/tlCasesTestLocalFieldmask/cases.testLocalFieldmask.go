@@ -20,20 +20,27 @@ type CasesTestLocalFieldmask struct {
 	F2 uint32 // Conditional: item.F1.0
 	// F3 (TrueType) // Conditional: item.F2.1
 	// F4 (TrueType) // Conditional: item.F2.1
+
+	tl2mask0 byte
 }
 
 func (CasesTestLocalFieldmask) TLName() string { return "cases.testLocalFieldmask" }
 func (CasesTestLocalFieldmask) TLTag() uint32  { return 0xf68fd3f9 }
 
+func (item *CasesTestLocalFieldmask) GetF2() uint32 {
+	return item.F2
+}
 func (item *CasesTestLocalFieldmask) SetF2(v uint32) {
 	item.F2 = v
 	item.F1 |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestLocalFieldmask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestLocalFieldmask) IsSetF2() bool { return item.F1&(1<<0) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF2() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestLocalFieldmask) SetF3(v bool) {
 	if v {
@@ -41,8 +48,13 @@ func (item *CasesTestLocalFieldmask) SetF3(v bool) {
 	} else {
 		item.F2 &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *CasesTestLocalFieldmask) IsSetF3() bool { return item.F2&(1<<1) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF3() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestLocalFieldmask) SetF4(v bool) {
 	if v {
@@ -50,12 +62,18 @@ func (item *CasesTestLocalFieldmask) SetF4(v bool) {
 	} else {
 		item.F2 &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 4
+	} else {
+		item.tl2mask0 &^= 4
+	}
 }
-func (item *CasesTestLocalFieldmask) IsSetF4() bool { return item.F2&(1<<1) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF4() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTestLocalFieldmask) Reset() {
 	item.F1 = 0
 	item.F2 = 0
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {
@@ -68,15 +86,23 @@ func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTestLocalFieldmask) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.F1); err != nil {
 		return w, err
 	}
 	if item.F1&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.NatRead(w, &item.F2); err != nil {
 			return w, err
 		}
 	} else {
 		item.F2 = 0
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 4
 	}
 	return w, nil
 }
@@ -260,6 +286,7 @@ func (item *CasesTestLocalFieldmask) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.F1
 	if item.F1 != 0 {
@@ -282,6 +309,7 @@ func (item *CasesTestLocalFieldmask) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -290,17 +318,17 @@ func (item *CasesTestLocalFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.F1
 	if item.F1 != 0 {
 		serializedSize += 4
@@ -309,6 +337,7 @@ func (item *CasesTestLocalFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]
 			w = basictl.NatWrite(w, item.F1)
 		}
 	}
+
 	// write item.F2
 	if item.F2 != 0 {
 		serializedSize += 4
@@ -317,6 +346,7 @@ func (item *CasesTestLocalFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]
 			w = basictl.NatWrite(w, item.F2)
 		}
 	}
+
 	w[currentBlockPosition] = currentBlock
 	return w, sizes
 }
@@ -343,13 +373,13 @@ func (item *CasesTestLocalFieldmask) InternalReadTL2(r []byte) (_ []byte, err er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -361,13 +391,10 @@ func (item *CasesTestLocalFieldmask) InternalReadTL2(r []byte) (_ []byte, err er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testLocalFieldmask", index)
 		}
 	}
-
-	// read item.F1
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F1); err != nil {
 			return currentR, err
@@ -375,8 +402,9 @@ func (item *CasesTestLocalFieldmask) InternalReadTL2(r []byte) (_ []byte, err er
 	} else {
 		item.F1 = 0
 	}
-
-	// read item.F2
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F2); err != nil {
 			return currentR, err
@@ -384,7 +412,13 @@ func (item *CasesTestLocalFieldmask) InternalReadTL2(r []byte) (_ []byte, err er
 	} else {
 		item.F2 = 0
 	}
-
+	if block&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if block&(1<<4) != 0 {
+		item.tl2mask0 |= 4
+	}
+	internal.Unused(currentR)
 	return r, nil
 }
 

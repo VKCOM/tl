@@ -157,6 +157,7 @@ func (item *UsefulServiceUserEntityPaymentItem) CalculateLayout(sizes []int) []i
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.Id
 	if len(item.Id) != 0 {
@@ -169,7 +170,7 @@ func (item *UsefulServiceUserEntityPaymentItem) CalculateLayout(sizes []int) []i
 	}
 
 	// calculate layout for item.Promo
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if item.Promo.Ok {
 		sizes = item.Promo.CalculateLayout(sizes)
 		if sizes[currentPosition] != 0 {
@@ -188,6 +189,7 @@ func (item *UsefulServiceUserEntityPaymentItem) CalculateLayout(sizes []int) []i
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -196,17 +198,17 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalWriteTL2(w []byte, sizes
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.Id
 	if len(item.Id) != 0 {
 		serializedSize += len(item.Id)
@@ -216,6 +218,7 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalWriteTL2(w []byte, sizes
 			w = basictl.StringWriteTL2(w, item.Id)
 		}
 	}
+
 	// write item.Promo
 	if item.Promo.Ok {
 		serializedSize += sizes[0]
@@ -253,13 +256,13 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalReadTL2(r []byte) (_ []b
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -271,13 +274,9 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalReadTL2(r []byte) (_ []b
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("usefulService.userEntityPaymentItem", index)
 		}
 	}
-
-	// read item.Id
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Id); err != nil {
 			return currentR, err
@@ -285,8 +284,6 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalReadTL2(r []byte) (_ []b
 	} else {
 		item.Id = ""
 	}
-
-	// read item.Promo
 	if block&(1<<2) != 0 {
 		if currentR, err = item.Promo.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -294,7 +291,7 @@ func (item *UsefulServiceUserEntityPaymentItem) InternalReadTL2(r []byte) (_ []b
 	} else {
 		item.Promo.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

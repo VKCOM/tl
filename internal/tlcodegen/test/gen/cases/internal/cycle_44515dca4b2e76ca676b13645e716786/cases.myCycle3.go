@@ -18,24 +18,32 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesMyCycle3 struct {
 	FieldsMask uint32
 	A          CasesMyCycle1 // Conditional: item.FieldsMask.0
+
+	tl2mask0 byte
 }
 
 func (CasesMyCycle3) TLName() string { return "cases.myCycle3" }
 func (CasesMyCycle3) TLTag() uint32  { return 0x7624f86b }
 
+func (item *CasesMyCycle3) GetA() CasesMyCycle1 {
+	return item.A
+}
 func (item *CasesMyCycle3) SetA(v CasesMyCycle1) {
 	item.A = v
 	item.FieldsMask |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesMyCycle3) ClearA() {
 	item.A.Reset()
 	item.FieldsMask &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesMyCycle3) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *CasesMyCycle3) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesMyCycle3) Reset() {
 	item.FieldsMask = 0
 	item.A.Reset()
+	item.tl2mask0 = 0
 }
 
 func (item *CasesMyCycle3) FillRandom(rg *basictl.RandGenerator) {
@@ -48,10 +56,12 @@ func (item *CasesMyCycle3) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesMyCycle3) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = item.A.Read(w); err != nil {
 			return w, err
 		}
@@ -192,6 +202,7 @@ func (item *CasesMyCycle3) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -201,7 +212,7 @@ func (item *CasesMyCycle3) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.A
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = item.A.CalculateLayout(sizes)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -218,6 +229,7 @@ func (item *CasesMyCycle3) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -226,17 +238,17 @@ func (item *CasesMyCycle3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.FieldsMask
 	if item.FieldsMask != 0 {
 		serializedSize += 4
@@ -245,6 +257,7 @@ func (item *CasesMyCycle3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []in
 			w = basictl.NatWrite(w, item.FieldsMask)
 		}
 	}
+
 	// write item.A
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -280,13 +293,13 @@ func (item *CasesMyCycle3) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -298,13 +311,10 @@ func (item *CasesMyCycle3) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.myCycle3", index)
 		}
 	}
-
-	// read item.FieldsMask
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.FieldsMask); err != nil {
 			return currentR, err
@@ -312,8 +322,9 @@ func (item *CasesMyCycle3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.FieldsMask = 0
 	}
-
-	// read item.A
+	if block&(1<<2) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if block&(1<<2) != 0 {
 		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -321,7 +332,7 @@ func (item *CasesMyCycle3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		item.A.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

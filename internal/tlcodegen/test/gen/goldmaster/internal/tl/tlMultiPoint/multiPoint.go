@@ -256,9 +256,10 @@ func (item *MultiPoint) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.A
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	sizes = tlBuiltinTuple3Int.BuiltinTuple3IntCalculateLayout(sizes, &item.A)
 	if sizes[currentPosition] != 0 {
 		lastUsedByte = 1
@@ -330,6 +331,7 @@ func (item *MultiPoint) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -338,17 +340,17 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.A
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -358,6 +360,7 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.B
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -367,6 +370,7 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.C
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -376,6 +380,7 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.D
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -385,6 +390,7 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.E
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -394,6 +400,7 @@ func (item *MultiPoint) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) 
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.F
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -429,13 +436,13 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -447,13 +454,9 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("multiPoint", index)
 		}
 	}
-
-	// read item.A
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinTuple3Int.BuiltinTuple3IntInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
@@ -461,8 +464,6 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.A)
 	}
-
-	// read item.B
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedInternalReadTL2(currentR, &item.B); err != nil {
 			return currentR, err
@@ -470,8 +471,6 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		tlBuiltinTuple3IntBoxed.BuiltinTuple3IntBoxedReset(&item.B)
 	}
-
-	// read item.C
 	if block&(1<<3) != 0 {
 		if currentR, err = tlBuiltinTuple3Int32.BuiltinTuple3Int32InternalReadTL2(currentR, &item.C); err != nil {
 			return currentR, err
@@ -479,8 +478,6 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.C)
 	}
-
-	// read item.D
 	if block&(1<<4) != 0 {
 		if currentR, err = tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
@@ -488,8 +485,6 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		tlBuiltinTuple3Int32Boxed.BuiltinTuple3Int32BoxedReset(&item.D)
 	}
-
-	// read item.E
 	if block&(1<<5) != 0 {
 		if currentR, err = tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32InternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
@@ -497,8 +492,6 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		tlBuiltinTuple3MyInt32.BuiltinTuple3MyInt32Reset(&item.E)
 	}
-
-	// read item.F
 	if block&(1<<6) != 0 {
 		if currentR, err = tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedInternalReadTL2(currentR, &item.F); err != nil {
 			return currentR, err
@@ -506,7 +499,7 @@ func (item *MultiPoint) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		tlBuiltinTuple3MyInt32Boxed.BuiltinTuple3MyInt32BoxedReset(&item.F)
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

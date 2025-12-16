@@ -1237,6 +1237,8 @@ type TypeRW interface {
 }
 
 type Field struct {
+	originateFromTL2 bool
+
 	originalName string
 	t            *TypeRWWrapper
 	bare         bool
@@ -1247,13 +1249,12 @@ type Field struct {
 	fieldMask *ActualNatArg
 	BitNumber uint32 // only used when fieldMask != nil
 
+	MaskTL2Bit *int
+
 	natArgs      []ActualNatArg
 	halfResolved HalfResolvedArgument
 
 	origTL tlast.Field
-
-	// for tl1 - tl2 smooth migration, not affecting tl1 (if it is not empty bitnumber has meaning)
-	GenerateLegacySettersForTL2Name string
 }
 
 func (f *Field) Bare() bool {
@@ -1286,7 +1287,15 @@ func (f *Field) IsLocalIndependent() bool {
 }
 
 func (f *Field) IsTL2Omitted() bool {
-	return f.originalName == "_"
+	return f.originateFromTL2 && f.originalName == "_"
+}
+
+func (f *Field) IsTL2Bool() bool {
+	if f.originateFromTL2 {
+		b, ok := f.t.trw.(*TypeRWBool)
+		return ok && !b.isTL2Legacy
+	}
+	return f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True")
 }
 
 func wrapWithError(wrap bool, wrappedType string) string {

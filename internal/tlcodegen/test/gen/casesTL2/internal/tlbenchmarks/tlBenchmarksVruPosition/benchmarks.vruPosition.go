@@ -9,7 +9,6 @@ package tlBenchmarksVruPosition
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tl/tlTrue"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/internal/tlbenchmarks/tlBenchmarksVruHash"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -18,105 +17,64 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type BenchmarksVruPosition struct {
-	FieldsMask uint32
-	// commitBit (TrueType) // Conditional: item.mask1.2
-	// metaBlock (TrueType) // Conditional: item.mask1.3
-	// splitPayload (TrueType) // Conditional: item.mask1.4
-	// rotationBlock (TrueType) // Conditional: item.mask1.5
-	// canonicalHash (TrueType) // Conditional: item.mask1.6
+	FieldsMask    uint32
+	CommitBit     bool
+	MetaBlock     bool
+	SplitPayload  bool
+	RotationBlock bool
+	CanonicalHash bool
 	PayloadOffset int64
 	BlockTimeNano int64
 	Hash          tlBenchmarksVruHash.BenchmarksVruHash
 	FileOffset    int64
-	seqNumber     int64 // Conditional: item.mask2.3
+	seqNumber     int64
 
-	mask1 byte // for fields #1 .. #7
-	mask2 byte // for fields #8 .. #15
+	tl2mask0 byte
 }
 
 func (BenchmarksVruPosition) TLName() string { return "benchmarks.vruPosition" }
 func (BenchmarksVruPosition) TLTag() uint32  { return 0x00000000 }
-
-func (item *BenchmarksVruPosition) SetCommitBit(v bool) {
-	if v {
-		item.mask1 |= 1 << 2
-	} else {
-		item.mask1 &^= 1 << 2
-	}
-}
-func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.mask1&(1<<2) != 0 }
-
-func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
-	if v {
-		item.mask1 |= 1 << 3
-	} else {
-		item.mask1 &^= 1 << 3
-	}
-}
-func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.mask1&(1<<3) != 0 }
-
-func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
-	if v {
-		item.mask1 |= 1 << 4
-	} else {
-		item.mask1 &^= 1 << 4
-	}
-}
-func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.mask1&(1<<4) != 0 }
-
-func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
-	if v {
-		item.mask1 |= 1 << 5
-	} else {
-		item.mask1 &^= 1 << 5
-	}
-}
-func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.mask1&(1<<5) != 0 }
-
-func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
-	if v {
-		item.mask1 |= 1 << 6
-	} else {
-		item.mask1 &^= 1 << 6
-	}
-}
-func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.mask1&(1<<6) != 0 }
 
 func (item *BenchmarksVruPosition) GetSeqNumber() int64 {
 	return item.seqNumber
 }
 func (item *BenchmarksVruPosition) SetSeqNumber(v int64) {
 	item.seqNumber = v
-	item.mask2 |= 1 << 3
+	item.tl2mask0 |= 1
 }
 func (item *BenchmarksVruPosition) ClearSeqNumber() {
 	item.seqNumber = 0
-	item.mask2 &^= 1 << 3
+	item.tl2mask0 &^= 1
 }
-func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.mask2&(1<<3) != 0 }
+func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.tl2mask0&1 != 0 }
 
 func (item *BenchmarksVruPosition) Reset() {
 	item.FieldsMask = 0
+	item.CommitBit = false
+	item.MetaBlock = false
+	item.SplitPayload = false
+	item.RotationBlock = false
+	item.CanonicalHash = false
 	item.PayloadOffset = 0
 	item.BlockTimeNano = 0
 	item.Hash.Reset()
 	item.FileOffset = 0
 	item.seqNumber = 0
+	item.tl2mask0 = 0
 }
 
 func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
-	item.mask1 = basictl.RandomByte(rg)
-	item.mask2 = basictl.RandomByte(rg)
 	item.FieldsMask = basictl.RandomUint(rg)
+	item.CommitBit = basictl.RandomUint(rg)&1 == 1
+	item.MetaBlock = basictl.RandomUint(rg)&1 == 1
+	item.SplitPayload = basictl.RandomUint(rg)&1 == 1
+	item.RotationBlock = basictl.RandomUint(rg)&1 == 1
+	item.CanonicalHash = basictl.RandomUint(rg)&1 == 1
 	item.PayloadOffset = basictl.RandomLong(rg)
 	item.BlockTimeNano = basictl.RandomLong(rg)
 	item.Hash.FillRandom(rg)
 	item.FileOffset = basictl.RandomLong(rg)
-	if item.mask2&(1<<3) != 0 {
-		item.seqNumber = basictl.RandomLong(rg)
-	} else {
-		item.seqNumber = 0
-	}
+	item.seqNumber = basictl.RandomLong(rg)
 }
 
 func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
@@ -155,16 +113,11 @@ func (item *BenchmarksVruPosition) ReadJSON(legacyTypeNames bool, in *basictl.Js
 
 func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer) error {
 	var propFieldsMaskPresented bool
-	var trueTypecommitBitPresented bool
-	var trueTypecommitBitValue bool
-	var trueTypemetaBlockPresented bool
-	var trueTypemetaBlockValue bool
-	var trueTypesplitPayloadPresented bool
-	var trueTypesplitPayloadValue bool
-	var trueTyperotationBlockPresented bool
-	var trueTyperotationBlockValue bool
-	var trueTypecanonicalHashPresented bool
-	var trueTypecanonicalHashValue bool
+	var propCommitBitPresented bool
+	var propMetaBlockPresented bool
+	var propSplitPayloadPresented bool
+	var propRotationBlockPresented bool
+	var propCanonicalHashPresented bool
 	var propPayloadOffsetPresented bool
 	var propBlockTimeNanoPresented bool
 	var propHashPresented bool
@@ -189,45 +142,45 @@ func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 				}
 				propFieldsMaskPresented = true
 			case "commit_bit":
-				if trueTypecommitBitPresented {
+				if propCommitBitPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruPosition", "commit_bit")
 				}
-				if err := internal.Json2ReadBool(in, &trueTypecommitBitValue); err != nil {
+				if err := internal.Json2ReadBool(in, &item.CommitBit); err != nil {
 					return err
 				}
-				trueTypecommitBitPresented = true
+				propCommitBitPresented = true
 			case "meta_block":
-				if trueTypemetaBlockPresented {
+				if propMetaBlockPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruPosition", "meta_block")
 				}
-				if err := internal.Json2ReadBool(in, &trueTypemetaBlockValue); err != nil {
+				if err := internal.Json2ReadBool(in, &item.MetaBlock); err != nil {
 					return err
 				}
-				trueTypemetaBlockPresented = true
+				propMetaBlockPresented = true
 			case "split_payload":
-				if trueTypesplitPayloadPresented {
+				if propSplitPayloadPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruPosition", "split_payload")
 				}
-				if err := internal.Json2ReadBool(in, &trueTypesplitPayloadValue); err != nil {
+				if err := internal.Json2ReadBool(in, &item.SplitPayload); err != nil {
 					return err
 				}
-				trueTypesplitPayloadPresented = true
+				propSplitPayloadPresented = true
 			case "rotation_block":
-				if trueTyperotationBlockPresented {
+				if propRotationBlockPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruPosition", "rotation_block")
 				}
-				if err := internal.Json2ReadBool(in, &trueTyperotationBlockValue); err != nil {
+				if err := internal.Json2ReadBool(in, &item.RotationBlock); err != nil {
 					return err
 				}
-				trueTyperotationBlockPresented = true
+				propRotationBlockPresented = true
 			case "canonical_hash":
-				if trueTypecanonicalHashPresented {
+				if propCanonicalHashPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruPosition", "canonical_hash")
 				}
-				if err := internal.Json2ReadBool(in, &trueTypecanonicalHashValue); err != nil {
+				if err := internal.Json2ReadBool(in, &item.CanonicalHash); err != nil {
 					return err
 				}
-				trueTypecanonicalHashPresented = true
+				propCanonicalHashPresented = true
 			case "payload_offset":
 				if propPayloadOffsetPresented {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("benchmarks.vruPosition", "payload_offset")
@@ -281,6 +234,21 @@ func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if !propFieldsMaskPresented {
 		item.FieldsMask = 0
 	}
+	if !propCommitBitPresented {
+		item.CommitBit = false
+	}
+	if !propMetaBlockPresented {
+		item.MetaBlock = false
+	}
+	if !propSplitPayloadPresented {
+		item.SplitPayload = false
+	}
+	if !propRotationBlockPresented {
+		item.RotationBlock = false
+	}
+	if !propCanonicalHashPresented {
+		item.CanonicalHash = false
+	}
 	if !propPayloadOffsetPresented {
 		item.PayloadOffset = 0
 	}
@@ -295,59 +263,6 @@ func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	}
 	if !propseqNumberPresented {
 		item.seqNumber = 0
-	}
-	if trueTypecommitBitPresented {
-		if trueTypecommitBitValue {
-			item.mask1 |= 1 << 2
-		}
-		item.mask1 |= 1 << 2
-	}
-	if trueTypemetaBlockPresented {
-		if trueTypemetaBlockValue {
-			item.mask1 |= 1 << 3
-		}
-		item.mask1 |= 1 << 3
-	}
-	if trueTypesplitPayloadPresented {
-		if trueTypesplitPayloadValue {
-			item.mask1 |= 1 << 4
-		}
-		item.mask1 |= 1 << 4
-	}
-	if trueTyperotationBlockPresented {
-		if trueTyperotationBlockValue {
-			item.mask1 |= 1 << 5
-		}
-		item.mask1 |= 1 << 5
-	}
-	if trueTypecanonicalHashPresented {
-		if trueTypecanonicalHashValue {
-			item.mask1 |= 1 << 6
-		}
-		item.mask1 |= 1 << 6
-	}
-	if propseqNumberPresented {
-		item.mask2 |= 1 << 3
-	}
-	// tries to set bit to zero if it is 1
-	if trueTypecommitBitPresented && !trueTypecommitBitValue && (item.mask1&(1<<2) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruPosition", "fieldmask bit item.mask1.2 is indefinite because of the contradictions in values")
-	}
-	// tries to set bit to zero if it is 1
-	if trueTypemetaBlockPresented && !trueTypemetaBlockValue && (item.mask1&(1<<3) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruPosition", "fieldmask bit item.mask1.3 is indefinite because of the contradictions in values")
-	}
-	// tries to set bit to zero if it is 1
-	if trueTypesplitPayloadPresented && !trueTypesplitPayloadValue && (item.mask1&(1<<4) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruPosition", "fieldmask bit item.mask1.4 is indefinite because of the contradictions in values")
-	}
-	// tries to set bit to zero if it is 1
-	if trueTyperotationBlockPresented && !trueTyperotationBlockValue && (item.mask1&(1<<5) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruPosition", "fieldmask bit item.mask1.5 is indefinite because of the contradictions in values")
-	}
-	// tries to set bit to zero if it is 1
-	if trueTypecanonicalHashPresented && !trueTypecanonicalHashValue && (item.mask1&(1<<6) != 0) {
-		return internal.ErrorInvalidJSON("benchmarks.vruPosition", "fieldmask bit item.mask1.6 is indefinite because of the contradictions in values")
 	}
 	return nil
 }
@@ -371,25 +286,40 @@ func (item *BenchmarksVruPosition) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	if (item.FieldsMask != 0) == false {
 		w = w[:backupIndexFieldsMask]
 	}
-	if item.mask1&(1<<2) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"commit_bit":true`...)
+	backupIndexCommitBit := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"commit_bit":`...)
+	w = basictl.JSONWriteBool(w, item.CommitBit)
+	if (item.CommitBit) == false {
+		w = w[:backupIndexCommitBit]
 	}
-	if item.mask1&(1<<3) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"meta_block":true`...)
+	backupIndexMetaBlock := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"meta_block":`...)
+	w = basictl.JSONWriteBool(w, item.MetaBlock)
+	if (item.MetaBlock) == false {
+		w = w[:backupIndexMetaBlock]
 	}
-	if item.mask1&(1<<4) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"split_payload":true`...)
+	backupIndexSplitPayload := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"split_payload":`...)
+	w = basictl.JSONWriteBool(w, item.SplitPayload)
+	if (item.SplitPayload) == false {
+		w = w[:backupIndexSplitPayload]
 	}
-	if item.mask1&(1<<5) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"rotation_block":true`...)
+	backupIndexRotationBlock := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"rotation_block":`...)
+	w = basictl.JSONWriteBool(w, item.RotationBlock)
+	if (item.RotationBlock) == false {
+		w = w[:backupIndexRotationBlock]
 	}
-	if item.mask1&(1<<6) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"canonical_hash":true`...)
+	backupIndexCanonicalHash := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"canonical_hash":`...)
+	w = basictl.JSONWriteBool(w, item.CanonicalHash)
+	if (item.CanonicalHash) == false {
+		w = w[:backupIndexCanonicalHash]
 	}
 	backupIndexPayloadOffset := len(w)
 	w = basictl.JSONAddCommaIfNeeded(w)
@@ -415,10 +345,12 @@ func (item *BenchmarksVruPosition) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	if (item.FileOffset != 0) == false {
 		w = w[:backupIndexFileOffset]
 	}
-	if item.mask2&(1<<3) != 0 {
-		w = basictl.JSONAddCommaIfNeeded(w)
-		w = append(w, `"seq_number":`...)
-		w = basictl.JSONWriteInt64(w, item.seqNumber)
+	backupIndexseqNumber := len(w)
+	w = basictl.JSONAddCommaIfNeeded(w)
+	w = append(w, `"seq_number":`...)
+	w = basictl.JSONWriteInt64(w, item.seqNumber)
+	if (item.seqNumber != 0) == false {
+		w = w[:backupIndexseqNumber]
 	}
 	return append(w, '}')
 }
@@ -440,6 +372,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.FieldsMask
 	if item.FieldsMask != 0 {
@@ -448,74 +381,39 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 		currentSize += 4
 	}
 
-	var truecommitBit tlTrue.True
-	// calculate layout for truecommitBit
-	currentPosition := len(sizes)
-	if item.mask1&(1<<2) != 0 {
-		sizes = truecommitBit.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	// calculate layout for item.CommitBit
+	if item.CommitBit {
+
+		lastUsedByte = 1
+		currentSize += 0
 	}
 
-	var truemetaBlock tlTrue.True
-	// calculate layout for truemetaBlock
-	currentPosition = len(sizes)
-	if item.mask1&(1<<3) != 0 {
-		sizes = truemetaBlock.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	// calculate layout for item.MetaBlock
+	if item.MetaBlock {
+
+		lastUsedByte = 1
+		currentSize += 0
 	}
 
-	var truesplitPayload tlTrue.True
-	// calculate layout for truesplitPayload
-	currentPosition = len(sizes)
-	if item.mask1&(1<<4) != 0 {
-		sizes = truesplitPayload.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	// calculate layout for item.SplitPayload
+	if item.SplitPayload {
+
+		lastUsedByte = 1
+		currentSize += 0
 	}
 
-	var truerotationBlock tlTrue.True
-	// calculate layout for truerotationBlock
-	currentPosition = len(sizes)
-	if item.mask1&(1<<5) != 0 {
-		sizes = truerotationBlock.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	// calculate layout for item.RotationBlock
+	if item.RotationBlock {
+
+		lastUsedByte = 1
+		currentSize += 0
 	}
 
-	var truecanonicalHash tlTrue.True
-	// calculate layout for truecanonicalHash
-	currentPosition = len(sizes)
-	if item.mask1&(1<<6) != 0 {
-		sizes = truecanonicalHash.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	// calculate layout for item.CanonicalHash
+	if item.CanonicalHash {
+
+		lastUsedByte = 1
+		currentSize += 0
 	}
 
 	// calculate layout for item.PayloadOffset
@@ -551,12 +449,10 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 	}
 
 	// calculate layout for item.seqNumber
-	if item.mask2&(1<<3) != 0 {
-		if item.seqNumber != 0 {
+	if item.seqNumber != 0 {
 
-			lastUsedByte = 2
-			currentSize += 8
-		}
+		lastUsedByte = 2
+		currentSize += 8
 	}
 
 	// append byte for each section until last mentioned field
@@ -566,6 +462,7 @@ func (item *BenchmarksVruPosition) CalculateLayout(sizes []int) []int {
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -574,17 +471,17 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.FieldsMask
 	if item.FieldsMask != 0 {
 		serializedSize += 4
@@ -593,66 +490,42 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.NatWrite(w, item.FieldsMask)
 		}
 	}
-	var truecommitBit tlTrue.True
-	// write truecommitBit
-	if item.mask1&(1<<2) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = truecommitBit.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+
+	// write item.CommitBit
+	if item.CommitBit {
+		serializedSize += 0
+		currentBlock |= (1 << 2)
+
 	}
-	var truemetaBlock tlTrue.True
-	// write truemetaBlock
-	if item.mask1&(1<<3) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = truemetaBlock.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+
+	// write item.MetaBlock
+	if item.MetaBlock {
+		serializedSize += 0
+		currentBlock |= (1 << 3)
+
 	}
-	var truesplitPayload tlTrue.True
-	// write truesplitPayload
-	if item.mask1&(1<<4) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = truesplitPayload.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+
+	// write item.SplitPayload
+	if item.SplitPayload {
+		serializedSize += 0
+		currentBlock |= (1 << 4)
+
 	}
-	var truerotationBlock tlTrue.True
-	// write truerotationBlock
-	if item.mask1&(1<<5) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 5)
-			w, sizes = truerotationBlock.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+
+	// write item.RotationBlock
+	if item.RotationBlock {
+		serializedSize += 0
+		currentBlock |= (1 << 5)
+
 	}
-	var truecanonicalHash tlTrue.True
-	// write truecanonicalHash
-	if item.mask1&(1<<6) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 6)
-			w, sizes = truecanonicalHash.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+
+	// write item.CanonicalHash
+	if item.CanonicalHash {
+		serializedSize += 0
+		currentBlock |= (1 << 6)
+
 	}
+
 	// write item.PayloadOffset
 	if item.PayloadOffset != 0 {
 		serializedSize += 8
@@ -661,7 +534,6 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.LongWrite(w, item.PayloadOffset)
 		}
 	}
-
 	// add byte for fields with index 8..15
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
@@ -672,6 +544,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	} else {
 		return w, sizes
 	}
+
 	// write item.BlockTimeNano
 	if item.BlockTimeNano != 0 {
 		serializedSize += 8
@@ -680,6 +553,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.LongWrite(w, item.BlockTimeNano)
 		}
 	}
+
 	// write item.Hash
 	serializedSize += sizes[0]
 	if sizes[0] != 0 {
@@ -689,6 +563,7 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 	} else {
 		sizes = sizes[1:]
 	}
+
 	// write item.FileOffset
 	if item.FileOffset != 0 {
 		serializedSize += 8
@@ -697,14 +572,13 @@ func (item *BenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]by
 			w = basictl.LongWrite(w, item.FileOffset)
 		}
 	}
+
 	// write item.seqNumber
-	if item.mask2&(1<<3) != 0 {
-		if item.seqNumber != 0 {
-			serializedSize += 8
-			if 8 != 0 {
-				currentBlock |= (1 << 3)
-				w = basictl.LongWrite(w, item.seqNumber)
-			}
+	if item.seqNumber != 0 {
+		serializedSize += 8
+		if 8 != 0 {
+			currentBlock |= (1 << 3)
+			w = basictl.LongWrite(w, item.seqNumber)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -733,13 +607,13 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -751,14 +625,10 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("benchmarks.vruPosition", index)
 		}
 	}
-	item.mask1 = block
-
-	// read item.FieldsMask
+	item.tl2mask0 = 0
 	if block&(1<<1) != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.FieldsMask); err != nil {
 			return currentR, err
@@ -766,78 +636,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.FieldsMask = 0
 	}
-
-	var truecommitBit tlTrue.True
-	// read truecommitBit
-	if block&(1<<2) != 0 {
-		if item.mask1&(1<<2) != 0 {
-			if currentR, err = truecommitBit.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "commitBit" + "is presented but depending bit is absent")
-		}
-	} else {
-		truecommitBit.Reset()
-	}
-
-	var truemetaBlock tlTrue.True
-	// read truemetaBlock
-	if block&(1<<3) != 0 {
-		if item.mask1&(1<<3) != 0 {
-			if currentR, err = truemetaBlock.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "metaBlock" + "is presented but depending bit is absent")
-		}
-	} else {
-		truemetaBlock.Reset()
-	}
-
-	var truesplitPayload tlTrue.True
-	// read truesplitPayload
-	if block&(1<<4) != 0 {
-		if item.mask1&(1<<4) != 0 {
-			if currentR, err = truesplitPayload.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "splitPayload" + "is presented but depending bit is absent")
-		}
-	} else {
-		truesplitPayload.Reset()
-	}
-
-	var truerotationBlock tlTrue.True
-	// read truerotationBlock
-	if block&(1<<5) != 0 {
-		if item.mask1&(1<<5) != 0 {
-			if currentR, err = truerotationBlock.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "rotationBlock" + "is presented but depending bit is absent")
-		}
-	} else {
-		truerotationBlock.Reset()
-	}
-
-	var truecanonicalHash tlTrue.True
-	// read truecanonicalHash
-	if block&(1<<6) != 0 {
-		if item.mask1&(1<<6) != 0 {
-			if currentR, err = truecanonicalHash.InternalReadTL2(currentR); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "canonicalHash" + "is presented but depending bit is absent")
-		}
-	} else {
-		truecanonicalHash.Reset()
-	}
-
-	// read item.PayloadOffset
 	if block&(1<<7) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.PayloadOffset); err != nil {
 			return currentR, err
@@ -854,9 +652,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		block = 0
 	}
-	item.mask2 = block
-
-	// read item.BlockTimeNano
 	if block&(1<<0) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.BlockTimeNano); err != nil {
 			return currentR, err
@@ -864,8 +659,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.BlockTimeNano = 0
 	}
-
-	// read item.Hash
 	if block&(1<<1) != 0 {
 		if currentR, err = item.Hash.InternalReadTL2(currentR); err != nil {
 			return currentR, err
@@ -873,8 +666,6 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.Hash.Reset()
 	}
-
-	// read item.FileOffset
 	if block&(1<<2) != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.FileOffset); err != nil {
 			return currentR, err
@@ -882,20 +673,17 @@ func (item *BenchmarksVruPosition) InternalReadTL2(r []byte) (_ []byte, err erro
 	} else {
 		item.FileOffset = 0
 	}
-
-	// read item.seqNumber
 	if block&(1<<3) != 0 {
-		if item.mask2&(1<<3) != 0 {
-			if currentR, err = basictl.LongRead(currentR, &item.seqNumber); err != nil {
-				return currentR, err
-			}
-		} else {
-			return currentR, basictl.TL2Error("field mask contradiction: field item." + "seqNumber" + "is presented but depending bit is absent")
+		item.tl2mask0 |= 1
+	}
+	if block&(1<<3) != 0 {
+		if currentR, err = basictl.LongRead(currentR, &item.seqNumber); err != nil {
+			return currentR, err
 		}
 	} else {
 		item.seqNumber = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

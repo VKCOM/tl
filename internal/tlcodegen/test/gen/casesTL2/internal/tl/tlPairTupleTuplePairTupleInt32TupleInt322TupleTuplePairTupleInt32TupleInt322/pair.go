@@ -167,9 +167,10 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 
 	currentSize := 0
 	lastUsedByte := 0
+	currentPosition := 0
 
 	// calculate layout for item.X
-	currentPosition := len(sizes)
+	currentPosition = len(sizes)
 	if len(item.X) != 0 {
 		sizes = tlBuiltinVectorTuplePairTupleInt32TupleInt322.BuiltinVectorTuplePairTupleInt32TupleInt322CalculateLayout(sizes, &item.X)
 		if sizes[currentPosition] != 0 {
@@ -201,6 +202,7 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 		// remove unused values
 		sizes = sizes[:sizePosition+1]
 	}
+	internal.Unused(currentPosition)
 	sizes[sizePosition] = currentSize
 	return sizes
 }
@@ -209,17 +211,17 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 	currentSize := sizes[0]
 	sizes = sizes[1:]
 
-	serializedSize := 0
-
 	w = basictl.TL2WriteSize(w, currentSize)
 	if currentSize == 0 {
 		return w, sizes
 	}
+	serializedSize := 0
 
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
 	serializedSize += 1
+
 	// write item.X
 	if len(item.X) != 0 {
 		serializedSize += sizes[0]
@@ -231,6 +233,7 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 			sizes = sizes[1:]
 		}
 	}
+
 	// write item.Y
 	if len(item.Y) != 0 {
 		serializedSize += sizes[0]
@@ -268,13 +271,13 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -286,13 +289,9 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("pair", index)
 		}
 	}
-
-	// read item.X
 	if block&(1<<1) != 0 {
 		if currentR, err = tlBuiltinVectorTuplePairTupleInt32TupleInt322.BuiltinVectorTuplePairTupleInt32TupleInt322InternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
@@ -300,8 +299,6 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 	} else {
 		item.X = item.X[:0]
 	}
-
-	// read item.Y
 	if block&(1<<2) != 0 {
 		if currentR, err = tlBuiltinVectorTuplePairTupleInt32TupleInt322.BuiltinVectorTuplePairTupleInt32TupleInt322InternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
@@ -309,7 +306,7 @@ func (item *PairTupleTuplePairTupleInt32TupleInt322TupleTuplePairTupleInt32Tuple
 	} else {
 		item.Y = item.Y[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
