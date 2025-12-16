@@ -7,13 +7,22 @@ func (trw *TypeRWPrimitive) calculateLayoutCall(
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	return ""
-	//_, size := trw.tl2TrivialSize(targetObject, canDependOnLocalBit, refObject)
-	//return fmt.Sprintf("%[1]s = append(%[1]s, %[2]s)", targetSizes, size)
+	if trw.tlType == "string" {
+		sz := fmt.Sprintf("sz = 1 + basictl.TL2CalculateSize(%s)", addAsterisk(refObject, targetObject))
+		if zeroIfEmpty {
+			sz += fmt.Sprintf("; len(%s) != 0", addAsterisk(refObject, targetObject))
+		}
+		return sz
+	}
+	sz := fmt.Sprintf("sz = %d", trw.trivialSize())
+	if zeroIfEmpty {
+		sz += fmt.Sprintf("; %s != 0", addAsterisk(refObject, targetObject))
+	}
+	return sz
 }
 
 func (trw *TypeRWPrimitive) writeTL2Call(
@@ -164,4 +173,16 @@ func (trw *TypeRWPrimitive) tl2TrivialSize(targetObject string, canDependOnLocal
 		size = "8"
 	}
 	return isConstant, size
+}
+
+func (trw *TypeRWPrimitive) trivialSize() int {
+	switch trw.goType {
+	case "byte":
+		return 1
+	case "int32", "uint32", "float32":
+		return 4
+	case "int64", "float64":
+		return 8
+	}
+	return 0
 }

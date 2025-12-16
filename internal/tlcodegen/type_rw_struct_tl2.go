@@ -12,7 +12,7 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
@@ -20,9 +20,13 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	//	return ""
 	//}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject)
+		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, zeroIfEmpty, ins, refObject)
 	}
-	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject))
+	sz := fmt.Sprintf("%[1]s, sz = %[2]s.CalculateLayout(%[1]s, %[3]v)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), zeroIfEmpty)
+	if zeroIfEmpty {
+		sz += "; sz != 0"
+	}
+	return sz
 }
 
 func (trw *TypeRWStruct) writeTL2Call(

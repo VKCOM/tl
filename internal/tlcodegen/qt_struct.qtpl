@@ -1310,126 +1310,61 @@ func (item *{%s= goName %}) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []
 {%- else -%}
 
 {%- if struct_.wr.wantsTL2 -%}
-func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
+func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
     {%- if struct_.isTypeDef() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
-    currentSize := 0
+    currentSize := 1
     lastUsedByte := 0
+    var sz int
+
     {%- if struct_.wr.unionParent != nil && struct_.wr.unionIndex != 0 -%}
         // add constructor No for union type in case of non first option
-        lastUsedByte = 1
         currentSize += basictl.TL2CalculateSize({%d= struct_.wr.unionIndex %})
+        lastUsedByte = currentSize
     {%- endif -%}
-    currentPosition := 0
     {%- for fieldIndex, field := range struct_.Fields -%}
+        {%- if (fieldIndex + 1) % 8 == 0 -%}
+            currentSize++
+        {%- endif -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Bool() -%}{%- continue -%}{%- endif -%}
         {%- code
-            isTrue := field.t.IsTrueType()
             fieldName := fmt.Sprintf("item.%s", field.goName)
-            if isTrue {
-                fieldName = fmt.Sprintf("true%s", field.goName)
-            }
             fieldRecursive := field.recursive
+            fieldAsterisk := fieldRecursive
             if struct_.isTypeDef() {
                 fieldName = "ptr"
                 fieldRecursive = true
+                fieldAsterisk = true
             }
-            isSizeConstant, trivialSize := field.t.trw.tl2TrivialSize(fieldName, field.fieldMask == nil, fieldRecursive)
         -%}
-
-        {%- code /** ?TRUE -> BOOL CASE **/ -%}
-        {%- if isTrue && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() -%}
-            {%- continue -%}
-        {%- endif -%}
-        {%- if isTrue -%}
+        {%- if field.t.IsTrueType() -%}
             var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
         {%- endif -%}
-            // calculate layout for {%s= fieldName %}
-        {%- if len(trivialSize) == 0 -%}
-            currentPosition = len(sizes)
-        {%- endif -%}
-        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-            if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) != 0 {
-        {%- endif -%}
-        {%- code
-            nonEmptyCondition := field.t.TypeJSONEmptyCondition(false, fieldName, fieldRecursive)
-           _, isMaybe := field.t.trw.(*TypeRWMaybe);
-           if fieldRecursive && !isMaybe {
-                nilCheck := fmt.Sprintf("%s != nil", fieldName)
-                if nonEmptyCondition == "" {
-                    nonEmptyCondition = nilCheck
-                } else {
-                    nonEmptyCondition = nilCheck + " && " + nonEmptyCondition
-                }
-            }
-        -%}
-        {%- if nonEmptyCondition != "" -%}
-            if {%s= nonEmptyCondition %} {
-        {%- endif -%}
-        {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, field.fieldMask == nil, struct_.wr.ins, fieldRecursive) %}
-        {%- if field.t.trw.doesZeroSizeMeanEmpty(field.fieldMask == nil) -%}
-            {%- if !isSizeConstant -%}
-                {%- code
-                    sizeValue := "sizes[currentPosition]"
-                    if len(trivialSize) != 0 {
-                        sizeValue = trivialSize
-                    }
-                -%}
-                if {%s= sizeValue %} != 0 {
-                    lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
-                    currentSize += {%s= sizeValue %}
-                    {%- if field.t.trw.isSizeWrittenInData() -%}
-                        currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
-                    {%- endif -%}
-                    {%- if len(trivialSize) == 0 -%}
-                        } else {
-                            sizes = sizes[:currentPosition + 1]
-                        }
-                    {%- else -%}
-                        }
-                    {%- endif -%}
-                {%- else -%}
-                    lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
-                    currentSize += {%s= trivialSize %}
-                {%- if field.t.trw.isSizeWrittenInData() -%}
-                    currentSize += basictl.TL2CalculateSize({%s= trivialSize %})
-                {%- endif -%}
-            {%- endif -%}
+        {%- if field.MaskTL2Bit != nil -%}
+            if item.{%s= field.TL2MaskForOP("&") %} != 0 {
+                {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
         {%- else -%}
-            {%- code
-                sizeValue := "sizes[currentPosition]"
-                if len(trivialSize) != 0 {
-                    sizeValue = trivialSize
-                }
-            -%}
-            lastUsedByte = {%d= (fieldIndex + 1) / 8 + 1 %}
-            currentSize += {%s= sizeValue %}
-            {%- if field.t.trw.isSizeWrittenInData() -%}
-                currentSize += basictl.TL2CalculateSize({%s= sizeValue %})
-            {%- endif -%}
+            if {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk) %} {
         {%- endif -%}
-        {%- if nonEmptyCondition != "" -%}
-            }
-        {%- endif -%}
-        {%- if field.fieldMask != nil && field.fieldMask.IsTL2() -%}
-            }
-        {%- endif -%}
+            currentSize += sz
+            lastUsedByte = currentSize
+        }
     {%- endfor -%}
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
 
-    // append byte for each section until last mentioned field
-    if lastUsedByte != 0 {
-        currentSize += lastUsedByte
-    } else {
-        // remove unused values
-        sizes = sizes[:sizePosition + 1]
-    }
-    {%s= struct_.wr.gen.InternalPrefix()%}Unused(currentPosition)
-    sizes[sizePosition] = currentSize
-    return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	if !optimizeEmpty || currentSize != 0 {
+        currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	sizes[sizePosition] = currentSize
+    return sizes, currentSize
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
@@ -1557,7 +1492,7 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
-    sizes = item.CalculateLayout(sizes)
+    sizes, _ = item.CalculateLayout(sizes, false)
     w, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes

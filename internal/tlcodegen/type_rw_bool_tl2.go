@@ -11,7 +11,7 @@ func (trw *TypeRWBool) calculateLayoutCall(
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
