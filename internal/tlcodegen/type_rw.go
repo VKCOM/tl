@@ -1298,6 +1298,10 @@ func (f *Field) IsTL2Bool() bool {
 	return f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True")
 }
 
+func (f *Field) TL2MaskForOP(op string) string {
+	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit/8, op, 1<<(*f.MaskTL2Bit%8))
+}
+
 func wrapWithError(wrap bool, wrappedType string) string {
 	if !wrap {
 		return wrappedType

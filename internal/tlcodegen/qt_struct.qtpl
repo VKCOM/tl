@@ -173,10 +173,6 @@ type {%s= goName %} struct {
                 maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
                 natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
             }
-            tl2ArgUse := ""
-            if field.MaskTL2Bit != nil {
-                tl2ArgUse = fmt.Sprintf("item.tl2mask%d", *field.MaskTL2Bit/8)
-            }
         -%}
         {%- if !field.t.IsTrueType() -%}
         {%- code
@@ -236,12 +232,12 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- if field.MaskTL2Bit != nil -%}
             {%- if field.t.IsTrueType() -%}
         if v {
-            {%s= tl2ArgUse %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            item.{%s= field.TL2MaskForOP("|=") %}
         } else {
-            {%s= tl2ArgUse %} &^= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            item.{%s= field.TL2MaskForOP("&^=") %}
         }
             {%- else -%}
-        {%s= tl2ArgUse %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            item.{%s= field.TL2MaskForOP("|=") %}
             {%- endif -%}
             {%- endif -%}
 }
@@ -272,7 +268,7 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 {%- endif -%}
             {%- endif -%}
             {%- if field.MaskTL2Bit != nil -%}
-    {%s= tl2ArgUse %} &^= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            item.{%s= field.TL2MaskForOP("&^=") %}
             {%- endif -%}
 }
             {%- endif -%}
@@ -285,7 +281,7 @@ func (item *{%s= goName %}) {%s= clearName %}() {
             }
         -%}
     {%- if field.MaskTL2Bit != nil -%}
-func (item *{%s= goName %}) {%s= isSetName %}() bool { return {%s= tl2ArgUse %} & {%v 1 << (*field.MaskTL2Bit % 8) %} != 0 }
+func (item *{%s= goName %}) {%s= isSetName %}() bool { return item.{%s= field.TL2MaskForOP("&") %} != 0 }
     {%- else -%}
         {%- if maskFunArg -%}
 func (item *{%s= goName %}) {%s= isSetName %}({%s= natArgUse %} uint32) bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
@@ -1202,7 +1198,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- if field.t.IsTrueType() && field.Bare() -%}
             {%- if field.fieldMask != nil && field.MaskTL2Bit != nil -%}
                 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
-                    item.tl2mask{%d *field.MaskTL2Bit/8 %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+                    item.{%s= field.TL2MaskForOP("|=") %}
                 }
             {%- endif -%}
             {%- continue -%}
@@ -1210,7 +1206,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
         {%- if field.MaskTL2Bit != nil -%}
-            item.tl2mask{%d *field.MaskTL2Bit/8 %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+            item.{%s= field.TL2MaskForOP("|=") %}
         {%- endif -%}
         {%- endif -%}
         {%- if field.recursive -%}
@@ -1627,7 +1623,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
         {%- endif -%}
         {%- if field.MaskTL2Bit != nil -%}
             if block & (1 << {%d= (fieldIndex + 1) % 8 %}) != 0 {
-                item.tl2mask{%d *field.MaskTL2Bit/8 %} |= {%v 1 << (*field.MaskTL2Bit % 8) %}
+                item.{%s= field.TL2MaskForOP("|=") %}
             }
         {%- endif -%}
         {%- if field.IsTL2Bool() -%}

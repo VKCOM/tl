@@ -372,10 +372,6 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
 			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
 		}
-		tl2ArgUse := ""
-		if field.MaskTL2Bit != nil {
-			tl2ArgUse = fmt.Sprintf("item.tl2mask%d", *field.MaskTL2Bit/8)
-		}
 
 		if !field.t.IsTrueType() {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
@@ -489,24 +485,18 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			if field.MaskTL2Bit != nil {
 				if field.t.IsTrueType() {
 					qw422016.N().S(`        if v {
-            `)
-					qw422016.N().S(tl2ArgUse)
-					qw422016.N().S(` |= `)
-					qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+            item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
 					qw422016.N().S(`
         } else {
-            `)
-					qw422016.N().S(tl2ArgUse)
-					qw422016.N().S(` &^= `)
-					qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+            item.`)
+					qw422016.N().S(field.TL2MaskForOP("&^="))
 					qw422016.N().S(`
         }
 `)
 				} else {
-					qw422016.N().S(`        `)
-					qw422016.N().S(tl2ArgUse)
-					qw422016.N().S(` |= `)
-					qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+					qw422016.N().S(`            item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
 					qw422016.N().S(`
 `)
 				}
@@ -569,10 +559,8 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 					}
 				}
 				if field.MaskTL2Bit != nil {
-					qw422016.N().S(`    `)
-					qw422016.N().S(tl2ArgUse)
-					qw422016.N().S(` &^= `)
-					qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+					qw422016.N().S(`            item.`)
+					qw422016.N().S(field.TL2MaskForOP("&^="))
 					qw422016.N().S(`
 `)
 				}
@@ -591,10 +579,8 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			qw422016.N().S(goName)
 			qw422016.N().S(`) `)
 			qw422016.N().S(isSetName)
-			qw422016.N().S(`() bool { return `)
-			qw422016.N().S(tl2ArgUse)
-			qw422016.N().S(` & `)
-			qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+			qw422016.N().S(`() bool { return item.`)
+			qw422016.N().S(field.TL2MaskForOP("&"))
 			qw422016.N().S(` != 0 }
 `)
 		} else {
@@ -2401,10 +2387,8 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 				qw422016.N().S(` & (1<<`)
 				qw422016.E().V(field.BitNumber)
 				qw422016.N().S(`) != 0 {
-                    item.tl2mask`)
-				qw422016.N().D(*field.MaskTL2Bit / 8)
-				qw422016.N().S(` |= `)
-				qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+                    item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
 				qw422016.N().S(`
                 }
 `)
@@ -2419,10 +2403,8 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 			qw422016.N().S(`) != 0 {
 `)
 			if field.MaskTL2Bit != nil {
-				qw422016.N().S(`            item.tl2mask`)
-				qw422016.N().D(*field.MaskTL2Bit / 8)
-				qw422016.N().S(` |= `)
-				qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+				qw422016.N().S(`            item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
 				qw422016.N().S(`
 `)
 			}
@@ -3063,10 +3045,8 @@ func (item *`)
 					qw422016.N().S(`            if block & (1 << `)
 					qw422016.N().D((fieldIndex + 1) % 8)
 					qw422016.N().S(`) != 0 {
-                item.tl2mask`)
-					qw422016.N().D(*field.MaskTL2Bit / 8)
-					qw422016.N().S(` |= `)
-					qw422016.E().V(1 << (*field.MaskTL2Bit % 8))
+                item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
 					qw422016.N().S(`
             }
 `)
