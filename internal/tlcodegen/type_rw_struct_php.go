@@ -429,7 +429,7 @@ class %[1]s_fetcher implements TL\RpcFunctionFetcher {
 %[3]s
     return $result;
   }
-  
+
 %[10]s
   public function typedStore(%[12]s) {
     if ($result instanceof %[1]s_result) {
