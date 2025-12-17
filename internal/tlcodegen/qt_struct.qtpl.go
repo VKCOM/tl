@@ -305,9 +305,12 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 			fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArg(struct_.Fields, *field.fieldMask), field.BitNumber)
 		}
 		prefixComment := ""
-		if field.t.IsTrueType() {
+		if field.t.IsTrueType() || field.IsZeroStateBool() {
 			prefixComment = "// "
 			fieldTypeString = "(TrueType)"
+			if field.t.originateFromTL2 {
+				fieldTypeString = "(bool)"
+			}
 		} else {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 		}
@@ -376,7 +379,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
 		}
 
-		if !field.t.IsTrueType() {
+		if !field.IsZeroStateBool() {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 			isTrueType = fieldTypeString
 
@@ -393,7 +396,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			}
 			getName := "G" + setName[1:]
 
-			if !field.t.IsTrueType() && field.MaskTL2Bit != nil {
+			if struct_.wr.wantsTL2 && !field.IsZeroStateBool() && field.MaskTL2Bit != nil {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
 				qw422016.N().S(`) `)
@@ -429,7 +432,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				qw422016.N().S(`) {
 `)
 			}
-			if !field.t.IsTrueType() {
+			if !field.IsZeroStateBool() {
 				if field.recursive {
 					qw422016.N().S(`    if item.`)
 					qw422016.N().S(field.goName)
@@ -457,7 +460,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 					qw422016.N().S(` != nil {
 `)
 				}
-				if field.t.IsTrueType() {
+				if field.IsZeroStateBool() {
 					qw422016.N().S(`        if v {
             `)
 					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
@@ -486,7 +489,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				}
 			}
 			if field.MaskTL2Bit != nil {
-				if field.t.IsTrueType() {
+				if field.IsZeroStateBool() {
 					qw422016.N().S(`        if v {
             item.`)
 					qw422016.N().S(field.TL2MaskForOP("|="))
@@ -506,7 +509,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			}
 			qw422016.N().S(`}
 `)
-			if !field.t.IsTrueType() {
+			if !field.IsZeroStateBool() {
 				clearName := struct_.clearNames[i]
 				if clearName == "" {
 					clearName = struct_.fieldsDec.deconflictName("Clear" + utils.UpperFirst(field.goName))
@@ -2088,7 +2091,7 @@ func (struct_ *TypeRWStruct) streamresetFields(qw422016 *qt422016.Writer, bytesV
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if field.t.IsTrueType() {
+		if field.IsZeroStateBool() {
 			continue
 		}
 		resetCode := field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive)
@@ -2631,22 +2634,17 @@ func (item *`)
 					fieldAsterisk = true
 				}
 
-				if field.t.IsTrueType() {
-					qw422016.N().S(`            var `)
-					qw422016.N().S(fieldName)
-					qw422016.N().S(` `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-					qw422016.N().S(`
-`)
-				}
 				if field.MaskTL2Bit != nil {
 					qw422016.N().S(`            if item.`)
 					qw422016.N().S(field.TL2MaskForOP("&"))
 					qw422016.N().S(` != 0 {
-                `)
-					qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk))
-					qw422016.N().S(`
 `)
+					if !field.IsZeroStateBool() {
+						qw422016.N().S(`                    `)
+						qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk))
+						qw422016.N().S(`
+`)
+					}
 				} else {
 					qw422016.N().S(`            `)
 					qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk))
@@ -2730,22 +2728,17 @@ func (item *`)
 					fieldAsterisk = true
 				}
 
-				if field.t.IsTrueType() {
-					qw422016.N().S(`            var `)
-					qw422016.N().S(fieldName)
-					qw422016.N().S(` `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-					qw422016.N().S(`
-`)
-				}
 				if field.MaskTL2Bit != nil {
 					qw422016.N().S(`            if item.`)
 					qw422016.N().S(field.TL2MaskForOP("&"))
 					qw422016.N().S(` != 0 {
-                `)
-					qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, false, struct_.wr.ins, fieldAsterisk))
-					qw422016.N().S(`
 `)
+					if !field.IsZeroStateBool() {
+						qw422016.N().S(`                    `)
+						qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, false, struct_.wr.ins, fieldAsterisk))
+						qw422016.N().S(`
+`)
+					}
 				} else {
 					qw422016.N().S(`            `)
 					qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, true, struct_.wr.ins, fieldAsterisk))
@@ -2860,7 +2853,7 @@ func (item *`)
     }
 `)
 				}
-				if field.IsTL2Bool() {
+				if field.IsZeroStateBool() {
 					if field.MaskTL2Bit != nil {
 						qw422016.N().S(`            if block & `)
 						qw422016.E().V(1 << ((fieldIndex + 1) % 8))

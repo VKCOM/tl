@@ -139,9 +139,12 @@ type {%s= goName %} struct {
                 fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArg(struct_.Fields, *field.fieldMask), field.BitNumber)
             }
             prefixComment := ""
-            if field.t.IsTrueType() {
+            if field.t.IsTrueType() || field.IsZeroStateBool() {
                 prefixComment = "// "
                 fieldTypeString = "(TrueType)"
+                if field.t.originateFromTL2 {
+                    fieldTypeString = "(bool)"
+                }
             } else {
                 fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
             }
@@ -174,7 +177,7 @@ type {%s= goName %} struct {
                 natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
             }
         -%}
-        {%- if !field.t.IsTrueType() -%}
+        {%- if !field.IsZeroStateBool() -%}
         {%- code
             fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
             isTrueType = fieldTypeString
@@ -193,7 +196,7 @@ type {%s= goName %} struct {
                 }
                 getName := "G" + setName[1:]
             -%}
-            {%- if !field.t.IsTrueType() && field.MaskTL2Bit != nil -%}
+            {%- if struct_.wr.wantsTL2 && !field.IsZeroStateBool() && field.MaskTL2Bit != nil -%}
 func (item *{%s= goName %}) {%s= getName %}() {%s= asterisk %}{%s= isTrueType %} {
     return item.{%s= field.goName %}
 }
@@ -203,7 +206,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}, {%s= natArgUse
             {%- else -%}
 func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- endif -%}
-            {%- if !field.t.IsTrueType() -%}
+            {%- if !field.IsZeroStateBool() -%}
                 {%- if field.recursive -%}
     if item.{%s= field.goName %} == nil {
         var value {%s= fieldTypeString %}
@@ -216,7 +219,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- if maskFunArg -%}
     if {%s= natArgUse %} != nil {
             {%- endif -%}
-            {%- if field.t.IsTrueType() -%}
+            {%- if field.IsZeroStateBool() -%}
         if v {
             {%s= addAsterisk(maskFunArg, natArgUse)  %} |= 1 << {%v field.BitNumber %}
         } else {
@@ -230,7 +233,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- endif -%}
             {%- endif -%}
             {%- if field.MaskTL2Bit != nil -%}
-            {%- if field.t.IsTrueType() -%}
+            {%- if field.IsZeroStateBool() -%}
         if v {
             item.{%s= field.TL2MaskForOP("|=") %}
         } else {
@@ -241,7 +244,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- endif -%}
             {%- endif -%}
 }
-            {%- if !field.t.IsTrueType() -%}
+            {%- if !field.IsZeroStateBool() -%}
                 {%- code clearName := struct_.clearNames[i]
                 if clearName == "" {
                         clearName = struct_.fieldsDec.deconflictName("Clear" + utils.UpperFirst(field.goName))
@@ -1047,7 +1050,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
-            if field.t.IsTrueType() {
+            if field.IsZeroStateBool() {
                 continue
             }
             resetCode := field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive)
@@ -1341,12 +1344,11 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
                 fieldAsterisk = true
             }
         -%}
-        {%- if field.t.IsTrueType() -%}
-            var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
-        {%- endif -%}
         {%- if field.MaskTL2Bit != nil -%}
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
-                {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
+                {%- if !field.IsZeroStateBool() -%}
+                    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
+                {%- endif -%}
         {%- else -%}
             {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
@@ -1410,12 +1412,11 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []i
                 fieldAsterisk = true
             }
         -%}
-        {%- if field.t.IsTrueType() -%}
-            var {%s= fieldName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
-        {%- endif -%}
         {%- if field.MaskTL2Bit != nil -%}
             if item.{%s= field.TL2MaskForOP("&") %} != 0 {
-                {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
+                {%- if !field.IsZeroStateBool() -%}
+                    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
+                {%- endif -%}
         {%- else -%}
             {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
@@ -1499,7 +1500,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
         block = 0
     }
         {%- endif -%}
-        {%- if field.IsTL2Bool() -%}
+        {%- if field.IsZeroStateBool() -%}
         {%- if field.MaskTL2Bit != nil -%}
             if block & {%v 1 << ((fieldIndex + 1) % 8) %} != 0 {
                 item.{%s= field.TL2MaskForOP("|=") %}

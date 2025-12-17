@@ -507,7 +507,7 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 		if isBool && refField.IsOptional && !bl.isTL2Legacy {
 			return refField.PRName.BeautifulError(fmt.Errorf("field with type \"bool\" can't be optional (use any maybe-like wrapper)"))
 		}
-		if (refField.IsOptional || (isBool && !bl.isTL2Legacy)) && field.isTL2Omitted {
+		if (refField.IsOptional || (isBool && !bl.isTL2Legacy)) && !field.isTL2Omitted {
 			field.goName = strings.ToLower(field.goName[:1]) + field.goName[1:]
 
 			maskBit := nextTL2MaskBit
