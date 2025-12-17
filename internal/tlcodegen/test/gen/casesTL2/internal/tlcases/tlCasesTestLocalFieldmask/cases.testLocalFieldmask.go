@@ -18,8 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTestLocalFieldmask struct {
 	F1 uint32
 	f2 uint32 // Conditional: item.mask1.2
-	F3 bool
-	F4 bool
+	// F3 (TrueType)
+	// F4 (TrueType)
 
 	mask1 byte // for fields #1 .. #7
 }

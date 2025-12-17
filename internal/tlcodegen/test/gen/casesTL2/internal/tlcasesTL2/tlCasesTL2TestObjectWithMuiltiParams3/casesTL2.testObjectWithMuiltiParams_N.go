@@ -27,20 +27,6 @@ func (CasesTL2TestObjectWithMuiltiParams3) TLName() string {
 }
 func (CasesTL2TestObjectWithMuiltiParams3) TLTag() uint32 { return 0x00000000 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams3) SetF2(v []int32, nat_m *uint32) {
-	item.F2 = v
-	if nat_m != nil {
-		*nat_m |= 1 << 0
-	}
-}
-func (item *CasesTL2TestObjectWithMuiltiParams3) ClearF2(nat_m *uint32) {
-	item.F2 = item.F2[:0]
-	if nat_m != nil {
-		*nat_m &^= 1 << 0
-	}
-}
-func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF2(nat_m uint32) bool { return nat_m&(1<<0) != 0 }
-
 func (item *CasesTL2TestObjectWithMuiltiParams3) Reset() {
 	tlBuiltinTuple3Int32.BuiltinTuple3Int32Reset(&item.F1)
 	item.F2 = item.F2[:0]

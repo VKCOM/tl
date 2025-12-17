@@ -19,9 +19,9 @@ type CasesTestRecursiveFieldmask struct {
 	F0 uint32
 	f1 uint32 // Conditional: item.mask1.2
 	f2 uint32 // Conditional: item.mask1.3
-	T1 bool
-	T2 bool
-	T3 bool
+	// T1 (TrueType)
+	// T2 (TrueType)
+	// T3 (TrueType)
 
 	mask1 byte // for fields #1 .. #7
 }

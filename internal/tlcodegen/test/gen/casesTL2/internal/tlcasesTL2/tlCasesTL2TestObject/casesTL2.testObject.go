@@ -24,7 +24,7 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTL2TestObject struct {
 	N uint32
 	// f1 (TrueType) // Conditional: item.mask1.2
-	F2 bool
+	// F2 (TrueType)
 	F3 []bool
 	F4 tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions
 	f5 bool // Conditional: item.mask1.6

@@ -18,26 +18,12 @@ var _ = internal.ErrorInvalidEnumTag
 
 type CasesTestOutFieldMask struct {
 	F1 uint32
-	F2 bool
+	// F2 (TrueType)
 	F3 []int32
 }
 
 func (CasesTestOutFieldMask) TLName() string { return "cases.testOutFieldMask" }
 func (CasesTestOutFieldMask) TLTag() uint32  { return 0x00000000 }
-
-func (item *CasesTestOutFieldMask) SetF1(v uint32, nat_f *uint32) {
-	item.F1 = v
-	if nat_f != nil {
-		*nat_f |= 1 << 0
-	}
-}
-func (item *CasesTestOutFieldMask) ClearF1(nat_f *uint32) {
-	item.F1 = 0
-	if nat_f != nil {
-		*nat_f &^= 1 << 0
-	}
-}
-func (item *CasesTestOutFieldMask) IsSetF1(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
 
 func (item *CasesTestOutFieldMask) Reset() {
 	item.F1 = 0

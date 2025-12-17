@@ -131,6 +131,7 @@ type {%s= goName %} {%s= asterisk %}{%s= fieldTypeString %}
     {%- endif -%}
 type {%s= goName %} struct {
     {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             asterisk := ifString(field.recursive, "*", "")
             fieldTypeString := ""
@@ -139,14 +140,13 @@ type {%s= goName %} struct {
                 fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArg(struct_.Fields, *field.fieldMask), field.BitNumber)
             }
             prefixComment := ""
-            if field.t.IsTrueType() {
+            if field.IsBit() {
                 prefixComment = "// "
                 fieldTypeString = "(TrueType)"
             } else {
                 fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
             }
         -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
     {%- if struct_.wr.originateFromTL2 -%}
@@ -173,21 +173,14 @@ type {%s= goName %} struct {
 {%- func (struct_ *TypeRWStruct)fieldMaskGettersAndSetters(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%- for i, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() -%} {%- continue -%} {%- endif -%}
+        {%- if field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
         {%- code
             fieldTypeString := ""
             isTrueType := "bool"
             asterisk := addAsterisk(field.recursive, "")
-            maskFunArg := false
-            natArgUse := ""
-            if field.GenerateLegacySettersForTL2Name != "" {
-                maskFunArg = true
-                natArgUse = "nat_" + field.GenerateLegacySettersForTL2Name
-            } else if field.fieldMask != nil {
-                maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
-                natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
-            }
+            maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
+            natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
         -%}
         {%- if !field.t.IsTrueType() -%}
         {%- code
@@ -195,7 +188,7 @@ type {%s= goName %} struct {
             isTrueType = fieldTypeString
         -%}
         {%- endif -%}
-        {%- if field.GenerateLegacySettersForTL2Name != "" || !field.fieldMask.isArith -%}
+        {%- if !field.fieldMask.isArith -%}
             {%- code
                 // Example
                 //     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;

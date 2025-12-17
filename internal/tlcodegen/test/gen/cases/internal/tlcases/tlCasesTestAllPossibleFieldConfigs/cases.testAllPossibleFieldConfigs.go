@@ -20,10 +20,10 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTestAllPossibleFieldConfigs struct {
 	Local uint32
 	F00   int32
-	// F01 (TrueType)
-	F02 []int32
-	F03 []int32
-	F10 int32 // Conditional: item.Local.0
+	F01   tlTrue.True
+	F02   []int32
+	F03   []int32
+	F10   int32 // Conditional: item.Local.0
 	// F11 (TrueType) // Conditional: item.Local.1
 	F12 []int32 // Conditional: item.Local.2
 	F13 []int32 // Conditional: item.Local.3

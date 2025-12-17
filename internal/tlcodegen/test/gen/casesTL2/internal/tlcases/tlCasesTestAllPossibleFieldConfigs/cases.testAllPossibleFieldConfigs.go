@@ -20,15 +20,15 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTestAllPossibleFieldConfigs struct {
 	Local uint32
 	F00   int32
-	// F01 (TrueType)
-	F02 []int32
-	F03 []int32
-	f10 int32 // Conditional: item.mask1.6
-	F11 bool
+	F01   tlTrue.True
+	F02   []int32
+	F03   []int32
+	f10   int32 // Conditional: item.mask1.6
+	// F11 (TrueType)
 	f12 []int32 // Conditional: item.mask2.0
 	f13 []int32 // Conditional: item.mask2.1
 	F20 int32
-	F21 bool
+	// F21 (TrueType)
 	F22 []int32
 	F23 []int32
 
@@ -77,54 +77,6 @@ func (item *CasesTestAllPossibleFieldConfigs) ClearF13() {
 	item.mask2 &^= 1 << 1
 }
 func (item *CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.mask2&(1<<1) != 0 }
-
-func (item *CasesTestAllPossibleFieldConfigs) SetF20(v int32, nat_outer *uint32) {
-	item.F20 = v
-	if nat_outer != nil {
-		*nat_outer |= 1 << 0
-	}
-}
-func (item *CasesTestAllPossibleFieldConfigs) ClearF20(nat_outer *uint32) {
-	item.F20 = 0
-	if nat_outer != nil {
-		*nat_outer &^= 1 << 0
-	}
-}
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF20(nat_outer uint32) bool {
-	return nat_outer&(1<<0) != 0
-}
-
-func (item *CasesTestAllPossibleFieldConfigs) SetF22(v []int32, nat_outer *uint32) {
-	item.F22 = v
-	if nat_outer != nil {
-		*nat_outer |= 1 << 2
-	}
-}
-func (item *CasesTestAllPossibleFieldConfigs) ClearF22(nat_outer *uint32) {
-	item.F22 = item.F22[:0]
-	if nat_outer != nil {
-		*nat_outer &^= 1 << 2
-	}
-}
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF22(nat_outer uint32) bool {
-	return nat_outer&(1<<2) != 0
-}
-
-func (item *CasesTestAllPossibleFieldConfigs) SetF23(v []int32, nat_outer *uint32) {
-	item.F23 = v
-	if nat_outer != nil {
-		*nat_outer |= 1 << 3
-	}
-}
-func (item *CasesTestAllPossibleFieldConfigs) ClearF23(nat_outer *uint32) {
-	item.F23 = item.F23[:0]
-	if nat_outer != nil {
-		*nat_outer &^= 1 << 3
-	}
-}
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF23(nat_outer uint32) bool {
-	return nat_outer&(1<<3) != 0
-}
 
 func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.Local = 0
