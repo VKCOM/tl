@@ -424,7 +424,7 @@ func (item *UseStrBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int)
 		if len(item.X) != 0 {
 			serializedSize += basictl.TL2CalculateSize(len(item.X))
 			currentBlock |= (1 << 1)
-			w = basictl.StringBytesWriteTL2(w, item.X)
+			w = basictl.StringWriteTL2Bytes(w, item.X)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -479,7 +479,7 @@ func (item *UseStrBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 
 	// read item.X
 	if block&(1<<1) != 0 {
-		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.X); err != nil {
+		if currentR, err = basictl.StringReadTL2Bytes(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {

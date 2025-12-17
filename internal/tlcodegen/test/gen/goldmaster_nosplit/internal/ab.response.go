@@ -841,27 +841,28 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 4 {
+		return r, ErrorInvalidUnionIndex("ab.Response", item.index)
 	}
 	switch item.index {
-	case 0:
-		break
 	case 1:
 		if currentR, err = item.valueCode.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
@@ -875,6 +876,7 @@ func (item *AbResponse) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	Unused(currentR)
 	return r, nil
 }
 func (item *AbResponse) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -1219,27 +1221,28 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 4 {
+		return r, ErrorInvalidUnionIndex("ab.Response", item.index)
 	}
 	switch item.index {
-	case 0:
-		break
 	case 1:
 		if currentR, err = item.valueCode.InternalReadTL2(currentR, block); err != nil {
 			return currentR, err
@@ -1253,6 +1256,7 @@ func (item *AbResponseBytes) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	Unused(currentR)
 	return r, nil
 }
 func (item *AbResponseBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
@@ -2124,7 +2128,7 @@ func (item *CdResponseBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []
 		if len(item.Str) != 0 {
 			serializedSize += basictl.TL2CalculateSize(len(item.Str))
 			currentBlock |= (1 << 2)
-			w = basictl.StringBytesWriteTL2(w, item.Str)
+			w = basictl.StringWriteTL2Bytes(w, item.Str)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -2158,7 +2162,7 @@ func (item *CdResponseBytes) InternalReadTL2(r []byte, block byte) (_ []byte, er
 
 	// read item.Str
 	if block&(1<<2) != 0 {
-		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Str); err != nil {
+		if currentR, err = basictl.StringReadTL2Bytes(currentR, &item.Str); err != nil {
 			return currentR, err
 		}
 	} else {

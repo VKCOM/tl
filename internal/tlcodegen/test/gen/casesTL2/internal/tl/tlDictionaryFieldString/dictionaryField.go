@@ -500,7 +500,7 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 		if len(item.Key) != 0 {
 			serializedSize += basictl.TL2CalculateSize(len(item.Key))
 			currentBlock |= (1 << 1)
-			w = basictl.StringBytesWriteTL2(w, item.Key)
+			w = basictl.StringWriteTL2Bytes(w, item.Key)
 		}
 	}
 	// write item.Value
@@ -509,7 +509,7 @@ func (item *DictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) 
 		if len(item.Value) != 0 {
 			serializedSize += basictl.TL2CalculateSize(len(item.Value))
 			currentBlock |= (1 << 2)
-			w = basictl.StringBytesWriteTL2(w, item.Value)
+			w = basictl.StringWriteTL2Bytes(w, item.Value)
 		}
 	}
 	w[currentBlockPosition] = currentBlock
@@ -564,7 +564,7 @@ func (item *DictionaryFieldStringBytes) InternalReadTL2(r []byte) (_ []byte, err
 
 	// read item.Key
 	if block&(1<<1) != 0 {
-		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Key); err != nil {
+		if currentR, err = basictl.StringReadTL2Bytes(currentR, &item.Key); err != nil {
 			return currentR, err
 		}
 	} else {
@@ -573,7 +573,7 @@ func (item *DictionaryFieldStringBytes) InternalReadTL2(r []byte) (_ []byte, err
 
 	// read item.Value
 	if block&(1<<2) != 0 {
-		if currentR, err = basictl.StringReadBytesTL2(currentR, &item.Value); err != nil {
+		if currentR, err = basictl.StringReadTL2Bytes(currentR, &item.Value); err != nil {
 			return currentR, err
 		}
 	} else {

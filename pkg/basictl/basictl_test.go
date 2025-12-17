@@ -75,7 +75,7 @@ func TestCases_String2(t *testing.T) {
 		t.Fatalf("wrong TL2 string format")
 	}
 	var strBytes []byte
-	r, err = StringReadBytesTL2(src, &strBytes)
+	r, err = StringReadTL2Bytes(src, &strBytes)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -124,7 +124,7 @@ func TestPanic_String2Bytes(t *testing.T) {
 		in := rapid.String().Draw(t, "in")
 
 		var out []byte
-		_, _ = StringReadBytesTL2([]byte(in), &out)
+		_, _ = StringReadTL2Bytes([]byte(in), &out)
 	})
 }
 
@@ -229,13 +229,13 @@ func TestRevStringRead2Bytes(t *testing.T) {
 		var errW, errR error
 
 		in := rapid.SliceOf(rapid.Byte()).Draw(t, "in")
-		rw, errW = StringBytesWriteTL2(rw, in), nil
+		rw, errW = StringWriteTL2Bytes(rw, in), nil
 		if errW != nil {
 			t.Fatalf("failed to write %#v: %v", in, errW)
 		}
 
 		out := rapid.SliceOf(rapid.Byte()).Draw(t, "out")
-		rw, errR = StringReadBytesTL2(rw, &out)
+		rw, errR = StringReadTL2Bytes(rw, &out)
 		if errR != nil {
 			t.Fatalf("failed to read: %v", errR)
 		}

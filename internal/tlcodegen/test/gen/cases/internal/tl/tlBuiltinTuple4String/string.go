@@ -213,7 +213,7 @@ func BuiltinTuple4StringBytesInternalWriteTL2(w []byte, sizes []int, vec *[4][]b
 	}
 
 	for i := 0; i < 4; i++ {
-		w = basictl.StringBytesWriteTL2(w, (*vec)[i])
+		w = basictl.StringWriteTL2Bytes(w, (*vec)[i])
 	}
 	return w, sizes
 }
@@ -242,7 +242,7 @@ func BuiltinTuple4StringBytesInternalReadTL2(r []byte, vec *[4][]byte) (_ []byte
 		lastIndex = 4
 	}
 	for i := 0; i < lastIndex; i++ {
-		if currentR, err = basictl.StringReadBytesTL2(currentR, &(*vec)[i]); err != nil {
+		if currentR, err = basictl.StringReadTL2Bytes(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
 	}
