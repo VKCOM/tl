@@ -702,7 +702,7 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 }
 
 func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isLegacy bool) (*TypeRWWrapper, error) {
-	boolType := TypeRWBool{wr: kernelType}
+	boolType := TypeRWBool{wr: kernelType, isTL2: true}
 	kernelType.trw = &boolType
 
 	if isLegacy {
