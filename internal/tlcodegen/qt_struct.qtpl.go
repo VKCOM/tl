@@ -377,17 +377,19 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		if field.fieldMask == nil {
 			continue
 		}
+		if field.fieldMask.isArith {
+			continue
+		}
 		fieldTypeString := ""
 		isTrueType := "bool"
+		if !field.t.IsTrueType() {
+			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+			isTrueType = fieldTypeString
+		}
 		asterisk := addAsterisk(field.recursive, "")
 		maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
 		natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
 
-		if !field.t.IsTrueType() {
-			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
-			isTrueType = fieldTypeString
-
-		}
 		if !field.fieldMask.isArith {
 			// Example
 			//     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
