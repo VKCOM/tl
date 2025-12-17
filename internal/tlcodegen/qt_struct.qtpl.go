@@ -298,6 +298,9 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 	qw422016.N().S(` struct {
 `)
 	for _, field := range struct_.Fields {
+		if field.IsTL2Omitted() {
+			continue
+		}
 		asterisk := ifString(field.recursive, "*", "")
 		fieldTypeString := ""
 		fieldsMaskComment := ""
@@ -305,16 +308,13 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 			fieldsMaskComment = fmt.Sprintf(" // Conditional: %s.%d", formatNatArg(struct_.Fields, *field.fieldMask), field.BitNumber)
 		}
 		prefixComment := ""
-		if field.t.IsTrueType() {
+		if field.IsBit() {
 			prefixComment = "// "
 			fieldTypeString = "(TrueType)"
 		} else {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 		}
 
-		if field.IsTL2Omitted() {
-			continue
-		}
 		qw422016.N().S(`    `)
 		qw422016.N().S(prefixComment)
 		qw422016.N().S(field.goName)
@@ -374,28 +374,21 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" {
+		if field.fieldMask == nil {
 			continue
 		}
 		fieldTypeString := ""
 		isTrueType := "bool"
 		asterisk := addAsterisk(field.recursive, "")
-		maskFunArg := false
-		natArgUse := ""
-		if field.GenerateLegacySettersForTL2Name != "" {
-			maskFunArg = true
-			natArgUse = "nat_" + field.GenerateLegacySettersForTL2Name
-		} else if field.fieldMask != nil {
-			maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
-			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
-		}
+		maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
+		natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
 
 		if !field.t.IsTrueType() {
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 			isTrueType = fieldTypeString
 
 		}
-		if field.GenerateLegacySettersForTL2Name != "" || !field.fieldMask.isArith {
+		if !field.fieldMask.isArith {
 			// Example
 			//     notify.notification#461f4ce2 {mode:#} removed:mode.0?Bool = notify.Notification mode;
 			//     @any notify.getScheduledNotifications#f53ad7bd  = notify.Notification 0;

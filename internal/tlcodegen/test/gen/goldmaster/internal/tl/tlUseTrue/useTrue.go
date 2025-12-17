@@ -21,8 +21,8 @@ type UseTrue struct {
 	Fm uint32
 	// A (TrueType) // Conditional: item.Fm.0
 	// B (TrueType) // Conditional: item.Fm.1
-	// C (TrueType)
-	// D (TrueType)
+	C tlTrue.True
+	D tlTrue.True
 	E bool // Conditional: item.Fm.2
 }
 

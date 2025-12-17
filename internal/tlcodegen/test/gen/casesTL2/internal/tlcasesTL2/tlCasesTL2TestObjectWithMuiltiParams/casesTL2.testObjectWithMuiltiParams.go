@@ -26,34 +26,6 @@ func (CasesTL2TestObjectWithMuiltiParams) TLName() string {
 }
 func (CasesTL2TestObjectWithMuiltiParams) TLTag() uint32 { return 0x00000000 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams) SetF1(v []int32, nat_n *uint32) {
-	item.F1 = v
-	if nat_n != nil {
-		*nat_n |= 1 << 0
-	}
-}
-func (item *CasesTL2TestObjectWithMuiltiParams) ClearF1(nat_n *uint32) {
-	item.F1 = item.F1[:0]
-	if nat_n != nil {
-		*nat_n &^= 1 << 0
-	}
-}
-func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF1(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
-
-func (item *CasesTL2TestObjectWithMuiltiParams) SetF2(v []int32, nat_m *uint32) {
-	item.F2 = v
-	if nat_m != nil {
-		*nat_m |= 1 << 0
-	}
-}
-func (item *CasesTL2TestObjectWithMuiltiParams) ClearF2(nat_m *uint32) {
-	item.F2 = item.F2[:0]
-	if nat_m != nil {
-		*nat_m &^= 1 << 0
-	}
-}
-func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF2(nat_m uint32) bool { return nat_m&(1<<0) != 0 }
-
 func (item *CasesTL2TestObjectWithMuiltiParams) Reset() {
 	item.F1 = item.F1[:0]
 	item.F2 = item.F2[:0]
