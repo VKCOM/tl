@@ -855,7 +855,7 @@ func (item *{%s= goName %}) WriteResult(w []byte, ret {%s= retArg %}) (_ []byte,
     return w, nil
     {%- endif -%}
 }
-{%- if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 -%}
+{%- if struct_.wr.wantsTL2 -%}
 
 func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *{%s= retArg %}) (_ []byte, err error) {
     currentSize := 0

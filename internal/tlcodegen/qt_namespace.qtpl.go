@@ -297,7 +297,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
 `)
-	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+	if fun.wr.wantsTL2 {
 		qw422016.N().S(`		if extra.PreferTL2 {
 			req.BodyFormatTL2 = true
 		}
@@ -306,7 +306,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`    }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
 `)
-	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+	if fun.wr.wantsTL2 {
 		qw422016.N().S(`	if req.BodyFormatTL2 {
 	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
 	    tctx := basictl.TL2WriteContext{}
@@ -321,7 +321,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	qw422016.N().S(`", err)
         }
 `)
-	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+	if fun.wr.wantsTL2 {
 		qw422016.N().S(`    }
 `)
 	}
@@ -337,7 +337,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
     }
     if ret != nil {
 `)
-	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+	if fun.wr.wantsTL2 {
 		qw422016.N().S(`		if resp.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
 			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
@@ -346,7 +346,7 @@ func streamwriteClientCode(qw422016 *qt422016.Writer, bytesVersion bool, shortPa
 	}
 	qw422016.N().S(`			resp.Body, err = args.ReadResult(resp.Body, ret)
 `)
-	if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+	if fun.wr.wantsTL2 {
 		qw422016.N().S(`		}
 `)
 	}
@@ -512,7 +512,7 @@ switch tag {
 			qw422016.N().S(`", err)
         }
 `)
-			if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+			if fun.wr.wantsTL2 {
 				qw422016.N().S(`        if hctx.BodyFormatTL2() {
             tctx := basictl.TL2WriteContext{}
             hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
@@ -521,7 +521,7 @@ switch tag {
 			}
 			qw422016.N().S(`            hctx.Response, err = args.WriteResult(hctx.Response, ret)
 `)
-			if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 {
+			if fun.wr.wantsTL2 {
 				qw422016.N().S(`        }
 `)
 			}

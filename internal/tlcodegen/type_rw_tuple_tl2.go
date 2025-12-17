@@ -7,7 +7,7 @@ func (trw *TypeRWBrackets) calculateLayoutCall(
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
@@ -25,7 +25,7 @@ func (trw *TypeRWBrackets) writeTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
