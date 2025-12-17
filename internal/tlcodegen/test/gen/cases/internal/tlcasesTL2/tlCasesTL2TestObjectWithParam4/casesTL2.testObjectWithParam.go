@@ -24,8 +24,6 @@ type CasesTL2TestObjectWithParam4 struct {
 func (CasesTL2TestObjectWithParam4) TLName() string { return "casesTL2.testObjectWithParam" }
 func (CasesTL2TestObjectWithParam4) TLTag() uint32  { return 0xd0ce3a42 }
 
-func (item *CasesTL2TestObjectWithParam4) IsSetX() bool { return 4&(1<<0) != 0 }
-
 func (item *CasesTL2TestObjectWithParam4) Reset() {
 	item.X = 0
 	tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.Y)

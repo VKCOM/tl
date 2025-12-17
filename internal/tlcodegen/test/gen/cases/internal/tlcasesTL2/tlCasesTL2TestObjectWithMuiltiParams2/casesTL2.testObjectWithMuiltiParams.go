@@ -41,8 +41,6 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ClearF1(nat_n *uint32) {
 }
 func (item *CasesTL2TestObjectWithMuiltiParams2) IsSetF1(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams2) IsSetF2() bool { return 2&(1<<0) != 0 }
-
 func (item *CasesTL2TestObjectWithMuiltiParams2) Reset() {
 	item.F1 = item.F1[:0]
 	tlBuiltinTuple2Int.BuiltinTuple2IntReset(&item.F2)

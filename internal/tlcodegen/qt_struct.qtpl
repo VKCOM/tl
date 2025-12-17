@@ -175,19 +175,18 @@ type {%s= goName %} struct {
     {%- for i, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%} {%- continue -%} {%- endif -%}
         {%- if field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
+        {%- if field.fieldMask.isArith -%} {%- continue -%} {%- endif -%}
         {%- code
             fieldTypeString := ""
             isTrueType := "bool"
+            if !field.t.IsTrueType() {
+                fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
+                isTrueType = fieldTypeString
+            }
             asterisk := addAsterisk(field.recursive, "")
             maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
             natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
         -%}
-        {%- if !field.t.IsTrueType() -%}
-        {%- code
-            fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
-            isTrueType = fieldTypeString
-        -%}
-        {%- endif -%}
         {%- if !field.fieldMask.isArith -%}
             {%- code
                 // Example

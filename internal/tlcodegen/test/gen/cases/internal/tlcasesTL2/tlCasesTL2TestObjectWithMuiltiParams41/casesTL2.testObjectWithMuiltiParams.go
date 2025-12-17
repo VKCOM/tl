@@ -27,10 +27,6 @@ func (CasesTL2TestObjectWithMuiltiParams41) TLName() string {
 }
 func (CasesTL2TestObjectWithMuiltiParams41) TLTag() uint32 { return 0x76444f62 }
 
-func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF1() bool { return 4&(1<<0) != 0 }
-
-func (item *CasesTL2TestObjectWithMuiltiParams41) IsSetF2() bool { return 1&(1<<0) != 0 }
-
 func (item *CasesTL2TestObjectWithMuiltiParams41) Reset() {
 	tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
 	tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
