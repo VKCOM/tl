@@ -1292,6 +1292,17 @@ func (f *Field) IsTL2Omitted() bool {
 	return f.originalName == "_"
 }
 
+// generate Set/IsSet with external (TL1) or internal (TL1 & TL2) mask/
+// must exactly correspond to migrator logic
+// TL1: x:fm.b?true x:fm.b?True
+// TL2: x:bit
+func (f *Field) IsBit() bool {
+	if b, ok := f.t.trw.(*TypeRWBool); ok {
+		return b.isTL2 && !b.isTL2Legacy
+	}
+	return f.fieldMask != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
+}
+
 func wrapWithError(wrap bool, wrappedType string) string {
 	if !wrap {
 		return wrappedType
