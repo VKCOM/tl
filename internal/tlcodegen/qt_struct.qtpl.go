@@ -312,7 +312,7 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 			fieldTypeString = field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 		}
 
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		qw422016.N().S(`    `)
@@ -371,7 +371,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 
 	for i, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.fieldMask == nil && field.GenerateLegacySettersForTL2Name == "" {
@@ -1099,7 +1099,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.originalName == "" {
@@ -1163,7 +1163,7 @@ func (item *`)
 		for _, field := range struct_.Fields {
 			/* TODO: skip anonymous names */
 
-			if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+			if field.IsTL2Omitted() {
 				continue
 			}
 			if field.originalName == "" {
@@ -1311,10 +1311,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
-			continue
-		}
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.originalName == "" {
@@ -1352,7 +1349,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.originalName == "" {
@@ -1416,7 +1413,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.originalName == "" {
@@ -1481,7 +1478,7 @@ func (item *`)
 	/* BLOCK: trueType with false values validation */
 
 	for _, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField {
@@ -1639,7 +1636,7 @@ func (item *`)
     w = append(w, '{')
 `)
 	for _, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		// field names will be mandatory soon, except for typedefs which are processed separately
@@ -1952,7 +1949,7 @@ func (item *`)
 }
 `)
 	for fieldId, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if _, affectedBits := struct_.GetFieldNatPropertiesAsUsageMap(fieldId, false, true); len(affectedBits) != 0 {
@@ -2062,7 +2059,7 @@ func (struct_ *TypeRWStruct) streamresetFields(qw422016 *qt422016.Writer, bytesV
 		return
 	}
 	for _, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.t.IsTrueType() {
@@ -2121,7 +2118,7 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		}
 	}
 	for fieldId, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.t.IsTrueType() {
@@ -2253,7 +2250,7 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 		return
 	}
 	for _, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		writingCode := ""
@@ -2345,7 +2342,7 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 	lastWritten := false
 
 	for i, field := range struct_.Fields {
-		if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+		if field.IsTL2Omitted() {
 			continue
 		}
 		if field.t.IsTrueType() && field.Bare() {
@@ -2566,7 +2563,7 @@ func (item *`)
 				if field.t.IsTrueType() && field.bare && field.fieldMask != nil && field.fieldMask.isField && !field.fieldMask.IsTL2() {
 					continue
 				}
-				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+				if field.IsTL2Omitted() {
 					continue
 				}
 				_, trivialSize := field.t.trw.tl2TrivialSize(fmt.Sprintf("item.%s", field.goName), field.fieldMask == nil, field.recursive)
@@ -2577,7 +2574,7 @@ func (item *`)
 			}
 
 			for fieldIndex, field := range struct_.Fields {
-				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+				if field.IsTL2Omitted() {
 					continue
 				}
 				isTrue := field.t.IsTrueType()
@@ -2781,7 +2778,7 @@ func (item *`)
 `)
 			}
 			for fieldIndex, field := range struct_.Fields {
-				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+				if field.IsTL2Omitted() {
 					continue
 				}
 				if (fieldIndex+1)%8 == 0 {
@@ -3042,7 +3039,7 @@ func (item *`)
 					qw422016.N().S(`
 `)
 				}
-				if struct_.wr.originateFromTL2 && field.IsTL2Omitted() {
+				if field.IsTL2Omitted() {
 					qw422016.N().S(`    // skip `)
 					qw422016.N().D(fieldIndex + 1)
 					qw422016.N().S(`-th field
