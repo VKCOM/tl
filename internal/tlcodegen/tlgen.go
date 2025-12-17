@@ -2123,6 +2123,9 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	default:
 		return nil, fmt.Errorf("unsupported language %q, only 'go' and 'cpp' are supported, plus '' for linting", options.Language)
 	}
+	if !options.GenerateTL2 {
+		options.TL2WhiteList = "" // so if we do not generate TL2, all wantsTL flags are false
+	}
 	typesWhiteList := prepareNameFilter(options.TypesWhiteList)
 	bytesWhiteList := prepareNameFilter(options.BytesWhiteList)
 	tl2WhiteList := prepareNameFilter(options.TL2WhiteList)
@@ -2635,9 +2638,6 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 	typesCounterMarkTL2 := 0
 	for _, v := range gen.generatedTypesList {
 		if inNameFilter(v.tlName, tl2WhiteList) {
-			v.MarkWantsTL2(tl2Children)
-			typesCounterMarkTL2++
-		} else if v.wantsTL2 {
 			v.MarkWantsTL2(tl2Children)
 			typesCounterMarkTL2++
 		}

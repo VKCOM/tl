@@ -1774,7 +1774,7 @@ func (item *`)
 	}
 	qw422016.N().S(`}
 `)
-	if struct_.wr.gen.options.GenerateTL2 && struct_.wr.wantsTL2 {
+	if struct_.wr.wantsTL2 {
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)

@@ -165,14 +165,14 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
     if extra != nil {
         req.Extra = extra.RequestExtra
         req.FailIfNoConnection = extra.FailIfNoConnection
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
 		if extra.PreferTL2 {
 			req.BodyFormatTL2 = true
 		}
 {%- endif -%}
     }
     rpc.UpdateExtraTimeout(&req.Extra, c.Timeout)
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
 	if req.BodyFormatTL2 {
 	    req.Body = basictl.NatWrite(req.Body, args.TLTag())
 	    tctx := basictl.TL2WriteContext{}
@@ -183,7 +183,7 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         if err != nil {
             return internal.ErrorClientWrite("{%s= tlName %}", err)
         }
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
     }
 {%- endif -%}
     resp, err := c.Client.Do(ctx, c.Network, c.Address, req)
@@ -195,14 +195,14 @@ func (c *Client) {%s= funcTypeString %}(ctx context.Context, args {%s= funcTypeS
         return internal.ErrorClientDo("{%s= tlName %}", c.Network, c.ActorID, c.Address, err)
     }
     if ret != nil {
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
 		if resp.BodyFormatTL2() {
             tctx := basictl.TL2ReadContext{}
 			resp.Body, err = args.ReadResultTL2(resp.Body, &tctx, ret)
 		} else {
 {%- endif -%}
 			resp.Body, err = args.ReadResult(resp.Body, ret)
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
 		}
 {%- endif -%}
 		if err != nil {
@@ -295,14 +295,14 @@ case {%s= tlTag %}: // {%s= tlName %}
         if err != nil {
             return internal.ErrorServerHandle("{%s= tlName %}", err)
         }
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
         if hctx.BodyFormatTL2() {
             tctx := basictl.TL2WriteContext{}
             hctx.Response, err = args.WriteResultTL2(hctx.Response, &tctx, ret)
         } else {
 {%- endif -%}
             hctx.Response, err = args.WriteResult(hctx.Response, ret)
-{%- if fun.wr.gen.options.GenerateTL2 && fun.wr.wantsTL2 -%}
+{%- if fun.wr.wantsTL2 -%}
         }
 {%- endif -%}
         if err != nil {

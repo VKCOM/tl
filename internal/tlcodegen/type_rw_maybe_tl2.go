@@ -7,7 +7,7 @@ func (trw *TypeRWMaybe) calculateLayoutCall(
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
@@ -20,7 +20,7 @@ func (trw *TypeRWMaybe) writeTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
