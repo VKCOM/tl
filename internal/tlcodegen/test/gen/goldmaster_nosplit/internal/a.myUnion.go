@@ -135,23 +135,26 @@ func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
+	}
+	if item.index < 0 || item.index >= 2 {
+		return r, ErrorInvalidUnionIndex("a.MyUnion", item.index)
 	}
 	switch item.index {
 	case 0:
@@ -163,6 +166,7 @@ func (item *AMyUnion) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 	}
+	Unused(currentR)
 	return r, nil
 }
 func (item *AMyUnion) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {

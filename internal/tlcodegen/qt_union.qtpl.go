@@ -380,41 +380,39 @@ func (item *`)
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
 
+    if currentSize == 0 {
+        item.Reset()
+        return r, nil
+    }
     currentR := r[:currentSize]
     r = r[currentSize:]
 
     var block byte
-    if currentSize == 0 {
-        item.index = 0
+    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    if (block & 1) != 0 {
+        if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     } else {
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
-        if (block & 1) != 0 {
-`)
-			readResult := "currentR"
-			if union.IsEnum {
-				readResult = "_"
-			}
-
-			qw422016.N().S(`            if `)
-			qw422016.N().S(readResult)
-			qw422016.N().S(`, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-        } else {
-            item.index = 0
-        }
+        item.index = 0
+    }
+    if item.index < 0 || item.index >= `)
+			qw422016.N().D(len(union.Fields))
+			qw422016.N().S(` {
+        return r, `)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`ErrorInvalidUnionIndex(`)
+			qw422016.N().Q(tlName)
+			qw422016.N().S(`, item.index)
     }
 `)
 			if !union.IsEnum {
 				qw422016.N().S(`    switch item.index {
 `)
 				for i, field := range union.Fields {
-					qw422016.N().S(`    case `)
-					qw422016.N().D(i)
-					qw422016.N().S(`:
+					if !field.t.IsTrueType() {
+						qw422016.N().S(`    case `)
+						qw422016.N().D(i)
+						qw422016.N().S(`:
 `)
-					if field.t.IsTrueType() {
-						qw422016.N().S(`        break
-`)
-					} else {
 						if field.recursive {
 							qw422016.N().S(`        if `)
 							qw422016.N().S(fmt.Sprintf("item.value%s", field.goName))
@@ -437,7 +435,10 @@ func (item *`)
 				qw422016.N().S(`    }
 `)
 			}
-			qw422016.N().S(`    return r, nil
+			qw422016.N().S(`    `)
+			qw422016.N().S(union.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(currentR)
+    return r, nil
 }
 `)
 		}

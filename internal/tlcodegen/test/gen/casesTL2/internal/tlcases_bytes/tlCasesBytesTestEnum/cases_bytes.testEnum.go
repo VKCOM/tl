@@ -102,24 +102,28 @@ func (item *CasesBytesTestEnum) InternalReadTL2(r []byte) (_ []byte, err error) 
 		return r, err
 	}
 
+	if currentSize == 0 {
+		item.Reset()
+		return r, nil
+	}
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
 	var block byte
-	if currentSize == 0 {
-		item.index = 0
-	} else {
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
+		return r, err
+	}
+	if (block & 1) != 0 {
+		if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
 			return r, err
 		}
-		if (block & 1) != 0 {
-			if _, item.index, err = basictl.TL2ParseSize(currentR); err != nil {
-				return r, err
-			}
-		} else {
-			item.index = 0
-		}
+	} else {
+		item.index = 0
 	}
+	if item.index < 0 || item.index >= 3 {
+		return r, internal.ErrorInvalidUnionIndex("cases_bytes.testEnum", item.index)
+	}
+	internal.Unused(currentR)
 	return r, nil
 }
 func (item *CasesBytesTestEnum) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {

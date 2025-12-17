@@ -212,33 +212,28 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     currentSize := 0
     if r, currentSize, err = basictl.TL2ParseSize(r); err != nil { return r, err }
 
+    if currentSize == 0 {
+        item.Reset()
+        return r, nil
+    }
     currentR := r[:currentSize]
     r = r[currentSize:]
 
     var block byte
-    if currentSize == 0 {
-        item.index = 0
+    if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
+    if (block & 1) != 0 {
+        if currentR, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     } else {
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return r, err }
-        if (block & 1) != 0 {
-            {%- code
-                readResult := "currentR"
-                if union.IsEnum {
-                    readResult = "_"
-                }
-            -%}
-            if {%s= readResult %}, item.index, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
-        } else {
-            item.index = 0
-        }
+        item.index = 0
+    }
+    if item.index < 0 || item.index >= {%d len(union.Fields) %} {
+        return r, {%s= union.wr.gen.InternalPrefix()%}ErrorInvalidUnionIndex({%q= tlName %}, item.index)
     }
     {%- if !union.IsEnum -%}
     switch item.index {
     {%- for i, field := range union.Fields -%}
+        {%- if !field.t.IsTrueType() -%}
     case {%d i %}:
-        {%- if field.t.IsTrueType() -%}
-        break
-        {%- else -%}
         {%- if field.recursive -%}
         if {%s= fmt.Sprintf("item.value%s", field.goName) %} == nil {
             var newValue {%s= field.t.TypeString2(bytesVersion, directImports, union.wr.ins, false, false) %}
@@ -250,6 +245,7 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte) (_ []byte, err error) {
     {%- endfor -%}
     }
     {%- endif -%}
+    {%s= union.wr.gen.InternalPrefix()%}Unused(currentR)
     return r, nil
 }
 {%- endif -%}

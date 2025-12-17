@@ -36,7 +36,7 @@ func (trw *TypeRWPrimitive) writeTL2Call(
 		method = "basictl.LongWrite"
 	case "string":
 		if bytesVersion {
-			method = "basictl.StringBytesWriteTL2"
+			method = "basictl.StringWriteTL2Bytes"
 		} else {
 			method = "basictl.StringWriteTL2"
 		}
@@ -72,7 +72,7 @@ func (trw *TypeRWPrimitive) readTL2Call(
 		method = "basictl.LongRead"
 	case "string":
 		if bytesVersion {
-			method = "basictl.StringReadBytesTL2"
+			method = "basictl.StringReadTL2Bytes"
 		} else {
 			method = "basictl.StringReadTL2"
 		}
