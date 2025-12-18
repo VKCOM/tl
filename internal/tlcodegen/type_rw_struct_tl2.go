@@ -2,9 +2,6 @@ package tlcodegen
 
 import (
 	"fmt"
-	"sort"
-
-	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWStruct) calculateLayoutCall(
@@ -159,18 +156,6 @@ func (trw *TypeRWStruct) tl2TrivialSize(targetObject string, canDependOnLocalBit
 		return trw.Fields[0].t.trw.tl2TrivialSize(targetObject, canDependOnLocalBit, refObject)
 	}
 	return false, ""
-}
-
-func (trw *TypeRWStruct) AllRequiredTL2Masks() []int {
-	required := make(map[int]bool)
-	for _, field := range trw.Fields {
-		if field.fieldMask != nil && field.fieldMask.IsTL2() {
-			required[-field.fieldMask.FieldIndex] = true
-		}
-	}
-	keys := utils.Keys(required)
-	sort.Ints(keys)
-	return keys
 }
 
 func (trw *TypeRWStruct) AllNewTL2Masks() []string {

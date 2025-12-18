@@ -2101,14 +2101,6 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 `)
 		return
 	}
-	if struct_.wr.originateFromTL2 {
-		for _, no := range struct_.AllRequiredTL2Masks() {
-			qw422016.N().S(`item.mask`)
-			qw422016.N().D(no)
-			qw422016.N().S(` = basictl.RandomByte(rg)
-`)
-		}
-	}
 	for fieldId, field := range struct_.Fields {
 		if field.IsTL2Omitted() {
 			continue
@@ -2429,7 +2421,6 @@ func (struct_ *TypeRWStruct) readFields(bytesVersion bool, directImports *Direct
 func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
-	tl2MasksToStore := utils.SliceToSet(struct_.AllRequiredTL2Masks())
 	//        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 	//        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
@@ -2980,10 +2971,6 @@ func (item *`)
 `)
 				}
 			}
-			if tl2MasksToStore[1] {
-				qw422016.N().S(`    item.mask1 = block
-`)
-			}
 			if struct_.isTypeDef() {
 				qw422016.N().S(`    ptr := (*`)
 				qw422016.N().S(struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
@@ -3015,12 +3002,6 @@ func (item *`)
         block = 0
     }
 `)
-					if tl2MasksToStore[(fieldIndex+1)/8+1] {
-						qw422016.N().S(`    item.mask`)
-						qw422016.N().D((fieldIndex+1)/8 + 1)
-						qw422016.N().S(` = block
-`)
-					}
 				}
 				qw422016.N().S(`
 `)

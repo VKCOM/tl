@@ -1055,11 +1055,6 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
         {%- return -%}
     {%- endif -%}
-    {%- if struct_.wr.originateFromTL2 -%}
-        {%- for _, no := range struct_.AllRequiredTL2Masks() -%}
-item.mask{%d no %} = basictl.RandomByte(rg)
-        {%- endfor -%}
-    {%- endif -%}
     {%- for fieldId, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- if field.t.IsTrueType() -%} {%- continue -%} {%- endif -%}
@@ -1223,7 +1218,6 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
     {%- code
         goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
         tlName := struct_.wr.tlName.String()
-        tl2MasksToStore := utils.SliceToSet(struct_.AllRequiredTL2Masks())
 //        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
 //        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
     -%}
@@ -1604,9 +1598,6 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     currentR := r
         {%- endif -%}
     {%- endif -%}
-    {%- if tl2MasksToStore[1] -%}
-    item.mask1 = block
-    {%- endif -%}
     {%- if struct_.isTypeDef() -%}
     ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1631,9 +1622,6 @@ func (item *{%s= goName %}) InternalReadTL2(r []byte, block byte) (_ []byte, err
     } else {
         block = 0
     }
-            {%- if tl2MasksToStore[(fieldIndex + 1) / 8 + 1] -%}
-    item.mask{%d (fieldIndex + 1) / 8 + 1 %} = block
-            {%- endif -%}
         {%- endif -%}
 
         {%- code /** ?TRUE -> BOOL CASE **/ -%}
