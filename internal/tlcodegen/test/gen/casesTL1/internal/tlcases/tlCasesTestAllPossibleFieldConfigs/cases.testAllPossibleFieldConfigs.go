@@ -194,6 +194,9 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 	if w, err = basictl.IntRead(w, &item.F00); err != nil {
 		return w, err
 	}
+	if w, err = item.F01.Read(w); err != nil {
+		return w, err
+	}
 	if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F02, item.Local); err != nil {
 		return w, err
 	}

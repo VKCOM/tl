@@ -92,7 +92,10 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 			return w, err
 		}
 	}
-	if w, err = basictl.NatReadExactTag(w, 0x3fedd339); err != nil {
+	if w, err = item.C.Read(w); err != nil {
+		return w, err
+	}
+	if w, err = item.D.ReadBoxed(w); err != nil {
 		return w, err
 	}
 	if item.Fm&(1<<2) != 0 {
