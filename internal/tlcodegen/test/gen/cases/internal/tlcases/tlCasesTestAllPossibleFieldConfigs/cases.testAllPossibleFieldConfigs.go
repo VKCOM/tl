@@ -205,6 +205,7 @@ func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerat
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Local); err != nil {
 		return w, err
 	}

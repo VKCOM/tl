@@ -107,6 +107,7 @@ func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
