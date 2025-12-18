@@ -410,6 +410,7 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if item.A == nil {
 			var value [2]CycleTuple
 			item.A = &value
@@ -432,6 +433,7 @@ func (item *CycleTuple) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.N&(1<<2) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBuiltinTuple3Int.BuiltinTuple3IntRead(w, &item.C); err != nil {
 			return w, err
 		}

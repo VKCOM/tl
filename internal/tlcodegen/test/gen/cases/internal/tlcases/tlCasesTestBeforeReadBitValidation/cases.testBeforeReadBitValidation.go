@@ -79,6 +79,7 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 		return w, err
 	}
 	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.A, item.N); err != nil {
 			return w, err
 		}
@@ -86,6 +87,7 @@ func (item *CasesTestBeforeReadBitValidation) Read(w []byte) (_ []byte, err erro
 		item.A = item.A[:0]
 	}
 	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.B, item.N); err != nil {
 			return w, err
 		}

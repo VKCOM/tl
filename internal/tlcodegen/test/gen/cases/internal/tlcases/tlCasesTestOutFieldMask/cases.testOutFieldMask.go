@@ -78,11 +78,15 @@ func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f u
 func (item *CasesTestOutFieldMask) Read(w []byte, nat_f uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.NatRead(w, &item.F1); err != nil {
 			return w, err
 		}
 	} else {
 		item.F1 = 0
+	}
+	if nat_f&(1<<3) != 0 {
+		item.tl2mask0 |= 2
 	}
 	return tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F3, nat_f)
 }

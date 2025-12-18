@@ -145,6 +145,21 @@ func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.FieldsMask); err != nil {
 		return w, err
 	}
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.FieldsMask&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.FieldsMask&(1<<3) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.FieldsMask&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.FieldsMask&(1<<15) != 0 {
+		item.tl2mask0 |= 16
+	}
 	if w, err = basictl.LongRead(w, &item.PayloadOffset); err != nil {
 		return w, err
 	}
@@ -158,6 +173,7 @@ func (item *BenchmarksVruPosition) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.FieldsMask&(1<<14) != 0 {
+		item.tl2mask0 |= 32
 		if w, err = basictl.LongRead(w, &item.SeqNumber); err != nil {
 			return w, err
 		}

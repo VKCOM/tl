@@ -91,6 +91,7 @@ func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = item.Head.ReadBoxed(w); err != nil {
 			return w, err
 		}
@@ -98,6 +99,7 @@ func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
 		item.Head.Reset()
 	}
 	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		if item.Tail == nil {
 			var value ListService5Output
 			item.Tail = &value

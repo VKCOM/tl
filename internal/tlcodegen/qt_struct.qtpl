@@ -1106,7 +1106,12 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
             lastWritten = lastWritten || last
         -%}
         {%- if field.IsBit() -%}
-            {%- if !field.Bare() -%} {%- code /* special case for TL1 */ -%}
+            {%- if field.MaskTL2Bit != nil -%}
+                if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                    item.{%s= field.TL2MaskForOP("|=") %}
+                }
+            {%- endif -%}
+            {%- if !field.Bare() -%} {%- code /* special rare case for TL1, let optimizer combine 2 expressions */ -%}
                 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
                     {%s= wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true) %}
                 }
@@ -1115,6 +1120,9 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- endif -%}
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+        {%- if field.MaskTL2Bit != nil -%}
+            item.{%s= field.TL2MaskForOP("|=") %}
+        {%- endif -%}
         {%- endif -%}
 {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
 {%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last) %}

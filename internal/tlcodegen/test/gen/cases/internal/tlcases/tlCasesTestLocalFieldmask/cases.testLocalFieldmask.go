@@ -88,11 +88,18 @@ func (item *CasesTestLocalFieldmask) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.F1&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.NatRead(w, &item.F2); err != nil {
 			return w, err
 		}
 	} else {
 		item.F2 = 0
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 4
 	}
 	return w, nil
 }

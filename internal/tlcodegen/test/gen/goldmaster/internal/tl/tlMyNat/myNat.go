@@ -74,6 +74,7 @@ func (item *MyNat) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if item.A == nil {
 			var value MyNat
 			item.A = &value
