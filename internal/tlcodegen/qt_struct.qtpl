@@ -993,11 +993,24 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
 {%s= field.t.TypeRandomCode(bytesVersion, directImports, struct_.wr.ins, "ptr", formatNatArgs(struct_.Fields, field.natArgs), true) %}
         {%- return -%}
     {%- endif -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
+    {%- endfor -%}
     {%- for fieldId, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.t.IsTrueType() -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsBit() -%}
+            {%- if field.MaskTL2Bit != nil -%}
+                if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                     item.{%s= field.TL2MaskForOP("|=") %}
+                }
+            {%- endif -%}
+            {%- continue -%}
+        {%- endif -%}
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+        {%- if field.MaskTL2Bit != nil -%}
+            item.{%s= field.TL2MaskForOP("|=") %}
+        {%- endif -%}
         {%- endif -%}
         {%- if field.recursive -%}
 rg.IncreaseDepth()

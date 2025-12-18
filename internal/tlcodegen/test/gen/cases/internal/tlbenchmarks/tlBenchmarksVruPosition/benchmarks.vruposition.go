@@ -128,12 +128,29 @@ func (item *BenchmarksVruPosition) Reset() {
 }
 
 func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1100000000101011)
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.FieldsMask&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.FieldsMask&(1<<3) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.FieldsMask&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.FieldsMask&(1<<15) != 0 {
+		item.tl2mask0 |= 16
+	}
 	item.PayloadOffset = basictl.RandomLong(rg)
 	item.BlockTimeNano = basictl.RandomLong(rg)
 	item.Hash.FillRandom(rg)
 	item.FileOffset = basictl.RandomLong(rg)
 	if item.FieldsMask&(1<<14) != 0 {
+		item.tl2mask0 |= 32
 		item.SeqNumber = basictl.RandomLong(rg)
 	} else {
 		item.SeqNumber = 0

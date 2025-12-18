@@ -46,7 +46,11 @@ func (item *Service5LongInsert) Reset() {
 }
 
 func (item *Service5LongInsert) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.Flags = basictl.RandomFieldMask(rg, 0b1)
+	if item.Flags&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 }
 
 func (item *Service5LongInsert) Read(w []byte) (_ []byte, err error) {
