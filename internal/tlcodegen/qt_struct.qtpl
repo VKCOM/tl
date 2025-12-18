@@ -1068,7 +1068,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- if field.recursive -%}
         if {%s= fmt.Sprintf("item.%s", field.goName) %} == nil {
             var tmpValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
-            {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "(&tmpValue)", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods) %}
+            {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), false, false, field.t.hasErrorInWriteMethods) %}
         } else {
             {%s= writingCode %}
         }

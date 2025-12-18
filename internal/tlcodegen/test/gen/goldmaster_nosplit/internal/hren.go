@@ -51,7 +51,7 @@ func (item *Hren) WriteGeneral(w []byte) (_ []byte, err error) {
 func (item *Hren) Write(w []byte) []byte {
 	if item.Next == nil {
 		var tmpValue HrenMaybe
-		w = (&tmpValue).WriteBoxed(w)
+		w = tmpValue.WriteBoxed(w)
 	} else {
 		w = item.Next.WriteBoxed(w)
 	}
