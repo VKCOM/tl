@@ -1125,21 +1125,10 @@ func (item *`)
 	needSomeRaw := false
 
 	for _, field := range struct_.Fields {
-		/* TODO: skip anonymous names */
-
-		if field.IsTL2Omitted() {
+		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
-		if field.originalName == "" {
-			continue
-		}
-		if field.t.IsTrueType() && field.fieldMask == nil {
-			continue
-		}
-		if field.t.IsTrueType() && !field.fieldMask.isField {
-			continue
-		}
-		if field.t.IsTrueType() {
+		if field.IsBit() {
 			qw422016.N().S(`    var trueType`)
 			qw422016.N().S(field.goName)
 			qw422016.N().S(`Presented bool
@@ -1189,12 +1178,7 @@ func (item *`)
             switch key {
 `)
 		for _, field := range struct_.Fields {
-			/* TODO: skip anonymous names */
-
-			if field.IsTL2Omitted() {
-				continue
-			}
-			if field.originalName == "" {
+			if field.IsTL2Omitted() || field.originalName == "" {
 				continue
 			}
 			qw422016.N().S(`                case "`)
@@ -1204,18 +1188,8 @@ func (item *`)
 			reader := "in"
 			itemField := fmt.Sprintf("item.%s", field.goName)
 
-			if field.t.IsTrueType() {
-				if field.fieldMask == nil {
-					qw422016.N().S(`                    var tmp`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-					qw422016.N().S(`
-                    `)
-					qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "tmp"+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
-					qw422016.N().S(`
-`)
-				} else if !field.fieldMask.isField {
+			if field.IsBit() {
+				if !field.fieldMask.isField {
 					qw422016.N().S(`                    return `)
 					qw422016.N().S(struct_.wr.gen.InternalPrefix())
 					qw422016.N().S(`ErrorInvalidJSON(`)

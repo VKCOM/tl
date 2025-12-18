@@ -557,12 +557,8 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         needSomeRaw := false
     -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- code /* TODO: skip anonymous names */ -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
-        {%- if field.t.IsTrueType() && field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
-        {%- if field.t.IsTrueType() && !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
-        {%- if field.t.IsTrueType() -%}
+        {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsBit() -%}
     var trueType{%s= field.goName %}Presented bool
     var trueType{%s= field.goName %}Value     bool
         {%- elseif !field.HasNatArguments() -%}
@@ -590,19 +586,14 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             in.WantColon()
             switch key {
         {%- for _, field := range struct_.Fields -%}
-            {%- code /* TODO: skip anonymous names */ -%}
-            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-            {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
+            {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
                 case "{%s= field.originalName %}":
             {%- code
                 reader := "in"
                 itemField := fmt.Sprintf("item.%s", field.goName)
             -%}
-            {%- if field.t.IsTrueType() -%}
-                {%- if field.fieldMask == nil -%}
-                    var tmp{%s= field.goName %} {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
-                    {%s= field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in", "tmp" + field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive) %}
-                {%- elseif !field.fieldMask.isField -%}
+            {%- if field.IsBit() -%}
+                {%- if !field.fieldMask.isField -%}
                     return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "implicit true field '{%s= field.originalName %}' cannot be defined, set fieldmask instead")
                 {%- else -%}
                     if trueType{%s= field.goName %}Presented {
