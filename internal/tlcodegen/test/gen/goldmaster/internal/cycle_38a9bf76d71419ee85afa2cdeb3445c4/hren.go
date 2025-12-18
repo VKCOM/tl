@@ -269,16 +269,16 @@ func (item *Hren) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read item.Next
 	if block&(1<<1) != 0 {
 		if item.Next == nil {
-			var newValue HrenMaybe
-			item.Next = &newValue
+			var value HrenMaybe
+			item.Next = &value
 		}
 		if currentR, err = (*item.Next).InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		if item.Next == nil {
-			var newValue HrenMaybe
-			item.Next = &newValue
+			var value HrenMaybe
+			item.Next = &value
 		}
 		item.Next.Reset()
 	}

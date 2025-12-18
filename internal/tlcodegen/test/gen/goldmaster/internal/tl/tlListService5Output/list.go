@@ -438,16 +438,16 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 	// read item.Tail
 	if block&(1<<3) != 0 {
 		if item.Tail == nil {
-			var newValue ListService5Output
-			item.Tail = &newValue
+			var value ListService5Output
+			item.Tail = &value
 		}
 		if currentR, err = item.Tail.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		if item.Tail == nil {
-			var newValue ListService5Output
-			item.Tail = &newValue
+			var value ListService5Output
+			item.Tail = &value
 		}
 		item.Tail.Reset()
 	}

@@ -357,16 +357,16 @@ func (item *MyNat) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read item.A
 	if block&(1<<2) != 0 {
 		if item.A == nil {
-			var newValue MyNat
-			item.A = &newValue
+			var value MyNat
+			item.A = &value
 		}
 		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		if item.A == nil {
-			var newValue MyNat
-			item.A = &newValue
+			var value MyNat
+			item.A = &value
 		}
 		item.A.Reset()
 	}

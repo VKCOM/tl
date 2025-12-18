@@ -191,18 +191,10 @@ func (item *AbAlias) InternalReadTL2(r []byte, block byte) (_ []byte, err error)
 
 	// read ptr
 	if block&(1<<1) != 0 {
-		if ptr == nil {
-			var newValue int32
-			ptr = &newValue
-		}
 		if currentR, err = basictl.IntRead(currentR, ptr); err != nil {
 			return currentR, err
 		}
 	} else {
-		if ptr == nil {
-			var newValue int32
-			ptr = &newValue
-		}
 		*ptr = 0
 	}
 
