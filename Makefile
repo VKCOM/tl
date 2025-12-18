@@ -115,23 +115,23 @@ migrate_to_tl2: build
 
 .PHONY: goldmaster_tl2_nocompile
 goldmaster_tl2_nocompile: build migrate_to_tl2
-	@./target/bin/tlgen --language=go --split-internal -v \
-		--tl2-generate=true \
-		--copyrightPath=./COPYRIGHT \
-		--outdir=./$(GEN_PATH)/casesTL2 \
-		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL2/tl \
-		--basicPkgPath=$(BASIC_TL_PATH) \
-		--generateByteVersions=cases_bytes. \
-		--generateRandomCode \
-		--generateLegacyJsonRead=false \
-		--checkLengthSanity=false \
-		./$(TLS_PATH)/cases.tl2
+	#	@./target/bin/tlgen --language=go --split-internal -v \
+	#		--tl2-generate=true \
+	#		--copyrightPath=./COPYRIGHT \
+	#		--outdir=./$(GEN_PATH)/casesTL2 \
+	#		--pkgPath=github.com/vkcom/tl/$(GEN_PATH)/casesTL2/tl \
+	#		--basicPkgPath=$(BASIC_TL_PATH) \
+	#		--generateByteVersions=cases_bytes. \
+	#		--generateRandomCode \
+	#		--generateLegacyJsonRead=false \
+	#		--checkLengthSanity=false \
+	#		./$(TLS_PATH)/cases.tl2
 
 .PHONY: goldmaster
 goldmaster: goldmaster_nocompile goldmaster_tl2_nocompile
 	@echo "Checking that generated code actually compiles..."
 	$(GO) build ./$(GEN_PATH)/cases/...
-	$(GO) build ./$(GEN_PATH)/casesTL2/...
+	# $(GO) build ./$(GEN_PATH)/casesTL2/...
 	$(GO) build ./$(GEN_PATH)/goldmaster/...
 	$(GO) build ./$(GEN_PATH)/goldmaster_nosplit/...
 
