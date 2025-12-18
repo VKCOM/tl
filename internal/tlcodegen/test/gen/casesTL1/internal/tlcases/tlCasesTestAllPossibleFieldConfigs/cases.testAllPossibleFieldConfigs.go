@@ -255,6 +255,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteGeneral(w []byte, nat_outer u
 func (item *CasesTestAllPossibleFieldConfigs) Write(w []byte, nat_outer uint32) (_ []byte, err error) {
 	w = basictl.NatWrite(w, item.Local)
 	w = basictl.IntWrite(w, item.F00)
+	w = item.F01.Write(w)
 	if w, err = tlBuiltinTupleInt.BuiltinTupleIntWrite(w, item.F02, item.Local); err != nil {
 		return w, err
 	}
