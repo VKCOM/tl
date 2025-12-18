@@ -2,20 +2,19 @@ package tl2compatibility
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	"github.com/vkcom/tl/internal/utils"
-	"github.com/vkcom/tl/pkg/basictl"
 	"math/rand"
-
-	factory1 "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
-	meta1 "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
-
-	factory2 "github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/factory"
-	meta2 "github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/meta"
-
 	"sort"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/vkcom/tl/internal/utils"
+	"github.com/vkcom/tl/pkg/basictl"
+
+	factory1 "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/factory"
+	meta1 "github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/meta"
+	//factory1 "github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/factory"
+	//meta1 "github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL2/meta"
 )
 
 func TestJsonCompatibility(t *testing.T) {
@@ -28,8 +27,8 @@ func TestJsonCompatibility(t *testing.T) {
 		return strings.Compare(tl1Items[i].TLName(), tl1Items[j].TLName()) > 0
 	})
 
-	tl2Items := meta2.GetAllTLItems()
-	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta2.TLItem) string {
+	tl2Items := meta1.GetAllTLItems()
+	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -49,7 +48,7 @@ func TestJsonCompatibility(t *testing.T) {
 				t.Fatalf("can't create in TL1: %s", item.TLName())
 				return
 			}
-			tl2Obj := factory2.CreateObjectFromName(item.TLName())
+			tl2Obj := factory1.CreateObjectFromName(item.TLName())
 			if tl2Obj == nil {
 				t.Skipf("for some reason can't find in tl2: %s", item.TLName())
 				return
@@ -99,8 +98,8 @@ func TestTL2Compatibility(t *testing.T) {
 		return strings.Compare(tl1Items[i].TLName(), tl1Items[j].TLName()) > 0
 	})
 
-	tl2Items := meta2.GetAllTLItems()
-	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta2.TLItem) string {
+	tl2Items := meta1.GetAllTLItems()
+	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -120,7 +119,7 @@ func TestTL2Compatibility(t *testing.T) {
 				t.Fatalf("can't create in TL1: %s", item.TLName())
 				return
 			}
-			tl2Obj := factory2.CreateObjectFromName(item.TLName())
+			tl2Obj := factory1.CreateObjectFromName(item.TLName())
 			if tl2Obj == nil {
 				t.Skipf("for some reason can't find in tl2: %s", item.TLName())
 				return
@@ -165,8 +164,8 @@ func TestJsonTL2Compatibility(t *testing.T) {
 		return strings.Compare(tl1Items[i].TLName(), tl1Items[j].TLName()) > 0
 	})
 
-	tl2Items := meta2.GetAllTLItems()
-	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta2.TLItem) string {
+	tl2Items := meta1.GetAllTLItems()
+	tl2ItemsNames := utils.MapSlice(tl2Items, func(a meta1.TLItem) string {
 		return a.TLName()
 	})
 
@@ -186,7 +185,7 @@ func TestJsonTL2Compatibility(t *testing.T) {
 				t.Fatalf("can't create in TL1: %s", item.TLName())
 				return
 			}
-			tl2Obj := factory2.CreateObjectFromName(item.TLName())
+			tl2Obj := factory1.CreateObjectFromName(item.TLName())
 			if tl2Obj == nil {
 				t.Skipf("for some reason can't find in tl2: %s", item.TLName())
 				return
