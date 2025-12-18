@@ -444,6 +444,9 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if !propF00Presented {
 		item.F00 = 0
 	}
+	if !propF01Presented {
+		item.F01.Reset()
+	}
 	if !propF10Presented {
 		item.F10 = 0
 	}
