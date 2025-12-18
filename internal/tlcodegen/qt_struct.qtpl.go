@@ -1129,13 +1129,15 @@ func (item *`)
 			continue
 		}
 		if field.IsBit() {
-			qw422016.N().S(`    var trueType`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(`Presented bool
+			if field.fieldMask.isField {
+				qw422016.N().S(`    var trueType`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(`Presented bool
     var trueType`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(`Value     bool
+				qw422016.N().S(field.goName)
+				qw422016.N().S(`Value     bool
 `)
+			}
 		} else if !field.HasNatArguments() {
 			/* TODO: can be optimized to read with only external nats */
 
@@ -1313,10 +1315,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if field.IsTL2Omitted() {
-			continue
-		}
-		if field.originalName == "" {
+		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
 		if field.t.IsTrueType() {
@@ -1351,10 +1350,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if field.IsTL2Omitted() {
-			continue
-		}
-		if field.originalName == "" {
+		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
 		if field.IsAffectingLocalFieldMasks() {
@@ -1415,10 +1411,7 @@ func (item *`)
 	for _, field := range struct_.Fields {
 		/* TODO: skip anonymous names */
 
-		if field.IsTL2Omitted() {
-			continue
-		}
-		if field.originalName == "" {
+		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
 		if field.t.IsTrueType() || !field.HasNatArguments() {
@@ -1480,7 +1473,7 @@ func (item *`)
 	/* BLOCK: trueType with false values validation */
 
 	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() {
+		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
 		if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField {
