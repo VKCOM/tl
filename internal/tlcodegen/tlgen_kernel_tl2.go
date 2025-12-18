@@ -519,8 +519,7 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 		// for tl1 unknown params call
 		for paramI := 0; paramI < len(field.t.NatParams); paramI++ {
 			field.natArgs = append(field.natArgs, ActualNatArg{
-				isArith:        true,
-				isTL2FakeArith: true,
+				isArith: true,
 				Arith: tlast.Arithmetic{
 					Res:  math.MaxUint32,
 					Nums: []uint32{math.MaxUint32},
@@ -910,11 +909,7 @@ func (w *TypeRWWrapper) wrapperNameTail() (tail string) {
 	b := strings.Builder{}
 	for _, a := range w.arguments {
 		if a.isNat {
-			if a.isTL2FakeArith {
-				b.WriteString("FakeUint32Max")
-			} else {
-				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-			}
+			b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
 		} else {
 			b.WriteString(utils.UpperFirst(a.tip.goGlobalName))
 		}

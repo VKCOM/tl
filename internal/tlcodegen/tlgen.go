@@ -124,8 +124,6 @@ type ResolvedArgument struct {
 	Arith   tlast.Arithmetic
 	tip     *TypeRWWrapper
 	bare    bool // vector Int is not the same as vector int, we must capture the difference somewhere
-
-	isTL2FakeArith bool // for only tl2 purposes
 }
 
 type ActualNatArg struct {
@@ -134,8 +132,6 @@ type ActualNatArg struct {
 	isField    bool // otherwise it is # param with name
 	FieldIndex int
 	name       string // param name
-
-	isTL2FakeArith bool // for only tl2 purposes
 }
 
 func (arg *ActualNatArg) IsTL2() bool {
