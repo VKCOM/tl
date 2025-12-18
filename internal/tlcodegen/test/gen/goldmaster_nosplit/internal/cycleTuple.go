@@ -333,6 +333,8 @@ type CycleTuple struct {
 	A *[2]CycleTuple // Conditional: item.N.0
 	B []CycleTuple
 	C [3]int32 // Conditional: item.N.2
+
+	tl2mask0 byte
 }
 
 func (CycleTuple) TLName() string { return "cycleTuple" }
@@ -345,24 +347,28 @@ func (item *CycleTuple) SetA(v [2]CycleTuple) {
 	}
 	*item.A = v
 	item.N |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CycleTuple) ClearA() {
 	if item.A != nil {
 		BuiltinTuple2CycleTupleReset(item.A)
 	}
 	item.N &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CycleTuple) IsSetA() bool { return item.N&(1<<0) != 0 }
+func (item *CycleTuple) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CycleTuple) SetC(v [3]int32) {
 	item.C = v
 	item.N |= 1 << 2
+	item.tl2mask0 |= 2
 }
 func (item *CycleTuple) ClearC() {
 	BuiltinTuple3IntReset(&item.C)
 	item.N &^= 1 << 2
+	item.tl2mask0 &^= 2
 }
-func (item *CycleTuple) IsSetC() bool { return item.N&(1<<2) != 0 }
+func (item *CycleTuple) IsSetC() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CycleTuple) Reset() {
 	item.N = 0
@@ -371,6 +377,7 @@ func (item *CycleTuple) Reset() {
 	}
 	item.B = item.B[:0]
 	BuiltinTuple3IntReset(&item.C)
+	item.tl2mask0 = 0
 }
 
 func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {

@@ -28,6 +28,8 @@ type BenchmarksVruPosition struct {
 	Hash          tlBenchmarksVruHash.BenchmarksVruHash
 	FileOffset    int64
 	SeqNumber     int64 // Conditional: item.FieldsMask.14
+
+	tl2mask0 byte
 }
 
 func (BenchmarksVruPosition) TLName() string { return "benchmarks.vruposition" }
@@ -39,8 +41,13 @@ func (item *BenchmarksVruPosition) SetCommitBit(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 1
+	} else {
+		item.tl2mask0 &^= 1
+	}
 }
-func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *BenchmarksVruPosition) IsSetCommitBit() bool { return item.tl2mask0&1 != 0 }
 
 func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 	if v {
@@ -48,8 +55,13 @@ func (item *BenchmarksVruPosition) SetMetaBlock(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.FieldsMask&(1<<1) != 0 }
+func (item *BenchmarksVruPosition) IsSetMetaBlock() bool { return item.tl2mask0&2 != 0 }
 
 func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 	if v {
@@ -57,8 +69,13 @@ func (item *BenchmarksVruPosition) SetSplitPayload(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 3
 	}
+	if v {
+		item.tl2mask0 |= 4
+	} else {
+		item.tl2mask0 &^= 4
+	}
 }
-func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.FieldsMask&(1<<3) != 0 }
+func (item *BenchmarksVruPosition) IsSetSplitPayload() bool { return item.tl2mask0&4 != 0 }
 
 func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 	if v {
@@ -66,8 +83,13 @@ func (item *BenchmarksVruPosition) SetRotationBlock(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 5
 	}
+	if v {
+		item.tl2mask0 |= 8
+	} else {
+		item.tl2mask0 &^= 8
+	}
 }
-func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.FieldsMask&(1<<5) != 0 }
+func (item *BenchmarksVruPosition) IsSetRotationBlock() bool { return item.tl2mask0&8 != 0 }
 
 func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 	if v {
@@ -75,18 +97,25 @@ func (item *BenchmarksVruPosition) SetCanonicalHash(v bool) {
 	} else {
 		item.FieldsMask &^= 1 << 15
 	}
+	if v {
+		item.tl2mask0 |= 16
+	} else {
+		item.tl2mask0 &^= 16
+	}
 }
-func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.FieldsMask&(1<<15) != 0 }
+func (item *BenchmarksVruPosition) IsSetCanonicalHash() bool { return item.tl2mask0&16 != 0 }
 
 func (item *BenchmarksVruPosition) SetSeqNumber(v int64) {
 	item.SeqNumber = v
 	item.FieldsMask |= 1 << 14
+	item.tl2mask0 |= 32
 }
 func (item *BenchmarksVruPosition) ClearSeqNumber() {
 	item.SeqNumber = 0
 	item.FieldsMask &^= 1 << 14
+	item.tl2mask0 &^= 32
 }
-func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.FieldsMask&(1<<14) != 0 }
+func (item *BenchmarksVruPosition) IsSetSeqNumber() bool { return item.tl2mask0&32 != 0 }
 
 func (item *BenchmarksVruPosition) Reset() {
 	item.FieldsMask = 0
@@ -95,6 +124,7 @@ func (item *BenchmarksVruPosition) Reset() {
 	item.Hash.Reset()
 	item.FileOffset = 0
 	item.SeqNumber = 0
+	item.tl2mask0 = 0
 }
 
 func (item *BenchmarksVruPosition) FillRandom(rg *basictl.RandGenerator) {

@@ -31,6 +31,8 @@ type CasesTestAllPossibleFieldConfigs struct {
 	// F21 (TrueType) // Conditional: nat_outer.1
 	F22 []int32 // Conditional: nat_outer.2
 	F23 []int32 // Conditional: nat_outer.3
+
+	tl2mask0 byte
 }
 
 func (CasesTestAllPossibleFieldConfigs) TLName() string { return "cases.testAllPossibleFieldConfigs" }
@@ -39,12 +41,14 @@ func (CasesTestAllPossibleFieldConfigs) TLTag() uint32  { return 0xfb6836d3 }
 func (item *CasesTestAllPossibleFieldConfigs) SetF10(v int32) {
 	item.F10 = v
 	item.Local |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF10() {
 	item.F10 = 0
 	item.Local &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF10() bool { return item.Local&(1<<0) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF10() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF11(v bool) {
 	if v {
@@ -52,44 +56,53 @@ func (item *CasesTestAllPossibleFieldConfigs) SetF11(v bool) {
 	} else {
 		item.Local &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF11() bool { return item.Local&(1<<1) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF11() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF12(v []int32) {
 	item.F12 = v
 	item.Local |= 1 << 2
+	item.tl2mask0 |= 4
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF12() {
 	item.F12 = item.F12[:0]
 	item.Local &^= 1 << 2
+	item.tl2mask0 &^= 4
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF12() bool { return item.Local&(1<<2) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF12() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF13(v []int32) {
 	item.F13 = v
 	item.Local |= 1 << 3
+	item.tl2mask0 |= 8
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF13() {
 	item.F13 = item.F13[:0]
 	item.Local &^= 1 << 3
+	item.tl2mask0 &^= 8
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.Local&(1<<3) != 0 }
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF13() bool { return item.tl2mask0&8 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF20(v int32, nat_outer *uint32) {
 	item.F20 = v
 	if nat_outer != nil {
 		*nat_outer |= 1 << 0
 	}
+	item.tl2mask0 |= 16
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF20(nat_outer *uint32) {
 	item.F20 = 0
 	if nat_outer != nil {
 		*nat_outer &^= 1 << 0
 	}
+	item.tl2mask0 &^= 16
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF20(nat_outer uint32) bool {
-	return nat_outer&(1<<0) != 0
-}
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF20() bool { return item.tl2mask0&16 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF21(v bool, nat_outer *uint32) {
 	if nat_outer != nil {
@@ -99,42 +112,45 @@ func (item *CasesTestAllPossibleFieldConfigs) SetF21(v bool, nat_outer *uint32) 
 			*nat_outer &^= 1 << 1
 		}
 	}
+	if v {
+		item.tl2mask0 |= 32
+	} else {
+		item.tl2mask0 &^= 32
+	}
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF21(nat_outer uint32) bool {
-	return nat_outer&(1<<1) != 0
-}
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF21() bool { return item.tl2mask0&32 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF22(v []int32, nat_outer *uint32) {
 	item.F22 = v
 	if nat_outer != nil {
 		*nat_outer |= 1 << 2
 	}
+	item.tl2mask0 |= 64
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF22(nat_outer *uint32) {
 	item.F22 = item.F22[:0]
 	if nat_outer != nil {
 		*nat_outer &^= 1 << 2
 	}
+	item.tl2mask0 &^= 64
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF22(nat_outer uint32) bool {
-	return nat_outer&(1<<2) != 0
-}
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF22() bool { return item.tl2mask0&64 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) SetF23(v []int32, nat_outer *uint32) {
 	item.F23 = v
 	if nat_outer != nil {
 		*nat_outer |= 1 << 3
 	}
+	item.tl2mask0 |= 128
 }
 func (item *CasesTestAllPossibleFieldConfigs) ClearF23(nat_outer *uint32) {
 	item.F23 = item.F23[:0]
 	if nat_outer != nil {
 		*nat_outer &^= 1 << 3
 	}
+	item.tl2mask0 &^= 128
 }
-func (item *CasesTestAllPossibleFieldConfigs) IsSetF23(nat_outer uint32) bool {
-	return nat_outer&(1<<3) != 0
-}
+func (item *CasesTestAllPossibleFieldConfigs) IsSetF23() bool { return item.tl2mask0&128 != 0 }
 
 func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.Local = 0
@@ -147,6 +163,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 	item.F20 = 0
 	item.F22 = item.F22[:0]
 	item.F23 = item.F23[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerator, nat_outer uint32) {

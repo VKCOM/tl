@@ -1243,6 +1243,8 @@ type Field struct {
 	fieldMask *ActualNatArg
 	BitNumber uint32 // only used when fieldMask != nil
 
+	MaskTL2Bit *int
+
 	natArgs      []ActualNatArg
 	halfResolved HalfResolvedArgument
 
@@ -1297,6 +1299,10 @@ func (f *Field) IsBit() bool {
 		return b.isTL2 && !b.isTL2Legacy
 	}
 	return f.fieldMask != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
+}
+
+func (f *Field) TL2MaskForOP(op string) string {
+	return fmt.Sprintf("tl2mask%d %s %d", *f.MaskTL2Bit/8, op, 1<<(*f.MaskTL2Bit%8))
 }
 
 func wrapWithError(wrap bool, wrappedType string) string {

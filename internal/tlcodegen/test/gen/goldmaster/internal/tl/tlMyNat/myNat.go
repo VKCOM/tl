@@ -18,6 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 type MyNat struct {
 	FieldsMask uint32
 	A          *MyNat // Conditional: item.FieldsMask.0
+
+	tl2mask0 byte
 }
 
 func (MyNat) TLName() string { return "myNat" }
@@ -30,20 +32,23 @@ func (item *MyNat) SetA(v MyNat) {
 	}
 	*item.A = v
 	item.FieldsMask |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *MyNat) ClearA() {
 	if item.A != nil {
 		item.A.Reset()
 	}
 	item.FieldsMask &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *MyNat) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *MyNat) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *MyNat) Reset() {
 	item.FieldsMask = 0
 	if item.A != nil {
 		item.A.Reset()
 	}
+	item.tl2mask0 = 0
 }
 
 func (item *MyNat) FillRandom(rg *basictl.RandGenerator) {

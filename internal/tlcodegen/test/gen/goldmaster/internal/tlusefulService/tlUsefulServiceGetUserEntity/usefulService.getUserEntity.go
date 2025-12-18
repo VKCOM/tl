@@ -19,6 +19,8 @@ var _ = internal.ErrorInvalidEnumTag
 type UsefulServiceGetUserEntity struct {
 	FieldsMask uint32
 	StageId    string // Conditional: item.FieldsMask.0
+
+	tl2mask0 byte
 }
 
 func (UsefulServiceGetUserEntity) TLName() string { return "usefulService.getUserEntity" }
@@ -27,16 +29,19 @@ func (UsefulServiceGetUserEntity) TLTag() uint32  { return 0x3c857e52 }
 func (item *UsefulServiceGetUserEntity) SetStageId(v string) {
 	item.StageId = v
 	item.FieldsMask |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *UsefulServiceGetUserEntity) ClearStageId() {
 	item.StageId = ""
 	item.FieldsMask &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *UsefulServiceGetUserEntity) IsSetStageId() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *UsefulServiceGetUserEntity) IsSetStageId() bool { return item.tl2mask0&1 != 0 }
 
 func (item *UsefulServiceGetUserEntity) Reset() {
 	item.FieldsMask = 0
 	item.StageId = ""
+	item.tl2mask0 = 0
 }
 
 func (item *UsefulServiceGetUserEntity) FillRandom(rg *basictl.RandGenerator) {

@@ -20,6 +20,8 @@ type CasesTestBeforeReadBitValidation struct {
 	N uint32
 	A []int32 // Conditional: item.N.0
 	B []int32 // Conditional: item.N.1
+
+	tl2mask0 byte
 }
 
 func (CasesTestBeforeReadBitValidation) TLName() string { return "cases.testBeforeReadBitValidation" }
@@ -28,27 +30,32 @@ func (CasesTestBeforeReadBitValidation) TLTag() uint32  { return 0x9b2396db }
 func (item *CasesTestBeforeReadBitValidation) SetA(v []int32) {
 	item.A = v
 	item.N |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestBeforeReadBitValidation) ClearA() {
 	item.A = item.A[:0]
 	item.N &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestBeforeReadBitValidation) IsSetA() bool { return item.N&(1<<0) != 0 }
+func (item *CasesTestBeforeReadBitValidation) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestBeforeReadBitValidation) SetB(v []int32) {
 	item.B = v
 	item.N |= 1 << 1
+	item.tl2mask0 |= 2
 }
 func (item *CasesTestBeforeReadBitValidation) ClearB() {
 	item.B = item.B[:0]
 	item.N &^= 1 << 1
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTestBeforeReadBitValidation) IsSetB() bool { return item.N&(1<<1) != 0 }
+func (item *CasesTestBeforeReadBitValidation) IsSetB() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestBeforeReadBitValidation) Reset() {
 	item.N = 0
 	item.A = item.A[:0]
 	item.B = item.B[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerator) {

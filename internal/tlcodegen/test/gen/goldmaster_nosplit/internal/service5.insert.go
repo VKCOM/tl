@@ -16,6 +16,8 @@ var _ = basictl.NatWrite
 type Service5Insert struct {
 	Flags uint32
 	// Persistent (TrueType) // Conditional: item.Flags.0
+
+	tl2mask0 byte
 }
 
 func (Service5Insert) TLName() string { return "service5.insert" }
@@ -27,11 +29,17 @@ func (item *Service5Insert) SetPersistent(v bool) {
 	} else {
 		item.Flags &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 1
+	} else {
+		item.tl2mask0 &^= 1
+	}
 }
-func (item *Service5Insert) IsSetPersistent() bool { return item.Flags&(1<<0) != 0 }
+func (item *Service5Insert) IsSetPersistent() bool { return item.tl2mask0&1 != 0 }
 
 func (item *Service5Insert) Reset() {
 	item.Flags = 0
+	item.tl2mask0 = 0
 }
 
 func (item *Service5Insert) FillRandom(rg *basictl.RandGenerator) {

@@ -2638,6 +2638,13 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 			typesCounterMarkTL2++
 		}
 	}
+	for _, v := range gen.generatedTypesList { // we do not need tl2masks in this case
+		if str, ok := v.trw.(*TypeRWStruct); ok && !v.wantsTL2 {
+			for i := range str.Fields {
+				str.Fields[i].MaskTL2Bit = nil
+			}
+		}
+	}
 	slices.SortStableFunc(gen.generatedTypesList, func(a, b *TypeRWWrapper) int { //  TODO - better idea?
 		return TypeRWWrapperLessGlobal(a, b)
 	})

@@ -19,6 +19,8 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTL2TestObjectWithMuiltiParams struct {
 	F1 []int32 // Conditional: nat_n.0
 	F2 []int32 // Conditional: nat_m.0
+
+	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams) TLName() string {
@@ -31,32 +33,37 @@ func (item *CasesTL2TestObjectWithMuiltiParams) SetF1(v []int32, nat_n *uint32) 
 	if nat_n != nil {
 		*nat_n |= 1 << 0
 	}
+	item.tl2mask0 |= 1
 }
 func (item *CasesTL2TestObjectWithMuiltiParams) ClearF1(nat_n *uint32) {
 	item.F1 = item.F1[:0]
 	if nat_n != nil {
 		*nat_n &^= 1 << 0
 	}
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF1(nat_n uint32) bool { return nat_n&(1<<0) != 0 }
+func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) SetF2(v []int32, nat_m *uint32) {
 	item.F2 = v
 	if nat_m != nil {
 		*nat_m |= 1 << 0
 	}
+	item.tl2mask0 |= 2
 }
 func (item *CasesTL2TestObjectWithMuiltiParams) ClearF2(nat_m *uint32) {
 	item.F2 = item.F2[:0]
 	if nat_m != nil {
 		*nat_m &^= 1 << 0
 	}
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF2(nat_m uint32) bool { return nat_m&(1<<0) != 0 }
+func (item *CasesTL2TestObjectWithMuiltiParams) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) Reset() {
 	item.F1 = item.F1[:0]
 	item.F2 = item.F2[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams) FillRandom(rg *basictl.RandGenerator, nat_n uint32, nat_m uint32) {
