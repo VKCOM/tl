@@ -363,11 +363,7 @@ func (w *TypeRWWrapper) resolvedT2GoName(insideNamespace string) (head, tail str
 	for _, a := range w.arguments {
 		if a.isNat {
 			if a.isArith {
-				if a.isTL2FakeArith {
-					b.WriteString("FakeUint32Max")
-				} else {
-					b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
-				}
+				b.WriteString(strconv.FormatUint(uint64(a.Arith.Res), 10))
 			}
 		} else {
 			head, tail := a.tip.resolvedT2GoName(insideNamespace)
@@ -1369,7 +1365,7 @@ func formatNatArgsAddNat(natArgs []string) []string {
 func formatNatArgs(fields []Field, natArgs []ActualNatArg) []string {
 	var result []string
 	for _, arg := range natArgs {
-		if !arg.isArith || arg.isTL2FakeArith {
+		if !arg.isArith {
 			result = append(result, formatNatArg(fields, arg))
 		}
 	}

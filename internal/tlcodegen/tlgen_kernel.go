@@ -117,10 +117,9 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 		if ta.IsNat {
 			if a.IsArith {
 				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-					isNat:          true,
-					isArith:        true,
-					Arith:          a.Arith,
-					isTL2FakeArith: false,
+					isNat:   true,
+					isArith: true,
+					Arith:   a.Arith,
 				})
 				halfResolved.Args = append(halfResolved.Args, HalfResolvedArgument{}) // Empty name here
 				continue
@@ -132,10 +131,9 @@ func (gen *Gen2) getType(lrc LocalResolveContext, t tlast.TypeRef, unionParent *
 					return nil, false, nil, HalfResolvedArgument{}, tlast.BeautifulError2(e1, e2)
 				}
 				kernelType.arguments = append(kernelType.arguments, ResolvedArgument{
-					isNat:          true, // true due to check above
-					isArith:        localArg.natArg.isArith,
-					Arith:          localArg.natArg.Arith,
-					isTL2FakeArith: localArg.natArg.isTL2FakeArith,
+					isNat:   true, // true due to check above
+					isArith: localArg.natArg.isArith,
+					Arith:   localArg.natArg.Arith,
 				})
 				halfResolved.Args = append(halfResolved.Args, HalfResolvedArgument{Name: aName})
 				if !localArg.natArg.isArith {
@@ -234,10 +232,9 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 				NamePR: a.PR,
 				TypePR: a.PR,
 				natArg: ActualNatArg{
-					isArith:        ra.isArith,
-					Arith:          ra.Arith,
-					name:           a.FieldName,
-					isTL2FakeArith: ra.isTL2FakeArith,
+					isArith: ra.isArith,
+					Arith:   ra.Arith,
+					name:    a.FieldName,
 				},
 			}
 			if !ra.isArith {
@@ -291,12 +288,12 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		switch tlType[0].Construct.Name.String() { // TODO - better switch
 		case BuiltinTupleName:
 			// tl2 faking vector
-			if myWrapper.arguments[0].isArith && myWrapper.arguments[0].isTL2FakeArith {
-				myWrapper.arguments = myWrapper.arguments[1:]
-				_, tail := myWrapper.resolvedT2GoName("")
-				myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
-				return gen.GenerateVector(myWrapper, tlType[0], lrc, 1)
-			}
+			//if myWrapper.arguments[0].isArith && myWrapper.arguments[0].isTL2FakeArith {
+			//	myWrapper.arguments = myWrapper.arguments[1:]
+			//	_, tail := myWrapper.resolvedT2GoName("")
+			//	myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinVector" + tail)
+			//	return gen.GenerateVector(myWrapper, tlType[0], lrc, 1)
+			//}
 			_, tail := myWrapper.resolvedT2GoName("")
 			myWrapper.goGlobalName = gen.globalDec.deconflictName("BuiltinTuple" + tail)
 			// built-in tuple has no local name. TODO - invent one?
