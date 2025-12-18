@@ -51,6 +51,9 @@ func (item *Service5Insert) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.Flags); err != nil {
 		return w, err
 	}
+	if item.Flags&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	return w, nil
 }
 

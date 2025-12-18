@@ -58,6 +58,7 @@ func (item *CasesMyCycle3) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = item.A.Read(w); err != nil {
 			return w, err
 		}

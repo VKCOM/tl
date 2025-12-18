@@ -91,6 +91,12 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.Fm); err != nil {
 		return w, err
 	}
+	if item.Fm&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Fm&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if item.Fm&(1<<1) != 0 {
 		if w, err = basictl.NatReadExactTag(w, 0x3fedd339); err != nil {
 			return w, err
@@ -103,6 +109,7 @@ func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.Fm&(1<<2) != 0 {
+		item.tl2mask0 |= 4
 		if w, err = tlBool.BoolReadBoxed(w, &item.E); err != nil {
 			return w, err
 		}

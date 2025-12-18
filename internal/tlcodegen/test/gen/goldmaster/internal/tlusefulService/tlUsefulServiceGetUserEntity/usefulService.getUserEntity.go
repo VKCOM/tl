@@ -59,6 +59,7 @@ func (item *UsefulServiceGetUserEntity) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.StringRead(w, &item.StageId); err != nil {
 			return w, err
 		}

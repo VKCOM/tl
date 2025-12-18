@@ -2186,8 +2186,20 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 		lastWritten = lastWritten || last
 
 		if field.IsBit() {
+			if field.MaskTL2Bit != nil {
+				qw422016.N().S(`                if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1<<`)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+                    item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+                }
+`)
+			}
 			if !field.Bare() {
-				/* special case for TL1 */
+				/* special rare case for TL1, let optimizer combine 2 expressions */
 
 				qw422016.N().S(`                if `)
 				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
@@ -2209,6 +2221,12 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 			qw422016.E().V(field.BitNumber)
 			qw422016.N().S(`) != 0 {
 `)
+			if field.MaskTL2Bit != nil {
+				qw422016.N().S(`            item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+`)
+			}
 		}
 		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 		qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last))

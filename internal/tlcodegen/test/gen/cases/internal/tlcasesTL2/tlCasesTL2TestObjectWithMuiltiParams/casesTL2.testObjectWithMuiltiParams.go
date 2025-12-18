@@ -82,6 +82,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) FillRandom(rg *basictl.RandGener
 func (item *CasesTL2TestObjectWithMuiltiParams) Read(w []byte, nat_n uint32, nat_m uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F1, nat_n); err != nil {
 			return w, err
 		}
@@ -89,6 +90,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams) Read(w []byte, nat_n uint32, nat
 		item.F1 = item.F1[:0]
 	}
 	if nat_m&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F2, nat_m); err != nil {
 			return w, err
 		}

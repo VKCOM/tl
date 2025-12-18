@@ -51,6 +51,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGen
 func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = tlBuiltinTuple4Int.BuiltinTuple4IntRead(w, &item.F1); err != nil {
 			return w, err
 		}
@@ -58,6 +59,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err 
 		tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.F1)
 	}
 	if 1&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBuiltinTuple1Int.BuiltinTuple1IntRead(w, &item.F2); err != nil {
 			return w, err
 		}

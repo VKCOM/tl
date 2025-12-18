@@ -221,6 +221,7 @@ func (item *DictionaryElemUglyIntString) FillRandom(rg *basictl.RandGenerator, n
 func (item *DictionaryElemUglyIntString) Read(w []byte, nat_f uint32) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.IntRead(w, &item.Key); err != nil {
 			return w, err
 		}
@@ -228,6 +229,7 @@ func (item *DictionaryElemUglyIntString) Read(w []byte, nat_f uint32) (_ []byte,
 		item.Key = 0
 	}
 	if nat_f&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = basictl.StringRead(w, &item.Value); err != nil {
 			return w, err
 		}

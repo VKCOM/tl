@@ -280,6 +280,7 @@ func (item *DictionaryElemStrangeString) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.Key&(1<<31) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.StringRead(w, &item.Value); err != nil {
 			return w, err
 		}

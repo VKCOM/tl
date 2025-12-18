@@ -44,6 +44,7 @@ func (item *CasesTL2TestObjectWithParam4) FillRandom(rg *basictl.RandGenerator) 
 func (item *CasesTL2TestObjectWithParam4) Read(w []byte) (_ []byte, err error) {
 	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.IntRead(w, &item.X); err != nil {
 			return w, err
 		}

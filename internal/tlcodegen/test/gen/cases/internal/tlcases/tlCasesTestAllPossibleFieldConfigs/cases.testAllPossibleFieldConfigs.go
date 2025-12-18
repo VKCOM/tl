@@ -222,13 +222,18 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 		return w, err
 	}
 	if item.Local&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		if w, err = basictl.IntRead(w, &item.F10); err != nil {
 			return w, err
 		}
 	} else {
 		item.F10 = 0
 	}
+	if item.Local&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if item.Local&(1<<2) != 0 {
+		item.tl2mask0 |= 4
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F12, item.Local); err != nil {
 			return w, err
 		}
@@ -236,6 +241,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 		item.F12 = item.F12[:0]
 	}
 	if item.Local&(1<<3) != 0 {
+		item.tl2mask0 |= 8
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F13, nat_outer); err != nil {
 			return w, err
 		}
@@ -243,13 +249,18 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 		item.F13 = item.F13[:0]
 	}
 	if nat_outer&(1<<0) != 0 {
+		item.tl2mask0 |= 16
 		if w, err = basictl.IntRead(w, &item.F20); err != nil {
 			return w, err
 		}
 	} else {
 		item.F20 = 0
 	}
+	if nat_outer&(1<<1) != 0 {
+		item.tl2mask0 |= 32
+	}
 	if nat_outer&(1<<2) != 0 {
+		item.tl2mask0 |= 64
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F22, item.Local); err != nil {
 			return w, err
 		}
@@ -257,6 +268,7 @@ func (item *CasesTestAllPossibleFieldConfigs) Read(w []byte, nat_outer uint32) (
 		item.F22 = item.F22[:0]
 	}
 	if nat_outer&(1<<3) != 0 {
+		item.tl2mask0 |= 128
 		if w, err = tlBuiltinTupleInt.BuiltinTupleIntRead(w, &item.F23, nat_outer); err != nil {
 			return w, err
 		}

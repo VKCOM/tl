@@ -111,6 +111,9 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 	if w, err = basictl.NatRead(w, &item.N); err != nil {
 		return w, err
 	}
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	if w, err = tlBool.BoolReadBoxed(w, &item.F2); err != nil {
 		return w, err
 	}
@@ -121,6 +124,7 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		if w, err = tlBool.BoolReadBoxed(w, &item.F5); err != nil {
 			return w, err
 		}
@@ -131,6 +135,7 @@ func (item *CasesTL2TestObject) Read(w []byte) (_ []byte, err error) {
 		return w, err
 	}
 	if item.N&(1<<14) != 0 {
+		item.tl2mask0 |= 4
 		if w, err = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedRead(w, &item.F7); err != nil {
 			return w, err
 		}
