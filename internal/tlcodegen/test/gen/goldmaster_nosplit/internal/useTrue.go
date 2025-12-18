@@ -83,6 +83,7 @@ func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *UseTrue) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Fm); err != nil {
 		return w, err
 	}

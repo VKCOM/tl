@@ -86,6 +86,7 @@ func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *ListService5Output) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flag); err != nil {
 		return w, err
 	}

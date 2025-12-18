@@ -2331,6 +2331,12 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 `)
 		return
 	}
+	for _, tl2mask := range struct_.AllNewTL2Masks() {
+		qw422016.N().S(`         item.`)
+		qw422016.N().S(tl2mask)
+		qw422016.N().S(` = 0
+`)
+	}
 	lastWritten := false
 
 	for i, field := range struct_.Fields {

@@ -275,6 +275,7 @@ func (item *DictionaryElemStrangeString) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *DictionaryElemStrangeString) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Key); err != nil {
 		return w, err
 	}

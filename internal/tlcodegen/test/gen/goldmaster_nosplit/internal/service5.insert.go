@@ -47,6 +47,7 @@ func (item *Service5Insert) FillRandom(rg *basictl.RandGenerator) {
 }
 
 func (item *Service5Insert) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if w, err = basictl.NatRead(w, &item.Flags); err != nil {
 		return w, err
 	}

@@ -49,6 +49,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) FillRandom(rg *basictl.RandGen
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) Read(w []byte) (_ []byte, err error) {
+	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
 		if w, err = tlBuiltinTuple4Int.BuiltinTuple4IntRead(w, &item.F1); err != nil {
 			return w, err
