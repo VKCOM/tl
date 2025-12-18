@@ -1050,17 +1050,16 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- return -%}
     {%- endif -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- code
-            writingCode := ""
-            if field.t.IsTrueType() {
-                if field.Bare() {
-                    continue
+        {%- if field.IsBit() -%}
+            {%- if !field.Bare() -%} {%- code /* special case for TL1 */ -%}
+                if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                    {%s= fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag) %}
                 }
-                writingCode = fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag)
-            } else {
-                writingCode = field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
-            }
+            {%- endif -%}
+            {%- continue -%}
+        {%- endif -%}
+        {%- code
+            writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
         -%}
         {%- if field.fieldMask != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
@@ -1102,7 +1101,6 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- endfor -%}
     {%- code lastWritten := false -%}
     {%- for i, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             last := i == len(struct_.Fields)-1 && field.fieldMask == nil
             lastWritten = lastWritten || last

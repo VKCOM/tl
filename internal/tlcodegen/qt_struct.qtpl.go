@@ -2078,18 +2078,24 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 		return
 	}
 	for _, field := range struct_.Fields {
-		if field.IsTL2Omitted() {
+		if field.IsBit() {
+			if !field.Bare() {
+				/* special case for TL1 */
+
+				qw422016.N().S(`                if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1<<`)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+                    `)
+				qw422016.N().S(fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag))
+				qw422016.N().S(`
+                }
+`)
+			}
 			continue
 		}
-		writingCode := ""
-		if field.t.IsTrueType() {
-			if field.Bare() {
-				continue
-			}
-			writingCode = fmt.Sprintf("w = basictl.NatWrite(w, 0x%08x)", field.t.tlTag)
-		} else {
-			writingCode = field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
-		}
+		writingCode := field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods)
 
 		if field.fieldMask != nil {
 			qw422016.N().S(`        if `)
@@ -2176,9 +2182,6 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 	lastWritten := false
 
 	for i, field := range struct_.Fields {
-		if field.IsTL2Omitted() {
-			continue
-		}
 		last := i == len(struct_.Fields)-1 && field.fieldMask == nil
 		lastWritten = lastWritten || last
 

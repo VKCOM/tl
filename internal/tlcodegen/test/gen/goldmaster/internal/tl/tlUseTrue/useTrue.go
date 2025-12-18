@@ -121,7 +121,8 @@ func (item *UseTrue) Write(w []byte) []byte {
 	if item.Fm&(1<<1) != 0 {
 		w = basictl.NatWrite(w, 0x3fedd339)
 	}
-	w = basictl.NatWrite(w, 0x3fedd339)
+	w = item.C.Write(w)
+	w = item.D.WriteBoxed(w)
 	if item.Fm&(1<<2) != 0 {
 		w = tlBool.BoolWriteBoxed(w, item.E)
 	}
