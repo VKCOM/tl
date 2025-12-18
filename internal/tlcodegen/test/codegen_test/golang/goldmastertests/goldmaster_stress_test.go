@@ -3,15 +3,16 @@ package goldmastertests
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
+	"os"
+	"sort"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	testformat "github.com/vkcom/tl/internal/tlcodegen/test/codegen_test/golang/common"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/factory"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/meta"
 	"github.com/vkcom/tl/internal/utils"
-	"math/rand"
-	"os"
-	"sort"
-	"testing"
 
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -223,16 +224,7 @@ func readTestData() (testformat.AllTestsBytes, error) {
 }
 
 func writeTestData(tests testformat.AllTestsBytes) error {
-	jsonBytes, _ := json.MarshalIndent(tests, "", "\t")
-	file, err := os.Create(PathToBytesData)
-
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	_, err = file.Write(jsonBytes)
-	if err != nil {
-		return err
-	}
+	//jsonBytes, _ := json.MarshalIndent(tests, "", "\t")
+	//return os.WriteFile(PathToBytesData, jsonBytes, 0666)
 	return nil
 }

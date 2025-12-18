@@ -2335,7 +2335,24 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if field.t.IsTrueType() && field.Bare() {
+		if field.IsBit() {
+			if !field.Bare() {
+				/* special case for TL1 */
+
+				last := i == len(struct_.Fields)-1 && field.fieldMask == nil
+				lastWritten = lastWritten || last
+
+				qw422016.N().S(`                if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1<<`)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+                    `)
+				qw422016.N().S(wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true))
+				qw422016.N().S(`
+                }
+`)
+			}
 			continue
 		}
 		if field.fieldMask != nil {
@@ -2346,6 +2363,9 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 			qw422016.N().S(`) != 0 {
 `)
 		}
+		last := i == len(struct_.Fields)-1 && field.fieldMask == nil
+		lastWritten = lastWritten || last
+
 		if field.recursive {
 			qw422016.N().S(`if item.`)
 			qw422016.N().S(field.goName)
@@ -2359,18 +2379,9 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 }
 `)
 		}
-		last := i == len(struct_.Fields)-1 && field.fieldMask == nil
-		lastWritten = lastWritten || last
-
-		if field.t.IsTrueType() {
-			qw422016.N().S(wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true))
-			qw422016.N().S(`
+		qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last))
+		qw422016.N().S(`
 `)
-		} else {
-			qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last))
-			qw422016.N().S(`
-`)
-		}
 		if field.fieldMask != nil {
 			if field.t.IsTrueType() {
 				qw422016.N().S(`}

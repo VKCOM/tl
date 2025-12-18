@@ -1175,25 +1175,32 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- code lastWritten := false -%}
     {%- for i, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.t.IsTrueType() && field.Bare() -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsBit() -%}
+            {%- if !field.Bare() -%} {%- code /* special case for TL1 */ -%}
+                {%- code
+                    last := i == len(struct_.Fields)-1 && field.fieldMask == nil
+                    lastWritten = lastWritten || last
+                -%}
+                if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                    {%s= wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true) %}
+                }
+            {%- endif -%}
+            {%- continue -%}
+        {%- endif -%}
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
         {%- endif -%}
+        {%- code
+            last := i == len(struct_.Fields)-1 && field.fieldMask == nil
+            lastWritten = lastWritten || last
+        -%}
         {%- if field.recursive -%}
 if item.{%s= field.goName %} == nil {
     var value {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
     item.{%s= field.goName %} = &value
 }
         {%- endif -%}
-        {%- code
-            last := i == len(struct_.Fields)-1 && field.fieldMask == nil
-            lastWritten = lastWritten || last
-        -%}
-        {%- if field.t.IsTrueType() -%}
-{%s= wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true) %}
-        {%- else -%}
 {%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last) %}
-        {%- endif -%}
         {%- if field.fieldMask != nil -%}
 {%- if field.t.IsTrueType() -%}
 }
