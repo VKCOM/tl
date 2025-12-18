@@ -186,8 +186,10 @@ func (item *Cyc1MyCycle) Reset() {
 }
 
 func (item *Cyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1)
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.A.FillRandom(rg)
 	} else {
 		item.A.Reset()

@@ -381,9 +381,11 @@ func (item *CycleTuple) Reset() {
 }
 
 func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.N = basictl.RandomFieldMask(rg, 0b101)
 	item.N = rg.LimitValue(item.N)
 	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		rg.IncreaseDepth()
 		if item.A == nil {
 			var value [2]CycleTuple
@@ -398,6 +400,7 @@ func (item *CycleTuple) FillRandom(rg *basictl.RandGenerator) {
 	}
 	BuiltinTupleCycleTupleFillRandom(rg, &item.B, item.N)
 	if item.N&(1<<2) != 0 {
+		item.tl2mask0 |= 2
 		BuiltinTuple3IntFillRandom(rg, &item.C)
 	} else {
 		BuiltinTuple3IntReset(&item.C)

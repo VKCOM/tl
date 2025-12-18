@@ -1968,11 +1968,29 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 `)
 		return
 	}
+	for _, tl2mask := range struct_.AllNewTL2Masks() {
+		qw422016.N().S(`         item.`)
+		qw422016.N().S(tl2mask)
+		qw422016.N().S(` = 0
+`)
+	}
 	for fieldId, field := range struct_.Fields {
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if field.t.IsTrueType() {
+		if field.IsBit() {
+			if field.MaskTL2Bit != nil {
+				qw422016.N().S(`                if `)
+				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+				qw422016.N().S(` & (1<<`)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 {
+                     item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+                }
+`)
+			}
 			continue
 		}
 		if field.fieldMask != nil {
@@ -1982,6 +2000,12 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 			qw422016.E().V(field.BitNumber)
 			qw422016.N().S(`) != 0 {
 `)
+			if field.MaskTL2Bit != nil {
+				qw422016.N().S(`            item.`)
+				qw422016.N().S(field.TL2MaskForOP("|="))
+				qw422016.N().S(`
+`)
+			}
 		}
 		if field.recursive {
 			qw422016.N().S(`rg.IncreaseDepth()

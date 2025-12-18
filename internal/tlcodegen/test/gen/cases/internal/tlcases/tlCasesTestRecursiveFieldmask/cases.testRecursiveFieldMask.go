@@ -103,16 +103,28 @@ func (item *CasesTestRecursiveFieldmask) Reset() {
 }
 
 func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.F0 = basictl.RandomFieldMask(rg, 0b1)
 	if item.F0&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.F1 = basictl.RandomFieldMask(rg, 0b10)
 	} else {
 		item.F1 = 0
 	}
 	if item.F1&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		item.F2 = basictl.RandomFieldMask(rg, 0b100)
 	} else {
 		item.F2 = 0
+	}
+	if item.F0&(1<<0) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.F1&(1<<1) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.F2&(1<<2) != 0 {
+		item.tl2mask0 |= 16
 	}
 }
 

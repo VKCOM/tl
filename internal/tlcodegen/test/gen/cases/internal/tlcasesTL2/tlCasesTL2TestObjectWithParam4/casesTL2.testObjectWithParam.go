@@ -33,7 +33,9 @@ func (item *CasesTL2TestObjectWithParam4) Reset() {
 }
 
 func (item *CasesTL2TestObjectWithParam4) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.X = basictl.RandomInt(rg)
 	} else {
 		item.X = 0

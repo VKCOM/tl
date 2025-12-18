@@ -167,37 +167,51 @@ func (item *CasesTestAllPossibleFieldConfigs) Reset() {
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerator, nat_outer uint32) {
+	item.tl2mask0 = 0
 	item.Local = basictl.RandomFieldMask(rg, 0b1111)
 	item.Local = rg.LimitValue(item.Local)
 	item.F00 = basictl.RandomInt(rg)
+	item.F01.FillRandom(rg)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F02, item.Local)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F03, nat_outer)
 	if item.Local&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.F10 = basictl.RandomInt(rg)
 	} else {
 		item.F10 = 0
 	}
+	if item.Local&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
 	if item.Local&(1<<2) != 0 {
+		item.tl2mask0 |= 4
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F12, item.Local)
 	} else {
 		item.F12 = item.F12[:0]
 	}
 	if item.Local&(1<<3) != 0 {
+		item.tl2mask0 |= 8
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F13, nat_outer)
 	} else {
 		item.F13 = item.F13[:0]
 	}
 	if nat_outer&(1<<0) != 0 {
+		item.tl2mask0 |= 16
 		item.F20 = basictl.RandomInt(rg)
 	} else {
 		item.F20 = 0
 	}
+	if nat_outer&(1<<1) != 0 {
+		item.tl2mask0 |= 32
+	}
 	if nat_outer&(1<<2) != 0 {
+		item.tl2mask0 |= 64
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F22, item.Local)
 	} else {
 		item.F22 = item.F22[:0]
 	}
 	if nat_outer&(1<<3) != 0 {
+		item.tl2mask0 |= 128
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F23, nat_outer)
 	} else {
 		item.F23 = item.F23[:0]

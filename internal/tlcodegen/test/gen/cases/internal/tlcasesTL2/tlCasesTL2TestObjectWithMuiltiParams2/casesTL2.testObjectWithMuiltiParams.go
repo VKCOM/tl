@@ -52,12 +52,15 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) Reset() {
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams2) FillRandom(rg *basictl.RandGenerator, nat_n uint32) {
+	item.tl2mask0 = 0
 	if nat_n&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F1, nat_n)
 	} else {
 		item.F1 = item.F1[:0]
 	}
 	if 2&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		tlBuiltinTuple2Int.BuiltinTuple2IntFillRandom(rg, &item.F2)
 	} else {
 		tlBuiltinTuple2Int.BuiltinTuple2IntReset(&item.F2)

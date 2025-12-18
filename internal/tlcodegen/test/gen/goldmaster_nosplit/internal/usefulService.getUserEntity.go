@@ -42,8 +42,10 @@ func (item *UsefulServiceGetUserEntity) Reset() {
 }
 
 func (item *UsefulServiceGetUserEntity) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1)
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.StageId = basictl.RandomString(rg)
 	} else {
 		item.StageId = ""

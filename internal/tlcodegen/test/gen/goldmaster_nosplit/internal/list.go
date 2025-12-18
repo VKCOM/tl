@@ -64,13 +64,16 @@ func (item *ListService5Output) Reset() {
 }
 
 func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.Flag = basictl.RandomFieldMask(rg, 0b1)
 	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.Head.FillRandom(rg)
 	} else {
 		item.Head.Reset()
 	}
 	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 2
 		rg.IncreaseDepth()
 		if item.Tail == nil {
 			var value ListService5Output

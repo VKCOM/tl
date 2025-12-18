@@ -52,8 +52,10 @@ func (item *CasesMyCycle1) Reset() {
 }
 
 func (item *CasesMyCycle1) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.FieldsMask = basictl.RandomFieldMask(rg, 0b1)
 	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		rg.IncreaseDepth()
 		if item.A == nil {
 			var value CasesMyCycle2

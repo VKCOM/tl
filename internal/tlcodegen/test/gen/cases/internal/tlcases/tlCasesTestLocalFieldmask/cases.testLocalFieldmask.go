@@ -74,11 +74,19 @@ func (item *CasesTestLocalFieldmask) Reset() {
 }
 
 func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.F1 = basictl.RandomFieldMask(rg, 0b1)
 	if item.F1&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.F2 = basictl.RandomFieldMask(rg, 0b10)
 	} else {
 		item.F2 = 0
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 4
 	}
 }
 

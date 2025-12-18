@@ -153,6 +153,7 @@ func (item *CasesTestAllPossibleFieldConfigs) FillRandom(rg *basictl.RandGenerat
 	item.Local = basictl.RandomFieldMask(rg, 0b1111)
 	item.Local = rg.LimitValue(item.Local)
 	item.F00 = basictl.RandomInt(rg)
+	item.F01.FillRandom(rg)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F02, item.Local)
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F03, nat_outer)
 	if item.Local&(1<<0) != 0 {

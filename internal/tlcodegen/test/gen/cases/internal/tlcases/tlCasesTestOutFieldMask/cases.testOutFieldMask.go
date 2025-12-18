@@ -67,10 +67,15 @@ func (item *CasesTestOutFieldMask) Reset() {
 }
 
 func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {
+	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.F1 = basictl.RandomUint(rg)
 	} else {
 		item.F1 = 0
+	}
+	if nat_f&(1<<3) != 0 {
+		item.tl2mask0 |= 2
 	}
 	tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.F3, nat_f)
 }

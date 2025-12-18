@@ -64,12 +64,15 @@ func (item *DictionaryElemUglyIntString) Reset() {
 }
 
 func (item *DictionaryElemUglyIntString) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {
+	item.tl2mask0 = 0
 	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		item.Key = basictl.RandomInt(rg)
 	} else {
 		item.Key = 0
 	}
 	if nat_f&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		item.Value = basictl.RandomString(rg)
 	} else {
 		item.Value = ""

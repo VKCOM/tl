@@ -88,18 +88,24 @@ func (item *CasesTL2TestObject) Reset() {
 }
 
 func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.N = basictl.RandomFieldMask(rg, 0b100000000000011)
 	item.N = rg.LimitValue(item.N)
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	item.F2 = basictl.RandomUint(rg)&1 == 1
 	tlBuiltinVectorBool.BuiltinVectorBoolFillRandom(rg, &item.F3)
 	item.F4.FillRandom(rg, item.N)
 	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		item.F5 = basictl.RandomUint(rg)&1 == 1
 	} else {
 		item.F5 = false
 	}
 	tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionFillRandom(rg, &item.F6)
 	if item.N&(1<<14) != 0 {
+		item.tl2mask0 |= 4
 		tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedFillRandom(rg, &item.F7)
 	} else {
 		item.F7 = item.F7[:0]

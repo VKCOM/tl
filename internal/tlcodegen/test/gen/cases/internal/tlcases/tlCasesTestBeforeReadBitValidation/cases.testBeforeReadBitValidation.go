@@ -59,14 +59,17 @@ func (item *CasesTestBeforeReadBitValidation) Reset() {
 }
 
 func (item *CasesTestBeforeReadBitValidation) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.N = basictl.RandomFieldMask(rg, 0b11)
 	item.N = rg.LimitValue(item.N)
 	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.A, item.N)
 	} else {
 		item.A = item.A[:0]
 	}
 	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
 		tlBuiltinTupleInt.BuiltinTupleIntFillRandom(rg, &item.B, item.N)
 	} else {
 		item.B = item.B[:0]

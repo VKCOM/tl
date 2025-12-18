@@ -78,8 +78,18 @@ func (item *UseTrue) Reset() {
 }
 
 func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {
+	item.tl2mask0 = 0
 	item.Fm = basictl.RandomFieldMask(rg, 0b111)
+	if item.Fm&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Fm&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	item.C.FillRandom(rg)
+	item.D.FillRandom(rg)
 	if item.Fm&(1<<2) != 0 {
+		item.tl2mask0 |= 4
 		item.E = basictl.RandomUint(rg)&1 == 1
 	} else {
 		item.E = false
