@@ -1318,7 +1318,7 @@ func (item *`)
 		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
-		if field.t.IsTrueType() {
+		if field.IsBit() {
 			continue
 		}
 		if !field.HasNatArguments() {
@@ -1355,7 +1355,7 @@ func (item *`)
 		}
 		if field.IsAffectingLocalFieldMasks() {
 			presentCondition := "true"
-			if field.t.IsTrueType() {
+			if field.IsBit() {
 				presentCondition = "trueType" + field.goName + "Presented"
 			} else if !field.HasNatArguments() {
 				presentCondition = "prop" + field.goName + "Presented"
@@ -1370,7 +1370,7 @@ func (item *`)
 `)
 			firstAffectedNat := 0
 
-			if field.t.IsTrueType() {
+			if field.IsBit() {
 				/* COMMENT: if trueType value is false bit sets to zero */
 				firstAffectedNat = 1
 
@@ -1385,22 +1385,13 @@ func (item *`)
         }
 `)
 			}
-			if struct_.wr.originateFromTL2 {
-				qw422016.N().S(`            `)
-				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+			for i := firstAffectedNat; i < len(affectedFields); i++ {
+				qw422016.N().S(`            item.`)
+				qw422016.N().S(affectedFields[i].goName)
 				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(field.BitNumber)
+				qw422016.E().V(bits[i])
 				qw422016.N().S(`
 `)
-			} else {
-				for i := firstAffectedNat; i < len(affectedFields); i++ {
-					qw422016.N().S(`        item.`)
-					qw422016.N().S(affectedFields[i].goName)
-					qw422016.N().S(` |= 1 << `)
-					qw422016.E().V(bits[i])
-					qw422016.N().S(`
-`)
-				}
 			}
 			qw422016.N().S(`    }
 `)
@@ -1414,7 +1405,7 @@ func (item *`)
 		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
-		if field.t.IsTrueType() || !field.HasNatArguments() {
+		if field.IsBit() || !field.HasNatArguments() {
 			continue
 		}
 		presentCondition := "raw" + field.goName + " != nil"
@@ -1476,7 +1467,7 @@ func (item *`)
 		if field.IsTL2Omitted() || field.originalName == "" {
 			continue
 		}
-		if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField {
+		if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.isField {
 			continue
 		}
 		bit := int(field.BitNumber)

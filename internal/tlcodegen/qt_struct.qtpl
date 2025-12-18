@@ -647,7 +647,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- for _, field := range struct_.Fields -%}
             {%- code /* TODO: skip anonymous names */ -%}
             {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
-            {%- if field.t.IsTrueType() -%} {%- continue -%} {%- endif -%}
+            {%- if field.IsBit() -%} {%- continue -%} {%- endif -%}
             {%- if !field.HasNatArguments() -%}
     if !prop{%s= field.goName %}Presented {
                 {%- if field.recursive -%}
@@ -667,7 +667,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
         {%- if field.IsAffectingLocalFieldMasks() -%}
             {%- code
                 presentCondition := "true"
-                if field.t.IsTrueType() {
+                if field.IsBit() {
                     presentCondition = "trueType" + field.goName + "Presented"
                 } else if !field.HasNatArguments() {
                     presentCondition = "prop" + field.goName + "Presented"
@@ -678,7 +678,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             -%}
     if {%s= presentCondition %} {
         {%- code firstAffectedNat := 0 -%}
-        {%- if field.t.IsTrueType() -%}
+        {%- if field.IsBit() -%}
             {%- code
                 /* COMMENT: if trueType value is false bit sets to zero */
                 firstAffectedNat = 1
@@ -687,13 +687,9 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} |= 1 << {%v field.BitNumber %}
         }
         {%- endif -%}
-        {%- if struct_.wr.originateFromTL2 -%}
-            {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} |= 1 << {%v field.BitNumber %}
-        {%- else -%}
-            {%- for i := firstAffectedNat; i < len(affectedFields); i++-%}
-        item.{%s= affectedFields[i].goName %} |= 1 << {%v bits[i] %}
-            {%- endfor -%}
-        {%- endif -%}
+        {%- for i := firstAffectedNat; i < len(affectedFields); i++-%}
+            item.{%s= affectedFields[i].goName %} |= 1 << {%v bits[i] %}
+        {%- endfor -%}
     }
         {%- endif -%}
     {%- endfor -%}
@@ -701,7 +697,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
         {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
-        {%- if field.t.IsTrueType() || !field.HasNatArguments() -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsBit() || !field.HasNatArguments() -%} {%- continue -%} {%- endif -%}
         {%- code presentCondition := "raw" + field.goName + " != nil" -%}
         {%- if field.fieldMask != nil -%}
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1 << {%v field.BitNumber %}) == 0 {
@@ -728,7 +724,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: trueType with false values validation */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
-        {%- if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
+        {%- if !field.IsBit() || field.fieldMask == nil || !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
         {%- code
             bit := int(field.BitNumber)
         -%}

@@ -229,6 +229,12 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	if !propFmPresented {
 		item.Fm = 0
 	}
+	if !propCPresented {
+		item.C.Reset()
+	}
+	if !propDPresented {
+		item.D.Reset()
+	}
 	if !propEPresented {
 		item.E = false
 	}
