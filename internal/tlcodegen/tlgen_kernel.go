@@ -504,6 +504,7 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 	res.fieldsDecCPP.fillCPPIdentifiers()
 	res.fieldsDec.fillGolangIdentifies()
 	myWrapper.trw = res
+	nextTL2MaskBit := 0
 	for i, field := range tlType.Fields {
 		fieldType, fieldTypeBare, fieldNatArgs, fieldHalfResolved, err := gen.getType(lrc, field.FieldType, nil)
 		if err != nil {
@@ -540,6 +541,9 @@ func (gen *Gen2) generateTypeStruct(lrc LocalResolveContext, myWrapper *TypeRWWr
 				return tlast.BeautifulError2(e1, e2)
 			}
 			newField.fieldMask = &localArg.natArg
+			maskBit := nextTL2MaskBit
+			newField.MaskTL2Bit = &maskBit
+			nextTL2MaskBit++
 		}
 		res.Fields = append(res.Fields, newField)
 		arg := LocalNatArg{

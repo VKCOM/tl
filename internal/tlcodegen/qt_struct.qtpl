@@ -149,23 +149,11 @@ type {%s= goName %} struct {
         -%}
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
-    {%- if struct_.wr.originateFromTL2 -%}
-        {%- code
-            masks := struct_.AllRequiredTL2Masks()
-        -%}
-        {%- if len(masks) > 0 -%}
-
-            {%- for _, mask := range masks -%}
-                {%- code
-                    left := (mask - 1) * 8
-                    right := left + 7
-                    if left == 0 {
-                        left = 1
-                    }
-                -%}
-    mask{%d mask %} byte // for fields #{%d left %} .. #{%d right %}
-            {%- endfor -%}
-        {%- endif -%}
+    {%- if struct_.wr.wantsTL2 -%}
+        {% code fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2) %}
+        {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+             {%s= tl2mask %} byte
+        {%- endfor -%}
     {%- endif -%}
 }
 {%- endfunc -%}
@@ -173,9 +161,9 @@ type {%s= goName %} struct {
 {%- func (struct_ *TypeRWStruct)fieldMaskGettersAndSetters(bytesVersion bool, directImports *DirectImports) -%}
     {%- code goName := addBytes(struct_.wr.goGlobalName, bytesVersion) -%}
     {%- for i, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() -%} {%- continue -%} {%- endif -%}
-        {%- if field.fieldMask == nil -%} {%- continue -%} {%- endif -%}
-        {%- if field.fieldMask.isArith -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.fieldMask == nil && field.MaskTL2Bit == nil -%} {%- continue -%} {%- endif -%}
+        {%- if field.fieldMask != nil && field.fieldMask.isArith -%} {%- continue -%} {%- endif -%}
         {%- code
             fieldTypeString := ""
             isTrueType := "bool"
@@ -184,8 +172,12 @@ type {%s= goName %} struct {
                 isTrueType = fieldTypeString
             }
             asterisk := addAsterisk(field.recursive, "")
-            maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
-            natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
+            maskFunArg := false
+            natArgUse := ""
+            if field.fieldMask != nil {
+                maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
+                natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
+            }
         -%}
         {%- if !field.fieldMask.isArith -%}
             {%- code
@@ -200,7 +192,7 @@ type {%s= goName %} struct {
                 }
                 getName := "G" + setName[1:]
             -%}
-            {%- if !field.t.IsTrueType() && field.fieldMask != nil && field.fieldMask.IsTL2() -%}
+            {%- if struct_.wr.wantsTL2 && !field.IsBit() && field.fieldMask != nil && field.fieldMask == nil -%}
 func (item *{%s= goName %}) {%s= getName %}() {%s= asterisk %}{%s= isTrueType %} {
     return item.{%s= field.goName %}
 }
@@ -210,7 +202,7 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}, {%s= natArgUse
             {%- else -%}
 func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- endif -%}
-            {%- if !field.t.IsTrueType() -%}
+            {%- if !field.IsBit() -%}
                 {%- if field.recursive -%}
     if item.{%s= field.goName %} == nil {
         var value {%s= fieldTypeString %}
@@ -219,10 +211,11 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
                 {%- endif -%}
     {%s= asterisk %}item.{%s= field.goName %} = v
             {%- endif -%}
+            {%- if field.fieldMask != nil -%}
             {%- if maskFunArg -%}
     if {%s= natArgUse %} != nil {
             {%- endif -%}
-            {%- if field.t.IsTrueType() -%}
+            {%- if field.IsBit() -%}
         if v {
             {%s= addAsterisk(maskFunArg, natArgUse)  %} |= 1 << {%v field.BitNumber %}
         } else {
@@ -234,8 +227,20 @@ func (item *{%s= goName %}) {%s= setName %}(v {%s= isTrueType %}) {
             {%- if maskFunArg -%}
     }
             {%- endif -%}
+            {%- endif -%}
+            {%- if field.MaskTL2Bit != nil -%}
+            {%- if field.IsBit() -%}
+        if v {
+            item.{%s= field.TL2MaskForOP("|=") %}
+        } else {
+            item.{%s= field.TL2MaskForOP("&^=") %}
+        }
+            {%- else -%}
+            item.{%s= field.TL2MaskForOP("|=") %}
+            {%- endif -%}
+            {%- endif -%}
 }
-            {%- if !field.t.IsTrueType() -%}
+            {%- if !field.IsBit() -%}
                 {%- code clearName := struct_.clearNames[i]
                 if clearName == "" {
                         clearName = struct_.fieldsDec.deconflictName("Clear" + utils.UpperFirst(field.goName))
@@ -252,6 +257,7 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 {%- else -%}
     {%s= field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive) %}
                 {%- endif -%}
+            {%- if field.fieldMask != nil -%}
                 {%- if maskFunArg-%}
     if {%s= natArgUse %} != nil {
                 {%- endif -%}
@@ -259,6 +265,10 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 {%- if maskFunArg-%}
     }
                 {%- endif -%}
+            {%- endif -%}
+            {%- if field.MaskTL2Bit != nil -%}
+            item.{%s= field.TL2MaskForOP("&^=") %}
+            {%- endif -%}
 }
             {%- endif -%}
         {%- endif -%}
@@ -269,11 +279,15 @@ func (item *{%s= goName %}) {%s= clearName %}() {
                 struct_.isSetNames[i] = isSetName
             }
         -%}
+    {%- if field.MaskTL2Bit != nil -%}
+func (item *{%s= goName %}) {%s= isSetName %}() bool { return item.{%s= field.TL2MaskForOP("&") %} != 0 }
+    {%- else -%}
         {%- if maskFunArg -%}
 func (item *{%s= goName %}) {%s= isSetName %}({%s= natArgUse %} uint32) bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
         {%- else -%}
 func (item *{%s= goName %}) {%s= isSetName %}() bool { return {%s= natArgUse %} & (1 << {%v field.BitNumber %}) != 0 }
         {%- endif -%}
+    {%- endif -%}
 
 
     {%- endfor -%}
@@ -1042,6 +1056,9 @@ if item.{%s= field.goName %} != nil { {%s= resetCode %} }
         {%- else -%}
 {%s= resetCode %}
         {%- endif -%}
+    {%- endfor -%}
+    {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
+         item.{%s= tl2mask %} = 0
     {%- endfor -%}
 {%- endfunc -%}
 

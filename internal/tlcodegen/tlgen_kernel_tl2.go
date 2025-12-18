@@ -485,6 +485,7 @@ func (gen *Gen2) genTypeDeclarationTL2(
 
 func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeRWStruct, refFields []tlast.TL2Field) error {
 	fields := &strct.Fields
+	nextTL2MaskBit := 0
 	for i, refField := range refFields {
 		// init
 		field := Field{
@@ -513,6 +514,14 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 		if bl, isBool := field.t.trw.(*TypeRWBool); isBool && refField.IsOptional && !bl.isTL2Legacy {
 			return refField.PRName.BeautifulError(fmt.Errorf("field with type \"bool\" can't be optional (use any maybe-like wrapper)"))
 		}
+		if (refField.IsOptional || field.IsBit()) && !field.IsTL2Omitted() {
+			// field.goName = strings.ToLower(field.goName[:1]) + field.goName[1:]
+
+			maskBit := nextTL2MaskBit
+			field.MaskTL2Bit = &maskBit
+			nextTL2MaskBit++
+		}
+
 		// tl1 boxed only for union
 		_, isUnion := field.t.trw.(*TypeRWUnion)
 		field.bare = !isUnion

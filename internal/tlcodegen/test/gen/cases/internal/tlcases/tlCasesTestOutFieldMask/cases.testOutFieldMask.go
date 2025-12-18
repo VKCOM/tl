@@ -21,6 +21,8 @@ type CasesTestOutFieldMask struct {
 	F1 uint32 // Conditional: nat_f.0
 	// F2 (TrueType) // Conditional: nat_f.3
 	F3 []int32
+
+	tl2mask0 byte
 }
 
 func (CasesTestOutFieldMask) TLName() string { return "cases.testOutFieldMask" }
@@ -31,14 +33,16 @@ func (item *CasesTestOutFieldMask) SetF1(v uint32, nat_f *uint32) {
 	if nat_f != nil {
 		*nat_f |= 1 << 0
 	}
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestOutFieldMask) ClearF1(nat_f *uint32) {
 	item.F1 = 0
 	if nat_f != nil {
 		*nat_f &^= 1 << 0
 	}
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestOutFieldMask) IsSetF1(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
+func (item *CasesTestOutFieldMask) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestOutFieldMask) SetF2(v bool, nat_f *uint32) {
 	if nat_f != nil {
@@ -48,12 +52,18 @@ func (item *CasesTestOutFieldMask) SetF2(v bool, nat_f *uint32) {
 			*nat_f &^= 1 << 3
 		}
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *CasesTestOutFieldMask) IsSetF2(nat_f uint32) bool { return nat_f&(1<<3) != 0 }
+func (item *CasesTestOutFieldMask) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestOutFieldMask) Reset() {
 	item.F1 = 0
 	item.F3 = item.F3[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestOutFieldMask) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {

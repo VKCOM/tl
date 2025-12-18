@@ -160,6 +160,8 @@ func BuiltinVectorCyc1MyCycleWriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 type Cyc1MyCycle struct {
 	FieldsMask uint32
 	A          Cyc2MyCycle // Conditional: item.FieldsMask.0
+
+	tl2mask0 byte
 }
 
 func (Cyc1MyCycle) TLName() string { return "cyc1.myCycle" }
@@ -168,16 +170,19 @@ func (Cyc1MyCycle) TLTag() uint32  { return 0x136ecc9e }
 func (item *Cyc1MyCycle) SetA(v Cyc2MyCycle) {
 	item.A = v
 	item.FieldsMask |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *Cyc1MyCycle) ClearA() {
 	item.A.Reset()
 	item.FieldsMask &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *Cyc1MyCycle) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *Cyc1MyCycle) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *Cyc1MyCycle) Reset() {
 	item.FieldsMask = 0
 	item.A.Reset()
+	item.tl2mask0 = 0
 }
 
 func (item *Cyc1MyCycle) FillRandom(rg *basictl.RandGenerator) {

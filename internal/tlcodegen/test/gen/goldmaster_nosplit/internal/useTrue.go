@@ -20,6 +20,8 @@ type UseTrue struct {
 	C True
 	D True
 	E bool // Conditional: item.Fm.2
+
+	tl2mask0 byte
 }
 
 func (UseTrue) TLName() string { return "useTrue" }
@@ -31,8 +33,13 @@ func (item *UseTrue) SetA(v bool) {
 	} else {
 		item.Fm &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 1
+	} else {
+		item.tl2mask0 &^= 1
+	}
 }
-func (item *UseTrue) IsSetA() bool { return item.Fm&(1<<0) != 0 }
+func (item *UseTrue) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *UseTrue) SetB(v bool) {
 	if v {
@@ -40,22 +47,30 @@ func (item *UseTrue) SetB(v bool) {
 	} else {
 		item.Fm &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *UseTrue) IsSetB() bool { return item.Fm&(1<<1) != 0 }
+func (item *UseTrue) IsSetB() bool { return item.tl2mask0&2 != 0 }
 
 func (item *UseTrue) SetE(v bool) {
 	item.E = v
 	item.Fm |= 1 << 2
+	item.tl2mask0 |= 4
 }
 func (item *UseTrue) ClearE() {
 	item.E = false
 	item.Fm &^= 1 << 2
+	item.tl2mask0 &^= 4
 }
-func (item *UseTrue) IsSetE() bool { return item.Fm&(1<<2) != 0 }
+func (item *UseTrue) IsSetE() bool { return item.tl2mask0&4 != 0 }
 
 func (item *UseTrue) Reset() {
 	item.Fm = 0
 	item.E = false
+	item.tl2mask0 = 0
 }
 
 func (item *UseTrue) FillRandom(rg *basictl.RandGenerator) {

@@ -18,6 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 type DictionaryElemUglyIntString struct {
 	Key   int32  // Conditional: nat_f.0
 	Value string // Conditional: nat_f.1
+
+	tl2mask0 byte
 }
 
 func (DictionaryElemUglyIntString) TLName() string { return "dictionaryElemUgly" }
@@ -28,32 +30,37 @@ func (item *DictionaryElemUglyIntString) SetKey(v int32, nat_f *uint32) {
 	if nat_f != nil {
 		*nat_f |= 1 << 0
 	}
+	item.tl2mask0 |= 1
 }
 func (item *DictionaryElemUglyIntString) ClearKey(nat_f *uint32) {
 	item.Key = 0
 	if nat_f != nil {
 		*nat_f &^= 1 << 0
 	}
+	item.tl2mask0 &^= 1
 }
-func (item *DictionaryElemUglyIntString) IsSetKey(nat_f uint32) bool { return nat_f&(1<<0) != 0 }
+func (item *DictionaryElemUglyIntString) IsSetKey() bool { return item.tl2mask0&1 != 0 }
 
 func (item *DictionaryElemUglyIntString) SetValue(v string, nat_f *uint32) {
 	item.Value = v
 	if nat_f != nil {
 		*nat_f |= 1 << 1
 	}
+	item.tl2mask0 |= 2
 }
 func (item *DictionaryElemUglyIntString) ClearValue(nat_f *uint32) {
 	item.Value = ""
 	if nat_f != nil {
 		*nat_f &^= 1 << 1
 	}
+	item.tl2mask0 &^= 2
 }
-func (item *DictionaryElemUglyIntString) IsSetValue(nat_f uint32) bool { return nat_f&(1<<1) != 0 }
+func (item *DictionaryElemUglyIntString) IsSetValue() bool { return item.tl2mask0&2 != 0 }
 
 func (item *DictionaryElemUglyIntString) Reset() {
 	item.Key = 0
 	item.Value = ""
+	item.tl2mask0 = 0
 }
 
 func (item *DictionaryElemUglyIntString) FillRandom(rg *basictl.RandGenerator, nat_f uint32) {

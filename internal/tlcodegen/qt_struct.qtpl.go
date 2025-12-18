@@ -325,28 +325,17 @@ func (struct_ *TypeRWStruct) streamtypeDefinition(qw422016 *qt422016.Writer, byt
 		qw422016.N().S(`
 `)
 	}
-	if struct_.wr.originateFromTL2 {
-		masks := struct_.AllRequiredTL2Masks()
+	if struct_.wr.wantsTL2 {
+		qw422016.N().S(`        `)
+		fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2)
 
-		if len(masks) > 0 {
-			qw422016.N().S(`
+		qw422016.N().S(`
 `)
-			for _, mask := range masks {
-				left := (mask - 1) * 8
-				right := left + 7
-				if left == 0 {
-					left = 1
-				}
-
-				qw422016.N().S(`    mask`)
-				qw422016.N().D(mask)
-				qw422016.N().S(` byte // for fields #`)
-				qw422016.N().D(left)
-				qw422016.N().S(` .. #`)
-				qw422016.N().D(right)
-				qw422016.N().S(`
+		for _, tl2mask := range struct_.AllNewTL2Masks() {
+			qw422016.N().S(`             `)
+			qw422016.N().S(tl2mask)
+			qw422016.N().S(` byte
 `)
-			}
 		}
 	}
 	qw422016.N().S(`}
@@ -374,10 +363,10 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 		if field.IsTL2Omitted() {
 			continue
 		}
-		if field.fieldMask == nil {
+		if field.fieldMask == nil && field.MaskTL2Bit == nil {
 			continue
 		}
-		if field.fieldMask.isArith {
+		if field.fieldMask != nil && field.fieldMask.isArith {
 			continue
 		}
 		fieldTypeString := ""
@@ -387,8 +376,12 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			isTrueType = fieldTypeString
 		}
 		asterisk := addAsterisk(field.recursive, "")
-		maskFunArg := !field.fieldMask.isField && !field.fieldMask.isArith
-		natArgUse := formatNatArg(struct_.Fields, *field.fieldMask)
+		maskFunArg := false
+		natArgUse := ""
+		if field.fieldMask != nil {
+			maskFunArg = !field.fieldMask.isField && !field.fieldMask.isArith
+			natArgUse = formatNatArg(struct_.Fields, *field.fieldMask)
+		}
 
 		if !field.fieldMask.isArith {
 			// Example
@@ -402,7 +395,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			}
 			getName := "G" + setName[1:]
 
-			if !field.t.IsTrueType() && field.fieldMask != nil && field.fieldMask.IsTL2() {
+			if struct_.wr.wantsTL2 && !field.IsBit() && field.fieldMask != nil && field.fieldMask == nil {
 				qw422016.N().S(`func (item *`)
 				qw422016.N().S(goName)
 				qw422016.N().S(`) `)
@@ -438,7 +431,7 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				qw422016.N().S(`) {
 `)
 			}
-			if !field.t.IsTrueType() {
+			if !field.IsBit() {
 				if field.recursive {
 					qw422016.N().S(`    if item.`)
 					qw422016.N().S(field.goName)
@@ -459,42 +452,63 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 				qw422016.N().S(` = v
 `)
 			}
-			if maskFunArg {
-				qw422016.N().S(`    if `)
-				qw422016.N().S(natArgUse)
-				qw422016.N().S(` != nil {
+			if field.fieldMask != nil {
+				if maskFunArg {
+					qw422016.N().S(`    if `)
+					qw422016.N().S(natArgUse)
+					qw422016.N().S(` != nil {
 `)
-			}
-			if field.t.IsTrueType() {
-				qw422016.N().S(`        if v {
+				}
+				if field.IsBit() {
+					qw422016.N().S(`        if v {
             `)
-				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`
+					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+					qw422016.N().S(` |= 1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`
         } else {
             `)
-				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-				qw422016.N().S(` &^= 1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`
+					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+					qw422016.N().S(` &^= 1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`
         }
 `)
-			} else {
-				qw422016.N().S(`        `)
-				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-				qw422016.N().S(` |= 1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`
+				} else {
+					qw422016.N().S(`        `)
+					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+					qw422016.N().S(` |= 1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`
 `)
+				}
+				if maskFunArg {
+					qw422016.N().S(`    }
+`)
+				}
 			}
-			if maskFunArg {
-				qw422016.N().S(`    }
+			if field.MaskTL2Bit != nil {
+				if field.IsBit() {
+					qw422016.N().S(`        if v {
+            item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
+					qw422016.N().S(`
+        } else {
+            item.`)
+					qw422016.N().S(field.TL2MaskForOP("&^="))
+					qw422016.N().S(`
+        }
 `)
+				} else {
+					qw422016.N().S(`            item.`)
+					qw422016.N().S(field.TL2MaskForOP("|="))
+					qw422016.N().S(`
+`)
+				}
 			}
 			qw422016.N().S(`}
 `)
-			if !field.t.IsTrueType() {
+			if !field.IsBit() {
 				clearName := struct_.clearNames[i]
 				if clearName == "" {
 					clearName = struct_.fieldsDec.deconflictName("Clear" + utils.UpperFirst(field.goName))
@@ -531,20 +545,28 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 					qw422016.N().S(`
 `)
 				}
-				if maskFunArg {
-					qw422016.N().S(`    if `)
-					qw422016.N().S(natArgUse)
-					qw422016.N().S(` != nil {
+				if field.fieldMask != nil {
+					if maskFunArg {
+						qw422016.N().S(`    if `)
+						qw422016.N().S(natArgUse)
+						qw422016.N().S(` != nil {
 `)
+					}
+					qw422016.N().S(`    `)
+					qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
+					qw422016.N().S(` &^= 1 << `)
+					qw422016.E().V(field.BitNumber)
+					qw422016.N().S(`
+`)
+					if maskFunArg {
+						qw422016.N().S(`    }
+`)
+					}
 				}
-				qw422016.N().S(`    `)
-				qw422016.N().S(addAsterisk(maskFunArg, natArgUse))
-				qw422016.N().S(` &^= 1 << `)
-				qw422016.E().V(field.BitNumber)
-				qw422016.N().S(`
-`)
-				if maskFunArg {
-					qw422016.N().S(`    }
+				if field.MaskTL2Bit != nil {
+					qw422016.N().S(`            item.`)
+					qw422016.N().S(field.TL2MaskForOP("&^="))
+					qw422016.N().S(`
 `)
 				}
 				qw422016.N().S(`}
@@ -557,30 +579,41 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 			struct_.isSetNames[i] = isSetName
 		}
 
-		if maskFunArg {
+		if field.MaskTL2Bit != nil {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
 			qw422016.N().S(`) `)
 			qw422016.N().S(isSetName)
-			qw422016.N().S(`(`)
-			qw422016.N().S(natArgUse)
-			qw422016.N().S(` uint32) bool { return `)
-			qw422016.N().S(natArgUse)
-			qw422016.N().S(` & (1 << `)
-			qw422016.E().V(field.BitNumber)
-			qw422016.N().S(`) != 0 }
+			qw422016.N().S(`() bool { return item.`)
+			qw422016.N().S(field.TL2MaskForOP("&"))
+			qw422016.N().S(` != 0 }
 `)
 		} else {
-			qw422016.N().S(`func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) `)
-			qw422016.N().S(isSetName)
-			qw422016.N().S(`() bool { return `)
-			qw422016.N().S(natArgUse)
-			qw422016.N().S(` & (1 << `)
-			qw422016.E().V(field.BitNumber)
-			qw422016.N().S(`) != 0 }
+			if maskFunArg {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) `)
+				qw422016.N().S(isSetName)
+				qw422016.N().S(`(`)
+				qw422016.N().S(natArgUse)
+				qw422016.N().S(` uint32) bool { return `)
+				qw422016.N().S(natArgUse)
+				qw422016.N().S(` & (1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 }
 `)
+			} else {
+				qw422016.N().S(`func (item *`)
+				qw422016.N().S(goName)
+				qw422016.N().S(`) `)
+				qw422016.N().S(isSetName)
+				qw422016.N().S(`() bool { return `)
+				qw422016.N().S(natArgUse)
+				qw422016.N().S(` & (1 << `)
+				qw422016.E().V(field.BitNumber)
+				qw422016.N().S(`) != 0 }
+`)
+			}
 		}
 		qw422016.N().S(`
 
@@ -2074,6 +2107,12 @@ func (struct_ *TypeRWStruct) streamresetFields(qw422016 *qt422016.Writer, bytesV
 			qw422016.N().S(`
 `)
 		}
+	}
+	for _, tl2mask := range struct_.AllNewTL2Masks() {
+		qw422016.N().S(`         item.`)
+		qw422016.N().S(tl2mask)
+		qw422016.N().S(` = 0
+`)
 	}
 }
 

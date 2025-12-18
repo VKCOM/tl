@@ -18,6 +18,8 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesMyCycle3 struct {
 	FieldsMask uint32
 	A          CasesMyCycle1 // Conditional: item.FieldsMask.0
+
+	tl2mask0 byte
 }
 
 func (CasesMyCycle3) TLName() string { return "cases.myCycle3" }
@@ -26,16 +28,19 @@ func (CasesMyCycle3) TLTag() uint32  { return 0x7624f86b }
 func (item *CasesMyCycle3) SetA(v CasesMyCycle1) {
 	item.A = v
 	item.FieldsMask |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesMyCycle3) ClearA() {
 	item.A.Reset()
 	item.FieldsMask &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesMyCycle3) IsSetA() bool { return item.FieldsMask&(1<<0) != 0 }
+func (item *CasesMyCycle3) IsSetA() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesMyCycle3) Reset() {
 	item.FieldsMask = 0
 	item.A.Reset()
+	item.tl2mask0 = 0
 }
 
 func (item *CasesMyCycle3) FillRandom(rg *basictl.RandGenerator) {

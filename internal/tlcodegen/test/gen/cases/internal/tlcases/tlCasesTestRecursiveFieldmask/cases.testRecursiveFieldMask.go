@@ -22,6 +22,8 @@ type CasesTestRecursiveFieldmask struct {
 	// T1 (TrueType) // Conditional: item.F0.0
 	// T2 (TrueType) // Conditional: item.F1.1
 	// T3 (TrueType) // Conditional: item.F2.2
+
+	tl2mask0 byte
 }
 
 func (CasesTestRecursiveFieldmask) TLName() string { return "cases.testRecursiveFieldMask" }
@@ -30,22 +32,26 @@ func (CasesTestRecursiveFieldmask) TLTag() uint32  { return 0xc58cf85e }
 func (item *CasesTestRecursiveFieldmask) SetF1(v uint32) {
 	item.F1 = v
 	item.F0 |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestRecursiveFieldmask) ClearF1() {
 	item.F1 = 0
 	item.F0 &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetF2(v uint32) {
 	item.F2 = v
 	item.F1 |= 1 << 1
+	item.tl2mask0 |= 2
 }
 func (item *CasesTestRecursiveFieldmask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 1
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
 	if v {
@@ -53,8 +59,13 @@ func (item *CasesTestRecursiveFieldmask) SetT1(v bool) {
 	} else {
 		item.F0 &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 4
+	} else {
+		item.tl2mask0 &^= 4
+	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT1() bool { return item.F0&(1<<0) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT1() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
 	if v {
@@ -62,8 +73,13 @@ func (item *CasesTestRecursiveFieldmask) SetT2(v bool) {
 	} else {
 		item.F1 &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 8
+	} else {
+		item.tl2mask0 &^= 8
+	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT2() bool { return item.F1&(1<<1) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT2() bool { return item.tl2mask0&8 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
 	if v {
@@ -71,13 +87,19 @@ func (item *CasesTestRecursiveFieldmask) SetT3(v bool) {
 	} else {
 		item.F2 &^= 1 << 2
 	}
+	if v {
+		item.tl2mask0 |= 16
+	} else {
+		item.tl2mask0 &^= 16
+	}
 }
-func (item *CasesTestRecursiveFieldmask) IsSetT3() bool { return item.F2&(1<<2) != 0 }
+func (item *CasesTestRecursiveFieldmask) IsSetT3() bool { return item.tl2mask0&16 != 0 }
 
 func (item *CasesTestRecursiveFieldmask) Reset() {
 	item.F0 = 0
 	item.F1 = 0
 	item.F2 = 0
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestRecursiveFieldmask) FillRandom(rg *basictl.RandGenerator) {

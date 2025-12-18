@@ -20,6 +20,8 @@ type CasesTestLocalFieldmask struct {
 	F2 uint32 // Conditional: item.F1.0
 	// F3 (TrueType) // Conditional: item.F2.1
 	// F4 (TrueType) // Conditional: item.F2.1
+
+	tl2mask0 byte
 }
 
 func (CasesTestLocalFieldmask) TLName() string { return "cases.testLocalFieldmask" }
@@ -28,12 +30,14 @@ func (CasesTestLocalFieldmask) TLTag() uint32  { return 0xf68fd3f9 }
 func (item *CasesTestLocalFieldmask) SetF2(v uint32) {
 	item.F2 = v
 	item.F1 |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *CasesTestLocalFieldmask) ClearF2() {
 	item.F2 = 0
 	item.F1 &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *CasesTestLocalFieldmask) IsSetF2() bool { return item.F1&(1<<0) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF2() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTestLocalFieldmask) SetF3(v bool) {
 	if v {
@@ -41,8 +45,13 @@ func (item *CasesTestLocalFieldmask) SetF3(v bool) {
 	} else {
 		item.F2 &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 2
+	} else {
+		item.tl2mask0 &^= 2
+	}
 }
-func (item *CasesTestLocalFieldmask) IsSetF3() bool { return item.F2&(1<<1) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF3() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTestLocalFieldmask) SetF4(v bool) {
 	if v {
@@ -50,12 +59,18 @@ func (item *CasesTestLocalFieldmask) SetF4(v bool) {
 	} else {
 		item.F2 &^= 1 << 1
 	}
+	if v {
+		item.tl2mask0 |= 4
+	} else {
+		item.tl2mask0 &^= 4
+	}
 }
-func (item *CasesTestLocalFieldmask) IsSetF4() bool { return item.F2&(1<<1) != 0 }
+func (item *CasesTestLocalFieldmask) IsSetF4() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTestLocalFieldmask) Reset() {
 	item.F1 = 0
 	item.F2 = 0
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTestLocalFieldmask) FillRandom(rg *basictl.RandGenerator) {

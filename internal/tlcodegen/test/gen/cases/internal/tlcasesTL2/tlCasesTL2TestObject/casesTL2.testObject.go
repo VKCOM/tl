@@ -31,6 +31,8 @@ type CasesTL2TestObject struct {
 	F5 bool // Conditional: item.N.1
 	F6 []cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion
 	F7 []tlTrue.True // Conditional: item.N.14
+
+	tl2mask0 byte
 }
 
 func (CasesTL2TestObject) TLName() string { return "casesTL2.testObject" }
@@ -42,28 +44,37 @@ func (item *CasesTL2TestObject) SetF1(v bool) {
 	} else {
 		item.N &^= 1 << 0
 	}
+	if v {
+		item.tl2mask0 |= 1
+	} else {
+		item.tl2mask0 &^= 1
+	}
 }
-func (item *CasesTL2TestObject) IsSetF1() bool { return item.N&(1<<0) != 0 }
+func (item *CasesTL2TestObject) IsSetF1() bool { return item.tl2mask0&1 != 0 }
 
 func (item *CasesTL2TestObject) SetF5(v bool) {
 	item.F5 = v
 	item.N |= 1 << 1
+	item.tl2mask0 |= 2
 }
 func (item *CasesTL2TestObject) ClearF5() {
 	item.F5 = false
 	item.N &^= 1 << 1
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTL2TestObject) IsSetF5() bool { return item.N&(1<<1) != 0 }
+func (item *CasesTL2TestObject) IsSetF5() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTL2TestObject) SetF7(v []tlTrue.True) {
 	item.F7 = v
 	item.N |= 1 << 14
+	item.tl2mask0 |= 4
 }
 func (item *CasesTL2TestObject) ClearF7() {
 	item.F7 = item.F7[:0]
 	item.N &^= 1 << 14
+	item.tl2mask0 &^= 4
 }
-func (item *CasesTL2TestObject) IsSetF7() bool { return item.N&(1<<14) != 0 }
+func (item *CasesTL2TestObject) IsSetF7() bool { return item.tl2mask0&4 != 0 }
 
 func (item *CasesTL2TestObject) Reset() {
 	item.N = 0
@@ -73,6 +84,7 @@ func (item *CasesTL2TestObject) Reset() {
 	item.F5 = false
 	item.F6 = item.F6[:0]
 	item.F7 = item.F7[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTL2TestObject) FillRandom(rg *basictl.RandGenerator) {

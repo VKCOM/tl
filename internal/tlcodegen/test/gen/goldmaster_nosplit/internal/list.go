@@ -17,6 +17,8 @@ type ListService5Output struct {
 	Flag uint32
 	Head Service5Output      // Conditional: item.Flag.0
 	Tail *ListService5Output // Conditional: item.Flag.0
+
+	tl2mask0 byte
 }
 
 func (ListService5Output) TLName() string { return "list" }
@@ -25,12 +27,14 @@ func (ListService5Output) TLTag() uint32  { return 0x02d80cdd }
 func (item *ListService5Output) SetHead(v Service5Output) {
 	item.Head = v
 	item.Flag |= 1 << 0
+	item.tl2mask0 |= 1
 }
 func (item *ListService5Output) ClearHead() {
 	item.Head.Reset()
 	item.Flag &^= 1 << 0
+	item.tl2mask0 &^= 1
 }
-func (item *ListService5Output) IsSetHead() bool { return item.Flag&(1<<0) != 0 }
+func (item *ListService5Output) IsSetHead() bool { return item.tl2mask0&1 != 0 }
 
 func (item *ListService5Output) SetTail(v ListService5Output) {
 	if item.Tail == nil {
@@ -39,14 +43,16 @@ func (item *ListService5Output) SetTail(v ListService5Output) {
 	}
 	*item.Tail = v
 	item.Flag |= 1 << 0
+	item.tl2mask0 |= 2
 }
 func (item *ListService5Output) ClearTail() {
 	if item.Tail != nil {
 		item.Tail.Reset()
 	}
 	item.Flag &^= 1 << 0
+	item.tl2mask0 &^= 2
 }
-func (item *ListService5Output) IsSetTail() bool { return item.Flag&(1<<0) != 0 }
+func (item *ListService5Output) IsSetTail() bool { return item.tl2mask0&2 != 0 }
 
 func (item *ListService5Output) Reset() {
 	item.Flag = 0
@@ -54,6 +60,7 @@ func (item *ListService5Output) Reset() {
 	if item.Tail != nil {
 		item.Tail.Reset()
 	}
+	item.tl2mask0 = 0
 }
 
 func (item *ListService5Output) FillRandom(rg *basictl.RandGenerator) {

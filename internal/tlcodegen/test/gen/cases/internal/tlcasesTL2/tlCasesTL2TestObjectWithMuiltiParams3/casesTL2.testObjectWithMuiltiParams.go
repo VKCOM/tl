@@ -20,6 +20,8 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTL2TestObjectWithMuiltiParams3 struct {
 	F1 [3]int32 // Conditional: 3.0
 	F2 []int32  // Conditional: nat_m.0
+
+	tl2mask0 byte
 }
 
 func (CasesTL2TestObjectWithMuiltiParams3) TLName() string {
@@ -32,18 +34,21 @@ func (item *CasesTL2TestObjectWithMuiltiParams3) SetF2(v []int32, nat_m *uint32)
 	if nat_m != nil {
 		*nat_m |= 1 << 0
 	}
+	item.tl2mask0 |= 2
 }
 func (item *CasesTL2TestObjectWithMuiltiParams3) ClearF2(nat_m *uint32) {
 	item.F2 = item.F2[:0]
 	if nat_m != nil {
 		*nat_m &^= 1 << 0
 	}
+	item.tl2mask0 &^= 2
 }
-func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF2(nat_m uint32) bool { return nat_m&(1<<0) != 0 }
+func (item *CasesTL2TestObjectWithMuiltiParams3) IsSetF2() bool { return item.tl2mask0&2 != 0 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) Reset() {
 	tlBuiltinTuple3Int.BuiltinTuple3IntReset(&item.F1)
 	item.F2 = item.F2[:0]
+	item.tl2mask0 = 0
 }
 
 func (item *CasesTL2TestObjectWithMuiltiParams3) FillRandom(rg *basictl.RandGenerator, nat_m uint32) {

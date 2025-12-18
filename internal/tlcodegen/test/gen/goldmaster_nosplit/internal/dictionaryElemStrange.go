@@ -240,6 +240,8 @@ func BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(tctx *basictl.JSONWrit
 type DictionaryElemStrangeString struct {
 	Key   uint32
 	Value string // Conditional: item.Key.31
+
+	tl2mask0 byte
 }
 
 func (DictionaryElemStrangeString) TLName() string { return "dictionaryElemStrange" }
@@ -248,16 +250,19 @@ func (DictionaryElemStrangeString) TLTag() uint32  { return 0xe3b2385c }
 func (item *DictionaryElemStrangeString) SetValue(v string) {
 	item.Value = v
 	item.Key |= 1 << 31
+	item.tl2mask0 |= 1
 }
 func (item *DictionaryElemStrangeString) ClearValue() {
 	item.Value = ""
 	item.Key &^= 1 << 31
+	item.tl2mask0 &^= 1
 }
-func (item *DictionaryElemStrangeString) IsSetValue() bool { return item.Key&(1<<31) != 0 }
+func (item *DictionaryElemStrangeString) IsSetValue() bool { return item.tl2mask0&1 != 0 }
 
 func (item *DictionaryElemStrangeString) Reset() {
 	item.Key = 0
 	item.Value = ""
+	item.tl2mask0 = 0
 }
 
 func (item *DictionaryElemStrangeString) FillRandom(rg *basictl.RandGenerator) {

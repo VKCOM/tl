@@ -2,8 +2,9 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
 	"sort"
+
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWStruct) calculateLayoutCall(
@@ -170,4 +171,14 @@ func (trw *TypeRWStruct) AllRequiredTL2Masks() []int {
 	keys := utils.Keys(required)
 	sort.Ints(keys)
 	return keys
+}
+
+func (trw *TypeRWStruct) AllNewTL2Masks() []string {
+	var result []string
+	for _, field := range trw.Fields {
+		if field.MaskTL2Bit != nil && *field.MaskTL2Bit%8 == 0 {
+			result = append(result, fmt.Sprintf("tl2mask%d", *field.MaskTL2Bit/8))
+		}
+	}
+	return result
 }
