@@ -323,6 +323,7 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteBoxed(w []byte, nat_outer uin
 func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, nat_outer uint32) error {
 	var propLocalPresented bool
 	var propF00Presented bool
+	var propF01Presented bool
 	var rawF02 []byte
 	var rawF03 []byte
 	var propF10Presented bool
@@ -360,10 +361,13 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 				}
 				propF00Presented = true
 			case "f01":
-				var tmpF01 tlTrue.True
-				if err := tmpF01.ReadJSONGeneral(tctx, in); err != nil {
+				if propF01Presented {
+					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f01")
+				}
+				if err := item.F01.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
+				propF01Presented = true
 			case "f02":
 				if rawF02 != nil {
 					return internal.ErrorInvalidJSONWithDuplicatingKeys("cases.testAllPossibleFieldConfigs", "f02")

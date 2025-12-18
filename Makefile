@@ -205,3 +205,7 @@ test:
 .PHONY: check
 check: build test
 	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... # update version together with github actions
+
+.PHONY: lint
+lint:
+	@$(GO) run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.6 run internal/tlcodegen/test/gen/...

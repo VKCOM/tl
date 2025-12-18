@@ -559,8 +559,10 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- for _, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
         {%- if field.IsBit() -%}
+        {%- if field.fieldMask.isField -%}
     var trueType{%s= field.goName %}Presented bool
     var trueType{%s= field.goName %}Value     bool
+        {%- endif -%}
         {%- elseif !field.HasNatArguments() -%}
             {%- code /* TODO: can be optimized to read with only external nats */ -%}
     var prop{%s= field.goName %}Presented bool
@@ -644,8 +646,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: reset independent props with they are absent */ -%}
     {%- for _, field := range struct_.Fields -%}
             {%- code /* TODO: skip anonymous names */ -%}
-            {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-            {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
+            {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
             {%- if field.t.IsTrueType() -%} {%- continue -%} {%- endif -%}
             {%- if !field.HasNatArguments() -%}
     if !prop{%s= field.goName %}Presented {
@@ -662,8 +663,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: bit fix */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
         {%- if field.IsAffectingLocalFieldMasks() -%}
             {%- code
                 presentCondition := "true"
@@ -700,8 +700,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- code /* BLOCK: read rest fields */ -%}
     {%- for _, field := range struct_.Fields -%}
         {%- code /* TODO: skip anonymous names */ -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
-        {%- if field.originalName == "" -%} {%- continue -%} {%- endif -%}
+        {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
         {%- if field.t.IsTrueType() || !field.HasNatArguments() -%} {%- continue -%} {%- endif -%}
         {%- code presentCondition := "raw" + field.goName + " != nil" -%}
         {%- if field.fieldMask != nil -%}
@@ -728,7 +727,7 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
     {%- endfor -%}
     {%- code /* BLOCK: trueType with false values validation */ -%}
     {%- for _, field := range struct_.Fields -%}
-        {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
         {%- if !field.t.IsTrueType() || field.fieldMask == nil || !field.fieldMask.isField -%} {%- continue -%} {%- endif -%}
         {%- code
             bit := int(field.BitNumber)

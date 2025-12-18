@@ -151,6 +151,8 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	var trueTypeAValue bool
 	var trueTypeBPresented bool
 	var trueTypeBValue bool
+	var propCPresented bool
+	var propDPresented bool
 	var propEPresented bool
 
 	if in != nil {
@@ -187,15 +189,21 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 				}
 				trueTypeBPresented = true
 			case "c":
-				var tmpC True
-				if err := tmpC.ReadJSONGeneral(tctx, in); err != nil {
+				if propCPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("useTrue", "c")
+				}
+				if err := item.C.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
+				propCPresented = true
 			case "d":
-				var tmpD True
-				if err := tmpD.ReadJSONGeneral(tctx, in); err != nil {
+				if propDPresented {
+					return ErrorInvalidJSONWithDuplicatingKeys("useTrue", "d")
+				}
+				if err := item.D.ReadJSONGeneral(tctx, in); err != nil {
 					return err
 				}
+				propDPresented = true
 			case "e":
 				if propEPresented {
 					return ErrorInvalidJSONWithDuplicatingKeys("useTrue", "e")
