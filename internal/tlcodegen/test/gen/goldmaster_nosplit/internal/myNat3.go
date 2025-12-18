@@ -478,18 +478,10 @@ func (item *MyPlus3) InternalReadTL2(r []byte, block byte) (_ []byte, err error)
 
 	// read ptr
 	if block&(1<<1) != 0 {
-		if ptr == nil {
-			var newValue MyNat3
-			ptr = &newValue
-		}
 		if currentR, err = ptr.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
-		if ptr == nil {
-			var newValue MyNat3
-			ptr = &newValue
-		}
 		ptr.Reset()
 	}
 

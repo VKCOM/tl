@@ -821,16 +821,16 @@ func (item *CycleTuple) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read item.A
 	if block&(1<<2) != 0 {
 		if item.A == nil {
-			var newValue [2]CycleTuple
-			item.A = &newValue
+			var value [2]CycleTuple
+			item.A = &value
 		}
 		if currentR, err = BuiltinTuple2CycleTupleInternalReadTL2(currentR, item.A); err != nil {
 			return currentR, err
 		}
 	} else {
 		if item.A == nil {
-			var newValue [2]CycleTuple
-			item.A = &newValue
+			var value [2]CycleTuple
+			item.A = &value
 		}
 		BuiltinTuple2CycleTupleReset(item.A)
 	}

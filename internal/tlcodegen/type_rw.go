@@ -1507,3 +1507,13 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports,
 	}
 `, f.goName, myType, f.goName)
 }
+
+func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
+	resetCode := f.t.TypeResettingCode(bytesVersion, directImports, ins, fmt.Sprintf("item.%s", f.goName), f.recursive)
+	if f.recursive {
+		return fmt.Sprintf(`	if item.%s != nil {
+		%s
+	}`, f.goName, resetCode)
+	}
+	return resetCode
+}

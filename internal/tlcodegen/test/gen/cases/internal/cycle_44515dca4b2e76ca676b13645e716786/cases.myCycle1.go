@@ -359,16 +359,16 @@ func (item *CasesMyCycle1) InternalReadTL2(r []byte) (_ []byte, err error) {
 	// read item.A
 	if block&(1<<2) != 0 {
 		if item.A == nil {
-			var newValue CasesMyCycle2
-			item.A = &newValue
+			var value CasesMyCycle2
+			item.A = &value
 		}
 		if currentR, err = item.A.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		if item.A == nil {
-			var newValue CasesMyCycle2
-			item.A = &newValue
+			var value CasesMyCycle2
+			item.A = &value
 		}
 		item.A.Reset()
 	}
