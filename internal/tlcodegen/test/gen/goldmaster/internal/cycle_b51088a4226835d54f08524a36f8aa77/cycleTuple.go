@@ -451,7 +451,7 @@ func (item *CycleTuple) Write(w []byte) (_ []byte, err error) {
 		if item.A == nil {
 			var tmpValue [2]CycleTuple
 			w = basictl.NatWrite(w, 0x9770768a)
-			if w, err = BuiltinTuple2CycleTupleWrite(w, (&tmpValue)); err != nil {
+			if w, err = BuiltinTuple2CycleTupleWrite(w, &tmpValue); err != nil {
 				return w, err
 			}
 		} else {

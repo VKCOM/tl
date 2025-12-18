@@ -125,7 +125,7 @@ func (item *ListService5Output) Write(w []byte) []byte {
 	if item.Flag&(1<<0) != 0 {
 		if item.Tail == nil {
 			var tmpValue ListService5Output
-			w = (&tmpValue).Write(w)
+			w = tmpValue.Write(w)
 		} else {
 			w = item.Tail.Write(w)
 		}

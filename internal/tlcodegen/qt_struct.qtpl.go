@@ -2107,7 +2107,7 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
 			qw422016.N().S(`
             `)
-			qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "(&tmpValue)", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, false, field.t.hasErrorInWriteMethods))
+			qw422016.N().S(field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), false, false, field.t.hasErrorInWriteMethods))
 			qw422016.N().S(`
         } else {
             `)

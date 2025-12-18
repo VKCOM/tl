@@ -98,7 +98,7 @@ func (item *CasesMyCycle1) Write(w []byte) []byte {
 	if item.FieldsMask&(1<<0) != 0 {
 		if item.A == nil {
 			var tmpValue CasesMyCycle2
-			w = (&tmpValue).Write(w)
+			w = tmpValue.Write(w)
 		} else {
 			w = item.A.Write(w)
 		}
