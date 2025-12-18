@@ -1501,6 +1501,7 @@ func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports,
 		return ""
 	}
 	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
+	// new(X) does not work for some types IIRC
 	return fmt.Sprintf(`	if item.%s == nil {
 		var value %s
 		item.%s = &value
