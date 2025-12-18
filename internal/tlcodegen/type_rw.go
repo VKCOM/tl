@@ -1495,3 +1495,15 @@ func ToLowerFirst(str string) string {
 	}
 	return strings.ToLower(str) // zero or single rune
 }
+
+func (f *Field) EnsureRecursive(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace) string {
+	if !f.recursive {
+		return ""
+	}
+	myType := f.t.TypeString2(bytesVersion, directImports, ins, false, false)
+	return fmt.Sprintf(`	if item.%s == nil {
+		var value %s
+		item.%s = &value
+	}
+`, f.goName, myType, f.goName)
+}
