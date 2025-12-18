@@ -432,19 +432,8 @@ func (struct_ *TypeRWStruct) streamfieldMaskGettersAndSetters(qw422016 *qt422016
 `)
 			}
 			if !field.IsBit() {
-				if field.recursive {
-					qw422016.N().S(`    if item.`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` == nil {
-        var value `)
-					qw422016.N().S(fieldTypeString)
-					qw422016.N().S(`
-        item.`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` = &value
-    }
-`)
-				}
+				qw422016.N().S(`    `)
+				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 				qw422016.N().S(`    `)
 				qw422016.N().S(asterisk)
 				qw422016.N().S(`item.`)
@@ -1005,22 +994,8 @@ func (item *`)
 					qw422016.N().S(` & (1 << `)
 					qw422016.E().V(field.BitNumber)
 					qw422016.N().S(`) != 0 {
-`)
-					if field.recursive {
-						fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
-
-						qw422016.N().S(`        if item.`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(` == nil {
-            var value `)
-						qw422016.N().S(fieldTypeString)
-						qw422016.N().S(`
-            item.`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(` = &value
-        }
-`)
-					}
+        `)
+					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 					qw422016.N().S(`        `)
 					qw422016.N().S(readingCode)
 					qw422016.N().S(`
@@ -1047,22 +1022,8 @@ func (item *`)
 					qw422016.N().S(`    if `)
 					qw422016.N().S(jsonField)
 					qw422016.N().S(` != nil {
-`)
-					if field.recursive {
-						fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
-
-						qw422016.N().S(`        if item.`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(` == nil {
-            var value `)
-						qw422016.N().S(fieldTypeString)
-						qw422016.N().S(`
-            item.`)
-						qw422016.N().S(field.goName)
-						qw422016.N().S(` = &value
-        }
-`)
-					}
+        `)
+					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 					qw422016.N().S(`        `)
 					qw422016.N().S(readingCode)
 					qw422016.N().S(`
@@ -1237,19 +1198,6 @@ func (item *`)
 				qw422016.N().S(`)
                     }
 `)
-				if field.recursive {
-					qw422016.N().S(`                    if `)
-					qw422016.N().S(itemField)
-					qw422016.N().S(` == nil {
-                        var value `)
-					qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-					qw422016.N().S(`
-                        `)
-					qw422016.N().S(itemField)
-					qw422016.N().S(` = &value
-                    }
-`)
-				}
 				if field.IsAffectedByExternalFieldMask() {
 					qw422016.N().S(`                    if `)
 					qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
@@ -1266,6 +1214,8 @@ func (item *`)
                     }
 `)
 				}
+				qw422016.N().S(`                    `)
+				qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 				qw422016.N().S(`                    `)
 				qw422016.N().S(field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, reader, itemField, formatNatArgs(struct_.Fields, field.natArgs), field.recursive))
 				qw422016.N().S(`
@@ -1535,19 +1485,8 @@ func (struct_ *TypeRWStruct) streamreadJsonWithResetForRaw(qw422016 *qt422016.Wr
 `)
 	readingCode := field.t.TypeJSON2ReadingCode(bytesVersion, directImports, struct_.wr.ins, "in"+field.goName+"Pointer", "item."+field.goName, formatNatArgs(struct_.Fields, field.natArgs), field.recursive)
 
-	if field.recursive {
-		qw422016.N().S(`        if item.`)
-		qw422016.N().S(field.goName)
-		qw422016.N().S(` == nil {
-            var value `)
-		qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-		qw422016.N().S(`
-            item.`)
-		qw422016.N().S(field.goName)
-		qw422016.N().S(` = &value
-        }
-`)
-	}
+	qw422016.N().S(`        `)
+	qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 	qw422016.N().S(`        `)
 	qw422016.N().S(readingCode)
 	qw422016.N().S(`
@@ -2118,18 +2057,10 @@ func (struct_ *TypeRWStruct) streamrandomFields(qw422016 *qt422016.Writer, bytes
 		}
 		if field.recursive {
 			qw422016.N().S(`rg.IncreaseDepth()
-if item.`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` == nil {
-    var value `)
-			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-			qw422016.N().S(`
-    item.`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` = &value
-}
 `)
 		}
+		qw422016.N().S(`        `)
+		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 		if fieldProps, indexes := struct_.GetFieldNatProperties(fieldId); (fieldProps & (FieldIsNat | FieldUsedAsFieldMask | FieldUsedAsSize)) != 0 {
 			if (fieldProps & FieldUsedAsFieldMask) != 0 {
 				bitMask := uint32(0)
@@ -2363,19 +2294,7 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 			qw422016.N().S(`) != 0 {
 `)
 		}
-		if field.recursive {
-			qw422016.N().S(`if item.`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` == nil {
-    var value `)
-			qw422016.N().S(field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false))
-			qw422016.N().S(`
-    item.`)
-			qw422016.N().S(field.goName)
-			qw422016.N().S(` = &value
-}
-`)
-		}
+		qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 		qw422016.N().S(field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last))
 		qw422016.N().S(`
 `)
