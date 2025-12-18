@@ -2335,12 +2335,12 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 		if field.IsTL2Omitted() {
 			continue
 		}
+		last := i == len(struct_.Fields)-1 && field.fieldMask == nil
+		lastWritten = lastWritten || last
+
 		if field.IsBit() {
 			if !field.Bare() {
 				/* special case for TL1 */
-
-				last := i == len(struct_.Fields)-1 && field.fieldMask == nil
-				lastWritten = lastWritten || last
 
 				qw422016.N().S(`                if `)
 				qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
@@ -2363,9 +2363,6 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 			qw422016.N().S(`) != 0 {
 `)
 		}
-		last := i == len(struct_.Fields)-1 && field.fieldMask == nil
-		lastWritten = lastWritten || last
-
 		if field.recursive {
 			qw422016.N().S(`if item.`)
 			qw422016.N().S(field.goName)
@@ -2383,29 +2380,24 @@ func (struct_ *TypeRWStruct) streamreadFields(qw422016 *qt422016.Writer, bytesVe
 		qw422016.N().S(`
 `)
 		if field.fieldMask != nil {
-			if field.t.IsTrueType() {
-				qw422016.N().S(`}
+			qw422016.N().S(`} else {
 `)
-			} else {
-				qw422016.N().S(`} else {
-`)
-				if field.recursive {
-					qw422016.N().S(`        if item.`)
-					qw422016.N().S(field.goName)
-					qw422016.N().S(` != nil {
-`)
-				}
-				qw422016.N().S(`            `)
-				qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
-				qw422016.N().S(`
-`)
-				if field.recursive {
-					qw422016.N().S(`        }
-`)
-				}
-				qw422016.N().S(`}
+			if field.recursive {
+				qw422016.N().S(`        if item.`)
+				qw422016.N().S(field.goName)
+				qw422016.N().S(` != nil {
 `)
 			}
+			qw422016.N().S(`            `)
+			qw422016.N().S(field.t.TypeResettingCode(bytesVersion, directImports, struct_.wr.ins, fmt.Sprintf("item.%s", field.goName), field.recursive))
+			qw422016.N().S(`
+`)
+			if field.recursive {
+				qw422016.N().S(`        }
+`)
+			}
+			qw422016.N().S(`}
+`)
 		}
 	}
 	if !lastWritten {

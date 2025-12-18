@@ -1175,12 +1175,12 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
     {%- code lastWritten := false -%}
     {%- for i, field := range struct_.Fields -%}
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
+        {%- code
+            last := i == len(struct_.Fields)-1 && field.fieldMask == nil
+            lastWritten = lastWritten || last
+        -%}
         {%- if field.IsBit() -%}
             {%- if !field.Bare() -%} {%- code /* special case for TL1 */ -%}
-                {%- code
-                    last := i == len(struct_.Fields)-1 && field.fieldMask == nil
-                    lastWritten = lastWritten || last
-                -%}
                 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
                     {%s= wrapLastW(last, fmt.Sprintf("basictl.NatReadExactTag(w, 0x%08x)", field.t.tlTag), true) %}
                 }
@@ -1190,10 +1190,6 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         {%- if field.fieldMask != nil -%}
 if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
         {%- endif -%}
-        {%- code
-            last := i == len(struct_.Fields)-1 && field.fieldMask == nil
-            lastWritten = lastWritten || last
-        -%}
         {%- if field.recursive -%}
 if item.{%s= field.goName %} == nil {
     var value {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
@@ -1202,9 +1198,6 @@ if item.{%s= field.goName %} == nil {
         {%- endif -%}
 {%s= field.t.TypeReadingCode(bytesVersion, directImports, struct_.wr.ins, "item."+field.goName, field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), field.recursive, last) %}
         {%- if field.fieldMask != nil -%}
-{%- if field.t.IsTrueType() -%}
-}
-{%- else -%}
 } else {
         {%- if field.recursive -%}
         if item.{%s= field.goName %} != nil {
@@ -1214,7 +1207,6 @@ if item.{%s= field.goName %} == nil {
         }
         {%- endif -%}
 }
-{%- endif -%}
         {%- endif -%}
     {%- endfor -%}
     {%- if !lastWritten -%}
