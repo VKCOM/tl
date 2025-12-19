@@ -8,8 +8,8 @@
 package tlcases
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_42a1a8597f818829cd168dce9785322f"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_44515dca4b2e76ca676b13645e716786"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_6f3c12bfb54febd97334ae12d94a605f"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace1Int"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace1PairTupleIntTupleInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tlcases/tlCasesInplace2Int"
@@ -67,9 +67,11 @@ type (
 	TestOutFieldMaskContainer            = tlCasesTestOutFieldMaskContainer.CasesTestOutFieldMaskContainer
 	TestRecursiveFieldmask               = tlCasesTestRecursiveFieldmask.CasesTestRecursiveFieldmask
 	TestTuple                            = tlCasesTestTuple.CasesTestTuple
-	TestUnion                            = cycle_42a1a8597f818829cd168dce9785322f.CasesTestUnion
-	TestUnion1                           = cycle_42a1a8597f818829cd168dce9785322f.CasesTestUnion1
-	TestUnion2                           = cycle_42a1a8597f818829cd168dce9785322f.CasesTestUnion2
+	TestUnion                            = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion
+	TestUnion1                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion1
+	TestUnion2                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion2
+	TestUnion3                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion3
+	TestUnion4                           = cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion4
 	TestUnionContainer                   = tlCasesTestUnionContainer.CasesTestUnionContainer
 	TestVector                           = tlCasesTestVector.CasesTestVector
 )

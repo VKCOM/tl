@@ -44,6 +44,8 @@ const (
 	CasesTestTuple                                  = 0x4b9caf8f // cases.testTuple
 	CasesTestUnion1                                 = 0x4b4f09b1 // cases.testUnion1
 	CasesTestUnion2                                 = 0x464f96c4 // cases.testUnion2
+	CasesTestUnion3                                 = 0x9b8c9e4c // cases.testUnion3
+	CasesTestUnion4                                 = 0xd6e28ad9 // cases.testUnion4
 	CasesTestUnionContainer                         = 0x4497a381 // cases.testUnionContainer
 	CasesTestVector                                 = 0x4975695c // cases.testVector
 	CasesGoTestNames                                = 0x6b61936a // casesGo.testNames

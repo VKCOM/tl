@@ -224,7 +224,7 @@ func readTestData() (testformat.AllTestsBytes, error) {
 }
 
 func writeTestData(tests testformat.AllTestsBytes) error {
-	//jsonBytes, _ := json.MarshalIndent(tests, "", "\t")
-	//return os.WriteFile(PathToBytesData, jsonBytes, 0666)
-	return nil
+	jsonBytes, _ := json.MarshalIndent(tests, "", "\t")
+	return os.WriteFile(PathToBytesData, jsonBytes, 0666)
+	//return nil
 }

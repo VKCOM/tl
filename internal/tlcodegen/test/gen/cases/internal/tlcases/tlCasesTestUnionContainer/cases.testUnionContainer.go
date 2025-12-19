@@ -9,7 +9,7 @@ package tlCasesTestUnionContainer
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/cycle_42a1a8597f818829cd168dce9785322f"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/cycle_6f3c12bfb54febd97334ae12d94a605f"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -17,7 +17,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type CasesTestUnionContainer struct {
-	Value cycle_42a1a8597f818829cd168dce9785322f.CasesTestUnion
+	Value cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion
 }
 
 func (CasesTestUnionContainer) TLName() string { return "cases.testUnionContainer" }

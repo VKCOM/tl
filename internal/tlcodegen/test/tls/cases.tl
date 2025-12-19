@@ -43,6 +43,10 @@ cases.testMaybe value:(Maybe int) = cases.TestMaybe;
 
 cases.testUnion1 value:int = cases.TestUnion;
 cases.testUnion2 value:string = cases.TestUnion;
+cases.testUnion3 int = cases.TestUnion;
+cases.testUnion4 string = cases.TestUnion;
+// cases.testUnion5 bool = cases.TestUnion;
+// cases.testUnion6 bit = cases.TestUnion;
 
 cases.testUnionContainer value:cases.TestUnion = cases.TestUnionContainer;
 
