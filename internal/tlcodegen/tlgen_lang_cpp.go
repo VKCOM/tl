@@ -458,7 +458,11 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		var df1 func(v string)
 		df1 = func(v string) {
 			visited[v] = true
-			for u := range directDeps[v] {
+
+			directDepsList := utils.Keys(directDeps[v])
+			sort.Strings(directDepsList)
+
+			for _, u := range directDepsList {
 				if !visited[u] && allVertices[u] {
 					df1(u)
 				}
@@ -480,7 +484,10 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		df2 = func(v string) {
 			visited[v] = true
 			component = append(component, v)
-			for u := range revDirectDeps[v] {
+			revDepsList := utils.Keys(revDirectDeps[v])
+			sort.Strings(revDepsList)
+
+			for _, u := range revDepsList {
 				if !visited[u] && allVertices[u] {
 					df2(u)
 				}
@@ -488,11 +495,16 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		}
 
 		visited = make(map[string]bool)
-		for v := range allVertices {
+
+		listOfVertices := utils.Keys(allVertices)
+		sort.Strings(listOfVertices)
+
+		for _, v := range listOfVertices {
 			if !visited[v] {
 				df1(v)
 			}
 		}
+
 		visited = make(map[string]bool)
 		for i := range order {
 			v := order[len(order)-1-i]
@@ -503,18 +515,9 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 			}
 		}
 
-		for i, component := range components {
-			sort.Strings(component)
-			components[i] = component
+		for i := range components {
+			sort.Strings(components[i])
 		}
-
-		// sort components
-		sort.Slice(components, func(i, j int) bool {
-			if len(components[i]) == len(components[j]) {
-				return slices.Compare(components[i], components[j]) > 0
-			}
-			return len(components[i]) > len(components[j])
-		})
 
 		nsToComponentId := make(map[string]int)
 		for id, comp := range components {
