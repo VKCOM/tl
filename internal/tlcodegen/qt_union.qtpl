@@ -171,7 +171,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     return sizes, currentSize
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int, int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
     {%- if !union.IsEnum -%} {% code /* copy of logic from struct.qtpl */ %}
     switch item.index {
     {%- for i, field := range union.Fields -%}
@@ -251,7 +251,7 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
         sizes = ctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes)
+    w, _, _ = item.InternalWriteTL2(w, sizes, false)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }

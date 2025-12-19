@@ -324,7 +324,7 @@ func (item *`)
 
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int, int) {
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 `)
 			if !union.IsEnum {
 				/* copy of logic from struct.qtpl */
@@ -448,7 +448,7 @@ func (item *`)
         sizes = ctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes)
+    w, _, _ = item.InternalWriteTL2(w, sizes, false)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }

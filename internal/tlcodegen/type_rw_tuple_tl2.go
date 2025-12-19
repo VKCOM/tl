@@ -11,12 +11,17 @@ func (trw *TypeRWBrackets) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	return fmt.Sprintf("%[1]s = %[4]s%[3]sCalculateLayout(%[1]s, %[2]s)",
+	sz := fmt.Sprintf("%[1]s, sz = %[4]s%[3]sCalculateLayout(%[1]s, %[2]s), %[5]v)",
 		targetSizes,
 		addAmpersand(refObject, targetObject),
 		addBytes(trw.wr.goGlobalName, bytesVersion),
 		trw.wr.ins.Prefix(directImports, ins),
+		zeroIfEmpty,
 	)
+	if zeroIfEmpty {
+		sz = fmt.Sprintf("if %s; sz != 0 {", sz)
+	}
+	return sz + "\ncurrentSize += sz"
 }
 
 func (trw *TypeRWBrackets) writeTL2Call(
