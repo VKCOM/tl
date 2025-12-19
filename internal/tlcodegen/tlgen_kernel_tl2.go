@@ -535,19 +535,6 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 				},
 			})
 		}
-		// generate tl2 legacy setters
-		if strings.Contains(refField.CommentBefore, "tlgen:addLegacySetters") {
-			maskNameFound, maskName := extractTLGenTag(refField.CommentBefore, "tlgen:addLegacySetters:name")
-			maskBitFound, maskBit := extractTLGenTag(refField.CommentBefore, "tlgen:addLegacySetters:bit")
-			if maskNameFound && maskBitFound {
-				field.GenerateLegacySettersForTL2Name = maskName
-				bitUint64, err := strconv.ParseUint(maskBit, 10, 32)
-				if err != nil {
-					return err
-				}
-				field.BitNumber = uint32(bitUint64)
-			}
-		}
 		*fields = append(*fields, field)
 	}
 	return nil

@@ -284,94 +284,87 @@ func (item *`)
 		if union.wr.wantsTL2 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) CalculateLayout(sizes []int) []int {
+			qw422016.N().S(`) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 `)
-			if union.IsEnum {
-				qw422016.N().S(`    switch item.index {
-    case 0:
-        sizes = append(sizes, 0)
-    default:
-        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
-    }
-`)
-			} else {
-				qw422016.N().S(`    switch item.index {
+			if !union.IsEnum {
+				/* copy of logic from struct.qtpl */
+
+				qw422016.N().S(`
+    switch item.index {
 `)
 				for i, field := range union.Fields {
-					qw422016.N().S(`    case `)
-					qw422016.N().D(i)
-					qw422016.N().S(`:
-`)
-					if field.t.IsTrueType() {
-						if i == 0 {
-							qw422016.N().S(`        sizes = append(sizes, 0)
-`)
-						} else {
-							qw422016.N().S(`        sizes = append(sizes, 1 + basictl.TL2CalculateSize(item.index))
-`)
-						}
-					} else {
-						qw422016.N().S(`        `)
-						qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive))
-						qw422016.N().S(`
+					if !field.t.IsTrueType() {
+						qw422016.N().S(`    case `)
+						qw422016.N().D(i)
+						qw422016.N().S(`:
+        return item.value`)
+						qw422016.N().S(field.goName)
+						qw422016.N().S(`.CalculateLayout(sizes, true)
 `)
 					}
 				}
 				qw422016.N().S(`    }
 `)
 			}
-			qw422016.N().S(`    return sizes
+			qw422016.N().S(`    currentSize := 1
+    lastUsedByte := 0
+    if item.index != 0 {
+        currentSize += basictl.TL2CalculateSize(item.index)
+        lastUsedByte = currentSize
+    }
+    if lastUsedByte < currentSize {
+        currentSize = lastUsedByte
+    }
+    if !optimizeEmpty || currentSize != 0 {
+        currentSize += basictl.TL2CalculateSize(currentSize)
+    }
+    sizes = append(sizes, currentSize)
+    return sizes, currentSize
 }
 
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int, int) {
 `)
-			if union.IsEnum {
-				qw422016.N().S(`    switch item.index {
-    case 0:
-        sizes = sizes[1:]
-        w = basictl.TL2WriteSize(w, 0)
-    default:
-        currentSize := sizes[0]
-        sizes = sizes[1:]
-        w = basictl.TL2WriteSize(w, currentSize)
-        w = append(w, 1)
-        w = basictl.TL2WriteSize(w, item.index)
-    }
-`)
-			} else {
-				qw422016.N().S(`    switch item.index {
+			if !union.IsEnum {
+				/* copy of logic from struct.qtpl */
+
+				qw422016.N().S(`
+    switch item.index {
 `)
 				for i, field := range union.Fields {
-					qw422016.N().S(`    case `)
-					qw422016.N().D(i)
-					qw422016.N().S(`:
-`)
-					if field.t.IsTrueType() {
-						if i == 0 {
-							qw422016.N().S(`        sizes = sizes[1:]
-        w = basictl.TL2WriteSize(w, 0)
-`)
-						} else {
-							qw422016.N().S(`        currentSize := sizes[0]
-        sizes = sizes[1:]
-        w = basictl.TL2WriteSize(w, currentSize)
-        w = append(w, 1)
-        w = basictl.TL2WriteSize(w, item.index)
-`)
-						}
-					} else {
-						qw422016.N().S(`        `)
-						qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fmt.Sprintf("item.value%s", field.goName), false, union.wr.ins, field.recursive))
-						qw422016.N().S(`
+					if !field.t.IsTrueType() {
+						qw422016.N().S(`    case `)
+						qw422016.N().D(i)
+						qw422016.N().S(`:
+        return item.value`)
+						qw422016.N().S(field.goName)
+						qw422016.N().S(`.InternalWriteTL2(w, sizes)
 `)
 					}
 				}
 				qw422016.N().S(`    }
 `)
 			}
-			qw422016.N().S(`    return w, sizes
+			qw422016.N().S(`    currentSize := sizes[0]
+    sizes = sizes[1:]
+    if currentSize == 0 {`)
+			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
+
+			qw422016.N().S(`        return w, sizes, currentSize
+    }
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    if item.index != 0 {
+        w = append(w, 1)
+        w = basictl.TL2WriteSize(w, item.index)
+    } else {
+        w = append(w, 0)
+    }
+    return w, sizes, currentSize
 }
 
 func (item *`)
@@ -454,8 +447,8 @@ func (item *`)
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
-    sizes = item.CalculateLayout(sizes)
-    w, _ = item.InternalWriteTL2(w, sizes)
+    sizes, _ = item.CalculateLayout(sizes, false)
+    w, _, _ = item.InternalWriteTL2(w, sizes)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
