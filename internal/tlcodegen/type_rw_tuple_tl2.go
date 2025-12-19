@@ -11,7 +11,7 @@ func (trw *TypeRWBrackets) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	sz := fmt.Sprintf("%[1]s, sz = %[4]s%[3]sCalculateLayout(%[1]s, %[2]s), %[5]v)",
+	sz := fmt.Sprintf("%[1]s, sz = %[4]s%[3]sCalculateLayout(%[1]s, %[5]v, %[2]s)",
 		targetSizes,
 		addAmpersand(refObject, targetObject),
 		addBytes(trw.wr.goGlobalName, bytesVersion),

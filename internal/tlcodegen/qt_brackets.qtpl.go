@@ -155,13 +155,8 @@ func `)
         lastUsedByte = currentSize
     }
     for i := 0; i < len(*vec); i++ {
-`)
-					if tuple.element.t.trw.doesCalculateLayoutUseObject(false) {
-						qw422016.N().S(`        elem := (*vec)[i]
-`)
-					}
-					qw422016.N().S(`        `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
+        `)
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
         lastUsedByte = currentSize
     }
@@ -180,28 +175,34 @@ func `)
 
 func `)
 					qw422016.N().S(goName)
-					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int,vec *`)
+					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool,vec *`)
 					qw422016.N().S(typeString)
-					qw422016.N().S(`) ([]byte, []int) {
+					qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
+    if currentSize == 0 {`)
+					/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-    w = basictl.TL2WriteSize(w, currentSize)
-    if len(*vec) != 0 {
-        w = basictl.TL2WriteSize(w, len(*vec))
+					qw422016.N().S(`        return w, sizes, currentSize
     }
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    w = basictl.TL2WriteSize(w, len(*vec))
 
+    var sz int
     for i := 0; i < len(*vec); i++ {
-`)
-					if tuple.element.t.trw.doesWriteTL2UseObject(false) {
-						qw422016.N().S(`        elem := (*vec)[i]
-`)
-					}
-					qw422016.N().S(`        `)
+        elem := (*vec)[i]
+        `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
-    return w, sizes
+    `)
+					qw422016.N().S(tuple.wr.gen.InternalPrefix())
+					qw422016.N().S(`Unused(sz)
+    return w, sizes, currentSize
 }
 `)
 				}
@@ -751,23 +752,6 @@ func `)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
 					qw422016.N().S(`) ([]int, int) {
-    keys := make([]`)
-					qw422016.N().S(keyTypeString)
-					qw422016.N().S(`, 0, len(*m))
-    for k := range *m {
-        keys = append(keys, k)
-    }
-`)
-					if tuple.dictKeyString {
-						qw422016.N().S(`    sort.Strings(keys)
-`)
-					} else {
-						qw422016.N().S(`    sort.Slice(keys, func(i, j int) bool {
-        return keys[i] < keys[j]
-    })
-`)
-					}
-					qw422016.N().S(`
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
@@ -775,21 +759,21 @@ func `)
     lastUsedByte := 0
     var sz int
 
-    if len(*vec) != 0 {
+    if len(*m) != 0 {
 `)
 					/* add # of elements */
 
 					qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(len(*vec))
         lastUsedByte = currentSize
     }
-    for i := 0; i < len(keys); i++ {
+    for key, value := range *m {
         elem := `)
 					qw422016.N().S(elementTypeString)
 					qw422016.N().S(`{`)
 					qw422016.N().S(keyFieldName)
-					qw422016.N().S(`:keys[i], `)
+					qw422016.N().S(`:key, `)
 					qw422016.N().S(valueFieldName)
-					qw422016.N().S(`:(*m)[keys[i]]}
+					qw422016.N().S(`:value]}
         `)
 					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
@@ -810,18 +794,24 @@ func `)
 
 func `)
 					qw422016.N().S(goName)
-					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, m *map[`)
+					qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[`)
 					qw422016.N().S(keyTypeString)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
-					qw422016.N().S(`) ([]byte, []int) {
+					qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
+    if currentSize == 0 {`)
+					/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-    w = basictl.TL2WriteSize(w, currentSize)
-    if len(*m) != 0 {
-        w = basictl.TL2WriteSize(w, len(*m))
+					qw422016.N().S(`        return w, sizes, currentSize
     }
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    w = basictl.TL2WriteSize(w, len(*m))
 
     keys := make([]`)
 					qw422016.N().S(keyTypeString)
@@ -840,23 +830,23 @@ func `)
 `)
 					}
 					qw422016.N().S(`
+    var sz int
     for i := 0; i < len(keys); i++ {
-`)
-					if tuple.element.t.trw.doesWriteTL2UseObject(false) {
-						qw422016.N().S(`        elem := `)
-						qw422016.N().S(elementTypeString)
-						qw422016.N().S(`{`)
-						qw422016.N().S(keyFieldName)
-						qw422016.N().S(`:keys[i], `)
-						qw422016.N().S(valueFieldName)
-						qw422016.N().S(`:(*m)[keys[i]]}
-`)
-					}
-					qw422016.N().S(`        `)
+        elem := `)
+					qw422016.N().S(elementTypeString)
+					qw422016.N().S(`{`)
+					qw422016.N().S(keyFieldName)
+					qw422016.N().S(`:keys[i], `)
+					qw422016.N().S(valueFieldName)
+					qw422016.N().S(`:(*m)[keys[i]]}
+        `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
-    return w, sizes
+    `)
+					qw422016.N().S(tuple.wr.gen.InternalPrefix())
+					qw422016.N().S(`Unused(sz)
+    return w, sizes, currentSize
 }
 `)
 				}
@@ -1328,9 +1318,8 @@ func `)
 `)
 				} else {
 					qw422016.N().S(`        for i := 0; i < len(*vec); i++ {
-            elem := (*vec)[i]
             `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
             lastUsedByte = currentSize
         }
@@ -1351,53 +1340,41 @@ func `)
 
 func `)
 				qw422016.N().S(goName)
-				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
+				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(`) ([]byte, []int) {
+				qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
+    if currentSize == 0 {`)
+				/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-    w = basictl.TL2WriteSize(w, currentSize)
-    if len(*vec) != 0 {
-        w = basictl.TL2WriteSize(w, len(*vec))
+				qw422016.N().S(`        return w, sizes, currentSize
     }
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`    // special case for bool
-    blockCount := (len(*vec) + 7) / 8
-    index := 0
-    for i := 0; i < blockCount; i++ {
-        var block byte
-
-        blockSize := 8
-        if index + blockSize > len(*vec) {
-            blockSize = len(*vec) - index
-        }
-        for j := 0; j < blockSize; j++ {
-            if (*vec)[index] {
-                block |= (1 << j)
-            }
-            index += 1
-        }
-
-        w = append(w, block)
-    }
+					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, *vec)
 `)
 				} else {
-					qw422016.N().S(`    for i := 0; i < len(*vec); i++ {
-`)
-					if tuple.element.t.trw.doesWriteTL2UseObject(false) {
-						qw422016.N().S(`        elem := (*vec)[i]
-`)
-					}
-					qw422016.N().S(`        `)
+					qw422016.N().S(`    var sz int
+    for i := 0; i < len(*vec); i++ {
+        elem := (*vec)[i]
+        `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
+    `)
+					qw422016.N().S(tuple.wr.gen.InternalPrefix())
+					qw422016.N().S(`Unused(sz)
 `)
 				}
-				qw422016.N().S(`    return w, sizes
+				qw422016.N().S(`    return w, sizes, currentSize
 }
 `)
 			}
@@ -1712,10 +1689,9 @@ func `)
         currentSize += (len(*vec) + 7) / 8
 `)
 				} else {
-					qw422016.N().S(`        for i := 0; i < len(keys); i++ {
-            elem := (*vec)[i]
+					qw422016.N().S(`        for i := 0; i < len(*vec); i++ {
             `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
             lastUsedByte = currentSize
         }
@@ -1736,53 +1712,41 @@ func `)
 
 func `)
 				qw422016.N().S(goName)
-				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
+				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(`) ([]byte, []int) {
+				qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
+    if currentSize == 0 {`)
+				/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-    w = basictl.TL2WriteSize(w, currentSize)
-    if len(*vec) != 0 {
-        w = basictl.TL2WriteSize(w, len(*vec))
+				qw422016.N().S(`        return w, sizes, currentSize
     }
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    w = basictl.TL2WriteSize(w, len(*vec))
 
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`    // special case for bool
-    blockCount := (len(*vec) + 7) / 8
-    index := 0
-    for i := 0; i < blockCount; i++ {
-        var block byte
-
-        blockSize := 8
-        if index + blockSize > len(*vec) {
-            blockSize = len(*vec) - index
-        }
-        for j := 0; j < blockSize; j++ {
-            if (*vec)[index] {
-                block |= (1 << j)
-            }
-            index += 1
-        }
-
-        w = append(w, block)
-    }
+					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, *vec)
 `)
 				} else {
-					qw422016.N().S(`    for i := 0; i < len(*vec); i++ {
-`)
-					if tuple.element.t.trw.doesWriteTL2UseObject(false) {
-						qw422016.N().S(`        elem := (*vec)[i]
-`)
-					}
-					qw422016.N().S(`        `)
+					qw422016.N().S(`    var sz int
+    for i := 0; i < len(*vec); i++ {
+        elem := (*vec)[i]
+        `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
+    `)
+					qw422016.N().S(tuple.wr.gen.InternalPrefix())
+					qw422016.N().S(`Unused(sz)
 `)
 				}
-				qw422016.N().S(`    return w, sizes
+				qw422016.N().S(`    return w, sizes, currentSize
 }
 `)
 			}
@@ -2108,25 +2072,30 @@ func `)
     lastUsedByte := 0
     var sz int
 
-    if tuple.size != 0 {
+    if `)
+				qw422016.N().V(tuple.size)
+				qw422016.N().S(` != 0 {
 `)
 				/* add # of elements, TODO - tl2 bool */
 
-				qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(tuple.size)
+				qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(`)
+				qw422016.N().V(tuple.size)
+				qw422016.N().S(`)
         lastUsedByte = currentSize
     }
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
 					qw422016.N().S(`        // special case for bool
-        currentSize += (tuple.size + 7) / 8
+        currentSize += (`)
+					qw422016.N().V(tuple.size)
+					qw422016.N().S(` + 7) / 8
 `)
 				} else {
 					qw422016.N().S(`        for i := 0; i < `)
 					qw422016.N().V(tuple.size)
 					qw422016.N().S(`; i++ {
-            elem := (*vec)[i]
             `)
-					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
+					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
             lastUsedByte = currentSize
         }
@@ -2147,57 +2116,44 @@ func `)
 
 func `)
 				qw422016.N().S(goName)
-				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, vec *`)
+				qw422016.N().S(`InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *`)
 				qw422016.N().S(typeString)
-				qw422016.N().S(`) ([]byte, []int) {
+				qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
+    if currentSize == 0 {`)
+				/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
+				qw422016.N().S(`        return w, sizes, currentSize
+    }
+    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
-    if `)
-				qw422016.N().V(tuple.size)
-				qw422016.N().S(` != 0 {
-        w = basictl.TL2WriteSize(w, `)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    w = basictl.TL2WriteSize(w, `)
 				qw422016.N().V(tuple.size)
 				qw422016.N().S(`)
-    }
 
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`    // special case for bool
-    index := 0
-    for i := uint32(0); i < (`)
-					qw422016.N().V(tuple.size)
-					qw422016.N().S(` + 7) / 8; i++ {
-        block := byte(0)
-        blockSize := 8
-        if index + blockSize > `)
-					qw422016.N().V(tuple.size)
-					qw422016.N().S(` {
-            blockSize = `)
-					qw422016.N().V(tuple.size)
-					qw422016.N().S(` - index
-        }
-        for j := 0; j < blockSize; j++ {
-            if (*vec)[index] {
-                block |= (1 << j)
-            }
-            index += 1
-        }
-        w = append(w, block)
-    }
+					qw422016.N().S(`        w = basictl.VectorBoolContentWriteTL2(w, (*vec)[:])
 `)
 				} else {
-					qw422016.N().S(`    for i := 0; i < `)
+					qw422016.N().S(`    var sz int
+    for i := 0; i < `)
 					qw422016.N().V(tuple.size)
 					qw422016.N().S(`; i++ {
         `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
+    `)
+					qw422016.N().S(tuple.wr.gen.InternalPrefix())
+					qw422016.N().S(`Unused(sz)
 `)
 				}
-				qw422016.N().S(`    return w, sizes
+				qw422016.N().S(`    return w, sizes, currentSize
 }
 `)
 			}
