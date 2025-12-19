@@ -9,17 +9,24 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	bytesVersion bool,
 	targetSizes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-	//	return ""
-	//}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, canDependOnLocalBit, ins, refObject)
+		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, zeroIfEmpty, ins, refObject)
 	}
-	return fmt.Sprintf("%[1]s = %[2]s.CalculateLayout(%[1]s)", targetSizes, addAsteriskAndBrackets(refObject, targetObject))
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		if zeroIfEmpty {
+			return "if false {"
+		}
+		return "currentSize += 1"
+	}
+	sz := fmt.Sprintf("%[1]s, sz = %[2]s.CalculateLayout(%[1]s, %[3]v)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), zeroIfEmpty)
+	if zeroIfEmpty {
+		sz = fmt.Sprintf("if %s; sz != 0 {", sz)
+	}
+	return sz + "\ncurrentSize += sz"
 }
 
 func (trw *TypeRWStruct) writeTL2Call(
@@ -28,21 +35,28 @@ func (trw *TypeRWStruct) writeTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	//if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
-	//	return ""
-	//}
 	if trw.isUnwrapType() {
-		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, canDependOnLocalBit, ins, refObject)
+		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, zeroIfEmpty, ins, refObject)
 	}
-	return fmt.Sprintf("%[3]s, %[1]s = %[2]s.InternalWriteTL2(%[3]s, %[1]s)",
+	if trw.wr.IsTrueType() && trw.wr.unionParent == nil {
+		if zeroIfEmpty {
+			return "if false {"
+		}
+		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetBytes)
+	}
+	sz := fmt.Sprintf("%[3]s, %[1]s, sz = %[2]s.InternalWriteTL2(%[3]s, %[1]s)",
 		targetSizes,
 		targetObject,
 		targetBytes,
 	)
+	if zeroIfEmpty {
+		sz = fmt.Sprintf("if %s; sz != 0 {", sz)
+	}
+	return sz
 }
 
 func (trw *TypeRWStruct) readTL2Call(

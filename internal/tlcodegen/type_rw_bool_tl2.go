@@ -15,11 +15,17 @@ func (trw *TypeRWBool) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	return ""
-	//if canDependOnLocalBit {
-	//	return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetSizes)
-	//}
-	//return fmt.Sprintf("%[1]s = append(%[1]s, 1)", targetSizes)
+	if !trw.isTL2Legacy {
+		if zeroIfEmpty {
+			return fmt.Sprintf("if %s {", addAsterisk(refObject, targetObject))
+		}
+		return ""
+	}
+	sz := fmt.Sprintf("currentSize += %d", 1)
+	if zeroIfEmpty {
+		return fmt.Sprintf("if %s {\n", addAsterisk(refObject, targetObject)) + sz
+	}
+	return sz
 }
 
 func (trw *TypeRWBool) writeTL2Call(
@@ -28,17 +34,23 @@ func (trw *TypeRWBool) writeTL2Call(
 	targetSizes string,
 	targetBytes string,
 	targetObject string,
-	canDependOnLocalBit bool,
+	zeroIfEmpty bool,
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if !trw.isTL2Legacy && canDependOnLocalBit {
-		return "" // fmt.Sprintf("%[1]s = %[1]s[1:]", targetSizes)
+	if !trw.isTL2Legacy {
+		if zeroIfEmpty {
+			return fmt.Sprintf("if %s {", addAsterisk(refObject, targetObject))
+		}
+		return ""
 	}
-	return fmt.Sprintf(`%[2]s = basictl.ByteBoolWriteTL2(%[2]s, %[1]s)`,
+	sz := fmt.Sprintf(`%[2]s = basictl.ByteBoolWriteTL2(%[2]s, %[1]s)`,
 		targetObject,
-		targetBytes,
-		targetSizes)
+		targetBytes)
+	if zeroIfEmpty {
+		return fmt.Sprintf("if %s {\n", addAsterisk(refObject, targetObject)) + sz
+	}
+	return sz
 }
 
 func (trw *TypeRWBool) readTL2Call(

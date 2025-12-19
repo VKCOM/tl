@@ -1,10 +1,11 @@
 TL2File := TL2Combinator* EOF;
 TL2Combinator := TL2Annotation* (TL2TypeDeclaration | TL2FuncDeclaration) scl;
 
-TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition?;
-TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? CRC32? eq TL2TypeDefinition?;
+TL2FuncDeclaration := TL2TypeName CRC32 TL2Field* funEq TL2TypeDefinition;
+TL2TypeDeclaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? CRC32? eq TL2TypeDefinition;
+TL2TypeDefDelaration := TL2TypeName (lts TL2TypeTemplate (cm TL2TypeTemplate)* gts)? eqq TL2TypeRef;
 
-TL2TypeDefinition := TL2TypeRef | TL2Field* | TL2UnionType;
+TL2TypeDefinition := /* single anonymous field */ TL2TypeRef | TL2Field* | TL2UnionType;
 
 TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)*;
 TL2UnionConstructor := ucName (TL2TypeRef | TL2Field*);
