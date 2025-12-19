@@ -8,10 +8,21 @@ package tlcodegen
 
 import "strings"
 
-const basictlPackage = "basictl"
+//const basictlPackage = "basictl"
+//const basicCPPTLIOStreamsPath = basictlPackage + "/io_streams.h"
+//const basicCPPTLIOThrowableStreamsPath = basictlPackage + "/io_throwable_streams.h"
 
-const basicCPPTLIOStreamsPath = basictlPackage + "/io_streams.h"
-const basicCPPTLIOThrowableStreamsPath = basictlPackage + "/io_throwable_streams.h"
+func CppBasictlPackage(gen2 *Gen2) string {
+	return "basictl"
+}
+
+func CppBasicTLIOStreamsPath(gen2 *Gen2) string {
+	return CppBasictlPackage(gen2) + "/io_streams.h"
+}
+
+func CppBasicTLIOThrowableStreamsPath(gen2 *Gen2) string {
+	return CppBasictlPackage(gen2) + "/io_throwable_streams.h"
+}
 
 const basictlCppIncludeStart = "/** TLGEN: CPP INCLUDES */\n"
 const basictlCppIncludeEnd = "/** TLGEN: CPP INCLUDES END */\n"
