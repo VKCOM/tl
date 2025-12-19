@@ -113,6 +113,8 @@ func parseFlags(opt *tlcodegen.Gen2Options) {
 		`whether to generate Makefile in a root with all generated namespaces targets (default:true)`)
 	flag.BoolVar(&opt.DeleteUnrelatedFiles, "cpp-delete-unrelated-files", true,
 		`whether to delete files that are already in the target directory, but will not be affected by the new generation (default:true)`)
+	flag.StringVar(&opt.BasicTLNamespace, "cpp-basictl-namespace", "basictl",
+		`name for namespace for tl basic types and functions (default:basictl)`)
 
 	// PHP
 	flag.BoolVar(&opt.AddFunctionBodies, "php-serialization-bodies", false,
