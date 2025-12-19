@@ -1180,7 +1180,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
     return sizes
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int) {
         {%- if field.t.trw.doesWriteTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
         {%- endif -%}
@@ -1278,7 +1278,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     return sizes, currentSize
 }
 
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int, int) {
+func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
     {%- if struct_.isTypeDef() -%}
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
@@ -1349,7 +1349,7 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
         sizes = ctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes)
+    w, _, _ = item.InternalWriteTL2(w, sizes, false)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
