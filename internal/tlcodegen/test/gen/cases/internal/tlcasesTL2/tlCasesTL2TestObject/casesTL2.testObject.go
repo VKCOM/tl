@@ -337,6 +337,15 @@ func (item *CasesTL2TestObject) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if trueTypeF1Presented && !trueTypeF1Value && (item.N&(1<<0) != 0) {
 		return internal.ErrorInvalidJSON("casesTL2.testObject", "fieldmask bit item.N.0 is indefinite because of the contradictions in values")
 	}
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.N&(1<<14) != 0 {
+		item.tl2mask0 |= 4
+	}
 	return nil
 }
 

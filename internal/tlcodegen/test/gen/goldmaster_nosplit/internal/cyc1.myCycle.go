@@ -297,6 +297,9 @@ func (item *Cyc1MyCycle) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basi
 	if propAPresented {
 		item.FieldsMask |= 1 << 0
 	}
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	return nil
 }
 

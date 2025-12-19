@@ -681,6 +681,15 @@ func (item *{%s= goName %}) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *b
             return {%s= struct_.wr.gen.InternalPrefix()%}ErrorInvalidJSON({%q= tlName %}, "fieldmask bit {%s= formatNatArg(struct_.Fields, *field.fieldMask) %}.{%d= bit %} is indefinite because of the contradictions in values")
         }
     {%- endfor -%}
+    {%- code /* BLOCK: set tl2 masks */ -%}
+    {%- for _, field := range struct_.Fields -%}
+        {%- if field.IsTL2Omitted() || field.originalName == "" -%}{%- continue -%}{%- endif -%}
+        {%- if field.fieldMask != nil && field.MaskTL2Bit != nil -%}
+            if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
+                item.{%s= field.TL2MaskForOP("|=") %}
+            }
+        {%- endif -%}
+    {%- endfor -%}
     return nil
 }
 

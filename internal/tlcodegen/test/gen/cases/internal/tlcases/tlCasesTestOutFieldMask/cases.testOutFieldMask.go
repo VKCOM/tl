@@ -182,6 +182,12 @@ func (item *CasesTestOutFieldMask) ReadJSONGeneral(tctx *basictl.JSONReadContext
 		return err
 	}
 
+	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if nat_f&(1<<3) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

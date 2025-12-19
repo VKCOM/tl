@@ -592,6 +592,12 @@ func (item *CycleTuple) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basic
 		return err
 	}
 
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.N&(1<<2) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

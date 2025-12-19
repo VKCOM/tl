@@ -432,6 +432,24 @@ func (item *BenchmarksVruPosition) ReadJSONGeneral(tctx *basictl.JSONReadContext
 	if trueTypeCanonicalHashPresented && !trueTypeCanonicalHashValue && (item.FieldsMask&(1<<15) != 0) {
 		return internal.ErrorInvalidJSON("benchmarks.vruposition", "fieldmask bit item.FieldsMask.15 is indefinite because of the contradictions in values")
 	}
+	if item.FieldsMask&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.FieldsMask&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.FieldsMask&(1<<3) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.FieldsMask&(1<<5) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.FieldsMask&(1<<15) != 0 {
+		item.tl2mask0 |= 16
+	}
+	if item.FieldsMask&(1<<14) != 0 {
+		item.tl2mask0 |= 32
+	}
 	return nil
 }
 

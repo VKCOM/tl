@@ -325,6 +325,21 @@ func (item *CasesTestRecursiveFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadC
 	if trueTypeT3Presented && !trueTypeT3Value && (item.F2&(1<<2) != 0) {
 		return internal.ErrorInvalidJSON("cases.testRecursiveFieldMask", "fieldmask bit item.F2.2 is indefinite because of the contradictions in values")
 	}
+	if item.F0&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.F1&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.F0&(1<<0) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.F1&(1<<1) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if item.F2&(1<<2) != 0 {
+		item.tl2mask0 |= 16
+	}
 	return nil
 }
 

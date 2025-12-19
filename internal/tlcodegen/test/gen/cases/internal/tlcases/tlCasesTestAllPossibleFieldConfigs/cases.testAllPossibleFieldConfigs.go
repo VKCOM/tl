@@ -595,6 +595,30 @@ func (item *CasesTestAllPossibleFieldConfigs) ReadJSONGeneral(tctx *basictl.JSON
 	if trueTypeF11Presented && !trueTypeF11Value && (item.Local&(1<<1) != 0) {
 		return internal.ErrorInvalidJSON("cases.testAllPossibleFieldConfigs", "fieldmask bit item.Local.1 is indefinite because of the contradictions in values")
 	}
+	if item.Local&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Local&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.Local&(1<<2) != 0 {
+		item.tl2mask0 |= 4
+	}
+	if item.Local&(1<<3) != 0 {
+		item.tl2mask0 |= 8
+	}
+	if nat_outer&(1<<0) != 0 {
+		item.tl2mask0 |= 16
+	}
+	if nat_outer&(1<<1) != 0 {
+		item.tl2mask0 |= 32
+	}
+	if nat_outer&(1<<2) != 0 {
+		item.tl2mask0 |= 64
+	}
+	if nat_outer&(1<<3) != 0 {
+		item.tl2mask0 |= 128
+	}
 	return nil
 }
 
