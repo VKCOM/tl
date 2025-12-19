@@ -48,7 +48,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 		}
 		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetBytes)
 	}
-	sz := fmt.Sprintf("%[3]s, %[1]s, sz = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[3]v)",
+	sz := fmt.Sprintf("%[3]s, %[1]s, sz = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[4]v)",
 		targetSizes,
 		targetObject,
 		targetBytes,
