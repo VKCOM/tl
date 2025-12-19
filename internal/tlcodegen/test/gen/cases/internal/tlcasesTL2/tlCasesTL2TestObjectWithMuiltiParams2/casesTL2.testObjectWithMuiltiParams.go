@@ -181,6 +181,12 @@ func (item *CasesTL2TestObjectWithMuiltiParams2) ReadJSONGeneral(tctx *basictl.J
 		}
 
 	}
+	if nat_n&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if 2&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

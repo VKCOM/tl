@@ -281,6 +281,15 @@ func (item *UseTrue) ReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.
 	if trueTypeBPresented && !trueTypeBValue && (item.Fm&(1<<1) != 0) {
 		return internal.ErrorInvalidJSON("useTrue", "fieldmask bit item.Fm.1 is indefinite because of the contradictions in values")
 	}
+	if item.Fm&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Fm&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.Fm&(1<<2) != 0 {
+		item.tl2mask0 |= 4
+	}
 	return nil
 }
 

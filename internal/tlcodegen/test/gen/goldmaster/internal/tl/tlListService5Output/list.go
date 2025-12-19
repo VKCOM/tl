@@ -235,6 +235,12 @@ func (item *ListService5Output) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if propTailPresented {
 		item.Flag |= 1 << 0
 	}
+	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.Flag&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

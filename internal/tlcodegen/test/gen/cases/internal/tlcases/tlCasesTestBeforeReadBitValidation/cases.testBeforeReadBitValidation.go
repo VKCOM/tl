@@ -231,6 +231,12 @@ func (item *CasesTestBeforeReadBitValidation) ReadJSONGeneral(tctx *basictl.JSON
 		}
 
 	}
+	if item.N&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.N&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

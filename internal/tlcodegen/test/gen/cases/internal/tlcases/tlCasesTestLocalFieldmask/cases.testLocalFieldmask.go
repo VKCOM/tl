@@ -237,6 +237,15 @@ func (item *CasesTestLocalFieldmask) ReadJSONGeneral(tctx *basictl.JSONReadConte
 	if trueTypeF4Presented && !trueTypeF4Value && (item.F2&(1<<1) != 0) {
 		return internal.ErrorInvalidJSON("cases.testLocalFieldmask", "fieldmask bit item.F2.1 is indefinite because of the contradictions in values")
 	}
+	if item.F1&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
+	if item.F2&(1<<1) != 0 {
+		item.tl2mask0 |= 4
+	}
 	return nil
 }
 

@@ -141,6 +141,9 @@ func (item *CasesTL2TestObjectWithParam4) ReadJSONGeneral(tctx *basictl.JSONRead
 	if !propYPresented {
 		tlBuiltinTuple4Int.BuiltinTuple4IntReset(&item.Y)
 	}
+	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	return nil
 }
 

@@ -257,6 +257,9 @@ func (item *Service5InsertList) ReadJSONGeneral(tctx *basictl.JSONReadContext, i
 	if trueTypePersistentPresented && !trueTypePersistentValue && (item.Flags&(1<<0) != 0) {
 		return internal.ErrorInvalidJSON("service5.insertList", "fieldmask bit item.Flags.0 is indefinite because of the contradictions in values")
 	}
+	if item.Flags&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
 	return nil
 }
 

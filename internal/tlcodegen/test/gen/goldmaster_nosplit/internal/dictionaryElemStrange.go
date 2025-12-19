@@ -377,6 +377,9 @@ func (item *DictionaryElemStrangeString) ReadJSONGeneral(tctx *basictl.JSONReadC
 	if propValuePresented {
 		item.Key |= 1 << 31
 	}
+	if item.Key&(1<<31) != 0 {
+		item.tl2mask0 |= 1
+	}
 	return nil
 }
 

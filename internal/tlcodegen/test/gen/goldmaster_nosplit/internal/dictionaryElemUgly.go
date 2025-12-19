@@ -323,6 +323,12 @@ func (item *DictionaryElemUglyIntString) ReadJSONGeneral(tctx *basictl.JSONReadC
 	if !propValuePresented {
 		item.Value = ""
 	}
+	if nat_f&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if nat_f&(1<<1) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

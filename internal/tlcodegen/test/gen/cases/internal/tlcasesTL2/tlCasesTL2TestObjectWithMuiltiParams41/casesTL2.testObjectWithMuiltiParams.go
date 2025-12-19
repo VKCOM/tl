@@ -162,6 +162,12 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) ReadJSONGeneral(tctx *basictl.
 	if !propF2Presented {
 		tlBuiltinTuple1Int.BuiltinTuple1IntReset(&item.F2)
 	}
+	if 4&(1<<0) != 0 {
+		item.tl2mask0 |= 1
+	}
+	if 1&(1<<0) != 0 {
+		item.tl2mask0 |= 2
+	}
 	return nil
 }
 

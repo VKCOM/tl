@@ -1381,6 +1381,25 @@ func (item *`)
         }
 `)
 	}
+	/* BLOCK: set tl2 masks */
+
+	for _, field := range struct_.Fields {
+		if field.IsTL2Omitted() || field.originalName == "" {
+			continue
+		}
+		if field.fieldMask != nil && field.MaskTL2Bit != nil {
+			qw422016.N().S(`            if `)
+			qw422016.N().S(formatNatArg(struct_.Fields, *field.fieldMask))
+			qw422016.N().S(` & (1<<`)
+			qw422016.E().V(field.BitNumber)
+			qw422016.N().S(`) != 0 {
+                item.`)
+			qw422016.N().S(field.TL2MaskForOP("|="))
+			qw422016.N().S(`
+            }
+`)
+		}
+	}
 	qw422016.N().S(`    return nil
 }
 
