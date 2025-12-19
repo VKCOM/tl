@@ -410,7 +410,7 @@ func (gen *Gen2) createDependencies(directDeps map[string]map[string]bool) (map[
 		code.WriteString("{\n")
 
 		code.WriteString("\t\"io\": [")
-		code.WriteString("\"basictl\"")
+		code.WriteString(fmt.Sprintf("\"%s\"", basictlPackage))
 		code.WriteString("],\n")
 
 		code.WriteString("\t\"dependencies\":[")
@@ -627,12 +627,12 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 			}
 
 			bodyCode := data[includesEnd+len(basictlCppIncludeEnd):]
-			bodyCode = bytes.ReplaceAll(bodyCode, []byte("basictl"), []byte(gen.cppBasictlNamespace()))
+			bodyCode = bytes.ReplaceAll(bodyCode, []byte(basictlPackage), []byte(gen.cppBasictlNamespace()))
 
 			code.Write(bodyCode)
 		} else {
 			bodyCode := data
-			bodyCode = bytes.ReplaceAll(bodyCode, []byte("basictl"), []byte(gen.cppBasictlNamespace()))
+			bodyCode = bytes.ReplaceAll(bodyCode, []byte(basictlPackage), []byte(gen.cppBasictlNamespace()))
 
 			code.Write(bodyCode)
 		}
@@ -664,18 +664,18 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 
 func createStreams(gen *Gen2, cppMake *strings.Builder) {
 	cppMake.WriteString("# compile streams which are used to work with io\n")
-	cppMake.WriteString("__build/io_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_streams.cpp basictl/io_streams.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c basictl/io_streams.cpp\n")
+	cppMake.WriteString(fmt.Sprintf("__build/io_streams.o: %[1]s/constants.h %[1]s/errors.h %[1]s/io_connectors.h %[1]s/io_streams.cpp %[1]s/io_streams.h\n", basictlPackage))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_streams.o -c %[1]s/io_streams.cpp\n", basictlPackage))
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("__build/io_throwable_streams.o: basictl/constants.h basictl/errors.h basictl/io_connectors.h basictl/io_throwable_streams.cpp basictl/io_throwable_streams.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c basictl/io_throwable_streams.cpp\n")
+	cppMake.WriteString(fmt.Sprintf("__build/io_throwable_streams.o: %[1]s/constants.h %[1]s/errors.h %[1]s/io_connectors.h %[1]s/io_throwable_streams.cpp %[1]s/io_throwable_streams.h\n", basictlPackage))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/io_throwable_streams.o -c %[1]s/io_throwable_streams.cpp\n", basictlPackage))
 
 	cppMake.WriteString("\n")
 
-	cppMake.WriteString("__build/string_io.o: basictl/io_connectors.h basictl/impl/string_io.cpp basictl/impl/string_io.h\n")
-	cppMake.WriteString("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c basictl/impl/string_io.cpp\n")
+	cppMake.WriteString(fmt.Sprintf("__build/string_io.o: %[1]s/io_connectors.h %[1]s/impl/string_io.cpp %[1]s/impl/string_io.h\n", basictlPackage))
+	cppMake.WriteString(fmt.Sprintf("\t@mkdir -p __build\n\t$(CC) $(CFLAGS) -I. -o __build/string_io.o -c %[1]s/impl/string_io.cpp\n", basictlPackage))
 }
 
 func (gen *Gen2) decideCppCodeDestinations(allTypes []*TypeRWWrapper) map[string]map[string]bool {
@@ -1301,5 +1301,5 @@ func cppRunLocalLinter(code, filename string) (string, string) {
 }
 
 func (gen *Gen2) cppBasictlNamespace() string {
-	return fmt.Sprintf("%[1]s::%[2]s", gen.options.RootCPPNamespace, "basictl")
+	return fmt.Sprintf("%[1]s::%[2]s", gen.options.RootCPPNamespace, basictlPackage)
 }
