@@ -8,9 +8,9 @@
 package factory
 
 import (
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_42a1a8597f818829cd168dce9785322f"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_44515dca4b2e76ca676b13645e716786"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_4a1568ff5f665a65be83c5d14a33c0d0"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/cycle_6f3c12bfb54febd97334ae12d94a605f"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlInt"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlInt32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/casesTL1/internal/tl/tlInt64"
@@ -157,8 +157,10 @@ func init() {
 	})
 	meta.SetGlobalFactoryCreateForObject(0xc58cf85e, func() meta.Object { var ret tlCasesTestRecursiveFieldmask.CasesTestRecursiveFieldmask; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x4b9caf8f, func() meta.Object { var ret tlCasesTestTuple.CasesTestTuple; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x4b4f09b1, func() meta.Object { var ret cycle_42a1a8597f818829cd168dce9785322f.CasesTestUnion1; return &ret })
-	meta.SetGlobalFactoryCreateForObject(0x464f96c4, func() meta.Object { var ret cycle_42a1a8597f818829cd168dce9785322f.CasesTestUnion2; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x4b4f09b1, func() meta.Object { var ret cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion1; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x464f96c4, func() meta.Object { var ret cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion2; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0x9b8c9e4c, func() meta.Object { var ret cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion3; return &ret })
+	meta.SetGlobalFactoryCreateForObject(0xd6e28ad9, func() meta.Object { var ret cycle_6f3c12bfb54febd97334ae12d94a605f.CasesTestUnion4; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x4497a381, func() meta.Object { var ret tlCasesTestUnionContainer.CasesTestUnionContainer; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0x4975695c, func() meta.Object { var ret tlCasesTestVector.CasesTestVector; return &ret })
 	meta.SetGlobalFactoryCreateForObject(0xa8509bda, func() meta.Object { var ret tlInt.Int; return &ret })

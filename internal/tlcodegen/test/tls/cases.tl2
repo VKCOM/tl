@@ -40,7 +40,11 @@ cases.testUnion =
 		value:int
 	// tlgen:tl1name:"cases.testUnion2"
 	| TestUnion2
-		value:string;
+		value:string
+	// tlgen:tl1name:"cases.testUnion3"
+	| TestUnion3 int
+	// tlgen:tl1name:"cases.testUnion4"
+	| TestUnion4 string;
 cases.testUnionContainer = value:cases.testUnion;
 cases.testEnum = 
 	// tlgen:tl1name:"cases.testEnum1"

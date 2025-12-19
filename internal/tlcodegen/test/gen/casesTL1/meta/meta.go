@@ -391,6 +391,8 @@ func init() {
 	fillObject("cases.testTuple#4b9caf8f", "#4b9caf8f", &TLItem{tag: 0x4b9caf8f, annotations: 0x0, tlName: "cases.testTuple", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testUnion1#4b4f09b1", "#4b4f09b1", &TLItem{tag: 0x4b4f09b1, annotations: 0x0, tlName: "cases.testUnion1", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testUnion2#464f96c4", "#464f96c4", &TLItem{tag: 0x464f96c4, annotations: 0x0, tlName: "cases.testUnion2", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testUnion3#9b8c9e4c", "#9b8c9e4c", &TLItem{tag: 0x9b8c9e4c, annotations: 0x0, tlName: "cases.testUnion3", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
+	fillObject("cases.testUnion4#d6e28ad9", "#d6e28ad9", &TLItem{tag: 0xd6e28ad9, annotations: 0x0, tlName: "cases.testUnion4", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testUnionContainer#4497a381", "#4497a381", &TLItem{tag: 0x4497a381, annotations: 0x0, tlName: "cases.testUnionContainer", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("cases.testVector#4975695c", "#4975695c", &TLItem{tag: 0x4975695c, annotations: 0x0, tlName: "cases.testVector", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
 	fillObject("int#a8509bda", "#a8509bda", &TLItem{tag: 0xa8509bda, annotations: 0x0, tlName: "int", isTL2: false, resultTypeContainsUnionTypes: false, argumentsTypesContainUnionTypes: false})
