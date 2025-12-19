@@ -1486,3 +1486,14 @@ func (f *Field) TypeResettingCode(bytesVersion bool, directImports *DirectImport
 	}
 	return resetCode
 }
+
+func (wr *TypeRWWrapper) CPPNamespaceParts() []string {
+	ns := make([]string, len(wr.gen.RootCPPNamespaceElements))
+	copy(ns, wr.gen.RootCPPNamespaceElements)
+	if wr.tlName.Namespace != "" {
+		ns = append(ns, wr.tlName.Namespace)
+	} else {
+		ns = append(ns, CommonGroup)
+	}
+	return ns
+}
