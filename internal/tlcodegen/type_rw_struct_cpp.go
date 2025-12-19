@@ -158,10 +158,7 @@ func (trw *TypeRWStruct) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectInc
 	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
 
 	anyRecursive := false
-	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
-	if trw.wr.tlName.Namespace != "" {
-		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
-	}
+	typeNamespace := trw.wr.CPPNamespaceParts()
 	if hpp != nil {
 		if !forwardDeclaration {
 			deps := trw.AllTypeDependencies(true, false)

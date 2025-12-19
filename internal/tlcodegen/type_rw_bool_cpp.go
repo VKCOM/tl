@@ -64,10 +64,7 @@ func (trw *TypeRWBool) CPPTypeReadingCode(bytesVersion bool, val string, bare bo
 }
 
 func (trw *TypeRWBool) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncludesCPP, hppIncFwd *DirectIncludesCPP, hppDet *strings.Builder, hppDetInc *DirectIncludesCPP, cppDet *strings.Builder, cppDetInc *DirectIncludesCPP, bytesVersion bool, forwardDeclaration bool) {
-	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
-	if trw.wr.tlName.Namespace != "" {
-		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
-	}
+	typeNamespace := trw.wr.CPPNamespaceParts()
 	if hpp != nil {
 		cppStartNamespace(hpp, typeNamespace)
 		// TODO - better names of enums

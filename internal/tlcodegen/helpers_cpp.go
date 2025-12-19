@@ -18,7 +18,7 @@ const basictlCppIncludeEnd = "/** TLGEN: CPP INCLUDES END */\n"
 const NoNamespaceGroup = ""
 const SpecialGroupPrefix = "__"
 
-const CommonGroup = SpecialGroupPrefix + "common_namespace"
+const CommonGroup = "common"
 const IndependentTypes = CommonGroup
 const GhostTypes = SpecialGroupPrefix + "ghosts"
 
@@ -26,5 +26,5 @@ const CppPrintGraphvizRepresentation = false
 const CppPrintNamespaceDependencies = false
 
 func cppIsSpecialNamespace(namespace string) bool {
-	return namespace == NoNamespaceGroup || strings.HasPrefix(namespace, SpecialGroupPrefix)
+	return namespace == NoNamespaceGroup || strings.HasPrefix(namespace, SpecialGroupPrefix) || namespace == CommonGroup
 }

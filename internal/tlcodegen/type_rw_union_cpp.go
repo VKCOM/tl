@@ -8,8 +8,9 @@ package tlcodegen
 
 import (
 	"fmt"
-	"github.com/vkcom/tl/internal/utils"
 	"strings"
+
+	"github.com/vkcom/tl/internal/utils"
 )
 
 func (trw *TypeRWUnion) CPPTypeJSONEmptyCondition(bytesVersion bool, val string, ref bool, deps []string) string {
@@ -75,10 +76,7 @@ func (trw *TypeRWUnion) CPPGenerateCode(hpp *strings.Builder, hppInc *DirectIncl
 
 	_, myArgsDecl := trw.wr.fullyResolvedClassCppNameArgs()
 
-	typeNamespace := trw.wr.gen.RootCPPNamespaceElements
-	if trw.wr.tlName.Namespace != "" {
-		typeNamespace = append(typeNamespace, trw.wr.tlName.Namespace)
-	}
+	typeNamespace := trw.wr.CPPNamespaceParts()
 	if hpp != nil {
 		if forwardDeclaration {
 			cppStartNamespace(hpp, typeNamespace)
