@@ -13,6 +13,9 @@ import "strings"
 //const basicCPPTLIOThrowableStreamsPath = basictlPackage + "/io_throwable_streams.h"
 
 func CppBasictlPackage(gen2 *Gen2) string {
+	if gen2.options.BasicTLNamespace != "" {
+		return gen2.options.BasicTLNamespace
+	}
 	return "basictl"
 }
 
