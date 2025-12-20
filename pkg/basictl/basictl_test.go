@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	"pgregory.net/rapid"
 )
 
@@ -286,5 +287,18 @@ func TestBuf_ByteSliceHuge(t *testing.T) {
 		if len(rw) != 0 {
 			t.Fatalf("%v unread bytes left", len(rw))
 		}
+	})
+}
+
+func TestVectorBool(t *testing.T) {
+	rapid.Check(t, func(t *rapid.T) {
+		var val []bool
+		val = rapid.SliceOf(rapid.Bool()).Draw(t, "values")
+		w := VectorBoolContentWriteTL2(nil, val)
+		val2 := make([]bool, len(val))
+		w2, err := VectorBoolContentReadTL2(w, val2)
+		require.NoError(t, err)
+		require.Equal(t, len(w2), 0)
+		require.Equal(t, val, val2)
 	})
 }
