@@ -241,3 +241,49 @@ func SkipFixedSizedValue(r []byte, l int) (_ []byte, err error) {
 	r = r[l:]
 	return r, err
 }
+
+func VectorBoolContentWriteTL2(w []byte, vec []bool) []byte {
+	blockOffset := 0
+	for ; blockOffset+8 <= len(vec); blockOffset += 8 {
+		var block byte
+		for j := 0; j < 8; j++ {
+			if vec[blockOffset+j] {
+				block |= (1 << j)
+			}
+		}
+		w = append(w, block)
+	}
+	if blockOffset < len(vec) {
+		var block byte
+		for j := 0; j < len(vec)-blockOffset; j++ {
+			if vec[blockOffset+j] {
+				block |= (1 << j)
+			}
+		}
+		w = append(w, block)
+	}
+	return w
+}
+
+func VectorBoolContentReadTL2(w []byte, vec []bool) (_ []byte, err error) {
+	blockOffset := 0
+	for ; blockOffset+8 <= len(vec); blockOffset += 8 {
+		var block byte
+		if w, err = ByteReadTL2(w, &block); err != nil {
+			return w, err
+		}
+		for j := 0; j < 8; j++ {
+			vec[blockOffset+j] = (block & (1 << j)) != 0
+		}
+	}
+	if blockOffset < len(vec) {
+		var block byte
+		if w, err = ByteReadTL2(w, &block); err != nil {
+			return w, err
+		}
+		for j := 0; j < len(vec)-blockOffset; j++ {
+			vec[blockOffset+j] = (block & (1 << j)) != 0
+		}
+	}
+	return w, nil
+}
