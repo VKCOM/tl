@@ -1173,18 +1173,16 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
 {%- if struct_.wr.wantsTL2 -%}
 
 func (item *{%s= goName %}) CalculateLayout(sizes []int) []int {
-        {%- if field.t.trw.doesCalculateLayoutUseObject(true) -%}
     ptr := (*{%s= fieldTypeString %})(item)
-        {%- endif -%}
     {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true) %}
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(ptr)
     return sizes
 }
 
 func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int) {
-        {%- if field.t.trw.doesWriteTL2UseObject(false) -%}
     ptr := (*{%s= fieldTypeString %})(item)
-        {%- endif -%}
     {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true) %}
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(ptr)
     return w, sizes
 }
 {%- endif -%}
