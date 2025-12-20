@@ -194,9 +194,8 @@ func `)
 
     var sz int
     for i := 0; i < len(*vec); i++ {
-        elem := (*vec)[i]
         `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
     `)
@@ -1364,9 +1363,8 @@ func `)
 				} else {
 					qw422016.N().S(`    var sz int
     for i := 0; i < len(*vec); i++ {
-        elem := (*vec)[i]
         `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
     `)
@@ -1736,9 +1734,8 @@ func `)
 				} else {
 					qw422016.N().S(`    var sz int
     for i := 0; i < len(*vec); i++ {
-        elem := (*vec)[i]
         `)
-					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
+					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
     `)

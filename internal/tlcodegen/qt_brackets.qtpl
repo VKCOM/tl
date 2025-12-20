@@ -120,8 +120,7 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool,ve
 
     var sz int
     for i := 0; i < len(*vec); i++ {
-        elem := (*vec)[i]
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return w, sizes, currentSize
@@ -772,8 +771,7 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     {%- else -%}
     var sz int
     for i := 0; i < len(*vec); i++ {
-        elem := (*vec)[i]
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     {%- endif -%}
@@ -995,8 +993,7 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     {%- else -%}
     var sz int
     for i := 0; i < len(*vec); i++ {
-        elem := (*vec)[i]
-        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
+        {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     {%- endif -%}
