@@ -1168,24 +1168,6 @@ return w, nil {%- endif -%}{%- code // keeps all function body on the same line 
             field := struct_.Fields[0]
             fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
         -%}
-{%- if struct_.wr.wantsTL2 -%}
-
-func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
-    ptr := (*{%s= fieldTypeString %})(item)
-    var sz int
-    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true) %}
-    {%s= struct_.wr.gen.InternalPrefix()%}Unused(ptr)
-    return sizes, sz
-}
-
-func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
-    ptr := (*{%s= fieldTypeString %})(item)
-    var sz int
-    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true) %}
-    {%s= struct_.wr.gen.InternalPrefix()%}Unused(ptr)
-    return w, sizes, sz
-}
-{%- endif -%}
 
 func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 {%- if !struct_.wr.wantsTL2 -%}
@@ -1195,8 +1177,15 @@ func (item *{%s= goName %}) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []b
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
-    sizes, _ = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes, false)
+    ptr := (*{%s= fieldTypeString %})(item)
+    var sz int
+    var currentSize int
+    {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true) %}
+    {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true) %}
+
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(ptr)
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(currentSize)
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
