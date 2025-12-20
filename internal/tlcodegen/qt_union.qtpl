@@ -177,7 +177,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     {%- for i, field := range union.Fields -%}
     {%- if !field.t.IsTrueType() -%}
     case {%d i %}:
-        return item.value{%s= field.goName %}.InternalWriteTL2(w, sizes)
+        return item.value{%s= field.goName %}.InternalWriteTL2(w, sizes, optimizeEmpty)
         {%- endif -%}
     {%- endfor -%}
     }

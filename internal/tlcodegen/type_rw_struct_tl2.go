@@ -23,6 +23,13 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 		return "currentSize += 1"
 	}
 	if trw.isTypeDef() && trw.wr.unionParent == nil {
+		actualType := trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, false, false)
+		if refObject {
+			targetObject = fmt.Sprintf("(*%s)%s", actualType, targetObject)
+		} else {
+			targetObject = fmt.Sprintf("(*%s)(&%s)", actualType, targetObject)
+			refObject = true
+		}
 		return trw.Fields[0].t.CalculateLayoutCall(directImports, bytesVersion, targetSizes, targetObject, zeroIfEmpty, ins, refObject)
 	}
 	sz := fmt.Sprintf("%[1]s, sz = %[2]s.CalculateLayout(%[1]s, %[3]v)", targetSizes, addAsteriskAndBrackets(refObject, targetObject), zeroIfEmpty)
@@ -52,6 +59,13 @@ func (trw *TypeRWStruct) writeTL2Call(
 		return fmt.Sprintf("%[1]s = append(%[1]s, 0)", targetBytes)
 	}
 	if trw.isTypeDef() && trw.wr.unionParent == nil {
+		actualType := trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, false, false)
+		if refObject {
+			targetObject = fmt.Sprintf("(*%s)%s", actualType, targetObject)
+		} else {
+			targetObject = fmt.Sprintf("(*%s)(&%s)", actualType, targetObject)
+			refObject = true
+		}
 		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, zeroIfEmpty, ins, refObject)
 	}
 	sz := fmt.Sprintf("%[3]s, %[1]s, sz = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[4]v)",

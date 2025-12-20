@@ -424,11 +424,11 @@ func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, m *map[{%s= 
 
     if len(*m) != 0 {
         {%- code /* add # of elements */ -%}
-        currentSize += basictl.TL2CalculateSize(len(*vec))
+        currentSize += basictl.TL2CalculateSize(len(*m))
         lastUsedByte = currentSize
     }
     for key, value := range *m {
-        elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:value]}
+        elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:value}
         {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "elem", false, tuple.wr.ins, false) %}
         lastUsedByte = currentSize
     }

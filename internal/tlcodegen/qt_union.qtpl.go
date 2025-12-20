@@ -339,7 +339,7 @@ func (item *`)
 						qw422016.N().S(`:
         return item.value`)
 						qw422016.N().S(field.goName)
-						qw422016.N().S(`.InternalWriteTL2(w, sizes)
+						qw422016.N().S(`.InternalWriteTL2(w, sizes, optimizeEmpty)
 `)
 					}
 				}

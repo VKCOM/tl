@@ -762,7 +762,7 @@ func `)
 `)
 					/* add # of elements */
 
-					qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(len(*vec))
+					qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(len(*m))
         lastUsedByte = currentSize
     }
     for key, value := range *m {
@@ -772,7 +772,7 @@ func `)
 					qw422016.N().S(keyFieldName)
 					qw422016.N().S(`:key, `)
 					qw422016.N().S(valueFieldName)
-					qw422016.N().S(`:value]}
+					qw422016.N().S(`:value}
         `)
 					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
