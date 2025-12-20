@@ -2308,48 +2308,11 @@ func (struct_ *TypeRWStruct) readFields(bytesVersion bool, directImports *Direct
 func (struct_ *TypeRWStruct) streamgenerateTL2Code(qw422016 *qt422016.Writer, bytesVersion bool, directImports *DirectImports) {
 	goName := addBytes(struct_.wr.goGlobalName, bytesVersion)
 	tlName := struct_.wr.tlName.String()
-	//        natArgsDecl := formatNatArgsDecl(struct_.wr.NatParams)
-	//        natArgsCall := formatNatArgsDeclCall(struct_.wr.NatParams)
 
 	if struct_.isTypeDef() && struct_.wr.unionParent == nil {
 		field := struct_.Fields[0]
 		fieldTypeString := field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false)
 
-		if struct_.wr.wantsTL2 {
-			qw422016.N().S(`
-func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) CalculateLayout(sizes []int, zeroIfEmpty bool) ([]int, int) {
-    ptr := (*`)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`)(item)
-    var sz int
-    `)
-			qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true))
-			qw422016.N().S(`
-    `)
-			qw422016.N().S(struct_.wr.gen.InternalPrefix())
-			qw422016.N().S(`Unused(ptr)
-    return sizes, sz
-}
-
-func (item *`)
-			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int, zeroIfEmpty bool, optimizeEmpty bool) ([]byte, []int, int) {
-    ptr := (*`)
-			qw422016.N().S(fieldTypeString)
-			qw422016.N().S(`)(item)
-    var sz int
-    `)
-			qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true))
-			qw422016.N().S(`
-    `)
-			qw422016.N().S(struct_.wr.gen.InternalPrefix())
-			qw422016.N().S(`Unused(ptr)
-    return w, sizes, sz
-}
-`)
-		}
 		qw422016.N().S(`
 func (item *`)
 		qw422016.N().S(goName)
@@ -2363,8 +2326,27 @@ func (item *`)
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
-    sizes = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes, false)
+    ptr := (*`)
+			qw422016.N().S(fieldTypeString)
+			qw422016.N().S(`)(item)
+    var sz int
+    var currentSize int
+    `)
+			qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ptr", false, struct_.wr.ins, true))
+			qw422016.N().S(`
+    `)
+			qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ptr", false, struct_.wr.ins, true))
+			qw422016.N().S(`
+
+    `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(ptr)
+    `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(currentSize)
+    `)
+			qw422016.N().S(struct_.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(sz)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
