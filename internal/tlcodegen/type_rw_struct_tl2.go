@@ -25,7 +25,7 @@ func (trw *TypeRWStruct) calculateLayoutCall(
 	if trw.isTypeDef() && trw.wr.unionParent == nil {
 		actualType := trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, false, false)
 		if refObject {
-			targetObject = fmt.Sprintf("(*%s)%s", actualType, targetObject)
+			targetObject = fmt.Sprintf("(*%s)(%s)", actualType, targetObject)
 		} else {
 			targetObject = fmt.Sprintf("(*%s)(&%s)", actualType, targetObject)
 			refObject = true
@@ -61,7 +61,7 @@ func (trw *TypeRWStruct) writeTL2Call(
 	if trw.isTypeDef() && trw.wr.unionParent == nil {
 		actualType := trw.Fields[0].t.TypeString2(bytesVersion, directImports, ins, false, false)
 		if refObject {
-			targetObject = fmt.Sprintf("(*%s)%s", actualType, targetObject)
+			targetObject = fmt.Sprintf("(*%s)(%s)", actualType, targetObject)
 		} else {
 			targetObject = fmt.Sprintf("(*%s)(&%s)", actualType, targetObject)
 			refObject = true
