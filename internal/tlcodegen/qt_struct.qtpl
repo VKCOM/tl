@@ -1088,6 +1088,7 @@ ptr := (*{%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, f
         if {%s= formatNatArg(struct_.Fields, *field.fieldMask) %} & (1<<{%v field.BitNumber %}) != 0 {
         {%- endif -%}
         {%- if field.recursive -%}
+        {%- code /* non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
         if {%s= fmt.Sprintf("item.%s", field.goName) %} == nil {
             var tmpValue {%s= field.t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %}
             {%s= field.t.TypeWritingCode(bytesVersion, directImports, struct_.wr.ins, "tmpValue", field.Bare(), formatNatArgs(struct_.Fields, field.natArgs), false, false, field.t.hasErrorInWriteMethods) %}
@@ -1249,6 +1250,8 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
                     {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
                 {%- endif -%}
         {%- else -%}
+            {%- code /* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
+            {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
             {%s= field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
             lastUsedByte = currentSize
@@ -1258,10 +1261,10 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
     return sizes, currentSize
 }
@@ -1272,13 +1275,13 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     {%- endif -%}
     currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
-        return w, sizes, currentSize
+    if optimizeEmpty && currentSize == 0 { {%- code /* CalculateLayout was called with optimizeEmpty and object turned out empty */ -%}
+        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     var sz int
     var currentBlock byte
@@ -1303,11 +1306,9 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
         {%- if field.IsTL2Omitted() -%}{%- continue -%}{%- endif -%}
         {%- code
             fieldName := fmt.Sprintf("item.%s", field.goName)
-            fieldRecursive := field.recursive
-            fieldAsterisk := fieldRecursive
+            fieldAsterisk := field.recursive
             if struct_.isTypeDef() {
                 fieldName = "ptr"
-                fieldRecursive = true
                 fieldAsterisk = true
             }
         -%}
@@ -1317,6 +1318,8 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
                     {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, false, struct_.wr.ins, fieldAsterisk) %}
                 {%- endif -%}
         {%- else -%}
+            {%- code /* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */ -%}
+            {%s= field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins) -%}
             {%s= field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, true, struct_.wr.ins, fieldAsterisk) %}
         {%- endif -%}
             currentBlock |= {%v 1 << ((fieldIndex + 1) % 8) %}
@@ -1324,7 +1327,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     {%- endfor -%}
     w[currentBlockPosition] = currentBlock
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
-    return w, sizes, currentSize
+    return w, sizes, 1
 }
 {%- endif -%}
 

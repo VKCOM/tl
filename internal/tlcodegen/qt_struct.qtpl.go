@@ -2146,6 +2146,8 @@ func (struct_ *TypeRWStruct) streamwriteFields(qw422016 *qt422016.Writer, bytesV
 `)
 		}
 		if field.recursive {
+			/* non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */
+
 			qw422016.N().S(`        if `)
 			qw422016.N().S(fmt.Sprintf("item.%s", field.goName))
 			qw422016.N().S(` == nil {
@@ -2443,6 +2445,10 @@ func (item *`)
 `)
 					}
 				} else {
+					/* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */
+
+					qw422016.N().S(`            `)
+					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 					qw422016.N().S(`            `)
 					qw422016.N().S(field.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", fieldName, true, struct_.wr.ins, fieldAsterisk))
 					qw422016.N().S(`
@@ -2456,10 +2462,10 @@ func (item *`)
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`Unused(sz)
@@ -2478,15 +2484,15 @@ func (item *`)
 			}
 			qw422016.N().S(`    currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-			qw422016.N().S(`        return w, sizes, currentSize
+			qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     var sz int
     var currentBlock byte
@@ -2517,11 +2523,9 @@ func (item *`)
 					continue
 				}
 				fieldName := fmt.Sprintf("item.%s", field.goName)
-				fieldRecursive := field.recursive
-				fieldAsterisk := fieldRecursive
+				fieldAsterisk := field.recursive
 				if struct_.isTypeDef() {
 					fieldName = "ptr"
-					fieldRecursive = true
 					fieldAsterisk = true
 				}
 
@@ -2537,6 +2541,10 @@ func (item *`)
 `)
 					}
 				} else {
+					/* we modify struct when writing non-optional recursive field (h next:Maybe<h> = H) because we do not want 2 versions of Maybe */
+
+					qw422016.N().S(`            `)
+					qw422016.N().S(field.EnsureRecursive(bytesVersion, directImports, struct_.wr.ins))
 					qw422016.N().S(`            `)
 					qw422016.N().S(field.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", fieldName, true, struct_.wr.ins, fieldAsterisk))
 					qw422016.N().S(`
@@ -2552,7 +2560,7 @@ func (item *`)
     `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`Unused(sz)
-    return w, sizes, currentSize
+    return w, sizes, 1
 }
 `)
 		}

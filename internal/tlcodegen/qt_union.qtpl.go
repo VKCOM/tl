@@ -315,10 +315,10 @@ func (item *`)
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes = append(sizes, currentSize)
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes = append(sizes, currentSize)
     return sizes, currentSize
 }
 
@@ -348,15 +348,15 @@ func (item *`)
 			}
 			qw422016.N().S(`    currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-			qw422016.N().S(`        return w, sizes, currentSize
+			qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     if item.index != 0 {
         w = append(w, 1)
