@@ -337,6 +337,7 @@ func (gen *Gen2) generateType(myWrapper *TypeRWWrapper) error {
 		head, tail = myWrapper.resolvedT2GoName(myWrapper.tlName.Namespace)
 		myWrapper.goLocalName = namespace.decGo.deconflictName(head + tail)
 		myWrapper.trw = &TypeRWBool{
+			isBit:       false,
 			wr:          myWrapper,
 			falseGoName: gen.globalDec.deconflictName(CNameToCamelName(falseDesc.Construct.Name.String())),
 			trueGoName:  gen.globalDec.deconflictName(CNameToCamelName(trueDesc.Construct.Name.String())),

@@ -17,8 +17,8 @@ type TypeRWBool struct {
 	falseTag    uint32
 	trueTag     uint32
 
-	isTL2       bool
-	isTL2Legacy bool
+	isTL2 bool
+	isBit bool
 }
 
 func (trw *TypeRWBool) typeString2(bytesVersion bool, directImports *DirectImports, ins *InternalNamespace, isLocal bool, skipAlias bool) string {

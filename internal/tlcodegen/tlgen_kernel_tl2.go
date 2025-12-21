@@ -176,7 +176,7 @@ func (gen *Gen2) genTypeTL2(resolvedRef tlast.TL2TypeRef) (*TypeRWWrapper, error
 	name := typeApplication.Name
 	comb, ok := gen.tl2Combinators[name.String()]
 	if name.String() == "bool" || name.String() == "legacy_bool" {
-		return gen.genBoolTL2(&kernelType, name.String() == "legacy_bool")
+		return gen.genBoolTL2(&kernelType, name.String() != "legacy_bool")
 	}
 	if !ok {
 		return nil, typeApplication.PRName.BeautifulError(fmt.Errorf("reference to unknown type %q", name))
@@ -511,7 +511,7 @@ func (gen *Gen2) genFieldsTL2(resolveMapping ResolvedTL2References, strct *TypeR
 		if err != nil {
 			return err
 		}
-		if bl, isBool := field.t.trw.(*TypeRWBool); isBool && refField.IsOptional && !bl.isTL2Legacy {
+		if bl, isBool := field.t.trw.(*TypeRWBool); isBool && refField.IsOptional && bl.isBit {
 			return refField.PRName.BeautifulError(fmt.Errorf("field with type \"bool\" can't be optional (use any maybe-like wrapper)"))
 		}
 		if (refField.IsOptional || field.IsBit()) && !field.IsTL2Omitted() {
@@ -696,18 +696,16 @@ func (gen *Gen2) genBracketTypeTL2(kernelType *TypeRWWrapper, br tlast.TL2Bracke
 	return kernelType, nil
 }
 
-func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isLegacy bool) (*TypeRWWrapper, error) {
-	boolType := TypeRWBool{wr: kernelType, isTL2: true}
+func (gen *Gen2) genBoolTL2(kernelType *TypeRWWrapper, isBit bool) (*TypeRWWrapper, error) {
+	boolType := TypeRWBool{wr: kernelType, isTL2: true, isBit: isBit}
 	kernelType.trw = &boolType
 
-	if isLegacy {
+	if !isBit {
 		kernelType.tl2Name = tlast.TL2TypeName{Name: "legacy_bool"}
 
 		kernelType.fileName = "legacy_bool"
 		kernelType.goGlobalName = "LegacyBool"
 		kernelType.goLocalName = "LegacyBool"
-
-		boolType.isTL2Legacy = true
 	} else {
 		kernelType.tl2Name = tlast.TL2TypeName{Name: "bool"}
 
