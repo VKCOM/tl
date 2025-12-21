@@ -163,10 +163,10 @@ func `)
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     `)
 					qw422016.N().S(tuple.wr.gen.InternalPrefix())
 					qw422016.N().S(`Unused(sz)
@@ -180,15 +180,15 @@ func `)
 					qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 					/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-					qw422016.N().S(`        return w, sizes, currentSize
+					qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     w = basictl.TL2WriteSize(w, len(*vec))
 
@@ -781,10 +781,10 @@ func `)
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     `)
 					qw422016.N().S(tuple.wr.gen.InternalPrefix())
 					qw422016.N().S(`Unused(sz)
@@ -800,15 +800,15 @@ func `)
 					qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 					/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-					qw422016.N().S(`        return w, sizes, currentSize
+					qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     w = basictl.TL2WriteSize(w, len(*m))
 
@@ -1327,10 +1327,10 @@ func `)
 				qw422016.N().S(`    if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     `)
 				qw422016.N().S(tuple.wr.gen.InternalPrefix())
 				qw422016.N().S(`Unused(sz)
@@ -1344,15 +1344,15 @@ func `)
 				qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 				/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-				qw422016.N().S(`        return w, sizes, currentSize
+				qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     w = basictl.TL2WriteSize(w, len(*vec))
 
@@ -1698,10 +1698,10 @@ func `)
 				qw422016.N().S(`    if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     `)
 				qw422016.N().S(tuple.wr.gen.InternalPrefix())
 				qw422016.N().S(`Unused(sz)
@@ -1715,15 +1715,15 @@ func `)
 				qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 				/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-				qw422016.N().S(`        return w, sizes, currentSize
+				qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     w = basictl.TL2WriteSize(w, len(*vec))
 
@@ -2101,10 +2101,10 @@ func `)
 				qw422016.N().S(`    if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
+    sizes[sizePosition] = currentSize
     if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
-    sizes[sizePosition] = currentSize
     `)
 				qw422016.N().S(tuple.wr.gen.InternalPrefix())
 				qw422016.N().S(`Unused(sz)
@@ -2118,15 +2118,15 @@ func `)
 				qw422016.N().S(`) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
-    if currentSize == 0 {`)
+    if optimizeEmpty && currentSize == 0 {`)
 				/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-				qw422016.N().S(`        return w, sizes, currentSize
+				qw422016.N().S(`        return w, sizes, 0
     }
-    oldLen := len(w)
     w = basictl.TL2WriteSize(w, currentSize)
+    oldLen := len(w)
     if len(w) - oldLen == currentSize {
-        return w, sizes, currentSize
+        return w, sizes, 1
     }
     w = basictl.TL2WriteSize(w, `)
 				qw422016.N().V(tuple.size)
