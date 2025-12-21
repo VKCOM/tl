@@ -1690,58 +1690,58 @@ func (item *`)
 
 func (item *`)
 		qw422016.N().S(goName)
+		qw422016.N().S(`) writeResultTL2(w []byte, sizes []int, ctx *basictl.TL2WriteContext, ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`) ([]byte, []int, int) {
+`)
+		/* calculateLayout */
+
+		qw422016.N().S(`    currentSize := 1
+    lastUsedByte := 0
+    var sz int
+    `)
+		qw422016.N().S(struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false))
+		qw422016.N().S(`
+        lastUsedByte = currentSize
+    }
+    if lastUsedByte < currentSize {
+        currentSize = lastUsedByte
+    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
+    sizesReuse := sizes
+`)
+		/* internalWrite */
+
+		qw422016.N().S(`    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    var currentBlock byte
+    currentBlockPosition := len(w)
+    w = append(w, 0)
+    `)
+		qw422016.N().S(struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false))
+		qw422016.N().S(`
+        currentBlock |= 2
+    }
+    w[currentBlockPosition] = currentBlock
+    `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`Unused(sz)
+    return w, sizesReuse, currentSize
+}
+
+func (item *`)
+		qw422016.N().S(goName)
 		qw422016.N().S(`) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret `)
 		qw422016.N().S(retArg)
 		qw422016.N().S(`) (_ []byte, err error) {
-`)
-		_, trivialSize := struct_.ResultType.trw.tl2TrivialSize("ret", true, false)
-		sizeValue := "sizes[0]"
-		if len(trivialSize) != 0 {
-			sizeValue = trivialSize
-		}
-		nonEmptyCondition := struct_.ResultType.TypeJSONEmptyCondition(false, "ret", false)
-		calculateResultLayout := struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false)
-		writeResult := struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false)
-
-		qw422016.N().S(`	var sizes []int
+	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	// write structured result
-	`)
-		qw422016.N().S(calculateResultLayout)
-		qw422016.N().S(`
-    totalSize := 0
-`)
-		if nonEmptyCondition != "" {
-			qw422016.N().S(`    if `)
-			qw422016.N().S(nonEmptyCondition)
-			qw422016.N().S(` {
-`)
-		}
-		qw422016.N().S(`    totalSize += 1
-    totalSize += `)
-		qw422016.N().S(sizeValue)
-		qw422016.N().S(`
-`)
-		if struct_.ResultType.trw.isSizeWrittenInData() {
-			qw422016.N().S(`    totalSize += basictl.TL2CalculateSize(`)
-			qw422016.N().S(sizeValue)
-			qw422016.N().S(`)
-`)
-		}
-		if nonEmptyCondition != "" {
-			qw422016.N().S(`    }
-`)
-		}
-		qw422016.N().S(`    w = basictl.TL2WriteSize(w, totalSize)
-    if totalSize != 0 {
-        w = append(w, 1 << 1)
-        `)
-		qw422016.N().S(writeResult)
-		qw422016.N().S(`
-    }
-
+    w, sizes, _ = item.writeResultTL2(w, sizes, ctx, ret)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
