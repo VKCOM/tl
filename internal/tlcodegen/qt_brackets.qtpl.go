@@ -164,7 +164,9 @@ func `)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if !optimizeEmpty || currentSize != 0 {
+    if optimizeEmpty && currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
+    } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
@@ -758,6 +760,26 @@ func `)
     lastUsedByte := 0
     var sz int
 
+`)
+					/* final size does not depend on order, but contents of sizes does, InternalWriteTL2 must run in exact lockstep */
+
+					qw422016.N().S(`    keys := make([]`)
+					qw422016.N().S(keyTypeString)
+					qw422016.N().S(`, 0, len(*m))
+    for k := range *m {
+        keys = append(keys, k)
+    }
+`)
+					if tuple.dictKeyString {
+						qw422016.N().S(`    sort.Strings(keys)
+`)
+					} else {
+						qw422016.N().S(`    sort.Slice(keys, func(i, j int) bool {
+        return keys[i] < keys[j]
+    })
+`)
+					}
+					qw422016.N().S(`
     if len(*m) != 0 {
 `)
 					/* add # of elements */
@@ -765,14 +787,14 @@ func `)
 					qw422016.N().S(`        currentSize += basictl.TL2CalculateSize(len(*m))
         lastUsedByte = currentSize
     }
-    for key, value := range *m {
+    for _, key := range keys {
         elem := `)
 					qw422016.N().S(elementTypeString)
 					qw422016.N().S(`{`)
 					qw422016.N().S(keyFieldName)
 					qw422016.N().S(`:key, `)
 					qw422016.N().S(valueFieldName)
-					qw422016.N().S(`:value}
+					qw422016.N().S(`:(*m)[key]}
         `)
 					qw422016.N().S(tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
@@ -782,7 +804,9 @@ func `)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if !optimizeEmpty || currentSize != 0 {
+    if optimizeEmpty && currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
+    } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
@@ -830,14 +854,14 @@ func `)
 					}
 					qw422016.N().S(`
     var sz int
-    for i := 0; i < len(keys); i++ {
+    for _, key := range keys {
         elem := `)
 					qw422016.N().S(elementTypeString)
 					qw422016.N().S(`{`)
 					qw422016.N().S(keyFieldName)
-					qw422016.N().S(`:keys[i], `)
+					qw422016.N().S(`:key, `)
 					qw422016.N().S(valueFieldName)
-					qw422016.N().S(`:(*m)[keys[i]]}
+					qw422016.N().S(`:(*m)[key]}
         `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
@@ -1328,7 +1352,9 @@ func `)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if !optimizeEmpty || currentSize != 0 {
+    if optimizeEmpty && currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
+    } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
@@ -1699,7 +1725,9 @@ func `)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if !optimizeEmpty || currentSize != 0 {
+    if optimizeEmpty && currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
+    } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
@@ -2102,7 +2130,9 @@ func `)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if !optimizeEmpty || currentSize != 0 {
+    if optimizeEmpty && currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
+    } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
