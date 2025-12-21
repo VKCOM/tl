@@ -25,7 +25,6 @@ func (maybe *TypeRWMaybe) StreamGenerateCode(qw422016 *qt422016.Writer, bytesVer
 	emptyTag := fmt.Sprintf("%#x", maybe.emptyTag)
 	okTag := fmt.Sprintf("%#x", maybe.okTag)
 	writeElementNeedsError := maybe.element.t.hasErrorInWriteMethods
-	isSizeConstant, trivialSize := maybe.element.t.trw.tl2TrivialSize("item.Value", false, maybe.element.recursive)
 
 	qw422016.N().S(`type `)
 	qw422016.N().S(goName)
@@ -149,113 +148,65 @@ func (item *`)
 		if maybe.wr.wantsTL2 {
 			qw422016.N().S(`func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) CalculateLayout(sizes []int) []int {
+			qw422016.N().S(`) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
     sizePosition := len(sizes)
     sizes = append(sizes, 0)
-    if item.Ok {
-        sizes[sizePosition] += 1
-        sizes[sizePosition] += basictl.TL2CalculateSize(1)
-`)
-			if len(trivialSize) == 0 && !maybe.element.t.IsTrueType() {
-				qw422016.N().S(`        currentPosition := len(sizes)
-`)
-			}
-			nonEmptyCondition := maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
 
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`        if `)
-				qw422016.N().S(nonEmptyCondition)
-				qw422016.N().S(` {
-`)
-			}
-			qw422016.N().S(`        `)
+    currentSize := 1
+    lastUsedByte := 0
+    var sz int
+
+    if item.Ok {
+        `)
 			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
-`)
-			sizeValue := "sizes[currentPosition]"
-			if len(trivialSize) != 0 {
-				sizeValue = trivialSize
-			}
+        lastUsedByte = currentSize
+    }
 
-			if !isSizeConstant {
-				qw422016.N().S(`        if `)
-				qw422016.N().S(sizeValue)
-				qw422016.N().S(` != 0 {
-`)
-			}
-			qw422016.N().S(`            sizes[sizePosition] += `)
-			qw422016.N().S(sizeValue)
-			qw422016.N().S(`
-`)
-			if maybe.element.t.trw.isSizeWrittenInData() {
-				qw422016.N().S(`            sizes[sizePosition] += basictl.TL2CalculateSize(`)
-				qw422016.N().S(sizeValue)
-				qw422016.N().S(`)
-`)
-			}
-			if !isSizeConstant {
-				qw422016.N().S(`        }
-`)
-			}
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`        }
-`)
-			}
-			qw422016.N().S(`    }
-    return sizes
+    if lastUsedByte < currentSize {
+        currentSize = lastUsedByte
+    }
+    if !optimizeEmpty || currentSize != 0 {
+        currentSize += basictl.TL2CalculateSize(currentSize)
+    }
+    sizes[sizePosition] = currentSize
+    `)
+			qw422016.N().S(maybe.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(sz)
+    return sizes, currentSize
 }
 
 func (item *`)
 			qw422016.N().S(goName)
-			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+			qw422016.N().S(`) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
     currentSize := sizes[0]
     sizes = sizes[1:]
+    if currentSize == 0 {`)
+			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
-    w = basictl.TL2WriteSize(w, currentSize)
-    if currentSize == 0 {
-        return w, sizes
+			qw422016.N().S(`        return w, sizes, currentSize
     }
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    var sz int
+    var currentBlock byte
+    currentBlockPosition := len(w)
+    w = append(w, 0)
 
     if item.Ok {
-        currentPosition := len(w)
-        w = append(w, 1)
-        w = basictl.TL2WriteSize(w, 1)
-`)
-			sizeValue = "sizes[0]"
-			if len(trivialSize) != 0 {
-				sizeValue = trivialSize
-			}
-			nonEmptyCondition = maybe.element.t.TypeJSONEmptyCondition(false, "item.Value", maybe.element.recursive)
-
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`        if `)
-				qw422016.N().S(nonEmptyCondition)
-				qw422016.N().S(` {
-`)
-			}
-			qw422016.N().S(`        if `)
-			qw422016.N().S(sizeValue)
-			qw422016.N().S(` != 0 {
-        w[currentPosition] |= (1 << 1)
         `)
 			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
-`)
-			if len(trivialSize) == 0 {
-				qw422016.N().S(`        } else {
-            sizes = sizes[1:]
-        }
-`)
-			} else {
-				qw422016.N().S(`        }
-`)
-			}
-			if nonEmptyCondition != "" {
-				qw422016.N().S(`        }
-`)
-			}
-			qw422016.N().S(`    }
-    return w, sizes
+        currentBlock |= 2
+    }
+    w[currentBlockPosition] = currentBlock
+    `)
+			qw422016.N().S(maybe.wr.gen.InternalPrefix())
+			qw422016.N().S(`Unused(sz)
+    return w, sizes, currentSize
 }
 `)
 		}
