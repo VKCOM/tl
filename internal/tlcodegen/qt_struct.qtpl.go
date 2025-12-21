@@ -2463,7 +2463,9 @@ func (item *`)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if !optimizeEmpty || currentSize != 0 {
+    if optimizeEmpty && currentSize == 0 {
+        sizes = sizes[:sizePosition+1]
+    } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
