@@ -150,7 +150,7 @@ type {%s= goName %} struct {
     {%s= prefixComment %}{%s= field.goName %} {%s= asterisk %}{%s= fieldTypeString %}{%s= fieldsMaskComment %}
     {%- endfor -%}
     {%- if struct_.wr.wantsTL2 -%}
-        {% code fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2) %}
+        {%- code /* fmt.Printf("%s %v %v\n", goName, struct_.wr.wantsTL2, struct_.wr.originateFromTL2) */ -%}
         {%- for _, tl2mask := range struct_.AllNewTL2Masks() -%}
              {%s= tl2mask %} byte
         {%- endfor -%}
@@ -827,41 +827,42 @@ func (item *{%s= goName %}) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext,
     return r, nil
 }
 
+func (item *{%s= goName %}) writeResultTL2(w []byte, sizes []int, ctx *basictl.TL2WriteContext, ret {%s= retArg %}) ([]byte, []int, int) {
+	{%- code /* calculateLayout */ -%}
+    currentSize := 1
+    lastUsedByte := 0
+    var sz int
+    {%s= struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false) %}
+        lastUsedByte = currentSize
+    }
+    if lastUsedByte < currentSize {
+        currentSize = lastUsedByte
+    }
+    currentSize += basictl.TL2CalculateSize(currentSize)
+    sizesReuse := sizes
+	{%- code /* internalWrite */ -%}
+    oldLen := len(w)
+    w = basictl.TL2WriteSize(w, currentSize)
+    if len(w) - oldLen == currentSize {
+        return w, sizes, currentSize
+    }
+    var currentBlock byte
+    currentBlockPosition := len(w)
+    w = append(w, 0)
+    {%s= struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false) %}
+        currentBlock |= 2
+    }
+    w[currentBlockPosition] = currentBlock
+    {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
+    return w, sizesReuse, currentSize
+}
+
 func (item *{%s= goName %}) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret {%s= retArg %}) (_ []byte, err error) {
-	{%- code
-	    _, trivialSize := struct_.ResultType.trw.tl2TrivialSize("ret", true, false)
-	    sizeValue := "sizes[0]"
-        if len(trivialSize) != 0 {
-            sizeValue = trivialSize
-        }
-        nonEmptyCondition := struct_.ResultType.TypeJSONEmptyCondition(false, "ret", false)
-        calculateResultLayout := struct_.ResultType.CalculateLayoutCall(directImports, bytesVersion, "sizes", "ret", true, struct_.wr.ins, false)
-        writeResult := struct_.ResultType.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "ret", true, struct_.wr.ins, false)
-	-%}
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	// write structured result
-	{%s= calculateResultLayout %}
-    totalSize := 0
-    {%- if nonEmptyCondition != "" -%}
-    if {%s= nonEmptyCondition %} {
-    {%- endif -%}
-    totalSize += 1
-    totalSize += {%s= sizeValue %}
-    {%- if struct_.ResultType.trw.isSizeWrittenInData() -%}
-    totalSize += basictl.TL2CalculateSize({%s= sizeValue %})
-    {%- endif -%}
-    {%- if nonEmptyCondition != "" -%}
-    }
-    {%- endif -%}
-    w = basictl.TL2WriteSize(w, totalSize)
-    if totalSize != 0 {
-        w = append(w, 1 << 1)
-        {%s= writeResult %}
-    }
-
+    w, sizes, _ = item.writeResultTL2(w, sizes, ctx, ret)
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
