@@ -81,10 +81,13 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     var sz int
 
     if item.Ok {
-        {%s= maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive) %}
+        currentSize += basictl.TL2CalculateSize(1)
         lastUsedByte = currentSize
-    }
 
+        {%s= maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", true, maybe.wr.ins, maybe.element.recursive) %}
+            lastUsedByte = currentSize
+        }
+    }
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
@@ -115,8 +118,11 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
     w = append(w, 0)
 
     if item.Ok {
-        {%s= maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive) %}
-        currentBlock |= 2
+        w = basictl.TL2WriteSize(w, 1)
+        currentBlock |= 1
+        {%s= maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", true, maybe.wr.ins, maybe.element.recursive) %}
+            currentBlock |= 2
+        }
     }
     w[currentBlockPosition] = currentBlock
     {%s= maybe.wr.gen.InternalPrefix()%}Unused(sz)

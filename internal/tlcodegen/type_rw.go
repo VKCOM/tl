@@ -1296,7 +1296,7 @@ func (f *Field) IsTL2Omitted() bool {
 // TL2: x:bit
 func (f *Field) IsBit() bool {
 	if b, ok := f.t.trw.(*TypeRWBool); ok {
-		return b.isTL2 && !b.isTL2Legacy
+		return b.isTL2 && b.isBit
 	}
 	return f.fieldMask != nil && (f.t.IsTrueType() && (f.t.tlName.String() == "true" || f.t.tlName.String() == "True"))
 }

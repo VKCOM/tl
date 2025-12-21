@@ -15,7 +15,7 @@ func (trw *TypeRWBool) calculateLayoutCall(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if !trw.isTL2Legacy {
+	if trw.isBit {
 		if zeroIfEmpty {
 			return fmt.Sprintf("if %s {", addAsterisk(refObject, targetObject))
 		}
@@ -38,7 +38,7 @@ func (trw *TypeRWBool) writeTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if !trw.isTL2Legacy {
+	if trw.isBit {
 		if zeroIfEmpty {
 			return fmt.Sprintf("if %s {", addAsterisk(refObject, targetObject))
 		}
@@ -62,7 +62,7 @@ func (trw *TypeRWBool) readTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if !trw.isTL2Legacy && canDependOnLocalBit {
+	if trw.isBit && canDependOnLocalBit {
 		return fmt.Sprintf("%[1]s = true", addAsterisk(refObject, targetObject))
 	}
 	return fmt.Sprintf(`if %[2]s, err = basictl.ByteBoolReadTL2(%[2]s, %[1]s); err != nil { return %[2]s, err }`,
@@ -78,7 +78,7 @@ func (trw *TypeRWBool) skipTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	if !trw.isTL2Legacy && canDependOnLocalBit {
+	if trw.isBit && canDependOnLocalBit {
 		return ""
 	}
 	return fmt.Sprintf(`if %[2]s, err = basictl.SkipFixedSizedValue(%[2]s, 1); err != nil { return %[2]s, err }`,
@@ -87,7 +87,7 @@ func (trw *TypeRWBool) skipTL2Call(
 }
 
 func (trw *TypeRWBool) doesZeroSizeMeanEmpty(canDependOnLocalBit bool) bool {
-	return !(!trw.isTL2Legacy && canDependOnLocalBit)
+	return !(trw.isBit && canDependOnLocalBit)
 }
 
 func (trw *TypeRWBool) doesCalculateLayoutUseObject(allowInplace bool) bool {
@@ -99,7 +99,7 @@ func (trw *TypeRWBool) isSizeWrittenInData() bool {
 }
 
 func (trw *TypeRWBool) doesWriteTL2UseObject(canDependOnLocalBit bool) bool {
-	return !(!trw.isTL2Legacy && canDependOnLocalBit)
+	return !(trw.isBit && canDependOnLocalBit)
 }
 
 func (trw *TypeRWBool) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
@@ -107,11 +107,11 @@ func (trw *TypeRWBool) doesReadTL2UseObject(canDependOnLocalBit bool) bool {
 }
 
 func (trw *TypeRWBool) doesReadTL2UseBytes(canDependOnLocalBit bool) bool {
-	return !(!trw.isTL2Legacy && canDependOnLocalBit)
+	return !(trw.isBit && canDependOnLocalBit)
 }
 
 func (trw *TypeRWBool) tl2TrivialSize(targetObject string, canDependOnLocalBit bool, refObject bool) (isConstant bool, size string) {
-	if !trw.isTL2Legacy && canDependOnLocalBit {
+	if trw.isBit && canDependOnLocalBit {
 		return true, "0"
 	}
 	return true, "1"

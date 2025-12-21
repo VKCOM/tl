@@ -157,12 +157,15 @@ func (item *`)
     var sz int
 
     if item.Ok {
-        `)
-			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
-			qw422016.N().S(`
+        currentSize += basictl.TL2CalculateSize(1)
         lastUsedByte = currentSize
-    }
 
+        `)
+			qw422016.N().S(maybe.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes", "item.Value", true, maybe.wr.ins, maybe.element.recursive))
+			qw422016.N().S(`
+            lastUsedByte = currentSize
+        }
+    }
     if lastUsedByte < currentSize {
         currentSize = lastUsedByte
     }
@@ -199,10 +202,13 @@ func (item *`)
     w = append(w, 0)
 
     if item.Ok {
+        w = basictl.TL2WriteSize(w, 1)
+        currentBlock |= 1
         `)
-			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", false, maybe.wr.ins, maybe.element.recursive))
+			qw422016.N().S(maybe.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "item.Value", true, maybe.wr.ins, maybe.element.recursive))
 			qw422016.N().S(`
-        currentBlock |= 2
+            currentBlock |= 2
+        }
     }
     w[currentBlockPosition] = currentBlock
     `)
