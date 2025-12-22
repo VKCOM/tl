@@ -241,7 +241,7 @@ func (item *CasesTL2TestObjectWithMuiltiParams41) CalculateLayout(sizes []int, o
 
 func (item *CasesTL2TestObjectWithMuiltiParams41) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1984188258 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

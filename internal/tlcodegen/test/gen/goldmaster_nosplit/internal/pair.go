@@ -186,7 +186,7 @@ func (item *PairAInnerAInner) CalculateLayout(sizes []int, optimizeEmpty bool) (
 
 func (item *PairAInnerAInner) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -463,7 +463,7 @@ func (item *PairBoolAColor) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
 
 func (item *PairBoolAColor) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -745,7 +745,7 @@ func (item *PairFloatDouble) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 
 func (item *PairFloatDouble) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1028,7 +1028,7 @@ func (item *PairIntInt) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 
 func (item *PairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1307,7 +1307,7 @@ func (item *PairIntPairMultiPointString) CalculateLayout(sizes []int, optimizeEm
 
 func (item *PairIntPairMultiPointString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1585,7 +1585,7 @@ func (item *PairMultiPointString) CalculateLayout(sizes []int, optimizeEmpty boo
 
 func (item *PairMultiPointString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1849,7 +1849,7 @@ func (item *PairPairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, optim
 
 func (item *PairPairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 255608747 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

@@ -163,7 +163,7 @@ func (item *AbTypeC) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 
 func (item *AbTypeC) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1771179374 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

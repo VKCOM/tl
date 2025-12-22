@@ -186,7 +186,7 @@ func (item *AMiddlePairAInnerAInnerAInnerBoxed3) CalculateLayout(sizes []int, op
 
 func (item *AMiddlePairAInnerAInnerAInnerBoxed3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2942184212 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

@@ -485,7 +485,7 @@ func (item *AUNionA) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 
 func (item *AUNionA) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2808490051 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -732,7 +732,7 @@ func (item *AuNionA) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 
 func (item *AuNionA) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3747739186 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

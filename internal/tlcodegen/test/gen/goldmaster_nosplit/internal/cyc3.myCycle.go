@@ -194,7 +194,7 @@ func (item *Cyc3MyCycle) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 
 func (item *Cyc3MyCycle) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1199990880 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

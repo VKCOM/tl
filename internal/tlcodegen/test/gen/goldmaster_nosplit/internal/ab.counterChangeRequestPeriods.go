@@ -487,7 +487,7 @@ func (item *AbCounterChangeRequestPeriodsMany) CalculateLayout(sizes []int, opti
 
 func (item *AbCounterChangeRequestPeriodsMany) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 346250624 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -733,7 +733,7 @@ func (item *AbCounterChangeRequestPeriodsOne) CalculateLayout(sizes []int, optim
 
 func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3653463525 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

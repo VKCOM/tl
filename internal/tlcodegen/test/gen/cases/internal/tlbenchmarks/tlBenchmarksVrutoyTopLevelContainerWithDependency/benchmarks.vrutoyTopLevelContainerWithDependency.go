@@ -209,7 +209,7 @@ func (item *BenchmarksVrutoyTopLevelContainerWithDependency) CalculateLayout(siz
 
 func (item *BenchmarksVrutoyTopLevelContainerWithDependency) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3245736078 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

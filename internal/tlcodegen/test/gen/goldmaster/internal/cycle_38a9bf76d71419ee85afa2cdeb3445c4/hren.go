@@ -193,7 +193,7 @@ func (item *Hren) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) 
 
 func (item *Hren) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 313217561 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

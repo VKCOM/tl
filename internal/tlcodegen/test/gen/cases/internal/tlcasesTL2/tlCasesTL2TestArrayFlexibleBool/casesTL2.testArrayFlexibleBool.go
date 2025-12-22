@@ -211,7 +211,7 @@ func (item *CasesTL2TestArrayFlexibleBool) CalculateLayout(sizes []int, optimize
 
 func (item *CasesTL2TestArrayFlexibleBool) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2538249001 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

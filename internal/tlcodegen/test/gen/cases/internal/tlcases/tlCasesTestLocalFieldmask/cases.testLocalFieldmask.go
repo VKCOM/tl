@@ -333,7 +333,7 @@ func (item *CasesTestLocalFieldmask) CalculateLayout(sizes []int, optimizeEmpty 
 
 func (item *CasesTestLocalFieldmask) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 4136621049 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

@@ -480,7 +480,7 @@ func (item *MyPlus) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int
 
 func (item *MyPlus) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2044774111 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -687,7 +687,7 @@ func (item *MyZero) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int
 
 func (item *MyZero) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2374402937 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

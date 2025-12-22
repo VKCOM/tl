@@ -168,7 +168,7 @@ func (item *CasesBytesTestDictString) CalculateLayout(sizes []int, optimizeEmpty
 
 func (item *CasesBytesTestDictString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1812256462 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -409,7 +409,7 @@ func (item *CasesBytesTestDictStringBytes) CalculateLayout(sizes []int, optimize
 
 func (item *CasesBytesTestDictStringBytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1812256462 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
