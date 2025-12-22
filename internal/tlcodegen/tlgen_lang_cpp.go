@@ -598,6 +598,8 @@ func (gen *Gen2) addCPPBasicTLFiles() error {
 	for _, file := range exportingFiles {
 		data := []byte(exportingFilesSources[file])
 
+		data = bytes.ReplaceAll(data, []byte("basictl"), []byte(gen.options.BasicTLNamespace))
+
 		code := strings.Builder{}
 		code.Write([]byte(HeaderComment))
 		code.Write([]byte("\n"))
