@@ -2,6 +2,11 @@
 
 TL is a data description language and data storage format.
 
+## Implementation details
+
+We do not rush go version until we need some new feature or (more often) we need a fix
+from our dependency, which requires newer go version.
+
 ## Overview
 
 In general, interest in TL stems from a desire to serialize data and make RPC calls to servers that implement TL RPC, as well as to implement such servers

@@ -94,7 +94,7 @@ type TL2UnionConstructor struct {
 
 // TL2UnionType := vb? TL2UnionConstructor (vb TL2UnionConstructor)+;
 type TL2UnionType struct {
-	Variants []TL2UnionConstructor // at least 2
+	Variants []TL2UnionConstructor // at least 1
 
 	PR PositionRange
 }

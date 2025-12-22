@@ -7,12 +7,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 
 	"github.com/TwiN/go-color"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/vkcom/tl/internal/tl2pure"
+	"github.com/vkcom/tl/internal/tlast"
 	"github.com/vkcom/tl/internal/tlcodegen"
 )
 
@@ -118,8 +122,55 @@ func (m model) View() string {
 	return s
 }
 
+func parseTL2File(file string) (tlast.TL2File, error) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return tlast.TL2File{}, fmt.Errorf("error reading schema file %q - %w", file, err)
+	}
+	dataStr := string(data)
+	return tlast.ParseTL2File(dataStr, file, tlast.LexerOptions{LexerLanguage: tlast.TL2}, os.Stdout)
+}
+
 func main() {
 	log.Printf("tlclient WIP version: %s", tlcodegen.TLGenVersion())
+
+	var runUI bool
+	flag.BoolVar(&runUI, "ui", false, "run in UI mode")
+	flag.Parse()
+
+	kernel := tl2pure.NewKernel()
+	if len(flag.Args()) == 0 {
+		log.Printf("tlclient requires 1 or more tl2 files")
+		os.Exit(2)
+	}
+	for _, arg := range flag.Args() {
+		f, err := parseTL2File(arg)
+		if err != nil {
+			log.Printf("%v", err)
+			os.Exit(3)
+		}
+		kernel.AddFile(f)
+	}
+	err := kernel.Compile()
+	if err != nil {
+		log.Printf("%v", err)
+		os.Exit(4)
+	}
+	//	tlt := kernel.TopLeveTypeInstances()
+	tlt := kernel.AllTypeInstances()
+	rnd := rand.New(rand.NewSource(1))
+	for _, t := range tlt {
+		log.Printf("type instance: %v", t.CanonicalName())
+		for i := 0; i < 5; i++ {
+			val := t.CreateValue()
+			val.Random(rnd)
+			tl2 := val.WriteTL2(nil)
+			js := val.WriteJSON(nil)
+			log.Printf(".   TL2: %x", tl2)
+			log.Printf(".   JSON: %s", js)
+		}
+	}
+
 	p := tea.NewProgram(initialModel())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
