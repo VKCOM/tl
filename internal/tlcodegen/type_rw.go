@@ -997,6 +997,9 @@ func (w *TypeRWWrapper) cppNamespaceQualifier() string {
 	if w.tlName.Namespace != "" {
 		s.WriteString(w.tlName.Namespace)
 		s.WriteString("::")
+	} else {
+		s.WriteString("common")
+		s.WriteString("::")
 	}
 	return s.String()
 }
