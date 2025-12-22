@@ -1,0 +1,52 @@
+
+//struct1 = x:uint32 y:byte z?:byte b1:bool b2:bool b3?:bool bb1:bit bb2:bit;
+//struct2 = x:[2]uint32 y:[4]uint32;
+
+
+// ---- test aliases ----
+//myUint = uint32;
+//myVector<t:type> = []t;
+//myMap<k:type, t:type> = map[k]t;
+//myBool = bool;
+//myIdentity<x:type> = x;
+//pair<x:type, y:type> = x:x y:y;
+//myPair<x:type> = pair<myVector<x>, myMap<x,x>>;
+//struct4 = a:myUint b:myIdentity<myVector<myUint>> c:myIdentity<myMap<myBool, myUint>> d:myPair<myBool>;
+// ---- errors
+// myBit<n:uint32> = bit;
+
+// ---- test cycles
+// myCycle1 = myCycle2; // runtime: goroutine stack exceeds 1000000000-byte limit
+// myCycle2 = myCycle3;
+// myCycle3 = myCycle1;
+// myNat = []myNat; // runtime: goroutine stack exceeds 1000000000-byte limit
+
+
+
+
+// ---- test trivial types ----
+//point = x:uint32 y:uint32;
+//rect = a:point b:point;
+//union1 = Empty | Alias uint32 | Field x:uint32 | Fields x:uint32 y:uint32;
+//union2 = Empty2 | Alias2 union1 | Field x:union1 | Fields [2]union1;
+//color = Red | Green | Blue;
+
+
+// ---- test brackets ----
+//struct3 = x: [2]uint32 y:[]uint32 
+//    z: map[uint32]uint32 zz: map[uint32]bool;
+//    p: map[byte]bit q: map[byte]bool
+//    r: map[bool]bit s: map[bool]bool
+//    t: []bool v: [4]bool;
+// ---- errors
+// struct3Error = x: [2]bit y:[]bit z: map[bit]uint32;
+wrongBracketType<n:uint32> = x:[n]uint32 y:[]n z:map[uint32]n; // unfortunately does not check without one below
+//useWrongBracketType = x:wrongBracketType<5>;
+
+// ---- test template resolution ----
+//pair<x:type, y:type> = x:x y:y;
+//usePair = pa:pair<uint32, uint32>;
+//a.inner<t:uint32> = a:[t]byte;
+//a.middle<w:uint32, p:type, q:type> = m1:a.inner<w> m2:pair<p, q>;
+//a.top1 = t1:a.middle<3, uint32, uint32>;
+//a.top2 = t1:a.middle<3, pair<a.inner<1>,a.inner<2>>, a.inner<3>>;

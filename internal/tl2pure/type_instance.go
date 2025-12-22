@@ -31,19 +31,6 @@ func (ins *TypeInstanceCommon) Declaration() tlast.TL2TypeDeclaration {
 	return ins.declaration
 }
 
-type TypeInstancePrimitive struct {
-	TypeInstanceCommon
-	goodForMapKey bool
-	clone         KernelValue
-}
-
-func (ins *TypeInstancePrimitive) GoodForMapKey() bool {
-	return ins.goodForMapKey
-}
-
-func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder) {
-}
-
-func (ins *TypeInstancePrimitive) CreateValue() KernelValue {
-	return ins.clone.Clone()
+func (ins *TypeInstanceCommon) GoodForMapKey() bool {
+	return false
 }

@@ -11,6 +11,23 @@ import (
 	"github.com/vkcom/tl/internal/tlast"
 )
 
+type TypeInstancePrimitive struct {
+	TypeInstanceCommon
+	goodForMapKey bool
+	clone         KernelValue
+}
+
+func (ins *TypeInstancePrimitive) GoodForMapKey() bool {
+	return ins.goodForMapKey
+}
+
+func (ins *TypeInstancePrimitive) FindCycle(c *cycleFinder) {
+}
+
+func (ins *TypeInstancePrimitive) CreateValue() KernelValue {
+	return ins.clone.Clone()
+}
+
 type KernelValueUint32 struct {
 	value uint32
 }
