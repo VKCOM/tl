@@ -1,0 +1,88 @@
+package tl2pure
+
+import (
+	"fmt"
+	"math/rand"
+
+	"github.com/vkcom/tl/internal/tlast"
+)
+
+type TypeInstanceAlias struct {
+	TypeInstanceCommon
+	fieldType *TypeInstanceRef
+}
+
+type KernelValueAlias struct {
+	instance *TypeInstanceAlias
+	value    KernelValue
+}
+
+func (ins *TypeInstanceAlias) GoodForMapKey() bool {
+	return ins.fieldType.ins.GoodForMapKey()
+}
+
+func (ins *TypeInstanceAlias) FindCycle(c *cycleFinder) {
+	if !c.push(ins) {
+		return
+	}
+	defer c.pop(ins)
+	ins.fieldType.ins.FindCycle(c)
+}
+
+func (ins *TypeInstanceAlias) CreateValue() KernelValue {
+	value := &KernelValueAlias{
+		instance: ins,
+		value:    ins.fieldType.ins.CreateValue(),
+	}
+	return value
+}
+
+func (v *KernelValueAlias) Random(rg *rand.Rand) {
+	v.value.Random(rg)
+}
+
+func (v *KernelValueAlias) WriteTL2(w []byte) []byte {
+	return v.value.WriteTL2(w)
+}
+
+func (v *KernelValueAlias) ReadTL2(w []byte) ([]byte, error) {
+	return v.value.ReadTL2(w)
+}
+
+func (v *KernelValueAlias) WriteJSON(w []byte) []byte {
+	return v.value.WriteJSON(w)
+}
+
+func (v *KernelValueAlias) Clone() KernelValue {
+	return v.value.Clone()
+}
+
+func (v *KernelValueAlias) CompareForMapKey(other KernelValue) int {
+	if v2, ok := other.(*KernelValueAlias); ok {
+		return v.value.CompareForMapKey(v2.value)
+	}
+	return 0
+}
+
+func (k *Kernel) createAlias(canonicalName string, alias tlast.TL2TypeRef,
+	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument) (TypeInstance, error) {
+	rt, err := k.resolveType(alias, templateArguments, lrc)
+	if err != nil {
+		return nil, fmt.Errorf("fail to resolve type of alias %s to %s: %w", canonicalName, alias, err)
+	}
+	aliasBit := k.IsBit(alias) // we must not call anything on TypeInstance during recursive resolution
+	if aliasBit {
+		return nil, fmt.Errorf("type bit is not allowed as a type alias")
+	}
+	fieldType, err := k.getInstance(rt)
+	if err != nil {
+		return nil, fmt.Errorf("fail to instantiate alias %s to %s: %w", canonicalName, alias, err)
+	}
+	ins := &TypeInstanceAlias{
+		TypeInstanceCommon: TypeInstanceCommon{
+			canonicalName: canonicalName,
+		},
+		fieldType: fieldType,
+	}
+	return ins, nil
+}
