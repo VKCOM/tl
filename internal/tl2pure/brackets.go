@@ -16,10 +16,6 @@ type KernelValueTuple struct {
 	elements []KernelValue
 }
 
-func (ins *TypeInstanceTupleVector) GoodForMapKey() bool {
-	return false
-}
-
 func (ins *TypeInstanceTupleVector) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return

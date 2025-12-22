@@ -18,10 +18,6 @@ type KernelValueMap struct {
 	elements []KernelValueObject
 }
 
-func (ins *TypeInstanceMap) GoodForMapKey() bool {
-	return false
-}
-
 func (ins *TypeInstanceMap) FindCycle(c *cycleFinder) {
 }
 

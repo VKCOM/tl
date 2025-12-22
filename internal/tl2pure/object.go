@@ -21,10 +21,6 @@ type KernelValueObject struct {
 	fields   []KernelValue // nil if optional field not set, to break recursion
 }
 
-func (ins *TypeInstanceObject) GoodForMapKey() bool {
-	return false
-}
-
 func (ins *TypeInstanceObject) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return

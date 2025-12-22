@@ -18,10 +18,6 @@ type KernelValueUnion struct {
 	variants []KernelValueObject // we remember state of all variants to improve editing experience
 }
 
-func (ins *TypeInstanceUnion) GoodForMapKey() bool {
-	return false
-}
-
 func (ins *TypeInstanceUnion) FindCycle(c *cycleFinder) {
 	if !c.push(ins) {
 		return
