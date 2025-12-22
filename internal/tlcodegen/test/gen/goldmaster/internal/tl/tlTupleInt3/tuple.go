@@ -103,25 +103,21 @@ func (item *TupleInt3) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleInt3) CalculateLayout(sizes []int) []int {
-	ptr := (*[3]int32)(item)
-	sizes = tlBuiltinTuple3Int.BuiltinTuple3IntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TupleInt3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[3]int32)(item)
-	w, sizes = tlBuiltinTuple3Int.BuiltinTuple3IntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *TupleInt3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[3]int32)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinTuple3Int.BuiltinTuple3IntCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinTuple3Int.BuiltinTuple3IntInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

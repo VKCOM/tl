@@ -46,47 +46,52 @@ func BuiltinTuple7BoolWrite(w []byte, vec *[7]bool) []byte {
 	return w
 }
 
-func BuiltinTuple7BoolCalculateLayout(sizes []int, vec *[7]bool) []int {
-	currentSize := 0
+func BuiltinTuple7BoolCalculateLayout(sizes []int, optimizeEmpty bool, vec *[7]bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if 7 != 0 {
 		currentSize += basictl.TL2CalculateSize(7)
+		lastUsedByte = currentSize
 	}
-
 	// special case for bool
 	currentSize += (7 + 7) / 8
-
+	lastUsedByte = currentSize
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTuple7BoolInternalWriteTL2(w []byte, sizes []int, vec *[7]bool) ([]byte, []int) {
+func BuiltinTuple7BoolInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[7]bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if 7 != 0 {
-		w = basictl.TL2WriteSize(w, 7)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, 7)
 
-	// special case for bool
-	index := 0
-	for i := uint32(0); i < (7+7)/8; i++ {
-		block := byte(0)
-		blockSize := 8
-		if index+blockSize > 7 {
-			blockSize = 7 - index
-		}
-		for j := 0; j < blockSize; j++ {
-			if (*vec)[index] {
-				block |= (1 << j)
-			}
-			index += 1
-		}
-		w = append(w, block)
+	w = basictl.VectorBoolContentWriteTL2(w, (*vec)[:])
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
 	}
-	return w, sizes
+	return w, sizes, currentSize
 }
 
 func BuiltinTuple7BoolInternalReadTL2(r []byte, vec *[7]bool) (_ []byte, err error) {

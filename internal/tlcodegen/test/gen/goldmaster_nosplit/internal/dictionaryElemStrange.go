@@ -83,12 +83,13 @@ func BuiltinVectorDictionaryElemStrangeStringWrite(w []byte, m map[uint32]string
 	return w
 }
 
-func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, m *map[uint32]string) []int {
+func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[uint32]string) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if len(*m) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
-	}
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
 
 	keys := make([]uint32, 0, len(*m))
 	for k := range *m {
@@ -98,24 +99,41 @@ func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, m *map
 		return keys[i] < keys[j]
 	})
 
-	for i := 0; i < len(keys); i++ {
-		elem := DictionaryElemStrangeString{Key: keys[i], Value: (*m)[keys[i]]}
-		currentPosition := len(sizes)
-		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	if len(*m) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(*m))
+		lastUsedByte = currentSize
 	}
-	return sizes
+	for _, key := range keys {
+		elem := DictionaryElemStrangeString{Key: key, Value: (*m)[key]}
+		sizes, sz = elem.CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []int, m *map[uint32]string) ([]byte, []int) {
+func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[uint32]string) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*m) != 0 {
-		w = basictl.TL2WriteSize(w, len(*m))
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	w = basictl.TL2WriteSize(w, len(*m))
 
 	keys := make([]uint32, 0, len(*m))
 	for k := range *m {
@@ -125,11 +143,16 @@ func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []
 		return keys[i] < keys[j]
 	})
 
-	for i := 0; i < len(keys); i++ {
-		elem := DictionaryElemStrangeString{Key: keys[i], Value: (*m)[keys[i]]}
-		w, sizes = elem.InternalWriteTL2(w, sizes)
+	var sz int
+	for _, key := range keys {
+		elem := DictionaryElemStrangeString{Key: key, Value: (*m)[key]}
+		w, sizes, _ = elem.InternalWriteTL2(w, sizes, false)
 	}
-	return w, sizes
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
 }
 
 func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[uint32]string) (_ []byte, err error) {
@@ -238,9 +261,8 @@ func BuiltinVectorDictionaryElemStrangeStringWriteJSONOpt(tctx *basictl.JSONWrit
 }
 
 type DictionaryElemStrangeString struct {
-	Key   uint32
-	Value string // Conditional: item.Key.31
-
+	Key      uint32
+	Value    string // Conditional: item.Key.31
 	tl2mask0 byte
 }
 
@@ -420,84 +442,84 @@ func (item *DictionaryElemStrangeString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryElemStrangeString) CalculateLayout(sizes []int) []int {
+func (item *DictionaryElemStrangeString) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 3820107868)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.Key
 	if item.Key != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&1 != 0 {
+		currentSize += basictl.TL2CalculateSize(len(item.Value)) + len(item.Value)
+		lastUsedByte = currentSize
 	}
 
-	// calculate layout for item.Value
-	if len(item.Value) != 0 {
-
-		if len(item.Value) != 0 {
-			lastUsedByte = 1
-			currentSize += len(item.Value)
-			currentSize += basictl.TL2CalculateSize(len(item.Value))
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *DictionaryElemStrangeString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *DictionaryElemStrangeString) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 3820107868 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.Key
 	if item.Key != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.Key)
-		}
+		w = basictl.NatWrite(w, item.Key)
+		currentBlock |= 2
 	}
-	// write item.Value
-	if len(item.Value) != 0 {
-		serializedSize += len(item.Value)
-		if len(item.Value) != 0 {
-			serializedSize += basictl.TL2CalculateSize(len(item.Value))
-			currentBlock |= (1 << 2)
-			w = basictl.StringWriteTL2(w, item.Value)
-		}
+	if item.tl2mask0&1 != 0 {
+		w = basictl.StringWriteTL2(w, item.Value)
+		currentBlock |= 4
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *DictionaryElemStrangeString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -513,13 +535,13 @@ func (item *DictionaryElemStrangeString) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -531,30 +553,26 @@ func (item *DictionaryElemStrangeString) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("dictionaryElemStrange", index)
 		}
 	}
-
-	// read item.Key
-	if block&(1<<1) != 0 {
+	item.tl2mask0 = 0
+	if block&2 != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.Key); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Key = 0
 	}
-
-	// read item.Value
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
+		item.tl2mask0 |= 1
 		if currentR, err = basictl.StringReadTL2(currentR, &item.Value); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Value = ""
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 

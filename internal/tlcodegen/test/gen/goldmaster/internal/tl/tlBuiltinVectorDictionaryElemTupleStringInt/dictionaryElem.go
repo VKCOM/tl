@@ -53,38 +53,58 @@ func BuiltinVectorDictionaryElemTupleStringIntWrite(w []byte, vec []tlDictionary
 	return w, nil
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) []int {
-	currentSize := 0
+func BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if len(*vec) != 0 {
 		currentSize += basictl.TL2CalculateSize(len(*vec))
+		lastUsedByte = currentSize
 	}
 	for i := 0; i < len(*vec); i++ {
-		currentPosition := len(sizes)
-		elem := (*vec)[i]
-		sizes = elem.CalculateLayout(sizes)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		sizes, sz = (*vec)[i].CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) ([]byte, []int) {
+func BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, len(*vec))
 
+	var sz int
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes)
+		w, sizes, _ = (*vec)[i].InternalWriteTL2(w, sizes, false)
 	}
-	return w, sizes
+	internal.Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(r []byte, vec *[]tlDictionaryElemTupleStringInt.DictionaryElemTupleStringInt) (_ []byte, err error) {

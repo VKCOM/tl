@@ -68,11 +68,12 @@ func (trw *TypeRWStruct) writeTL2Call(
 		}
 		return trw.Fields[0].t.WriteTL2Call(directImports, bytesVersion, targetSizes, targetBytes, targetObject, zeroIfEmpty, ins, refObject)
 	}
-	sz := fmt.Sprintf("%[3]s, %[1]s, sz = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[4]v)",
+	sz := fmt.Sprintf("%[3]s, %[1]s, %[5]s = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[4]v)",
 		targetSizes,
 		targetObject,
 		targetBytes,
 		zeroIfEmpty,
+		ifString(zeroIfEmpty, "sz", "_"),
 	)
 	if zeroIfEmpty {
 		sz = fmt.Sprintf("if %s; sz != 0 {", sz)

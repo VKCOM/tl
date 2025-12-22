@@ -48,35 +48,57 @@ func BuiltinTupleLongWrite(w []byte, vec []int64, nat_n uint32) (_ []byte, err e
 	return w, nil
 }
 
-func BuiltinTupleLongCalculateLayout(sizes []int, vec *[]int64) []int {
-	currentSize := 0
+func BuiltinTupleLongCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]int64) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if len(*vec) != 0 {
 		currentSize += basictl.TL2CalculateSize(len(*vec))
+		lastUsedByte = currentSize
 	}
 	for i := 0; i < len(*vec); i++ {
-
 		currentSize += 8
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTupleLongInternalWriteTL2(w []byte, sizes []int, vec *[]int64) ([]byte, []int) {
+func BuiltinTupleLongInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]int64) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, len(*vec))
 
+	var sz int
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w = basictl.LongWrite(w, elem)
+		w = basictl.LongWrite(w, (*vec)[i])
 	}
-	return w, sizes
+	internal.Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTupleLongInternalReadTL2(r []byte, vec *[]int64) (_ []byte, err error) {

@@ -49,37 +49,57 @@ func BuiltinTupleStringWrite(w []byte, vec []string, nat_n uint32) (_ []byte, er
 	return w, nil
 }
 
-func BuiltinTupleStringCalculateLayout(sizes []int, vec *[]string) []int {
-	currentSize := 0
+func BuiltinTupleStringCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]string) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if len(*vec) != 0 {
 		currentSize += basictl.TL2CalculateSize(len(*vec))
+		lastUsedByte = currentSize
 	}
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-
-		currentSize += len(elem)
-		currentSize += basictl.TL2CalculateSize(len(elem))
+		currentSize += basictl.TL2CalculateSize(len((*vec)[i])) + len((*vec)[i])
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, vec *[]string) ([]byte, []int) {
+func BuiltinTupleStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]string) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, len(*vec))
 
+	var sz int
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w = basictl.StringWriteTL2(w, elem)
+		w = basictl.StringWriteTL2(w, (*vec)[i])
 	}
-	return w, sizes
+	Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTupleStringInternalReadTL2(r []byte, vec *[]string) (_ []byte, err error) {
@@ -265,24 +285,20 @@ func (item *String) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *String) CalculateLayout(sizes []int) []int {
-
-	return sizes
-}
-
-func (item *String) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*string)(item)
-	w = basictl.StringWriteTL2(w, *ptr)
-	return w, sizes
-}
-
 func (item *String) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*string)(item)
+	var sz int
+	var currentSize int
+	currentSize += basictl.TL2CalculateSize(len(*ptr)) + len(*ptr)
+	w = basictl.StringWriteTL2(w, *ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

@@ -28,11 +28,12 @@ func (trw *TypeRWUnion) writeTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	sz := fmt.Sprintf("%[3]s, %[1]s, sz = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[4]v)",
+	sz := fmt.Sprintf("%[3]s, %[1]s, %[5]s = %[2]s.InternalWriteTL2(%[3]s, %[1]s, %[4]v)",
 		targetSizes,
 		targetObject,
 		targetBytes,
 		zeroIfEmpty,
+		ifString(zeroIfEmpty, "sz", "_"),
 	)
 	if zeroIfEmpty {
 		sz = fmt.Sprintf("if %s; sz != 0 {", sz)

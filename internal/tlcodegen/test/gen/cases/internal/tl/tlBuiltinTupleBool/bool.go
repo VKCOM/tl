@@ -49,48 +49,52 @@ func BuiltinTupleBoolWrite(w []byte, vec []bool, nat_n uint32) (_ []byte, err er
 	return w, nil
 }
 
-func BuiltinTupleBoolCalculateLayout(sizes []int, vec *[]bool) []int {
-	currentSize := 0
+func BuiltinTupleBoolCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if len(*vec) != 0 {
 		currentSize += basictl.TL2CalculateSize(len(*vec))
+		lastUsedByte = currentSize
 	}
 	// special case for bool
 	currentSize += (len(*vec) + 7) / 8
+	lastUsedByte = currentSize
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTupleBoolInternalWriteTL2(w []byte, sizes []int, vec *[]bool) ([]byte, []int) {
+func BuiltinTupleBoolInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, len(*vec))
 
-	// special case for bool
-	blockCount := (len(*vec) + 7) / 8
-	index := 0
-	for i := 0; i < blockCount; i++ {
-		var block byte
-
-		blockSize := 8
-		if index+blockSize > len(*vec) {
-			blockSize = len(*vec) - index
-		}
-		for j := 0; j < blockSize; j++ {
-			if (*vec)[index] {
-				block |= (1 << j)
-			}
-			index += 1
-		}
-
-		w = append(w, block)
+	w = basictl.VectorBoolContentWriteTL2(w, *vec)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
 	}
-	return w, sizes
+	return w, sizes, currentSize
 }
 
 func BuiltinTupleBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err error) {

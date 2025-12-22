@@ -102,24 +102,20 @@ func (item *Long) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *Long) CalculateLayout(sizes []int) []int {
-
-	return sizes
-}
-
-func (item *Long) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*int64)(item)
-	w = basictl.LongWrite(w, *ptr)
-	return w, sizes
-}
-
 func (item *Long) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*int64)(item)
+	var sz int
+	var currentSize int
+	currentSize += 8
+	w = basictl.LongWrite(w, *ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

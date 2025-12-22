@@ -87,25 +87,21 @@ func (item *TupleLong) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []byte, na
 	return w, nil
 }
 
-func (item *TupleLong) CalculateLayout(sizes []int) []int {
-	ptr := (*[]int64)(item)
-	sizes = tlBuiltinTupleLong.BuiltinTupleLongCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TupleLong) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]int64)(item)
-	w, sizes = tlBuiltinTupleLong.BuiltinTupleLongInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *TupleLong) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]int64)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinTupleLong.BuiltinTupleLongCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinTupleLong.BuiltinTupleLongInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

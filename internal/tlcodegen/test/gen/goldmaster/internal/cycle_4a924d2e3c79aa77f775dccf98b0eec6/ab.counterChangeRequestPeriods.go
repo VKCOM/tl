@@ -116,24 +116,55 @@ func (item *AbCounterChangeRequestPeriods) WriteBoxed(w []byte) []byte {
 	return w
 }
 
-func (item *AbCounterChangeRequestPeriods) CalculateLayout(sizes []int) []int {
+func (item *AbCounterChangeRequestPeriods) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+
 	switch item.index {
 	case 0:
-		sizes = item.valueMany.CalculateLayout(sizes)
+		return item.valueMany.CalculateLayout(sizes, optimizeEmpty)
 	case 1:
-		sizes = item.valueOne.CalculateLayout(sizes)
+		return item.valueOne.CalculateLayout(sizes, optimizeEmpty)
 	}
-	return sizes
+	currentSize := 1
+	lastUsedByte := 0
+	if item.index != 0 {
+		currentSize += basictl.TL2CalculateSize(item.index)
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes = append(sizes, currentSize)
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	return sizes, currentSize
 }
 
-func (item *AbCounterChangeRequestPeriods) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AbCounterChangeRequestPeriods) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+
 	switch item.index {
 	case 0:
-		w, sizes = item.valueMany.InternalWriteTL2(w, sizes)
+		return item.valueMany.InternalWriteTL2(w, sizes, optimizeEmpty)
 	case 1:
-		w, sizes = item.valueOne.InternalWriteTL2(w, sizes)
+		return item.valueOne.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	return w, sizes
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	if item.index != 0 {
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, item.index)
+	} else {
+		w = append(w, 0)
+	}
+	return w, sizes, currentSize
 }
 
 func (item *AbCounterChangeRequestPeriods) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -177,12 +208,15 @@ func (item *AbCounterChangeRequestPeriods) InternalReadTL2(r []byte) (_ []byte, 
 	return r, nil
 }
 func (item *AbCounterChangeRequestPeriods) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -426,74 +460,75 @@ func (item *AbCounterChangeRequestPeriodsMany) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) CalculateLayout(sizes []int) []int {
+func (item *AbCounterChangeRequestPeriodsMany) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 346250624)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.ObjectsPeridos
-	currentPosition := len(sizes)
-	if len(item.ObjectsPeridos) != 0 {
-		sizes = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, &item.ObjectsPeridos)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	if sizes, sz = tlBuiltinVectorInt.BuiltinVectorIntCalculateLayout(sizes, true, &item.ObjectsPeridos); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *AbCounterChangeRequestPeriodsMany) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *AbCounterChangeRequestPeriodsMany) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 346250624 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.ObjectsPeridos
-	if len(item.ObjectsPeridos) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, &item.ObjectsPeridos)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = tlBuiltinVectorInt.BuiltinVectorIntInternalWriteTL2(w, sizes, true, &item.ObjectsPeridos); sz != 0 {
+		currentBlock |= 2
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *AbCounterChangeRequestPeriodsMany) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -502,16 +537,14 @@ func (item *AbCounterChangeRequestPeriodsMany) WriteTL2(w []byte, ctx *basictl.T
 
 func (item *AbCounterChangeRequestPeriodsMany) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.ObjectsPeridos
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = tlBuiltinVectorInt.BuiltinVectorIntInternalReadTL2(currentR, &item.ObjectsPeridos); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.ObjectsPeridos = item.ObjectsPeridos[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -526,9 +559,7 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte, ctx *basictl.TL
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -536,8 +567,6 @@ func (item *AbCounterChangeRequestPeriodsMany) ReadTL2(r []byte, ctx *basictl.TL
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {
@@ -674,75 +703,82 @@ func (item *AbCounterChangeRequestPeriodsOne) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) CalculateLayout(sizes []int) []int {
+func (item *AbCounterChangeRequestPeriodsOne) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 3653463525)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
 	// add constructor No for union type in case of non first option
-	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
-
-	// calculate layout for item.Period
+	lastUsedByte = currentSize
 	if item.Period != 0 {
-
-		lastUsedByte = 1
 		currentSize += 8
+		lastUsedByte = currentSize
 	}
 
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *AbCounterChangeRequestPeriodsOne) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 3653463525 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
-	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
-	serializedSize += basictl.TL2CalculateSize(1)
-	// write item.Period
+	currentBlock |= 1
 	if item.Period != 0 {
-		serializedSize += 8
-		if 8 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.LongWrite(w, item.Period)
-		}
+		w = basictl.LongWrite(w, item.Period)
+		currentBlock |= 2
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *AbCounterChangeRequestPeriodsOne) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -751,16 +787,14 @@ func (item *AbCounterChangeRequestPeriodsOne) WriteTL2(w []byte, ctx *basictl.TL
 
 func (item *AbCounterChangeRequestPeriodsOne) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
-
-	// read item.Period
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.Period); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Period = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 
@@ -775,9 +809,7 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte, ctx *basictl.TL2
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -785,8 +817,6 @@ func (item *AbCounterChangeRequestPeriodsOne) ReadTL2(r []byte, ctx *basictl.TL2
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {

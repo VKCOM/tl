@@ -49,38 +49,58 @@ func BuiltinTupleTupleInt2Write(w []byte, vec [][2]int32, nat_n uint32) (_ []byt
 	return w, nil
 }
 
-func BuiltinTupleTupleInt2CalculateLayout(sizes []int, vec *[][2]int32) []int {
-	currentSize := 0
+func BuiltinTupleTupleInt2CalculateLayout(sizes []int, optimizeEmpty bool, vec *[][2]int32) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if len(*vec) != 0 {
 		currentSize += basictl.TL2CalculateSize(len(*vec))
+		lastUsedByte = currentSize
 	}
 	for i := 0; i < len(*vec); i++ {
-		currentPosition := len(sizes)
-		elem := (*vec)[i]
-		sizes = tlBuiltinTuple2Int.BuiltinTuple2IntCalculateLayout(sizes, &elem)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		sizes, sz = tlBuiltinTuple2Int.BuiltinTuple2IntCalculateLayout(sizes, false, &(*vec)[i])
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTupleTupleInt2InternalWriteTL2(w []byte, sizes []int, vec *[][2]int32) ([]byte, []int) {
+func BuiltinTupleTupleInt2InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[][2]int32) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, len(*vec))
 
+	var sz int
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w, sizes = tlBuiltinTuple2Int.BuiltinTuple2IntInternalWriteTL2(w, sizes, &elem)
+		w, sizes, _ = tlBuiltinTuple2Int.BuiltinTuple2IntInternalWriteTL2(w, sizes, false, &(*vec)[i])
 	}
-	return w, sizes
+	internal.Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTupleTupleInt2InternalReadTL2(r []byte, vec *[][2]int32) (_ []byte, err error) {

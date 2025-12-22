@@ -103,25 +103,21 @@ func (item *VectorBool) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorBool) CalculateLayout(sizes []int) []int {
-	ptr := (*[]bool)(item)
-	sizes = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorBool) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]bool)(item)
-	w, sizes = tlBuiltinVectorBool.BuiltinVectorBoolInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorBool) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]bool)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorBool.BuiltinVectorBoolInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

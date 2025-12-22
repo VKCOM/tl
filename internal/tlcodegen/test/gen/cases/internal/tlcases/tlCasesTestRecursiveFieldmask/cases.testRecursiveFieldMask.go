@@ -22,7 +22,6 @@ type CasesTestRecursiveFieldmask struct {
 	// T1 (TrueType) // Conditional: item.F0.0
 	// T2 (TrueType) // Conditional: item.F1.1
 	// T3 (TrueType) // Conditional: item.F2.2
-
 	tl2mask0 byte
 }
 
@@ -397,95 +396,110 @@ func (item *CasesTestRecursiveFieldmask) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int) []int {
+func (item *CasesTestRecursiveFieldmask) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 3314350174)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.F0
 	if item.F0 != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&1 != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&2 != 0 {
+		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&4 != 0 {
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&8 != 0 {
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&16 != 0 {
+		lastUsedByte = currentSize
 	}
 
-	// calculate layout for item.F1
-	if item.F1 != 0 {
-
-		lastUsedByte = 1
-		currentSize += 4
-	}
-
-	// calculate layout for item.F2
-	if item.F2 != 0 {
-
-		lastUsedByte = 1
-		currentSize += 4
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *CasesTestRecursiveFieldmask) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 3314350174 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.F0
 	if item.F0 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.F0)
-		}
+		w = basictl.NatWrite(w, item.F0)
+		currentBlock |= 2
 	}
-	// write item.F1
-	if item.F1 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 2)
-			w = basictl.NatWrite(w, item.F1)
-		}
+	if item.tl2mask0&1 != 0 {
+		w = basictl.NatWrite(w, item.F1)
+		currentBlock |= 4
 	}
-	// write item.F2
-	if item.F2 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 3)
-			w = basictl.NatWrite(w, item.F2)
-		}
+	if item.tl2mask0&2 != 0 {
+		w = basictl.NatWrite(w, item.F2)
+		currentBlock |= 8
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if item.tl2mask0&4 != 0 {
+		currentBlock |= 16
+	}
+	if item.tl2mask0&8 != 0 {
+		currentBlock |= 32
+	}
+	if item.tl2mask0&16 != 0 {
+		currentBlock |= 64
+	}
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *CasesTestRecursiveFieldmask) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -501,13 +515,13 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -519,39 +533,43 @@ func (item *CasesTestRecursiveFieldmask) InternalReadTL2(r []byte) (_ []byte, er
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testRecursiveFieldMask", index)
 		}
 	}
-
-	// read item.F0
-	if block&(1<<1) != 0 {
+	item.tl2mask0 = 0
+	if block&2 != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.F0); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F0 = 0
 	}
-
-	// read item.F1
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
+		item.tl2mask0 |= 1
 		if currentR, err = basictl.NatRead(currentR, &item.F1); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F1 = 0
 	}
-
-	// read item.F2
-	if block&(1<<3) != 0 {
+	if block&8 != 0 {
+		item.tl2mask0 |= 2
 		if currentR, err = basictl.NatRead(currentR, &item.F2); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F2 = 0
 	}
-
+	if block&16 != 0 {
+		item.tl2mask0 |= 4
+	}
+	if block&32 != 0 {
+		item.tl2mask0 |= 8
+	}
+	if block&64 != 0 {
+		item.tl2mask0 |= 16
+	}
+	internal.Unused(currentR)
 	return r, nil
 }
 

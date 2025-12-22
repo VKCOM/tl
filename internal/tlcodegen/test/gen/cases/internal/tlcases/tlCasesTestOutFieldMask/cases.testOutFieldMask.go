@@ -10,7 +10,6 @@ package tlCasesTestOutFieldMask
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlBuiltinTupleInt"
-	"github.com/vkcom/tl/internal/tlcodegen/test/gen/cases/internal/tl/tlTrue"
 	"github.com/vkcom/tl/pkg/basictl"
 )
 
@@ -20,8 +19,7 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTestOutFieldMask struct {
 	F1 uint32 // Conditional: nat_f.0
 	// F2 (TrueType) // Conditional: nat_f.3
-	F3 []int32
-
+	F3       []int32
 	tl2mask0 byte
 }
 
@@ -219,111 +217,89 @@ func (item *CasesTestOutFieldMask) WriteJSONOpt(tctx *basictl.JSONWriteContext, 
 	return append(w, '}'), nil
 }
 
-func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int) []int {
+func (item *CasesTestOutFieldMask) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 3177925436)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.F1
-	if item.F1 != 0 {
-
-		lastUsedByte = 1
+	if item.tl2mask0&1 != 0 {
 		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&2 != 0 {
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, true, &item.F3); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	var trueF2 tlTrue.True
-	// calculate layout for trueF2
-	currentPosition := len(sizes)
-	sizes = trueF2.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.F3
-	currentPosition = len(sizes)
-	if len(item.F3) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F3)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *CasesTestOutFieldMask) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 3177925436 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.F1
-	if item.F1 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.F1)
-		}
+	if item.tl2mask0&1 != 0 {
+		w = basictl.NatWrite(w, item.F1)
+		currentBlock |= 2
 	}
-	var trueF2 tlTrue.True
-	// write trueF2
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = trueF2.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
+	if item.tl2mask0&2 != 0 {
+		currentBlock |= 4
 	}
-	// write item.F3
-	if len(item.F3) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F3)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F3); sz != 0 {
+		currentBlock |= 8
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *CasesTestOutFieldMask) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -339,13 +315,13 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte) (_ []byte, err erro
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -357,40 +333,29 @@ func (item *CasesTestOutFieldMask) InternalReadTL2(r []byte) (_ []byte, err erro
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testOutFieldMask", index)
 		}
 	}
-
-	// read item.F1
-	if block&(1<<1) != 0 {
+	item.tl2mask0 = 0
+	if block&2 != 0 {
+		item.tl2mask0 |= 1
 		if currentR, err = basictl.NatRead(currentR, &item.F1); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F1 = 0
 	}
-
-	var trueF2 tlTrue.True
-	// read trueF2
-	if block&(1<<2) != 0 {
-		if currentR, err = trueF2.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		trueF2.Reset()
+	if block&4 != 0 {
+		item.tl2mask0 |= 2
 	}
-
-	// read item.F3
-	if block&(1<<3) != 0 {
+	if block&8 != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F3); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F3 = item.F3[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

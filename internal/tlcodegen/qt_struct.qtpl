@@ -854,6 +854,9 @@ func (item *{%s= goName %}) writeResultTL2(w []byte, sizes []int, ctx *basictl.T
     }
     w[currentBlockPosition] = currentBlock
     {%s= struct_.wr.gen.InternalPrefix()%}Unused(sz)
+    if len(sizes) != 0 {
+        panic("tl2: internal write did not consume all size data")
+    }
     return w, sizesReuse, currentSize
 }
 

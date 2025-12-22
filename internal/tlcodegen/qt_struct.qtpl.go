@@ -1726,6 +1726,9 @@ func (item *`)
     `)
 		qw422016.N().S(struct_.wr.gen.InternalPrefix())
 		qw422016.N().S(`Unused(sz)
+    if len(sizes) != 0 {
+        panic("tl2: internal write did not consume all size data")
+    }
     return w, sizesReuse, currentSize
 }
 

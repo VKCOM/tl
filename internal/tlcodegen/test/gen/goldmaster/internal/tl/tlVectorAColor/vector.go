@@ -104,25 +104,21 @@ func (item *VectorAColor) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorAColor) CalculateLayout(sizes []int) []int {
-	ptr := (*[]tlAColor.AColor)(item)
-	sizes = tlBuiltinVectorAColor.BuiltinVectorAColorCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]tlAColor.AColor)(item)
-	w, sizes = tlBuiltinVectorAColor.BuiltinVectorAColorInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]tlAColor.AColor)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorAColor.BuiltinVectorAColorCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorAColor.BuiltinVectorAColorInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

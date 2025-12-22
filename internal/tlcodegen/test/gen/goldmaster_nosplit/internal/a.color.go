@@ -100,29 +100,41 @@ func (item *AColor) WriteBoxed(w []byte) []byte {
 	return w
 }
 
-func (item *AColor) CalculateLayout(sizes []int) []int {
-	switch item.index {
-	case 0:
-		sizes = append(sizes, 0)
-	default:
-		sizes = append(sizes, 1+basictl.TL2CalculateSize(item.index))
+func (item *AColor) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	currentSize := 1
+	lastUsedByte := 0
+	if item.index != 0 {
+		currentSize += basictl.TL2CalculateSize(item.index)
+		lastUsedByte = currentSize
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes = append(sizes, currentSize)
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	return sizes, currentSize
 }
 
-func (item *AColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	switch item.index {
-	case 0:
-		sizes = sizes[1:]
-		w = basictl.TL2WriteSize(w, 0)
-	default:
-		currentSize := sizes[0]
-		sizes = sizes[1:]
-		w = basictl.TL2WriteSize(w, currentSize)
+func (item *AColor) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	if item.index != 0 {
 		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, item.index)
+	} else {
+		w = append(w, 0)
 	}
-	return w, sizes
+	return w, sizes, currentSize
 }
 
 func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -156,12 +168,15 @@ func (item *AColor) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 func (item *AColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -308,43 +323,65 @@ func (item *AColorBoxedMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *AColorBoxedMaybe) CalculateLayout(sizes []int) []int {
+func (item *AColorBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
 	if item.Ok {
-		sizes[sizePosition] += 1
-		sizes[sizePosition] += basictl.TL2CalculateSize(1)
-		currentPosition := len(sizes)
-		sizes = item.Value.CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			sizes[sizePosition] += sizes[currentPosition]
-			sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+		currentSize += basictl.TL2CalculateSize(1)
+		lastUsedByte = currentSize
+
+		if sizes, sz = item.Value.CalculateLayout(sizes, true); sz != 0 {
+			currentSize += sz
+			lastUsedByte = currentSize
 		}
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *AColorBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
 
 	if item.Ok {
-		currentPosition := len(w)
-		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
-		if sizes[0] != 0 {
-			w[currentPosition] |= (1 << 1)
-			w, sizes = item.Value.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
+		currentBlock |= 1
+		if w, sizes, sz = item.Value.InternalWriteTL2(w, sizes, true); sz != 0 {
+			currentBlock |= 2
 		}
 	}
-	return w, sizes
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
 }
 
 func (item *AColorBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -473,38 +510,58 @@ func BuiltinVectorAColorWrite(w []byte, vec []AColor) []byte {
 	return w
 }
 
-func BuiltinVectorAColorCalculateLayout(sizes []int, vec *[]AColor) []int {
-	currentSize := 0
+func BuiltinVectorAColorCalculateLayout(sizes []int, optimizeEmpty bool, vec *[]AColor) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if len(*vec) != 0 {
 		currentSize += basictl.TL2CalculateSize(len(*vec))
+		lastUsedByte = currentSize
 	}
 	for i := 0; i < len(*vec); i++ {
-		currentPosition := len(sizes)
-		elem := (*vec)[i]
-		sizes = elem.CalculateLayout(sizes)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		sizes, sz = (*vec)[i].CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinVectorAColorInternalWriteTL2(w []byte, sizes []int, vec *[]AColor) ([]byte, []int) {
+func BuiltinVectorAColorInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[]AColor) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*vec) != 0 {
-		w = basictl.TL2WriteSize(w, len(*vec))
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, len(*vec))
 
+	var sz int
 	for i := 0; i < len(*vec); i++ {
-		elem := (*vec)[i]
-		w, sizes = elem.InternalWriteTL2(w, sizes)
+		w, sizes, _ = (*vec)[i].InternalWriteTL2(w, sizes, false)
 	}
-	return w, sizes
+	Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinVectorAColorInternalReadTL2(r []byte, vec *[]AColor) (_ []byte, err error) {
