@@ -92,7 +92,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
+    if currentSize == 0 {
         sizes = sizes[:sizePosition+1]
     } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
@@ -125,6 +125,9 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
         }
     }
     w[currentBlockPosition] = currentBlock
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     {%s= maybe.wr.gen.InternalPrefix()%}Unused(sz)
     return w, sizes, currentSize
 }

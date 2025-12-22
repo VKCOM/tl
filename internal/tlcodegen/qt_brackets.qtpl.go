@@ -200,6 +200,9 @@ func `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     `)
 					qw422016.N().S(tuple.wr.gen.InternalPrefix())
 					qw422016.N().S(`Unused(sz)
@@ -866,6 +869,9 @@ func `)
 					qw422016.N().S(tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false))
 					qw422016.N().S(`
     }
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     `)
 					qw422016.N().S(tuple.wr.gen.InternalPrefix())
 					qw422016.N().S(`Unused(sz)
@@ -1338,6 +1344,7 @@ func `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
 					qw422016.N().S(`        // special case for bool
         currentSize += (len(*vec) + 7) / 8
+        lastUsedByte = currentSize
 `)
 				} else {
 					qw422016.N().S(`        for i := 0; i < len(*vec); i++ {
@@ -1398,7 +1405,10 @@ func `)
 					qw422016.N().S(`Unused(sz)
 `)
 				}
-				qw422016.N().S(`    return w, sizes, currentSize
+				qw422016.N().S(`    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
+    return w, sizes, currentSize
 }
 `)
 			}
@@ -1711,6 +1721,7 @@ func `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
 					qw422016.N().S(`        // special case for bool
         currentSize += (len(*vec) + 7) / 8
+        lastUsedByte = currentSize
 `)
 				} else {
 					qw422016.N().S(`        for i := 0; i < len(*vec); i++ {
@@ -1771,7 +1782,10 @@ func `)
 					qw422016.N().S(`Unused(sz)
 `)
 				}
-				qw422016.N().S(`    return w, sizes, currentSize
+				qw422016.N().S(`    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
+    return w, sizes, currentSize
 }
 `)
 			}
@@ -2114,6 +2128,7 @@ func `)
         currentSize += (`)
 					qw422016.N().V(tuple.size)
 					qw422016.N().S(` + 7) / 8
+        lastUsedByte = currentSize
 `)
 				} else {
 					qw422016.N().S(`        for i := 0; i < `)
@@ -2180,7 +2195,10 @@ func `)
 					qw422016.N().S(`Unused(sz)
 `)
 				}
-				qw422016.N().S(`    return w, sizes, currentSize
+				qw422016.N().S(`    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
+    return w, sizes, currentSize
 }
 `)
 			}
