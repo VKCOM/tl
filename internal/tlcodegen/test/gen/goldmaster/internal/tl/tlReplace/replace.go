@@ -415,7 +415,7 @@ func (item *Replace) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 
 func (item *Replace) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3954338601 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

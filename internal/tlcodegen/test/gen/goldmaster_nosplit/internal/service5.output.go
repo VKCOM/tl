@@ -131,7 +131,7 @@ func (item *Service5EmptyOutput) CalculateLayout(sizes []int, optimizeEmpty bool
 
 func (item *Service5EmptyOutput) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 4287593912 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -681,7 +681,7 @@ func (item *Service5StringOutput) CalculateLayout(sizes []int, optimizeEmpty boo
 
 func (item *Service5StringOutput) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3692498932 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

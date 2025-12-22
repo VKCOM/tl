@@ -1281,7 +1281,7 @@ func (item *{%s= goName %}) InternalWriteTL2(w []byte, sizes []int, optimizeEmpt
         ptr := (*{%s= struct_.Fields[0].t.TypeString2(bytesVersion, directImports, struct_.wr.ins, false, false) %})(item)
     {%- endif -%}
     if sizes[0] != {%v= struct_.wr.tlTag %} {
-        panic("aja")
+        panic("tl2: tag mismatch between calculate and write")
     }
     currentSize := sizes[1]
     sizes = sizes[2:]

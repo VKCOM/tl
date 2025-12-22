@@ -190,7 +190,7 @@ func (item *AbTopLevel2) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int
 
 func (item *AbTopLevel2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3472438267 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -463,7 +463,7 @@ func (item *AbTopLevel2Bytes) CalculateLayout(sizes []int, optimizeEmpty bool) (
 
 func (item *AbTopLevel2Bytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3472438267 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

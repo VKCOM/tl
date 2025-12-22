@@ -462,7 +462,7 @@ func (item *BenchmarksVrutoytopLevelUnionBig) CalculateLayout(sizes []int, optim
 
 func (item *BenchmarksVrutoytopLevelUnionBig) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 4015352814 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -672,7 +672,7 @@ func (item *BenchmarksVrutoytopLevelUnionEmpty) CalculateLayout(sizes []int, opt
 
 func (item *BenchmarksVrutoytopLevelUnionEmpty) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 3458713456 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

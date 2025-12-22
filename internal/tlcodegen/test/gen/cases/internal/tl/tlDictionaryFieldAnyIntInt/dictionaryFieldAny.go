@@ -196,7 +196,7 @@ func (item *DictionaryFieldAnyIntInt) CalculateLayout(sizes []int, optimizeEmpty
 
 func (item *DictionaryFieldAnyIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 742631003 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

@@ -619,7 +619,7 @@ func (item *CasesTestUnion1) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 
 func (item *CasesTestUnion1) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1263471025 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -866,7 +866,7 @@ func (item *CasesTestUnion2) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 
 func (item *CasesTestUnion2) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1179621060 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1084,7 +1084,7 @@ func (item *CasesTestUnion3) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 func (item *CasesTestUnion3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	ptr := (*int32)(item)
 	if sizes[0] != 2609684044 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1303,7 +1303,7 @@ func (item *CasesTestUnion4) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 func (item *CasesTestUnion4) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	ptr := (*string)(item)
 	if sizes[0] != 3605170905 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

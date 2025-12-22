@@ -2494,7 +2494,7 @@ func (item *`)
 			qw422016.N().S(`    if sizes[0] != `)
 			qw422016.N().V(struct_.wr.tlTag)
 			qw422016.N().S(` {
-        panic("aja")
+        panic("tl2: tag mismatch between calculate and write")
     }
     currentSize := sizes[1]
     sizes = sizes[2:]

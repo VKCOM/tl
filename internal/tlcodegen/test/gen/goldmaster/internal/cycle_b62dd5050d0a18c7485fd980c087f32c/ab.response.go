@@ -143,7 +143,7 @@ func (item *AbAlias) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 func (item *AbAlias) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	ptr := (*int32)(item)
 	if sizes[0] != 2487921303 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -394,7 +394,7 @@ func (item *AbCode) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int
 
 func (item *AbCode) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 1985065388 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -602,7 +602,7 @@ func (item *AbEmpty) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, in
 
 func (item *AbEmpty) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 516335166 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1693,7 +1693,7 @@ func (item *CdResponse) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int,
 
 func (item *CdResponse) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2350919524 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -1984,7 +1984,7 @@ func (item *CdResponseBytes) CalculateLayout(sizes []int, optimizeEmpty bool) ([
 
 func (item *CdResponseBytes) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2350919524 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]

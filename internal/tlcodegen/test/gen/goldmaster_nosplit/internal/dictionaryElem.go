@@ -1734,7 +1734,7 @@ func (item *DictionaryElemIntPairIntInt) CalculateLayout(sizes []int, optimizeEm
 
 func (item *DictionaryElemIntPairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -2012,7 +2012,7 @@ func (item *DictionaryElemLongPairIntInt) CalculateLayout(sizes []int, optimizeE
 
 func (item *DictionaryElemLongPairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -2290,7 +2290,7 @@ func (item *DictionaryElemPairBoolAColorInt) CalculateLayout(sizes []int, optimi
 
 func (item *DictionaryElemPairBoolAColorInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -2568,7 +2568,7 @@ func (item *DictionaryElemPairFloatDoubleInt) CalculateLayout(sizes []int, optim
 
 func (item *DictionaryElemPairFloatDoubleInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -2846,7 +2846,7 @@ func (item *DictionaryElemPairIntIntInt) CalculateLayout(sizes []int, optimizeEm
 
 func (item *DictionaryElemPairIntIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -3124,7 +3124,7 @@ func (item *DictionaryElemPairIntPairMultiPointStringInt) CalculateLayout(sizes 
 
 func (item *DictionaryElemPairIntPairMultiPointStringInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -3402,7 +3402,7 @@ func (item *DictionaryElemStringPairIntInt) CalculateLayout(sizes []int, optimiz
 
 func (item *DictionaryElemStringPairIntInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
@@ -3674,7 +3674,7 @@ func (item *DictionaryElemTupleStringInt) CalculateLayout(sizes []int, optimizeE
 
 func (item *DictionaryElemTupleStringInt) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	if sizes[0] != 2795339216 {
-		panic("aja")
+		panic("tl2: tag mismatch between calculate and write")
 	}
 	currentSize := sizes[1]
 	sizes = sizes[2:]
