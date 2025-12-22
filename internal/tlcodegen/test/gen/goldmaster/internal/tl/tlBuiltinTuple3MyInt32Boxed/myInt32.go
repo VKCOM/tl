@@ -9,6 +9,7 @@ package tlBuiltinTuple3MyInt32Boxed
 
 import (
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal"
+	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlInt32"
 	"github.com/vkcom/tl/internal/tlcodegen/test/gen/goldmaster/internal/tl/tlMyInt32"
 	"github.com/vkcom/tl/pkg/basictl"
 )
@@ -46,36 +47,57 @@ func BuiltinTuple3MyInt32BoxedWrite(w []byte, vec *[3]tlMyInt32.MyInt32) []byte 
 	return w
 }
 
-func BuiltinTuple3MyInt32BoxedCalculateLayout(sizes []int, vec *[3]tlMyInt32.MyInt32) []int {
-	currentSize := 0
+func BuiltinTuple3MyInt32BoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]tlMyInt32.MyInt32) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if 3 != 0 {
 		currentSize += basictl.TL2CalculateSize(3)
+		lastUsedByte = currentSize
 	}
-
 	for i := 0; i < 3; i++ {
-		sizes = (*vec)[i].CalculateLayout(sizes)
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTuple3MyInt32BoxedInternalWriteTL2(w []byte, sizes []int, vec *[3]tlMyInt32.MyInt32) ([]byte, []int) {
+func BuiltinTuple3MyInt32BoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]tlMyInt32.MyInt32) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if 3 != 0 {
-		w = basictl.TL2WriteSize(w, 3)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, 3)
 
+	var sz int
 	for i := 0; i < 3; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		w = basictl.IntWrite(w, *(*int32)((*tlInt32.Int32)(&(*vec)[i])))
 	}
-	return w, sizes
+	internal.Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTuple3MyInt32BoxedInternalReadTL2(r []byte, vec *[3]tlMyInt32.MyInt32) (_ []byte, err error) {

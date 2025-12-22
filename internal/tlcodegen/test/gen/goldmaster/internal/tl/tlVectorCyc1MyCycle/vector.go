@@ -103,25 +103,21 @@ func (item *VectorCyc1MyCycle) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorCyc1MyCycle) CalculateLayout(sizes []int) []int {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	sizes = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
-	w, sizes = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorCyc1MyCycle) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]cycle_e10cb78db8a2766007111b86ce9e11d9.Cyc1MyCycle)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = cycle_e10cb78db8a2766007111b86ce9e11d9.BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

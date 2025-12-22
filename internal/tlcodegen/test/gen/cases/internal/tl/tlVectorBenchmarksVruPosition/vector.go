@@ -104,25 +104,21 @@ func (item *VectorBenchmarksVruPosition) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorBenchmarksVruPosition) CalculateLayout(sizes []int) []int {
-	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorBenchmarksVruPosition) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
-	w, sizes = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorBenchmarksVruPosition) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]tlBenchmarksVruPosition.BenchmarksVruPosition)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorBenchmarksVruPosition.BuiltinVectorBenchmarksVruPositionInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

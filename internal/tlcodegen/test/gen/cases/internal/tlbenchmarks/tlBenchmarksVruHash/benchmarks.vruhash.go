@@ -162,80 +162,84 @@ func (item *BenchmarksVruHash) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *BenchmarksVruHash) CalculateLayout(sizes []int) []int {
+func (item *BenchmarksVruHash) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 3541815549)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.Low
 	if item.Low != 0 {
-
-		lastUsedByte = 1
 		currentSize += 8
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.High
 	if item.High != 0 {
-
-		lastUsedByte = 1
 		currentSize += 8
+		lastUsedByte = currentSize
 	}
 
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *BenchmarksVruHash) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 3541815549 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.Low
 	if item.Low != 0 {
-		serializedSize += 8
-		if 8 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.LongWrite(w, item.Low)
-		}
+		w = basictl.LongWrite(w, item.Low)
+		currentBlock |= 2
 	}
-	// write item.High
 	if item.High != 0 {
-		serializedSize += 8
-		if 8 != 0 {
-			currentBlock |= (1 << 2)
-			w = basictl.LongWrite(w, item.High)
-		}
+		w = basictl.LongWrite(w, item.High)
+		currentBlock |= 4
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *BenchmarksVruHash) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -251,13 +255,13 @@ func (item *BenchmarksVruHash) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -269,30 +273,24 @@ func (item *BenchmarksVruHash) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("benchmarks.vruhash", index)
 		}
 	}
-
-	// read item.Low
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.Low); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Low = 0
 	}
-
-	// read item.High
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
 		if currentR, err = basictl.LongRead(currentR, &item.High); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.High = 0
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

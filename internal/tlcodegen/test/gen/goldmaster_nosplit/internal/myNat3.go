@@ -115,25 +115,51 @@ func (item *MyNat3) WriteBoxed(w []byte) []byte {
 	return w
 }
 
-func (item *MyNat3) CalculateLayout(sizes []int) []int {
+func (item *MyNat3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+
 	switch item.index {
-	case 0:
-		sizes = append(sizes, 0)
 	case 1:
-		sizes = (*item.valueMyPlus3).CalculateLayout(sizes)
+		return item.valueMyPlus3.CalculateLayout(sizes, optimizeEmpty)
 	}
-	return sizes
+	currentSize := 1
+	lastUsedByte := 0
+	if item.index != 0 {
+		currentSize += basictl.TL2CalculateSize(item.index)
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes = append(sizes, currentSize)
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	return sizes, currentSize
 }
 
-func (item *MyNat3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *MyNat3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+
 	switch item.index {
-	case 0:
-		sizes = sizes[1:]
-		w = basictl.TL2WriteSize(w, 0)
 	case 1:
-		w, sizes = item.valueMyPlus3.InternalWriteTL2(w, sizes)
+		return item.valueMyPlus3.InternalWriteTL2(w, sizes, optimizeEmpty)
 	}
-	return w, sizes
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	if item.index != 0 {
+		w = append(w, 1)
+		w = basictl.TL2WriteSize(w, item.index)
+	} else {
+		w = append(w, 0)
+	}
+	return w, sizes, currentSize
 }
 
 func (item *MyNat3) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -177,12 +203,15 @@ func (item *MyNat3) InternalReadTL2(r []byte) (_ []byte, err error) {
 	return r, nil
 }
 func (item *MyNat3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -386,86 +415,83 @@ func (item *MyPlus3) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *MyPlus3) CalculateLayout(sizes []int) []int {
+func (item *MyPlus3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	ptr := (*MyNat3)(item)
+	sizes = append(sizes, 1764501787)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
 	// add constructor No for union type in case of non first option
-	lastUsedByte = 1
 	currentSize += basictl.TL2CalculateSize(1)
-
-	// calculate layout for ptr
-	currentPosition := len(sizes)
-	if ptr != nil {
-		sizes = (*ptr).CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	lastUsedByte = currentSize
+	if sizes, sz = (*ptr).CalculateLayout(sizes, true); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *MyPlus3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	ptr := (*MyNat3)(item)
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if sizes[0] != 1764501787 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-
 	// add constructor No for union type in case of non first option
-	currentBlock |= (1 << 0)
-
 	w = basictl.TL2WriteSize(w, 1)
-	serializedSize += basictl.TL2CalculateSize(1)
-	// write ptr
-	if ptr != nil {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 1)
-			w, sizes = ptr.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	currentBlock |= 1
+	if w, sizes, sz = ptr.InternalWriteTL2(w, sizes, true); sz != 0 {
+		currentBlock |= 2
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *MyPlus3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -475,16 +501,14 @@ func (item *MyPlus3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 func (item *MyPlus3) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
 	currentR := r
 	ptr := (*MyNat3)(item)
-
-	// read ptr
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = ptr.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		ptr.Reset()
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
@@ -499,9 +523,7 @@ func (item *MyPlus3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -509,8 +531,6 @@ func (item *MyPlus3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 1 {
@@ -613,47 +633,67 @@ func (item *MyZero3) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *MyZero3) CalculateLayout(sizes []int) []int {
+func (item *MyZero3) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 272253135)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *MyZero3) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *MyZero3) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 272253135 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *MyZero3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -661,7 +701,8 @@ func (item *MyZero3) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 }
 
 func (item *MyZero3) InternalReadTL2(r []byte, block byte) (_ []byte, err error) {
-
+	currentR := r
+	Unused(currentR)
 	return r, nil
 }
 
@@ -676,9 +717,7 @@ func (item *MyZero3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 
 	var block byte
 	var index int
-	if currentSize == 0 {
-		index = 0
-	} else {
+	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
 		}
@@ -686,8 +725,6 @@ func (item *MyZero3) ReadTL2(r []byte, ctx *basictl.TL2ReadContext) (_ []byte, e
 			if currentR, index, err = basictl.TL2ParseSize(currentR); err != nil {
 				return r, err
 			}
-		} else {
-			index = 0
 		}
 	}
 	if index != 0 {

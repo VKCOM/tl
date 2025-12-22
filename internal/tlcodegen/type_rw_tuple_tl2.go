@@ -34,13 +34,14 @@ func (trw *TypeRWBrackets) writeTL2Call(
 	ins *InternalNamespace,
 	refObject bool,
 ) string {
-	sz := fmt.Sprintf("%[5]s, %[1]s, sz = %[4]s%[3]sInternalWriteTL2(%[5]s, %[1]s, %[6]v, %[2]s)",
+	sz := fmt.Sprintf("%[5]s, %[1]s, %[7]s = %[4]s%[3]sInternalWriteTL2(%[5]s, %[1]s, %[6]v, %[2]s)",
 		targetSizes,
 		addAmpersand(refObject, targetObject),
 		addBytes(trw.wr.goGlobalName, bytesVersion),
 		trw.wr.ins.Prefix(directImports, ins),
 		targetBytes,
 		zeroIfEmpty,
+		ifString(zeroIfEmpty, "sz", "_"),
 	)
 	if zeroIfEmpty {
 		sz = fmt.Sprintf("if %s; sz != 0 {", sz)

@@ -100,25 +100,21 @@ func (item *VectorAColor) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorAColor) CalculateLayout(sizes []int) []int {
-	ptr := (*[]AColor)(item)
-	sizes = BuiltinVectorAColorCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorAColor) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]AColor)(item)
-	w, sizes = BuiltinVectorAColorInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorAColor) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]AColor)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorAColorCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorAColorInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -224,25 +220,21 @@ func (item *VectorCyc1MyCycle) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorCyc1MyCycle) CalculateLayout(sizes []int) []int {
-	ptr := (*[]Cyc1MyCycle)(item)
-	sizes = BuiltinVectorCyc1MyCycleCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorCyc1MyCycle) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]Cyc1MyCycle)(item)
-	w, sizes = BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorCyc1MyCycle) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]Cyc1MyCycle)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorCyc1MyCycleCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorCyc1MyCycleInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -348,25 +340,21 @@ func (item *VectorDictionaryFieldString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorDictionaryFieldString) CalculateLayout(sizes []int) []int {
-	ptr := (*map[string]string)(item)
-	sizes = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorDictionaryFieldString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*map[string]string)(item)
-	w, sizes = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorDictionaryFieldString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*map[string]string)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -472,25 +460,21 @@ func (item *VectorDictionaryFieldStringBytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorDictionaryFieldStringBytes) CalculateLayout(sizes []int) []int {
-	ptr := (*[]DictionaryFieldStringBytes)(item)
-	sizes = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorDictionaryFieldStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]DictionaryFieldStringBytes)(item)
-	w, sizes = BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorDictionaryFieldStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]DictionaryFieldStringBytes)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -578,25 +562,21 @@ func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteJ
 	return w
 }
 
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int) []int {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	w, sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -702,25 +682,21 @@ func (item *VectorInt) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorInt) CalculateLayout(sizes []int) []int {
-	ptr := (*[]int32)(item)
-	sizes = BuiltinVectorIntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]int32)(item)
-	w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]int32)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorIntCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorIntInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -782,47 +758,65 @@ func (item *VectorIntBoxedMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *VectorIntBoxedMaybe) CalculateLayout(sizes []int) []int {
+func (item *VectorIntBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
 	if item.Ok {
-		sizes[sizePosition] += 1
-		sizes[sizePosition] += basictl.TL2CalculateSize(1)
-		currentPosition := len(sizes)
-		if len(item.Value) != 0 {
-			sizes = BuiltinVectorIntCalculateLayout(sizes, &item.Value)
-			if sizes[currentPosition] != 0 {
-				sizes[sizePosition] += sizes[currentPosition]
-				sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-			}
+		currentSize += basictl.TL2CalculateSize(1)
+		lastUsedByte = currentSize
+
+		if sizes, sz = BuiltinVectorIntCalculateLayout(sizes, true, &item.Value); sz != 0 {
+			currentSize += sz
+			lastUsedByte = currentSize
 		}
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *VectorIntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorIntBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
 
 	if item.Ok {
-		currentPosition := len(w)
-		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
-		if len(item.Value) != 0 {
-			if sizes[0] != 0 {
-				w[currentPosition] |= (1 << 1)
-				w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Value)
-			} else {
-				sizes = sizes[1:]
-			}
+		currentBlock |= 1
+		if w, sizes, sz = BuiltinVectorIntInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+			currentBlock |= 2
 		}
 	}
-	return w, sizes
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
 }
 
 func (item *VectorIntBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -948,47 +942,65 @@ func (item *VectorIntMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *VectorIntMaybe) CalculateLayout(sizes []int) []int {
+func (item *VectorIntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
 	if item.Ok {
-		sizes[sizePosition] += 1
-		sizes[sizePosition] += basictl.TL2CalculateSize(1)
-		currentPosition := len(sizes)
-		if len(item.Value) != 0 {
-			sizes = BuiltinVectorIntCalculateLayout(sizes, &item.Value)
-			if sizes[currentPosition] != 0 {
-				sizes[sizePosition] += sizes[currentPosition]
-				sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-			}
+		currentSize += basictl.TL2CalculateSize(1)
+		lastUsedByte = currentSize
+
+		if sizes, sz = BuiltinVectorIntCalculateLayout(sizes, true, &item.Value); sz != 0 {
+			currentSize += sz
+			lastUsedByte = currentSize
 		}
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *VectorIntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *VectorIntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
 
 	if item.Ok {
-		currentPosition := len(w)
-		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
-		if len(item.Value) != 0 {
-			if sizes[0] != 0 {
-				w[currentPosition] |= (1 << 1)
-				w, sizes = BuiltinVectorIntInternalWriteTL2(w, sizes, &item.Value)
-			} else {
-				sizes = sizes[1:]
-			}
+		currentBlock |= 1
+		if w, sizes, sz = BuiltinVectorIntInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+			currentBlock |= 2
 		}
 	}
-	return w, sizes
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
 }
 
 func (item *VectorIntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {

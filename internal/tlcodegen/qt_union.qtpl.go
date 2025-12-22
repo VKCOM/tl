@@ -443,12 +443,15 @@ func (item *`)
 			qw422016.N().S(`    return w
 `)
 		} else {
-			qw422016.N().S(`    var sizes []int
+			qw422016.N().S(`    var sizes, sizes2 []int
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes, false)
+    w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+    if len(sizes2) != 0 {
+        panic("tl2: internal write did not consume all size data")
+    }
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }

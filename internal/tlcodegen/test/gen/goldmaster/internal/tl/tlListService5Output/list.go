@@ -17,10 +17,9 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 type ListService5Output struct {
-	Flag uint32
-	Head cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output // Conditional: item.Flag.0
-	Tail *ListService5Output                                   // Conditional: item.Flag.0
-
+	Flag     uint32
+	Head     cycle_16847572a0831d4cd4c0c0fb513151f3.Service5Output // Conditional: item.Flag.0
+	Tail     *ListService5Output                                   // Conditional: item.Flag.0
 	tl2mask0 byte
 }
 
@@ -286,109 +285,94 @@ func (item *ListService5Output) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *ListService5Output) CalculateLayout(sizes []int) []int {
+func (item *ListService5Output) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 47713501)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.Flag
 	if item.Flag != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&1 != 0 {
+		sizes, sz = item.Head.CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&2 != 0 {
+		sizes, sz = (*item.Tail).CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	// calculate layout for item.Head
-	currentPosition := len(sizes)
-	sizes = item.Head.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.Tail
-	currentPosition = len(sizes)
-	if item.Tail != nil {
-		sizes = (*item.Tail).CalculateLayout(sizes)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *ListService5Output) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 47713501 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.Flag
 	if item.Flag != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.Flag)
-		}
+		w = basictl.NatWrite(w, item.Flag)
+		currentBlock |= 2
 	}
-	// write item.Head
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = item.Head.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
+	if item.tl2mask0&1 != 0 {
+		w, sizes, _ = item.Head.InternalWriteTL2(w, sizes, false)
+		currentBlock |= 4
 	}
-	// write item.Tail
-	if item.Tail != nil {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = item.Tail.InternalWriteTL2(w, sizes)
-		} else {
-			sizes = sizes[1:]
-		}
+	if item.tl2mask0&2 != 0 {
+		w, sizes, _ = item.Tail.InternalWriteTL2(w, sizes, false)
+		currentBlock |= 8
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *ListService5Output) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -404,13 +388,13 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -422,32 +406,27 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("list", index)
 		}
 	}
-
-	// read item.Flag
-	if block&(1<<1) != 0 {
+	item.tl2mask0 = 0
+	if block&2 != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.Flag); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Flag = 0
 	}
-
-	// read item.Head
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
+		item.tl2mask0 |= 1
 		if currentR, err = item.Head.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Head.Reset()
 	}
-
-	// read item.Tail
-	if block&(1<<3) != 0 {
+	if block&8 != 0 {
+		item.tl2mask0 |= 2
 		if item.Tail == nil {
 			var value ListService5Output
 			item.Tail = &value
@@ -456,13 +435,11 @@ func (item *ListService5Output) InternalReadTL2(r []byte) (_ []byte, err error) 
 			return currentR, err
 		}
 	} else {
-		if item.Tail == nil {
-			var value ListService5Output
-			item.Tail = &value
+		if item.Tail != nil {
+			item.Tail.Reset()
 		}
-		item.Tail.Reset()
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

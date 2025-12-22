@@ -87,25 +87,21 @@ func (item *TupleCycleTuple) WriteJSONOpt(tctx *basictl.JSONWriteContext, w []by
 	return w, nil
 }
 
-func (item *TupleCycleTuple) CalculateLayout(sizes []int) []int {
-	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	sizes = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TupleCycleTuple) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
-	w, sizes = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *TupleCycleTuple) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]cycle_b51088a4226835d54f08524a36f8aa77.CycleTuple)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = cycle_b51088a4226835d54f08524a36f8aa77.BuiltinTupleCycleTupleInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

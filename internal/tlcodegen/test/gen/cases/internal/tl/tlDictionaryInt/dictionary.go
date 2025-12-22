@@ -104,25 +104,21 @@ func (item *DictionaryInt) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryInt) CalculateLayout(sizes []int) []int {
-	ptr := (*map[string]int32)(item)
-	sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *DictionaryInt) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*map[string]int32)(item)
-	w, sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *DictionaryInt) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*map[string]int32)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -228,25 +224,21 @@ func (item *DictionaryIntBytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryIntBytes) CalculateLayout(sizes []int) []int {
-	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
-	sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *DictionaryIntBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
-	w, sizes = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *DictionaryIntBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]tlDictionaryFieldInt.DictionaryFieldIntBytes)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorDictionaryFieldInt.BuiltinVectorDictionaryFieldIntBytesInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

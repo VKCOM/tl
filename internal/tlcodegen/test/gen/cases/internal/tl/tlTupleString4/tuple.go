@@ -103,25 +103,21 @@ func (item *TupleString4) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleString4) CalculateLayout(sizes []int) []int {
-	ptr := (*[4]string)(item)
-	sizes = tlBuiltinTuple4String.BuiltinTuple4StringCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TupleString4) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[4]string)(item)
-	w, sizes = tlBuiltinTuple4String.BuiltinTuple4StringInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *TupleString4) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[4]string)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinTuple4String.BuiltinTuple4StringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinTuple4String.BuiltinTuple4StringInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -227,25 +223,21 @@ func (item *TupleString4Bytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *TupleString4Bytes) CalculateLayout(sizes []int) []int {
-	ptr := (*[4][]byte)(item)
-	sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TupleString4Bytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[4][]byte)(item)
-	w, sizes = tlBuiltinTuple4String.BuiltinTuple4StringBytesInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *TupleString4Bytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[4][]byte)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinTuple4String.BuiltinTuple4StringBytesCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinTuple4String.BuiltinTuple4StringBytesInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

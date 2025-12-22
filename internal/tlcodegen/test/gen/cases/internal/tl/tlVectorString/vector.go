@@ -103,25 +103,21 @@ func (item *VectorString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorString) CalculateLayout(sizes []int) []int {
-	ptr := (*[]string)(item)
-	sizes = tlBuiltinVectorString.BuiltinVectorStringCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]string)(item)
-	w, sizes = tlBuiltinVectorString.BuiltinVectorStringInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]string)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorString.BuiltinVectorStringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorString.BuiltinVectorStringInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -227,25 +223,21 @@ func (item *VectorStringBytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *VectorStringBytes) CalculateLayout(sizes []int) []int {
-	ptr := (*[][]byte)(item)
-	sizes = tlBuiltinVectorString.BuiltinVectorStringBytesCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *VectorStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[][]byte)(item)
-	w, sizes = tlBuiltinVectorString.BuiltinVectorStringBytesInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *VectorStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[][]byte)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinVectorString.BuiltinVectorStringBytesCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinVectorString.BuiltinVectorStringBytesInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

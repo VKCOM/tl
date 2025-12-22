@@ -82,29 +82,41 @@ func (item *CasesBytesTestEnum) WriteBoxed(w []byte) []byte {
 	return w
 }
 
-func (item *CasesBytesTestEnum) CalculateLayout(sizes []int) []int {
-	switch item.index {
-	case 0:
-		sizes = append(sizes, 0)
-	default:
-		sizes = append(sizes, 1+basictl.TL2CalculateSize(item.index))
+func (item *CasesBytesTestEnum) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	currentSize := 1
+	lastUsedByte := 0
+	if item.index != 0 {
+		currentSize += basictl.TL2CalculateSize(item.index)
+		lastUsedByte = currentSize
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes = append(sizes, currentSize)
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	return sizes, currentSize
 }
 
-func (item *CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	switch item.index {
-	case 0:
-		sizes = sizes[1:]
-		w = basictl.TL2WriteSize(w, 0)
-	default:
-		currentSize := sizes[0]
-		sizes = sizes[1:]
-		w = basictl.TL2WriteSize(w, currentSize)
+func (item *CasesBytesTestEnum) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	currentSize := sizes[0]
+	sizes = sizes[1:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	if item.index != 0 {
 		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, item.index)
+	} else {
+		w = append(w, 0)
 	}
-	return w, sizes
+	return w, sizes, currentSize
 }
 
 func (item *CasesBytesTestEnum) InternalReadTL2(r []byte) (_ []byte, err error) {
@@ -138,12 +150,15 @@ func (item *CasesBytesTestEnum) InternalReadTL2(r []byte) (_ []byte, err error) 
 	return r, nil
 }
 func (item *CasesBytesTestEnum) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

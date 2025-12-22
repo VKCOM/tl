@@ -88,25 +88,21 @@ func (item *TuplePairTupleIntTupleInt2) WriteJSONOpt(tctx *basictl.JSONWriteCont
 	return w, nil
 }
 
-func (item *TuplePairTupleIntTupleInt2) CalculateLayout(sizes []int) []int {
-	ptr := (*[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *TuplePairTupleIntTupleInt2) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
-	w, sizes = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *TuplePairTupleIntTupleInt2) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = tlBuiltinTuple2PairTupleIntTupleInt.BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w, sizes, false, ptr)
+
+	internal.Unused(ptr)
+	internal.Unused(currentSize)
+	internal.Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

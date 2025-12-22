@@ -29,9 +29,8 @@ type CasesTestAllPossibleFieldConfigs struct {
 	F13 []int32 // Conditional: item.Local.3
 	F20 int32   // Conditional: nat_outer.0
 	// F21 (TrueType) // Conditional: nat_outer.1
-	F22 []int32 // Conditional: nat_outer.2
-	F23 []int32 // Conditional: nat_outer.3
-
+	F22      []int32 // Conditional: nat_outer.2
+	F23      []int32 // Conditional: nat_outer.3
 	tl2mask0 byte
 }
 
@@ -710,309 +709,176 @@ func (item *CasesTestAllPossibleFieldConfigs) WriteJSONOpt(tctx *basictl.JSONWri
 	return append(w, '}'), nil
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int) []int {
+func (item *CasesTestAllPossibleFieldConfigs) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 4217910995)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.Local
 	if item.Local != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F00
 	if item.F00 != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
-	var trueF01 tlTrue.True
-	// calculate layout for trueF01
-	currentPosition := len(sizes)
-	sizes = trueF01.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
+	if false {
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F02
-	currentPosition = len(sizes)
-	if len(item.F02) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F02)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	if sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, true, &item.F02); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F03
-	currentPosition = len(sizes)
-	if len(item.F03) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F03)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	if sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, true, &item.F03); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F10
-	if item.F10 != 0 {
-
-		lastUsedByte = 1
+	if item.tl2mask0&1 != 0 {
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F12
-	currentPosition = len(sizes)
-	if len(item.F12) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F12)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	if item.tl2mask0&2 != 0 {
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F13
-	currentPosition = len(sizes)
-	if len(item.F13) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F13)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
+	currentSize++
+	if item.tl2mask0&4 != 0 {
+		sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, false, &item.F12)
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F20
-	if item.F20 != 0 {
-
-		lastUsedByte = 2
+	if item.tl2mask0&8 != 0 {
+		sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, false, &item.F13)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&16 != 0 {
 		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&32 != 0 {
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&64 != 0 {
+		sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, false, &item.F22)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&128 != 0 {
+		sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, false, &item.F23)
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	var trueF21 tlTrue.True
-	// calculate layout for trueF21
-	currentPosition = len(sizes)
-	sizes = trueF21.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 2
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.F22
-	currentPosition = len(sizes)
-	if len(item.F22) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F22)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.F23
-	currentPosition = len(sizes)
-	if len(item.F23) != 0 {
-		sizes = tlBuiltinTupleInt.BuiltinTupleIntCalculateLayout(sizes, &item.F23)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *CasesTestAllPossibleFieldConfigs) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 4217910995 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.Local
 	if item.Local != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.Local)
-		}
+		w = basictl.NatWrite(w, item.Local)
+		currentBlock |= 2
 	}
-	// write item.F00
 	if item.F00 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 2)
-			w = basictl.IntWrite(w, item.F00)
-		}
+		w = basictl.IntWrite(w, item.F00)
+		currentBlock |= 4
 	}
-	var trueF01 tlTrue.True
-	// write trueF01
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = trueF01.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
+	if false {
+		currentBlock |= 8
 	}
-	// write item.F02
-	if len(item.F02) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F02)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F02); sz != 0 {
+		currentBlock |= 16
 	}
-	// write item.F03
-	if len(item.F03) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 5)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F03)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, true, &item.F03); sz != 0 {
+		currentBlock |= 32
 	}
-	// write item.F10
-	if item.F10 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 6)
-			w = basictl.IntWrite(w, item.F10)
-		}
+	if item.tl2mask0&1 != 0 {
+		w = basictl.IntWrite(w, item.F10)
+		currentBlock |= 64
 	}
-
-	// add byte for fields with index 8..15
+	if item.tl2mask0&2 != 0 {
+		currentBlock |= 128
+	}
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
-	if serializedSize != currentSize {
-		currentBlockPosition = len(w)
+	// start the next block
+	currentBlockPosition = len(w)
+	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
-		serializedSize += 1
-	} else {
-		return w, sizes
 	}
-	// write item.F12
-	if len(item.F12) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 0)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F12)
-		} else {
-			sizes = sizes[1:]
-		}
+	if item.tl2mask0&4 != 0 {
+		w, sizes, _ = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F12)
+		currentBlock |= 1
 	}
-	// write item.F13
-	if len(item.F13) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 1)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F13)
-		} else {
-			sizes = sizes[1:]
-		}
+	if item.tl2mask0&8 != 0 {
+		w, sizes, _ = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F13)
+		currentBlock |= 2
 	}
-	// write item.F20
-	if item.F20 != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 2)
-			w = basictl.IntWrite(w, item.F20)
-		}
+	if item.tl2mask0&16 != 0 {
+		w = basictl.IntWrite(w, item.F20)
+		currentBlock |= 4
 	}
-	var trueF21 tlTrue.True
-	// write trueF21
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = trueF21.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
+	if item.tl2mask0&32 != 0 {
+		currentBlock |= 8
 	}
-	// write item.F22
-	if len(item.F22) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F22)
-		} else {
-			sizes = sizes[1:]
-		}
+	if item.tl2mask0&64 != 0 {
+		w, sizes, _ = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F22)
+		currentBlock |= 16
 	}
-	// write item.F23
-	if len(item.F23) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 5)
-			w, sizes = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, &item.F23)
-		} else {
-			sizes = sizes[1:]
-		}
+	if item.tl2mask0&128 != 0 {
+		w, sizes, _ = tlBuiltinTupleInt.BuiltinTupleIntInternalWriteTL2(w, sizes, false, &item.F23)
+		currentBlock |= 32
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *CasesTestAllPossibleFieldConfigs) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -1028,13 +894,13 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -1046,68 +912,55 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("cases.testAllPossibleFieldConfigs", index)
 		}
 	}
-
-	// read item.Local
-	if block&(1<<1) != 0 {
+	item.tl2mask0 = 0
+	if block&2 != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.Local); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.Local = 0
 	}
-
-	// read item.F00
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
 		if currentR, err = basictl.IntRead(currentR, &item.F00); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F00 = 0
 	}
-
-	var trueF01 tlTrue.True
-	// read trueF01
-	if block&(1<<3) != 0 {
-		if currentR, err = trueF01.InternalReadTL2(currentR); err != nil {
+	if block&8 != 0 {
+		if currentR, err = basictl.SkipSizedValue(currentR); err != nil {
 			return currentR, err
 		}
-	} else {
-		trueF01.Reset()
 	}
-
-	// read item.F02
-	if block&(1<<4) != 0 {
+	if block&16 != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F02); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F02 = item.F02[:0]
 	}
-
-	// read item.F03
-	if block&(1<<5) != 0 {
+	if block&32 != 0 {
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F03); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F03 = item.F03[:0]
 	}
-
-	// read item.F10
-	if block&(1<<6) != 0 {
+	if block&64 != 0 {
+		item.tl2mask0 |= 1
 		if currentR, err = basictl.IntRead(currentR, &item.F10); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F10 = 0
 	}
-
-	// read next block for fields 8..15
+	if block&128 != 0 {
+		item.tl2mask0 |= 2
+	}
+	// start the next block
 	if len(currentR) > 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return currentR, err
@@ -1115,62 +968,50 @@ func (item *CasesTestAllPossibleFieldConfigs) InternalReadTL2(r []byte) (_ []byt
 	} else {
 		block = 0
 	}
-
-	// read item.F12
-	if block&(1<<0) != 0 {
+	if block&1 != 0 {
+		item.tl2mask0 |= 4
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F12); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F12 = item.F12[:0]
 	}
-
-	// read item.F13
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
+		item.tl2mask0 |= 8
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F13); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F13 = item.F13[:0]
 	}
-
-	// read item.F20
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
+		item.tl2mask0 |= 16
 		if currentR, err = basictl.IntRead(currentR, &item.F20); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F20 = 0
 	}
-
-	var trueF21 tlTrue.True
-	// read trueF21
-	if block&(1<<3) != 0 {
-		if currentR, err = trueF21.InternalReadTL2(currentR); err != nil {
-			return currentR, err
-		}
-	} else {
-		trueF21.Reset()
+	if block&8 != 0 {
+		item.tl2mask0 |= 32
 	}
-
-	// read item.F22
-	if block&(1<<4) != 0 {
+	if block&16 != 0 {
+		item.tl2mask0 |= 64
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F22); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F22 = item.F22[:0]
 	}
-
-	// read item.F23
-	if block&(1<<5) != 0 {
+	if block&32 != 0 {
+		item.tl2mask0 |= 128
 		if currentR, err = tlBuiltinTupleInt.BuiltinTupleIntInternalReadTL2(currentR, &item.F23); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F23 = item.F23[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

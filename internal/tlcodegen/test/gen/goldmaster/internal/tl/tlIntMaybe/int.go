@@ -54,41 +54,66 @@ func (item *IntMaybe) WriteBoxed(w []byte) []byte {
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *IntMaybe) CalculateLayout(sizes []int) []int {
+func (item *IntMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if item.Ok {
-		sizes[sizePosition] += 1
-		sizes[sizePosition] += basictl.TL2CalculateSize(1)
-		if item.Value != 0 {
 
-			sizes[sizePosition] += 4
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
+	if item.Ok {
+		currentSize += basictl.TL2CalculateSize(1)
+		lastUsedByte = currentSize
+
+		if item.Value != 0 {
+			currentSize += 4
+			lastUsedByte = currentSize
 		}
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *IntMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
 
 	if item.Ok {
-		currentPosition := len(w)
-		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
+		currentBlock |= 1
 		if item.Value != 0 {
-			if 4 != 0 {
-				w[currentPosition] |= (1 << 1)
-				w = basictl.IntWrite(w, item.Value)
-			}
+			w = basictl.IntWrite(w, item.Value)
+			currentBlock |= 2
 		}
 	}
-	return w, sizes
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, currentSize
 }
 
 func (item *IntMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {

@@ -83,12 +83,13 @@ func BuiltinVectorDictionaryElemStrangeStringWrite(w []byte, m map[uint32]string
 	return w
 }
 
-func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, m *map[uint32]string) []int {
+func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, optimizeEmpty bool, m *map[uint32]string) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
-	if len(*m) != 0 {
-		sizes[sizePosition] += basictl.TL2CalculateSize(len(*m))
-	}
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
 
 	keys := make([]uint32, 0, len(*m))
 	for k := range *m {
@@ -98,24 +99,41 @@ func BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes []int, m *map
 		return keys[i] < keys[j]
 	})
 
-	for i := 0; i < len(keys); i++ {
-		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{Key: keys[i], Value: (*m)[keys[i]]}
-		currentPosition := len(sizes)
-		sizes = elem.CalculateLayout(sizes)
-		sizes[sizePosition] += sizes[currentPosition]
-		sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
+	if len(*m) != 0 {
+		currentSize += basictl.TL2CalculateSize(len(*m))
+		lastUsedByte = currentSize
 	}
-	return sizes
+	for _, key := range keys {
+		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{Key: key, Value: (*m)[key]}
+		sizes, sz = elem.CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []int, m *map[uint32]string) ([]byte, []int) {
+func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m *map[uint32]string) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if len(*m) != 0 {
-		w = basictl.TL2WriteSize(w, len(*m))
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	w = basictl.TL2WriteSize(w, len(*m))
 
 	keys := make([]uint32, 0, len(*m))
 	for k := range *m {
@@ -125,11 +143,16 @@ func BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w []byte, sizes []
 		return keys[i] < keys[j]
 	})
 
-	for i := 0; i < len(keys); i++ {
-		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{Key: keys[i], Value: (*m)[keys[i]]}
-		w, sizes = elem.InternalWriteTL2(w, sizes)
+	var sz int
+	for _, key := range keys {
+		elem := tlDictionaryElemStrangeString.DictionaryElemStrangeString{Key: key, Value: (*m)[key]}
+		w, sizes, _ = elem.InternalWriteTL2(w, sizes, false)
 	}
-	return w, sizes
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, currentSize
 }
 
 func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[uint32]string) (_ []byte, err error) {

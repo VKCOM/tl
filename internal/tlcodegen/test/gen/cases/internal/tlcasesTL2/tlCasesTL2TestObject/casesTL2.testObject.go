@@ -25,13 +25,12 @@ var _ = internal.ErrorInvalidEnumTag
 type CasesTL2TestObject struct {
 	N uint32
 	// F1 (TrueType) // Conditional: item.N.0
-	F2 bool
-	F3 []bool
-	F4 tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions
-	F5 bool // Conditional: item.N.1
-	F6 []cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion
-	F7 []tlTrue.True // Conditional: item.N.14
-
+	F2       bool
+	F3       []bool
+	F4       tlBenchmarksVrutoyPositions.BenchmarksVrutoyPositions
+	F5       bool // Conditional: item.N.1
+	F6       []cycle_4a1568ff5f665a65be83c5d14a33c0d0.BenchmarksVrutoyTopLevelUnion
+	F7       []tlTrue.True // Conditional: item.N.14
 	tl2mask0 byte
 }
 
@@ -421,196 +420,136 @@ func (item *CasesTL2TestObject) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *CasesTL2TestObject) CalculateLayout(sizes []int) []int {
+func (item *CasesTL2TestObject) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 1335287189)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.N
 	if item.N != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
-	// calculate layout for item.F2
+	if item.tl2mask0&1 != 0 {
+		lastUsedByte = currentSize
+	}
 	if item.F2 {
-
-		lastUsedByte = 1
-		currentSize += 0
-	}
-
-	// calculate layout for item.F3
-	currentPosition := len(sizes)
-	if len(item.F3) != 0 {
-		sizes = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, &item.F3)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.F4
-	currentPosition = len(sizes)
-	sizes = item.F4.CalculateLayout(sizes)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.F5
-	if item.F5 {
-
-		lastUsedByte = 1
 		currentSize += 1
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinVectorBool.BuiltinVectorBoolCalculateLayout(sizes, true, &item.F3); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = item.F4.CalculateLayout(sizes, true); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if item.tl2mask0&2 != 0 {
+		currentSize += 1
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes, true, &item.F6); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	currentSize++
+	if item.tl2mask0&4 != 0 {
+		sizes, sz = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedCalculateLayout(sizes, false, &item.F7)
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	// calculate layout for item.F6
-	currentPosition = len(sizes)
-	if len(item.F6) != 0 {
-		sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionCalculateLayout(sizes, &item.F6)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.F7
-	currentPosition = len(sizes)
-	if len(item.F7) != 0 {
-		sizes = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedCalculateLayout(sizes, &item.F7)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *CasesTL2TestObject) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 1335287189 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.N
 	if item.N != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.N)
-		}
+		w = basictl.NatWrite(w, item.N)
+		currentBlock |= 2
 	}
-	// write item.F2
+	if item.tl2mask0&1 != 0 {
+		currentBlock |= 4
+	}
 	if item.F2 {
-		serializedSize += 0
-		currentBlock |= (1 << 3)
-
+		w = basictl.ByteBoolWriteTL2(w, item.F2)
+		currentBlock |= 8
 	}
-	// write item.F3
-	if len(item.F3) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = tlBuiltinVectorBool.BuiltinVectorBoolInternalWriteTL2(w, sizes, &item.F3)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = tlBuiltinVectorBool.BuiltinVectorBoolInternalWriteTL2(w, sizes, true, &item.F3); sz != 0 {
+		currentBlock |= 16
 	}
-	// write item.F4
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 5)
-		w, sizes = item.F4.InternalWriteTL2(w, sizes)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = item.F4.InternalWriteTL2(w, sizes, true); sz != 0 {
+		currentBlock |= 32
 	}
-	// write item.F5
-	if item.F5 {
-		serializedSize += 1
-		if 1 != 0 {
-			currentBlock |= (1 << 6)
-			w = basictl.ByteBoolWriteTL2(w, item.F5)
-		}
+	if item.tl2mask0&2 != 0 {
+		w = basictl.ByteBoolWriteTL2(w, item.F5)
+		currentBlock |= 64
 	}
-	// write item.F6
-	if len(item.F6) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 7)
-			w, sizes = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, &item.F6)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalWriteTL2(w, sizes, true, &item.F6); sz != 0 {
+		currentBlock |= 128
 	}
-
-	// add byte for fields with index 8..15
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
-	if serializedSize != currentSize {
-		currentBlockPosition = len(w)
+	// start the next block
+	currentBlockPosition = len(w)
+	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
-		serializedSize += 1
-	} else {
-		return w, sizes
 	}
-	// write item.F7
-	if len(item.F7) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 0)
-			w, sizes = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedInternalWriteTL2(w, sizes, &item.F7)
-		} else {
-			sizes = sizes[1:]
-		}
+	if item.tl2mask0&4 != 0 {
+		w, sizes, _ = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedInternalWriteTL2(w, sizes, false, &item.F7)
+		currentBlock |= 1
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *CasesTL2TestObject) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -626,13 +565,13 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -644,65 +583,57 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesTL2.testObject", index)
 		}
 	}
-
-	// read item.N
-	if block&(1<<1) != 0 {
+	item.tl2mask0 = 0
+	if block&2 != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.N = 0
 	}
-
-	// read item.F2
-	if block&(1<<3) != 0 {
-		item.F2 = true
+	if block&4 != 0 {
+		item.tl2mask0 |= 1
+	}
+	if block&8 != 0 {
+		if currentR, err = basictl.ByteBoolReadTL2(currentR, &item.F2); err != nil {
+			return currentR, err
+		}
 	} else {
 		item.F2 = false
 	}
-
-	// read item.F3
-	if block&(1<<4) != 0 {
+	if block&16 != 0 {
 		if currentR, err = tlBuiltinVectorBool.BuiltinVectorBoolInternalReadTL2(currentR, &item.F3); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F3 = item.F3[:0]
 	}
-
-	// read item.F4
-	if block&(1<<5) != 0 {
+	if block&32 != 0 {
 		if currentR, err = item.F4.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F4.Reset()
 	}
-
-	// read item.F5
-	if block&(1<<6) != 0 {
+	if block&64 != 0 {
+		item.tl2mask0 |= 2
 		if currentR, err = basictl.ByteBoolReadTL2(currentR, &item.F5); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F5 = false
 	}
-
-	// read item.F6
-	if block&(1<<7) != 0 {
+	if block&128 != 0 {
 		if currentR, err = tlBuiltinVectorBenchmarksVrutoyTopLevelUnion.BuiltinVectorBenchmarksVrutoyTopLevelUnionInternalReadTL2(currentR, &item.F6); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F6 = item.F6[:0]
 	}
-
-	// read next block for fields 8..15
+	// start the next block
 	if len(currentR) > 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return currentR, err
@@ -710,16 +641,15 @@ func (item *CasesTL2TestObject) InternalReadTL2(r []byte) (_ []byte, err error) 
 	} else {
 		block = 0
 	}
-
-	// read item.F7
-	if block&(1<<0) != 0 {
+	if block&1 != 0 {
+		item.tl2mask0 |= 4
 		if currentR, err = tlBuiltinVectorTrueBoxed.BuiltinVectorTrueBoxedInternalReadTL2(currentR, &item.F7); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F7 = item.F7[:0]
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

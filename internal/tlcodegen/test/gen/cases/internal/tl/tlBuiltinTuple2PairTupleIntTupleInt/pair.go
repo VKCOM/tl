@@ -48,38 +48,58 @@ func BuiltinTuple2PairTupleIntTupleIntWrite(w []byte, vec *[2]tlPairTupleIntTupl
 	return w, nil
 }
 
-func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) []int {
-	currentSize := 0
+func BuiltinTuple2PairTupleIntTupleIntCalculateLayout(sizes []int, optimizeEmpty bool, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if 2 != 0 {
 		currentSize += basictl.TL2CalculateSize(2)
+		lastUsedByte = currentSize
 	}
-
 	for i := 0; i < 2; i++ {
-		currentPosition := len(sizes)
-		sizes = (*vec)[i].CalculateLayout(sizes)
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
+		sizes, sz = (*vec)[i].CalculateLayout(sizes, false)
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
-
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) ([]byte, []int) {
+func BuiltinTuple2PairTupleIntTupleIntInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if 2 != 0 {
-		w = basictl.TL2WriteSize(w, 2)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, 2)
 
+	var sz int
 	for i := 0; i < 2; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		w, sizes, _ = (*vec)[i].InternalWriteTL2(w, sizes, false)
 	}
-	return w, sizes
+	internal.Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTuple2PairTupleIntTupleIntInternalReadTL2(r []byte, vec *[2]tlPairTupleIntTupleInt.PairTupleIntTupleInt) (_ []byte, err error) {

@@ -100,25 +100,21 @@ func (item *DictionaryString) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryString) CalculateLayout(sizes []int) []int {
-	ptr := (*map[string]string)(item)
-	sizes = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *DictionaryString) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*map[string]string)(item)
-	w, sizes = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *DictionaryString) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*map[string]string)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldStringCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldStringInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -224,25 +220,21 @@ func (item *DictionaryStringBytes) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *DictionaryStringBytes) CalculateLayout(sizes []int) []int {
-	ptr := (*[]DictionaryFieldStringBytes)(item)
-	sizes = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *DictionaryStringBytes) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*[]DictionaryFieldStringBytes)(item)
-	w, sizes = BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *DictionaryStringBytes) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*[]DictionaryFieldStringBytes)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldStringBytesCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldStringBytesInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -330,25 +322,21 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteJSONOpt(tctx
 	return w
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) CalculateLayout(sizes []int) []int {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, ptr)
-	return sizes
-}
-
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
-	w, sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, ptr)
-	return w, sizes
-}
-
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxed) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*map[string]UsefulServiceUserEntityPaymentItem)(item)
+	var sz int
+	var currentSize int
+	sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, false, ptr)
+	currentSize += sz
+	w, sizes, _ = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, false, ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -410,47 +398,65 @@ func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) WriteBo
 	return basictl.NatWrite(w, 0x27930a7b)
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) CalculateLayout(sizes []int) []int {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 1
+	lastUsedByte := 0
+	var sz int
+
 	if item.Ok {
-		sizes[sizePosition] += 1
-		sizes[sizePosition] += basictl.TL2CalculateSize(1)
-		currentPosition := len(sizes)
-		if len(item.Value) != 0 {
-			sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, &item.Value)
-			if sizes[currentPosition] != 0 {
-				sizes[sizePosition] += sizes[currentPosition]
-				sizes[sizePosition] += basictl.TL2CalculateSize(sizes[currentPosition])
-			}
+		currentSize += basictl.TL2CalculateSize(1)
+		lastUsedByte = currentSize
+
+		if sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedCalculateLayout(sizes, true, &item.Value); sz != 0 {
+			currentSize += sz
+			lastUsedByte = currentSize
 		}
 	}
-	return sizes
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
+func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
 	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
+	var currentBlock byte
+	currentBlockPosition := len(w)
+	w = append(w, 0)
 
 	if item.Ok {
-		currentPosition := len(w)
-		w = append(w, 1)
 		w = basictl.TL2WriteSize(w, 1)
-		if len(item.Value) != 0 {
-			if sizes[0] != 0 {
-				w[currentPosition] |= (1 << 1)
-				w, sizes = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, &item.Value)
-			} else {
-				sizes = sizes[1:]
-			}
+		currentBlock |= 1
+		if w, sizes, sz = BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternalWriteTL2(w, sizes, true, &item.Value); sz != 0 {
+			currentBlock |= 2
 		}
 	}
-	return w, sizes
+	w[currentBlockPosition] = currentBlock
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
 }
 
 func (item *DictionaryUsefulServiceUserEntityPaymentItemBoxedBoxedMaybe) InternalReadTL2(r []byte) (_ []byte, err error) {

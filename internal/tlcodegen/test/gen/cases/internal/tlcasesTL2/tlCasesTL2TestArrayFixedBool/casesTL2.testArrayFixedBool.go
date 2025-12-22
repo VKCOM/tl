@@ -248,170 +248,110 @@ func (item *CasesTL2TestArrayFixedBool) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *CasesTL2TestArrayFixedBool) CalculateLayout(sizes []int) []int {
+func (item *CasesTL2TestArrayFixedBool) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 4144287566)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.A1
-	currentPosition := len(sizes)
-	sizes = tlBuiltinTuple1Bool.BuiltinTuple1BoolCalculateLayout(sizes, &item.A1)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
+	if sizes, sz = tlBuiltinTuple1Bool.BuiltinTuple1BoolCalculateLayout(sizes, true, &item.A1); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinTuple0Bool.BuiltinTuple0BoolCalculateLayout(sizes, true, &item.A2); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinTuple7Bool.BuiltinTuple7BoolCalculateLayout(sizes, true, &item.A3); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinTuple8Bool.BuiltinTuple8BoolCalculateLayout(sizes, true, &item.A4); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinTuple11Bool.BuiltinTuple11BoolCalculateLayout(sizes, true, &item.A5); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = tlBuiltinTuple16Bool.BuiltinTuple16BoolCalculateLayout(sizes, true, &item.A6); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	// calculate layout for item.A2
-	currentPosition = len(sizes)
-	sizes = tlBuiltinTuple0Bool.BuiltinTuple0BoolCalculateLayout(sizes, &item.A2)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.A3
-	currentPosition = len(sizes)
-	sizes = tlBuiltinTuple7Bool.BuiltinTuple7BoolCalculateLayout(sizes, &item.A3)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.A4
-	currentPosition = len(sizes)
-	sizes = tlBuiltinTuple8Bool.BuiltinTuple8BoolCalculateLayout(sizes, &item.A4)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.A5
-	currentPosition = len(sizes)
-	sizes = tlBuiltinTuple11Bool.BuiltinTuple11BoolCalculateLayout(sizes, &item.A5)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// calculate layout for item.A6
-	currentPosition = len(sizes)
-	sizes = tlBuiltinTuple16Bool.BuiltinTuple16BoolCalculateLayout(sizes, &item.A6)
-	if sizes[currentPosition] != 0 {
-		lastUsedByte = 1
-		currentSize += sizes[currentPosition]
-		currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-	} else {
-		sizes = sizes[:currentPosition+1]
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	internal.Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *CasesTL2TestArrayFixedBool) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 4144287566 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.A1
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 1)
-		w, sizes = tlBuiltinTuple1Bool.BuiltinTuple1BoolInternalWriteTL2(w, sizes, &item.A1)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = tlBuiltinTuple1Bool.BuiltinTuple1BoolInternalWriteTL2(w, sizes, true, &item.A1); sz != 0 {
+		currentBlock |= 2
 	}
-	// write item.A2
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 2)
-		w, sizes = tlBuiltinTuple0Bool.BuiltinTuple0BoolInternalWriteTL2(w, sizes, &item.A2)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = tlBuiltinTuple0Bool.BuiltinTuple0BoolInternalWriteTL2(w, sizes, true, &item.A2); sz != 0 {
+		currentBlock |= 4
 	}
-	// write item.A3
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 3)
-		w, sizes = tlBuiltinTuple7Bool.BuiltinTuple7BoolInternalWriteTL2(w, sizes, &item.A3)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = tlBuiltinTuple7Bool.BuiltinTuple7BoolInternalWriteTL2(w, sizes, true, &item.A3); sz != 0 {
+		currentBlock |= 8
 	}
-	// write item.A4
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 4)
-		w, sizes = tlBuiltinTuple8Bool.BuiltinTuple8BoolInternalWriteTL2(w, sizes, &item.A4)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = tlBuiltinTuple8Bool.BuiltinTuple8BoolInternalWriteTL2(w, sizes, true, &item.A4); sz != 0 {
+		currentBlock |= 16
 	}
-	// write item.A5
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 5)
-		w, sizes = tlBuiltinTuple11Bool.BuiltinTuple11BoolInternalWriteTL2(w, sizes, &item.A5)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = tlBuiltinTuple11Bool.BuiltinTuple11BoolInternalWriteTL2(w, sizes, true, &item.A5); sz != 0 {
+		currentBlock |= 32
 	}
-	// write item.A6
-	serializedSize += sizes[0]
-	if sizes[0] != 0 {
-		serializedSize += basictl.TL2CalculateSize(sizes[0])
-		currentBlock |= (1 << 6)
-		w, sizes = tlBuiltinTuple16Bool.BuiltinTuple16BoolInternalWriteTL2(w, sizes, &item.A6)
-	} else {
-		sizes = sizes[1:]
+	if w, sizes, sz = tlBuiltinTuple16Bool.BuiltinTuple16BoolInternalWriteTL2(w, sizes, true, &item.A6); sz != 0 {
+		currentBlock |= 64
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	internal.Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *CasesTL2TestArrayFixedBool) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -427,13 +367,13 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -445,66 +385,52 @@ func (item *CasesTL2TestArrayFixedBool) InternalReadTL2(r []byte) (_ []byte, err
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, internal.ErrorInvalidUnionIndex("casesTL2.testArrayFixedBool", index)
 		}
 	}
-
-	// read item.A1
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = tlBuiltinTuple1Bool.BuiltinTuple1BoolInternalReadTL2(currentR, &item.A1); err != nil {
 			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple1Bool.BuiltinTuple1BoolReset(&item.A1)
 	}
-
-	// read item.A2
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
 		if currentR, err = tlBuiltinTuple0Bool.BuiltinTuple0BoolInternalReadTL2(currentR, &item.A2); err != nil {
 			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple0Bool.BuiltinTuple0BoolReset(&item.A2)
 	}
-
-	// read item.A3
-	if block&(1<<3) != 0 {
+	if block&8 != 0 {
 		if currentR, err = tlBuiltinTuple7Bool.BuiltinTuple7BoolInternalReadTL2(currentR, &item.A3); err != nil {
 			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple7Bool.BuiltinTuple7BoolReset(&item.A3)
 	}
-
-	// read item.A4
-	if block&(1<<4) != 0 {
+	if block&16 != 0 {
 		if currentR, err = tlBuiltinTuple8Bool.BuiltinTuple8BoolInternalReadTL2(currentR, &item.A4); err != nil {
 			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple8Bool.BuiltinTuple8BoolReset(&item.A4)
 	}
-
-	// read item.A5
-	if block&(1<<5) != 0 {
+	if block&32 != 0 {
 		if currentR, err = tlBuiltinTuple11Bool.BuiltinTuple11BoolInternalReadTL2(currentR, &item.A5); err != nil {
 			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple11Bool.BuiltinTuple11BoolReset(&item.A5)
 	}
-
-	// read item.A6
-	if block&(1<<6) != 0 {
+	if block&64 != 0 {
 		if currentR, err = tlBuiltinTuple16Bool.BuiltinTuple16BoolInternalReadTL2(currentR, &item.A6); err != nil {
 			return currentR, err
 		}
 	} else {
 		tlBuiltinTuple16Bool.BuiltinTuple16BoolReset(&item.A6)
 	}
-
+	internal.Unused(currentR)
 	return r, nil
 }
 

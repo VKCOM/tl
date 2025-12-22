@@ -43,36 +43,57 @@ func BuiltinTuple3Int32Write(w []byte, vec *[3]Int32) []byte {
 	return w
 }
 
-func BuiltinTuple3Int32CalculateLayout(sizes []int, vec *[3]Int32) []int {
-	currentSize := 0
+func BuiltinTuple3Int32CalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if 3 != 0 {
 		currentSize += basictl.TL2CalculateSize(3)
+		lastUsedByte = currentSize
 	}
-
 	for i := 0; i < 3; i++ {
-		sizes = (*vec)[i].CalculateLayout(sizes)
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTuple3Int32InternalWriteTL2(w []byte, sizes []int, vec *[3]Int32) ([]byte, []int) {
+func BuiltinTuple3Int32InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if 3 != 0 {
-		w = basictl.TL2WriteSize(w, 3)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, 3)
 
+	var sz int
 	for i := 0; i < 3; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		w = basictl.IntWrite(w, *(*int32)(&(*vec)[i]))
 	}
-	return w, sizes
+	Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTuple3Int32InternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, err error) {
@@ -182,36 +203,57 @@ func BuiltinTuple3Int32BoxedWrite(w []byte, vec *[3]Int32) []byte {
 	return w
 }
 
-func BuiltinTuple3Int32BoxedCalculateLayout(sizes []int, vec *[3]Int32) []int {
-	currentSize := 0
+func BuiltinTuple3Int32BoxedCalculateLayout(sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]int, int) {
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
+
+	currentSize := 0
+	lastUsedByte := 0
+	var sz int
+
 	if 3 != 0 {
 		currentSize += basictl.TL2CalculateSize(3)
+		lastUsedByte = currentSize
 	}
-
 	for i := 0; i < 3; i++ {
-		sizes = (*vec)[i].CalculateLayout(sizes)
 		currentSize += 4
+		lastUsedByte = currentSize
 	}
-
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
+	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if optimizeEmpty && currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	} else {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func BuiltinTuple3Int32BoxedInternalWriteTL2(w []byte, sizes []int, vec *[3]Int32) ([]byte, []int) {
+func BuiltinTuple3Int32BoxedInternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, vec *[3]Int32) ([]byte, []int, int) {
 	currentSize := sizes[0]
 	sizes = sizes[1:]
-
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
 	w = basictl.TL2WriteSize(w, currentSize)
-	if 3 != 0 {
-		w = basictl.TL2WriteSize(w, 3)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
 	}
+	w = basictl.TL2WriteSize(w, 3)
 
+	var sz int
 	for i := 0; i < 3; i++ {
-		w, sizes = (*vec)[i].InternalWriteTL2(w, sizes)
+		w = basictl.IntWrite(w, *(*int32)(&(*vec)[i]))
 	}
-	return w, sizes
+	Unused(sz)
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	return w, sizes, currentSize
 }
 
 func BuiltinTuple3Int32BoxedInternalReadTL2(r []byte, vec *[3]Int32) (_ []byte, err error) {
@@ -378,24 +420,20 @@ func (item *Int32) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *Int32) CalculateLayout(sizes []int) []int {
-
-	return sizes
-}
-
-func (item *Int32) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	ptr := (*int32)(item)
-	w = basictl.IntWrite(w, *ptr)
-	return w, sizes
-}
-
 func (item *Int32) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
 	var sizes []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	ptr := (*int32)(item)
+	var sz int
+	var currentSize int
+	currentSize += 4
+	w = basictl.IntWrite(w, *ptr)
+
+	Unused(ptr)
+	Unused(currentSize)
+	Unused(sz)
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}

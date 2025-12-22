@@ -292,8 +292,7 @@ func TestBuf_ByteSliceHuge(t *testing.T) {
 
 func TestVectorBool(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
-		var val []bool
-		val = rapid.SliceOf(rapid.Bool()).Draw(t, "values")
+		val := rapid.SliceOf(rapid.Bool()).Draw(t, "values")
 		w := VectorBoolContentWriteTL2(nil, val)
 		val2 := make([]bool, len(val))
 		w2, err := VectorBoolContentReadTL2(w, val2)

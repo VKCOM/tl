@@ -415,316 +415,154 @@ func (item *UseDictUgly) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (item *UseDictUgly) CalculateLayout(sizes []int) []int {
+func (item *UseDictUgly) CalculateLayout(sizes []int, optimizeEmpty bool) ([]int, int) {
+	sizes = append(sizes, 4221364247)
 	sizePosition := len(sizes)
 	sizes = append(sizes, 0)
 
-	currentSize := 0
+	currentSize := 1
 	lastUsedByte := 0
+	var sz int
 
-	// calculate layout for item.N
 	if item.N != 0 {
-
-		lastUsedByte = 1
 		currentSize += 4
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes, true, &item.A); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes, true, &item.B); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes, true, &item.C); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes, true, &item.D); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes, true, &item.E); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes, true, &item.F); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	currentSize++
+	if sizes, sz = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes, true, &item.G); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes, true, &item.X); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes, true, &item.Y); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
+	}
+	if sizes, sz = BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes, true, &item.Z); sz != 0 {
+		currentSize += sz
+		lastUsedByte = currentSize
 	}
 
-	// calculate layout for item.A
-	currentPosition := len(sizes)
-	if len(item.A) != 0 {
-		sizes = BuiltinVectorDictionaryElemUglyIntStringCalculateLayout(sizes, &item.A)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.B
-	currentPosition = len(sizes)
-	if len(item.B) != 0 {
-		sizes = BuiltinVectorDictionaryElemStrangeStringCalculateLayout(sizes, &item.B)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.C
-	currentPosition = len(sizes)
-	if len(item.C) != 0 {
-		sizes = BuiltinVectorDictionaryElemPairIntIntIntCalculateLayout(sizes, &item.C)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.D
-	currentPosition = len(sizes)
-	if len(item.D) != 0 {
-		sizes = BuiltinVectorDictionaryElemTupleStringIntCalculateLayout(sizes, &item.D)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.E
-	currentPosition = len(sizes)
-	if len(item.E) != 0 {
-		sizes = BuiltinVectorDictionaryElemPairBoolAColorIntCalculateLayout(sizes, &item.E)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.F
-	currentPosition = len(sizes)
-	if len(item.F) != 0 {
-		sizes = BuiltinVectorDictionaryElemPairFloatDoubleIntCalculateLayout(sizes, &item.F)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 1
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.G
-	currentPosition = len(sizes)
-	if len(item.G) != 0 {
-		sizes = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntCalculateLayout(sizes, &item.G)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.X
-	currentPosition = len(sizes)
-	if len(item.X) != 0 {
-		sizes = BuiltinVectorDictionaryElemIntPairIntIntCalculateLayout(sizes, &item.X)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.Y
-	currentPosition = len(sizes)
-	if len(item.Y) != 0 {
-		sizes = BuiltinVectorDictionaryElemLongPairIntIntCalculateLayout(sizes, &item.Y)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// calculate layout for item.Z
-	currentPosition = len(sizes)
-	if len(item.Z) != 0 {
-		sizes = BuiltinVectorDictionaryElemStringPairIntIntCalculateLayout(sizes, &item.Z)
-		if sizes[currentPosition] != 0 {
-			lastUsedByte = 2
-			currentSize += sizes[currentPosition]
-			currentSize += basictl.TL2CalculateSize(sizes[currentPosition])
-		} else {
-			sizes = sizes[:currentPosition+1]
-		}
-	}
-
-	// append byte for each section until last mentioned field
-	if lastUsedByte != 0 {
-		currentSize += lastUsedByte
-	} else {
-		// remove unused values
-		sizes = sizes[:sizePosition+1]
+	if lastUsedByte < currentSize {
+		currentSize = lastUsedByte
 	}
 	sizes[sizePosition] = currentSize
-	return sizes
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
+	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
 }
 
-func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int) ([]byte, []int) {
-	currentSize := sizes[0]
-	sizes = sizes[1:]
-
-	serializedSize := 0
-
-	w = basictl.TL2WriteSize(w, currentSize)
-	if currentSize == 0 {
-		return w, sizes
+func (item *UseDictUgly) InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool) ([]byte, []int, int) {
+	if sizes[0] != 4221364247 {
+		panic("aja")
 	}
-
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
-	serializedSize += 1
-	// write item.N
 	if item.N != 0 {
-		serializedSize += 4
-		if 4 != 0 {
-			currentBlock |= (1 << 1)
-			w = basictl.NatWrite(w, item.N)
-		}
+		w = basictl.NatWrite(w, item.N)
+		currentBlock |= 2
 	}
-	// write item.A
-	if len(item.A) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w, sizes, &item.A)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemUglyIntStringInternalWriteTL2(w, sizes, true, &item.A); sz != 0 {
+		currentBlock |= 4
 	}
-	// write item.B
-	if len(item.B) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w, sizes, &item.B)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemStrangeStringInternalWriteTL2(w, sizes, true, &item.B); sz != 0 {
+		currentBlock |= 8
 	}
-	// write item.C
-	if len(item.C) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 4)
-			w, sizes = BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w, sizes, &item.C)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairIntIntIntInternalWriteTL2(w, sizes, true, &item.C); sz != 0 {
+		currentBlock |= 16
 	}
-	// write item.D
-	if len(item.D) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 5)
-			w, sizes = BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w, sizes, &item.D)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemTupleStringIntInternalWriteTL2(w, sizes, true, &item.D); sz != 0 {
+		currentBlock |= 32
 	}
-	// write item.E
-	if len(item.E) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 6)
-			w, sizes = BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w, sizes, &item.E)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairBoolAColorIntInternalWriteTL2(w, sizes, true, &item.E); sz != 0 {
+		currentBlock |= 64
 	}
-	// write item.F
-	if len(item.F) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 7)
-			w, sizes = BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w, sizes, &item.F)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairFloatDoubleIntInternalWriteTL2(w, sizes, true, &item.F); sz != 0 {
+		currentBlock |= 128
 	}
-
-	// add byte for fields with index 8..15
 	w[currentBlockPosition] = currentBlock
 	currentBlock = 0
-	if serializedSize != currentSize {
-		currentBlockPosition = len(w)
+	// start the next block
+	currentBlockPosition = len(w)
+	if len(w)-oldLen < currentSize {
 		w = append(w, 0)
-		serializedSize += 1
-	} else {
-		return w, sizes
 	}
-	// write item.G
-	if len(item.G) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 0)
-			w, sizes = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w, sizes, &item.G)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalWriteTL2(w, sizes, true, &item.G); sz != 0 {
+		currentBlock |= 1
 	}
-	// write item.X
-	if len(item.X) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 1)
-			w, sizes = BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w, sizes, &item.X)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemIntPairIntIntInternalWriteTL2(w, sizes, true, &item.X); sz != 0 {
+		currentBlock |= 2
 	}
-	// write item.Y
-	if len(item.Y) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 2)
-			w, sizes = BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w, sizes, &item.Y)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemLongPairIntIntInternalWriteTL2(w, sizes, true, &item.Y); sz != 0 {
+		currentBlock |= 4
 	}
-	// write item.Z
-	if len(item.Z) != 0 {
-		serializedSize += sizes[0]
-		if sizes[0] != 0 {
-			serializedSize += basictl.TL2CalculateSize(sizes[0])
-			currentBlock |= (1 << 3)
-			w, sizes = BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w, sizes, &item.Z)
-		} else {
-			sizes = sizes[1:]
-		}
+	if w, sizes, sz = BuiltinVectorDictionaryElemStringPairIntIntInternalWriteTL2(w, sizes, true, &item.Z); sz != 0 {
+		currentBlock |= 8
 	}
-	w[currentBlockPosition] = currentBlock
-	return w, sizes
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
+	}
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, 1
 }
 
 func (item *UseDictUgly) WriteTL2(w []byte, ctx *basictl.TL2WriteContext) []byte {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	sizes = item.CalculateLayout(sizes)
-	w, _ = item.InternalWriteTL2(w, sizes)
+	sizes, _ = item.CalculateLayout(sizes, false)
+	w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
@@ -740,13 +578,13 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
-	currentR := r[:currentSize]
-	r = r[currentSize:]
-
 	if currentSize == 0 {
 		item.Reset()
 		return r, nil
 	}
+	currentR := r[:currentSize]
+	r = r[currentSize:]
+
 	var block byte
 	if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 		return currentR, err
@@ -758,76 +596,59 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 			return currentR, err
 		}
 		if index != 0 {
-			// unknown cases for current type
-			item.Reset()
-			return r, nil
+			return r, ErrorInvalidUnionIndex("useDictUgly", index)
 		}
 	}
-
-	// read item.N
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = basictl.NatRead(currentR, &item.N); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.N = 0
 	}
-
-	// read item.A
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemUglyIntStringInternalReadTL2(currentR, &item.A); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.A = item.A[:0]
 	}
-
-	// read item.B
-	if block&(1<<3) != 0 {
+	if block&8 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(currentR, &item.B); err != nil {
 			return currentR, err
 		}
 	} else {
 		BuiltinVectorDictionaryElemStrangeStringReset(item.B)
 	}
-
-	// read item.C
-	if block&(1<<4) != 0 {
+	if block&16 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairIntIntIntInternalReadTL2(currentR, &item.C); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.C = item.C[:0]
 	}
-
-	// read item.D
-	if block&(1<<5) != 0 {
+	if block&32 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemTupleStringIntInternalReadTL2(currentR, &item.D); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.D = item.D[:0]
 	}
-
-	// read item.E
-	if block&(1<<6) != 0 {
+	if block&64 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairBoolAColorIntInternalReadTL2(currentR, &item.E); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.E = item.E[:0]
 	}
-
-	// read item.F
-	if block&(1<<7) != 0 {
+	if block&128 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairFloatDoubleIntInternalReadTL2(currentR, &item.F); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.F = item.F[:0]
 	}
-
-	// read next block for fields 8..15
+	// start the next block
 	if len(currentR) > 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return currentR, err
@@ -835,43 +656,35 @@ func (item *UseDictUgly) InternalReadTL2(r []byte) (_ []byte, err error) {
 	} else {
 		block = 0
 	}
-
-	// read item.G
-	if block&(1<<0) != 0 {
+	if block&1 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntInternalReadTL2(currentR, &item.G); err != nil {
 			return currentR, err
 		}
 	} else {
 		item.G = item.G[:0]
 	}
-
-	// read item.X
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(currentR, &item.X); err != nil {
 			return currentR, err
 		}
 	} else {
 		BuiltinVectorDictionaryElemIntPairIntIntReset(item.X)
 	}
-
-	// read item.Y
-	if block&(1<<2) != 0 {
+	if block&4 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(currentR, &item.Y); err != nil {
 			return currentR, err
 		}
 	} else {
 		BuiltinVectorDictionaryElemLongPairIntIntReset(item.Y)
 	}
-
-	// read item.Z
-	if block&(1<<3) != 0 {
+	if block&8 != 0 {
 		if currentR, err = BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(currentR, &item.Z); err != nil {
 			return currentR, err
 		}
 	} else {
 		BuiltinVectorDictionaryElemStringPairIntIntReset(item.Z)
 	}
-
+	Unused(currentR)
 	return r, nil
 }
 
