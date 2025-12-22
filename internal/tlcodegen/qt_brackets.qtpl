@@ -124,6 +124,9 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool,ve
     for i := 0; i < len(*vec); i++ {
         {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "(*vec)[i]", false, tuple.wr.ins, false) %}
     }
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return w, sizes, currentSize
 }
@@ -490,6 +493,9 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, m
         elem := {%s= elementTypeString %}{{%s= keyFieldName %}:key, {%s= valueFieldName %}:(*m)[key]}
         {%s= tuple.element.t.WriteTL2Call(directImports, bytesVersion, "sizes", "w", "elem", false, tuple.wr.ins, false) %}
     }
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     return w, sizes, currentSize
 }
@@ -753,6 +759,7 @@ func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= ty
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         // special case for bool
         currentSize += (len(*vec) + 7) / 8
+        lastUsedByte = currentSize
     {%- else -%}
         for i := 0; i < len(*vec); i++ {
             {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
@@ -794,6 +801,9 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     {%- endif -%}
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     return w, sizes, currentSize
 }
 {%- endif -%}
@@ -977,6 +987,7 @@ func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= ty
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         // special case for bool
         currentSize += (len(*vec) + 7) / 8
+        lastUsedByte = currentSize
     {%- else -%}
         for i := 0; i < len(*vec); i++ {
             {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
@@ -1018,6 +1029,9 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     {%- endif -%}
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     return w, sizes, currentSize
 }
 {%- endif -%}
@@ -1217,6 +1231,7 @@ func {%s= goName %}CalculateLayout(sizes []int, optimizeEmpty bool, vec *{%s= ty
     {%- if _, ok := tuple.element.t.trw.(*TypeRWBool); ok -%}
         // special case for bool
         currentSize += ({%v= tuple.size %} + 7) / 8
+        lastUsedByte = currentSize
     {%- else -%}
         for i := 0; i < {%v= tuple.size %}; i++ {
             {%s= tuple.element.t.CalculateLayoutCall(directImports, bytesVersion, "sizes",  "(*vec)[i]", false, tuple.wr.ins, false) %}
@@ -1258,6 +1273,9 @@ func {%s= goName %}InternalWriteTL2(w []byte, sizes []int, optimizeEmpty bool, v
     }
     {%s= tuple.wr.gen.InternalPrefix()%}Unused(sz)
     {%- endif -%}
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     return w, sizes, currentSize
 }
 {%- endif -%}

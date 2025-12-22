@@ -150,7 +150,7 @@ func (item *{%s= goName %}) CalculateLayout(sizes []int, optimizeEmpty bool) ([]
     {%- for i, field := range union.Fields -%}
     {%- if !field.t.IsTrueType() -%}
     case {%d i %}:
-        return item.value{%s= field.goName %}.CalculateLayout(sizes, true)
+        return item.value{%s= field.goName %}.CalculateLayout(sizes, optimizeEmpty)
         {%- endif -%}
     {%- endfor -%}
     }

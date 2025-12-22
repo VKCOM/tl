@@ -170,7 +170,7 @@ func (item *`)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
+    if currentSize == 0 {
         sizes = sizes[:sizePosition+1]
     } else {
         currentSize += basictl.TL2CalculateSize(currentSize)
@@ -211,6 +211,9 @@ func (item *`)
         }
     }
     w[currentBlockPosition] = currentBlock
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     `)
 			qw422016.N().S(maybe.wr.gen.InternalPrefix())
 			qw422016.N().S(`Unused(sz)

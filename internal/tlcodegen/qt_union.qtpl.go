@@ -299,7 +299,7 @@ func (item *`)
 						qw422016.N().S(`:
         return item.value`)
 						qw422016.N().S(field.goName)
-						qw422016.N().S(`.CalculateLayout(sizes, true)
+						qw422016.N().S(`.CalculateLayout(sizes, optimizeEmpty)
 `)
 					}
 				}

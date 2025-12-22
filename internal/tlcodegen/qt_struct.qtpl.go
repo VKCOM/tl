@@ -2400,7 +2400,10 @@ func (item *`)
 				qw422016.N().S(`)(item)
 `)
 			}
-			qw422016.N().S(`    sizePosition := len(sizes)
+			qw422016.N().S(`    sizes = append(sizes, `)
+			qw422016.N().V(struct_.wr.tlTag)
+			qw422016.N().S(`)
+    sizePosition := len(sizes)
     sizes = append(sizes, 0)
 
     currentSize := 1
@@ -2463,9 +2466,10 @@ func (item *`)
         currentSize = lastUsedByte
     }
     sizes[sizePosition] = currentSize
-    if optimizeEmpty && currentSize == 0 {
+    if currentSize == 0 {
         sizes = sizes[:sizePosition+1]
-    } else {
+    }
+    if !optimizeEmpty || currentSize != 0 {
         currentSize += basictl.TL2CalculateSize(currentSize)
     }
     `)
@@ -2484,8 +2488,13 @@ func (item *`)
 				qw422016.N().S(`)(item)
 `)
 			}
-			qw422016.N().S(`    currentSize := sizes[0]
-    sizes = sizes[1:]
+			qw422016.N().S(`    if sizes[0] != `)
+			qw422016.N().V(struct_.wr.tlTag)
+			qw422016.N().S(` {
+        panic("aja")
+    }
+    currentSize := sizes[1]
+    sizes = sizes[2:]
     if optimizeEmpty && currentSize == 0 {`)
 			/* CalculateLayout was called with optimizeEmpty and object turned out empty */
 
@@ -2513,12 +2522,15 @@ func (item *`)
 				if (fieldIndex+1)%8 == 0 {
 					qw422016.N().S(`            w[currentBlockPosition] = currentBlock
             currentBlock = 0
-            if len(w) - oldLen == currentSize {
-                return w, sizes, currentSize
-            }
-            // start the next block
+`)
+					/* we cannot return here, because fields must pop from sizes, so we will call WriteTL2.
+					   this optimization starts only for field 7 and further, so it is actually rare */
+
+					qw422016.N().S(`            // start the next block
             currentBlockPosition = len(w)
-            w = append(w, 0)
+            if len(w) - oldLen < currentSize {
+                w = append(w, 0)
+            }
 `)
 				}
 				if field.IsTL2Omitted() {
@@ -2558,7 +2570,12 @@ func (item *`)
         }
 `)
 			}
-			qw422016.N().S(`    w[currentBlockPosition] = currentBlock
+			qw422016.N().S(`    if currentBlockPosition < len(w) {
+        w[currentBlockPosition] = currentBlock
+    }
+    if len(w) - oldLen != currentSize {
+        panic("tl2: mismatch between calculate and write")
+    }
     `)
 			qw422016.N().S(struct_.wr.gen.InternalPrefix())
 			qw422016.N().S(`Unused(sz)
@@ -2575,12 +2592,15 @@ func (item *`)
 			qw422016.N().S(`    return w
 `)
 		} else {
-			qw422016.N().S(`    var sizes []int
+			qw422016.N().S(`    var sizes, sizes2 []int
     if ctx != nil {
         sizes = ctx.SizeBuffer[:0]
     }
     sizes, _ = item.CalculateLayout(sizes, false)
-    w, _, _ = item.InternalWriteTL2(w, sizes, false)
+    w, sizes2, _ = item.InternalWriteTL2(w, sizes, false)
+    if len(sizes2) != 0 {
+        panic("tl2: internal write did not consume all size data")
+    }
     if ctx != nil {
         ctx.SizeBuffer = sizes
     }
