@@ -109,17 +109,12 @@ func BuiltinTuple4StringInternalReadTL2(r []byte, vec *[4]string) (_ []byte, err
 		}
 	}
 
-	lastIndex := elementCount
-	if lastIndex > 4 {
-		lastIndex = 4
-	}
+	lastIndex := min(elementCount, 4)
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = basictl.StringReadTL2(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
 	for i := lastIndex; i < 4; i++ {
 		(*vec)[i] = ""
 	}
@@ -261,17 +256,12 @@ func BuiltinTuple4StringBytesInternalReadTL2(r []byte, vec *[4][]byte) (_ []byte
 		}
 	}
 
-	lastIndex := elementCount
-	if lastIndex > 4 {
-		lastIndex = 4
-	}
+	lastIndex := min(elementCount, 4)
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = basictl.StringReadTL2Bytes(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
 	for i := lastIndex; i < 4; i++ {
 		(*vec)[i] = (*vec)[i][:0]
 	}

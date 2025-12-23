@@ -20,9 +20,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReset(m map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedFillRandom(rg *basictl.RandGenerator, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) {
@@ -41,19 +39,14 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedRead(w [
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	var data map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryFieldUsefulServiceUserEntityPaymentItemBoxed.DictionaryFieldUsefulServiceUserEntityPaymentItemBoxed
 		if w, err = elem.Read(w, nat_t); err != nil {
@@ -161,14 +154,13 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 		}
 	}
 
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
 	if *m == nil {
-		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem)
+		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, elementCount)
 	}
-
-	for key := range *m {
-		delete(*m, key)
-	}
-
 	data := *m
 
 	for i := 0; i < elementCount; i++ {
@@ -182,16 +174,12 @@ func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedInternal
 }
 
 func BuiltinVectorDictionaryFieldUsefulServiceUserEntityPaymentItemBoxedReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, nat_t uint32) error {
-	var data map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem
+	clear(*m)
 	if *m == nil {
 		*m = make(map[string]tlUsefulServiceUserEntityPaymentItem.UsefulServiceUserEntityPaymentItem, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

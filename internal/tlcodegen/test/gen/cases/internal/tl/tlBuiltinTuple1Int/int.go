@@ -109,17 +109,12 @@ func BuiltinTuple1IntInternalReadTL2(r []byte, vec *[1]int32) (_ []byte, err err
 		}
 	}
 
-	lastIndex := elementCount
-	if lastIndex > 1 {
-		lastIndex = 1
-	}
+	lastIndex := min(elementCount, 1)
 	for i := 0; i < lastIndex; i++ {
 		if currentR, err = basictl.IntRead(currentR, &(*vec)[i]); err != nil {
 			return currentR, err
 		}
 	}
-
-	// reset elements if received less elements
 	for i := lastIndex; i < 1; i++ {
 		(*vec)[i] = 0
 	}

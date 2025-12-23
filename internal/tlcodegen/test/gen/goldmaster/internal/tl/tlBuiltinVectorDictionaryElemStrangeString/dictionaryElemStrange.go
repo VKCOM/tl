@@ -19,9 +19,7 @@ var _ = basictl.NatWrite
 var _ = internal.ErrorInvalidEnumTag
 
 func BuiltinVectorDictionaryElemStrangeStringReset(m map[uint32]string) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryElemStrangeStringFillRandom(rg *basictl.RandGenerator, m *map[uint32]string) {
@@ -40,19 +38,14 @@ func BuiltinVectorDictionaryElemStrangeStringRead(w []byte, m *map[uint32]string
 	if w, err = basictl.NatRead(w, &l); err != nil {
 		return w, err
 	}
-	var data map[uint32]string
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[uint32]string, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[uint32]string, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem tlDictionaryElemStrangeString.DictionaryElemStrangeString
 		if w, err = elem.Read(w); err != nil {
@@ -166,14 +159,13 @@ func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[ui
 		}
 	}
 
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
 	if *m == nil {
-		*m = make(map[uint32]string)
+		*m = make(map[uint32]string, elementCount)
 	}
-
-	for key := range *m {
-		delete(*m, key)
-	}
-
 	data := *m
 
 	for i := 0; i < elementCount; i++ {
@@ -187,16 +179,12 @@ func BuiltinVectorDictionaryElemStrangeStringInternalReadTL2(r []byte, m *map[ui
 }
 
 func BuiltinVectorDictionaryElemStrangeStringReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[uint32]string) error {
-	var data map[uint32]string
+	clear(*m)
 	if *m == nil {
 		*m = make(map[uint32]string, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

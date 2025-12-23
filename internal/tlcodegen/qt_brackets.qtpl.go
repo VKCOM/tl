@@ -553,9 +553,7 @@ func `)
 			qw422016.N().S(`]`)
 			qw422016.N().S(valueTypeString)
 			qw422016.N().S(`) {
-    for k := range m {
-        delete(m, k)
-    }
+    clear(m)
 }
 
 `)
@@ -618,27 +616,18 @@ func `)
     }
 `)
 				}
-				qw422016.N().S(`    var data map[`)
-				qw422016.N().S(keyTypeString)
-				qw422016.N().S(`]`)
-				qw422016.N().S(valueTypeString)
-				qw422016.N().S(`
+				qw422016.N().S(`    clear(*m)
+    if l == 0 {
+        return w, nil
+    }
     if *m == nil {
-        if l == 0 {
-            return w, nil
-        }
-        data = make(map[`)
+        *m = make(map[`)
 				qw422016.N().S(keyTypeString)
 				qw422016.N().S(`]`)
 				qw422016.N().S(valueTypeString)
 				qw422016.N().S(`, l)
-        *m = data
-    } else {
-        data = *m
-        for k := range data {
-            delete(data, k)
-        }
     }
+    data := *m
     for i := 0; i < int(l); i++ {
         var elem `)
 				qw422016.N().S(elementTypeString)
@@ -883,18 +872,17 @@ func `)
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
+    clear(*m)
+    if elementCount == 0 {
+        return r, nil
+    }
     if *m == nil {
         *m = make(map[`)
 					qw422016.N().S(keyTypeString)
 					qw422016.N().S(`]`)
 					qw422016.N().S(valueTypeString)
-					qw422016.N().S(`)
+					qw422016.N().S(`, elementCount)
     }
-
-    for key := range *m {
-        delete(*m, key)
-    }
-
     data := *m
 
     for i := 0; i < elementCount; i++ {
@@ -939,27 +927,19 @@ func `)
         }
     }
     l := len(_map)
-    var data map[`)
-				qw422016.N().S(keyTypeString)
-				qw422016.N().S(`]`)
-				qw422016.N().S(valueTypeString)
-				qw422016.N().S(`
+    clear(*m)
+    if l == 0 {
+        return nil
+    }
     if *m == nil {
-        if l == 0 {
-            return nil
-        }
-        data = make(map[`)
+        *m = make(map[`)
 				qw422016.N().S(keyTypeString)
 				qw422016.N().S(`]`)
 				qw422016.N().S(valueTypeString)
 				qw422016.N().S(`, l)
-        *m = data
-    } else {
-        data = *m
-        for k := range data {
-            delete(data, k)
-        }
     }
+    data := *m
+
     for _jkey, _jvalue := range _map {
 `)
 				if tuple.dictKeyString {
@@ -999,24 +979,16 @@ func `)
 			qw422016.N().S(` `)
 			qw422016.N().S(valueNatArgsDecl)
 			qw422016.N().S(`) error {
-	var data map[`)
-			qw422016.N().S(keyTypeString)
-			qw422016.N().S(`]`)
-			qw422016.N().S(valueTypeString)
-			qw422016.N().S(`
+    clear(*m)
 	if *m == nil {
 	    *m = make(map[`)
 			qw422016.N().S(keyTypeString)
 			qw422016.N().S(`]`)
 			qw422016.N().S(valueTypeString)
 			qw422016.N().S(`, 0)
-	    data = *m
-	} else {
-        data = *m
-        for k := range data {
-            delete(data, k)
-        }
-    }
+	}
+    data := *m
+
     if in != nil {
         in.Delim('{')
         if !in.Ok() {
@@ -1407,22 +1379,7 @@ func `)
     *vec = (*vec)[:elementCount]
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`    // special case for bool
-    blocksCount := (elementCount + 7) / 8
-    index := 0
-    for i := 0; i < blocksCount; i++ {
-        var block byte
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
-
-        blockSize := 8
-        if index + blockSize > elementCount {
-            blockSize = elementCount - index
-        }
-        for j := 0; j < blockSize; j++ {
-            (*vec)[index] = (block & (1 << j)) != 0
-            index += 1
-        }
-    }
+					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
 `)
 				} else {
 					qw422016.N().S(`    for i := 0; i < elementCount; i++ {
@@ -1769,22 +1726,7 @@ func `)
     *vec = (*vec)[:elementCount]
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`    // special case for bool
-    blocksCount := (elementCount + 7) / 8
-    index := 0
-    for i := 0; i < blocksCount; i++ {
-        var block byte
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
-
-        blockSize := 8
-        if index + blockSize > elementCount {
-            blockSize = elementCount - index
-        }
-        for j := 0; j < blockSize; j++ {
-            (*vec)[index] = (block & (1 << j)) != 0
-            index += 1
-        }
-    }
+					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil { return currentR, err }
 `)
 				} else {
 					qw422016.N().S(`    for i := 0; i < elementCount; i++ {
@@ -2158,55 +2100,33 @@ func `)
         if currentR, elementCount, err = basictl.TL2ParseSize(currentR); err != nil { return r, err }
     }
 
-    lastIndex := elementCount
-    if lastIndex > `)
+    lastIndex := min(elementCount, `)
 				qw422016.N().V(tuple.size)
-				qw422016.N().S(` {
-        lastIndex = `)
-				qw422016.N().V(tuple.size)
-				qw422016.N().S(`
-    }
+				qw422016.N().S(`)
 `)
 				if _, ok := tuple.element.t.trw.(*TypeRWBool); ok {
-					qw422016.N().S(`    // special case for bool
-    blocksCount := (lastIndex + 7) / 8
-    index := 0
-    for i := 0; i < blocksCount; i++ {
-        var block byte
-        if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil { return currentR, err }
+					qw422016.N().S(`        if currentR, err = basictl.VectorBoolContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil { return currentR, err }
+`)
+					/* reset elements if received less elements */
 
-        blockSize := 8
-        if index + blockSize > lastIndex {
-            blockSize = lastIndex - index
-        }
-        for j := 0; j < blockSize; j++ {
-            (*vec)[index] = (block & (1 << j)) != 0
-            index += 1
-        }
-    }
-
-    // reset elements if received less elements
-    for i := lastIndex; i < `)
-					qw422016.N().V(tuple.size)
-					qw422016.N().S(`; i++ {
-        (*vec)[i] = false
-    }
+					qw422016.N().S(`        clear((*vec)[lastIndex:])
 `)
 				} else {
-					qw422016.N().S(`    for i := 0; i < lastIndex; i++ {
-        `)
+					qw422016.N().S(`        for i := 0; i < lastIndex; i++ {
+            `)
 					qw422016.N().S(tuple.element.t.ReadTL2Call(directImports, bytesVersion, "currentR", "(*vec)[i]", false, tuple.wr.ins, false))
 					qw422016.N().S(`
-    }
+        }
+`)
+					/* reset elements if received less elements */
 
-    // reset elements if received less elements
-    for i := lastIndex; i < `)
+					qw422016.N().S(`        for i := lastIndex; i < `)
 					qw422016.N().V(tuple.size)
 					qw422016.N().S(`; i++ {
-        `)
+            `)
 					qw422016.N().S(tuple.element.t.TypeResettingCode(bytesVersion, directImports, tuple.wr.ins, "(*vec)[i]", false))
 					qw422016.N().S(`
-    }
+        }
 `)
 				}
 				qw422016.N().S(`

@@ -105,33 +105,11 @@ func BuiltinTuple0BoolInternalReadTL2(r []byte, vec *[0]bool) (_ []byte, err err
 		}
 	}
 
-	lastIndex := elementCount
-	if lastIndex > 0 {
-		lastIndex = 0
+	lastIndex := min(elementCount, 0)
+	if currentR, err = basictl.VectorBoolContentReadTL2(currentR, (*vec)[:lastIndex]); err != nil {
+		return currentR, err
 	}
-	// special case for bool
-	blocksCount := (lastIndex + 7) / 8
-	index := 0
-	for i := 0; i < blocksCount; i++ {
-		var block byte
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-			return currentR, err
-		}
-
-		blockSize := 8
-		if index+blockSize > lastIndex {
-			blockSize = lastIndex - index
-		}
-		for j := 0; j < blockSize; j++ {
-			(*vec)[index] = (block & (1 << j)) != 0
-			index += 1
-		}
-	}
-
-	// reset elements if received less elements
-	for i := lastIndex; i < 0; i++ {
-		(*vec)[i] = false
-	}
+	clear((*vec)[lastIndex:])
 
 	return r, nil
 }

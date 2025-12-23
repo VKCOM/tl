@@ -16,9 +16,7 @@ import (
 var _ = basictl.NatWrite
 
 func BuiltinVectorDictionaryElemIntPairIntIntReset(m map[int32]PairIntInt) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryElemIntPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int32]PairIntInt) {
@@ -40,19 +38,14 @@ func BuiltinVectorDictionaryElemIntPairIntIntRead(w []byte, m *map[int32]PairInt
 	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
-	var data map[int32]PairIntInt
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[int32]PairIntInt, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[int32]PairIntInt, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryElemIntPairIntInt
 		if w, err = elem.Read(w); err != nil {
@@ -166,14 +159,13 @@ func BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(r []byte, m *map[in
 		}
 	}
 
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
 	if *m == nil {
-		*m = make(map[int32]PairIntInt)
+		*m = make(map[int32]PairIntInt, elementCount)
 	}
-
-	for key := range *m {
-		delete(*m, key)
-	}
-
 	data := *m
 
 	for i := 0; i < elementCount; i++ {
@@ -187,16 +179,12 @@ func BuiltinVectorDictionaryElemIntPairIntIntInternalReadTL2(r []byte, m *map[in
 }
 
 func BuiltinVectorDictionaryElemIntPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int32]PairIntInt) error {
-	var data map[int32]PairIntInt
+	clear(*m)
 	if *m == nil {
 		*m = make(map[int32]PairIntInt, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -253,9 +241,7 @@ func BuiltinVectorDictionaryElemIntPairIntIntWriteJSONOpt(tctx *basictl.JSONWrit
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntReset(m map[int64]PairIntInt) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[int64]PairIntInt) {
@@ -277,19 +263,14 @@ func BuiltinVectorDictionaryElemLongPairIntIntRead(w []byte, m *map[int64]PairIn
 	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
-	var data map[int64]PairIntInt
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[int64]PairIntInt, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[int64]PairIntInt, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryElemLongPairIntInt
 		if w, err = elem.Read(w); err != nil {
@@ -403,14 +384,13 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(r []byte, m *map[i
 		}
 	}
 
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
 	if *m == nil {
-		*m = make(map[int64]PairIntInt)
+		*m = make(map[int64]PairIntInt, elementCount)
 	}
-
-	for key := range *m {
-		delete(*m, key)
-	}
-
 	data := *m
 
 	for i := 0; i < elementCount; i++ {
@@ -424,16 +404,12 @@ func BuiltinVectorDictionaryElemLongPairIntIntInternalReadTL2(r []byte, m *map[i
 }
 
 func BuiltinVectorDictionaryElemLongPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[int64]PairIntInt) error {
-	var data map[int64]PairIntInt
+	clear(*m)
 	if *m == nil {
 		*m = make(map[int64]PairIntInt, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {
@@ -1110,9 +1086,7 @@ func BuiltinVectorDictionaryElemPairIntPairMultiPointStringIntWriteJSONOpt(tctx 
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntReset(m map[string]PairIntInt) {
-	for k := range m {
-		delete(m, k)
-	}
+	clear(m)
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntFillRandom(rg *basictl.RandGenerator, m *map[string]PairIntInt) {
@@ -1134,19 +1108,14 @@ func BuiltinVectorDictionaryElemStringPairIntIntRead(w []byte, m *map[string]Pai
 	if err = basictl.CheckLengthSanity(w, l, 4); err != nil {
 		return w, err
 	}
-	var data map[string]PairIntInt
-	if *m == nil {
-		if l == 0 {
-			return w, nil
-		}
-		data = make(map[string]PairIntInt, l)
-		*m = data
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
+	clear(*m)
+	if l == 0 {
+		return w, nil
 	}
+	if *m == nil {
+		*m = make(map[string]PairIntInt, l)
+	}
+	data := *m
 	for i := 0; i < int(l); i++ {
 		var elem DictionaryElemStringPairIntInt
 		if w, err = elem.Read(w); err != nil {
@@ -1254,14 +1223,13 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(r []byte, m *map
 		}
 	}
 
+	clear(*m)
+	if elementCount == 0 {
+		return r, nil
+	}
 	if *m == nil {
-		*m = make(map[string]PairIntInt)
+		*m = make(map[string]PairIntInt, elementCount)
 	}
-
-	for key := range *m {
-		delete(*m, key)
-	}
-
 	data := *m
 
 	for i := 0; i < elementCount; i++ {
@@ -1275,16 +1243,12 @@ func BuiltinVectorDictionaryElemStringPairIntIntInternalReadTL2(r []byte, m *map
 }
 
 func BuiltinVectorDictionaryElemStringPairIntIntReadJSONGeneral(tctx *basictl.JSONReadContext, in *basictl.JsonLexer, m *map[string]PairIntInt) error {
-	var data map[string]PairIntInt
+	clear(*m)
 	if *m == nil {
 		*m = make(map[string]PairIntInt, 0)
-		data = *m
-	} else {
-		data = *m
-		for k := range data {
-			delete(data, k)
-		}
 	}
+	data := *m
+
 	if in != nil {
 		in.Delim('{')
 		if !in.Ok() {

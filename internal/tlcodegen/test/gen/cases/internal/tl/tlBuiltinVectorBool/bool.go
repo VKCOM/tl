@@ -113,23 +113,8 @@ func BuiltinVectorBoolInternalReadTL2(r []byte, vec *[]bool) (_ []byte, err erro
 		*vec = make([]bool, elementCount)
 	}
 	*vec = (*vec)[:elementCount]
-	// special case for bool
-	blocksCount := (elementCount + 7) / 8
-	index := 0
-	for i := 0; i < blocksCount; i++ {
-		var block byte
-		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
-			return currentR, err
-		}
-
-		blockSize := 8
-		if index+blockSize > elementCount {
-			blockSize = elementCount - index
-		}
-		for j := 0; j < blockSize; j++ {
-			(*vec)[index] = (block & (1 << j)) != 0
-			index += 1
-		}
+	if currentR, err = basictl.VectorBoolContentReadTL2(currentR, *vec); err != nil {
+		return currentR, err
 	}
 	return r, nil
 }
