@@ -31,7 +31,7 @@ all: build
 .PHONY: build
 build: # build static binary to run on many linux variants
 	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlgen ./cmd/tlgen
-	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tlclient2 ./cmd/tlclient2
+	CGO_ENABLED=0 $(GO) build -ldflags "$(COMMON_LDFLAGS)" -buildvcs=false -o target/bin/tl2client ./cmd/tl2client
 
 tlo-bootstrap: build
 	@./target/bin/tlgen -v --language=go \
@@ -203,7 +203,8 @@ test:
 
 # target should be as close as possible to github actions used to enable merge
 .PHONY: check
-check: build test
+check: build test lint
+	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.5.1 --version
 	@$(GO) run honnef.co/go/tools/cmd/staticcheck@v0.5.1 ./... # update version together with github actions
 
 .PHONY: lint

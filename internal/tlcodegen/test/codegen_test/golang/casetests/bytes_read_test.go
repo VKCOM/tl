@@ -292,7 +292,7 @@ func TestAppendNewCasesForTesting(t *testing.T) {
 			t.Fatalf("can't open file with test cases")
 			return
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 
 		_, err = file.Write(bytes)
 		if err != nil {
@@ -442,7 +442,7 @@ func updateTestData(t *testing.T) {
 			t.Fatalf("can't open file with test cases")
 			return
 		}
-		defer file.Close()
+		defer func() { _ = file.Close() }()
 
 		bytes, _ := json.MarshalIndent(tests, "", "\t")
 		_, err = file.Write(bytes)

@@ -27,9 +27,9 @@
 // ---- test trivial types ----
 //point = x:uint32 y:uint32;
 //rect = a:point b:point;
-//union1 = Empty | Alias uint32 | Field x:uint32 | Fields x:uint32 y:uint32;
-//union2 = Empty2 | Alias2 union1 | Field x:union1 | Fields [2]union1;
-//color = Red | Green | Blue;
+union1 = Empty | Alias uint32 | Field x:uint32 | Fields x:uint32 y:uint32;
+union2 = Empty2 | Alias2 union1 | Field x:union1 | Fields [2]union1;
+color = Red | Green | Blue;
 
 
 // ---- test brackets ----

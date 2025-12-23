@@ -1,6 +1,7 @@
 package tl2pure
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/vkcom/tl/internal/tlast"
@@ -79,8 +80,8 @@ func (v *KernelValueUnion) CompareForMapKey(other KernelValue) int {
 	return 0
 }
 
-/*
-func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType, lrc map[string]ResolvedArgument) (TypeInstance, error) {
+func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType,
+	templateArguments []tlast.TL2TypeTemplate, lrc []tlast.TL2TypeArgument) (TypeInstance, error) {
 	ins := &TypeInstanceUnion{
 		TypeInstanceCommon: TypeInstanceCommon{
 			canonicalName: canonicalName,
@@ -90,7 +91,7 @@ func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType, lrc m
 	}
 	for i, variantDef := range def.Variants {
 		element, err := k.createObject(canonicalName+"__"+variantDef.Name, tlast.TL2TypeDeclaration{},
-			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, lrc, true, i)
+			!variantDef.IsTypeAlias, variantDef.TypeAlias, variantDef.Fields, templateArguments, lrc, true, i)
 		if err != nil {
 			return nil, fmt.Errorf("fail to resolve type of union %s element %d: %w", canonicalName, i, err)
 		}
@@ -98,4 +99,3 @@ func (k *Kernel) createUnion(canonicalName string, def tlast.TL2UnionType, lrc m
 	}
 	return ins, nil
 }
-*/
