@@ -2610,7 +2610,7 @@ func GenerateCode(tl tlast.TL, tl2 tlast.TL2File, options Gen2Options) (*Gen2, e
 		if combinator.HasAnnotation(tl1Diagonal) {
 			continue
 		}
-		ref := tlast.TL2TypeRef{SomeType: &tlast.TL2TypeApplication{Name: combinator.ReferenceName()}}
+		ref := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: combinator.ReferenceName()}}
 		if !combinator.IsFunction && len(combinator.TypeDecl.TemplateArguments) > 0 {
 			continue
 		}

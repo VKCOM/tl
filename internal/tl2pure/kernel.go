@@ -89,7 +89,7 @@ func (k *Kernel) CanonicalName(t tlast.TL2TypeRef) string {
 func (k *Kernel) canonicalName(t tlast.TL2TypeRef, sb *strings.Builder) {
 	if t.IsBracket {
 		sb.WriteString("[")
-		if t.BracketType.IndexType != nil {
+		if t.BracketType.HasIndex {
 			if t.BracketType.IndexType.IsNumber {
 				sb.WriteString(fmt.Sprintf("%d", t.BracketType.IndexType.Number))
 			} else {
@@ -149,12 +149,12 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 	}
 	if tr.Type.IsBracket {
 		bracketType := *tr.Type.BracketType
-		if bracketType.IndexType != nil {
-			ic, err := k.resolveArgument(*bracketType.IndexType, templateArguments, lrc)
+		if bracketType.HasIndex {
+			ic, err := k.resolveArgument(bracketType.IndexType, templateArguments, lrc)
 			if err != nil {
 				return tr, err
 			}
-			bracketType.IndexType = &ic
+			bracketType.IndexType = ic
 		}
 		ac, err := k.resolveType(bracketType.ArrayType, templateArguments, lrc)
 		if err != nil {
@@ -165,7 +165,7 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 		return tr, nil
 	}
 	// names found in local arguments have priprity over global type names
-	someType := *tr.Type.SomeType
+	someType := tr.Type.SomeType
 	if len(someType.Arguments) == 0 {
 		if someType.Name.Namespace == "" {
 			for i, targ := range templateArguments {
@@ -185,7 +185,7 @@ func (k *Kernel) resolveArgumentImpl(tr tlast.TL2TypeArgument, templateArguments
 		}
 		someType.Arguments[i] = rt
 	}
-	tr.Type.SomeType = &someType
+	tr.Type.SomeType = someType
 	return tr, nil
 }
 
@@ -206,7 +206,7 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 		if err != nil {
 			return nil, err
 		}
-		if tr.BracketType.IndexType != nil {
+		if tr.BracketType.HasIndex {
 			if tr.BracketType.IndexType.IsNumber {
 				if elemBit {
 					return nil, fmt.Errorf("type bit is not allowed as bracket element")
@@ -468,7 +468,7 @@ func (k *Kernel) Compile() error {
 	}
 	// instantiate all top-level declarations
 	for _, tip := range k.tipsOrdered {
-		tr := tlast.TL2TypeRef{SomeType: &tlast.TL2TypeApplication{Name: tip.tip.Name}}
+		tr := tlast.TL2TypeRef{SomeType: tlast.TL2TypeApplication{Name: tip.tip.Name}}
 		if len(tip.tip.TemplateArguments) == 0 {
 			if _, err := k.getInstance(tr); err != nil {
 				return fmt.Errorf("error adding type %s: %w", tip.tip.Name, err)
@@ -478,7 +478,7 @@ func (k *Kernel) Compile() error {
 				if arg.Category.IsType() {
 					someType := tlast.TL2TypeApplication{Name: tlast.TL2TypeName{Name: "uint32"}}
 					tr.SomeType.Arguments = append(tr.SomeType.Arguments,
-						tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: &someType}})
+						tlast.TL2TypeArgument{Type: tlast.TL2TypeRef{SomeType: someType}})
 				} else {
 					tr.SomeType.Arguments = append(tr.SomeType.Arguments,
 						tlast.TL2TypeArgument{IsNumber: true, Number: 1})

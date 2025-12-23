@@ -294,15 +294,13 @@ func (t *TL2TypeRef) Print(sb *strings.Builder) {
 			t.BracketType.Print(sb)
 		}
 	} else {
-		if t.SomeType != nil {
-			t.SomeType.Print(sb)
-		}
+		t.SomeType.Print(sb)
 	}
 }
 
 func (t *TL2BracketType) Print(sb *strings.Builder) {
 	sb.WriteString("[")
-	if t.IndexType != nil {
+	if t.HasIndex {
 		t.IndexType.Print(sb)
 	}
 	sb.WriteString("]")
