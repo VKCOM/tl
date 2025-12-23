@@ -1648,10 +1648,10 @@ func (item *`)
 `)
 	}
 	qw422016.N().S(`}
+
 `)
 	if struct_.wr.wantsTL2 {
-		qw422016.N().S(`
-func (item *`)
+		qw422016.N().S(`func (item *`)
 		qw422016.N().S(goName)
 		qw422016.N().S(`) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *`)
 		qw422016.N().S(retArg)
@@ -1787,55 +1787,6 @@ func (item *`)
     return w, nil
 }
 
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-`)
-		if !struct_.wr.wantsTL2 {
-			qw422016.N().S(`  return r, w, `)
-			qw422016.N().S(struct_.wr.gen.InternalPrefix())
-			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(struct_.wr.tlName.String())
-			qw422016.N().S(`)
-`)
-		} else {
-			qw422016.N().S(`  var ret `)
-			qw422016.N().S(retArg)
-			qw422016.N().S(`
-  if r, err = item.ReadResult(r, &ret); err != nil {
-    return r, w, err
-  }
-  w, err = item.WriteResultTL2(w, tctx, ret)
-  return r, w, err
-`)
-		}
-		qw422016.N().S(`}
-
-func (item *`)
-		qw422016.N().S(goName)
-		qw422016.N().S(`) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-`)
-		if !struct_.wr.wantsTL2 {
-			qw422016.N().S(`  return r, w, `)
-			qw422016.N().S(struct_.wr.gen.InternalPrefix())
-			qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
-			qw422016.N().Q(struct_.wr.tlName.String())
-			qw422016.N().S(`)
-`)
-		} else {
-			qw422016.N().S(`  var ret `)
-			qw422016.N().S(retArg)
-			qw422016.N().S(`
-  if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
-    return r, w, err
-  }
-  w, err = item.WriteResult(w, ret)
-  return r, w, err
-`)
-		}
-		qw422016.N().S(`}
-
-
 `)
 	}
 	qw422016.N().S(`
@@ -1917,6 +1868,54 @@ func (item *`)
   w, err = item.WriteResult(w, ret)
   return r, w, err
 }
+
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+`)
+	if !struct_.wr.wantsTL2 {
+		qw422016.N().S(`  return r, w, `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().S(`)
+`)
+	} else {
+		qw422016.N().S(`  var ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`
+  if r, err = item.ReadResult(r, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.WriteResultTL2(w, tctx, ret)
+  return r, w, err
+`)
+	}
+	qw422016.N().S(`}
+
+func (item *`)
+	qw422016.N().S(goName)
+	qw422016.N().S(`) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+`)
+	if !struct_.wr.wantsTL2 {
+		qw422016.N().S(`  return r, w, `)
+		qw422016.N().S(struct_.wr.gen.InternalPrefix())
+		qw422016.N().S(`ErrorTL2SerializersNotGenerated(`)
+		qw422016.N().Q(struct_.wr.tlName.String())
+		qw422016.N().S(`)
+`)
+	} else {
+		qw422016.N().S(`  var ret `)
+		qw422016.N().S(retArg)
+		qw422016.N().S(`
+  if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
+    return r, w, err
+  }
+  w, err = item.WriteResult(w, ret)
+  return r, w, err
+`)
+	}
+	qw422016.N().S(`}
 `)
 	for fieldId, field := range struct_.Fields {
 		if field.IsTL2Omitted() {

@@ -206,24 +206,6 @@ func (item *Service5InsertList) WriteResultTL2(w []byte, ctx *basictl.TL2WriteCo
 	return w, nil
 }
 
-func (item *Service5InsertList) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret tlListService5Output.ListService5Output
-	if r, err = item.ReadResult(r, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.WriteResultTL2(w, tctx, ret)
-	return r, w, err
-}
-
-func (item *Service5InsertList) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
-	var ret tlListService5Output.ListService5Output
-	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
-		return r, w, err
-	}
-	w, err = item.WriteResult(w, ret)
-	return r, w, err
-}
-
 func (item *Service5InsertList) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *tlListService5Output.ListService5Output) error {
 	tctx := &basictl.JSONReadContext{LegacyTypeNames: legacyTypeNames}
 	if err := ret.ReadJSONGeneral(tctx, in); err != nil {
@@ -261,6 +243,24 @@ func (item *Service5InsertList) ReadResultJSONWriteResult(r []byte, w []byte) ([
 	var ret tlListService5Output.ListService5Output
 	err := item.ReadResultJSON(true, &basictl.JsonLexer{Data: r}, &ret)
 	if err != nil {
+		return r, w, err
+	}
+	w, err = item.WriteResult(w, ret)
+	return r, w, err
+}
+
+func (item *Service5InsertList) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret tlListService5Output.ListService5Output
+	if r, err = item.ReadResult(r, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.WriteResultTL2(w, tctx, ret)
+	return r, w, err
+}
+
+func (item *Service5InsertList) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret tlListService5Output.ListService5Output
+	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
 		return r, w, err
 	}
 	w, err = item.WriteResult(w, ret)
