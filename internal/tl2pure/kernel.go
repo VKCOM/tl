@@ -276,8 +276,8 @@ func (k *Kernel) getInstance(tr tlast.TL2TypeRef) (*TypeInstanceRef, error) {
 	// }
 	var err error
 	switch {
-	// case kt.tip.Type.IsUnionType:
-	// ref.ins, err = k.createUnion(canonicalName, kt.tip.Type.UnionType, lrc2)
+	case kt.tip.Type.IsUnionType:
+		ref.ins, err = k.createUnion(canonicalName, kt.tip.Type.UnionType, kt.tip.TemplateArguments, someType.Arguments)
 	case kt.tip.Type.IsAlias():
 		ref.ins, err = k.createAlias(canonicalName, kt.tip.Type.TypeAlias, kt.tip.TemplateArguments, someType.Arguments)
 	case kt.tip.Type.IsConstructorFields:

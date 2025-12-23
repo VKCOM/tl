@@ -787,7 +787,7 @@ true = True; // this can be used as void type and serialized to empty array in P
 ---functions---
 @read myTestFunction x:[[[TYPE_HERE]]] = [[[TYPE_HERE]]];`
 
-					ast, err := tlast.ParseTL(strings.Replace(data, "[[[TYPE_HERE]]]", s+argsToAdd[s], -1))
+					ast, err := tlast.ParseTL(strings.ReplaceAll(data, "[[[TYPE_HERE]]]", s+argsToAdd[s]))
 					if err != nil {
 						t.Error(err)
 						return

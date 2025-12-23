@@ -235,8 +235,8 @@ func (gen *Gen2) generateCodeCPP(bytesWhiteList []string) error {
 		for _, spec := range specs {
 			cppDetInc.ns[spec] = CppIncludeInfo{componentId: spec.typeComponent, namespace: spec.groupName}
 		}
-		keys := utils.Keys(cppDetInc.ns)
-		fmt.Sprintln(keys)
+		//keys := utils.Keys(cppDetInc.ns)
+		//fmt.Println(keys)
 		for _, n := range cppDetInc.sortedIncludes(gen.componentsOrder, func(wrapper *TypeRWWrapper) string { return wrapper.hppDetailsFileName }) {
 			if !createdDetailsHpps[n] {
 				continue

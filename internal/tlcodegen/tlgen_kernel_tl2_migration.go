@@ -156,13 +156,13 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingPartInfo, error) {
 		sort.Strings(namespaces)
 
 		for _, namespace := range namespaces {
-			fmt.Fprintf(file, ">>> %s\n", namespace)
+			_, _ = fmt.Fprintf(file, ">>> %s\n", namespace)
 
 			reductions := utils.Keys(namespaceToReductions[namespace])
 			sort.Strings(reductions)
 
 			for _, reduction := range reductions {
-				fmt.Fprintf(file, "%s\n", reduction)
+				_, _ = fmt.Fprintf(file, "%s\n", reduction)
 			}
 		}
 
@@ -184,7 +184,7 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingPartInfo, error) {
 		filter := true
 
 		if filter {
-			fmt.Fprintf(file2, "Filter to show only reductions in multiple namespaces\n")
+			_, _ = fmt.Fprintf(file2, "Filter to show only reductions in multiple namespaces\n")
 		}
 
 		reds := utils.Keys(reductionToNamespaceUsages)
@@ -200,15 +200,15 @@ func (gen *Gen2) SplitMigratingTypes() ([]MigratingPartInfo, error) {
 
 			sort.Strings(nss)
 
-			fmt.Fprintf(file2, ">>> %s: [", red)
+			_, _ = fmt.Fprintf(file2, ">>> %s: [", red)
 			for _, ns := range nss {
 				if ns == "" {
 					ns = "__empty"
 				}
-				fmt.Fprintf(file2, "%s,", ns)
+				_, _ = fmt.Fprintf(file2, "%s,", ns)
 			}
 
-			fmt.Fprintf(file2, "]\n")
+			_, _ = fmt.Fprintf(file2, "]\n")
 		}
 	}
 

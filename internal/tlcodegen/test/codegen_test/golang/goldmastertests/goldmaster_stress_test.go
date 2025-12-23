@@ -42,8 +42,8 @@ func TestGoldmasterStressTest(t *testing.T) {
 				dst.FillRandom(rg)
 				for _, success := range testingInfo.Successes {
 					t.Run(fmt.Sprintf("TL[%s]", success.Bytes), func(t *testing.T) {
-						var writeFunc func([]byte) ([]byte, error) = dst.WriteGeneral
-						var readFunc func([]byte) ([]byte, error) = dst.Read
+						writeFunc := dst.WriteGeneral
+						readFunc := dst.Read
 
 						if success.IsTLBytesBoxed {
 							writeFunc = dst.WriteBoxedGeneral
