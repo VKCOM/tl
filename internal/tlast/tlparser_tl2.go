@@ -21,6 +21,14 @@ type TL2TypeArgument struct {
 
 	IsNumber bool
 
+	// this field is not set by AST, but it is included here,
+	// otherwise we'd have to set up the same type family for kernel
+	// during type checking, every argument is checked and category set,
+	// for example: useN<n:#, t:type> = pair<n, t>, when we typecheck, we set
+	// category of pair's arguments to pair<n(#), t(type)>, so then we can
+	// look up pair definition and see if it is compatible
+	Category TL2TypeCategory
+
 	PR PositionRange
 }
 

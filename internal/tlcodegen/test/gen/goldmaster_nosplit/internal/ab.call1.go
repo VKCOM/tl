@@ -68,15 +68,17 @@ func (item *AbCall1) WriteResult(w []byte, ret AbTypeB) (_ []byte, err error) {
 
 func (item *AbCall1) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *AbTypeB) (_ []byte, err error) {
 	currentSize := 0
-	if r, err = basictl.TL2ReadSize(r, &currentSize); err != nil {
+	if r, currentSize, err = basictl.TL2ParseSize(r); err != nil {
 		return r, err
+	}
+	if len(r) < currentSize {
+		return r, basictl.TL2Error("not enough data: expected %d, got %d", currentSize, len(r))
 	}
 
 	currentR := r[:currentSize]
 	r = r[currentSize:]
 
-	// first field mask
-	block := byte(0)
+	var block byte
 	if currentSize != 0 {
 		if currentR, err = basictl.ByteReadTL2(currentR, &block); err != nil {
 			return r, err
@@ -84,11 +86,11 @@ func (item *AbCall1) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *A
 	}
 
 	// check no of constructor
-	if block&(1<<0) != 0 {
-		return currentR, basictl.TL2Error("unknown union type")
+	if block&1 != 0 {
+		return currentR, basictl.TL2Error("function result must not use variant type field")
 	}
 
-	if block&(1<<1) != 0 {
+	if block&2 != 0 {
 		if currentR, err = ret.InternalReadTL2(currentR); err != nil {
 			return currentR, err
 		}
@@ -98,7 +100,11 @@ func (item *AbCall1) ReadResultTL2(r []byte, ctx *basictl.TL2ReadContext, ret *A
 	return r, nil
 }
 
-func (item *AbCall1) writeResultTL2(w []byte, sizes []int, ctx *basictl.TL2WriteContext, ret AbTypeB) ([]byte, []int, int) {
+func (item *AbCall1) calculateLayoutResult(sizes []int, optimizeEmpty bool, ret AbTypeB) ([]int, int) {
+	sizes = append(sizes, 549845805)
+	sizePosition := len(sizes)
+	sizes = append(sizes, 0)
+
 	currentSize := 1
 	lastUsedByte := 0
 	var sz int
@@ -109,37 +115,82 @@ func (item *AbCall1) writeResultTL2(w []byte, sizes []int, ctx *basictl.TL2Write
 	if lastUsedByte < currentSize {
 		currentSize = lastUsedByte
 	}
-	currentSize += basictl.TL2CalculateSize(currentSize)
-	sizesReuse := sizes
-	oldLen := len(w)
-	w = basictl.TL2WriteSize(w, currentSize)
-	if len(w)-oldLen == currentSize {
-		return w, sizes, currentSize
+	sizes[sizePosition] = currentSize
+	if currentSize == 0 {
+		sizes = sizes[:sizePosition+1]
 	}
+	if !optimizeEmpty || currentSize != 0 {
+		currentSize += basictl.TL2CalculateSize(currentSize)
+	}
+	Unused(sz)
+	return sizes, currentSize
+}
+
+func (item *AbCall1) writeResultTL2(w []byte, sizes []int, optimizeEmpty bool, ret AbTypeB) ([]byte, []int, int) {
+	if sizes[0] != 549845805 {
+		panic("tl2: tag mismatch between calculate and write")
+	}
+	currentSize := sizes[1]
+	sizes = sizes[2:]
+
+	if optimizeEmpty && currentSize == 0 {
+		return w, sizes, 0
+	}
+	w = basictl.TL2WriteSize(w, currentSize)
+	oldLen := len(w)
+	if len(w)-oldLen == currentSize {
+		return w, sizes, 1
+	}
+	var sz int
 	var currentBlock byte
 	currentBlockPosition := len(w)
 	w = append(w, 0)
+
 	if w, sizes, sz = ret.InternalWriteTL2(w, sizes, true); sz != 0 {
 		currentBlock |= 2
 	}
-	w[currentBlockPosition] = currentBlock
-	Unused(sz)
-	if len(sizes) != 0 {
-		panic("tl2: internal write did not consume all size data")
+	if currentBlockPosition < len(w) {
+		w[currentBlockPosition] = currentBlock
 	}
-	return w, sizesReuse, currentSize
+	if len(w)-oldLen != currentSize {
+		panic("tl2: mismatch between calculate and write")
+	}
+	Unused(sz)
+	return w, sizes, currentSize
 }
 
 func (item *AbCall1) WriteResultTL2(w []byte, ctx *basictl.TL2WriteContext, ret AbTypeB) (_ []byte, err error) {
-	var sizes []int
+	var sizes, sizes2 []int
 	if ctx != nil {
 		sizes = ctx.SizeBuffer[:0]
 	}
-	w, sizes, _ = item.writeResultTL2(w, sizes, ctx, ret)
+	sizes, _ = item.calculateLayoutResult(sizes, false, ret)
+	w, sizes2, _ = item.writeResultTL2(w, sizes, false, ret)
+	if len(sizes2) != 0 {
+		panic("tl2: internal write did not consume all size data")
+	}
 	if ctx != nil {
 		ctx.SizeBuffer = sizes
 	}
 	return w, nil
+}
+
+func (item *AbCall1) ReadResultWriteResultTL2(tctx *basictl.TL2WriteContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret AbTypeB
+	if r, err = item.ReadResult(r, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.WriteResultTL2(w, tctx, ret)
+	return r, w, err
+}
+
+func (item *AbCall1) ReadResultTL2WriteResult(tctx *basictl.TL2ReadContext, r []byte, w []byte) (_ []byte, _ []byte, err error) {
+	var ret AbTypeB
+	if r, err = item.ReadResultTL2(r, tctx, &ret); err != nil {
+		return r, w, err
+	}
+	w, err = item.WriteResult(w, ret)
+	return r, w, err
 }
 
 func (item *AbCall1) ReadResultJSON(legacyTypeNames bool, in *basictl.JsonLexer, ret *AbTypeB) error {

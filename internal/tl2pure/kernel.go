@@ -460,10 +460,14 @@ func (k *Kernel) Compile() error {
 			return fmt.Errorf("error adding type %s: %w", comb.TypeDecl.Name, err)
 		}
 	}
-	// resolve all declarations by linking to other declarations
+	// type all declarations by comparing type ref with actual type definition
 	for _, tip := range k.tipsOrdered {
-		_ = k.typeCheck(tip.tip.Type)
-
+		if err := k.typeCheck(tip.tip.Type); err != nil {
+			return err
+		}
+	}
+	// instantiate all top-level declarations
+	for _, tip := range k.tipsOrdered {
 		tr := tlast.TL2TypeRef{SomeType: &tlast.TL2TypeApplication{Name: tip.tip.Name}}
 		if len(tip.tip.TemplateArguments) == 0 {
 			if _, err := k.getInstance(tr); err != nil {
